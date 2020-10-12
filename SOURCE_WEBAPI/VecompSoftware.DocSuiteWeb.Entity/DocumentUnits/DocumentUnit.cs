@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.Commons.Interfaces.CQRS.Events;
+using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Entity.Monitors;
+using VecompSoftware.DocSuiteWeb.Entity.PECMails;
+using VecompSoftware.DocSuiteWeb.Entity.PosteWeb;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Repository.Entity;
@@ -28,6 +32,9 @@ namespace VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
             UDSDocumentUnits = new HashSet<UDSDocumentUnit>();
             WorkflowActivities = new HashSet<WorkflowActivity>();
             FascicleDocumentUnits = new HashSet<FascicleDocumentUnit>();
+            Collaborations = new HashSet<Collaboration>();
+            POLRequests = new HashSet<PosteOnLineRequest>();
+            WorkflowActions = new HashSet<IWorkflowAction>();
         }
         #endregion
 
@@ -61,6 +68,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 
         public virtual UDSRepository UDSRepository { get; set; }
 
+        public virtual TenantAOO TenantAOO { get; set; }
+
         public virtual ICollection<DocumentUnitRole> DocumentUnitRoles { get; set; }
 
         public virtual ICollection<DocumentUnitChain> DocumentUnitChains { get; set; }
@@ -76,9 +85,30 @@ namespace VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
         public virtual ICollection<UDSDocumentUnit> UDSDocumentUnits { get; set; }
 
         public virtual ICollection<WorkflowActivity> WorkflowActivities { get; set; }
+
+        public virtual ICollection<PECMail> PecMails { get; set; }
+
+        public virtual ICollection<Collaboration> Collaborations { get; set; }
+
+        public virtual ICollection<PosteOnLineRequest> POLRequests { get; set; }
+
+        public virtual ICollection<UDSDocumentUnit> UDSSourceDocumentUnits { get; set; }
+
+        public virtual ICollection<UDSCollaboration> UDSCollaborations { get; set; }
+
+        public virtual ICollection<UDSContact> UDSContacts { get; set; }
+
+        public virtual ICollection<UDSMessage> UDSMessages { get; set; }
+
+        public virtual ICollection<UDSRole> UDSRoles { get; set; }
+
+        public virtual ICollection<UDSPECMail> UDSPECMails { get; set; }
+
+        public virtual ICollection<UDSUser> UDSUsers { get; set; }
         #endregion
 
         #region [ Not Mapping Properties ]
+        public bool WorkflowAutoComplete { get; set; }
         public Guid? IdWorkflowActivity { get; set; }
         public string WorkflowName { get; set; }
         public ICollection<IWorkflowAction> WorkflowActions { get; set; }

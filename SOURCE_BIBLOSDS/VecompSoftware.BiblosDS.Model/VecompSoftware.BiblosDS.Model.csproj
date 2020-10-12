@@ -45,13 +45,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CQRS\CommandModel.cs" />
+    <Compile Include="CQRS\Notifications\NotificationDetailModel.cs" />
     <Compile Include="CQRS\Notifications\CommandNotify.cs" />
     <Compile Include="CQRS\Notifications\NotifyLevel.cs" />
     <Compile Include="CQRS\Notifications\Preservations\CommandPreservationNotify.cs" />
+    <Compile Include="CQRS\Preservations\CommandConfigureArchiveForPreservation.cs" />
     <Compile Include="CQRS\Preservations\CommandExecutePreservation.cs" />
     <Compile Include="CQRS\Preservations\CommandInsertPreservationPDV.cs" />
     <Compile Include="CQRS\Preservations\CommandInsertPreservationRDV.cs" />
     <Compile Include="CQRS\Preservations\CommandPurgePreservation.cs" />
+    <Compile Include="Parameters\ArchiveConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

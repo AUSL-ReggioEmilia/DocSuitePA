@@ -12,6 +12,7 @@ using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Model.Securities;
+using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
 
 namespace VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator
 {
@@ -94,10 +95,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator
                     WorkflowName = _moduleConfiguration.WorkflowName,
                     Host = _hostIdentify
                 };
-                EventTokenSecurity eventTokenSecurity = new EventTokenSecurity(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _identityContext, tokenModel);
+                EventTokenSecurity eventTokenSecurity = new EventTokenSecurity(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _moduleConfiguration.TenantAOOId, _identityContext, tokenModel);
                 eventTokenSecurity.CustomProperties.Add(ModuleConfigurationHelper.MODULE_NAME, _message_attribute_module_name);
-                eventTokenSecurity = _webAPIClient.PostAsync(eventTokenSecurity).Result;
-                _logger.WriteInfo(new LogMessage(string.Concat("Generated and sended new token security authentication and expiry on ", expiryDate.ToString())), LogCategories);
+                ServiceBusMessage serviceBusMessage = _webAPIClient.SendEventAsync(eventTokenSecurity).Result;
+                _logger.WriteInfo(new LogMessage($"Generated and sended new token security authentication in message {serviceBusMessage.MessageId} with expiration date on {expiryDate}"), LogCategories);
             }
             catch (Exception ex)
             {

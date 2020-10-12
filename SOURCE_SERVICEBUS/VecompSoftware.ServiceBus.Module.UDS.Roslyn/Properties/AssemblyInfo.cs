@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("VecompSoftware.ServiceBus.Module.UDS.Roslyn")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2019")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyMetadata("tags", "VecompSoftware.ServiceBus.Module.UDS.Roslyn")]
@@ -17,5 +17,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("d76fbb2e-3817-49a5-9703-aa56f2f98fef")]
 
-[assembly: AssemblyVersion("8.87.0.0")]
-[assembly: AssemblyFileVersion("8.87.0.0")]
+[assembly: AssemblyVersion("9.09.0.0")]
+[assembly: AssemblyFileVersion("9.09.0.0")]

@@ -37,6 +37,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Parameters
             modelTransformed.LastUsedNumberReg = model.LastUsedNumberReg;
             modelTransformed.RegistrationUser = model.RegistrationUser;
             modelTransformed.RegistrationDate = model.RegistrationDate;
+            modelTransformed.TenantAOO_IdTenantAOO = model.TenantAOO_IdTenantAOO;
+            model.TenantAOO_Name = model.TenantAOO_Name;
 
             return modelTransformed;
         }

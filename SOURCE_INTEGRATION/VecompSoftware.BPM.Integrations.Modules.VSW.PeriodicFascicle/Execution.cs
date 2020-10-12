@@ -98,7 +98,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle
             if (_needInitializeModule)
             {
                 _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventCQRSFascicolable>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration, 
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventCQRSFascicolable>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.PeriodicFascicolableDocumentUnitSubscription, FascicolateDocumentUnit));
 
                 _needInitializeModule = false;
@@ -115,7 +115,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle
             _needInitializeModule = true;
         }
 
-        private async Task FascicolateDocumentUnit(IEventCQRSFascicolable evt)
+        private async Task FascicolateDocumentUnit(IEventCQRSFascicolable evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage(string.Concat("FascicolateDocumentUnit -> evaluate event id ", evt.Id)), LogCategories);
 
@@ -124,12 +124,12 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle
                 _logger.WriteError(new LogMessage("FascicolateDocumentUnit -> DocumentUnit is null"), LogCategories);
                 throw new Exception("Non e' presente una DocumentUnit nell'evento di fascicolazione");
             }
+            DocumentUnit documentUnit = evt.DocumentUnit;
+            _logger.WriteInfo(new LogMessage($"Evaluating DocumentUnitId {documentUnit.UniqueId}"), LogCategories);
 
             Fascicle periodicFascicle = await GetPeriodicFascicle(evt);
+            _logger.WriteInfo(new LogMessage($"DocumentUnitId {documentUnit.UniqueId} are going to be store into fascicle {periodicFascicle.UniqueId}/{periodicFascicle.DSWEnvironment}"), LogCategories);
 
-            DocumentUnit documentUnit = evt.DocumentUnit;
-
-            _logger.WriteInfo(new LogMessage($"FascicolateDocumentUnit -> Evaluating DocumentUnitId {documentUnit.UniqueId}"), LogCategories);
             await FascicolateDocumentUnitAsync(documentUnit.UniqueId, periodicFascicle);
         }
 
@@ -143,8 +143,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle
 
             CategoryFascicle categoryFascicle = evt.CategoryFascicle;
 
-            ICollection<Fascicle> periodicFascicles = await _webAPIClient.GetFasciclesAsync(string.Concat("$filter=Category/EntityShortId eq ", categoryFascicle.Category.EntityShortId, " and (Container/EntityShortId eq ", evt.DocumentUnit.Container.EntityShortId, " or Container eq null)",
-                " and DSWEnvironment eq ", categoryFascicle.DSWEnvironment, " and EndDate eq null and FascicleType eq 'Period'&$expand=Category,Container,Contacts,FascicleRoles($expand=Role),MetadataRepository,FascicleFolders"));
+            ICollection<Fascicle> periodicFascicles = await _webAPIClient.GetFasciclesAsync($"$filter=Category/EntityShortId eq {categoryFascicle.Category.EntityShortId} and (Container/EntityShortId eq {evt.DocumentUnit.Container.EntityShortId} or Container eq null) and DSWEnvironment eq {categoryFascicle.DSWEnvironment} and EndDate eq null and FascicleType eq 'Period'&$expand=Category,Container,Contacts,FascicleRoles($expand=Role),MetadataRepository,FascicleFolders");
 
             if (periodicFascicles.Count() < 1)
             {
@@ -158,7 +157,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.PeriodicFascicle
                 throw new TooManyPeriodicFasciclesException("Sono stati trovati piu' fascicoli periodici corrispondenti al piano di fascicolaizone");
             }
 
-            _logger.WriteInfo(new LogMessage(string.Concat("GetPeriodicFascicle -> Founded a single FascicleProtocol", periodicFascicles.First().UniqueId)), LogCategories);
+            _logger.WriteInfo(new LogMessage($"GetPeriodicFascicle -> Founded a single FascicleProtocol {periodicFascicles.First().UniqueId}"), LogCategories);
 
             Fascicle currentPeriodicFascicle = periodicFascicles.First();
             FascicleFolder folder = currentPeriodicFascicle.FascicleFolders.FirstOrDefault(f => f.Typology == FascicleFolderTypology.Fascicle);

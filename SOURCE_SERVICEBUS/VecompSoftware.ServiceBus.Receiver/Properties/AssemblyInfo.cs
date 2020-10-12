@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("VecompSoftware.ServiceBus.Receiver")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2019")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyMetadata("tags", "VecompSoftware.ServiceBus.Receiver")]
@@ -17,5 +17,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("a6566f8b-37ac-4328-b31a-7067949c4719")]
 
-[assembly: AssemblyVersion("8.87.0.0")]
-[assembly: AssemblyFileVersion("8.87.0.0")]
+[assembly: AssemblyVersion("9.09.0.0")]
+[assembly: AssemblyFileVersion("9.09.0.0")]

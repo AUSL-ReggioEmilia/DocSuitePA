@@ -1,10 +1,12 @@
-﻿using VecompSoftware.DocSuiteWeb.Common.Loggers;
+﻿using VecompSoftware.DocSuite.Document;
+using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation;
 using VecompSoftware.DocSuiteWeb.Validation.RulesetDefinitions.Entities.Fascicles;
+using ModelDocuments = VecompSoftware.DocSuiteWeb.Model.Documents;
 
 namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 {
@@ -13,15 +15,18 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
         #region [ Fields ]
         private readonly ILogger _logger;
         private readonly IDataUnitOfWork _unitOfWork;
+        private readonly IDocumentContext<ModelDocuments.Document, ModelDocuments.ArchiveDocument> _documentClient;
         #endregion
 
         #region [ Constructor ]
         public FascicleDocumentService(IDataUnitOfWork unitOfWork, ILogger logger, IValidatorService validationService,
-            IFascicleRuleset fascicleRuleset, IMapperUnitOfWork mapperUnitOfWork, ISecurity security)
+            IFascicleRuleset fascicleRuleset, IMapperUnitOfWork mapperUnitOfWork, ISecurity security,
+            IDocumentContext<ModelDocuments.Document, ModelDocuments.ArchiveDocument> documentClient)
             : base(unitOfWork, logger, validationService, fascicleRuleset, mapperUnitOfWork, security)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _documentClient = documentClient;
         }
 
         #endregion
@@ -43,8 +48,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
         {
             if (entityTransformed != null)
             {
-                DocSuite.Document.BiblosDS.DocumentBiblosDS documentBiblosDS = new DocSuite.Document.BiblosDS.DocumentBiblosDS(_logger);
-                if (!documentBiblosDS.HasActiveDocuments(entityTransformed.IdArchiveChain))
+                if (!_documentClient.HasActiveDocuments(entityTransformed.IdArchiveChain))
                 {
                     _unitOfWork.Repository<FascicleDocument>().Delete(entityTransformed);
                 }

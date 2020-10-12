@@ -13,6 +13,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ENavigare.Config
         public string DocumentSeriesItemSubscriptionRetired { get; set; }
         public string TenantName { get; set; }
         public Guid TenantId { get; set; }
+        public Guid TenantAOOId { get; set; }
         public IDictionary<string, string> ArchiveMappingUrls { get; set; }
     }
 }

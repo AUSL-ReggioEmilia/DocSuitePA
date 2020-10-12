@@ -6,6 +6,7 @@ using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Entity.Monitors;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.DocumentUnits;
@@ -50,6 +51,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.DocumentUnits
 
         public byte[] Timestamp { get; set; }
 
+        public Guid IdTenantAOO { get; set; }
+
         #endregion
 
         #region [ Navigation Properties ]
@@ -61,6 +64,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.DocumentUnits
         public Fascicle Fascicle { get; set; }
 
         public UDSRepository UDSRepository { get; set; }
+
+        public TenantAOO TenantAOO { get; set; }
 
         public ICollection<FascicleDocumentUnit> FascicleDocumentUnits { get; set; }
 

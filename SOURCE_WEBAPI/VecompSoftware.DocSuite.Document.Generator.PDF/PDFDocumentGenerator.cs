@@ -80,6 +80,21 @@ namespace VecompSoftware.DocSuite.Document.Generator.PDF
             }, _logger, LogCategories);
         }
 
-        #endregion        
+        public Task<byte[]> GenerateDocumentAsync(Guid idTemplate, IDocumentGeneratorModel source, byte[] content = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<byte[]> GetLatestVersionAsync(Guid idTemplate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] AppendTable(IDocumentGeneratorModel source, byte[] content)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

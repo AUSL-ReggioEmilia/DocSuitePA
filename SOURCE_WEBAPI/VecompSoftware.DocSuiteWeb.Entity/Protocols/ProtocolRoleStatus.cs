@@ -1,6 +1,6 @@
 ﻿namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
 {
-    public enum ProtocolRoleStatus
+    public enum ProtocolRoleStatus: short
     {
         /// <summary>
         /// 'Si tratta di uno status presente SOLO in ProtocolRejectedRole

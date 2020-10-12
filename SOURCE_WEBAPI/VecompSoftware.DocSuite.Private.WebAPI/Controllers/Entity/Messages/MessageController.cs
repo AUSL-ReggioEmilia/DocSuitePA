@@ -4,7 +4,6 @@ using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.Core.Command;
 using VecompSoftware.Core.Command.CQRS.Commands.Entities.Messages;
 using VecompSoftware.DocSuite.Service.Models.Parameters;
-using VecompSoftware.DocSuite.WebAPI.Common.Configurations;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Common.Securities;
@@ -51,7 +50,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Messages
         {
             try
             {
-                _logger.WriteDebug(new LogMessage(string.Concat("VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Messages.AfterSave with entity UniqueId ", entity.UniqueId)), LogCategories);
+                _logger.WriteDebug(new LogMessage($"VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Messages.AfterSave with entity UniqueId {entity.UniqueId}"), LogCategories);
                 Message message = _unitOfWork.Repository<Message>().Find(entity.EntityId);
                 if (message != null)
                 {
@@ -59,22 +58,19 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Messages
                     ICQRS command = null;
                     if (entity.Status == MessageStatus.Active)
                     {
-                        command = new CommandCreateMessage(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, identity, message);
+                        command = new CommandCreateMessage(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty, identity, message);
                     }
                     if (command != null)
                     {
                         foreach (IWorkflowAction workflowAction in WorkflowActions)
                         {
-                            if (IdWorkflowActivity.HasValue)
-                            {
-                                workflowAction.IdWorkflowActivity = IdWorkflowActivity.Value;
-                            }
+                            workflowAction.IdWorkflowActivity = IdWorkflowActivity;
                             command.WorkflowActions.Add(workflowAction);
                         }
                         ServiceBusMessage serviceBusMessage = _cqrsMapper.Map(command, new ServiceBusMessage());
                         if (serviceBusMessage == null || string.IsNullOrEmpty(serviceBusMessage.ChannelName))
                         {
-                            throw new DSWException(string.Concat("Queue name to command [", command.ToString(), "] is not mapped"), null, DSWExceptionCode.SC_Mapper);
+                            throw new DSWException($"Queue name to command [{command}] is not mapped", null, DSWExceptionCode.SC_Mapper);
                         }
                         Task.Run(async () =>
                         {

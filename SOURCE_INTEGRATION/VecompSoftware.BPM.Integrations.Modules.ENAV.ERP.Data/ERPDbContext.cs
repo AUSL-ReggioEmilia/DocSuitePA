@@ -9,8 +9,12 @@ using System.Data.Entity.Validation;
 using System.Linq;
 using System.Threading.Tasks;
 using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Configurations;
-using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Entities;
-using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Mappings;
+using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Entities.ERP;
+using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Entities.HR;
+using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Entities.Invoices;
+using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Mappings.ERP;
+using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Mappings.HR;
+using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Mappings.Invoices;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
@@ -45,6 +49,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data
         public virtual DbSet<Event> Events { get; set; }
         public virtual DbSet<PayableInvoice> PayableInvoices { get; set; }
         public virtual DbSet<ReceivableInvoice> ReceivableInvoices { get; set; }
+        public virtual DbSet<SkyDocCommand> SkyDocCommands { get; set; }
+        public virtual DbSet<SkyDocDocument> SkyDocDocuments { get; set; }
+        public virtual DbSet<SkyDocEvent> SkyDocEvents { get; set; }
+
         #endregion
 
         #region [ Constructor ]
@@ -70,7 +78,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data
                     .Add(new CommandMap())
                     .Add(new EventMap())
                     .Add(new ReceivableInvoiceMap())
-                    .Add(new PayableInvoiceMap());
+                    .Add(new PayableInvoiceMap())
+                    .Add(new SkyDocCommandMap())
+                    .Add(new SkyDocDocumentMap())
+                    .Add(new SkyDocEventMap());
             }
             catch (Exception ex)
             {

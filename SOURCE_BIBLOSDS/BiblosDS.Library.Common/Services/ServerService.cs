@@ -139,22 +139,6 @@ namespace BiblosDS.Library.Common.Services
             }
         }
 
-        public static Server GetMasterServer()
-        {
-            logger.Debug("GetMasterServer");
-            try
-            {
-                var servers = DbProvider.GetServers();
-                return servers.FirstOrDefault(x => x.ServerRole == ServerRole.Master);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                Logging.WriteLogEvent(LoggingSource.BiblosDS_General, "ServerService." + MethodBase.GetCurrentMethod().Name, ex.ToString(), LoggingOperationType.BiblosDS_General, LoggingLevel.BiblosDS_Errors);
-                throw;
-            }
-        }
-
         public static ArchiveServerConfig GetArchiveServerConfig(Guid idServer, Guid idArchive)
         {
             return DbProvider.GetArchiveServerConfig(idServer, idArchive);
@@ -195,23 +179,9 @@ namespace BiblosDS.Library.Common.Services
             return DbProvider.GetDocumentInServer(currentServer.IdServer, idDocument);
         }
 
-        /// <summary>
-        /// Risolve il nome del server per il suo ruolo.
-        /// </summary>
-        /// <returns></returns>
-        public static string GetServerName()
+        public static ArchiveServerConfig GetArchiveServerConfig(Guid idArchive)
         {
-            if (GetCurrentServer().ServerRole != ServerRole.Proxy)
-                return string.Empty;
-
-            var master = ServerService.GetMasterServer();
-            if (master == null)
-                throw new ServerNotDefined_Exception("Undefined master server. Invalid configuration for proxy server: {0}.",
-                    MachineService.GetServerName());
-
-            logger.DebugFormat("Server is a proxy, Redirect to: {0}", master.ServerName);
-            return master.ServerName;
-
+            return DbProvider.GetArchiveServerConfig(idArchive);
         }
     }
 }

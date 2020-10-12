@@ -11,7 +11,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Workflows
             entityTransformed.Status = entity.Status;
             entityTransformed.InstanceId = entity.InstanceId;
             entityTransformed.Json = entity.Json;
-
+            entityTransformed.Subject = entity.Subject;
             #endregion
 
             return entityTransformed;

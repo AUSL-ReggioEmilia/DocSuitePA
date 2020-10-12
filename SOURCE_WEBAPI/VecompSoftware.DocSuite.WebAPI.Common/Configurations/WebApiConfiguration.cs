@@ -53,18 +53,6 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Configurations
             }
         }
 
-        public static string WorkflowEngineType
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_workflowEngineType))
-                {
-                    _workflowEngineType = ConfigurationManager.AppSettings["VecompSoftware.DocSuiteWeb.Service.Workflow.EngineType"];
-                }
-                return _workflowEngineType;
-            }
-        }
-
         public static bool AllowCrossOrigin
         {
             get

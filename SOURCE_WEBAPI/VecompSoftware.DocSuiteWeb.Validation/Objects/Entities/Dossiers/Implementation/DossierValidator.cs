@@ -29,12 +29,14 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Dossiers
         public DateTimeOffset? EndDate { get; set; }
         public string Subject { get; set; }
         public string Note { get; set; }
-        public string JsonMetadata { get; set; }
+        public string MetadataDesigner { get; set; }
+        public string MetadataValues { get; set; }
         public string RegistrationUser { get; set; }
         public DateTimeOffset RegistrationDate { get; set; }
         public string LastChangedUser { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
         public byte[] Timestamp { get; set; }
+        public DossierStatus Status { get; set; }
 
         #endregion
 
@@ -51,6 +53,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Dossiers
         public ICollection<DossierFolder> DossierFolders { get; set; }
         public ICollection<WorkflowInstance> WorkflowInstances { get; set; }
         public ICollection<DossierLink> DossierLinks { get; set; }
+        public ICollection<MetadataValue> SourceMetadataValues { get; set; }
+        public ICollection<MetadataValueContact> MetadataValueContacts { get; set; }
         #endregion
     }
 }

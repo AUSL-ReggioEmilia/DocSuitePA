@@ -13,17 +13,12 @@ namespace VecompSoftware.DocSuiteWeb.Model.Workflow
         /// Argomenti in INGRESSO al workflow.
         /// </summary>
         public IDictionary<string, WorkflowArgument> Arguments { get; set; }
-        /// <summary>
-        /// Parametri di avvio del workflow.
-        /// </summary>
-        public IDictionary<string, object> StartParameters { get; set; }
         #endregion
 
         #region [ Constructor ]
         public WorkflowStart()
         {
             Arguments = new Dictionary<string, WorkflowArgument>();
-            StartParameters = new Dictionary<string, object>();
         }
         #endregion
     }

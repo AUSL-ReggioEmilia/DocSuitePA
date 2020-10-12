@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -14,5 +14,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("26e04bfb-42ef-4ee4-bf19-320b4f98586f")]
 
-[assembly: AssemblyVersion("8.87.0.0")]
-[assembly: AssemblyFileVersion("8.87.0.0")]
+[assembly: AssemblyVersion("9.09.0.0")]
+[assembly: AssemblyFileVersion("9.09.0.0")]

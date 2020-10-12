@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.Core.Command.CQRS.Events.Models.Resolutions;
@@ -28,8 +26,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Resolutions
         #endregion
 
         #region [ Constructor ]
-        public ResolutionContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient)
-            : base(logger, webApiClient, biblosClient)
+        public ResolutionContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
             _webAPIClient = webApiClient;
             _biblosClient = biblosClient;
@@ -45,7 +43,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Resolutions
             try
             {
                 resolution = ((ICommandCreateResolution)command).ContentType.ContentTypeValue;
-                evt = new EventCreateResolution(command.TenantName, command.TenantId, command.Identity, resolution, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
+                evt = new EventCreateResolution(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, resolution, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
             }
             catch (Exception ex)
             {
@@ -63,7 +61,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Resolutions
             try
             {
                 resolution = ((ICommandUpdateResolution)command).ContentType.ContentTypeValue;
-                evt = new EventUpdateResolution(command.TenantName, command.TenantId, command.Identity, resolution, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
+                evt = new EventUpdateResolution(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, resolution, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
             }
             catch (Exception ex)
             {
@@ -97,7 +95,6 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Resolutions
                 documentUnit.Year = resolutionModel.Year.Value;
                 documentUnit.DocumentUnitName = resolutionModel.DocumentUnitName;
                 documentUnit.Status = DocumentUnitStatus.Active;
-
                 #endregion
 
                 #region [ Navigation Properties ]

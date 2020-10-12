@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Security;
@@ -124,9 +125,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.PECMails
 
         public Guid UniqueId { get; set; }
 
-        public Guid? IdUDS { get; set; }
-
-        public DSWEnvironmentType? DocumentUnitType { get; set; }
         public InvoiceStatus? InvoiceStatus { get; set; }
 
         #endregion
@@ -134,7 +132,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.PECMails
         #region [ Navigation Properties ]
         public Location Location { get; set; }
         public PECMailBox PECMailBox { get; set; }
-        public UDSRepository UDSRepository { get; set; }
+        public DocumentUnit DocumentUnit { get; set; }
         public ICollection<PECMailReceipt> PECMailChildrenReceipts { get; set; }
         public ICollection<PECMailReceipt> PECMailReceipts { get; set; }
         // public PECMailBox PECMailBox { get; set; }

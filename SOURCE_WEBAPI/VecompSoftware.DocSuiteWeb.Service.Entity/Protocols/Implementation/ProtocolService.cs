@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
@@ -8,6 +9,7 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Parameters;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Finder.Parameters;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
@@ -73,12 +75,14 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Protocols
                 entity.Year = (short)DateTime.Now.Year;
                 entity.ConservationStatus = "M";
                 entity.HasConservatedDocs = false;
-                string IdentificationSdi = entity.AdvancedProtocol?.IdentificationSdi;
+                string identificationSdi = entity.AdvancedProtocol?.IdentificationSdi;
+                string serviceCategory = entity.AdvancedProtocol?.ServiceCategory;
                 entity.AdvancedProtocol = new AdvancedProtocol
                 {
                     Year = entity.Year,
                     Number = entity.Number,
-                    IdentificationSdi = IdentificationSdi
+                    IdentificationSdi = identificationSdi,
+                    ServiceCategory = serviceCategory
                 };
                 _unitOfWork.Repository<AdvancedProtocol>().Insert(entity.AdvancedProtocol);
                 entity.ProtocolLogs.Add(CreatProtocoloLog(entity, "PI", "Creato protocollo"));
@@ -100,6 +104,16 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Protocols
                 if (entity.AttachLocation != null)
                 {
                     entity.AttachLocation = _unitOfWork.Repository<Location>().Find(entity.AttachLocation.EntityShortId);
+                }
+
+                if (entity.TenantAOO != null)
+                {
+                    entity.TenantAOO = _unitOfWork.Repository<TenantAOO>().Find(entity.TenantAOO.UniqueId);
+                }
+
+                if (entity.DocType != null)
+                {
+                    entity.DocType = _unitOfWork.Repository<ProtocolDocumentType>().Find(entity.DocType.EntityShortId);
                 }
 
                 if (entity.ProtocolRoles != null && entity.ProtocolRoles.Count > 0)

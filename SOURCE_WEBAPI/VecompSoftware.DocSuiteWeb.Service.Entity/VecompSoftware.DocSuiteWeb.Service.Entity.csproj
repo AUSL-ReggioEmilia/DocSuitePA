@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.DocSuiteWeb.Service.Entity</RootNamespace>
     <AssemblyName>VecompSoftware.DocSuiteWeb.Service.Entity</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -39,7 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -57,9 +57,13 @@
     <Compile Include="Commons\ICategoryFascicleRightService.cs" />
     <Compile Include="Commons\IContactPlaceNameService.cs" />
     <Compile Include="Commons\IContactTitleService.cs" />
+    <Compile Include="Commons\IMetadataContactValueService.cs" />
+    <Compile Include="Commons\IMetadataValueService.cs" />
     <Compile Include="Commons\Implementation\CategoryFascicleRightService.cs" />
     <Compile Include="Commons\Implementation\ContactPlaceNameService.cs" />
     <Compile Include="Commons\Implementation\ContactTitleService.cs" />
+    <Compile Include="Commons\Implementation\MetadataContactValueService.cs" />
+    <Compile Include="Commons\Implementation\MetadataValueService.cs" />
     <Compile Include="Commons\Implementation\UserLogService.cs" />
     <Compile Include="Commons\IUserLogService.cs" />
     <Compile Include="DocumentArchives\IDocumentSeriesItemLinkService.cs" />
@@ -78,6 +82,8 @@
     <Compile Include="PECMails\Implementation\PECMailBoxService.cs" />
     <Compile Include="PECMails\IPECMailBoxConfigurationService.cs" />
     <Compile Include="PECMails\IPECMailBoxService.cs" />
+    <Compile Include="PosteWeb\Implementation\POLRequestService.cs" />
+    <Compile Include="PosteWeb\IPOLRequestService.cs" />
     <Compile Include="Processes\Implementation\ProcessFascicleTemplateService.cs" />
     <Compile Include="Processes\Implementation\ProcessFascicleWorkflowRepositoryService.cs" />
     <Compile Include="Processes\Implementation\ProcessService.cs" />
@@ -143,6 +149,10 @@
     <Compile Include="Resolutions\IResolutionKindService.cs" />
     <Compile Include="Resolutions\IResolutionLogService.cs" />
     <Compile Include="Resolutions\IResolutionDocumentSeriesItemService.cs" />
+    <Compile Include="Tasks\Implementation\TaskHeaderProtocolService.cs" />
+    <Compile Include="Tasks\Implementation\TaskHeaderService.cs" />
+    <Compile Include="Tasks\ITaskHeaderProtocolService.cs" />
+    <Compile Include="Tasks\ITaskHeaderService.cs" />
     <Compile Include="Templates\Implementation\TemplateDocumentRepositoryService.cs" />
     <Compile Include="Templates\Implementation\TemplateCollaborationDocumentRepositoryService.cs" />
     <Compile Include="Templates\Implementation\TemplateCollaborationService.cs" />
@@ -264,9 +274,11 @@
     <Compile Include="Resolutions\IResolutionService.cs" />
     <Compile Include="Resolutions\Implementation\ResolutionService.cs" />
     <Compile Include="ServiceHelper.cs" />
+    <Compile Include="Tenants\Implementation\TenantAOOService.cs" />
     <Compile Include="Tenants\Implementation\TenantConfigurationService.cs" />
     <Compile Include="Tenants\Implementation\TenantService.cs" />
     <Compile Include="Tenants\Implementation\TenantWorkflowRepositoryService.cs" />
+    <Compile Include="Tenants\ITenantAOOService.cs" />
     <Compile Include="Tenants\ITenantConfigurationService.cs" />
     <Compile Include="Tenants\ITenantService.cs" />
     <Compile Include="Tenants\ITenantWorkflowRepositoryService.cs" />
@@ -327,6 +339,10 @@
       <Project>{1ea007b2-b9fe-4a04-aae4-f86366fb3036}</Project>
       <Name>VecompSoftware.DocSuite.Document.BiblosDS</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.Document\VecompSoftware.DocSuite.Document.csproj">
+      <Project>{EA3F23A5-9EB3-4512-A847-083DE0EFE278}</Project>
+      <Name>VecompSoftware.DocSuite.Document</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.DocSuite.Service.Models\VecompSoftware.DocSuite.Service.Models.csproj">
       <Project>{666bdbda-d461-4692-9cf7-ff03784a6e96}</Project>
       <Name>VecompSoftware.DocSuite.Service.Models</Name>
@@ -379,14 +395,11 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="VecompSoftware.DocSuiteWeb.Service.Entity.nuspec">
+    <Content Include="VecompSoftware.DocSuiteWeb.Service.Entity.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tasks\" />
-    <Folder Include="Tenders\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

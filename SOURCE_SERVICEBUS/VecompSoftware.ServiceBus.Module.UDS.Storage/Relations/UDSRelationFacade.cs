@@ -21,8 +21,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage.Relations
 
         public UDSRelationFacade(string xml, string xmlSchema, string dbSchema = "dbo")
         {
-            List<string> validationErrors;
-            bool validate = UDSModel.ValidateXml(xml, xmlSchema, out validationErrors);
+            bool validate = UDSModel.ValidateXml(xml, xmlSchema, out List<string> validationErrors);
             if (!validate)
             {
                 throw new UDSRelationException(string.Format("UDSRelationFacade - Errori di validazione Xml: {0}", string.Join("\n", validationErrors)));
@@ -78,7 +77,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage.Relations
                     UDSDocumentId = Guid.NewGuid(),
                     UDSId = udsId,
                     DocumentName = !model.AllowMultiFile ? instance.DocumentName : string.Empty,
-                    IdDocument = Guid.Parse(instance.IdDocument),
+                    IdDocument = Guid.Parse(instance.StoredChainId),
                     DocumentType = (short)docType,
                     DocumentLabel = model.Label
                 };
@@ -100,8 +99,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage.Relations
                 AuthorizationType = instance.AuthorizationType
             };
 
-            Guid uniqueIdRole;
-            if (Guid.TryParse(instance.UniqueId, out uniqueIdRole))
+            if (Guid.TryParse(instance.UniqueId, out Guid uniqueIdRole))
             {
                 udsAuthorization.UniqueIdRole = uniqueIdRole;
             }
@@ -196,8 +194,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage.Relations
                     IdMessage = instance.IdMessage
                 };
 
-                Guid uniqueIdMessage;
-                if (Guid.TryParse(instance.UniqueId, out uniqueIdMessage))
+                if (Guid.TryParse(instance.UniqueId, out Guid uniqueIdMessage))
                 {
                     item.UniqueIdMessage = uniqueIdMessage;
                 }
@@ -226,8 +223,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage.Relations
                     IdPECMail = instance.IdPECMail
                 };
 
-                Guid uniqueIdPecMail;
-                if (Guid.TryParse(instance.UniqueId, out uniqueIdPecMail))
+                if (Guid.TryParse(instance.UniqueId, out Guid uniqueIdPecMail))
                 {
                     item.UniqueIdPECMail = uniqueIdPecMail;
                 }
@@ -280,8 +276,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage.Relations
                     IdResolution = instance.IdResolution
                 };
 
-                Guid uniqueIdResolution;
-                if (Guid.TryParse(instance.UniqueId, out uniqueIdResolution))
+                if (Guid.TryParse(instance.UniqueId, out Guid uniqueIdResolution))
                 {
                     item.UniqueIdResolution = uniqueIdResolution;
                 }
@@ -367,7 +362,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage.Relations
 
                 //elementi da aggiungere
                 DocumentInstance instance = model.Instances.First();
-                Guid idDocument = Guid.Parse(instance.IdDocument);
+                Guid idDocument = Guid.Parse(instance.StoredChainId);
                 string documentName = instance.DocumentName;
                 if (string.IsNullOrEmpty(documentName) && docType == UDSDocumentType.Document)
                 {

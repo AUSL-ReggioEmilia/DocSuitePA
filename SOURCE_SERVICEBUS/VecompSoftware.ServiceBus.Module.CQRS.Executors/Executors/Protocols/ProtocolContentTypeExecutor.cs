@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.Core.Command.CQRS;
@@ -34,8 +32,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Protocols
         #endregion
 
         #region [ Constructor ]
-        public ProtocolContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient)
-            : base(logger, webApiClient, biblosClient)
+        public ProtocolContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
             _logger = logger;
             _webApiClient = webApiClient;
@@ -49,19 +47,17 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Protocols
         {
             IEvent evt = null;
             Protocol protocol;
-            Guid guidResult;
-            int intResult;
             try
             {
                 protocol = ((ICommandCreateProtocol)command).ContentType.ContentTypeValue;
 
                 CollaborationUniqueId = null;
-                if (command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Any() && Guid.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).FirstOrDefault().Value.ToString(), out guidResult))
+                if (command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Any() && Guid.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).FirstOrDefault().Value.ToString(), out Guid guidResult))
                 {
                     CollaborationUniqueId = guidResult;
                 }
                 CollaborationId = null;
-                if (command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_ID).Any() && int.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_ID).FirstOrDefault().Value.ToString(), out intResult))
+                if (command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_ID).Any() && int.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_ID).FirstOrDefault().Value.ToString(), out int intResult))
                 {
                     CollaborationId = intResult;
                 }
@@ -71,7 +67,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Protocols
                     CollaborationTemplateName = command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_TEMPLATE_NAME).FirstOrDefault().Value.ToString();
                 }
 
-                evt = new EventCreateProtocol(command.TenantName, command.TenantId, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, command.Identity, protocol, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
+                evt = new EventCreateProtocol(command.TenantName, command.TenantId, command.TenantAOOId, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, command.Identity, protocol, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
 
             }
             catch (Exception ex)
@@ -89,18 +85,16 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Protocols
             try
             {
                 Protocol protocol;
-                Guid guidResult;
-                int intResult;
 
                 protocol = ((ICommandUpdateProtocol)command).ContentType.ContentTypeValue;
 
                 CollaborationUniqueId = null;
-                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID) && Guid.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Value.ToString(), out guidResult))
+                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID) && Guid.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Value.ToString(), out Guid guidResult))
                 {
                     CollaborationUniqueId = guidResult;
                 }
                 CollaborationId = null;
-                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_ID) && int.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_ID).Value.ToString(), out intResult))
+                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_ID) && int.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_ID).Value.ToString(), out int intResult))
                 {
                     CollaborationId = intResult;
                 }
@@ -113,12 +107,12 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Protocols
 
                 if (protocol.IdStatus == 0)
                 {
-                    evt = new EventUpdateProtocol(command.TenantName, command.TenantId, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, command.Identity, protocol, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
+                    evt = new EventUpdateProtocol(command.TenantName, command.TenantId, command.TenantAOOId, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, command.Identity, protocol, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
                 }
 
                 if (protocol.IdStatus != 0)
                 {
-                    evt = new EventCancelProtocol(command.TenantName, command.TenantId, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, command.Identity, protocol, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
+                    evt = new EventCancelProtocol(command.TenantName, command.TenantId, command.TenantAOOId, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, command.Identity, protocol, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
                 }
 
             }

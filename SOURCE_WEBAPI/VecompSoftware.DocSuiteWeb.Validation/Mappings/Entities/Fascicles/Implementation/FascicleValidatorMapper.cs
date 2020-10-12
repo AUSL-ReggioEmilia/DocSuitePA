@@ -31,8 +31,9 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Fascicles
             entityTransformed.VisibilityType = entity.VisibilityType;
             entityTransformed.Timestamp = entity.Timestamp;
             entityTransformed.MetadataValues = entity.MetadataValues;
+            entityTransformed.MetadataDesigner = entity.MetadataDesigner;
             entityTransformed.DSWEnvironment = entity.DSWEnvironment;
-            entityTransformed.ProcessFascicleTemplate = entity.ProcessFascicleTemplate;
+            entityTransformed.CustomActions = entity.CustomActions;
             #endregion
 
             #region [ Navigation Properties ]
@@ -49,7 +50,10 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Fascicles
             entityTransformed.DossierFolders = entity.DossierFolders;
             entityTransformed.WorkflowInstances = entity.WorkflowInstances;
             entityTransformed.FascicleFolders = entity.FascicleFolders;
+            entityTransformed.FascicleTemplate = entity.FascicleTemplate;
             entityTransformed.DocumentUnitFascicleCategories = entity.DocumentUnitFascicleCategories;
+            entityTransformed.MetadataValueContacts = entity.MetadataValueContacts;
+            entityTransformed.SourceMetadataValues = entity.SourceMetadataValues;
             #endregion
 
             return entityTransformed;

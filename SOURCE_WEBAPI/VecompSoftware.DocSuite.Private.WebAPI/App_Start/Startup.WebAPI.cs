@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.Cors;
 using Owin;
+using VecompSoftware.DocSuite.Private.WebAPI.Middleware;
 
 namespace VecompSoftware.DocSuite.Private.WebAPI
 {
@@ -12,6 +13,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
         public void ConfigureAPI(IAppBuilder appBuilder)
         {
+            appBuilder.Use(typeof(DSWShibbolethMiddleware));
+
             appBuilder.Map("/signalr", map =>
             {
                 // Setup the CORS middleware to run before SignalR.

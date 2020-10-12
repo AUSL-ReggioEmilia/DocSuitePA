@@ -32,6 +32,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Tenants
             entityTransformed.Roles = entity.Roles;
             entityTransformed.PECMailBoxes = entity.PECMailBoxes;
             entityTransformed.TenantWorkflowRepositories = entity.TenantWorkflowRepositories;
+            entityTransformed.WorkflowActivities = entity.WorkflowActivities;
+            entityTransformed.TenantTypologyType = entity.TenantTypology;
 
             #endregion
 

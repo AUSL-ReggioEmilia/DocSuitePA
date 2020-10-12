@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.ServiceBus.Receiver.Base</RootNamespace>
     <AssemblyName>VecompSoftware.ServiceBus.Receiver.Base</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -47,7 +47,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -60,26 +60,26 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="VecompSoftware.Commons.Interfaces, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.8.87.19295.1\lib\net461\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.9.20254.2\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Core.Command, Version=8.87.19296.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Core.Command.8.87.19296.3\lib\net461\VecompSoftware.Core.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Core.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Core.Command.9.9.20267.1\lib\net48\VecompSoftware.Core.Command.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.9.20254.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.9.20254.5\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Command, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Command.8.87.19296.2\lib\net461\VecompSoftware.Services.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +98,12 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.ServiceBus.WebAPI\VecompSoftware.ServiceBus.WebAPI.csproj">
+      <Project>{2B9846E8-3E0D-4001-BCB6-85FBAED4A2B1}</Project>
+      <Name>VecompSoftware.ServiceBus.WebAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

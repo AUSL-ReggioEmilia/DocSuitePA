@@ -97,6 +97,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Workflows
                 .WithMany(t => t.WorkflowActivities)
                 .Map(m => m.MapKey("DocumentUnitReferencedId"));
 
+            HasOptional(t => t.Tenant)
+                .WithMany(t => t.WorkflowActivities)
+                .Map(m => m.MapKey("IdTenant"));
+
             #endregion
         }
     }

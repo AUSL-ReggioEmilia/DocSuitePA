@@ -41,11 +41,16 @@ namespace VecompSoftware.BPM.Integrations.Services.StampaConforme
         #endregion
 
         #region [ Methods ]
-        public async Task<byte[]> ConvertToPDFAAsync(byte[] source, string signature)
+        public static string GetSignature(string signature, string source)
+        {
+            return signature.Replace("(SIGNATURE)", source);
+        }
+
+        public async Task<byte[]> ConvertToPDFAAsync(byte[] source, string fileExtension, string signature)
         {
             try
             {
-                stDoc toConvertDocument = new stDoc { FileExtension = "pdf", Blob = Convert.ToBase64String(source) };
+                stDoc toConvertDocument = new stDoc { FileExtension = fileExtension, Blob = Convert.ToBase64String(source) };
                 ToRasterFormatExResponse response = await _stampaConformeClient.ToRasterFormatExAsync(toConvertDocument, "pdf", signature);
                 return Convert.FromBase64String(response.Body.ToRasterFormatExResult.Blob);
             }
@@ -70,11 +75,11 @@ namespace VecompSoftware.BPM.Integrations.Services.StampaConforme
             }
         }
 
-        public async Task<byte[]> BuildPDFAsync(byte[] template, BuildValueModel[] buildValueModel, string label) 
+        public async Task<byte[]> BuildPDFAsync(byte[] template, BuildValueModel[] buildValueModel, string signature)
         {
             try
             {
-                BuildPDFResponse response = await _stampaConformeClient.BuildPDFAsync(template, buildValueModel, label);
+                BuildPDFResponse response = await _stampaConformeClient.BuildPDFAsync(template, buildValueModel, signature);
                 return response.Body.BuildPDFResult;
             }
             catch (Exception ex)

@@ -41,9 +41,14 @@
             public const string DEMATERIALISATION_DOCUMENT = "dsw_p_collaboration_dematerialisation_document";
 
             /// <summary>
+            /// Modello della collaborazione
+            /// </summary>
+            public const string COLLABORATION_MODEL = "dsw_p_collaboration_model";
+
+            /// <summary>
             /// Modello di unità documentale di destinazione della collaborazione
             /// </summary>
-            public const string DOCUMENT_UNIT_MODEL = "dsw_p_collaboration_model";
+            public const string DOCUMENT_UNIT_MODEL = "dsw_p_collaboration_manage_model";
         }
 
         /// <summary>
@@ -157,6 +162,16 @@
             /// Riferimento
             /// </summary>
             public const string REFERENCE = "dsw_p_archive";
+
+            /// <summary>
+            /// Modello dell'archivio
+            /// </summary>
+            public const string ARCHIVE_MODEL = "dsw_p_archive_model";
+
+            /// <summary>
+            /// Modello del classificatore
+            /// </summary>
+            public const string CATEGORY_MODEL = "dsw_p_archive_category";
         }
 
         /// <summary>
@@ -179,6 +194,56 @@
             /// Riferimento
             /// </summary>
             public const string REFERENCE = "dsw_p_fascicle";
+            /// <summary>
+            /// Modello del fascicolo
+            /// </summary>
+            public const string FASCICLE_MODEL = "dsw_p_fascicle_model";
+            /// <summary>
+            /// Settore responsabile del fascicolo
+            /// </summary>
+            public const string MANAGE = "dsw_p_fascicle_manage";
+            /// <summary>
+            /// Cartella del fascicolo
+            /// </summary>
+            public const string FASCICLE_FOLDER = "dsw_p_fascicle_folder";
+            /// <summary>
+            /// Inserto del fascicolo
+            /// </summary>
+            public const string FASCICLE_MISCELLANEA = "dsw_p_fascicle_miscellanea";
+        }
+
+        /// <summary>
+        /// Sottoclasse coi parametri specifici per il modulo PECMail
+        /// </summary>
+        public static class PECMailNames
+        {
+            /// <summary>
+            /// Riferimento
+            /// </summary>
+            public const string PECMAIL_MODEL = "dsw_p_pecmail_model";
+
+            /// <summary>
+            /// Documento principale
+            /// </summary>
+            public const string MAIN_DOCUMENT = "dsw_p_pecmail_main_document";
+
+            /// <summary>
+            /// Documento allegato
+            /// </summary>
+            public const string ATTACHMENT_DOCUMENT = "dsw_p_pecmail_attachment_document";
+
+        }
+
+
+        /// <summary>
+        /// Sottoclasse coi parametri specifici per le integrazioni
+        /// </summary>
+        public static class IntegrationNames
+        {
+            /// <summary>
+            /// Riferimento
+            /// </summary>
+            public const string EVENT = "dsw_p_integration_event";
         }
     }
 }

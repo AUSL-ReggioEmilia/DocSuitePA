@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using VecompSoftware.DocSuiteWeb.Model.DocumentGenerator;
 
 namespace VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice.Models
 {
@@ -24,6 +23,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice.Models
         public bool InvoiceAdEEnabled { get; set; }
         public bool AdEProtocolNotificationEnabled { get; set; }
         public string WorkflowInvoiceDeleteRepositoryName { get; set; }
-        public Dictionary<string, Dictionary<XMLModelKind, InvoiceConfiguration>> WorkflowConfigurations { get; set; }
+        public Dictionary<string, WorkflowConfigurationModel> WorkflowConfigurations { get; set; }
+        public MessageConfiguration MessageConfiguration { get; set; }
     }
 }

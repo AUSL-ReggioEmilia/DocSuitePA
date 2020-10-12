@@ -61,9 +61,9 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataInsert
                 collaborationUniqueId = udsEntityModel.Relations.Collaborations.FirstOrDefault()?.CollaborationUniqueId;
                 collaborationTemplateName = udsEntityModel.Relations.Collaborations.FirstOrDefault()?.CollaborationTemplateName;
 
-                IEventInsertUDSData evt = new EventInsertUDSData(command.CorrelationId, command.TenantName, command.TenantId, command.Identity,
+                IEventInsertUDSData evt = new EventInsertUDSData(command.CorrelationId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity,
                     command.ContentType.ContentTypeValue);
-                evt.CorrelatedCommands.Add(command);
+                evt.CorrelatedMessages.Add(command);
                 if (!await PushEventAsync(evt))
                 {
                     throw new Exception("EventInsertUDSData not sent");
@@ -75,11 +75,11 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataInsert
                 {
                     categoryFascicle = await GetDefaultCategoryFascicle(udsEntityModel.IdCategory.Value);
                 }
-                ICommandCQRSCreateUDSData commandCQRS = new CommandCQRSCreateUDSData(command.TenantName, command.TenantId, command.Identity, udsBuildModel, categoryFascicle, null,
+                ICommandCQRSCreateUDSData commandCQRS = new CommandCQRSCreateUDSData(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, udsBuildModel, categoryFascicle, null,
                     collaborationUniqueId, collaborationId, collaborationTemplateName);
                 if (command.CorrelationId.HasValue)
                 {
-                    commandCQRS = new CommandCQRSCreateUDSData(command.CorrelationId.Value, command.TenantName, command.TenantId, command.Identity, udsBuildModel, categoryFascicle, null,
+                    commandCQRS = new CommandCQRSCreateUDSData(command.CorrelationId.Value, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, udsBuildModel, categoryFascicle, null,
                          collaborationUniqueId, collaborationId, collaborationTemplateName);
                 }
                 if (udsBuildModel.WorkflowActions != null)
@@ -94,7 +94,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataInsert
                     throw new Exception("CommandCQRSCreateUDSData not sent");
                 }
                 #region [ EventCompleteUDSBuild ]
-                IEventCompleteUDSBuild eventCompleteUDSBuild = new EventCompleteUDSBuild(Guid.NewGuid(), command.CorrelationId, command.TenantName, command.TenantId,
+                IEventCompleteUDSBuild eventCompleteUDSBuild = new EventCompleteUDSBuild(Guid.NewGuid(), command.CorrelationId, command.TenantName, command.TenantId, command.TenantAOOId,
                     command.Identity, udsBuildModel, null);
                 if (!await PushEventAsync(eventCompleteUDSBuild))
                 {
@@ -107,9 +107,9 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataInsert
             catch (Exception ex)
             {
                 ResetModelXML(command.ContentType.ContentTypeValue);
-                IEventError evt = new EventError(command.CorrelationId, command.TenantName, command.TenantId, command.Identity,
+                IEventError evt = new EventError(command.CorrelationId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity,
                     new ContentTypeString($"Errore in fase di inserimento nell'archivio [{ex.Message}]"), null);
-                evt.CorrelatedCommands.Add(command);
+                evt.CorrelatedMessages.Add(command);
                 if (!await PushEventAsync(evt))
                 {
                     throw new Exception("EventError not sent");
@@ -133,12 +133,11 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataInsert
                     IdAuthorization = f.IdRole.Value,
                     UniqueId = f.UniqueId.Value.ToString(),
                 }), userName, creationTime, null, model.Year, model.Number);
-                
+
                 ///TODO: Tali attività devono essere integrate in transazione con l'inserimento della UDS. In questo momento sono fuori in quanto non risulta possibile gestire la 
                 ///transazione della UDS e delle attività nelle web api                    
                 await InsertRelationsAsync(udsModel, model.UDSRepository.Id, model.UDSRepository.DSWEnvironment, userName, creationTime);
                 await InsertLogAsync(udsModel, model.UDSRepository.Id, model.UDSRepository.DSWEnvironment);
-                await ArchivePECMailAsync(udsModel, model.UDSRepository.Id);
             }
             catch (Exception ex)
             {
@@ -146,6 +145,17 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataInsert
                 throw ex;
             }
             return udsModel;
+        }
+
+        private async Task BuildCQRSInsertCommand(ICommandInsertUDSData command, UDSEntityModel udsModel)
+        {
+            IEventInsertUDSData evt = new EventInsertUDSData(command.CorrelationId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity,
+                    command.ContentType.ContentTypeValue);
+            if (udsModel.Relations != null && udsModel.Relations.PECMails != null && udsModel.Relations.PECMails.Any())
+            {
+
+            }
+            evt.CorrelatedMessages.Add(command);
         }
     }
 }

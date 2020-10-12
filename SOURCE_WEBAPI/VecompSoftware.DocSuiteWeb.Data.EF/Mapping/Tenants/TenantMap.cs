@@ -65,6 +65,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Tenants
                 .HasColumnName("Timestamp")
                 .IsRequired();
 
+            Property(x => x.TenantTypology)
+                .HasColumnName("TenantTypology")
+                .IsRequired();
+
             Ignore(x => x.EntityId)
                 .Ignore(x => x.EntityShortId);
             #endregion
@@ -106,6 +110,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Tenants
                     p.MapLeftKey("IdTenant");
                     p.MapRightKey("EntityId");
                 });
+
+            HasRequired(t => t.TenantAOO)
+                .WithMany(t => t.Tenants)
+                .Map(m => m.MapKey("IdTenantAOO"));
             #endregion
         }
     }

@@ -144,7 +144,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .Map(m => m.MapKey("DocumentSeriesAnnexedLocation"));
 
             HasOptional(t => t.DocumentSeriesUnpublishedAnnexedLocation)
-                .WithMany(t => t.DoDocumentSeriesUnpublishedAnnexedContainers)
+                .WithMany(t => t.DocumentSeriesUnpublishedAnnexedContainers)
                 .Map(m => m.MapKey("DocumentSeriesUnpublishedAnnexedLocation"));
 
             #endregion

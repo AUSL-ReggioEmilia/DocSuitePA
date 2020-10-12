@@ -12,7 +12,6 @@ using VecompSoftware.ServiceBus.Module.UDS.Roslyn.Generators.Classes;
 using VecompSoftware.ServiceBus.Module.UDS.Roslyn.Generators.Controllers;
 using VecompSoftware.ServiceBus.Module.UDS.Storage;
 using VecompSoftware.ServiceBus.WebAPI;
-using VecompSoftware.Services.Command;
 using VecompSoftware.Services.Command.CQRS.Commands.Models.UDS;
 
 namespace VecompSoftware.ServiceBus.Module.UDS.Listener.Create
@@ -206,9 +205,9 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.Create
                     BiblosDS.BiblosDSManagement.AttributeGroup attributeGroup_default = attributeGroups.SingleOrDefault(a => a.GroupType.Equals(BiblosDS.BiblosDSManagement.AttributeGroupType.Undefined));
 
                     await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ReadOnly, AttributeHelper.AttributeName_Signature, "System.String", true);
-                    await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ReadOnly, AttributeHelper.AttributeName_Filename, "System.String", true);
+                    await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ModifyAlways, AttributeHelper.AttributeName_Filename, "System.String", true);
                     await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ModifyAlways, AttributeHelper.AttributeName_PrivacyLevel, "System.Int64", false);
-                    await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ModifyAlways, AttributeHelper.AttributeName_SecureDocumentId, "System.String", false);
+                    await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ModifyAlways, AttributeHelper.AttributeName_SignModels, "System.String", false);
 
                     if (isMainDocument)
                     {

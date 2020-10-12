@@ -41,8 +41,9 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.DocumentUnits
         }
         #endregion
 
-        public BiblosDocumentsController(IDataUnitOfWork unitOfWork, IDocumentContext<ModelDocument.Document, ModelDocument.ArchiveDocument> documentService)
+        public BiblosDocumentsController(IDataUnitOfWork unitOfWork, ILogger logger, IDocumentContext<ModelDocument.Document, ModelDocument.ArchiveDocument> documentService)
         {
+            _logger = logger;
             _unitOfWork = unitOfWork;
             _documentService = documentService;
         }

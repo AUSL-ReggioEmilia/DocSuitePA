@@ -13,6 +13,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Processes
             #region [ Base ]
 
             entityTransformed.EndDate = entity.EndDate;
+            entityTransformed.Name = entity.Name;
             entityTransformed.JsonModel = entity.JsonModel;
             entityTransformed.LastChangedDate = entity.LastChangedDate;
             entityTransformed.LastChangedUser = entity.LastChangedUser;

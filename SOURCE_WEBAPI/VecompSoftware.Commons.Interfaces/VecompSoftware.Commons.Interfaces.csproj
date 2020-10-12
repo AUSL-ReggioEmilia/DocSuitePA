@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.Commons.Interfaces</RootNamespace>
     <AssemblyName>VecompSoftware.Commons.Interfaces</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <SccProjectName>SAK</SccProjectName>
@@ -59,6 +59,8 @@
     <Compile Include="CQRS\Events\IWorkflowAction.cs" />
     <Compile Include="CQRS\Events\IWorkflowActionDocumentUnitLink.cs" />
     <Compile Include="CQRS\Events\IWorkflowActionFascicle.cs" />
+    <Compile Include="CQRS\Events\IWorkflowActionFascicleClose.cs" />
+    <Compile Include="CQRS\Events\IWorkflowActionShareDocumentUnit.cs" />
     <Compile Include="DocumentGenerator\IDocumentGenerator.cs" />
     <Compile Include="DocumentGenerator\Models\IDocumentGeneratorModel.cs" />
     <Compile Include="DocumentGenerator\Models\IDocumentGeneratorParameter.cs" />
@@ -69,9 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="VecompSoftware.Commons.Interfaces.nuspec">
+    <Content Include="VecompSoftware.Commons.Interfaces.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

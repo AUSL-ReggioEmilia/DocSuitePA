@@ -21,6 +21,8 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             QueryParameter parentToExcludeParameter = new QueryParameter(CommonDefinition.SQL_Param_Contact_ParentToExclude, DBNull.Value);
             QueryParameter avcpParentIdParameter = new QueryParameter(CommonDefinition.SQL_Param_Contact_AVCPParentId, DBNull.Value);
             QueryParameter fascicleParentIdParameter = new QueryParameter(CommonDefinition.SQL_Param_Contact_FascicleParentId, DBNull.Value);
+            QueryParameter tenantIdParameter = new QueryParameter(CommonDefinition.SQL_Param_Role_TenantId, DBNull.Value);
+
 
             if (!string.IsNullOrEmpty(finderModel.Filter))
             {
@@ -46,10 +48,14 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             {
                 parentToExcludeParameter.ParameterValue = finderModel.ParentToExclude.Value;
             }
+            if (finderModel.IdTenant.HasValue)
+            {
+                tenantIdParameter.ParameterValue = finderModel.IdTenant.Value;
+            }
 
             return repository.ExecuteModelFunction<ContactTableValuedModel>(CommonDefinition.SQL_FX_Contact_FindContacts,
                 new QueryParameter(CommonDefinition.SQL_Param_Contact_UserName, userName), new QueryParameter(CommonDefinition.SQL_Param_Contact_Domain, domain),
-                filterParameter, applyAuthorizationsParameter, excludeRoleContactsParameter, parentIdParameter, parentToExcludeParameter, avcpParentIdParameter, fascicleParentIdParameter);
+                filterParameter, applyAuthorizationsParameter, excludeRoleContactsParameter, parentIdParameter, parentToExcludeParameter, avcpParentIdParameter, fascicleParentIdParameter, tenantIdParameter);
         }
 
         public static ICollection<ContactTableValuedModel> GetContactParents(this IRepository<Contact> repository, int idContact)
@@ -72,17 +78,68 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                 addressBookAdministratorGroupsParameter);
         }
 
-        public static int CountContactBySearchCode(this IRepository<Contact> repository, string searchCode, bool optimization = false)
+        public static IQueryable<Contact> GetContactBySearchCode(this IRepository<Contact> repository, string searchCode, int? idFather, bool optimization = false)
         {
-            return repository.Query(x => x.SearchCode == searchCode, optimization)
-                .SelectAsQueryable()
-                .Count();
+            IQueryable<Contact> partialQuery = repository.Query(x => x.SearchCode == searchCode, optimization).SelectAsQueryable();
+            if (idFather.HasValue)
+            {
+                string fullIncrementalPath = repository.Queryable(optimization = true).Where(f => f.EntityId == idFather.Value).Select(f => f.FullIncrementalPath).SingleOrDefault();
+                if (!string.IsNullOrEmpty(fullIncrementalPath))
+                {
+                    partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
+                }
+            }
+            return partialQuery;
         }
 
-        public static IQueryable<Contact> FindContactsByDescriptionOrFiscalCode(this IRepository<Contact> repository, string description, string fiscalCode, bool optimization = false)
+        public static int CountContactBySearchCode(this IRepository<Contact> repository, string searchCode, int? idFather, bool optimization = false)
         {
-            return repository.Query(x => x.Description == description || (!string.IsNullOrEmpty(fiscalCode) && x.FiscalCode == fiscalCode), optimization)
+            IQueryable<Contact> partialQuery = repository.Query(x => x.SearchCode == searchCode, optimization).SelectAsQueryable();
+            if (idFather.HasValue)
+            {
+                string fullIncrementalPath = repository.Queryable(optimization = true).Where(f => f.EntityId == idFather.Value).Select(f => f.FullIncrementalPath).SingleOrDefault();
+                if (!string.IsNullOrEmpty(fullIncrementalPath))
+                {
+                    partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
+                }
+            }
+            return partialQuery.Count();
+        }
+
+        public static IQueryable<Contact> FindContactsByDescriptionOrFiscalCode(this IRepository<Contact> repository, string description, string fiscalCode, int? idFather, bool optimization = false)
+        {
+            IQueryable<Contact> partialQuery = repository.Query(x => x.Description == description || (!string.IsNullOrEmpty(fiscalCode) && x.FiscalCode == fiscalCode), optimization).SelectAsQueryable();
+            if (idFather.HasValue)
+            {
+                string fullIncrementalPath = repository.Queryable(optimization = true).Where(f => f.EntityId == idFather.Value).Select(f => f.FullIncrementalPath).SingleOrDefault();
+                if (!string.IsNullOrEmpty(fullIncrementalPath))
+                {
+                    partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
+                }
+            }
+            return partialQuery;
+        }
+
+        public static IQueryable<Contact> GetByUniqueId(this IRepository<Contact> repository, Guid contactUniqueId, int? idFather, bool optimization = false)
+        {
+            IQueryable<Contact> partialQuery = repository.Query(x => x.UniqueId == contactUniqueId, optimization: optimization)
                 .SelectAsQueryable();
+            if (idFather.HasValue)
+            {
+                string fullIncrementalPath = repository.Queryable(optimization = true).Where(f => f.EntityId == idFather.Value).Select(f => f.FullIncrementalPath).SingleOrDefault();
+                if (!string.IsNullOrEmpty(fullIncrementalPath))
+                {
+                    partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
+                }
+            }
+            return partialQuery;
+        }
+
+        public static IQueryable<Contact> GetContactByParentId(this IRepository<Contact> repository, int parentId, bool optimization = false)
+        {
+            IQueryable<Contact> partialQuery = repository.Query(x => x.IncrementalFather == parentId, optimization: optimization)
+                .SelectAsQueryable();
+            return partialQuery;
         }
     }
 }

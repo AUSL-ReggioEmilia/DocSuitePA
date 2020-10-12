@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
+using VecompSoftware.DocSuiteWeb.Model.Parameters;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
 {
@@ -54,6 +56,8 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
         public string MainDocumentName { get; set; }
 
         public Guid? IdUDSRepository { get; set; }
+
+        public TenantAOOModel TenantAOO { get; set; }
 
         public DocumentUnitChainModel DocumentUnitChain { get; set; }
 

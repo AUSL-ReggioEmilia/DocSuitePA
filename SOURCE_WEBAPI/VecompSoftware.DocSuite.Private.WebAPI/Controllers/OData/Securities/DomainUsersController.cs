@@ -3,9 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
+using VecompSoftware.DocSuiteWeb.Data;
+using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Finder.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Securities;
 using VecompSoftware.DocSuiteWeb.Security;
 using CommonHelpers = VecompSoftware.DocSuite.WebAPI.Common.Helpers;
@@ -22,6 +26,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Securities
         private readonly ISecurity _security;
         private readonly ILogger _logger;
         private readonly Guid _instanceId;
+        private readonly IDataUnitOfWork _unitOfWork;
+        private readonly IParameterEnvService _parameterEnvService;
 
         #endregion
 
@@ -41,10 +47,12 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Securities
         #endregion
 
         #region [ Constructor ]
-        public DomainUsersController(ISecurity security, ILogger logger)
+        public DomainUsersController(ISecurity security, ILogger logger, IDataUnitOfWork unitOfWork, IParameterEnvService parameterEnvService)
         {
             _security = security;
             _logger = logger;
+            _unitOfWork = unitOfWork;
+            _parameterEnvService = parameterEnvService;
             _instanceId = Guid.NewGuid();
         }
         #endregion
@@ -66,6 +74,20 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Securities
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
                 return new List<DomainUserModel>(1) { _security.GetCurrentUser() }.AsQueryable();
+            }, _logger, LogCategories);
+        }
+
+        public IHttpActionResult GetCurrentRights()
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                DomainUserModel domainUserModel = _security.GetCurrentUser();
+                if (!domainUserModel.Rights.Any())
+                {
+                    domainUserModel.Rights = _unitOfWork.Repository<RoleUser>().GetUserRights(domainUserModel.Name, domainUserModel.Domain, 
+                        _parameterEnvService.RoleGroupPECRightEnabled);
+                }
+                return Ok(domainUserModel);
             }, _logger, LogCategories);
         }
 

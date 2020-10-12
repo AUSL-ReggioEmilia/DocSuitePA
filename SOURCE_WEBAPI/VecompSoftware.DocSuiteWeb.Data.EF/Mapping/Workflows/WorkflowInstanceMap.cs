@@ -32,6 +32,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Workflows
                .HasColumnName("Json")
                .IsOptional();
 
+            Property(x => x.Subject)
+               .HasColumnName("Subject")
+               .IsOptional();
+
             Property(x => x.RegistrationUser)
                 .HasColumnName("RegistrationUser")
                 .IsRequired()

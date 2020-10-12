@@ -9,6 +9,7 @@ using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Common.Securities;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Mapper.ServiceBus.Messages;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
@@ -26,6 +27,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Commons
         private readonly IQueueService _queueService;
         private readonly ICQRSMessageMapper _cqrsMapper;
         private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDataUnitOfWork _unitOfWork;
         #endregion
 
         #region [ Constructor ]
@@ -37,6 +39,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Commons
             _queueService = queueService;
             _cqrsMapper = cqrsMapper;
             _parameterEnvService = parameterEnvService;
+            _unitOfWork = unitOfWork;
         }
         #endregion
 
@@ -52,7 +55,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Commons
             {
                 IIdentityContext identity = new IdentityContext(_currentIdentity.FullUserName);
 
-                ICommandDeleteCategoryFascicle command = new CommandDeleteCategoryFascicle(Guid.Empty, _parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, identity, entity);
+                ICommandDeleteCategoryFascicle command = new CommandDeleteCategoryFascicle(Guid.Empty, _parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty, identity, entity);
                 ServiceBusMessage message = _cqrsMapper.Map(command, new ServiceBusMessage());
                 if (message == null || string.IsNullOrEmpty(message.ChannelName))
                 {

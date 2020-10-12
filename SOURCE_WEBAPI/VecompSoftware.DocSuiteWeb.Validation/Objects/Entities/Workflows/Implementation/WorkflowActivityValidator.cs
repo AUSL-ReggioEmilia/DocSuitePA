@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Workflows;
@@ -52,6 +53,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Workflows
         public WorkflowInstance WorkflowInstance { get; set; }
 
         public DocumentUnit DocumentUnitReferenced { get; set; }
+
+        public Tenant Tenant { get; set; }
         #endregion
     }
 }

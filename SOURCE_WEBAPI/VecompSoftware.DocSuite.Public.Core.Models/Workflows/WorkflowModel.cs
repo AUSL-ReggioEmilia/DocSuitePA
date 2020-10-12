@@ -16,7 +16,7 @@ namespace VecompSoftware.DocSuite.Public.Core.Models.Workflows
         /// Modello che permette l'avvio del Workflow. Viene utilizzato nel content type del comando <see cref="Commands.Workflows.StartWorkflowCommand"/>
         /// </summary>
         /// <param name="workflowName">Setta la proprietà Name del modello. Il valore è il nome del Workflow configurato nella DocSuite. 
-        /// Contattare Vecomp Software per conoscere i valori del cliente</param>
+        /// Contattare Dgroove per conoscere i valori del cliente</param>
         /// <param name="activityTitlePrefix">Permette di personalizzare le attività che vengono generate nella scrivania dell'utente in DocSuite.
         /// Questo sistema è utile quanto le attività del workflow non possono essere completamente 
         /// automatizzate e quindi necessitano dell'intervento dell'operatore per essere completate. 

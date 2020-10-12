@@ -12,7 +12,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataUpdate
     {
         public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient,
             BiblosDS.BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandUpdateUDSData")
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandUpdateUDSData", webApiClient)
         {
 
         }

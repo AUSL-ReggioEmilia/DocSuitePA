@@ -12,7 +12,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.DocumentGenerator
         public BaseDocumentGeneratorParameter(string name)
         {
             Name = name;
-            LookingTag = string.Concat("${", name, "}");
+            LookingTag = string.Concat("#{", name, "}");
         }
         #endregion
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.UDS
 {
@@ -18,6 +19,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.UDS
         #region [ Navigation Properties ]
 
         public virtual UDSRepository Repository { get; set; }
+        public virtual DocumentUnit SourceUDS { get; set; }
         #endregion
 
     }

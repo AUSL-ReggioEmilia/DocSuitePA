@@ -1,20 +1,16 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using VecompSoftware.BPM.Integrations.Modules.ENEA.Wide.Clients;
 using VecompSoftware.BPM.Integrations.Modules.ENEA.Wide.Configurations;
 using VecompSoftware.BPM.Integrations.Modules.ENEA.Wide.Models;
 using VecompSoftware.BPM.Integrations.Modules.ENEA.Wide.ProtocollaService;
-using VecompSoftware.BPM.Integrations.Modules.ENEA.Wide.TipoDocumentoService;
 using VecompSoftware.BPM.Integrations.Services.BiblosDS;
-using VecompSoftware.BPM.Integrations.Services.BiblosDS.DocumentService;
 using VecompSoftware.BPM.Integrations.Services.ServiceBus;
 using VecompSoftware.BPM.Integrations.Services.StampaConforme;
 using VecompSoftware.BPM.Integrations.Services.WebAPI;
@@ -160,7 +156,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.ENEA.Wide
             _needInitializeModule = true;
         }
 
-        private async Task EventUDSDataCreatedCallbackAsync(IEventCQRSCreateUDSData evt)
+        private async Task EventUDSDataCreatedCallbackAsync(IEventCQRSCreateUDSData evt, IDictionary<string, object> properties)
         {
             try
             {
@@ -216,13 +212,13 @@ namespace VecompSoftware.BPM.Integrations.Modules.ENEA.Wide
                     string newSignature = $"Protocollo WIDE {wideProtocolNumber} del {DateTime.Now.ToShortDateString()}";
                     _logger.WriteDebug(new LogMessage($"Updating main document signature to {newSignature} ..."), LogCategories);
                     ArchiveDocument mainDocument = await _documentClient.GetInfoDocumentAsync(mainBiblosDocument.IdDocument);
-                    mainDocument.Metadata[_documentClient.SIGNATURE_ATTRIBUTE_NAME] = newSignature;
+                    mainDocument.Metadata[_documentClient.ATTRIBUTE_SIGNATURE] = newSignature;
                     Guid updatedDocumentId = await _documentClient.UpdateDocumentAsync(mainDocument.Archive, mainDocument.IdDocument, mainDocument.Metadata);
                     _logger.WriteInfo(new LogMessage($"main document {mainDocument.IdDocument} has been successfully updated. New Id was setted to {updatedDocumentId}"), LogCategories);
 
                     Services.BiblosDS.DocumentService.Content content = await _documentClient.GetDocumentContentByIdAsync(mainBiblosDocument.IdDocument).ConfigureAwait(false);
                     _logger.WriteDebug(new LogMessage("Converting main document to PDF/A format ..."), LogCategories);
-                    byte[] contentPDFA = await _stampaConformeClient.ConvertToPDFAAsync(content.Blob, string.Format(SIGNATURE, newSignature)).ConfigureAwait(false);
+                    byte[] contentPDFA = await _stampaConformeClient.ConvertToPDFAAsync(content.Blob, Path.GetExtension(mainDocument.Name), string.Format(SIGNATURE, newSignature)).ConfigureAwait(false);
 
                     string rootFolderName = string.Concat(wideProtocolNumber.Split(Path.GetInvalidFileNameChars()));
 
@@ -273,10 +269,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.ENEA.Wide
                     _ftpClient.StoreFile(rootFolderName, mainBiblosDocument.Name, contentPDFA);
 
                     _logger.WriteDebug(new LogMessage($"Calling sign to protocol {wideProtocolNumber} wide ..."), LogCategories);
-                    _wideClient.InserimentoAllegati(new List<BiblosDocument>() { mainBiblosDocument }, InserisciAllegatiService.Tipologia_Type.S, rootFolderName, wideProtocolNumber);
+                    _wideClient.InserimentoAllegati(new List<BiblosDocument>() { mainBiblosDocument }, InserisciAllegatiService.Tipologia_Type.O, rootFolderName, wideProtocolNumber);
 
                     #endregion
-                    
+
                     uds_metadatas[META_KEY_ESITO_WIDE] = JsonConvert.SerializeObject(new List<string>() { ESITO_WIDE_SUCCESS });
                     uds_metadatas[META_KEY_ESITO] = string.Format(ESITO_SUCCESS, DateTime.Now.ToLongDateString());
                 }
@@ -312,7 +308,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.ENEA.Wide
             UDSBuildModel udsBuildModel = PrepareUpdateUDSBuildModel(udsRepository, documentUnit.UniqueId, uds_metadatas, uds_documents, udsRoles, udsContacts, udsMessages, udsPECMails,
                 udsDocumentUnits, _identityContext.User);
 
-            CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _identityContext, udsBuildModel);
+            CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _moduleConfiguration.TenantAOOId, _identityContext, udsBuildModel);
             await _webAPIClient.SendCommandAsync(commandUpdateUDSData);
             _logger.WriteInfo(new LogMessage($"Updating metadata {commandUpdateUDSData.Id} has been sended"), LogCategories);
         }
@@ -327,8 +323,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.ENEA.Wide
             {
                 foreach (FieldBaseType item in metadata.Items)
                 {
-                    UDSModelField udsField = new UDSModelField(item);
-                    udsField.Value = uds_metadatas.Single(f => f.Key == item.ColumnName).Value;
+                    UDSModelField udsField = new UDSModelField(item)
+                    {
+                        Value = uds_metadatas.Single(f => f.Key == item.ColumnName).Value
+                    };
                 }
             }
 

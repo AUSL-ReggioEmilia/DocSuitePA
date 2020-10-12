@@ -65,6 +65,23 @@ namespace BiblosDS.Library.Common.DB
             }            
         }
 
+        public ArchiveServerConfig GetArchiveServerConfig(Guid idArchive)
+        {
+            try
+            {
+                Model.ArchiveServerConfig query = db.ArchiveServerConfig
+                    .Include(i => i.Server)
+                    .Where(x => x.IdArchive == idArchive).FirstOrDefault();
+                if (query != null)
+                    return query.Convert();
+                return null;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
         public ArchiveServerConfig GetArchiveServerConfig(Guid idServer, Guid idArchive)
         {
             try

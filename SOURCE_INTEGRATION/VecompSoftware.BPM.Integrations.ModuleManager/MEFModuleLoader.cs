@@ -84,12 +84,19 @@ namespace VecompSoftware.BPM.Integrations.ModuleManager
                 _container.ComposeExportedValue<IDocumentClient>(new DocumentClient(_logger));
                 _container.ComposeExportedValue<IStampaConformeClient>(new StampaConformeClient(_logger));
                 _container.ComposeExportedValue<ISignServiceClient>(new SignService(_logger));
-                //_container.ComposeExportedValue<IWorkflowInstanceManager>(new WorkflowInstanceManager(_logger));
                 _container.ComposeParts(this);
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                foreach (Exception item in ex.LoaderExceptions)
+                {
+                    _logger.WriteError(new LogMessage($"ReflectionTypeLoadException -> {item.Message}"), item, LogCategories);
+                }
+                throw;
             }
             catch (Exception ex)
             {
-                _logger.WriteError(new LogMessage("MEFModuleLoader.Initialize() -> configuration error"), ex, LogCategories);
+                _logger.WriteError(new LogMessage($"MEFModuleLoader.Initialize() -> configuration error {ex.GetType().FullName}"), ex, LogCategories);
                 throw;
             }
         }

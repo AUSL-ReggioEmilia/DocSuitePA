@@ -1,0 +1,45 @@
+{
+  "SyncTopicName": "sync",
+  "ContactCreateSubscriptions": [
+    {
+      "ActionType": "Create",
+      "SubscriptionName": "AOO01_CreateContact",
+      "WebAPIUrl": "http://localhost/dsw.webapi",
+      "TenantAOOName": "AOO01"
+    },
+    {
+      "ActionType": "Create",
+      "SubscriptionName": "AOO02_CreateContact",
+      "WebAPIUrl": "http://localhost/dsw.webapi",
+      "TenantAOOName": "AOO02"
+    }
+  ],
+  "ContactDeleteSubscriptions": [
+    {
+      "ActionType": "Delete",
+      "SubscriptionName": "AOO01_DeleteContact",
+      "WebAPIUrl": "http://localhost/dsw.webapi",
+      "TenantAOOName": "AOO01"
+    },
+    {
+      "ActionType": "Delete",
+      "SubscriptionName": "AOO02_DeleteContact",
+      "WebAPIUrl": "http://localhost/dsw.webapi",
+      "TenantAOOName": "AOO02"
+    }
+  ],
+  "ContactUpdateSubscriptions": [
+    {
+      "ActionType": "Update",
+      "SubscriptionName": "AOO01_UpdateContact",
+      "WebAPIUrl": "http://localhost/dsw.webapi",
+      "TenantAOOName": "AOO01"
+    },
+    {
+      "ActionType": "Update",
+      "SubscriptionName": "AOO02_UpdateContact",
+      "WebAPIUrl": "http://localhost/dsw.webapi",
+      "TenantAOOName": "AOO02"
+    }
+  ]
+}

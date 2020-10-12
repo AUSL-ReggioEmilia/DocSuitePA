@@ -61,17 +61,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.Commons.Interfaces", "VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj", "{C6F323C0-C21B-433B-90C8-0B64A42115AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Public.Core.Models", "VecompSoftware.DocSuite.Public.Core.Models\VecompSoftware.DocSuite.Public.Core.Models.csproj", "{077AE562-309A-4F9D-A4F8-2808981D8BE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VecompSoftware.DocSuite.Public.Core.Models", "VecompSoftware.DocSuite.Public.Core.Models\VecompSoftware.DocSuite.Public.Core.Models.csproj", "{077AE562-309A-4F9D-A4F8-2808981D8BE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Public.Core.Models.Customs", "VecompSoftware.DocSuite.Public.Core.Models.Customs\VecompSoftware.DocSuite.Public.Core.Models.Customs.csproj", "{0578D9C7-C7C4-43F3-B0ED-5A9272376461}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VecompSoftware.DocSuite.Public.Core.Models.Customs", "VecompSoftware.DocSuite.Public.Core.Models.Customs\VecompSoftware.DocSuite.Public.Core.Models.Customs.csproj", "{0578D9C7-C7C4-43F3-B0ED-5A9272376461}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Public.Helpers", "VecompSoftware.DocSuite.Public.Helpers\VecompSoftware.DocSuite.Public.Helpers.csproj", "{57E84F5A-8BDC-40F3-9C74-3B07DB1D1D7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VecompSoftware.DocSuite.Public.Helpers", "VecompSoftware.DocSuite.Public.Helpers\VecompSoftware.DocSuite.Public.Helpers.csproj", "{57E84F5A-8BDC-40F3-9C74-3B07DB1D1D7D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Public.Tests", "VecompSoftware.DocSuite.Public.Tests\VecompSoftware.DocSuite.Public.Tests.csproj", "{99FA040D-2F58-418A-AAA8-7E9A48C93ABE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Public.WebAPI", "VecompSoftware.DocSuite.Public.WebAPI\VecompSoftware.DocSuite.Public.WebAPI.csproj", "{67E0FB4F-96CB-40D0-AE41-F8D095C22E75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Public.Core.Models.Helpers", "VecompSoftware.DocSuite.Public.Core.Models.Helpers\VecompSoftware.DocSuite.Public.Core.Models.Helpers.csproj", "{A6A979BA-38C8-4286-8964-F385FF89E07E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VecompSoftware.DocSuite.Public.Core.Models.Helpers", "VecompSoftware.DocSuite.Public.Core.Models.Helpers\VecompSoftware.DocSuite.Public.Core.Models.Helpers.csproj", "{A6A979BA-38C8-4286-8964-F385FF89E07E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Document.BiblosDS", "VecompSoftware.DocSuite.Document.BiblosDS\VecompSoftware.DocSuite.Document.BiblosDS.csproj", "{1EA007B2-B9FE-4A04-AAE4-F86366FB3036}"
 EndProject
@@ -87,9 +87,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Document.Generator.PDF", "VecompSoftware.DocSuite.Document.Generator.PDF\VecompSoftware.DocSuite.Document.Generator.PDF.csproj", "{5F08F790-8C37-4575-82C2-5FFE91E6F214}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Document.TelerikReport", "VecompSoftware.Docsuite.Document.TelerikReport\VecompSoftware.DocSuite.Document.TelerikReport.csproj", "{C391E159-A79D-4B7E-9868-C5A136E05832}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Document.Generator.OpenXml.Word", "VecompSoftware.DocSuite.Document.Generator.OpenXml.Word\VecompSoftware.DocSuite.Document.Generator.OpenXml.Word.csproj", "{0C334C00-3B46-4A3A-B2C4-EDC741487544}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Service.SignalR", "VecompSoftware.DocSuite.Service.SignalR\VecompSoftware.DocSuite.Service.SignalR.csproj", "{203A04A0-1C6E-455C-A5CD-D63808855BC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -249,14 +249,14 @@ Global
 		{5F08F790-8C37-4575-82C2-5FFE91E6F214}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F08F790-8C37-4575-82C2-5FFE91E6F214}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F08F790-8C37-4575-82C2-5FFE91E6F214}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C391E159-A79D-4B7E-9868-C5A136E05832}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C391E159-A79D-4B7E-9868-C5A136E05832}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C391E159-A79D-4B7E-9868-C5A136E05832}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C391E159-A79D-4B7E-9868-C5A136E05832}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0C334C00-3B46-4A3A-B2C4-EDC741487544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0C334C00-3B46-4A3A-B2C4-EDC741487544}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C334C00-3B46-4A3A-B2C4-EDC741487544}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C334C00-3B46-4A3A-B2C4-EDC741487544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{203A04A0-1C6E-455C-A5CD-D63808855BC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{203A04A0-1C6E-455C-A5CD-D63808855BC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{203A04A0-1C6E-455C-A5CD-D63808855BC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{203A04A0-1C6E-455C-A5CD-D63808855BC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -298,8 +298,8 @@ Global
 		{AD6836DA-8BAD-4E6B-AC30-B507778573C7} = {A1FFA5F8-646F-43EF-A72A-5640EC4A8CC5}
 		{666BDBDA-D461-4692-9CF7-FF03784A6E96} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
 		{5F08F790-8C37-4575-82C2-5FFE91E6F214} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
-		{C391E159-A79D-4B7E-9868-C5A136E05832} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
 		{0C334C00-3B46-4A3A-B2C4-EDC741487544} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{203A04A0-1C6E-455C-A5CD-D63808855BC9} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D43683CA-EE78-4E25-866F-E62B400B7C8B}
@@ -460,13 +460,13 @@ Global
 		SccProjectTopLevelParentUniqueName38 = VecompSoftware.DocSuite.WebAPI.sln
 		SccProjectName38 = VecompSoftware.DocSuite.Document.Generator.PDF
 		SccLocalPath38 = VecompSoftware.DocSuite.Document.Generator.PDF
-		SccProjectUniqueName39 = VecompSoftware.Docsuite.Document.TelerikReport\\VecompSoftware.DocSuite.Document.TelerikReport.csproj
+		SccProjectUniqueName39 = VecompSoftware.DocSuite.Document.Generator.OpenXml.Word\\VecompSoftware.DocSuite.Document.Generator.OpenXml.Word.csproj
 		SccProjectTopLevelParentUniqueName39 = VecompSoftware.DocSuite.WebAPI.sln
-		SccProjectName39 = VecompSoftware.Docsuite.Document.TelerikReport
-		SccLocalPath39 = VecompSoftware.Docsuite.Document.TelerikReport
-		SccProjectUniqueName40 = VecompSoftware.DocSuite.Document.Generator.OpenXml.Word\\VecompSoftware.DocSuite.Document.Generator.OpenXml.Word.csproj
+		SccProjectName39 = VecompSoftware.DocSuite.Document.Generator.OpenXml.Word
+		SccLocalPath39 = VecompSoftware.DocSuite.Document.Generator.OpenXml.Word
+		SccProjectUniqueName40 = VecompSoftware.DocSuite.Service.SignalR\\VecompSoftware.DocSuite.Service.SignalR.csproj
 		SccProjectTopLevelParentUniqueName40 = VecompSoftware.DocSuite.WebAPI.sln
-		SccProjectName40 = VecompSoftware.DocSuite.Document.Generator.OpenXml.Word
-		SccLocalPath40 = VecompSoftware.DocSuite.Document.Generator.OpenXml.Word
+		SccProjectName40 = VecompSoftware.DocSuite.Service.SignalR
+		SccLocalPath40 = VecompSoftware.DocSuite.Service.SignalR
 	EndGlobalSection
 EndGlobal

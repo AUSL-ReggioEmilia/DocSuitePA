@@ -33,6 +33,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Workflows
         public Guid? InstanceId { get; set; }
 
         public string Json { get; set; }
+        public string Subject { get; set; }
 
         #endregion
 

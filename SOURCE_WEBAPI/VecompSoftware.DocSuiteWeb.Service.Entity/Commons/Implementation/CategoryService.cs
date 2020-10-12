@@ -3,6 +3,7 @@ using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.MassimariScarto;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
 using VecompSoftware.DocSuiteWeb.Repository.UnitOfWork;
@@ -44,6 +45,12 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
             {
                 entity.MetadataRepository = _unitOfWork.Repository<MetadataRepository>().Find(entity.MetadataRepository.UniqueId);
             }
+
+            if (entity.TenantAOO != null)
+            {
+                entity.TenantAOO = _unitOfWork.Repository<TenantAOO>().Find(entity.TenantAOO.UniqueId);
+            }
+
             return base.BeforeCreate(entity);
         }
 
@@ -72,6 +79,10 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
             if (entity.CategorySchema != null)
             {
                 entityTransformed.CategorySchema = _unitOfWork.Repository<CategorySchema>().Find(entity.CategorySchema.UniqueId);
+            }
+            if (entity.TenantAOO != null)
+            {
+                entityTransformed.TenantAOO = _unitOfWork.Repository<TenantAOO>().Find(entity.TenantAOO.UniqueId);
             }
             return base.BeforeUpdate(entity, entityTransformed);
         }

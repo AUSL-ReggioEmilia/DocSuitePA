@@ -2,11 +2,7 @@
 using BiblosDS.Library.Common.Objects;
 using BiblosDS.Library.Common.Objects.Enums;
 using BiblosDS.Library.Common.Objects.Response;
-using BiblosDS.Library.Common.Utility;
-
 using log4net;
-
-using Microsoft.WindowsAzure.ServiceRuntime;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -65,20 +61,10 @@ namespace BiblosDS.Library.Common.DB
         {
             get
             {
-                if (AzureService.IsAvailable)
-                {
-                    var cnn = RoleEnvironment.GetConfigurationSettingValue("BiblosDS");
-                    if (string.IsNullOrEmpty(cnn))
-                        throw new Exception("Impostare una connessione \"BiblosDS\" nel file .cscfg.");
-                    return cnn;
-                }
-                else
-                {
-                    if (ConfigurationManager.ConnectionStrings["BiblosDS"] == null)
-                        throw new Exception("Impostare una connessione \"BiblosDS\" nel file .config.");
+                if (ConfigurationManager.ConnectionStrings["BiblosDS"] == null)
+                    throw new Exception("Impostare una connessione \"BiblosDS\" nel file .config.");
 
-                    return ConfigurationManager.ConnectionStrings["BiblosDS"].ConnectionString;
-                }
+                return ConfigurationManager.ConnectionStrings["BiblosDS"].ConnectionString;
             }
         }
 
@@ -140,11 +126,11 @@ namespace BiblosDS.Library.Common.DB
         {
             try
             {
-                return db.Document.Where(x => 
-                    db.Document.Any(xx => xx.IdDocument == IdDocument 
+                return db.Document.Where(x =>
+                    db.Document.Any(xx => xx.IdDocument == IdDocument
                             && (xx.IdDocumentStatus == (short)Enums.DocumentStatus.InCache || xx.IdDocumentStatus == (short)Enums.DocumentStatus.InStorage || xx.IdDocumentStatus == (short)Enums.DocumentStatus.InTransito || xx.IdDocumentStatus == (short)Enums.DocumentStatus.MovedToPreservation))
-                    && x.Archive.IdArchive == IdArchive 
-                    && x.IdDocument != IdDocument && x.PrimaryKeyValue == PrimaryKeyValue 
+                    && x.Archive.IdArchive == IdArchive
+                    && x.IdDocument != IdDocument && x.PrimaryKeyValue == PrimaryKeyValue
                     && x.IdDocumentLink == null
                     && (x.IdDocumentStatus == (short)Enums.DocumentStatus.InCache || x.IdDocumentStatus == (short)Enums.DocumentStatus.InStorage || x.IdDocumentStatus == (short)Enums.DocumentStatus.InTransito || x.IdDocumentStatus == (short)Enums.DocumentStatus.MovedToPreservation)
                     && x.IsLatestVersion == true).Count();
@@ -2000,16 +1986,21 @@ namespace BiblosDS.Library.Common.DB
             }
         }
 
-        public BindingList<PreservationArchiveInfoResponse> GetLegalArchives(string domainUserName)
+        public BindingList<PreservationArchiveInfoResponse> GetLegalArchives(string domainUserName, Guid? idCompany)
         {
-            var list = new BindingList<PreservationArchiveInfoResponse>();
+            BindingList<PreservationArchiveInfoResponse> list = new BindingList<PreservationArchiveInfoResponse>();
 
-            var query = db.Archive
+            IQueryable<Model.Archive> query = db.Archive
                 .Include(x => x.PreservationUserRole)
                 .Include(x => x.PreservationUserRole.First().PreservationRole)
                 .Include(x => x.PreservationUserRole.First().PreservationUser)
                 .Where(x => x.IsLegal == 1)
-                .OrderBy(x => x.Name);
+                .OrderBy(x => x.Name).AsQueryable();
+
+            if (idCompany.HasValue)
+            {
+                query = query.Where(x => x.ArchiveCompany.Select(ac => ac.IdCompany).Contains(idCompany.Value));
+            }
 
             foreach (var item in query)
             {
@@ -2022,7 +2013,7 @@ namespace BiblosDS.Library.Common.DB
             return list;
         }
 
-        public BindingList<DocumentArchive> GetArchives(int skip, int take, DocumentCondition filter, List<DocumentSortCondition> sort, out int totalItems)
+        public BindingList<DocumentArchive> GetArchives(int skip, int take, DocumentCondition filter, List<DocumentSortCondition> sort, out int totalItems, Guid idCompany)
         {
             try
             {
@@ -2030,7 +2021,11 @@ namespace BiblosDS.Library.Common.DB
                 var parameters = new List<object>();
                 BindingList<DocumentArchive> list = new BindingList<DocumentArchive>();
 
-                var query = db.Archive.AsQueryable();
+                IQueryable<Model.Archive> query = db.Archive.AsQueryable();
+
+                query = query.Where(x => x.ArchiveCompany.Select(y => y.IdCompany).Contains(idCompany));
+
+
                 ProcessFilters<Model.Archive>(filter, ref query);
                 totalItems = query.Count();
                 foreach (var item in sort)
@@ -2285,14 +2280,14 @@ namespace BiblosDS.Library.Common.DB
             return retval;
         }
 
-        public BindingList<DocumentArchive> GetArchivesByIdPaged(IEnumerable<Guid> idsArchive, int skip, int take, out int total)
+        public BindingList<DocumentArchive> GetArchivesByIdPaged(IEnumerable<Guid> idsArchive, int skip, int take, out int total, Guid idCompany)
         {
             var retval = new BindingList<DocumentArchive>();
             total = 0;
             try
             {
                 IQueryable<Model.Archive> query = db.Archive
-                    .Where(x => idsArchive.Contains(x.IdArchive));
+                    .Where(x => idsArchive.Contains(x.IdArchive) && x.ArchiveCompany.Select(a => a.IdCompany).Contains(idCompany));
 
                 total = db.Archive
                     .Count(x => idsArchive.Contains(x.IdArchive));
@@ -2397,7 +2392,7 @@ namespace BiblosDS.Library.Common.DB
                 ForwardedDevicesCount = query.ForwardedDevicesCount,
                 PreservationsCount = query.PreservationsCount,
             };
-        }        
+        }
         #endregion
 
         #region Server
@@ -2488,6 +2483,12 @@ namespace BiblosDS.Library.Common.DB
                 {
                     model.ServerName = server.ServerName;
                     model.ServerRole = server.ServerRole.ToString();
+                    model.DocumentServiceUrl = server.DocumentServiceUrl;
+                    model.DocumentServiceBinding = server.DocumentServiceBinding;
+                    model.DocumentServiceBindingConfiguration = server.DocumentServiceBindingConfiguration;
+                    model.StorageServiceUrl = server.StorageServiceUrl;
+                    model.StorageServiceBinding = server.StorageServiceBinding;
+                    model.StorageServiceBindingConfiguration = server.StorageServiceBindingConfiguration;
                 }
 
                 if (requireSave)
@@ -2519,6 +2520,12 @@ namespace BiblosDS.Library.Common.DB
                     IdServer = server.IdServer,
                     ServerName = server.ServerName,
                     ServerRole = server.ServerRole.ToString(),
+                    DocumentServiceUrl = server.DocumentServiceUrl,
+                    DocumentServiceBinding = server.DocumentServiceBinding,
+                    DocumentServiceBindingConfiguration = server.DocumentServiceBindingConfiguration,
+                    StorageServiceUrl = server.StorageServiceUrl,
+                    StorageServiceBinding = server.StorageServiceBinding,
+                    StorageServiceBindingConfiguration = server.StorageServiceBindingConfiguration
                 };
 
                 db.Server.AddObject(model);
@@ -4023,19 +4030,45 @@ namespace BiblosDS.Library.Common.DB
             }
         }
 
-        public List<Preservation> PreservationToClose()
+        public List<Preservation> PreservationToClose(Guid idCompany)
         {
             try
             {
                 List<Preservation> items = new List<Preservation>();
                 string preservationCode = ((int)PreservationTaskTypes.Preservation).ToString();
-                var presrvation = db.Preservation.Include(x => x.Archive).Where(x => x.PreservationTask1.Any(p => p.PreservationTaskType.KeyCode == preservationCode) && !x.CloseDate.HasValue);
-                foreach (var item in presrvation)
-                {
-                    item.CloseContent = null;
-                    items.Add(item.Convert());
-                }
-                return items;
+                string closeAnnualPreservationCode = ((int)PreservationTaskTypes.CloseAnnualPreservation).ToString();
+                List<Preservation> preservations = db.Preservation.Include(x => x.Archive).Include(x => x.Archive.ArchiveCompany)
+                    .Where(x => x.PreservationTask1.Any(p => p.PreservationTaskType.KeyCode == preservationCode || p.PreservationTaskType.KeyCode == closeAnnualPreservationCode) &&
+                        x.Archive.ArchiveCompany.Select(ac => ac.IdCompany).Any(c => c == idCompany) && !x.CloseDate.HasValue)
+                    .Select(s => new Preservation
+                    {
+                        Archive = new DocumentArchive() { IdArchive = s.IdArchive, Name = s.Archive.Name },
+                        IdPreservation = s.IdPreservation,
+                        IdArchive = s.IdArchive,
+                        IdPreservationTaskGroup = s.IdPreservationTaskGroup,
+                        Path = s.Path,
+                        Label = s.Label,
+                        PreservationDate = s.PreservationDate,
+                        StartDate = s.StartDate,
+                        EndDate = s.EndDate,
+                        CloseDate = s.CloseDate,
+                        IndexHash = s.IndexHash,
+                        LastVerifiedDate = s.LastVerifiedDate,
+                        IdPreservationUser = s.IdPreservationUser,
+                        PathHash = s.PathHash,
+                        IdArchiveBiblosStore = s.IdArchiveBiblosStore,
+                        IdDocumentIndexFile = s.IdDocumentIndex,
+                        IdDocumentCloseFile = s.IdDocumentClose,
+                        IdDocumentIndexFileXML = s.IdDocumentIndexXml,
+                        IdDocumentSignedIndexFile = s.IdDocumentIndedSigned,
+                        IdDocumentSignedCloseFile = s.IdDocumentCloseSigned,
+                        PreservationSize = s.PreservationSize,
+                        LastSectionalValue = s.LastSectionalValue,
+                        IdDocumentIndexFileXSLT = s.IdDocumentIndexXSLT,
+                        LockOnDocumentInsert = s.LockOnDocumentInsert
+                    }).ToList();
+
+                return preservations;
             }
             catch (Exception)
             {
@@ -4109,9 +4142,9 @@ namespace BiblosDS.Library.Common.DB
         {
             BindingList<Document> results = new BindingList<Document>();
             IQueryable<Model.Document> query = db.Document.Include("Storage").Include("PreservationDocuments").Where(x => x.Archive.IdArchive == idArchive
-                && x.IdParentBiblos.HasValue && (x.IdDocumentStatus != (short)DocumentStatus.RemovedFromStorage 
+                && x.IdParentBiblos.HasValue && (x.IdDocumentStatus != (short)DocumentStatus.RemovedFromStorage
                                                     && x.IdDocumentStatus != (short)DocumentStatus.ProfileOnly && x.IdDocumentStatus != (short)DocumentStatus.Undefined)
-                && x.IsDetached == true && x.IsConservated == 0 
+                && x.IsDetached == true && x.IsConservated == 0
                 && !x.PreservationDocuments.Any() && x.IsLatestVersion == true);
 
             if (fromDate.HasValue && fromDate != DateTime.MinValue)
@@ -4253,7 +4286,7 @@ namespace BiblosDS.Library.Common.DB
 
                     if (requireSave)
                         db.SaveChanges();
-                }                
+                }
             }
             finally
             {
@@ -4278,6 +4311,85 @@ namespace BiblosDS.Library.Common.DB
             {
                 Dispose();
             }
+        }
+
+        public void UpdateArchiveBiblosId(Guid idArchive, int lastidBiblos)
+        {
+            try
+            {
+                Model.Archive archive = db.Archive.Where(x => x.IdArchive == idArchive).Single();
+                archive.LastIdBiblos = lastidBiblos;
+
+                if (requireSave)
+                    db.SaveChanges();
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        internal DocumentArchive GetArchiveFromPreservation(Guid idPreservation)
+        {
+            try
+            {
+                var archive = this.db.Archive.Where(x => x.Preservation.Any(xx => xx.IdPreservation == idPreservation)).FirstOrDefault();
+                if (archive != null)
+                {
+                    return archive.Convert();
+                }
+                return null;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        internal ICollection<DocumentArchive> GetPreservationArchivesConfigurable(Guid? idCompany, string archiveName, int? skip, int? top, out int totalItems)
+        {
+            try
+            {
+                ICollection<DocumentArchive> results = new List<DocumentArchive>();
+                IQueryable<Model.Archive> query = this.db.Archive.Where(x => x.IsLegal == 0 || (idCompany != null && x.ArchiveCompany.Any(xx => xx.Company.IdCompany == idCompany) && x.IsLegal == 1))
+                                                            .Where(x => !x.Preservation.Any())
+                    .OrderBy(x => x.Name);
+                if (!string.IsNullOrEmpty(archiveName))
+                {
+                    query = query.Where(x => x.Name.Contains(archiveName));
+                }
+                totalItems = query.Count();
+                if (skip.HasValue)
+                {
+                    query = query.Skip(skip.Value);
+                }
+                if (top.HasValue)
+                {
+                    query = query.Take(top.Value);
+                }
+                query.ToList().ForEach(f => results.Add(f.Convert()));
+                return results;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        internal ICollection<Document> GetDocumentsFromArchive(DocumentArchive archive)
+        {
+            ICollection<Document> documents = new List<Document>();
+            IQueryable<Model.Document> query = this.db.Document.Where(x =>
+                    x.IdArchive == archive.IdArchive
+                    && x.IsVisible == 1
+                    && (!x.IsDetached.HasValue || !x.IsDetached.Value)
+                    && x.IdParentBiblos.HasValue
+                    && x.IsLatestVersion
+                    && x.IsConfirmed == 1
+                    && (x.IdDocumentStatus == (short)DocumentStatus.InCache || x.IdDocumentStatus == (short)DocumentStatus.InStorage || x.IdDocumentStatus == (short)DocumentStatus.InTransito));
+
+            query.ToList().ForEach(f => documents.Add(f.Convert()));
+            return documents;
         }
     }
 }

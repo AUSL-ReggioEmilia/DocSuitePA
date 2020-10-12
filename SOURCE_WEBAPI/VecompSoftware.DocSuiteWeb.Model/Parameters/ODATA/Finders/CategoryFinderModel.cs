@@ -1,4 +1,5 @@
-﻿using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
+﻿using System;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders
 {
@@ -21,6 +22,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders
         public string FullCode { get; set; }
         public bool? FascicleFilterEnabled { get; set; }
         public short? IdContainer { get; set; }
+        public Guid IdTenantAOO { get; set; }
         #endregion
     }
 }

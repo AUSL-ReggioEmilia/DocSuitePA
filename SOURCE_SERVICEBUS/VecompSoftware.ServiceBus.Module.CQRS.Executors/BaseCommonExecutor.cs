@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.Commons.Interfaces.CQRS.Events;
@@ -12,6 +12,7 @@ using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Model.Workflow.Actions;
 using VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Workflows;
+using VecompSoftware.ServiceBus.ServiceBus;
 using VecompSoftware.ServiceBus.WebAPI;
 using VecompSoftware.Services.Command;
 using VecompSoftware.Services.Command.CQRS.Commands;
@@ -24,22 +25,30 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors
         #region [ Fields ]
         private readonly BiblosDS.BiblosClient _biblosClient;
         private readonly IWebAPIClient _webApiClient;
+        private readonly ServiceBus.ServiceBusClient _serviceBusClient;
         private readonly ILogger _logger;
         protected static IEnumerable<LogCategory> _logCategories = null;
         private readonly IDictionary<Type, IWorkflowActionExecutor> _workflowActionExecutors;
         #endregion
 
         #region [ Constructor ]
-        public BaseCommonExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
+        public BaseCommonExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
         {
             _webApiClient = webApiClient;
             _biblosClient = biblosClient;
+            _serviceBusClient = serviceBusClient;
             _logger = logger;
             _workflowActionExecutors = new Dictionary<Type, IWorkflowActionExecutor>();
             IWorkflowActionFascicleExecutor workflowActionFascicleExecutor = new WorkflowActionFascicleExecutor(logger, webApiClient);
             IWorkflowActionDocumentUnitLinkExecutor workflowActionDocumentUnitLinkExecutor = new WorkflowActionDocumentUnitLinkExecutor(logger, webApiClient);
+            IWorkflowActionFascicleCloseExecutor workflowActionFascicleCloseExecutor = new WorkflowActionFascicleCloseExecutor(logger, webApiClient);
+            IWorkflowActionAggregationExecutor workflowActionAggregationExecutor = new WorkflowActionAggregationExecutor(logger, webApiClient, () => _workflowActionExecutors);
+            IWorkflowActionShareDocumentUnitModelExecutor workflowActionShareDocumentUnitModelExecutor = new WorkflowActionShareDocumentUnitModelExecutor(logger, webApiClient);
             _workflowActionExecutors.Add(typeof(WorkflowActionFascicleModel), workflowActionFascicleExecutor);
             _workflowActionExecutors.Add(typeof(WorkflowActionDocumentUnitLinkModel), workflowActionDocumentUnitLinkExecutor);
+            _workflowActionExecutors.Add(typeof(WorkflowActionFascicleCloseModel), workflowActionFascicleCloseExecutor);
+            _workflowActionExecutors.Add(typeof(WorkflowActionAggregationExecutor), workflowActionAggregationExecutor);
+            _workflowActionExecutors.Add(typeof(WorkflowActionShareDocumentUnitModel), workflowActionShareDocumentUnitModelExecutor);
         }
         #endregion
 
@@ -81,10 +90,22 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors
 
         public async Task CreateWorkflowActionsAsync(ICommandCQRS command, ICollection<IWorkflowAction> workflowActions)
         {
+            string subscriptionName;
+            IWorkflowActionExecutor aggregatorExecutor = _workflowActionExecutors.Single(x => x.Key == typeof(WorkflowActionAggregationExecutor)).Value;
             foreach (IWorkflowAction workflowAction in workflowActions)
             {
                 foreach (IWorkflowActionExecutor workflowExecutor in _workflowActionExecutors.Where(x => workflowAction.GetType() == x.Key).Select(s => s.Value))
                 {
+                    if (workflowAction.WorkflowActions != null && workflowAction.WorkflowActions.Count > 0)
+                    {
+                        subscriptionName = $"{workflowAction.WorkflowActions.Count}_{workflowAction.UniqueId}";
+                        await _serviceBusClient.CreateSubscriptionAsync(ServiceBusClient.WorkflowAggregationTopicName, subscriptionName, 
+                            string.Format(ServiceBusClient.SERVICE_BUS_CORRELATIONID_FILTER, workflowAction.UniqueId), true);
+
+                        await aggregatorExecutor.CreateActionEventAsync(command, workflowAction);
+                        await CreateWorkflowActionsAsync(command, workflowAction.WorkflowActions);
+                        continue;
+                    }
                     await workflowExecutor.CreateActionEventAsync(command, workflowAction);
                 }
             }
@@ -158,8 +179,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors
         {
             try
             {
-                return await _webApiClient.GetDocumentUnitFascicleCategoryAsync(fascicleDocumentUnit.DocumentUnit.UniqueId, 
-                    fascicleDocumentUnit.Fascicle.Category.EntityShortId, 
+                return await _webApiClient.GetDocumentUnitFascicleCategoryAsync(fascicleDocumentUnit.DocumentUnit.UniqueId,
+                    fascicleDocumentUnit.Fascicle.Category.EntityShortId,
                     fascicleDocumentUnit.Fascicle.UniqueId);
             }
             catch (Exception ex)

@@ -1,6 +1,5 @@
-﻿using System;
-using BiblosDS.Library.Common.Objects;
-using BiblosDS.Library.Helper;
+﻿using BiblosDS.Library.Common.Objects;
+using VecompSoftware.BiblosDS.Model.Parameters;
 
 namespace BiblosDS.LegalExtension.AdminPortal.ViewModel
 {

@@ -18,5 +18,23 @@ namespace BiblosDS.Library.Common.Objects
 
         [DataMember]
         public ServerRole ServerRole { get; set; }
+
+        [DataMember]
+        public string DocumentServiceUrl { get; set; }
+
+        [DataMember]
+        public string DocumentServiceBinding { get; set; }
+
+        [DataMember]
+        public string DocumentServiceBindingConfiguration { get; set; }
+
+        [DataMember]
+        public string StorageServiceUrl { get; set; }
+
+        [DataMember]
+        public string StorageServiceBinding { get; set; }
+
+        [DataMember]
+        public string StorageServiceBindingConfiguration { get; set; }
     }
 }

@@ -33,6 +33,14 @@ namespace VecompSoftware.DocSuiteWeb.Model.Documents.Signs
         public RemoteSignType RemoteSignType { get; set; }
         public StorageInformationType StorageInformationType { get; set; }
         public IDictionary<string, string> CustomProperties { get; set; }
+        /// <summary>
+        /// Elenco degli utenti a cui ho delegato il mio profilo di firma
+        /// </summary>
+        public IDictionary<string, DelegateUser> Delegations { get; set; }
+        /// <summary>
+        /// L'elenco dei firmatari a cui sono stato abilitato all'uso del profilo di firma
+        /// </summary>
+        public IDictionary<string, DelegateUser> BeenDelegated { get; set; }
         #endregion
     }
 

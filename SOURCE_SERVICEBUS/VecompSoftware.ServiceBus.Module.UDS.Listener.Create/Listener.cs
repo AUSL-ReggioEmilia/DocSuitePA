@@ -11,7 +11,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.Create
     public class Listener : ListenerMessageBase<ICommandCreateUDS>, IListenerMessageGeneric<ICommandCreateUDS>
     {
         public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandCreateUDS")
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandCreateUDS", webApiClient)
         {
 
         }

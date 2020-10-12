@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Securities
 {
@@ -10,6 +11,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Securities
         public DomainUserModel()
         {
             DomainGroups = new HashSet<DomainGroupModel>();
+            Rights = new HashSet<SecurityRight>();
         }
 
         //
@@ -66,6 +68,9 @@ namespace VecompSoftware.DocSuiteWeb.Model.Securities
         public string ClientMachineName { get; set; }
 
         public ICollection<DomainGroupModel> DomainGroups { get; set; }
+
+        //public IDictionary<DSWEnvironmentType, SecurityRight> Rights { get; set; }
+        public ICollection<SecurityRight> Rights { get; set; }
 
         public string Account
         {

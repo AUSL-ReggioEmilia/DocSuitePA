@@ -33,6 +33,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Workflows
             entityTransformed.WorkflowProperties = entity.WorkflowProperties;
             entityTransformed.WorkflowAuthorizations = entity.WorkflowAuthorizations;
             entityTransformed.DocumentUnitReferenced = entity.DocumentUnitReferenced;
+            entityTransformed.Tenant = entity.Tenant;
 
             #endregion
 

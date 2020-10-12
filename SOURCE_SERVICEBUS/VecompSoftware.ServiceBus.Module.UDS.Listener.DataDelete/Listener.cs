@@ -11,7 +11,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataDelete
     public class Listener : ListenerMessageBase<ICommandDeleteUDSData>, IListenerMessageGeneric<ICommandDeleteUDSData>
     {
         public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandDeleteUDSData")
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandDeleteUDSData", webApiClient)
         {
 
         }

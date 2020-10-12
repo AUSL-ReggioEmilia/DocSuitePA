@@ -1,0 +1,86 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.CustomerCompanyViewModel
+
+@if (Request.IsAuthenticated)
+{
+    <div id="cap-view">
+        @(Html.Kendo().DropDownList()
+        .Animation(animation => animation.Open(open => open.SlideIn(SlideDirection.Down)))
+              .Name("companies")
+              .SelectedIndex(Model.SelectedIndex)
+              .DataTextField("CompanyName")
+              .DataValueField("IdCompany")
+              .Events(e => e.Change("change"))
+              .HtmlAttributes(new { style = "width: 280px; text-align:center;" })
+              .DataSource(datasource =>
+                datasource
+                .Read(read => read.Action("GetUserCompanies", "Home")))
+
+        )
+    </div>
+
+    <div class="loading-spinner" style="display:none"></div>
+
+    <style>
+        .k-dropdown .k-state-default {
+            padding: 0px 57px 3px 33px !important;
+        }
+    </style>
+
+    <script>
+
+        $(document).ready(function () { });
+
+
+        function change(e) {
+
+            let dataItem = e.sender.dataItem();
+
+            let selectedIndex = e.sender.selectedIndex;
+            let companyId = dataItem.IdCompany;
+            let companyName = dataItem.CompanyName;
+
+            changeCompany(selectedIndex, companyId, companyName);
+            //updateCompany(id);
+        };
+
+        function changeCompany(selectedIndex, companyId, companyName) {
+
+            $(".loading-spinner").show().fadeIn("fast");
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                async: false,
+                url: '@Url.Action("CacheCompanyId", "Home")',
+                data: {
+                     SelectedIndex: selectedIndex,
+                     CompanyId: companyId,
+                     CompanyName: companyName
+                },
+                success: function (res) {
+                    location.reload();
+                },
+                error: function (xhr) {
+                   alert(xhr.responseText);
+                }
+            });
+        }
+
+        function updateCompany(id) {
+              $.ajax({
+                 cache: false,
+                  type: "POST",
+                  async: false,
+                  url: '@Url.Action("UpdateCompany", "Home")',
+                  data: { idCompany: id },
+                  success: function (res) {
+                      alert("Successfully updated");
+                  },
+                  error: function (xhr) {
+                    alert(xhr.responseText);
+                  }
+                });
+        }
+
+    </script>
+}

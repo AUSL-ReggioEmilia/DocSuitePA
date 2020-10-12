@@ -42,6 +42,12 @@ namespace VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Data
 
         public virtual DbSet<PayableInvoice> PayableInvoices { get; set; }
         public virtual DbSet<ReceivableInvoice> ReceivableInvoices { get; set; }
+        public virtual DbSet<ODADocSuiteCommand> ODADocSuiteCommands { get; set; }
+        public virtual DbSet<RDADocSuiteCommand> RDADocSuiteCommands { get; set; }
+        public virtual DbSet<PreventivoDocSuiteCommand> PreventivoDocSuiteCommands { get; set; }
+        public virtual DbSet<ResolutionEvent> ResolutionEvents { get; set; }
+        public virtual DbSet<MainDocument> MainDocuments { get; set; }
+        public virtual DbSet<AttachedDocument> AttachedDocuments { get; set; }
         #endregion
 
         #region [ Constructor ]
@@ -64,7 +70,16 @@ namespace VecompSoftware.BPM.Integrations.Modules.AFOL.ERP.Data
 
                 modelBuilder.Configurations
                     .Add(new ReceivableInvoiceMap())
-                    .Add(new PayableInvoiceMap());
+                    .Add(new PayableInvoiceMap())
+                    .Add(new DocSuiteCommandMap())
+                    .Add(new ODADocSuiteCommandMap())
+                    .Add(new RDADocSuiteCommandMap())
+                    .Add(new PreventivoDocSuiteCommandMap())
+                    .Add(new DocSuiteDocumentMap())
+                    .Add(new MainDocumentMap())
+                    .Add(new AttachedDocumentMap())
+                    .Add(new DocSuiteEventMap())
+                    .Add(new ResolutionEventMap());
             }
             catch (Exception ex)
             {

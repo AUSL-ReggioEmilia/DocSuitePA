@@ -19,7 +19,6 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Processes
             entityTransformed.EndDate = entity.EndDate;
             entityTransformed.Note = entity.Note;
             entityTransformed.Name = entity.Name;
-            entityTransformed.FascicleType = entity.FascicleType;
             entityTransformed.RegistrationDate = entity.RegistrationDate;
             entityTransformed.RegistrationUser = entity.RegistrationUser;
             entityTransformed.ProcessType = entity.ProcessType;

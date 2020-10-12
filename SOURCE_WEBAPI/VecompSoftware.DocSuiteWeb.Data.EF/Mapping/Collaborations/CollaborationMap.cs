@@ -110,6 +110,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Collaborations
 
             Ignore(x => x.Timestamp)
                 .Ignore(x => x.EntityShortId)
+                .Ignore(x => x.WorkflowAutoComplete)
                 .Ignore(x => x.WorkflowName)
                 .Ignore(x => x.IdWorkflowActivity)
                 .Ignore(x => x.WorkflowActions);
@@ -135,6 +136,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Collaborations
             HasOptional(t => t.WorkflowInstance)
                 .WithMany(t => t.Collaborations)
                 .Map(m => m.MapKey("IdWorkflowInstance"));
+
+            HasOptional(t => t.DocumentUnit)
+                .WithMany(t => t.Collaborations)
+                .Map(m => m.MapKey("IdDocumentUnit"));
 
             #endregion
         }

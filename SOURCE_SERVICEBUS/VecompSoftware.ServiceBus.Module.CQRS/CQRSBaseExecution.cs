@@ -12,10 +12,12 @@ using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentArchives;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Entity.Messages;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Resolutions;
 using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
@@ -24,6 +26,7 @@ using VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors;
 using VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Collaborations;
 using VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Commons;
 using VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.DocumentArchives;
+using VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Dossiers;
 using VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Fascicles;
 using VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Messages;
 using VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.PECMails;
@@ -66,6 +69,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS
 
         public IDictionary<string, object> Properties { get; set; }
         public EvaluationModel RetryPolicyEvaluation { get; set; }
+        public Guid? IdWorkflowActivity { get; set; }
 
         private readonly Dictionary<Type, IBaseCommonExecutor> _commandExecutors;
 
@@ -73,22 +77,23 @@ namespace VecompSoftware.ServiceBus.Module.CQRS
 
         #region [ Constructor ]
 
-        public CQRSBaseExecution(ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
+        public CQRSBaseExecution(ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
         {
             _logger = logger;
             _webApiClient = webApiClient;
             _biblosClient = biblosClient;
             _commandExecutors = new Dictionary<Type, IBaseCommonExecutor>();
-            IProtocolContentTypeExecutor protocolContentTypeExecutor = new ProtocolContentTypeExecutor(logger, webApiClient, biblosClient);
-            IResolutionContentTypeExecutor resolutionContentTypeExecutor = new ResolutionContentTypeExecutor(logger, webApiClient, biblosClient);
-            IDocumentSeriesItemContentTypeExecutor documentSeriesItemContentTypeExecutor = new DocumentSeriesItemContentTypeExecutor(logger, webApiClient, biblosClient);
-            IUDSContentTypeExecutor udsContentTypeExecutor = new UDSContentTypeExecutor(logger, webApiClient, biblosClient);
-            IPECMailContentTypeExecutor pecContentTypeExecutor = new PECMailContentTypeExecutor(logger, webApiClient, biblosClient);
-            IFascicleContentTypeExecutor fascicleContentTypeExecutor = new FascicleContentTypeExecutor(logger, webApiClient, biblosClient);
-            IMessageContentTypeExecutor messageContentTypeExecutor = new MessageContentTypeExecutor(logger, webApiClient, biblosClient);
-            ICollaborationContentTypeExecutor collaborationContentTypeExecutor = new CollaborationContentTypeExecutor(logger, webApiClient, biblosClient);
-            ICategoryFascicleContentTypeExecutor categoryFascicleContentTypeExecutor = new CategoryFascicleContentTypeExecutor(logger, webApiClient, biblosClient);
-            IFascicleDocumentUnitContentTypeExecutor fascicleDocumentUnitContentTypeExecutor = new FascicleDocumentUnitContentTypeExecutor(logger, webApiClient, biblosClient);
+            IProtocolContentTypeExecutor protocolContentTypeExecutor = new ProtocolContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
+            IResolutionContentTypeExecutor resolutionContentTypeExecutor = new ResolutionContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
+            IDocumentSeriesItemContentTypeExecutor documentSeriesItemContentTypeExecutor = new DocumentSeriesItemContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
+            IUDSContentTypeExecutor udsContentTypeExecutor = new UDSContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
+            IPECMailContentTypeExecutor pecContentTypeExecutor = new PECMailContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
+            IFascicleContentTypeExecutor fascicleContentTypeExecutor = new FascicleContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
+            IMessageContentTypeExecutor messageContentTypeExecutor = new MessageContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
+            ICollaborationContentTypeExecutor collaborationContentTypeExecutor = new CollaborationContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
+            ICategoryFascicleContentTypeExecutor categoryFascicleContentTypeExecutor = new CategoryFascicleContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
+            IFascicleDocumentUnitContentTypeExecutor fascicleDocumentUnitContentTypeExecutor = new FascicleDocumentUnitContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
+            IDossierContentTypeExecutor dossierContentTypeExecutor = new DossierContentTypeExecutor(logger, webApiClient, biblosClient, serviceBusClient);
             _commandExecutors.Add(typeof(Protocol), protocolContentTypeExecutor);
             _commandExecutors.Add(typeof(ResolutionModel), resolutionContentTypeExecutor);
             _commandExecutors.Add(typeof(DocumentSeriesItem), documentSeriesItemContentTypeExecutor);
@@ -99,6 +104,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS
             _commandExecutors.Add(typeof(Collaboration), collaborationContentTypeExecutor);
             _commandExecutors.Add(typeof(CategoryFascicle), categoryFascicleContentTypeExecutor);
             _commandExecutors.Add(typeof(FascicleDocumentUnit), fascicleDocumentUnitContentTypeExecutor);
+            _commandExecutors.Add(typeof(Dossier), dossierContentTypeExecutor);
         }
 
         #endregion
@@ -127,7 +133,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS
 
                 evaluatedMapping = await EvaluateMappingDocumentUnitAsync(command, executor, entity, isCommandUpdate);
                 evt = executor.CreateEvent(command, isCommandUpdate, documentUnit: evaluatedMapping.Item1);
-                evt.CorrelatedCommands.Add(command);
+                evt.CorrelatedMessages.Add(command);
                 if (!await executor.PushEventAsync(evt))
                 {
                     _logger.WriteError(new LogMessage("PushEventAsync Error in sending event to WebAPI"), LogCategories);
@@ -191,7 +197,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS
             _logger.WriteDebug(new LogMessage($"Evaluate {rolesAdded.Count} roles added"), LogCategories);
             foreach (DocumentUnitRole role in rolesAdded)
             {
-                createRoleUserAuthorization = new EventCreateRoleAuthorization(Guid.NewGuid(), entity.UniqueId, command.TenantName, command.TenantId, command.Identity, documentUnit, role.UniqueIdRole, null);
+                createRoleUserAuthorization = new EventCreateRoleAuthorization(Guid.NewGuid(), entity.UniqueId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, documentUnit, role.UniqueIdRole, null);
                 if (!await executor.PushEventAsync(createRoleUserAuthorization))
                 {
                     _logger.WriteError(new LogMessage("PushEventAsync Error in sending event to WebAPI"), LogCategories);
@@ -201,7 +207,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS
             _logger.WriteDebug(new LogMessage($"Evaluate {rolesDeleted.Count} roles deleted"), LogCategories);
             foreach (DocumentUnitRole role in rolesDeleted)
             {
-                deleteRoleUserAuthorization = new EventDeleteRoleAuthorization(Guid.NewGuid(), entity.UniqueId, command.TenantName, command.TenantId, command.Identity, documentUnitBeforeSave, role.UniqueIdRole, null);
+                deleteRoleUserAuthorization = new EventDeleteRoleAuthorization(Guid.NewGuid(), entity.UniqueId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, documentUnitBeforeSave, role.UniqueIdRole, null);
                 if (!await executor.PushEventAsync(deleteRoleUserAuthorization))
                 {
                     _logger.WriteError(new LogMessage("PushEventAsync Error in sending event to WebAPI"), LogCategories);
@@ -211,7 +217,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS
             _logger.WriteDebug(new LogMessage($"Evaluate {usersAdded.Count} user added"), LogCategories);
             foreach (DocumentUnitUser user in usersAdded)
             {
-                createUserAuthorization = new EventCreateUserAuthorization(Guid.NewGuid(), entity.UniqueId, command.TenantName, command.TenantId, command.Identity, documentUnit, user.Account, null);
+                createUserAuthorization = new EventCreateUserAuthorization(Guid.NewGuid(), entity.UniqueId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, documentUnit, user.Account, null);
                 if (!await executor.PushEventAsync(createUserAuthorization))
                 {
                     _logger.WriteError(new LogMessage("PushEventAsync Error in sending event to WebAPI"), LogCategories);
@@ -221,7 +227,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS
             _logger.WriteDebug(new LogMessage($"Evaluate {usersRemoved.Count} user deleted"), LogCategories);
             foreach (DocumentUnitUser user in usersRemoved)
             {
-                deleteUserAuthorization = new EventDeleteUserAuthorization(Guid.NewGuid(), entity.UniqueId, command.TenantName, command.TenantId, command.Identity, documentUnitBeforeSave, user.Account, null);
+                deleteUserAuthorization = new EventDeleteUserAuthorization(Guid.NewGuid(), entity.UniqueId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, documentUnitBeforeSave, user.Account, null);
                 if (!await executor.PushEventAsync(deleteUserAuthorization))
                 {
                     _logger.WriteError(new LogMessage("PushEventAsync Error in sending event to WebAPI"), LogCategories);
@@ -236,6 +242,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS
             if (typeof(IDocumentUnitEntity).IsAssignableFrom(baseCommonExecutor.GetType()))
             {
                 documentUnit = await baseCommonExecutor.Mapping(entity, command.Identity, isCommandUpdate);
+                documentUnit.TenantAOO = new TenantAOO() { UniqueId = command.TenantAOOId };
                 existDocumentUnit = await _webApiClient.GetDocumentUnitAsync(documentUnit);
                 bool skipSendDocument = existDocumentUnit != null &&
                     existDocumentUnit.UniqueId == documentUnit.UniqueId && existDocumentUnit.Year == documentUnit.Year && existDocumentUnit.Number == documentUnit.Number &&
@@ -248,8 +255,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS
                 else
                 {
                     _logger.WriteWarning(new LogMessage($"DocumentUnit - {entity.GetType()} - {entity.UniqueId} already exists and CQRS structures has been skipped."), LogCategories);
-                }               
-            }            
+                }
+            }
 
             return new Tuple<DocumentUnit, DocumentUnit>(documentUnit, existDocumentUnit);
         }

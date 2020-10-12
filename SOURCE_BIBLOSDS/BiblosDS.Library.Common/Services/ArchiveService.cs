@@ -76,9 +76,9 @@ namespace BiblosDS.Library.Common.Services
         /// Ritorna la lista degli archivi legali.
         /// </summary>
         /// <returns></returns>
-        public static BindingList<PreservationArchiveInfoResponse> GetLegalArchives(string domainUserName)
+        public static BindingList<PreservationArchiveInfoResponse> GetLegalArchives(string domainUserName, Guid? idCompany)
         {
-            return DbProvider.GetLegalArchives(domainUserName);
+            return DbProvider.GetLegalArchives(domainUserName, idCompany);
         }
 
         /// <summary>
@@ -102,11 +102,11 @@ namespace BiblosDS.Library.Common.Services
             }
         }
 
-        public static BindingList<DocumentArchive> GetArchives(int skip, int take, DocumentCondition filter, List<DocumentSortCondition> sort, out int totalItems)
+        public static BindingList<DocumentArchive> GetArchives(int skip, int take, DocumentCondition filter, List<DocumentSortCondition> sort, out int totalItems, Guid idCompany)
         {
             try
             {
-                return DbProvider.GetArchives(skip, take, filter, sort, out totalItems);
+                return DbProvider.GetArchives(skip, take, filter, sort, out totalItems, idCompany);
             }
             catch (Exception e)
             {
@@ -136,11 +136,11 @@ namespace BiblosDS.Library.Common.Services
             }
         }
 
-        public static BindingList<DocumentArchive> GetArchivesByIdPaged(IEnumerable<Guid> idsArchive, int skip, int take, out int total)
+        public static BindingList<DocumentArchive> GetArchivesByIdPaged(IEnumerable<Guid> idsArchive, int skip, int take, out int total, Guid idCompany)
         {
             try
             {
-                return DbProvider.GetArchivesByIdPaged(idsArchive, skip, take, out total);
+                return DbProvider.GetArchivesByIdPaged(idsArchive, skip, take, out total, idCompany);
             }
             catch (Exception e)
             {
@@ -218,7 +218,7 @@ namespace BiblosDS.Library.Common.Services
         /// Salva le modifiche a un DocumentArchive
         /// </summary>
         /// <param name="Archive">DocumentArchive modificato</param>
-        public static void UpdateArchive(DocumentArchive Archive)
+        public static void UpdateArchive(DocumentArchive Archive, bool convertDateMain = true)
         {
             // IsLegal è sempre true o false e LastIdBiblos non è mai null
             DocumentArchive dbArchive = DbProvider.GetArchive(Archive.IdArchive);
@@ -230,7 +230,7 @@ namespace BiblosDS.Library.Common.Services
 
             DbAdminProvider.UpdateArchive(Archive);
 
-            if (dbArchive.IsLegal != Archive.IsLegal && Archive.IsLegal && DbProvider.ExistMainDateAttribute(Archive.IdArchive))
+            if (convertDateMain && dbArchive.IsLegal != Archive.IsLegal && Archive.IsLegal && DbProvider.ExistMainDateAttribute(Archive.IdArchive))
             {
                 ConvertArchiveConservationEnabled(Archive);
             }
@@ -490,6 +490,67 @@ namespace BiblosDS.Library.Common.Services
                 }                
             }
             currentProvider.SaveChanges();
+        }
+
+        public static bool IsArchiveRedirectable(Guid idArchive, out ArchiveServerConfig archiveServerConfig)
+        {
+            DocumentArchive currentArchive = DbProvider.GetArchive(idArchive);
+            archiveServerConfig = null;
+            if (currentArchive == null)
+            {
+                throw new Exceptions.Archive_Exception($"Archive {idArchive} not found");
+            }
+
+            ArchiveServerConfig serverConfig = DbProvider.GetArchiveServerConfig(idArchive);
+            if (serverConfig != null && serverConfig.Server.ServerRole == ServerRole.Remote)
+            {
+                archiveServerConfig = serverConfig;
+                return true;
+            }
+            return false;
+        }
+
+        public static void UpdateArchiveLastIdBiblos(Guid idArchive, int lastIdBiblos)
+        {
+            DocumentArchive currentArchive = DbProvider.GetArchive(idArchive);
+            if (currentArchive == null)
+            {
+                throw new Exceptions.Archive_Exception($"Archive {idArchive} not found");
+            }
+
+            if (lastIdBiblos < currentArchive.LastIdBiblos)
+            {
+                throw new Exceptions.Archive_Exception($"Non è possibile impostare il valore {lastIdBiblos} in quanto è inferiore all'ultimo IdBiblos ({currentArchive.LastIdBiblos}) impostato per l'archivio.");
+            }
+
+            DbProvider.UpdateArchiveBiblosId(idArchive, lastIdBiblos);
+        }
+
+        public static DocumentArchive GetArchiveFromPreservation(Guid idPreservation)
+        {
+            return DbProvider.GetArchiveFromPreservation(idPreservation);
+        }
+
+        /// <summary>
+        /// Ritorna la lista degli archivi non definiti per la conservazione.
+        /// </summary>
+        /// <returns></returns>
+        public static ICollection<DocumentArchive> GetPreservationArchivesConfigurable(Guid? idCompany, string archiveName, int? skip, int? top, out int totalItems)
+        {
+            return DbProvider.GetPreservationArchivesConfigurable(idCompany, archiveName, skip, top, out totalItems);
+        }
+
+        public static ArchiveCompany UpdateArchiveCompany(ArchiveCompany archComp)
+        {
+            try
+            {
+                return DbProvider.UpdateArchiveCompany(archComp);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
         }
     }
 }

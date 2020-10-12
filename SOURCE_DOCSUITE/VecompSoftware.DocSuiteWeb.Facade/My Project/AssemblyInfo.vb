@@ -1,4 +1,4 @@
-Imports System.Reflection
+﻿Imports System.Reflection
 Imports System.Runtime.InteropServices
 
 <Assembly: AssemblyTitle("VecompSoftware.DocSuiteWeb.Facade")>
@@ -12,5 +12,5 @@ Imports System.Runtime.InteropServices
 
 <Assembly: Guid("ace34d82-2561-4c43-b2c9-b63b75311cad")>
 
-<Assembly: AssemblyVersion("9.09.20286.02")>
-<Assembly: AssemblyFileVersion("9.09.20286.02")>
+<Assembly: AssemblyVersion("9.09.0.0")>
+<Assembly: AssemblyFileVersion("9.09.0.0")>

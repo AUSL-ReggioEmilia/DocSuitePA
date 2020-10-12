@@ -1,6 +1,7 @@
 ﻿{
   "TenantName": "AUSL-RE",
   "TenantId": "1F761813-6086-44F1-A507-99954EA64343",
+  "TenantAOOId": "ff2efa82-4ea3-471e-af22-f784bbf09c25",
   "TopicWorkflowIntegration": "workflow_integration",
   "TopicBuilderEvent": "builder_event",
   "TopicWorkflowActivityCompleted": "workflow_activity_completed",
@@ -8,7 +9,9 @@
   "WorkflowStartUpdateFascicleRDASubscription": "WorkflowStartUpdateFascicleRDA",
   "WorkflowRDAFascicleBuildCompleteSubscription": "WorkflowRDAFascicleBuildComplete",
   "WorkflowActivityRDAAssignmentCompleteSubscription": "WorkflowActivityRDAAssignmentComplete",
+  "WorkflowActivityRDAApprovalCompleteSubscription": "WorkflowActivityRDAApprovalComplete",
   "WorkflowRepositoryName": "AGENAS - FASCICOLO AUTOMATICO RDA",
+  "UDSRepositoryName": "RDA",
   "FascicleResponsibleContact": 3998,
   "RDACategoryId": -32704,
   "ContractCategoryId": -32704,
@@ -18,5 +21,6 @@
     "GARA": "525ef55f-36c3-4268-96ec-320367069983"
   },
   "ContainerDossierId": -31983,
-  "RoleDossierId": -32757
+  "RoleDossierId": -32757,
+  "CategoryDossierId": -32704
 }

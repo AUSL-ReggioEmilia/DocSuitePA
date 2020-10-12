@@ -15,23 +15,25 @@ namespace VecompSoftware.DocSuite.Public.Core.Models.Workflows.Parameters
         #region [ Contructors ]
 
         /// <summary>
-        /// Modello dell'Unità Documentaria prodotta dalla collaborazione di firma
+        /// Modello dell'unità documentaria prodotta dalla collaborazione di firma
         /// </summary>
         /// <param name="subject">Oggetto dell'unità documentaria</param>
         /// <param name="note">Note dell'unità documentaria</param>
         /// <param name="direction">Specifica se l'unità documentaria è in ingresso o in uscita <see cref="DocumentUnitDirection"/></param>
         /// <param name="documentUnitType">Tipologia dell'unità documentaria <see cref="DocumentUnitType"/></param>
         /// <param name="category">Classificatore o Titolario dell'unità documentaria</param>
+        /// <param name="container">Classificatore o Titolario dell'unità documentaria</param>
         /// <param name="dueDate"> Data di promemoria della collaborazione</param>
         /// <param name="collaborationPriority">Priorità della collaborazione</param>
         public CollaborationModel(string subject, string note, DocumentUnitDirection direction,
-            DocumentUnitType documentUnitType, CategoryModel category = null, DateTimeOffset? dueDate = null,
-            CollaborationPriorityType collaborationPriority = CollaborationPriorityType.Normal)
+            DocumentUnitType documentUnitType, CategoryModel category = null, ContainerModel container = null, 
+            DateTimeOffset? dueDate = null, CollaborationPriorityType collaborationPriority = CollaborationPriorityType.Normal)
         {
             Subject = subject;
             Note = note;
             DueDate = dueDate;
             Category = category;
+            Container = container;
             Direction = direction;
             DocumentUnitType = documentUnitType;
             CollaborationPriority = collaborationPriority;

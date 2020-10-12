@@ -50,6 +50,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Commons
         public override ContactModel Map(ContactTableValuedModel model, ContactModel modelTransformed)
         {
             modelTransformed.Id = model.IdContact;
+            modelTransformed.EntityId = model.IdContact;
             modelTransformed.ContactType = MapContactType(model);
             modelTransformed.Description = model.Description;
             modelTransformed.Code = model.Code;
@@ -57,6 +58,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Commons
             modelTransformed.CertifiedMail = model.CertifiedMail;
             modelTransformed.Note = model.Note;
             modelTransformed.FiscalCode = model.FiscalCode;
+            modelTransformed.IncrementalFather = model.IncrementalFather;
             return modelTransformed;
         }
 

@@ -1,0 +1,78 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.Archives.ArchivePreservationAttributesConfigurationViewModel
+
+<h2>Selezione attributi di conservazione per l'archivio <b>@Model.ArchiveName</b></h2>
+<br />
+
+@Html.HiddenFor(x => x.IdArchive)
+@Html.HiddenFor(x => x.ActiveStep, new { Value = 2 })
+
+<table class="form-vertical-table k-block" style="width: 100%;">
+    <tr>
+        <td><b>Selezionare la lista degli attributi da utilizzare per la conservazione (IPdA):</b></td>
+    </tr>
+    <tr>
+        <td>
+            <label for="lstAttributesSource" style="display: inline-block; width: 280px; font-style: italic;">Attributi disponibili</label>
+            <label for="SelectedPreservationAttributes" style="display: inline-block; font-style: italic;">Attributi conservazione (l'ordinamento verrà rispettato)</label>
+            <br />
+            @(Html.Kendo().ListBox()
+                .Name("lstAttributesSource")
+                .DataValueField("Key")
+                .DataTextField("Value")
+                .Draggable(true)
+                .DropSources("SelectedPreservationAttributes")
+                .ConnectWith("SelectedPreservationAttributes")
+                .BindTo(Model.ArchiveAttributes.Select(s => new { Key = s.Key, Value = s.Value }))
+                .Selectable(ListBoxSelectable.Single)
+                .Toolbar(toolbar =>
+                    toolbar.Tools(tools => tools
+                        .TransferTo()
+                        .TransferFrom()
+                        .TransferAllTo()
+                        .TransferAllFrom()
+                ))
+            )
+
+            <script>
+                function onReorder(e) {
+                    e.preventDefault();
+                    var dataSource = e.sender.dataSource;
+
+                    var dataItem = e.dataItems[0]
+                    var index = dataSource.indexOf(dataItem) + e.offset;
+                    dataSource.remove(dataItem);
+                    dataSource.insert(index, dataItem);
+                    e.sender.wrapper.find("[data-uid='" + dataItem.uid + "']").addClass("k-state-selected");
+                }
+            </script>
+
+            @(Html.Kendo().ListBox()
+                .Name("SelectedPreservationAttributes")
+                .Draggable(true)
+                .DropSources("lstAttributesSource")
+                .DataValueField("Key")
+                .DataTextField("Value")
+                .ConnectWith("lstAttributesSource")
+                .BindTo(Model.PreservationAttributes.Select(s => new { Key = s.Key, Value = s.Value }))
+                .HtmlAttributes(new { required = "required", validationmessage = "E' necessario selezionare almeno un attributo per la conservazione dei documenti" })
+                .Selectable(ListBoxSelectable.Single)
+                .Toolbar(toolbar =>
+                    toolbar.Tools(tools => tools
+                        .MoveUp()
+                        .MoveDown()
+                ))
+                .Events(e => e.Reorder("onReorder"))
+            )
+        </td>
+    </tr>
+    <tr>
+        <td>@(Html.ValidationMessageFor(x => x.SelectedPreservationAttributes))</td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">
+            @(Html.Kendo().Button()
+                .Name("btnConfirm")
+                .Content("Conferma e prosegui"))
+        </td>
+    </tr>
+</table>

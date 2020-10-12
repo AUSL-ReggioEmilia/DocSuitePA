@@ -9,6 +9,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice.Models
         public string TopicWorkflowCompleted { get; set; }
         public string TenantName { get; set; }
         public Guid TenantId { get; set; }
+        public Guid TenantAOOId { get; set; }
         public string TopicWorkflowIntegration { get; set; }
         public string TopicBuilderEvent { get; set; }
         public string WorkflowStartReceivableInvoiceSubscription { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Protocols;
 
@@ -11,6 +12,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
         {
             ProtocolContacts = new List<ProtocolContactModel>();
             ProtocolContactManuals = new List<ProtocolContactManualModel>();
+            Roles = new List<RoleModel>();
         }
         #endregion
 
@@ -33,6 +35,8 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
         public ICollection<ProtocolContactModel> ProtocolContacts { get; set; }
 
         public ICollection<ProtocolContactManualModel> ProtocolContactManuals { get; set; }
+
+        public ICollection<RoleModel> Roles { get; set; }
 
         #endregion
 

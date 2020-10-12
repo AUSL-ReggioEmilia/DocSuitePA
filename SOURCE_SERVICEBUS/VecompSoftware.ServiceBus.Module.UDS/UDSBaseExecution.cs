@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
@@ -15,7 +16,9 @@ using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
+using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
+using VecompSoftware.DocSuiteWeb.Model.Workflow.Actions;
 using VecompSoftware.ServiceBus.Module.UDS.Storage.Relations;
 using VecompSoftware.ServiceBus.Receiver.Base;
 using VecompSoftware.ServiceBus.WebAPI;
@@ -57,6 +60,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS
         public IDictionary<string, object> Properties { get; set; }
 
         public EvaluationModel RetryPolicyEvaluation { get; set; }
+        public Guid? IdWorkflowActivity { get; set; }
 
         public string DBSchema => _udsConfig.DbSchema;
 
@@ -340,7 +344,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS
             }
 
         }
-        
+
         public T RetryingPolicyAction<T>(Func<T> func, int step = 1, int retry_tentative = 5)
         {
             _logger.WriteDebug(new LogMessage($"RetryingPolicyAction : tentative {step}/{retry_tentative} in progress..."), LogCategories);
@@ -407,37 +411,6 @@ namespace VecompSoftware.ServiceBus.Module.UDS
             {
                 _logger.WriteError(ex, LogCategories);
                 return false;
-            }
-        }
-
-        protected async Task ArchivePECMailAsync(UDSEntityModel model, Guid repositoryId)
-        {
-            if (model.Relations == null || model.Relations.PECMails == null || !model.Relations.PECMails.Any())
-            {
-                return;
-            }
-
-            foreach (UDSPECMail instance in model.Relations.PECMails)
-            {
-                try
-                {
-                    PECMail pec = await GetPECMailAsync(instance.IdPECMail);
-                    if (pec != null && !pec.Year.HasValue)
-                    {
-                        _logger.WriteDebug(new LogMessage(string.Concat(pec.EntityId, " PEC evaluating ... ")), LogCategories);
-                        pec.Year = model.Year;
-                        pec.Number = model.Number;
-                        pec.IdUDS = model.IdUDS;
-                        pec.UDSRepository = new WebApiEntity.UDSRepository(repositoryId);
-                        pec.DocumentUnitType = DocSuiteWeb.Entity.Commons.DSWEnvironmentType.UDS;
-                        pec.RecordedInDocSuite = 1;
-                        await UpdatePECMailAsync(pec, UpdateActionType.PECMailManaged.ToString());
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.WriteWarning(new LogMessage(string.Format("ArchivePECMailAsync -> Errore in validazione PEC con ID {0}: {1}", instance.IdPECMail, ex.Message)), LogCategories);
-                }
             }
         }
 
@@ -562,9 +535,47 @@ namespace VecompSoftware.ServiceBus.Module.UDS
             model.Users = MapUDSUsers(entityModel.Users);
             model.Documents = entityModel.Relations != null ? MapUDSDocuments(entityModel.Relations.Documents) : new List<WebApiModel.UDSDocumentModel>();
 
+            if (model.WorkflowActions == null)
+            {
+                model.WorkflowActions = new List<IWorkflowAction>();
+            }
+            model.WorkflowActions = model.WorkflowActions.Concat(MapWorkflowLinkActions(entityModel)).ToList();
             return model;
         }
-        
+
+        private ICollection<IWorkflowAction> MapWorkflowLinkActions(UDSEntityModel model)
+        {
+            if (model.Relations == null)
+            {
+                return new List<IWorkflowAction>();
+            }
+
+            List<IWorkflowAction> workflowActions = new List<IWorkflowAction>();
+            workflowActions.AddRange(MapWorkflowPECMailLinkActions(model));
+            return workflowActions;
+        }
+
+        private ICollection<IWorkflowAction> MapWorkflowPECMailLinkActions(UDSEntityModel model)
+        {
+            if (model.Relations.PECMails == null || !model.Relations.PECMails.Any())
+            {
+                return new List<IWorkflowAction>();
+            }
+
+            ICollection<IWorkflowAction> workflowActions = new List<IWorkflowAction>();
+            foreach (UDSPECMail instance in model.Relations.PECMails)
+            {
+                PECMail pecInstance = GetPECMailAsync(instance.IdPECMail).Result;
+                if (pecInstance != null && !pecInstance.Year.HasValue)
+                {
+                    workflowActions.Add(new WorkflowActionDocumentUnitLinkModel(
+                        new DocumentUnitModel() { UniqueId = model.IdUDS, Number = model.Number.Value.ToString(), Year = model.Year.Value },
+                        new DocumentUnitModel() { UniqueId = instance.UniqueIdPECMail, EntityId = instance.IdPECMail, Environment = (int)DocSuiteWeb.Model.Entities.Commons.DSWEnvironmentType.PECMail }));
+                }
+            }
+            return workflowActions;
+        }
+
         protected ICollection<UserModel> MapUDSUsers(IEnumerable<UDSUserModel> users)
         {
             ICollection<UserModel> udsUsers = new List<UserModel>();

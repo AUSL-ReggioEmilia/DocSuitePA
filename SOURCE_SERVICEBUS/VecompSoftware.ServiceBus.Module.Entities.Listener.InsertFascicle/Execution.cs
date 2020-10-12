@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.Core.Command.CQRS.Events.Models.Fascicle;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
+using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
+using VecompSoftware.DocSuiteWeb.Entity.Processes;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Dossiers;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
 using VecompSoftware.ServiceBus.BiblosDS;
@@ -31,6 +35,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
         protected static IEnumerable<LogCategory> _logCategories = null;
         private readonly List<Archive> _biblosArchives;
         private readonly JsonSerializerSettings _serializerSettings;
+        private readonly IDictionary<DocSuiteWeb.Model.Entities.Fascicles.FascicleType, string> _fascicleTypeInsertActionDescription;
         #endregion
 
         #region [ Properties ]
@@ -47,6 +52,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
         }
         public IDictionary<string, object> Properties { get; set; }
         public EvaluationModel RetryPolicyEvaluation { get; set; }
+        public Guid? IdWorkflowActivity { get; set; }
 
         #endregion
 
@@ -56,13 +62,16 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
             _logger = logger;
             _biblosClient = biblosClient;
             _webApiClient = webApiClient;
-            _biblosArchives = _biblosClient.Document.GetArchives();
             _serializerSettings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Objects,
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 PreserveReferencesHandling = PreserveReferencesHandling.All
+            };
+            _fascicleTypeInsertActionDescription = new Dictionary<DocSuiteWeb.Model.Entities.Fascicles.FascicleType, string> {
+                { DocSuiteWeb.Model.Entities.Fascicles.FascicleType.Activity, EnumHelper.GetDescription(InsertActionType.InsertActivityFascicle) },
+                {  DocSuiteWeb.Model.Entities.Fascicles.FascicleType.Procedure, EnumHelper.GetDescription(InsertActionType.InsertProcedureFascicle) }
             };
         }
         #endregion
@@ -72,6 +81,15 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
             Fascicle fascicle = new Fascicle();
             FascicleBuildModel fascicleBuildModel = command.ContentType.ContentTypeValue;
             FascicleModel fascicleModel = fascicleBuildModel.Fascicle;
+            IdWorkflowActivity = fascicleBuildModel.IdWorkflowActivity;
+            List<DossierFolderModel> dossierFolderDoAction = new List<DossierFolderModel>();
+            string fascicleInsertActionType;
+            if (!fascicleModel.FascicleType.HasValue || !_fascicleTypeInsertActionDescription.TryGetValue(fascicleModel.FascicleType.Value, out fascicleInsertActionType))
+            {
+                _logger.WriteError(new LogMessage($"Undefined or unsupported fascicle type {fascicleModel.FascicleType}"), LogCategories);
+
+                throw new ServiceBusEvaluationException(new EvaluationModel { CommandName = nameof(command), CorrelationId = command.CorrelationId });
+            }
 
             try
             {
@@ -91,7 +109,12 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
                 {
                     if (!fascicleModel.Category.IdCategory.HasValue)
                     {
-                        throw new ArgumentNullException("fascicleModel.Category.IdCategory", "IdCategory must be define");
+                        throw new ArgumentNullException("fascicleModel.Category.IdCategory", "IdCategory must be defined");
+                    }
+
+                    if (fascicleModel.UniqueId == Guid.Empty)
+                    {
+                        throw new ArgumentException("fascicleModel.UniqueId", $"Invalid FascicleModel UniqueId {fascicleModel.UniqueId}");
                     }
 
                     fascicle.MetadataValues = fascicleModel.MetadataValues;
@@ -100,6 +123,21 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
                     fascicle.Note = fascicleModel.Note;
                     fascicle.Manager = fascicleModel.Manager;
                     fascicle.FascicleObject = fascicleModel.FascicleObject;
+                    fascicle.MetadataDesigner = fascicleModel.MetadataDesigner;
+
+                    if (fascicleModel.FascicleTemplate != null)
+                    {
+                        fascicle.FascicleTemplate = new ProcessFascicleTemplate
+                        {
+                            JsonModel = fascicleModel.FascicleTemplate.JsonModel,
+                            Name = fascicleModel.FascicleTemplate.Name,
+                            UniqueId = fascicleModel.FascicleTemplate.UniqueId ?? Guid.NewGuid(),
+                            StartDate = fascicleModel.FascicleTemplate.StartDate,
+                            EndDate = fascicleModel.FascicleTemplate.EndDate,
+                            RegistrationDate = fascicleModel.FascicleTemplate.RegistrationDate,
+                            RegistrationUser = fascicleModel.FascicleTemplate.RegistrationUser
+                        };
+                    }
 
                     if (fascicleModel.MetadataRepository != null)
                     {
@@ -115,20 +153,70 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
                     {
                         fascicle.VisibilityType = (DocSuiteWeb.Entity.Fascicles.VisibilityType)fascicleModel.VisibilityType.Value;
                     }
+
                     if (fascicleModel.Conservation != null)
                     {
                         fascicle.Conservation = fascicleModel.Conservation.Value;
                     }
+
+                    if (fascicleModel.DossierFolders.Any())
+                    {
+                        dossierFolderDoAction.AddRange(fascicleModel.DossierFolders.Where(f => f.Status == DocSuiteWeb.Model.Entities.Dossiers.DossierFolderStatus.DoAction));
+                        List<DossierFolder> dossierFolders = new List<DossierFolder>();
+                        DossierFolder folder;
+                        foreach (DossierFolderModel dossierFolderModel in fascicleModel.DossierFolders.Where(f => f.Status != DocSuiteWeb.Model.Entities.Dossiers.DossierFolderStatus.DoAction))
+                        {
+                            if (dossierFolderModel.Status == DocSuiteWeb.Model.Entities.Dossiers.DossierFolderStatus.Fascicle || dossierFolderModel.Status == DocSuiteWeb.Model.Entities.Dossiers.DossierFolderStatus.FascicleClose)
+                            {
+                                _logger.WriteWarning(new LogMessage($"Fascicle {fascicle.GetTitle()} has wrong dossierfolder({dossierFolderModel.UniqueId}) reference type and it going to replace with parent association"), LogCategories);
+                                folder = await _webApiClient.GetDossierFolderParentAsync(dossierFolderModel.UniqueId);
+                                folder.Category = new Category() { EntityShortId = (short)fascicleModel.Category.IdCategory.Value };
+                                if (folder == null)
+                                {
+                                    _logger.WriteError(new LogMessage($"DossierFolder {dossierFolderModel.UniqueId} doesn't have parent. it will be skip"), LogCategories);
+                                    continue;
+                                }
+                                dossierFolders.Add(folder);
+                            }
+                            else
+                            {
+                                dossierFolders.Add(new DossierFolder()
+                                {
+                                    UniqueId = dossierFolderModel.UniqueId,
+                                    Status = (VecompSoftware.DocSuiteWeb.Entity.Dossiers.DossierFolderStatus)dossierFolderModel.Status,
+                                    Category = dossierFolderModel.IdCategory.HasValue ? new Category() { EntityShortId = dossierFolderModel.IdCategory.Value} : null
+                                });
+                            }
+
+                        }
+                        fascicle.DossierFolders = dossierFolders;
+                    }
+
                     fascicle.Contacts = new List<Contact>();
                     if (fascicleModel.Contacts != null && fascicleModel.Contacts.Count > 0)
                     {
-                        foreach (ContactModel contact in fascicleModel.Contacts.Where(f => f.Id.HasValue))
+                        foreach (ContactModel contact in fascicleModel.Contacts.Where(f => f.EntityId.HasValue))
                         {
-                            fascicle.Contacts.Add(new Contact() { EntityId = contact.Id.Value });
+                            fascicle.Contacts.Add(new Contact() { EntityId = contact.EntityId.Value });
                         }
                     }
 
                     fascicle.Category = new Category() { EntityShortId = (short)fascicleModel.Category.IdCategory.Value };
+
+                    fascicle.FascicleRoles = new List<FascicleRole>();
+                    if (fascicleModel.FascicleRoles != null && fascicleModel.FascicleRoles.Count > 0)
+                    {
+                        fascicle.FascicleRoles = fascicleModel.FascicleRoles.Where(x => x.Role.IdRole.HasValue).Select(s => 
+                            new FascicleRole() 
+                            { 
+                                Role = new Role() 
+                                { 
+                                    EntityShortId = s.Role.IdRole.Value 
+                                }, 
+                                IsMaster = s.IsMaster,
+                                AuthorizationRoleType = (AuthorizationRoleType)s.AuthorizationRoleType
+                            }).ToList();
+                    }
 
                     RetryPolicyEvaluation.Steps.Add(new StepModel()
                     {
@@ -138,7 +226,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
                 }
                 else
                 {
-                    StepModel messageStatus = RetryPolicyEvaluation.Steps.First(f => f.Name == "ENTITY"); //Posso fare first direttamente perche sono nell else
+                    StepModel messageStatus = RetryPolicyEvaluation.Steps.First(f => f.Name == "ENTITY");
                     fascicle = JsonConvert.DeserializeObject<Fascicle>(messageStatus.LocalReference);
                 }
 
@@ -146,14 +234,30 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
                 {
                     fascicle.WorkflowName = fascicleBuildModel.WorkflowName;
                     fascicle.IdWorkflowActivity = fascicleBuildModel.IdWorkflowActivity;
+                    fascicle.WorkflowAutoComplete = fascicleBuildModel.WorkflowAutoComplete;
                     foreach (IWorkflowAction workflowAction in fascicleBuildModel.WorkflowActions)
                     {
                         fascicle.WorkflowActions.Add(workflowAction);
                     }
 
-                    fascicle = await _webApiClient.PostEntityAsync(fascicle);
-                    _logger.WriteInfo(new LogMessage($"Fascicle {fascicle.GetTitle()} has been created"), LogCategories);                    
-
+                    _logger.WriteDebug(new LogMessage(JsonConvert.SerializeObject(fascicle, _serializerSettings)), LogCategories);
+                    fascicle = await _webApiClient.PostEntityAsync(fascicle, fascicleInsertActionType);
+                    _logger.WriteInfo(new LogMessage($"Fascicle {fascicle.GetTitle()} has been created"), LogCategories);
+                    DossierFolder dossierFolder;
+                    foreach (DossierFolderModel item in dossierFolderDoAction)
+                    {
+                        dossierFolder = await _webApiClient.PutEntityAsync(new DossierFolder() 
+                        {
+                            UniqueId = item.UniqueId,
+                            Category = new Category() { EntityShortId = fascicle.Category.EntityShortId },
+                            Fascicle = fascicle,
+                            JsonMetadata = item.JsonMetadata,
+                            Name = item.Name,
+                            Status = DocSuiteWeb.Entity.Dossiers.DossierFolderStatus.Fascicle
+                        });
+                        _logger.WriteInfo(new LogMessage($"DoAction DossierFolder {item.Name} update to new fascicle"), LogCategories);
+                        fascicle.DossierFolders.Add(dossierFolder);
+                    }
                     RetryPolicyEvaluation.Steps.Add(new StepModel()
                     {
                         Name = "ENTITY_CREATED",
@@ -173,20 +277,20 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
                     if (fascicleModel.FascicleFolders.Count > 0)
                     {
                         FascicleFolder defaultFolder = await _webApiClient.GetDefaultFascicleFolderAsync(fascicle.UniqueId);
-                        FascicleFolder folder;
-                        foreach (FascicleFolderModel fascicleFolder in fascicleModel.FascicleFolders)
+                        FascicleFolder fascicleFolder;
+                        foreach (FascicleFolderModel fascicleFolderModel in fascicleModel.FascicleFolders)
                         {
-                            folder = new FascicleFolder()
+                            fascicleFolder = new FascicleFolder()
                             {
-                                UniqueId = fascicleFolder.UniqueId,
+                                UniqueId = fascicleFolderModel.UniqueId,
                                 Fascicle = fascicle,
                                 ParentInsertId = defaultFolder.UniqueId,
-                                Name = fascicleFolder.Name,
-                                Status = (DocSuiteWeb.Entity.Fascicles.FascicleFolderStatus)fascicleFolder.Status,
-                                Typology = (DocSuiteWeb.Entity.Fascicles.FascicleFolderTypology)fascicleFolder.Typology
+                                Name = fascicleFolderModel.Name,
+                                Status = (DocSuiteWeb.Entity.Fascicles.FascicleFolderStatus)fascicleFolderModel.Status,
+                                Typology = (DocSuiteWeb.Entity.Fascicles.FascicleFolderTypology)fascicleFolderModel.Typology
                             };
-                            await _webApiClient.PostEntityAsync(folder);
-                            _logger.WriteInfo(new LogMessage($"Fascicle folder {folder.Name} has been created"), LogCategories);
+                            await _webApiClient.PostEntityAsync(fascicleFolder);
+                            _logger.WriteInfo(new LogMessage($"Fascicle folder {fascicleFolder.Name} has been created"), LogCategories);
                         }
                     }
                     RetryPolicyEvaluation.Steps.Add(new StepModel()
@@ -199,95 +303,6 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
                 {
                     StepModel messageStatus = RetryPolicyEvaluation.Steps.First(f => f.Name == "FASCICLE_FOLDERS");
                     fascicle = JsonConvert.DeserializeObject<Fascicle>(messageStatus.LocalReference);
-                }
-                #endregion
-
-                //Attraverso il layer di BiblosDS salvare tutti gli inserti con relativa segnatura (metadato)
-                #region [ Salvare tutti gli allegati]
-                if (!RetryPolicyEvaluation.Steps.Any(f => f.Name == "CREATE_BIBLOS") && fascicleModel.DocumentUnits.Any())
-                {
-                    Guid documentUnitName = fascicleModel.FascicleDocuments.First().IdArchiveChain;
-                    Archive documentAttachmentAndAnnexedArchive = _biblosArchives.Single(f => f.IdArchive.Equals(documentUnitName));
-
-                    List<BiblosDS.BiblosDS.Attribute> attachmentAttributes = _biblosClient.Document.GetAttributesDefinition(documentAttachmentAndAnnexedArchive.Name);
-                    foreach (FascicleDocumentModel documentUnitModel in fascicleModel.FascicleDocuments)
-                    {
-
-                        //CREO CATENA IDENTIFICATIVA
-                        Guid? attachmentChainId = documentUnitModel.Document.ChainId;
-                        if (!attachmentChainId.HasValue)
-                        {
-                            //cerchi attachmentChainId dagli Attachments/Annexed
-                            attachmentChainId = _biblosClient.Document.CreateDocumentChain(documentAttachmentAndAnnexedArchive.Name, new List<AttributeValue>());
-                            documentUnitModel.Document.ChainId = attachmentChainId;
-                        }
-                        List<AttributeValue> attachmentAttributeValues;
-                        int pos = fascicleModel.FascicleDocuments.Count(f => f.Document.DocumentId.HasValue);
-
-                        if (documentUnitModel.Document.DocumentId.HasValue)
-                        {
-                            DocumentModel attachment = documentUnitModel.Document;
-                            attachmentAttributeValues = new List<AttributeValue>()
-                        {
-                            new AttributeValue()
-                            {
-                                Attribute = attachmentAttributes.Single(f =>
-                                    f.Name.Equals(AttributeHelper.AttributeName_Filename,
-                                        StringComparison.InvariantCultureIgnoreCase)),
-                                Value = attachment.FileName,
-                            },
-                            new AttributeValue()
-                            {
-                                Attribute = attachmentAttributes.Single(f =>
-                                    f.Name.Equals(AttributeHelper.AttributeName_Signature,
-                                        StringComparison.InvariantCultureIgnoreCase)),
-                                Value = attachment.Segnature,
-                            },
-                            new AttributeValue()
-                            {
-                                Attribute = attachmentAttributes.Single(f =>
-                                    f.Name.Equals(AttributeHelper.AttributeName_PrivacyLevel,
-                                        StringComparison.InvariantCultureIgnoreCase)),
-                                Value = 0,
-                            }
-                            };
-                            attachment.ChainId = attachmentChainId;
-                            documentUnitModel.IdArchiveChain = attachmentChainId.Value;
-                            _logger.WriteDebug(new LogMessage(string.Concat("biblos attachment archive name is ", documentAttachmentAndAnnexedArchive.Name)), LogCategories);
-
-                            //CREO IL DOCUMENTO
-                            Document attachmentFascicleDocument = new Document
-                            {
-                                Archive = documentAttachmentAndAnnexedArchive,
-                                Content = new Content { Blob = attachment.ContentStream },
-                                Name = attachment.FileName,
-                                IsVisible = true,
-                                AttributeValues = attachmentAttributeValues
-                            };
-
-                            //ASSOCIO IL DOCUMENTO ALLA SUA CATENA DI COMPETENZA
-                            attachmentFascicleDocument = _biblosClient.Document.AddDocumentToChain(attachmentFascicleDocument, attachmentChainId, ContentFormat.Binary);
-                            attachment.DocumentId = attachmentFascicleDocument.IdDocument;
-                            _logger.WriteInfo(new LogMessage(string.Concat("inserted document ", attachmentFascicleDocument.IdDocument.ToString(), " in archive ", documentAttachmentAndAnnexedArchive.IdArchive.ToString())), LogCategories);
-
-                            //Se fa questo ad ogni iterazione lo sovrascriva ma non crea problemi in quanto DocumentParent è sempre lo stesso
-                            //message.MessageAttachments.FirstOrDefault(x => x.ChainId == messageAttachmentModel.ChainId).ChainId = attachmentMessageDocument.DocumentParent.IdBiblos.Value;
-                            fascicle.FascicleLogs.Add(new FascicleLog() { LogType = FascicleLogType.DocumentInsert, LogDescription = $"Allegato (Add): {attachment.FileName}" });
-                        }
-                    }
-                    RetryPolicyEvaluation.Steps.Add(new StepModel()
-                    {
-                        Name = "CREATE_BIBLOS",
-                        LocalReference = JsonConvert.SerializeObject(fascicle, _serializerSettings)
-                    });
-                }
-                else
-                {
-                    StepModel messageStatus = RetryPolicyEvaluation.Steps.FirstOrDefault(f => f.Name == "CREATE_BIBLOS");
-                    if (messageStatus != null)
-                    {
-                        fascicle = JsonConvert.DeserializeObject<Fascicle>(messageStatus.LocalReference);
-                    }
                 }
                 #endregion
 
@@ -321,7 +336,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
 
                 if (!RetryPolicyEvaluation.Steps.Any(f => f.Name == "FASCICLE_CREATED"))
                 {
-                    fascicle = await _webApiClient.PutEntityAsync(fascicle);
+                    fascicle = await _webApiClient.PutEntityAsync(fascicle, fascicle.FascicleType == DocSuiteWeb.Entity.Fascicles.FascicleType.Activity ? UpdateActionType.ActivityFascicleUpdate.ToString() : string.Empty);
                     RetryPolicyEvaluation.Steps.Add(new StepModel()
                     {
                         Name = "FASCICLE_CREATED",
@@ -338,16 +353,15 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
                 //Attraverso le WebAPI comunicando col verbo POST inviare l'evento EventoCompleteFascicleBuild
                 #region [ EventoCompleteFascicleBuild ]
 
+                fascicleModel.RegistrationDate = fascicle.RegistrationDate;
                 fascicleModel.RegistrationUser = fascicle.RegistrationUser;
                 fascicleModel.Year = fascicle.Year;
                 fascicleModel.Title = fascicle.Title;
                 fascicleModel.StartDate = fascicle.StartDate;
                 fascicleModel.Number = fascicle.Number;
-
                 fascicleBuildModel.Fascicle = fascicleModel;
-
-                IEventCompleteFascicleBuild eventCompleteFascicleBuild = new EventCompleteFascicleBuild(Guid.NewGuid(), fascicleBuildModel.UniqueId, 
-                    command.TenantName, command.TenantId, command.Identity, fascicleBuildModel, null);
+                IEventCompleteFascicleBuild eventCompleteFascicleBuild = new EventCompleteFascicleBuild(Guid.NewGuid(), command.CorrelationId ?? fascicleBuildModel.UniqueId,
+                    command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, fascicleBuildModel, null);
 
                 if (!await _webApiClient.PushEventAsync(eventCompleteFascicleBuild))
                 {

@@ -15,7 +15,7 @@ namespace VecompSoftware.DocSuite.Public.Core.Models.Workflows.Parameters
 
         /// <summary>
         /// Modello del Metadato dinamico.
-        /// I singoli valori vanno concordati con Vecomp Software in fase di attivazione dell'integrazione con DocSuite 
+        /// I singoli valori vanno concordati con Dgroove in fase di attivazione dell'integrazione con DocSuite 
         /// </summary>
         /// <param name="keyName">Nome del metadato.</param>
         /// <param name="value">Valore del metadato in formato stringa.</param>

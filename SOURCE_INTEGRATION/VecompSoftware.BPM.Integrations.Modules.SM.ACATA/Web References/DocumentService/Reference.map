@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///D:/WSDL/wsdl actasrv/ACARIS-Archive.xsd" filename="ACARIS-Archive.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="file:///D:/WSDL/wsdl actasrv/ACARISWS-DocumentService.wsdl" filename="DocumentService.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///D:/WSDL/wsdl actasrv/ACARIS-Document.xsd" filename="ACARIS-Document.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///D:/WSDL/wsdl actasrv/ACARIS-Common.xsd" filename="ACARIS-Common.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///D:/WSDL/wsdl actasrv/ACARIS-DocumentMessaging.xsd" filename="ACARIS-DocumentMessaging.xsd" />
+  </Results>
+</DiscoveryClientResultsFile>

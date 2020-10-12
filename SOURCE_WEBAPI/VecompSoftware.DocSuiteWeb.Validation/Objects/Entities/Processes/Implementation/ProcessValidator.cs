@@ -32,7 +32,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Processes
         public DateTimeOffset? LastChangedDate { get; set; }
         public byte[] Timestamp { get; set; }
         public string Name { get; set; }
-        public FascicleType FascicleType { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public string Note { get; set; }

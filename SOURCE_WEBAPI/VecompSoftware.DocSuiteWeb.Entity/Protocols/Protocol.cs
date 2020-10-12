@@ -6,6 +6,8 @@ using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentArchives;
 using VecompSoftware.DocSuiteWeb.Entity.Messages;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
+using VecompSoftware.DocSuiteWeb.Entity.Tasks;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Repository.Entity;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
@@ -32,6 +34,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
             ProtocolParers = new HashSet<ProtocolParer>();
             ProtocolContactManuals = new HashSet<ProtocolContactManual>();
             WorkflowActions = new List<IWorkflowAction>();
+            TaskHeaderProtocols = new List<TaskHeaderProtocol>();
         }
         #endregion
 
@@ -78,11 +81,13 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
 
         public virtual Location AttachLocation { get; set; }
 
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
         public virtual Container Container { get; set; }
 
         public virtual ProtocolType ProtocolType { get; set; }
+
+        public virtual TenantAOO TenantAOO { get; set; }
 
         public virtual ICollection<ProtocolLog> ProtocolLogs { get; set; }
 
@@ -108,9 +113,12 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
 
         public virtual ICollection<ProtocolContactManual> ProtocolContactManuals { get; set; }
 
+        public virtual ICollection<TaskHeaderProtocol> TaskHeaderProtocols { get; set; }
+
         #endregion
 
         #region [ Not Mapping Properties ]
+        public bool WorkflowAutoComplete { get; set; }
         public Guid? IdWorkflowActivity { get; set; }
         public string WorkflowName { get; set; }
         public ICollection<IWorkflowAction> WorkflowActions { get; set; }

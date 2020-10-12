@@ -44,6 +44,12 @@ namespace VecompSoftware.DocSuiteWeb.Common.Infrastructures
         DocumentUnitArchived = CreateProtocol * 2,
 
         [Description("ProtocolShared")]
-        ProtocolShared = DocumentUnitArchived * 2
+        ProtocolShared = DocumentUnitArchived * 2,
+
+        [Description("CloneDossierFolder")]
+        CloneProcessDetails = ProtocolShared * 2,
+
+        [Description("InsertProcedureFascicle")]
+        InsertProcedureFascicle = CloneProcessDetails * 2
     }
 }

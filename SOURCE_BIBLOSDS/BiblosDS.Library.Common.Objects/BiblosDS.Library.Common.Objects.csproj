@@ -144,6 +144,7 @@
     <Compile Include="Enums\LoggingOperationType.cs" />
     <Compile Include="Enums\LoggingSource.cs" />
     <Compile Include="Enums\PreservationErrorCode.cs" />
+    <Compile Include="Enums\PreservationTaskStatus.cs" />
     <Compile Include="Enums\PreservationTaskTypes.cs" />
     <Compile Include="Enums\RuleOperator.cs" />
     <Compile Include="Enums\ServerRole.cs" />

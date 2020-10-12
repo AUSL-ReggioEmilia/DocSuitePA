@@ -63,6 +63,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.UDS
                 .WithMany(t => t.UDSDocumentUnits)
                 .Map(m => m.MapKey("IdDocumentUnit"));
 
+            HasRequired(t => t.SourceUDS)
+                .WithMany(t => t.UDSSourceDocumentUnits)
+                .HasForeignKey(f => f.IdUDS);
+
             #endregion
         }
     }

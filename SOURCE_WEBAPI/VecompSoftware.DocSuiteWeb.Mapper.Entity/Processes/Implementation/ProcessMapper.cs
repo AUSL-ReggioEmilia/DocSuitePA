@@ -16,7 +16,6 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Processes
             entityTransformed.LastChangedUser = entity.LastChangedUser;
             entityTransformed.ObjectState = entity.ObjectState;
             entityTransformed.EndDate = entity.EndDate;
-            entityTransformed.FascicleType = entity.FascicleType;
             entityTransformed.Name = entity.Name;
             entityTransformed.Note = entity.Note;
             entityTransformed.StartDate = entity.StartDate;

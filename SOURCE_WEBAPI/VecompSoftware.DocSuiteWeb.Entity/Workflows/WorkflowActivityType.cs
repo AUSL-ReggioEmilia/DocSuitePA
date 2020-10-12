@@ -10,7 +10,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Workflows
         [Description("Crea protocollo")]
         ProtocolCreate = 1,
         [Description("Protocolla da PEC")]
-        PecToProtocol = 2,
+        PECToProtocol = 2,
         [Description("Inserisci archivio")]
         UDSCreate = 3,
         [Description("Protocolla da archivio")]
@@ -25,10 +25,10 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Workflows
         CollaborationToProtocol = 8,
         [Description("Presa in carico")]
         Assignment = 9,
-        [Description("Attestazione di conformità")]
-        DematerialisationStatement = 11,
-        [Description("Crea securizzazione documento")]
-        SecureDocumentCreate = 12,
+        [Description("RIUTILIZZABILE")]
+        TO_REUSE_01 = 11,
+        [Description("RIUTILIZZABILE")]
+        TO_REUSE_02 = 12,
         [Description("Creazione automatica di archivio tramite servizi")]
         BuildAchive = 13,
         [Description("Creazione di protocollo tramite servizi")]

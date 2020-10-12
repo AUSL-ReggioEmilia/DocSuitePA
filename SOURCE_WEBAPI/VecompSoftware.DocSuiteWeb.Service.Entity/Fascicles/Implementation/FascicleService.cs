@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -9,13 +10,17 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
+using VecompSoftware.DocSuiteWeb.Entity.Processes;
 using VecompSoftware.DocSuiteWeb.Finder.Commons;
 using VecompSoftware.DocSuiteWeb.Finder.Dossiers;
 using VecompSoftware.DocSuiteWeb.Finder.Fascicles;
 using VecompSoftware.DocSuiteWeb.Mapper;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
+using VecompSoftware.DocSuiteWeb.Model.Metadata;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
 using VecompSoftware.DocSuiteWeb.Repository.UnitOfWork;
 using VecompSoftware.DocSuiteWeb.Security;
+using VecompSoftware.DocSuiteWeb.Service.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers;
 using VecompSoftware.DocSuiteWeb.Validation;
 using VecompSoftware.DocSuiteWeb.Validation.RulesetDefinitions.Entities.Fascicles;
@@ -29,6 +34,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
+        private readonly IMapperUnitOfWork _mapperUnitOfWork;
         private bool _needdelete = true;
         #endregion
 
@@ -40,6 +46,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _mapperUnitOfWork = mapperUnitOfWork;
         }
 
         #endregion
@@ -56,15 +63,15 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                 RegistrationUser = registrationUser,
                 Entity = fascicle
             };
-            fascicleLog.Hash = HashGenerator.GenerateHash(string.Concat(fascicleLog.RegistrationUser, "|", fascicleLog.LogType, "|", fascicleLog.LogDescription, "|", fascicleLog.UniqueId, "|", fascicle.UniqueId, "|", fascicleLog.RegistrationDate.ToString("yyyyMMddHHmmss")));
+            fascicleLog.Hash = HashGenerator.GenerateHash($"{fascicleLog.RegistrationUser}|{fascicleLog.LogType}|{fascicleLog.LogDescription}|{fascicleLog.UniqueId}|{fascicle.UniqueId}|{fascicleLog.RegistrationDate:yyyyMMddHHmmss}");
             return fascicleLog;
         }
 
         protected override Fascicle BeforeCreate(Fascicle entity)
         {
+            entity.FascicleFolders.Clear();
             if (entity.Contacts != null)
             {
-                //entity.Contacts = _unitOfWork.Repository<Contact>().Queryable().Where(f => entity.Contacts.Any(x => x.EntityId == f.EntityId)).ToList();
                 HashSet<Contact> contacts = new HashSet<Contact>();
                 Contact contact = null;
                 foreach (Contact item in entity.Contacts)
@@ -96,6 +103,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
             if (entity.Container != null)
             {
                 entity.Container = _unitOfWork.Repository<Container>().Find(entity.Container.EntityShortId);
+            }
+
+            if (entity.FascicleTemplate != null)
+            {
+                entity.FascicleTemplate = _unitOfWork.Repository<ProcessFascicleTemplate>().Find(entity.FascicleTemplate.UniqueId);
             }
 
             entity.Number = -1;
@@ -130,21 +142,41 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                 string categorySectionTitle = string.Join(".", _unitOfWork.Repository<Category>().Queryable(true)
                     .Where(f => idCategories.Contains(f.EntityShortId))
                     .OrderBy(f => f.EntityShortId)
+                    .Where(f=> f.Code > 0)
                     .Select(f => f.Code));
 
-                entity.Title = string.Concat(entity.Year, ".", categorySectionTitle, "-", entity.Number.ToString("0000000"));
+                entity.Title = $"{entity.Year}.{categorySectionTitle}-{entity.Number:0000000}";
             }
 
-            FascicleFolder rootNode = new FascicleFolder
+            if (entity.DossierFolders != null)
             {
-                UniqueId = entity.UniqueId,
-                Fascicle = entity,
-                Name = string.Format("Tutti i documenti"),
-                Category = entity.Category,
-                Status = FascicleFolderStatus.Active,
-                Typology = FascicleFolderTypology.Root,
-            };
-            _unitOfWork.Repository<FascicleFolder>().Insert(rootNode);
+                HashSet<DossierFolder> dossierFolders = new HashSet<DossierFolder>();
+                DossierFolder dossierFolderParent = null;
+                DossierFolder dossierFascicleFolder = null;
+                foreach (DossierFolder dossierFolder in entity.DossierFolders)
+                {
+                    dossierFolderParent = _unitOfWork.Repository<DossierFolder>().GetIncludeDossier(dossierFolder.UniqueId);
+                    if (dossierFolderParent != null)
+                    {
+                        dossierFolderParent.Status = DossierFolderStatus.Folder;
+                        _unitOfWork.Repository<DossierFolder>().Update(dossierFolderParent);
+                        dossierFascicleFolder = new DossierFolder()
+                        {
+                            UniqueId = Guid.NewGuid(),
+                            Fascicle = entity,
+                            Dossier = dossierFolderParent.Dossier,
+                            ParentInsertId = dossierFolderParent.UniqueId,
+                            Name = $"{entity.Title}-{entity.FascicleObject}",
+                            Status = DossierFolderStatus.Fascicle,
+                            Category = entity.Category
+                        };
+                        dossierFolders.Add(dossierFascicleFolder);
+                    }
+                }
+                entity.DossierFolders = dossierFolders;
+                _unitOfWork.Repository<DossierFolder>().InsertRange(entity.DossierFolders);
+            }
+
             if (entity.FascicleRoles != null)
             {
                 HashSet<FascicleRole> fascicleRoles = new HashSet<FascicleRole>();
@@ -153,14 +185,13 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                 foreach (FascicleRole item in entity.FascicleRoles)
                 {
                     fascicleRole = new FascicleRole();
-                    role = null;
                     role = _unitOfWork.Repository<Role>().Find(item.Role.EntityShortId);
-
-                    if (role != null)
+                    if (role != null && !fascicleRoles.Any(f => f.Role.EntityShortId == role.EntityShortId))
                     {
                         fascicleRole.Role = role;
                         fascicleRole.Fascicle = entity;
                         fascicleRole.IsMaster = item.IsMaster;
+                        fascicleRole.AuthorizationRoleType = item.AuthorizationRoleType;
 
                         switch (entity.FascicleType)
                         {
@@ -170,17 +201,8 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                                     break;
                                 }
                             case FascicleType.Procedure:
-                                {
-                                    fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Accounted;
-                                    if (item.IsMaster)
-                                    {
-                                        fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Responsible;
-                                    }
-                                    break;
-                                }
                             case FascicleType.Period:
                                 {
-                                    fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Accounted;
                                     if (item.IsMaster)
                                     {
                                         fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Responsible;
@@ -194,10 +216,60 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                 entity.FascicleRoles = fascicleRoles;
                 _unitOfWork.Repository<FascicleRole>().InsertRange(entity.FascicleRoles);
             }
+
+            if (!string.IsNullOrEmpty(entity.MetadataValues))
+            {
+                ICollection<MetadataValueModel> metadataValueModels = JsonConvert.DeserializeObject<ICollection<MetadataValueModel>>(entity.MetadataValues);
+                MetadataDesignerModel metadataDesignerModel = JsonConvert.DeserializeObject<MetadataDesignerModel>(entity.MetadataDesigner);
+                ICollection<MetadataValue> metadataValues = new List<MetadataValue>();
+                ICollection<MetadataValueContact> metadataContactValues = new List<MetadataValueContact>();
+                foreach (MetadataValueModel metadataValueModel in metadataValueModels.Where(x => metadataDesignerModel.ContactFields.Any(xx => xx.KeyName == x.KeyName)))
+                {
+                    metadataContactValues.Add(CreateMetadataContactValue(metadataValueModel, entity));
+                }
+
+                MetadataValue metadataValue;
+                foreach (MetadataValueModel metadataValueModel in metadataValueModels.Where(x => !metadataDesignerModel.ContactFields.Any(xx => xx.KeyName == x.KeyName)))
+                {
+                    metadataValue = MetadataValueService.CreateMetadataValue(metadataDesignerModel, metadataValueModel);
+                    metadataValue.Fascicle = entity;
+                    metadataValues.Add(metadataValue);
+                }
+                entity.SourceMetadataValues = metadataValues;
+                entity.MetadataValueContacts = metadataContactValues;
+                _unitOfWork.Repository<MetadataValue>().InsertRange(entity.SourceMetadataValues);
+                _unitOfWork.Repository<MetadataValueContact>().InsertRange(entity.MetadataValueContacts);
+            }
             _unitOfWork.Repository<FascicleLog>().Insert(CreateLog(entity, FascicleLogType.Insert, "Inserimento nuovo fascicolo", CurrentDomainUser.Account));
 
+            _unitOfWork.Repository<FascicleFolder>().Insert(new FascicleFolder
+            {
+                UniqueId = entity.UniqueId,
+                Fascicle = entity,
+                Name = "Tutti i documenti",
+                Category = null,
+                Status = FascicleFolderStatus.Active,
+                Typology = FascicleFolderTypology.Root
+            });
             return base.BeforeCreate(entity);
         }
+
+        private MetadataValueContact CreateMetadataContactValue(MetadataValueModel metadataValueModel, Fascicle fascicle)
+        {
+            MetadataValueContact metadataContactValue = new MetadataValueContact();
+            metadataContactValue.Fascicle = fascicle;
+            metadataContactValue.Name = metadataValueModel.KeyName;
+            ContactModel contactModel = JsonConvert.DeserializeObject<ContactModel>(metadataValueModel.Value);
+            if (contactModel.Id.HasValue)
+            {
+                metadataContactValue.Contact = _unitOfWork.Repository<Contact>().Find(contactModel.Id.Value);
+            }
+            else
+            {
+                metadataContactValue.ContactManual = metadataValueModel.Value;
+            }
+            return metadataContactValue;
+        }        
 
         protected override IQueryFluent<Fascicle> SetEntityIncludeOnUpdate(IQueryFluent<Fascicle> query)
         {
@@ -205,7 +277,9 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
             {
                 query = query.Include(f => f.Contacts)
                     .Include(f => f.FascicleDocuments)
-                    .Include(f => f.DossierFolders.Select(z => z.Dossier));
+                    .Include(f => f.DossierFolders.Select(z => z.Dossier))
+                    .Include(f => f.SourceMetadataValues)
+                    .Include(f => f.MetadataValueContacts);
             }
 
             return query;
@@ -223,6 +297,10 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 
         protected override Fascicle BeforeUpdate(Fascicle entity, Fascicle entityTransformed)
         {
+            if (entity.Category != null)
+            {
+                entityTransformed.Category = _unitOfWork.Repository<Category>().Find(entity.Category.EntityShortId);
+            }
 
             if (entity.Contacts != null)
             {
@@ -238,11 +316,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                 }
             }
 
-            if (entity.Category != null)
-            {
-                entityTransformed.Category = _unitOfWork.Repository<Category>().Find(entity.Category.EntityShortId);
-            }
-
             if (entity.FascicleDocuments != null && entity.FascicleDocuments.Count > 0)
             {
                 foreach (FascicleDocument item in entity.FascicleDocuments.Where(x => !entityTransformed.FascicleDocuments.Any(f => f.UniqueId == x.UniqueId)))
@@ -253,32 +326,60 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                 }
             }
 
-            if (entityTransformed.DossierFolders != null)
+            if (entityTransformed.SourceMetadataValues != null && entityTransformed.MetadataValueContacts != null && !string.IsNullOrEmpty(entity.MetadataValues))
             {
-                DossierFolderStatus dossierFolderStatus = entity.EndDate.HasValue ? DossierFolderStatus.FascicleClose : DossierFolderStatus.Fascicle;
-                bool changed = false;
-                string dossierFolderName = string.Concat(entityTransformed.Title, "-", entityTransformed.FascicleObject);
-                foreach (DossierFolder folder in entityTransformed.DossierFolders)
+                ICollection<MetadataValueModel> metadataValueModels = JsonConvert.DeserializeObject<ICollection<MetadataValueModel>>(entity.MetadataValues);
+                MetadataDesignerModel metadataDesignerModel = JsonConvert.DeserializeObject<MetadataDesignerModel>(entityTransformed.MetadataDesigner);
+                foreach (MetadataValue item in entityTransformed.SourceMetadataValues.Where(c => !metadataValueModels.Any(x => x.KeyName == c.Name)).ToList())
                 {
-                    changed = false;
-                    if (folder.Status != dossierFolderStatus)
-                    {
-                        folder.Status = dossierFolderStatus;
-                        changed = true;
-                    }
-                    if (folder.Name != dossierFolderName)
-                    {
-                        folder.Name = dossierFolderName;
-                        changed = true;
-                    }
-                    if (changed)
-                    {
-                        _unitOfWork.Repository<DossierFolder>().Update(folder);
-                        _unitOfWork.Repository<DossierLog>().Insert(BaseDossierService<DossierLog>.CreateLog(folder.Dossier, folder, dossierFolderStatus == DossierFolderStatus.FascicleClose ? DossierLogType.FolderClose : DossierLogType.FolderModify,
-                             string.Concat("La cartella ", folder.Name, dossierFolderStatus == DossierFolderStatus.FascicleClose ? " è stata chiusa dalla chiusura del fascicolo " : " è stata aggiornata dalla modifica dell'oggetto del fascicolo ", entity.Title, "-", entity.FascicleObject),
-                             CurrentDomainUser.Account));
-                    }
+                    _unitOfWork.Repository<MetadataValue>().Delete(item);
+                    _unitOfWork.Repository<FascicleLog>().Insert(CreateLog(entityTransformed, FascicleLogType.Modify, string.Concat("Rimosso il metadato '", item.Name, "'"), CurrentDomainUser.Account));
                 }
+                foreach (MetadataValueContact item in entityTransformed.MetadataValueContacts.Where(c => !metadataValueModels.Any(x => x.KeyName == c.Name)).ToList())
+                {
+                    _unitOfWork.Repository<MetadataValueContact>().Delete(item);
+                    _unitOfWork.Repository<FascicleLog>().Insert(CreateLog(entityTransformed, FascicleLogType.Modify, string.Concat("Rimosso il metadato '", item.Name, "'"), CurrentDomainUser.Account));
+                }
+
+                MetadataValueContact tmpContactValue;                
+                foreach (MetadataValueContact item in entityTransformed.MetadataValueContacts.Where(c => metadataValueModels.Any(x => x.KeyName == c.Name)).ToList())
+                {
+                    tmpContactValue = CreateMetadataContactValue(metadataValueModels.Single(x => x.KeyName == item.Name), entityTransformed);
+                    item.Contact = tmpContactValue.Contact;
+                    item.ContactManual = tmpContactValue.ContactManual;
+                    _unitOfWork.Repository<MetadataValueContact>().Update(item);
+                }
+                MetadataValue tmpMetadataValue;
+                foreach (MetadataValue item in entityTransformed.SourceMetadataValues.Where(c => metadataValueModels.Any(x => x.KeyName == c.Name)).ToList())
+                {
+                    tmpMetadataValue = MetadataValueService.CreateMetadataValue(metadataDesignerModel, metadataValueModels.Single(x => x.KeyName == item.Name));
+                    _mapperUnitOfWork.Repository<IDomainMapper<MetadataValue, MetadataValue>>().Map(tmpMetadataValue, item);
+                    _unitOfWork.Repository<MetadataValue>().Update(item);
+                }
+
+                foreach (MetadataValueModel metadataValueModel in metadataValueModels.Where(x => metadataDesignerModel.ContactFields.Any(xx => xx.KeyName == x.KeyName) 
+                                && !entityTransformed.MetadataValueContacts.Any(xx => xx.Name == x.KeyName)))
+                {
+                    _unitOfWork.Repository<MetadataValueContact>().Insert(CreateMetadataContactValue(metadataValueModel, entityTransformed));
+                    _unitOfWork.Repository<FascicleLog>().Insert(CreateLog(entityTransformed, FascicleLogType.Modify, string.Concat("Creato il metadato '", metadataValueModel.KeyName, "'"), CurrentDomainUser.Account));
+                }
+                foreach (MetadataValueModel metadataValueModel in metadataValueModels.Where(x => !metadataDesignerModel.ContactFields.Any(xx => xx.KeyName == x.KeyName) 
+                                && !entityTransformed.SourceMetadataValues.Any(xx => xx.Name == x.KeyName)))
+                {
+                    tmpMetadataValue = MetadataValueService.CreateMetadataValue(metadataDesignerModel, metadataValueModel);
+                    tmpMetadataValue.Fascicle = entityTransformed;
+                    _unitOfWork.Repository<MetadataValue>().Insert(tmpMetadataValue);
+                    _unitOfWork.Repository<FascicleLog>().Insert(CreateLog(entityTransformed, FascicleLogType.Modify, string.Concat("Creato il metadato '", metadataValueModel.KeyName, "'"), CurrentDomainUser.Account));
+                }
+            }
+
+            if (CurrentUpdateActionType == UpdateActionType.AssociatedProcessDossierFolderToFascicle)
+            {
+                InsertProcessDossierFolder(entity, entityTransformed);
+            }
+            else
+            {
+                UpdateFascicleDossierFolders(entity, entityTransformed);
             }
 
             string log = string.Concat(entity.EndDate.HasValue ? "Chiusura" : "Modifica", " del fascicolo");
@@ -290,8 +391,13 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
             }
             _unitOfWork.Repository<FascicleLog>().Insert(CreateLog(entityTransformed, entity.EndDate.HasValue ? FascicleLogType.Close : FascicleLogType.Modify, log, CurrentDomainUser.Account));
 
-            return base.BeforeUpdate(entity, entityTransformed);
+            if (CurrentUpdateActionType == UpdateActionType.ChangeFascicleType)
+            {
+                entityTransformed.FascicleType = FascicleType.Procedure;
+                _unitOfWork.Repository<FascicleLog>().Insert(CreateLog(entityTransformed, FascicleLogType.Modify, string.Concat("Trasforma in fascicolo di procedimento."), CurrentDomainUser.Account));
+            }
 
+            return base.BeforeUpdate(entity, entityTransformed);
         }
 
         protected override IQueryFluent<Fascicle> SetEntityIncludeOnDelete(IQueryFluent<Fascicle> query)
@@ -305,7 +411,9 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                     .Include(f => f.DossierFolders)
                     .Include(f => f.FascicleLinks)
                     .Include(f => f.WorkflowInstances)
-                    .Include(f => f.Contacts);
+                    .Include(f => f.Contacts)
+                    .Include(f => f.SourceMetadataValues)
+                    .Include(f => f.MetadataValueContacts);
             }
 
             return query;
@@ -329,6 +437,8 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                     _unitOfWork.Repository<FascicleLog>().DeleteRange(entityTransformed.FascicleLogs.ToList());
                     _unitOfWork.Repository<FascicleFolder>().DeleteRange(folders.ToList());
                     _unitOfWork.Repository<FascicleRole>().DeleteRange(entityTransformed.FascicleRoles.ToList());
+                    _unitOfWork.Repository<MetadataValue>().DeleteRange(entityTransformed.SourceMetadataValues.ToList());
+                    _unitOfWork.Repository<MetadataValueContact>().DeleteRange(entityTransformed.MetadataValueContacts.ToList());
                 }
 
                 if (hasDocumentUnit || entityTransformed.FascicleDocuments.Any())
@@ -348,6 +458,91 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 
             }
             return base.BeforeDelete(entity, entityTransformed);
+        }
+
+        private void InsertProcessDossierFolder(Fascicle entity, Fascicle entityTransformed)
+        {
+            if (entity.DossierFolders == null || entity.DossierFolders.Any(df => entityTransformed.DossierFolders.Any(d => d.UniqueId == df.UniqueId)))
+            {
+                return;
+            }
+
+            HashSet<DossierFolder> dossierFolders = new HashSet<DossierFolder>();
+            DossierFolder dossierFolderParent = null;
+            DossierFolder dossierFascicleFolder = null;
+            foreach (DossierFolder dossierFolder in entity.DossierFolders)
+            {
+                dossierFolderParent = _unitOfWork.Repository<DossierFolder>().GetIncludeDossier(dossierFolder.UniqueId);
+                if (dossierFolderParent != null)
+                {
+                    dossierFolderParent.Status = DossierFolderStatus.Folder;
+                    _unitOfWork.Repository<DossierFolder>().Update(dossierFolderParent);
+                    dossierFascicleFolder = new DossierFolder()
+                    {
+                        UniqueId = Guid.NewGuid(),
+                        Fascicle = entityTransformed,
+                        Dossier = dossierFolderParent.Dossier,
+                        ParentInsertId = dossierFolderParent.UniqueId,
+                        Name = $"{entityTransformed.Title}-{entityTransformed.FascicleObject}",
+                        Status = DossierFolderStatus.Fascicle,
+                        Category = entityTransformed.Category
+                    };
+                    dossierFolders.Add(dossierFascicleFolder);
+                }
+            }
+            DossierFolder oldDossierFolder = entityTransformed.DossierFolders.FirstOrDefault();
+            entityTransformed.DossierFolders = dossierFolders;
+            _unitOfWork.Repository<DossierFolder>().InsertRange(entityTransformed.DossierFolders);
+            if (oldDossierFolder != null && oldDossierFolder.Status == DossierFolderStatus.Fascicle)
+            {
+                _unitOfWork.Repository<DossierFolder>().Delete(oldDossierFolder);
+            }
+        }
+
+        private void UpdateFascicleDossierFolders(Fascicle entity, Fascicle entityTransformed)
+        {
+            if (entity.DossierFolders != null && entity.DossierFolders.Count > 0)
+            {
+                foreach (DossierFolder dossierFolder in entityTransformed.DossierFolders.Where(df => !entity.DossierFolders.Any(d => d.UniqueId == df.UniqueId)).ToList())
+                {
+                    entityTransformed.DossierFolders.Remove(dossierFolder);
+                    _unitOfWork.Repository<FascicleLog>().Insert(CreateLog(entityTransformed, FascicleLogType.Modify, $"Rimosso il dossier '{dossierFolder.Name }'", CurrentDomainUser.Account));
+                }
+
+                foreach (DossierFolder dossierFolder in entity.DossierFolders.Where(df => !entityTransformed.DossierFolders.Any(d => d.UniqueId == df.UniqueId)).ToList())
+                {
+                    entityTransformed.DossierFolders.Add(_unitOfWork.Repository<DossierFolder>().GetIncludeDossier(dossierFolder.UniqueId));
+                    _unitOfWork.Repository<FascicleLog>().Insert(CreateLog(entityTransformed, FascicleLogType.Modify, $"Aggiunto il dossier '{dossierFolder.Name }'", CurrentDomainUser.Account));
+                }
+            }
+
+            if (entityTransformed.DossierFolders != null)
+            {
+                DossierFolderStatus dossierFolderStatus = entity.EndDate.HasValue ? DossierFolderStatus.FascicleClose : DossierFolderStatus.Fascicle;
+                bool changed = false;
+                string dossierFolderName = $"{entityTransformed.Title}-{entityTransformed.FascicleObject}";
+                foreach (DossierFolder folder in entityTransformed.DossierFolders)
+                {
+                    changed = false;
+                    if (folder.Status != dossierFolderStatus)
+                    {
+                        folder.Status = dossierFolderStatus;
+                        changed = true;
+                    }
+                    if (folder.Name != dossierFolderName)
+                    {
+                        folder.Name = dossierFolderName;
+                        changed = true;
+                    }
+                    if (changed)
+                    {
+                        _unitOfWork.Repository<DossierFolder>().Update(folder);
+                        _unitOfWork.Repository<DossierLog>().Insert(BaseDossierService<DossierLog>.CreateLog(folder.Dossier, folder, dossierFolderStatus == DossierFolderStatus.FascicleClose ? DossierLogType.FolderClose : DossierLogType.FolderModify,
+                             $"La cartella {folder.Name} {(dossierFolderStatus == DossierFolderStatus.FascicleClose ? " è stata chiusa dalla chiusura del fascicolo " : " è stata aggiornata dalla modifica dell'oggetto del fascicolo")} {entity.Title}-{entity.FascicleObject}",
+                             CurrentDomainUser.Account));
+                    }
+                }
+            }
         }
 
         #endregion

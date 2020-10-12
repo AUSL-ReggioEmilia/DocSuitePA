@@ -7,6 +7,7 @@ using BiblosDS.Library.Common.Objects;
 using BiblosDS.Library.Common.Objects.Response;
 using BiblosDS.Library.Common.Services;
 using BiblosDS.Library.Common.Utility;
+using VecompSoftware.BiblosDS.WCF.Common;
 using VecompSoftware.ServiceContract.BiblosDS.Documents;
 
 [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]

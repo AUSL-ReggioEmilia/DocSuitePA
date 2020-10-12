@@ -10,6 +10,7 @@ using VecompSoftware.DocSuiteWeb.Common.Configuration;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
+using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
 using VecompSoftware.DocSuiteWeb.Service.ServiceBus;
 
@@ -29,6 +30,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Hubs
         private readonly IMessageConfiguration _messageConfiguration;
         private static readonly ConcurrentDictionary<string, string> _connections = new ConcurrentDictionary<string, string>();
         private readonly IDictionary<string, ServiceBusMessageConfiguration> _messageMappings;
+        private readonly IDataUnitOfWork _unitOfWork;
         #endregion
 
         #region [ Const ]
@@ -52,6 +54,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Hubs
         protected ILogger Logger => _logger;
         protected ITopicService TopicService => _topicService;
         protected IParameterEnvService ParameterEnvService => _parameterEnvService;
+        protected IDataUnitOfWork UnitOfWork => _unitOfWork;
         #endregion
 
         #region [ Constructor ]
@@ -63,12 +66,21 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Hubs
             _parameterEnvService = (IParameterEnvService)UnityConfig.GetConfiguredContainer().GetService(typeof(IParameterEnvService));
             _messageConfiguration = (IMessageConfiguration)UnityConfig.GetConfiguredContainer().GetService(typeof(IMessageConfiguration));
             _messageMappings = _messageConfiguration.GetConfigurations();
+            _unitOfWork = (IDataUnitOfWork)UnityConfig.GetConfiguredContainer().GetService(typeof(IDataUnitOfWork));
         }
         #endregion
 
         #region [ Methods ]
 
         protected abstract IList<string> GetSubscriptionNames();
+
+        protected async Task<bool> SubscriptionConfigurationExistsAsync(string messageConfigurationName, string correlationId)
+        {
+            string topicName = _messageMappings[messageConfigurationName].TopicName;
+            string dynamicSubscriptionName = $"{messageConfigurationName}_{correlationId}";
+
+            return await _topicService.SubscriptionExists(topicName, GetSafeSubscriptionName(dynamicSubscriptionName));
+        }
 
         protected async Task SubscribeTopicAsync(string messageConfigurationName, string correlationId, string commandName, Action<ServiceBusMessage> callback)
         {
@@ -108,6 +120,31 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Hubs
                 else
                 {
                     _logger.WriteDebug(new LogMessage(string.Concat("SendClientResponse found CorrelationId identifier -> ", result.CorrelationId, ". Setted direct mode communication")), LogCategories);
+                }
+                action(modeCommunication, result);
+            }, _logger, _logCategories);
+        }
+
+        protected void SendClientResponse<T>(T result, string correlationId, Action<dynamic, T> action) where T : class
+        {
+            ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                if (result == null)
+                {
+                    _logger.WriteWarning(new LogMessage("SendClientResponse result is null"), LogCategories);
+                    return;
+                }
+                dynamic modeCommunication = Clients.All;
+                if (string.IsNullOrEmpty(correlationId)
+                    || !_connections.Any(f => f.Value.Equals(correlationId))
+                    || (modeCommunication = Clients.Client(_connections.Single(f => f.Value.Equals(correlationId)).Key)) == null)
+                {
+                    _logger.WriteWarning(new LogMessage("SendClientResponse unknown correlationId. Setted broadcast mode communication"), LogCategories);
+                    modeCommunication = Clients.All;
+                }
+                else
+                {
+                    _logger.WriteDebug(new LogMessage(string.Concat("SendClientResponse found CorrelationId identifier -> ", correlationId, ". Setted direct mode communication")), LogCategories);
                 }
                 action(modeCommunication, result);
             }, _logger, _logCategories);
@@ -153,12 +190,33 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Hubs
 
         public override async Task OnDisconnected(bool stopCalled)
         {
+            string correlationId = RemoveConnection();
+
+            if (!string.IsNullOrEmpty(correlationId))
+            {
+                await RemoveSubscriptionsForAsync(correlationId);
+            }
+
+            await base.OnDisconnected(stopCalled);
+        }
+
+        //Reason : In Workflow Hub I overwritten the OnDisconnected method because I don't want to use await RemoveSubscriptionsForAsync(correlationId)
+        //The service bus subsribers will work continuously until the end of processing. In this case the new OnDisconnected method calls RemoveConnection
+        //to only remove the connectionId from _connections.
+        protected string RemoveConnection()
+        {
             string correlationId = Context.QueryString["correlationId"];
+
             if (!_connections.TryRemove(Context.ConnectionId, out correlationId))
             {
                 _logger.WriteWarning(new LogMessage(string.Concat("Concurrent Exception in TryRemove ConnectionId ", Context.ConnectionId, " to CorrelationId ", correlationId)), LogCategories);
-                return;
             }
+
+            return correlationId;
+        }
+
+        protected async Task RemoveSubscriptionsForAsync(string correlationId)
+        {
             IList<string> subscriptionNames = GetSubscriptionNames();
             string subscriptionNameEvaluated;
             string topicName;
@@ -168,8 +226,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Hubs
                 topicName = _messageMappings[subscriptionName].TopicName;
                 await _topicService.UnsubscribeTopicAsync(topicName, GetSafeSubscriptionName(subscriptionNameEvaluated));
             }
-
-            await base.OnDisconnected(stopCalled);
         }
 
         public override Task OnReconnected()

@@ -14,10 +14,12 @@ using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Entity;
 using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
+using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Model.ExternalModels;
 using VecompSoftware.Services.Command.CQRS.Events;
+using VecompSoftware.Services.Command.CQRS.Events.Entities.DocumentUnits;
 using VecompSoftware.Services.Command.CQRS.Events.Entities.PECMails;
 using VecompSoftware.Services.Command.CQRS.Events.Entities.Protocols;
 
@@ -118,10 +120,12 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN
                     _moduleConfiguration.ProtocolCreatedSubscription, EventProtocolCreatedCallbackAsync));
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventCancelProtocol>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.WorkflowIntegrationTopic,
                     _moduleConfiguration.ProtocolCancelSubscription, EventProtocolCanceledCallbackAsync));
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventCreatePECMail>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.WorkflowIntegrationTopic, 
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventCreatePECMail>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.WorkflowIntegrationTopic,
                     _moduleConfiguration.PECMailCreatedSubscription, EventPECCreatedCallbackAsync));
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventReceivedReceiptPECMail>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.WorkflowIntegrationTopic,
                     _moduleConfiguration.PECMailReceiptReceivedSubscription, EventPECReceiptReceivedCallbackAsync));
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventShareDocumentUnit>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.WorkflowIntegrationTopic,
+                    _moduleConfiguration.WorkflowStartZENShareDocumentUnitSubscription, EventShareDocumentUnitCallbackAsync));
 
                 _needInitializeModule = false;
             }
@@ -186,7 +190,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN
             }
         }
 
-        private async Task EventProtocolCreatedCallbackAsync(IEventCreateProtocol evt)
+        private async Task EventProtocolCreatedCallbackAsync(IEventCreateProtocol evt, IDictionary<string, object> properties)
         {
             if (Cancel)
             {
@@ -208,7 +212,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN
             }
         }
 
-        private async Task EventProtocolCanceledCallbackAsync(IEventCancelProtocol evt)
+        private async Task EventProtocolCanceledCallbackAsync(IEventCancelProtocol evt, IDictionary<string, object> properties)
         {
             if (Cancel)
             {
@@ -230,7 +234,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN
             }
         }
 
-        private async Task EventPECCreatedCallbackAsync(IEventCreatePECMail evt)
+        private async Task EventPECCreatedCallbackAsync(IEventCreatePECMail evt, IDictionary<string, object> properties)
         {
             if (Cancel)
             {
@@ -252,7 +256,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN
             }
         }
 
-        private async Task EventPECReceiptReceivedCallbackAsync(IEventReceivedReceiptPECMail evt)
+        private async Task EventPECReceiptReceivedCallbackAsync(IEventReceivedReceiptPECMail evt, IDictionary<string, object> properties)
         {
             if (Cancel)
             {
@@ -341,6 +345,66 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN
                 throw new Exception("Errore: l'evento non ha tutte le informazioni necessarie alla corretta gestione verso ZEN");
             }
         }
+
+        private async Task EventShareDocumentUnitCallbackAsync(IEventShareDocumentUnit evt, IDictionary<string, object> properties)
+        {
+            if (Cancel)
+            {
+                return;
+            }
+            _logger.WriteInfo(new LogMessage($"EventShareDocumentUnitCallbackAsync -> received callback with event id {evt.Id}"), LogCategories);
+
+            try
+            {
+                DocumentUnit documentUnit = evt.ContentType.ContentTypeValue;
+                _logger.WriteDebug(new LogMessage($"Evaluating documentUnit {documentUnit.Title}/{documentUnit.UniqueId}"), LogCategories);
+                Protocol protocol = (await _webAPIClient.GetProtocolAsync($"$filter=UniqueId eq {documentUnit.UniqueId}&$expand=ProtocolContacts($expand=Contact),ProtocolContactManuals,AdvancedProtocol,ProtocolType")).SingleOrDefault();
+                if (protocol == null)
+                {
+                    _logger.WriteError(new LogMessage($"Protocol {documentUnit.Title}/{documentUnit.UniqueId} not exist"), LogCategories);
+                    throw new ArgumentNullException("Protocol", $"Protocol {documentUnit.Title}/{documentUnit.UniqueId} not exist");
+                }
+
+                DocSuiteEvent docSuiteEvent = new DocSuiteEvent
+                {
+                    EventDate = documentUnit.RegistrationDate,
+                    WorkflowReferenceId = null,
+                    EventModel = new DocSuiteModel()
+                    {
+                        Title = documentUnit.Title,
+                        UniqueId = documentUnit.UniqueId,
+                        Year = documentUnit.Year,
+                        Number = documentUnit.Number,
+                        ModelType = DocSuiteType.Protocol,
+                        ModelStatus = DocSuiteStatus.Activated
+                    }
+                };
+                string sender = string.Join(", ", protocol.ProtocolContacts
+                    .Where(f => f.ComunicationType == ComunicationType.Sender)
+                    .Select(f => f.Contact.Description.Replace("|", " "))
+                    .Union(protocol.ProtocolContactManuals
+                                   .Where(f => f.ComunicationType == ComunicationType.Sender)
+                                   .Select(f => f.Description.Replace("|", " "))));
+
+                docSuiteEvent.EventModel.CustomProperties = new Dictionary<string, string>
+                {
+                    { "ExecutorUser", evt.Identity.User },
+                    { "ProtocolSubject", documentUnit.Subject },
+                    { "ProtocolNote", protocol.AdvancedProtocol?.Note},
+                    { "ProtocolDirection", ((ProtocolTypology)protocol.ProtocolType.EntityShortId).ToString()},
+                    { "ProtocolSender", sender},
+                    { "ProtocolCategoryCode", documentUnit.Category.FullCode},
+                    { "ProtocolCategoryDescription", documentUnit.Category.Name}
+                };
+                await _zenClient.SendEventAsync(docSuiteEvent);
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteError(new LogMessage($"EventShareDocumentUnitCallbackAsync -> error occouring when calling ZEN service for event id {evt.Id}"), ex, LogCategories);
+                throw;
+            }
+        }
+
         #endregion
     }
 }

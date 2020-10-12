@@ -26,6 +26,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Dossiers
         {
             modelTransformed.UniqueId = entity.UniqueId;
             modelTransformed.Role = entity.Role == null ? null : _mapperUnitOfWork.Repository<IDomainMapper<Role, RoleModel>>().Map(entity.Role, new RoleModel());
+            modelTransformed.IsMaster = entity.IsMaster;
+            modelTransformed.Type = (DocSuiteWeb.Model.Commons.AuthorizationRoleType)entity.AuthorizationRoleType;
 
             return modelTransformed;
         }

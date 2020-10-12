@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Repository.Entity;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Workflows
@@ -55,6 +56,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Workflows
         public virtual WorkflowInstance WorkflowInstance { get; set; }
 
         public virtual DocumentUnit DocumentUnitReferenced { get; set; }
+
+        public virtual Tenant Tenant { get; set; }
         #endregion
     }
 }

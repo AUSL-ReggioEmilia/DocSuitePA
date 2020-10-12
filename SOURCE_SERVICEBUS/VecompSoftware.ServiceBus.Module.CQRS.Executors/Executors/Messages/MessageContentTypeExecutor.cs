@@ -26,8 +26,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Messages
         #endregion
 
         #region [ Constructor ]
-        public MessageContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient)
-            : base(logger, webApiClient, biblosClient)
+        public MessageContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
             _logger = logger;
             _webApiClient = webApiClient;
@@ -43,7 +43,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Messages
             try
             {
                 message = ((ICommandCreateMessage)command).ContentType.ContentTypeValue;
-                evt = new EventCreateMessage(command.TenantName, command.TenantId, command.Identity, message);
+                evt = new EventCreateMessage(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, message);
             }
             catch (Exception ex)
             {

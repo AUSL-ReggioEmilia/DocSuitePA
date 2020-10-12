@@ -20,6 +20,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Commons
             entityTransformed.FullIncrementalPath = entity.FullIncrementalPath;
             entityTransformed.IdParent = entity.Parent?.EntityShortId;
             entityTransformed.CategoryType = CategoryModelType.Category;
+            entityTransformed.Code = entity.Code;
             return entityTransformed;
         }
 

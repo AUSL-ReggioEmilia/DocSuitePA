@@ -10,8 +10,11 @@ using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
+using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
+using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
@@ -117,7 +120,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink
             _needInitializeModule = true;
         }
 
-        private async Task CreateDocumentUnitLinkCallback(IEventWorkflowActionDocumentUnitLink evt)
+        private async Task CreateDocumentUnitLinkCallback(IEventWorkflowActionDocumentUnitLink evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage(string.Concat("CreateDocumentUnitLinkCallback -> evaluate event id ", evt.Id)), LogCategories);
 
@@ -147,6 +150,16 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink
                     case (int)DSWEnvironmentType.PECMail:
                         {
                             await LinkIntoPECMail(destinationLink, referenced);
+                            break;
+                        }
+                    case (int)DSWEnvironmentType.Collaboration:
+                        {
+                            await LinkIntoCollaboration(destinationLink, referenced);
+                            break;
+                        }
+                    case (int)DSWEnvironmentType.Dossier:
+                        {
+                            await LinkIntoDossier(destinationLink, referenced);
                             break;
                         }
                     default:
@@ -189,9 +202,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink
                 EntityId = destinationLink.EntityId.Value,
                 Year = referenced.Year,
                 Number = int.Parse(referenced.Number),
-                IdUDS = referenced.IdUDSRepository.HasValue ? referenced.UniqueId : default(Guid?),
-                UDSRepository = referenced.IdUDSRepository.HasValue ? new UDSRepository(referenced.IdUDSRepository.Value) : null,
-                DocumentUnitType = (DSWEnvironmentType)referenced.Environment,
+                DocumentUnit = new DocumentUnit(referenced.UniqueId),
                 RecordedInDocSuite = 1
             };
             await _webAPIClient.PutAsync(pecMail, actionType: UpdateActionType.PECMailManaged, retryPolicyEnabled: true);
@@ -211,6 +222,38 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.DocumentUnitLink
 
             await _webAPIClient.PostAsync(udsDocumentUnit, retryPolicyEnabled: true);
             _logger.WriteInfo(new LogMessage($"LinkIntoUDS -> UDSDocumentUnit {referenced.UniqueId}/{referenced.Environment} has been successfully inserted"), LogCategories);
+        }
+
+        private async Task LinkIntoCollaboration(DocumentUnitModel destinationLink, DocumentUnitModel referenced)
+        {
+            Collaboration collaboration = new Collaboration()
+            {
+                UniqueId = destinationLink.UniqueId,
+                Year = referenced.Year,
+                Number = int.Parse(referenced.Number),
+                DocumentUnit = new DocumentUnit(referenced.UniqueId)
+            };
+
+            await _webAPIClient.PutAsync(collaboration, actionType: UpdateActionType.CollaborationManaged, retryPolicyEnabled: true);
+            _logger.WriteInfo(new LogMessage($"LinkIntoCollaboration -> DocumentUnit {referenced.UniqueId}/{referenced.Environment} has been successfully inserted"), LogCategories);
+        }
+
+        private async Task LinkIntoDossier(DocumentUnitModel destinationLink, DocumentUnitModel referenced)
+        {
+            _logger.WriteInfo(new LogMessage($"LinkIntoDossier -> Linking DocumentUnit {referenced.UniqueId}/{referenced.Environment} into dossier {destinationLink.UniqueId}"), LogCategories);
+            if (referenced.Environment == (int)DSWEnvironmentType.Fascicle)
+            {
+                DossierFolder fascicleDossierFolder = new DossierFolder
+                {
+                    Dossier = new Dossier { UniqueId = destinationLink.UniqueId },
+                    Fascicle = new Fascicle { UniqueId = referenced.UniqueId },
+                    ParentInsertId = destinationLink.UniqueId,
+                    Category = new Category { EntityShortId = (short)referenced.Category.IdCategory.Value }
+                };
+
+                await _webAPIClient.PostAsync(fascicleDossierFolder, retryPolicyEnabled: true);
+                _logger.WriteInfo(new LogMessage($"LinkIntoDossier -> DocumentUnit {referenced.UniqueId}/{referenced.Environment} has been successfully inserted"), LogCategories);
+            }
         }
 
 

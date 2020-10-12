@@ -8,5 +8,6 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer.
         public string WorkflowName { get; set; }
         public string TenantName { get; set; }
         public Guid TenantId { get; set; }
+        public Guid TenantAOOId { get; set; }
     }
 }

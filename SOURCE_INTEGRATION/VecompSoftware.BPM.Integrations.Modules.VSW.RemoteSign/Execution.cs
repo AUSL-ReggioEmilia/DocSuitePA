@@ -5,22 +5,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign.Configuration;
 using VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign.Models;
+using VecompSoftware.BPM.Integrations.Services.BiblosDS;
+using VecompSoftware.BPM.Integrations.Services.BiblosDS.DocumentService;
 using VecompSoftware.BPM.Integrations.Services.ServiceBus;
 using VecompSoftware.BPM.Integrations.Services.WebAPI;
+using VecompSoftware.BPM.Integrations.Services.WebAPI.Models;
 using VecompSoftware.Core.Command.CQRS.Events.Models.Integrations.GenericProcesses;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Model.Documents.Signs;
 using VecompSoftware.DocSuiteWeb.Model.Integrations.GenericProcesses;
+using VecompSoftware.DocSuiteWeb.Model.Workflow;
 using VecompSoftware.Services.SignService.ArubaSignService.Models;
 using VecompSoftware.Services.SignService.ProxySignService.Models;
 using VecompSoftware.Services.SignService.Services;
-using VecompSoftware.DocSuiteWeb.Model.Workflow;
 using SignModel = VecompSoftware.Services.SignService.Models;
-using VecompSoftware.BPM.Integrations.Services.BiblosDS;
-using VecompSoftware.BPM.Integrations.Services.BiblosDS.DocumentService;
-using VecompSoftware.BPM.Integrations.Services.WebAPI.Models;
 
 namespace VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
 {
@@ -122,7 +122,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
             if (_needInitializeModule)
             {
                 _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
-                _subscriptions.Add(_serviceBusClient.StartListening<EventDematerialisationRequest>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration, 
+                _subscriptions.Add(_serviceBusClient.StartListening<EventDematerialisationRequest>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.WorkflowStartOTPRequestSubscription, WorkflowStartOTPRequestallback));
                 _subscriptions.Add(_serviceBusClient.StartListening<EventDematerialisationRequest>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.WorkflowStartRemoteSignSubscription, WorkflowStartRemoteSignCallback));
@@ -142,9 +142,9 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
         #region [ ServiceBus Callbacks ]
 
         #region [ Sign Documents ]
-        private async Task WorkflowStartRemoteSignCallback(EventDematerialisationRequest arg)
+        private async Task WorkflowStartRemoteSignCallback(EventDematerialisationRequest arg, IDictionary<string, object> properties)
         {
-            DocumentManagementRequestModel documentManagementRequestModel = arg.Content.ContentValue as DocumentManagementRequestModel;
+            DocumentManagementRequestModel documentManagementRequestModel = arg.ContentType.ContentTypeValue;
             RemoteSignProperty signOption = documentManagementRequestModel.UserProfileRemoteSignProperty;
             ICollection<WorkflowReferenceBiblosModel> documentChains = documentManagementRequestModel.Documents;
 
@@ -194,14 +194,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
 
                         _logger.WriteInfo(new LogMessage($"[ArubaRemote] Sign document: signing document successfully with ArubaRemote"), new LogCategory("SignDocument"));
                         await _webAPIClient.PushCorrelatedNotificationAsync($"Documento {documentChain.DocumentName} firmato con successo.",
-                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
+                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
                     }
                     catch (Exception ex)
                     {
                         _logger.WriteError(new LogMessage($"[ArubaRemote] Sign document: Critical error occured during signing document: {ex.Message}"), new LogCategory("SignDocument"));
 
                         await _webAPIClient.PushCorrelatedNotificationAsync($"Firma documento: {documentChain.DocumentName} errore.",
-                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
+                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
                         _logger.WriteError(new LogMessage("[ArubaRemote] SignRemote -> Critical Error"), ex, LogCategories);
                         throw;
                     }
@@ -232,14 +232,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
 
                         _logger.WriteInfo(new LogMessage($"[InfocertRemote] Sign document: signing document successfully with InfocertRemote"), new LogCategory("SignDocument"));
                         await _webAPIClient.PushCorrelatedNotificationAsync($"Documento {documentChain.DocumentName} firmato con successo.",
-                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
+                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
                     }
                     catch (Exception ex)
                     {
                         _logger.WriteError(new LogMessage($"[InfocertRemote] Sign document: Critical error occured during signing document: {ex.Message}"), new LogCategory("SignDocument"));
 
                         await _webAPIClient.PushCorrelatedNotificationAsync($"Firma documento {documentChain.DocumentName} errore.",
-                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
+                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
                         _logger.WriteError(new LogMessage("[InfocertRemote] SignRemote -> Critical Error"), ex, LogCategories);
                         throw;
                     }
@@ -288,14 +288,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
                         _logger.WriteInfo(new LogMessage($"[ArubaAutomatic] Sign document: signing document successfully with ArubaAutomatic"), new LogCategory("SignDocument"));
 
                         await _webAPIClient.PushCorrelatedNotificationAsync($"Documento {documentChain.DocumentName} firmato con successo.",
-                           ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
+                           ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
                     }
                     catch (Exception ex)
                     {
                         _logger.WriteError(new LogMessage($"[ArubaAutomatic] Sign document: Critical error occured during signing document: {ex.Message}"), new LogCategory("SignDocument"));
 
                         await _webAPIClient.PushCorrelatedNotificationAsync($"Signing document: {documentChain.DocumentName} failed.",
-                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
+                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
                         _logger.WriteError(new LogMessage("[ArubaAutomatic] SignAutomatic -> Critical Error"), ex, LogCategories);
                         throw;
                     }
@@ -324,14 +324,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
                         _logger.WriteInfo(new LogMessage($"[InfocertAutomatic] Sign document: signing document successfully with InfocertAutomatic"), new LogCategory("SignDocument"));
 
                         await _webAPIClient.PushCorrelatedNotificationAsync($"Documento {documentChain.DocumentName} firmato con successo.",
-                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
+                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
                     }
                     catch (Exception ex)
                     {
                         _logger.WriteError(new LogMessage($"[InfocertAutomatic] Sign document: Critical error occured during signing document: {ex.Message}"), new LogCategory("SignDocument"));
 
                         await _webAPIClient.PushCorrelatedNotificationAsync($"Signing document: {documentChain.DocumentName} failed.",
-                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
+                            ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
                         _logger.WriteError(new LogMessage("[InfocertAutomatic] SignAutomatic -> Critical Error"), ex, LogCategories);
                         throw;
                     }
@@ -370,9 +370,9 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
         #endregion
 
         #region [ Request OTP]
-        private async Task WorkflowStartOTPRequestallback(EventDematerialisationRequest arg)
+        private async Task WorkflowStartOTPRequestallback(EventDematerialisationRequest arg, IDictionary<string, object> properties)
         {
-            DocumentManagementRequestModel documentManagementRequestModel = arg.Content.ContentValue as DocumentManagementRequestModel;
+            DocumentManagementRequestModel documentManagementRequestModel = arg.ContentType.ContentTypeValue;
             RemoteSignProperty signOption = documentManagementRequestModel.UserProfileRemoteSignProperty;
 
             IDictionary<string, string> signProvider = documentManagementRequestModel.UserProfileRemoteSignProperty.CustomProperties;
@@ -411,14 +411,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
                 signService.RequestOTP(proxySignModel, SignModel.SignatureType.ProxySign);
 
                 await _webAPIClient.PushCorrelatedNotificationAsync("OTP richiesto \u00E8 stato inviato",
-                         ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
+                         ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
 
                 _logger.WriteInfo(new LogMessage($"[RequestOTPInfocert] OTP request: OTP request sent successfully with Infocert"), new LogCategory("OTPRequest"));
             }
             catch (Exception ex)
             {
                 await _webAPIClient.PushCorrelatedNotificationAsync("Errore durante l'invio della richiesta OTP",
-                       ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
+                       ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
 
                 _logger.WriteError(new LogMessage($"[RequestOTPInfocert] OTP request: Critical error occured during OTP request: {ex.Message}"), new LogCategory("OTPRequest"));
                 throw;
@@ -447,14 +447,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.RemoteSign
                 signService.RequestOTP(arubaSignModel, SignModel.SignatureType.ArubaSign);
 
                 await _webAPIClient.PushCorrelatedNotificationAsync("OTP richiesto \u00E8 stato inviato",
-                         ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
+                         ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusDone);
 
                 _logger.WriteInfo(new LogMessage($"[RequestOTPAruba] OTP request: OTP request sent successfully with Aruba"), new LogCategory("OTPRequest"));
             }
             catch (Exception ex)
             {
                 await _webAPIClient.PushCorrelatedNotificationAsync("Errore durante l'invio della richiesta OTP",
-                        ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
+                        ModuleConfigurationHelper.MODULE_NAME, evt.TenantId, evt.TenantAOOId, evt.TenantName, evt.CorrelationId, evt.Identity, NotificationType.EventWorkflowStatusError);
 
                 _logger.WriteError(new LogMessage($"[RequestOTPAruba] OTP request: Critical error occured during OTP request: {ex.Message}"), new LogCategory("OTPRequest"));
                 throw;

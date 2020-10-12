@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "Lista degli archivi configurabili alla conservazione";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section featured {
+    <hgroup class="title">
+        <h1><span class="fas fa-box-open" style="font-size: 32px; margin-right: 10px;"></span>@ViewBag.Title</h1>
+    </hgroup>
+}
+<br />
+
+@(Html.Kendo().Grid<BiblosDS.LegalExtension.AdminPortal.ViewModel.Archives.ArchiveConfigurableViewModel>()
+    .Name("Grid")
+    .Columns(columns =>
+    {
+        columns.Bound(o => o.ArchiveName).Title("Nome archivio");
+        columns.Bound(o => o.IsPreservationEnabled).Title("Abilitato alla conservazione")
+              .ClientTemplate("<div style=\"text-align: center;\">" +
+                              "#if(IsPreservationEnabled){#" +
+                              "<i class=\"fas fa-check\"></i>" +
+                              "#} else {#" +
+                              "<i class=\"fas fa-times\"></i>" +
+                              "#}#" +
+                              "</div>")
+              .Width(200);
+        columns.Bound(o => o.IdArchive)
+              .ClientTemplate("<a href='ArchiveConfigurationWizard/#=IdArchive#' class='k-button'>Configurazione</a>")
+              .Width(130)
+              .Title(" ");
+    })
+    .Pageable(pager => pager.Refresh(true))
+    .Resizable(a => a.Columns(true))
+    .Scrollable()
+    .ToolBar(t => t.Search())
+    .Search(search=> { search.Field(f => f.ArchiveName); })
+    .DataSource(dataSource => dataSource
+    .Ajax()
+    .Model(model => model.Id(p => p.IdArchive))
+    .PageSize(10)
+    .Read(read => read.Action("GetPreservationArchivesConfigurable", "Archive"))
+    )
+)
+

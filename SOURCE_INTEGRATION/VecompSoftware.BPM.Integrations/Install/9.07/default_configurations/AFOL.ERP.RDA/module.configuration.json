@@ -1,0 +1,21 @@
+{
+  "ConnectionString": "Data Source=srvbeeneardev.westeurope.cloudapp.azure.com,51433;Initial Catalog=AFOL_ERP;persist security info=True;MultipleActiveResultSets=True;Max Pool Size=1024;User Id=DocSuite;Password=#CoronaVirus2020|Beenear!;Application Name=DSW.PrivateWebAPI.Lazzarotto",
+  "FascicleObject": "RDA {0:number}",
+  "FascicleResponsibleContact": 18958,
+  "CategoryId": -32765,
+  "RDAWorkflowRepositoryName": "AFOL - RDA - Crea RDA con fascicolazione",
+  "ODAWorkflowRepositoryName": "AFOL - RDA - Crea ODA",
+  "PreventivoWorkflowRepositoryName": "AFOL - RDA - Crea Preventivo",
+  "ConservationPeriod": 10,
+  "IdMetadataRepository": "BF61733A-1F80-4DB9-ADA8-6A353B6315D4",
+  "RootContact": 14,
+  "RDAUdsRepositoryId": "B8ED7C64-F096-443B-AB5F-A747012899C6",
+  "ODAUdsRepositoryId": "1FD851F2-DE49-4444-AFD1-24EEED793540",
+  "PreventivoUdsRepositoryId": "A111A11A-CA9E-4AC1-9758-B6D749FAC435",
+  "AuthorizationRoles": [ -32765 ],
+  "TenantName": "AFOL",
+  "TenantId": "E5ED27AA-7FEA-432F-91F4-42B9A9250908",
+  "TenantAOOId": "D31B7C2C-250B-406F-B05A-2301093B1AC8",
+  "TopicWorkflowIntegration": "workflow_integration",
+  "WorkflowStartResolutionRDASubscription": "WorkflowStartResolutionRDA"
+}

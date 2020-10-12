@@ -102,7 +102,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinon
                 _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventCreateUserAuthorization>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.WorkflowStartProtocolUserAuthorizationSubscription, EventCreateUserAuthorizationCallback));
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventDeleteUserAuthorization>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration, 
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventDeleteUserAuthorization>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.WorkflowStartProtocolRemoveUserAuthorizationSubscription, EventDeleteUserAuthorizationCallback));
 
                 _needInitializeModule = false;
@@ -120,7 +120,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinon
         }
 
         #region [ ServiceBus Callbacks ]
-        private async Task EventCreateUserAuthorizationCallback(IEventCreateUserAuthorization evt)
+        private async Task EventCreateUserAuthorizationCallback(IEventCreateUserAuthorization evt, IDictionary<string, object> properties)
         {
             try
             {
@@ -160,6 +160,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinon
 
                 DocumentUnitChain main = documentUnit.DocumentUnitChains.Single(f => f.ChainType == ChainType.MainChain);
                 DocumentUnitChain attachments = documentUnit.DocumentUnitChains.SingleOrDefault(f => f.ChainType == ChainType.AttachmentsChain);
+                DocumentUnitChain annexed = documentUnit.DocumentUnitChains.SingleOrDefault(f => f.ChainType == ChainType.AnnexedChain);
                 WorkflowDocumentModel workflowDocumentModel = new WorkflowDocumentModel();
                 workflowDocumentModel.Documents.Add(new KeyValuePair<DocSuiteWeb.Model.Entities.DocumentUnits.ChainType, DocumentModel>(DocSuiteWeb.Model.Entities.DocumentUnits.ChainType.MainChain, new DocumentModel()
                 {
@@ -174,12 +175,20 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinon
                         ChainId = attachments.IdArchiveChain,
                     }));
                 }
+                if (annexed != null)
+                {
+                    workflowDocumentModel.Documents.Add(new KeyValuePair<DocSuiteWeb.Model.Entities.DocumentUnits.ChainType, DocumentModel>(DocSuiteWeb.Model.Entities.DocumentUnits.ChainType.AnnexedChain, new DocumentModel()
+                    {
+                        ChainType = DocSuiteWeb.Model.Entities.DocumentUnits.ChainType.AnnexedChain,
+                        ChainId = annexed.IdArchiveChain,
+                    }));
+                }
                 WorkflowResult workflowResult = await StartWorkflowAsync(workflowDocumentModel, account, _moduleConfiguration.WorkflowRepositoryName, documentUnit, documentUnitUser);
 
                 if (!workflowResult.IsValid)
                 {
                     _logger.WriteError(new LogMessage("An error occured in start request opinion workflow"), LogCategories);
-                    throw new Exception("VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinion");
+                    throw new Exception(string.Join(", ", workflowResult.Errors));
                 }
                 _logger.WriteInfo(new LogMessage(string.Concat("Workflow started correctly [IsValid: ", workflowResult.IsValid, "] with instanceId ", workflowResult.InstanceId)), LogCategories);
             }
@@ -190,7 +199,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinon
             }
         }
 
-        private async Task EventDeleteUserAuthorizationCallback(IEventDeleteUserAuthorization evt)
+        private async Task EventDeleteUserAuthorizationCallback(IEventDeleteUserAuthorization evt, IDictionary<string, object> properties)
         {
             try
             {
@@ -251,6 +260,13 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinon
                 ValueGuid = _moduleConfiguration.TenantId
             });
 
+            workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, new WorkflowArgument()
+            {
+                Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID,
+                PropertyType = ArgumentType.PropertyGuid,
+                ValueGuid = _moduleConfiguration.TenantAOOId
+            });
+
             workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, new WorkflowArgument()
             {
                 Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME,
@@ -289,7 +305,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinon
                 PropertyType = ArgumentType.PropertyString,
                 ValueString = documentUnit.Subject
             });
-            
+
             workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL, new WorkflowArgument()
             {
                 Name = WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL,

@@ -7,6 +7,7 @@ using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Messages;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Protocols;
 
@@ -79,6 +80,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Protocols
         public Category Category { get; set; }
         public Container Container { get; set; }
         public ProtocolType ProtocolType { get; set; }
+        public TenantAOO TenantAOO { get; set; }
         public ICollection<ProtocolLog> ProtocolLogs { get; set; }
         public ICollection<ProtocolContact> ProtocolContacts { get; set; }
         public ICollection<ProtocolRole> ProtocolRoles { get; set; }

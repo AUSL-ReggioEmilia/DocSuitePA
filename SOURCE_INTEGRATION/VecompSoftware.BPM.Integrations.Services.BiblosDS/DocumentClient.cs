@@ -11,6 +11,7 @@ using VecompSoftware.DocSuiteWeb.Common.Loggers;
 
 namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
 {
+
     [LogCategory(LogCategoryDefinition.DOCUMENTCONTEX)]
     public class DocumentClient : IDocumentClient
     {
@@ -28,13 +29,9 @@ namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
         #endregion
 
         #region [ Properties ]
-        public string SIGNATURE_ATTRIBUTE_NAME 
-        {
-            get
-            {
-                return "Signature";
-            }
-        }
+        public string ATTRIBUTE_SIGNATURE => "Signature";
+
+        public string ATTRIBUTE_FILENAME => "Filename";
 
         private static IEnumerable<LogCategory> LogCategories
         {
@@ -62,13 +59,21 @@ namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
         #endregion
 
         #region [ Constructor ]
-        public DocumentClient(ILogger logger)
+        public DocumentClient(ILogger logger, IDocumentClientConfiguration documentClientConfiguration = null)
         {
             _logger = logger;
-            _document = new DocumentsClient();
+            if (documentClientConfiguration != null)
+            {
+                _document = new DocumentsClient(documentClientConfiguration.EndPointConfigurationName, documentClientConfiguration.RemoteAddress);
+            }
+            else
+            {
+                _document = new DocumentsClient();
+            }
             _contentSearch = new SearchService.ContentSearchClient();
             _digitalSign = new SignService.ServiceDigitalSignClient();
         }
+
         #endregion
 
         #region [ Methods ]
@@ -83,7 +88,7 @@ namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
                         attributes, metadata.Key, metadata.Value);
                 if (attributeValue != null)
                 {
-                    _logger.WriteDebug(new LogMessage(string.Concat("set metadata ", metadata.Key, " -> ", metadata.Value)), LogCategories);
+                    _logger.WriteDebug(new LogMessage($"set metadata {metadata.Key} -> {metadata.Value}"), LogCategories);
                     attributeValues.Add(attributeValue);
                 }
             }
@@ -149,8 +154,7 @@ namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
             {
                 string archiveName = documentModel.Archive.ToLower();
                 Document document = new Document();
-                KeyValuePair<Archive, List<DocumentService.Attribute>> archive;
-                if (!_cache_ArchiveAttributes.ContainsKey(archiveName) || !_cache_ArchiveAttributes.TryGetValue(archiveName, out archive))
+                if (!_cache_ArchiveAttributes.ContainsKey(archiveName) || !_cache_ArchiveAttributes.TryGetValue(archiveName, out KeyValuePair<Archive, List<DocumentService.Attribute>> archive))
                 {
                     Archive biblosArchive = Archives.SingleOrDefault(f => f.Name.Equals(archiveName, StringComparison.InvariantCultureIgnoreCase));
                     if (biblosArchive == null)
@@ -210,8 +214,7 @@ namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
             return await DocumentHelper.TryCatchWithLogger(async () =>
             {
                 string archiveName = documentModels.First().Archive.ToLower();
-                KeyValuePair<Archive, List<DocumentService.Attribute>> archive;
-                if (!_cache_ArchiveAttributes.ContainsKey(archiveName) || !_cache_ArchiveAttributes.TryGetValue(archiveName, out archive))
+                if (!_cache_ArchiveAttributes.ContainsKey(archiveName) || !_cache_ArchiveAttributes.TryGetValue(archiveName, out KeyValuePair<Archive, List<DocumentService.Attribute>> archive))
                 {
                     Archive biblosArchive = Archives.SingleOrDefault(f => f.Name.Equals(archiveName, StringComparison.InvariantCultureIgnoreCase));
                     if (biblosArchive == null)
@@ -283,14 +286,14 @@ namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
         {
             await DocumentHelper.TryCatchWithLogger(async () =>
             {
-                _logger.WriteInfo(new LogMessage(string.Concat("DetachDocumentAsync -> Detaching document ", documentId)), LogCategories);
+                _logger.WriteInfo(new LogMessage($"DetachDocumentAsync -> Detaching document {documentId}"), LogCategories);
                 Document document = await _document.GetDocumentInfoByIdAsync(documentId);
                 if (document == null)
                 {
-                    _logger.WriteWarning(new LogMessage(string.Concat("DetachDocumentAsync -> Document ", documentId, " not found")), LogCategories);
+                    _logger.WriteWarning(new LogMessage($"DetachDocumentAsync -> Document {documentId} not found"), LogCategories);
                 }
                 await _document.DocumentDetachAsync(document);
-                _logger.WriteInfo(new LogMessage(string.Concat("DetachDocumentAsync -> Document ", documentId, " detached")), LogCategories);
+                _logger.WriteInfo(new LogMessage($"DetachDocumentAsync -> Document {documentId} detached"), LogCategories);
             }, _logger, LogCategories);
         }
 
@@ -299,8 +302,7 @@ namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
             try
             {
                 Document document = new Document();
-                KeyValuePair<Archive, List<DocumentService.Attribute>> archive;
-                if (!_cache_ArchiveAttributes.ContainsKey(archiveName) || !_cache_ArchiveAttributes.TryGetValue(archiveName, out archive))
+                if (!_cache_ArchiveAttributes.ContainsKey(archiveName) || !_cache_ArchiveAttributes.TryGetValue(archiveName, out KeyValuePair<Archive, List<DocumentService.Attribute>> archive))
                 {
                     Archive biblosArchive = Archives.SingleOrDefault(f => f.Name.Equals(archiveName, StringComparison.InvariantCultureIgnoreCase));
                     if (biblosArchive == null)
@@ -341,8 +343,7 @@ namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
             try
             {
                 Document document = new Document();
-                KeyValuePair<Archive, List<DocumentService.Attribute>> archive;
-                if (!_cache_ArchiveAttributes.ContainsKey(archiveName) || !_cache_ArchiveAttributes.TryGetValue(archiveName, out archive))
+                if (!_cache_ArchiveAttributes.ContainsKey(archiveName) || !_cache_ArchiveAttributes.TryGetValue(archiveName, out KeyValuePair<Archive, List<DocumentService.Attribute>> archive))
                 {
                     Archive biblosArchive = Archives.SingleOrDefault(f => f.Name.Equals(archiveName, StringComparison.InvariantCultureIgnoreCase));
                     if (biblosArchive == null)
@@ -433,8 +434,7 @@ namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
             {
                 string archiveName = documentModel.Archive.ToLower();
                 Document document = new Document();
-                KeyValuePair<Archive, List<DocumentService.Attribute>> archive;
-                if (!_cache_ArchiveAttributes.ContainsKey(archiveName) || !_cache_ArchiveAttributes.TryGetValue(archiveName, out archive))
+                if (!_cache_ArchiveAttributes.ContainsKey(archiveName) || !_cache_ArchiveAttributes.TryGetValue(archiveName, out KeyValuePair<Archive, List<DocumentService.Attribute>> archive))
                 {
                     Archive biblosArchive = Archives.SingleOrDefault(f => f.Name.Equals(archiveName, StringComparison.InvariantCultureIgnoreCase));
                     if (biblosArchive == null)

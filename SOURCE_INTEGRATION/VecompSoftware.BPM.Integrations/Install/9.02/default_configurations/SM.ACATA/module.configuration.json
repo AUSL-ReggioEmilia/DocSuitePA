@@ -1,0 +1,26 @@
+{
+  "TenantName": "ASL-TO-CITTA",
+  "TenantId": "E5ED27AA-7FEA-432F-91F4-42B9A9250908",
+  "TenantAOOId": "ff2efa82-4ea3-471e-af22-f784bbf09c25",
+  "TopicWorkflowIntegration": "workflow_integration",
+  "WorkflowStartActaShareProtocolSubscription": "WorkflowStartActaShareProtocol",
+  "Endpoints": {
+    "RepositoryWS": "http://10.8.9.77:8080/actasrv/repositoryWS",
+    "OfficialBookWS": "http://10.8.9.77:8080/actasrv/officialbookWS",
+    "BackOfficeWS": "http://10.8.9.77:8080/actasrv/backofficeWS",
+    "DocumentWS": "http://10.8.9.77:8080/actasrv/documentWS",
+    "ObjectWS": "http://10.8.9.77:8080/actasrv/objectWS",
+    "SubjectRegistryWS": "http://10.8.9.77:8080/actasrv/subjectregistryWS"
+  },
+  "AcarisParameters": {
+    "IdAOO": 2,
+    "IdStructure": 2,
+    "IdNode": 2,
+    "FiscalCode": "0000002062090234",
+    "InstitutionCode": "PA RSM",
+    "InstitutionDescription": "PA Rep. San Marino",
+    "DestinatarioInternoCodiceNodo": "U097-R",
+    "DestinatarioInternoDescrizioneNodo": "U097-R - Responsabile",
+    "AppKey": "103/123/24/-79/-26/-104/-4/-61/41/89/-59/-116/-110/125/-54/90" //smart-client, if none available please leave ""
+  }
+}

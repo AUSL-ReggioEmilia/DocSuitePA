@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 
 namespace VecompSoftware.Commons.Interfaces.CQRS.Events
@@ -16,9 +17,11 @@ namespace VecompSoftware.Commons.Interfaces.CQRS.Events
         IContentBase Referenced { get; set; }
 
         /// <summary>
-        /// Specified message's type of dependency
+        /// Specified message type of dependency
         /// </summary>
         string MessageTypeDependency { get; set; }
+
+        ICollection<IWorkflowAction> WorkflowActions { get; set; }
     }
 
 }

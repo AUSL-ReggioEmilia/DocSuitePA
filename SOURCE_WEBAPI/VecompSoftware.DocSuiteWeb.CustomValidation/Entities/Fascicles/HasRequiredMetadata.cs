@@ -1,6 +1,7 @@
 ﻿using Microsoft.Practices.EnterpriseLibrary.Common.Configuration;
 using Microsoft.Practices.EnterpriseLibrary.Validation.Configuration;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
@@ -26,13 +27,14 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Fascicles
         protected override void ValidateObject(FascicleValidator objectToValidate)
         {
             bool result = false;
-            MetadataModel metadataModel = objectToValidate.MetadataValues != null ? JsonConvert.DeserializeObject<MetadataModel>(objectToValidate.MetadataValues) : null;
-            if (metadataModel != null &&
-                (metadataModel.TextFields.Any(t => t.Required && string.IsNullOrEmpty(t.Value)) ||
-                 metadataModel.NumberFields.Any(t => t.Required && string.IsNullOrEmpty(t.Value)) ||
-                 metadataModel.DateFields.Any(t => t.Required && string.IsNullOrEmpty(t.Value)) ||
-                 metadataModel.BoolFields.Any(t => t.Required && string.IsNullOrEmpty(t.Value)) ||
-                 metadataModel.EnumFields.Any(t => t.Required && string.IsNullOrEmpty(t.Value)) ||
+            MetadataDesignerModel metadataModel = !string.IsNullOrEmpty(objectToValidate.MetadataDesigner) ? JsonConvert.DeserializeObject<MetadataDesignerModel>(objectToValidate.MetadataDesigner) : null;
+            ICollection<MetadataValueModel> metadataValueModels = !string.IsNullOrEmpty(objectToValidate.MetadataValues) ? JsonConvert.DeserializeObject<ICollection<MetadataValueModel>>(objectToValidate.MetadataValues) : null;
+            if (metadataModel != null && metadataValueModels != null &&
+                (metadataModel.TextFields.Any(t => t.Required && metadataValueModels.Any(mv => mv.KeyName == t.KeyName && string.IsNullOrEmpty(mv.Value))) ||
+                 metadataModel.NumberFields.Any(t => t.Required && metadataValueModels.Any(mv => mv.KeyName == t.KeyName && string.IsNullOrEmpty(mv.Value))) ||
+                 metadataModel.DateFields.Any(t => t.Required && metadataValueModels.Any(mv => mv.KeyName == t.KeyName && string.IsNullOrEmpty(mv.Value))) ||
+                 metadataModel.BoolFields.Any(t => t.Required && metadataValueModels.Any(mv => mv.KeyName == t.KeyName && string.IsNullOrEmpty(mv.Value))) ||
+                 metadataModel.EnumFields.Any(t => t.Required && metadataValueModels.Any(mv => mv.KeyName == t.KeyName && string.IsNullOrEmpty(mv.Value))) ||
                  metadataModel.DiscussionFields.Any(t => t.Required && (t.Comments == null || t.Comments.Count == 0))))
             {
                 result = true;

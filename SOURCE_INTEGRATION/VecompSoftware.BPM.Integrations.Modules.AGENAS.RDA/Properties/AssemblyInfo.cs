@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("VecompSoftware.BPM.Integrations.Modules.AGENAS.RDA")]
@@ -15,5 +14,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("e99a2613-c0b7-4768-9397-dac1850a3aaf")]
 
-[assembly: AssemblyVersion("8.87.0.0")]
-[assembly: AssemblyFileVersion("8.87.0.0")]
+[assembly: AssemblyVersion("9.09.0.0")]
+[assembly: AssemblyFileVersion("9.09.0.0")]

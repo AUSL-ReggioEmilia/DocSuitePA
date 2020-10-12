@@ -30,5 +30,11 @@ namespace BiblosDS.LegalExtension.AdminPortal.ViewModel
         public DateTime NextPreservationTaskStartDocumentDate { get; set; }
 
         public bool HasArchiveConfigurationFile { get; set; }
+
+        public PreservationTask VerifyTask { get; set; }
+
+        public bool HasVerifyTaskDefined { get; set; }
+
+        public bool HasCompanyDefined { get; set; }
     }
 }

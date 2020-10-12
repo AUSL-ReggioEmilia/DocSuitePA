@@ -144,8 +144,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.PECMails
                 .HasColumnName("InvoiceType")
                 .IsOptional();
 
-            Property(x => x.HumanEnabled)
-                .HasColumnName("HumanEnabled")
+            Property(x => x.LoginError)
+                .HasColumnName("LoginError")
                 .IsRequired();
 
             Ignore(x => x.Timestamp)

@@ -204,14 +204,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.PECMails
                 .HasColumnName("MultipleType")
                 .IsOptional();
 
-            Property(x => x.IdUDS)
-                .HasColumnName("IdUDS")
-                .IsOptional();
-
-            Property(x => x.DocumentUnitType)
-                .HasColumnName("DocumentUnitType")
-                .IsOptional();
-
             Property(x => x.RegistrationUser)
                 .HasColumnName("RegistrationUser")
                 .IsRequired()
@@ -240,6 +232,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.PECMails
 
             Ignore(x => x.Timestamp)
                 .Ignore(x => x.EntityShortId)
+                .Ignore(x => x.WorkflowAutoComplete)
                 .Ignore(x => x.WorkflowName)
                 .Ignore(x => x.IdWorkflowActivity)
                 .Ignore(x => x.WorkflowActions);
@@ -255,9 +248,9 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.PECMails
                 .WithMany(t => t.PECMails)
                 .Map(m => m.MapKey("IDPECMailBox"));
 
-            HasOptional(t => t.UDSRepository)
+            HasOptional(t => t.DocumentUnit)
                 .WithMany(t => t.PecMails)
-                .Map(m => m.MapKey("IdUDSRepository"));
+                .Map(m => m.MapKey("IdDocumentUnit"));
 
             #endregion
         }

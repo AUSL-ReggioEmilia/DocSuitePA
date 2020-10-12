@@ -74,7 +74,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
         public ICollection<Fascicle> Fascicles { get; set; }
         public ICollection<Dossier> Dossiers { get; set; }
         public ICollection<Tenant> Tenants { get; set; }
-
+        public ICollection<MetadataValueContact> MetadataValueContacts { get; set; }
         #endregion
 
     }

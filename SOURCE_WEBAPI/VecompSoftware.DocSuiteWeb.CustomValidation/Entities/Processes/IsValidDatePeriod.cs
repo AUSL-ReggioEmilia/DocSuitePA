@@ -17,7 +17,7 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Processes
         #region [ Constructor ]
 
         public IsValidDatePeriod(NameValueCollection attributes)
-            : base("Il periodo di data non è valido.", nameof(IsValidDatePeriod))
+            : base("Il periodo delle date non è valido.", nameof(IsValidDatePeriod))
         {
 
         }

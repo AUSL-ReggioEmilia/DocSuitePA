@@ -12,7 +12,22 @@ E' necessario quindi impostare il parametro nella sezione appSettings nel seguen
 
 	<add key="WebAPIUrl" value="<Indirizzo API>" />
 
+L'indirizzo utilizzato di default è http://localhost:9000/WCFHost.WebAPI, verificare se la porta
+utilizzata è libera sul server.
+
 N.B. Si consiglia di esporre tale servizio sempre in localhost in quanto non esposto su IIS.
 
 #AC
 ##############################################################################################################
+Il processo di conservazione è stato modificato per essere eseguito in maniera asincrona dal servizio windows WCFHost.
+E' necessario quindi riportare le chiavi di configurazione del PreservationPortal in appSettings del file di configurazione corrente.
+Le chiavi di configurazione impostabili sono le seguenti:
+	- Preservation_SingleVHD
+    - PersistVerifyPreservation
+    - PreservationLimitTaskDocToEndDocumentDate
+	- PreservationAutoClose
+
+Per chiarimenti chiedere al team di Sviluppo.
+
+#AC
+#####################################################################################

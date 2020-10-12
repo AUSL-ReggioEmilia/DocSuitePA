@@ -70,6 +70,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Fascicles
                 .HasColumnName("VisibilityType")
                 .IsRequired();
 
+            Property(x => x.MetadataDesigner)
+                .HasColumnName("MetadataDesigner")
+                .IsOptional();
+
             Property(x => x.MetadataValues)
                 .HasColumnName("MetadataValues")
                 .IsOptional();
@@ -98,10 +102,14 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Fascicles
                 .HasColumnName("DSWEnvironment")
                 .IsOptional();
 
-            Ignore(x => x.EntityId)
-                .Ignore(x => x.EntityShortId);
+            Property(x => x.CustomActions)
+                .HasColumnName("CustomActions")
+                .IsOptional();
 
-            Ignore(x => x.WorkflowName)
+            Ignore(x => x.EntityId)
+                .Ignore(x => x.EntityShortId)
+                .Ignore(x => x.WorkflowAutoComplete)
+                .Ignore(x => x.WorkflowName)
                 .Ignore(x => x.IdWorkflowActivity)
                 .Ignore(x => x.WorkflowActions);
 
@@ -134,7 +142,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Fascicles
                 .WithMany(t => t.Fascicles)
                 .Map(m => m.MapKey("IdContainer"));
 
-            HasOptional(t => t.ProcessFascicleTemplate)
+            HasOptional(t => t.FascicleTemplate)
                 .WithMany(t => t.Fascicles)
                 .Map(m => m.MapKey("IdProcessFascicleTemplate"));
             #endregion

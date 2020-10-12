@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 using VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess.Configuration;
 using VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess.Models;
@@ -19,6 +18,7 @@ using VecompSoftware.Core.Command.CQRS.Events.Models.Workflows;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
+using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Templates;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
@@ -26,6 +26,7 @@ using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
 using VecompSoftware.DocSuiteWeb.Model.Workflow;
 using VecompSoftware.Helpers.UDS;
 using VecompSoftware.Helpers.Workflow;
+using DSWEnvironmentType = VecompSoftware.DocSuiteWeb.Model.Entities.Commons.DSWEnvironmentType;
 
 namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
 {
@@ -35,14 +36,19 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
     {
         #region [ Fields ]
 
+        private bool _needInitializeModule = false;
+        private UDSRepository _udsRepository;
+        private Location _workflowLocation;
+
         private readonly ILogger _logger;
         private readonly IWebAPIClient _webAPIClient;
         private readonly IStampaConformeClient _stampaConformeClient;
         private readonly IDocumentClient _documentClient;
         private static IEnumerable<LogCategory> _logCategories;
         private readonly ModuleConfigurationModel _moduleConfiguration;
-        private readonly UDSRepository _udsRepository;
-        private readonly DirectoryInfo _rootDirectory;
+        private readonly DirectoryInfo _workflowEventsPath;
+        private readonly DirectoryInfo _backuPath;
+        private readonly Dictionary<EventAttributeName, string> _eventDataType;
 
         public const string UDSMetadata_DataInizioControlli = "DataInizioControlli";
         public const string UDSMetadata_DataFineControlli = "DataFineControlli";
@@ -51,6 +57,20 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
         public const string UDSMetadata_Stato = "Stato";
         public const string UDSMetadata_Stato_Value_Good = "Nessuna segnalazione critica";
         public const string UDSMetadata_Stato_Value_Error = "Segnalazione critica da Analizzare";
+
+        private const string CHECK_START_DATE = "DataInizioControlli";
+        private const string CHECK_END_DATE = "DataFineControlli";
+        private const string GENERAL_OUTCOME = "EsitoGenerale";
+        private const string CRITICAL_REPORT = "SONO PRESENTI SEGNALAZIONI CRITICHE";
+        private const string NON_CRITICAL_REPORT = "NON SONO PRESENTI SEGNALAZIONI CRITICHE";
+        private const string DATE_ROW = "DATARow";
+        private const string SERVER_NAME = "NOME DEL SERVER";
+        private const string RAM_CHECK = "CONTROLLO RAM";
+        private const string CPU_CHECK = "CONTROLLO CPU";
+        private const string DISK_CHECK = "CONTROLLO DISCO";
+        private const string WINDOWS_EVENTS = "EVENTI DI WINDOWS";
+        private const string OK_CHECK_RESULT = "CONTROLLO POSITIVO";
+        private const string ERROR_CHECK_RESULT = "CONTROLLO IN ERRORE";
         #endregion
 
         #region [ Properties ]
@@ -83,21 +103,64 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
             _moduleConfiguration = ModuleConfigurationHelper.GetModuleConfiguration();
             _documentClient = documentClient;
             _stampaConformeClient = stampaConformeClient;
-            _udsRepository = _webAPIClient.GetUDSRepository(_moduleConfiguration.UDSName).Result.Last(f => f.Status == DocSuiteWeb.Entity.UDS.UDSRepositoryStatus.Confirmed);
-            if (_udsRepository == null)
-            {
-                throw new ArgumentException($"UDSRepository {_moduleConfiguration.UDSName} not found");
-            }
-            _rootDirectory = new DirectoryInfo(_moduleConfiguration.WorkflowEventsPath);
-            if (!_rootDirectory.Exists)
+            _workflowEventsPath = new DirectoryInfo(_moduleConfiguration.WorkflowEventsPath);
+            _backuPath = new DirectoryInfo(_moduleConfiguration.BackupPath);
+            if (!_workflowEventsPath.Exists)
             {
                 throw new ArgumentException($"Drop directory {_moduleConfiguration.WorkflowEventsPath} not exists");
             }
+            _eventDataType = new Dictionary<EventAttributeName, string>
+                {
+                    { EventAttributeName.Processor,"Processor"},
+                    { EventAttributeName.Memory,"Memory"},
+                    { EventAttributeName.PhysicalDisk,"PhysicalDisk"}
+                };
         }
 
         #endregion
 
         #region [ Methods ]        
+        protected override void Execute()
+        {
+            if (Cancel)
+            {
+                return;
+            }
+
+            try
+            {
+                InitializeModule();
+                ProcessEventsAsync().Wait();
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteError(new LogMessage("TECMARKET.ReportProcess -> Execute critical error"), ex, LogCategories);
+                throw;
+            }
+        }
+
+        private void InitializeModule()
+        {
+            if (_needInitializeModule)
+            {
+                _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
+
+                int? workflowLocationId = _webAPIClient.GetParameterWorkflowLocationIdAsync().Result;
+                if (!workflowLocationId.HasValue)
+                {
+                    throw new ArgumentNullException("Parameter WorkflowLocationId is not defined");
+                }
+                _workflowLocation = _webAPIClient.GetLocationAsync(workflowLocationId.Value).Result.Single();
+
+                _udsRepository = _webAPIClient.GetUDSRepository(_moduleConfiguration.UDSName).Result.Last(f => f.Status == DocSuiteWeb.Entity.UDS.UDSRepositoryStatus.Confirmed);
+                if (_udsRepository == null)
+                {
+                    throw new ArgumentException($"UDSRepository {_moduleConfiguration.UDSName} not found");
+                }
+
+                _needInitializeModule = false;
+            }
+        }
 
         private async Task ProcessEventsAsync()
         {
@@ -109,17 +172,20 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
             WorkflowReferenceModel workflowReferenceModel = new WorkflowReferenceModel();
             EventModel eventModel;
             FileInfo[] files;
+            string backupPath;
+            string sessionId;
             try
             {
                 string workflowName = string.Empty;
                 byte[] templatePDF = await GetPDFTemplateAsync();
                 Guid correlationId;
                 EventWorkflowStartRequest evt;
-                byte[] pdfContent;
+                byte[] pdfContent = null;
+                byte[] excelContent = null;
                 WorkflowResult workflowResult;
                 IDictionary<string, object> metadatas;
                 List<EventModel> eventModels = new List<EventModel>();
-                foreach (DirectoryInfo directoryPath in _rootDirectory.GetDirectories())
+                foreach (DirectoryInfo directoryPath in _workflowEventsPath.GetDirectories())
                 {
                     _logger.WriteDebug(new LogMessage($"Looking {directoryPath.FullName} ..."), LogCategories);
                     files = directoryPath.GetFiles();
@@ -149,30 +215,48 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
                     pdfContent = await BuildPDF(eventModels, templatePDF, metadatas);
                     _logger.WriteDebug(new LogMessage("PDF document successfully generated"), LogCategories);
 
+                    excelContent = ExcelHelper.BuildExcel(eventModels, "Teckmarket Report");
+                    _logger.WriteDebug(new LogMessage("Excel document successfully generated"), LogCategories);
+
                     _logger.WriteDebug(new LogMessage("Building document model"), LogCategories);
                     workflowName = _moduleConfiguration.WorkflowRepositoryNormalName;
                     if (eventModels.Any(x => x.EventLogs.Any(y => y.LogType == nameof(EventLogEntryType.Error))))
                     {
                         workflowName = _moduleConfiguration.WorkflowRepositoryErrorName;
                     }
-                    workflowReferenceModelUDS = CreateUDSBuildModelAsync(correlationId, workflowName, pdfContent, metadatas);
+                    workflowReferenceModelUDS = await CreateUDSBuildModelAsync(correlationId, workflowName, pdfContent, excelContent, metadatas);
 
                     _logger.WriteDebug(new LogMessage($"Workflow {workflowName} initialize model correctly"), LogCategories);
                     _logger.WriteDebug(new LogMessage($"Preparing starting workflow with correlationId {correlationId}"), LogCategories);
                     workflowResult = await StartWorkflowAsync(workflowReferenceModelUDS, workflowName);
-                    if (!workflowResult.IsValid)
+                    if (!workflowResult.IsValid || !workflowResult.InstanceId.HasValue)
                     {
                         _logger.WriteError(new LogMessage("An error occured in StartWorkflowAsync"), LogCategories);
-                        throw new Exception("VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess");
+                        throw new Exception(string.Join(", ", workflowResult.Errors));
                     }
-                    else
+                    sessionId = string.Format("{0:yyyyMMdd_HHmmss}", DateTime.Now);
+                    backupPath = string.Empty;
+                    if (_backuPath.Exists)
                     {
-                        foreach(var fileInfo in directoryPath.GetFiles())
+                        backupPath = Directory.CreateDirectory(Path.Combine(_backuPath.FullName, sessionId)).FullName;
+                    }
+                    foreach (FileInfo fileInfo in directoryPath.GetFiles())
+                    {
+                        if (!_backuPath.Exists)
                         {
                             fileInfo.Delete();
                             _logger.WriteDebug(new LogMessage($"File {fileInfo.FullName} deleted"), LogCategories);
                         }
+                        else
+                        {
+
+                            backupPath = Path.Combine(backupPath, fileInfo.Name);
+                            File.Move(fileInfo.FullName, backupPath);
+                            _logger.WriteDebug(new LogMessage($"File {fileInfo.FullName} has moved to {backupPath}"), LogCategories);
+                        }
                     }
+                    directoryPath.Delete();
+                    _logger.WriteDebug(new LogMessage($"Directory {directoryPath.FullName} deleted"), LogCategories);
                 }
                 _logger.WriteInfo(new LogMessage($"File {_moduleConfiguration.WorkflowEventsPath} contains {events.Count} events"), LogCategories);
             }
@@ -197,18 +281,18 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
         {
             List<BuildValueModel> buildValueModels = new List<BuildValueModel>();
 
-            bool anyServerWithError= eventModels.Any(y => y.EventLogs.Any(x=>x.LogType == nameof(EventLogEntryType.Error)));
+            bool anyServerWithError = eventModels.Any(y => y.EventLogs.Any(x => x.LogType == nameof(EventLogEntryType.Error)));
 
             metadatas.Add(UDSMetadata_DataInizioControlli, eventModels.Max(x => Convert.ToDateTime(x.EventDate)));
             buildValueModels.Add(new BuildValueModel()
             {
-                Name = "Data inizio controlli",
+                Name = CHECK_START_DATE,
                 Value = eventModels.Min(x => Convert.ToDateTime(x.EventDate)).ToShortDateString()
             });
             metadatas.Add(UDSMetadata_DataFineControlli, eventModels.Max(x => Convert.ToDateTime(x.EventDate)));
             buildValueModels.Add(new BuildValueModel()
             {
-                Name = "Data fine controlli",
+                Name = CHECK_END_DATE,
                 Value = eventModels.Max(x => Convert.ToDateTime(x.EventDate)).ToShortDateString()
             });
             metadatas.Add(UDSMetadata_Stato, anyServerWithError ? UDSMetadata_Stato_Value_Error : UDSMetadata_Stato_Value_Good);
@@ -216,46 +300,62 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
 
             buildValueModels.Add(new BuildValueModel()
             {
-                Name = "Esito",
-                Value = anyServerWithError
-                ? "SONO PRESENTI SEGNALAZIONI CRITICHE"
-                : "NON SONO PRESENTI SEGNALAZIONI CRITICHE"
+                Name = GENERAL_OUTCOME,
+                Value = anyServerWithError ? CRITICAL_REPORT : NON_CRITICAL_REPORT
             });
             for (int i = 1; i <= eventModels.Count; i++)
             {
-                EventModel eventModel = eventModels[i - 1];
-
-                var hasError = eventModel.EventLogs.Any(y => y.LogType == nameof(EventLogEntryType.Error));
-                var hasWarning = eventModel.EventLogs.Any(y => y.LogType == nameof(EventLogEntryType.Warning));
-                var logEventType = hasError ? "Errore" : hasWarning ? "Avviso" : "Successo";
-
-                buildValueModels.Add(new BuildValueModel()
-                {
-                    Name = $"DATA INIZIORow{i}",
-                    Value = Convert.ToDateTime(eventModel.EventDate).ToShortDateString()
-                }); ;
-                buildValueModels.Add(new BuildValueModel()
-                {
-                    Name = $"NOME DEL SERVERRow{i}",
-                    Value = $"{eventModel.ServerHost} - {eventModel.ServerIP}"
-                });
-                buildValueModels.Add(new BuildValueModel()
-                {
-                    Name = $"ESITORow{i}",
-                    Value = logEventType
-                });
-                buildValueModels.Add(new BuildValueModel()
-                {
-                    Name = $"NOME CONTROLLORow{i}",
-                    Value = hasError ? eventModel.EventLogs.First(f => f.LogType == "Error").LogSource : eventModel.EventLogs.FirstOrDefault()?.LogSource
-                }) ;
-                
+                PopulatePDFColumns(buildValueModels, eventModels[i - 1], i, i == 1);
             }
-            byte[] doc = await _stampaConformeClient.BuildPDFAsync(templatePDF, buildValueModels.ToArray(), string.Empty);
-            return doc;
+            return await _stampaConformeClient.BuildPDFAsync(templatePDF, buildValueModels.ToArray(), string.Empty);
         }
 
-        private static DocumentInstance[] FillDocumentInstances(List<FileModel> files)
+        private void PopulatePDFColumns(List<BuildValueModel> buildValueModels, EventModel eventModel, int currentDirIndex, bool IsFirstTable)
+        {
+            EventLogModel ram = eventModel.EventLogs.Where(x => !string.IsNullOrEmpty(x.SourceDeviceName) && x.SourceDeviceName.Equals(_eventDataType[EventAttributeName.Memory])).FirstOrDefault();
+            EventLogModel proc = eventModel.EventLogs.Where(x => !string.IsNullOrEmpty(x.SourceDeviceName) && x.SourceDeviceName.Equals(_eventDataType[EventAttributeName.Processor])).FirstOrDefault();
+            EventLogModel disk = eventModel.EventLogs.Where(x => !string.IsNullOrEmpty(x.SourceDeviceName) && x.SourceDeviceName.Equals(_eventDataType[EventAttributeName.PhysicalDisk])).FirstOrDefault();
+
+            for (int tableIndex = 1; tableIndex < 5; tableIndex++)
+            {
+                buildValueModels.Add(new BuildValueModel()
+                {
+                    Name = IsFirstTable ? $"{DATE_ROW}{tableIndex}" : $"{DATE_ROW}{tableIndex}_{currentDirIndex}",
+                    Value = Convert.ToDateTime(eventModel.EventDate).ToShortDateString()
+                });
+            }
+            buildValueModels.Add(new BuildValueModel()
+            {
+                Name = IsFirstTable ? SERVER_NAME : $"{SERVER_NAME}_{currentDirIndex}",
+                Value = $"{eventModel.ServerHost} - {eventModel.ServerIP}"
+            });
+
+            buildValueModels.Add(new BuildValueModel()
+            {
+                Name = IsFirstTable ? RAM_CHECK : $"{RAM_CHECK}_{currentDirIndex}",
+                Value = ram != null ? ERROR_CHECK_RESULT : OK_CHECK_RESULT
+            });
+
+            buildValueModels.Add(new BuildValueModel()
+            {
+                Name = IsFirstTable ? CPU_CHECK : $"{CPU_CHECK}_{currentDirIndex}",
+                Value = proc != null ? ERROR_CHECK_RESULT : OK_CHECK_RESULT
+            });
+
+            buildValueModels.Add(new BuildValueModel()
+            {
+                Name = IsFirstTable ? DISK_CHECK : $"{DISK_CHECK}_{currentDirIndex}",
+                Value = disk != null ? ERROR_CHECK_RESULT : OK_CHECK_RESULT
+            });
+
+            buildValueModels.Add(new BuildValueModel()
+            {
+                Name = IsFirstTable ? WINDOWS_EVENTS : $"{WINDOWS_EVENTS}_{currentDirIndex}",
+                Value = eventModel.EventLogs.Any(y => y.LogType == nameof(EventLogEntryType.Error)) ? ERROR_CHECK_RESULT : OK_CHECK_RESULT
+            });
+        }
+
+        private async Task<DocumentInstance[]> FillDocumentInstancesAsync(List<FileModel> files)
         {
             if (files.Count == 0)
             {
@@ -263,18 +363,25 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
             }
 
             IList<DocumentInstance> instances = new List<DocumentInstance>();
+            ArchiveDocument archiveDocument;
             foreach (FileModel file in files)
             {
+                archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+                {
+                    Archive = _workflowLocation.ProtocolArchive,
+                    ContentStream = file.Content,
+                    Name = file.Filename,
+                });
                 instances.Add(new DocumentInstance()
                 {
-                    DocumentContent = Convert.ToBase64String(file.Content),
+                    IdDocumentToStore = archiveDocument.IdDocument.ToString(),
                     DocumentName = file.Filename
                 });
             }
             return instances.ToArray();
         }
 
-        private WorkflowReferenceModel CreateUDSBuildModelAsync(Guid correlationId, string workflowName, byte[] pdfContent, IDictionary<string, object> metadatas)
+        private async Task<WorkflowReferenceModel> CreateUDSBuildModelAsync(Guid correlationId, string workflowName, byte[] pdfContent, byte[] excelContent, IDictionary<string, object> metadatas)
         {
             WorkflowReferenceModel workflowReferenceModel = new WorkflowReferenceModel
             {
@@ -295,11 +402,21 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
                 new FileModel()
                 {
                     Content = pdfContent,
-                    Filename = _moduleConfiguration.ReportFileName
+                    Filename = _moduleConfiguration.ReportPDFFileName
                 }
             };
 
-            model.Model.Documents.Document.Instances = FillDocumentInstances(fileModels);
+            List<FileModel> attachment = new List<FileModel>
+            {
+                new FileModel()
+                {
+                    Content = excelContent,
+                    Filename = _moduleConfiguration.ReportExcelFileName
+                }
+            };
+
+            model.Model.Documents.Document.Instances = await FillDocumentInstancesAsync(fileModels);
+            model.Model.Documents.DocumentAttachment.Instances = await FillDocumentInstancesAsync(attachment);
 
             UDSBuildModel udsBuildModel = new UDSBuildModel(model.SerializeToXml())
             {
@@ -317,7 +434,6 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
                 Subject = model.Model.Subject.Value,
                 RegistrationUser = WindowsIdentity.GetCurrent().Name
             };
-
             workflowReferenceModel.ReferenceType = DSWEnvironmentType.Build;
             workflowReferenceModel.ReferenceModel = JsonConvert.SerializeObject(udsBuildModel, ModuleConfigurationHelper.JsonSerializerSettings);
 
@@ -355,24 +471,6 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
 
         }
 
-        protected override void Execute()
-        {
-            try
-            {
-                ProcessEventsAsync().Wait();
-            }
-            catch (Exception ex)
-            {
-                _logger.WriteError(new LogMessage("TECMARKET.ReportProcess -> Execute critical error"), ex, LogCategories);
-                throw;
-            }
-        }
-
-        protected override void OnStop()
-        {
-            _logger.WriteInfo(new LogMessage("OnStop -> TECMARKET.ReportProcess"), LogCategories);
-        }
-
         public static IDictionary<string, object> MappingMetadatas(Section[] sections, IDictionary<string, object> metadatas)
         {
             IDictionary<string, object> uds_metadatas = new Dictionary<string, object>();
@@ -398,6 +496,11 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess
             }
             uds_metadatas[udsMetadataName] = currentMetadata;
             return uds_metadatas;
+        }
+
+        protected override void OnStop()
+        {
+            _logger.WriteInfo(new LogMessage("OnStop -> TECMARKET.ReportProcess"), LogCategories);
         }
 
         #endregion

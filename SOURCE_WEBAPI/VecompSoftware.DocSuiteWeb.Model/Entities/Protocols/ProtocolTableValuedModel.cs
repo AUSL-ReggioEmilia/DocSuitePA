@@ -1,9 +1,10 @@
 ﻿using System;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
 {
-    public class ProtocolTableValuedModel : ICategoryTableValuedModel, IContainerTableValuedModel
+    public class ProtocolTableValuedModel : ICategoryTableValuedModel, IContainerTableValuedModel, ITenantAOOTableValuedModel
     {
         #region [ Constructor ]
         public ProtocolTableValuedModel()
@@ -29,6 +30,9 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
         public string Object { get; set; }
 
         public int? IdDocument { get; set; }
+        public string DocumentProtocol { get; set; }
+        public DateTime DocumentDate { get; set; }
+        public string Note { get; set; }
 
 
         #region [ Category ]
@@ -69,6 +73,11 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
 
         public string ProtocolType_Description { get; set; }
 
+        #endregion
+
+        #region [ TenantAOO ]
+        public Guid? TenantAOO_IdTenantAOO { get; set; }
+        public string TenantAOO_Name { get; set; }
         #endregion
 
         #endregion

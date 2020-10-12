@@ -42,6 +42,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Commons
             entityTransformed.MetadataRepository = entity.MetadataRepository;
             entityTransformed.FascicleFolders = entity.FascicleFolders;
             entityTransformed.Processes = entity.Processes;
+            entityTransformed.TenantAOO = entity.TenantAOO;
             #endregion
 
             return entityTransformed;

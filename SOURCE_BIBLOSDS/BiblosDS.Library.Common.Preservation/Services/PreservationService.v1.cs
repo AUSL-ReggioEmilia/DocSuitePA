@@ -1,27 +1,28 @@
-﻿using System;
+﻿using BiblosDS.Library.Common.Enums;
+using BiblosDS.Library.Common.Exceptions;
+using BiblosDS.Library.Common.Objects;
+using BiblosDS.Library.Common.Objects.Enums;
+using BiblosDS.Library.Common.Objects.Response;
+using BiblosDS.Library.Common.Preservation.Indice;
+using BiblosDS.Library.Common.Preservation.ObjectsXml;
+using BiblosDS.Library.Common.Preservation.Properties;
+using BiblosDS.Library.Common.Services;
+using BiblosDS.Library.Common.Utility;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.IO;
-using BiblosDS.Library.Common.Objects;
-using BiblosDS.Library.Common.Services;
-using System.ComponentModel;
-using BiblosDS.Library.Common.Enums;
+using System.Linq;
 using System.ServiceModel;
-using BiblosDS.Library.Common.Objects.Response;
-using Newtonsoft.Json;
-using BiblosDS.Library.Common.Objects.Enums;
-using System.Configuration;
-using BiblosDS.Library.Common.Preservation.Properties;
-using BiblosDS.Library.Common.Preservation.ObjectsXml;
+using System.Text;
 using System.Xml;
-using BiblosDS.Library.Common.Utility;
+using VecompSoftware.BiblosDS.Model.Parameters;
+using VecompSoftware.BiblosDS.WCF.Common;
 using VecompSoftware.ServiceContract.BiblosDS.Documents;
-using BiblosDS.Library.Helper;
-using BiblosDS.Library.Common.Exceptions;
 using BiblosStorageService = VecompSoftware.BiblosDS.Service.Storage;
-using BiblosDS.Library.Common.Preservation.Indice;
 
 namespace BiblosDS.Library.Common.Preservation.Services
 {
@@ -41,12 +42,32 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 throw;
             }
         }
+
+        /// <summary>
+        /// Il processo di versamento si svolge nel seguente modo:
+        /// - Preparazione dei documenti da conservare partendo dalla definizione
+        ///   di un task di conservazione specifico.
+        /// - Creazione del PdV (Pacchetto di versamento) per il versamento dei documenti
+        ///   in conservazione.
+        /// - Validazione del PdV, fase di analisi dei documenti da portare in conservazione.
+        /// - TODO: generare un RdV (Rapporto di versamento) specifico per la fase di conservazione,
+        ///   tale rapporto dovrà contenere l'esito, per singolo documento, della fase di validazione.
+        ///   Attualmente viene riportato l'XML del PdV.
+        /// - Assemblaggio PdA (Pacchetto di archiviazione), copia dei documenti sul supporto di conservazione
+        ///   definito nella configurazione dell'archivio.
+        /// - Creazione file di supporto PdA (file IPdA, file di chiusura, file di indice per la visualizzazione del supporto e
+        ///   file di lotto).
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
         public PreservationInfoResponse CreatePreservation(PreservationTask task)
         {
             bool persistVerifyPreservation = false;
             bool isVerifyTask = false;
+            bool isCloseYearPreservation = false;
             string exceptions = string.Empty;
             Guid preservationId = Guid.Empty;
+            PreservationTaskStatus taskStatus = PreservationTaskStatus.Done;
             PreservationInfoResponse result = new PreservationInfoResponse();
 
             if (task.IdPreservationTask == Guid.Empty)
@@ -62,8 +83,16 @@ namespace BiblosDS.Library.Common.Preservation.Services
             }
 
             isVerifyTask = task.TaskType.Type == PreservationTaskTypes.Verify;
-            persistVerifyPreservation = AzureService.GetSettingValue("PersistVerifyPreservation") != null && AzureService.GetSettingValue("PersistVerifyPreservation").ToString().ToLower() == "true";
+            isCloseYearPreservation = task.TaskType.Type == PreservationTaskTypes.CloseAnnualPreservation;
+            persistVerifyPreservation = WCFUtility.GetSettingValue("PersistVerifyPreservation") != null && WCFUtility.GetSettingValue("PersistVerifyPreservation").ToString().ToLower() == "true";
             DocumentArchive archive = task.Archive;
+            if (string.IsNullOrEmpty(archive.PreservationConfiguration))
+            {
+                new PreservationError($"Non è stata definita la configurazione per l'archivio {archive.Name}({archive.IdArchive})", PreservationErrorCode.E_PRESERVATION_EX).ThrowsAsFaultException();
+            }
+            ArchiveConfiguration archiveConfiguration = JsonConvert.DeserializeObject<ArchiveConfiguration>(archive.PreservationConfiguration);
+            archiveConfiguration.VerifyPreservationIncrementalEnabled = archiveConfiguration.VerifyPreservationIncrementalEnabled && (!isCloseYearPreservation &&
+                                                                            (task.CorrelatedTasks == null || !task.CorrelatedTasks.Any(x => x.TaskType.Type == PreservationTaskTypes.CloseAnnualPreservation)));
             string archivePathPreservation = archive.PathPreservation;
             ArchiveCompany archiveCompany = GetArchiveCompanies(archive.IdArchive).SingleOrDefault();
             if (archiveCompany?.Company == null)
@@ -84,19 +113,38 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 Pulse(nameof(CreatePreservation), "Verifica ed inizializzazione dei documenti da portare in conservazione.", 1);
 
                 logger.Info($"Inizializzazione documenti per la conservazione {preservationId}");
-                PreservationInfoResponse documentInitializedInfoResponse = InitializePreservationDocuments(task, preservationId);
+                PreservationInfoResponse documentInitializedInfoResponse = InitializePreservationDocuments(task, preservationId, archiveConfiguration);
                 DateTime effectiveTaskStartDate = documentInitializedInfoResponse.StartDocumentDate.Value;
                 DateTime effectiveTaskEndDate = documentInitializedInfoResponse.EndDocumentDate.Value;
                 DbProvider.UpdatePreservationTaskPreservation(task, preservationId);
 
-                ICollection<Document> documents = DbProvider.PrepareDocumentsForPreservation(archive, task, preservationId, PreservationHelper.GetForceAutoInc(ArchiveConfigFile));
+                ICollection<Document> documents = DbProvider.PrepareDocumentsForPreservation(archive, task, preservationId, (archiveConfiguration.VerifyPreservationDateEnabled || archiveConfiguration.ForceAutoInc));
                 if (documents == null || documents.Count == 0)
                 {
                     new PreservationError("Nessun documento disponibile per la conservazione.", PreservationErrorCode.E_NO_DOCUMENT_EX).ThrowsAsFaultException();
                 }
+
+                if (!isVerifyTask)
+                {
+                    Pulse(nameof(CreatePreservation), $"Preparazione PdV (pacchetto di versamento) per la conservazione {preservationId}", 1);
+                    ICollection<Objects.AwardBatch> batches = PreservationService.GetPreservationAwardBatches(preservationId);
+                    result.AwardBatchesXml = new Dictionary<Guid, string>();
+                    foreach (Objects.AwardBatch awardBatch in batches)
+                    {
+                        DocumentService.MoveDocumentsAwardBatch(awardBatch.IdAwardBatch, false, true);
+                        if (!awardBatch.IdPDVDocument.HasValue || !awardBatch.IdRDVDocument.HasValue)
+                        {
+                            Pulse(nameof(CreatePreservation), $"Inizio creazione pacchetto di versamento per lotto {awardBatch.IdAwardBatch}", 1);
+                            result.AwardBatchesXml.Add(awardBatch.IdAwardBatch, CreateAwardBatchPDVXml(awardBatch, currentPreservation));
+                            Pulse(nameof(CreatePreservation), $"Creazione pacchetto di versamento per lotto {awardBatch.IdAwardBatch} terminata correttamente", 100);
+                        }
+                    }
+                    Pulse(nameof(CreatePreservation), $"Fine preparazione PdV per la conservazione {preservationId}", 100);
+                }
+
                 logger.Debug("Verifica eccezioni.");
                 Pulse(nameof(CreatePreservation), $"Validazione documenti per la conservazione, l'attività potrebbe richiedere alcuni minuti", 1);
-                if (!CheckPreservationExceptions(preservationId, out List<string> errors, documents, out currentPreservation))
+                if (!CheckPreservationExceptions(preservationId, out List<string> errors, documents, out currentPreservation, archiveConfiguration))
                 {
                     //Nel caso di eccezione non va cancellata la conservazione                    
                     //exceptions = string.Join(Environment.NewLine, errors.Take(20));
@@ -120,8 +168,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 }
 
                 //JOURNALING
-                Pulse(nameof(CreatePreservation), "Inizio scrittura PreservationJournaling", 1);
-
+                logger.Info("Inizio scrittura PreservationJournaling");
                 PreservationJournalingActivity createPreservationJournalingActivity = DbProvider.GetCreatePreservationJournalingActivity();
                 if (createPreservationJournalingActivity == null)
                 {
@@ -139,37 +186,23 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 };
 
                 AddPreservationJournaling(journal);
-                Pulse(nameof(CreatePreservation), "PreservationJournaling scritto correttamente", 100);
+                logger.Info("PreservationJournaling scritto correttamente");
 
-                string preservationName = PreservationFileManager.GetPreservationName(currentPreservation);
+                string preservationName = PreservationFileManager.GetPreservationName(currentPreservation, isCloseYearPreservation);
                 Pulse(nameof(CreatePreservation), $"Nome conservazione da utilizzare {preservationName}", 100);
 
                 currentPreservation.Name = preservationName;
                 currentPreservation.Label = preservationName;
 
-                fileManager = new PreservationFileManager(archive, company);
-                currentPreservation.Path = GetPreservationStorage(archive, company, task, currentPreservation);
-                bool.TryParse(AzureService.GetSettingValue("Preservation_SingleVHD"), out bool singleVHD);
-                if (singleVHD)
-                {
-                    foreach (string subDirectory in Directory.EnumerateDirectories(fileManager.WorkingDir()))
-                    {
-                        try
-                        {
-                            Directory.Delete(subDirectory, true);
-                        }
-                        catch (Exception ex)
-                        {
-                            logger.Warn($"Non è stato possibile eliminare la directory {subDirectory}.", ex);
-                        }
-                    }
-                }
-
-                string preservationDirectory = fileManager.CheckPreservationWritableDirectory(currentPreservation, isVerifyTask);
+                fileManager = new PreservationFileManager(archive, company);                
+                string preservationDirectory = fileManager.CheckPreservationWritableDirectory(currentPreservation, isVerifyTask, isCloseYearPreservation);
+                currentPreservation.Path = preservationDirectory;
                 try
                 {
                     if (Directory.Exists(preservationDirectory))
+                    {
                         Directory.Delete(preservationDirectory, true);
+                    }
 
                     Directory.CreateDirectory(preservationDirectory);
                 }
@@ -178,10 +211,10 @@ namespace BiblosDS.Library.Common.Preservation.Services
                     new PreservationError(ex, PreservationErrorCode.E_SYSTEM_EXCEPTION).ThrowsAsFaultException();
                 }
 
-                Pulse(nameof(CreatePreservation), "Inizio copia documenti nel percorso di conservazione, l'attività potrebbe richiedere alcuni minuti.", 1);
+                Pulse(nameof(CreatePreservation), "Inizio assemblamento PdA e copia documenti nel percorso di conservazione, l'attività potrebbe richiedere alcuni minuti.", 1);
                 logger.Debug("Lettura AttributesValues completi per generazione file di conservazione");
                 IDictionary<Guid, BindingList<DocumentAttributeValue>> fullDocumentAttributes = currentPreservation.Documents.ToDictionary(k => k.IdDocument, k => DbProvider.GetFullDocumentAttributeValues(k.IdDocument));
-                
+
                 long preservationSize = 0;
                 int progress = 1;
                 decimal percentage;
@@ -204,7 +237,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
 
                 fileManager.CheckTemplateFile(company);
 
-                Pulse(nameof(CreatePreservation), "Copia documenti nel percorso di conservazione terminata.", 100);                
+                Pulse(nameof(CreatePreservation), "Copia documenti nel percorso di conservazione terminata.", 100);
 
                 Pulse(nameof(CreatePreservation), "Inizio creazione file indice.", 1);
                 CreatePreservationIndexFile_v1(currentPreservation, archiveCompany, preservationDirectory, preservationName, fullDocumentAttributes);
@@ -242,8 +275,10 @@ namespace BiblosDS.Library.Common.Preservation.Services
                     logger.Info("Caricamento file nell'archivio Biblos.");
                     currentPreservation.PathHash = UtilityService.GetHash(currentPreservation.Path + "|" + company.IdCompany, true);
                     preservationSize += AddDocumentToPreservationArchive(currentPreservation, preservationName, preservationDirectory, preservationId, archive.IdArchive);
-                    if ((AzureService.IsAvailable && AzureService.GetSettingValue("PreservationAutoClose").ToStringExt() == "true") || PreservationHelper.GetPreservationAutoClose(ArchiveConfigFile))
+                    if (archiveConfiguration.PreservationAutoClose)
+                    {
                         currentPreservation.CloseDate = DateTime.Now;
+                    }
                     //Creazione StorageDevice
                     logger.Info("Creazione device per la conservazione.");
                     string storageDeviceLabel = string.Format("01-01-{0}_31-12-{0}", currentPreservation.StartDate.GetValueOrDefault().Year);
@@ -267,20 +302,9 @@ namespace BiblosDS.Library.Common.Preservation.Services
                         Device = new PreservationStorageDevice { IdPreservationStorageDevice = idPreservationStorageDevice.Value },
                         Preservation = currentPreservation
                     });
-                    if ((AzureService.IsAvailable && AzureService.GetSettingValue("PreservationAutoClose").ToStringExt() != "true") || !PreservationHelper.GetPreservationAutoClose(ArchiveConfigFile))
-                        CreateArchivePreservationMark_v1(idPreservationStorageDevice.Value, archive, company, fileManager);
-
-                    ICollection<Objects.AwardBatch> batches = PreservationService.GetPreservationAwardBatches(preservationId);
-                    result.AwardBatchesXml = new Dictionary<Guid, string>();
-                    foreach (Objects.AwardBatch awardBatch in batches)
+                    if (!archiveConfiguration.PreservationAutoClose)
                     {
-                        DocumentService.MoveDocumentsAwardBatch(awardBatch.IdAwardBatch, false, true);
-                        if (!awardBatch.IdPDVDocument.HasValue || !awardBatch.IdRDVDocument.HasValue)
-                        {
-                            Pulse(nameof(CreatePreservation), $"Inizio creazione pacchetto di versamento per lotto {awardBatch.IdAwardBatch}", 1);
-                            result.AwardBatchesXml.Add(awardBatch.IdAwardBatch, CreateAwardBatchPDVXml(awardBatch, currentPreservation));
-                            Pulse(nameof(CreatePreservation), $"Creazione pacchetto di versamento per lotto {awardBatch.IdAwardBatch} terminata correttamente", 100);
-                        }
+                        CreateArchivePreservationMark_v1(idPreservationStorageDevice.Value, archive, company, fileManager);
                     }
                 }
                 Pulse(nameof(CreatePreservation), "Conclusione processo.", 90);
@@ -308,11 +332,17 @@ namespace BiblosDS.Library.Common.Preservation.Services
                                 logger.InfoFormat("Preservation in VERIFY: {0}", preservationId);
                             }
                             else
+                            {
                                 DbProvider.SavePreservationVerify(preservationId, ex);
+                            }
+
                             currentPreservation.LockOnDocumentInsert = true;
                         }
                         else
+                        {
                             currentPreservation.LockOnDocumentInsert = false;
+                        }
+
                         DbProvider.UpdatePreservationModifyField(currentPreservation);
                     }
                     catch (Exception abortError)
@@ -322,10 +352,25 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 }
                 finally
                 {
-                    if (ex is FaultException<PreservationError>)
+                    taskStatus = PreservationTaskStatus.Error;
+                    if (ex is FaultException<ResponseError> && (ex as FaultException<ResponseError>).Detail is PreservationError)
                     {
-                        logger.Warn(ex);
-                        result.Error = (ex as FaultException<PreservationError>).Detail;
+                        FaultException<ResponseError> faultException = ex as FaultException<ResponseError>;
+                        logger.Error(faultException);
+                        result.Error = (PreservationError)faultException.Detail;
+                        switch ((PreservationErrorCode)faultException.Detail.ErrorCode)
+                        {
+                            case PreservationErrorCode.E_NO_DOCUMENT_EX:
+                                {
+                                    taskStatus = PreservationTaskStatus.NoDocuments;
+                                }
+                                break;
+                            case PreservationErrorCode.E_EXIST_NO_CONSERVATED_DOCUMENT:
+                                {
+                                    taskStatus = PreservationTaskStatus.ExistNoConservatedDocuments;
+                                }
+                                break;
+                        }
                     }
                     else
                     {
@@ -337,14 +382,19 @@ namespace BiblosDS.Library.Common.Preservation.Services
             finally
             {
                 if (fileManager != null)
+                {
                     fileManager.Dispose();
+                }
+
                 try
                 {
                     if (!isVerifyTask)
                     {
-                        var dir = fileManager.CheckPreservationWritableDirectory(currentPreservation, true);
+                        var dir = fileManager.CheckPreservationWritableDirectory(currentPreservation, true, isCloseYearPreservation);
                         if (Directory.Exists(dir))
+                        {
                             Directory.Delete(dir, true);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -352,7 +402,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                     logger.Error(ex);
                 }
             }
-            DbProvider.SavePreservationTaskStatus(task, result.HasErros, result.HasErros ? result.Error.Message : null);
+            SavePreservationTaskStatus(task, taskStatus, result.HasErros, result.HasErros ? result.Error.Message : null);
             result.Documents = null;
             logger.InfoFormat("{0} - ritorno al chiamante.", nameof(CreatePreservation));
 
@@ -369,20 +419,30 @@ namespace BiblosDS.Library.Common.Preservation.Services
             try
             {
                 if (fileManager == null)
+                {
                     fileManager = new PreservationFileManager(archive, company);
+                }
 
                 var device = DbProvider.GetPreservationStorageDevice(idStorageDevice);
 
                 if (device == null)
-                    new PreservationError("Non ci sono archivi informatici aventi ID " + idStorageDevice, PreservationErrorCode.E_UNEXPECTED_RESULT).ThrowsAsFaultException();
+                {
+                    new PreservationError($"Non ci sono archivi informatici aventi ID { idStorageDevice }", PreservationErrorCode.E_UNEXPECTED_RESULT).ThrowsAsFaultException();
+                }
 
-                if (company.TemplateADEFile == null)
+                if (string.IsNullOrEmpty(company.TemplateADEFile))
                 {
                     company.TemplateADEFile = Resources.Template;
                     DbProvider.UpdateCompany(company);
                 }
 
-                var conservazioni = device.PreservationsInDevice.Select(x => x.Preservation).OrderBy(x => x.Archive.Name).ThenBy(x => x.StartDate);
+                ICollection<Guid> preservationIds = GetIdPreservationsInStorageDevice(idStorageDevice);
+                ICollection<Objects.Preservation> preservations = new List<Objects.Preservation>();
+                foreach (Guid id in preservationIds)
+                {
+                    preservations.Add(GetPreservation(id, false));
+                }
+                var conservazioni = preservations.OrderBy(x => x.Archive.Name).ThenBy(x => x.StartDate);
 
                 var buffer = company.TemplateADEFile;
                 var marca = string.Empty;
@@ -412,21 +472,27 @@ namespace BiblosDS.Library.Common.Preservation.Services
 
                 foreach (var cons in conservazioni)
                 {
-                    var directoryOfPreservation = fileManager.CheckPreservationWritableDirectory(cons, false);
+                    var directoryOfPreservation = cons.Path;
                     pathConservazione = new DirectoryInfo(directoryOfPreservation);
 
                     if (!pathConservazione.Exists)
+                    {
                         new PreservationError("Percorso conservazione inesistente per conservazione avente ID " + cons.IdPreservation).ThrowsAsFaultException();
+                    }
 
                     fileChiusura = pathConservazione.GetFiles("CHIUSURA*.txt").SingleOrDefault();
 
                     if (fileChiusura == null || !fileChiusura.Exists)
+                    {
                         new PreservationError("File chiusura conservazione inesistente per conservazione avente ID " + cons.IdPreservation).ThrowsAsFaultException();
+                    }
 
                     cons.Archive = ArchiveService.GetArchive(cons.IdArchive);
 
                     if (!listaArchivi.Any(x => x.IdArchive == cons.IdArchive))
+                    {
                         listaArchivi.Add(cons.Archive);
+                    }
 
                     lines = new List<string>(File.ReadAllLines(fileChiusura.FullName));
 
@@ -542,7 +608,9 @@ namespace BiblosDS.Library.Common.Preservation.Services
         {
             Guid? idPreservation;
             if ((idPreservation = DbProvider.GetPreservationIdByTask(task.IdPreservationTask)) != null)
+            {
                 return idPreservation.Value;
+            }
             else
             {
                 return DbProvider.CreatePreservation(task);
@@ -556,13 +624,19 @@ namespace BiblosDS.Library.Common.Preservation.Services
             try
             {
                 if (string.IsNullOrEmpty(workingDir))
+                {
                     throw new Exception("Working directory non configurata correttamente.");
+                }
 
                 if (preservation.Documents == null)
+                {
                     throw new Exception(string.Format("Nessun documento associato alla conservazione con id {0}", preservation.IdPreservation));
+                }
 
                 if (exceptions == null)
+                {
                     exceptions = string.Empty;
+                }
 
                 var user = preservation.User;
                 var sCognomeNomeCf = string.Format("{0} {1} C.F. {2}", user.Name, user.Surname, user.FiscalId);
@@ -590,7 +664,9 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 var attrs = DbProvider.GetAttributeByPreservationPosition(preservation.IdArchive);
 
                 foreach (var item in attrs)
+                {
                     sElencoCampi += string.Format("  - {0}\r\n", item.Description);
+                }
 
                 sElencoCampi += "  - Impronta SHA " + (useSHA256 ? "256" : "1") + " (formato Hex)\r\n";
 
@@ -730,7 +806,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                         {
                             currentAttributeValue = string.Format(attr.Format, documentAttributeValue.Value);
                         }
-                        catch (Exception ex) { }
+                        catch (Exception) { }
                     }
 
                     string attributeName = string.IsNullOrEmpty(attr.Description) ? attr.Name : attr.Description;
@@ -821,10 +897,15 @@ namespace BiblosDS.Library.Common.Preservation.Services
             if (!presPrms.ContainsKey("PreservationArchiveId"))
             {
                 if ((archive = ArchiveService.GetArchiveByName("Preservation")) == null)
+                {
                     return 0;
+                }
             }
             else
+            {
                 archive = new DocumentArchive(new Guid(presPrms["PreservationArchiveId"]));
+            }
+
             var documentChiusura = new Document
             {
                 Archive = archive,
@@ -932,9 +1013,10 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 errorMessage = $"Il task: {preservationTask.IdPreservationTask} non ha una tipologia definita.";
                 return false;
             }
-            if (preservationTask.TaskType.Type != PreservationTaskTypes.Preservation && preservationTask.TaskType.Type != PreservationTaskTypes.Verify)
+            if (preservationTask.TaskType.Type != PreservationTaskTypes.Preservation && preservationTask.TaskType.Type != PreservationTaskTypes.Verify
+                && preservationTask.TaskType.Type != PreservationTaskTypes.CloseAnnualPreservation)
             {
-                errorMessage = $"Il task: {preservationTask.IdPreservationTask} non è di una tipologia processabile, è possibile eseguire solamente task di tipo 'Preservation' o 'Verify'.";
+                errorMessage = $"Il task: {preservationTask.IdPreservationTask} non è di una tipologia processabile, è possibile eseguire solamente task di tipo 'Preservation', 'Verify' o 'CloseAnnualPreservation'.";
                 return false;
             }
             if (preservationTask.Archive == null)
@@ -1002,7 +1084,8 @@ namespace BiblosDS.Library.Common.Preservation.Services
 
         private Guid GetIdPreservationByPreservationTask(PreservationTask preservationTask)
         {
-            if (preservationTask.TaskType.Type != PreservationTaskTypes.Preservation)
+            if (preservationTask.TaskType.Type != PreservationTaskTypes.Preservation
+                && preservationTask.TaskType.Type != PreservationTaskTypes.CloseAnnualPreservation)
             {
                 throw new Generic_Exception($"Il task {preservationTask.IdPreservationTask} che si sta cercando di processare non è di tipo Preservation");
             }
@@ -1032,9 +1115,9 @@ namespace BiblosDS.Library.Common.Preservation.Services
             return verifyPreservationTask.IdPreservation.GetValueOrDefault();
         }
 
-        private PreservationInfoResponse InitializePreservationDocuments(PreservationTask preservationTask, Guid idPreservation)
+        private PreservationInfoResponse InitializePreservationDocuments(PreservationTask preservationTask, Guid idPreservation, ArchiveConfiguration archiveConfiguration)
         {
-            PreservationInfoResponse availableDocumentResponse = DbProvider.GetAvailableDocumentDateForPreservation(preservationTask.Archive, preservationTask, idPreservation, PreservationHelper.GetPreservationLimitTaskToDocumentDate(ArchiveConfigFile));
+            PreservationInfoResponse availableDocumentResponse = DbProvider.GetAvailableDocumentDateForPreservation(preservationTask.Archive, preservationTask, idPreservation, archiveConfiguration.PreservationLimitTaskToDocumentDate);
             if (!availableDocumentResponse.HasPendingDocument)
             {
                 new PreservationError("Nessun documento disponibile per la conservazione.", PreservationErrorCode.E_NO_DOCUMENT_EX).ThrowsAsFaultException();
@@ -1047,36 +1130,26 @@ namespace BiblosDS.Library.Common.Preservation.Services
 
             if (availableDocumentResponse.StartDocumentDate.Value.Year < availableDocumentResponse.EndDocumentDate.Value.Year)
             {
-                new PreservationError("Sono presenti documenti con anno inferiore all'anno della conservazione corrente. Eseguire una conservazione di chiusura anno.", PreservationErrorCode.E_PRESERVATION_EX).ThrowsAsFaultException();
+                new PreservationError("Sono presenti documenti con anno inferiore all'anno della conservazione corrente. Eseguire una conservazione di chiusura anno.", PreservationErrorCode.E_EXIST_NO_CONSERVATED_DOCUMENT).ThrowsAsFaultException();
             }
 
             if (availableDocumentResponse.StartDocumentDate.Value.Year != availableDocumentResponse.EndDocumentDate.Value.Year)
             {
-                new PreservationError($"Attenzione, ci sono dei documenti con data cross anno. Le conservazioni vanno effettuate su documenti dello stesso anno. Eseguire una conservazione sui documenti dell'anno {availableDocumentResponse.StartDocumentDate:yyyy}, e se il problema persiste contattare il riferimento tecnico.", PreservationErrorCode.E_PRESERVATION_EX).ThrowsAsFaultException();
+                new PreservationError($"Attenzione, ci sono dei documenti con data cross anno. Le conservazioni vanno effettuate su documenti dello stesso anno. Eseguire una conservazione sui documenti dell'anno {availableDocumentResponse.StartDocumentDate:yyyy}, e se il problema persiste contattare il riferimento tecnico.", PreservationErrorCode.E_EXIST_NO_CONSERVATED_DOCUMENT).ThrowsAsFaultException();
             }
 
             var preservationDate = DbProvider.GetLastPreservedDate(preservationTask.Archive.IdArchive, idPreservation);
+            if (preservationTask.TaskType.Type == PreservationTaskTypes.CloseAnnualPreservation || 
+                (preservationTask.CorrelatedTasks != null && preservationTask.CorrelatedTasks.Any(x => x.TaskType.Type == PreservationTaskTypes.CloseAnnualPreservation)))
+            {
+                preservationDate = preservationTask.StartDocumentDate;
+            }
+            
             if (preservationDate.HasValue && availableDocumentResponse.StartDocumentDate.Value < preservationDate.GetValueOrDefault())
             {
-                new PreservationError("Sono presenti documenti con data inferiore all'ultima conservazione. Contattare il riferimento tecnico.", PreservationErrorCode.E_PRESERVATION_EX).ThrowsAsFaultException();
+                new PreservationError("Sono presenti documenti con data inferiore all'ultima conservazione. Contattare il riferimento tecnico.", PreservationErrorCode.E_EXIST_NO_CONSERVATED_DOCUMENT).ThrowsAsFaultException();
             }
             return availableDocumentResponse;
-        }
-
-        public string GetPreservationStorage(DocumentArchive archive, Company company, PreservationTask preservationTask, Objects.Preservation preservation)
-        {
-            if (AzureService.IsAvailable)
-            {
-                return GetAzurePreservationStorage(archive, company, preservationTask, preservation);
-            }
-            return GetLocalPreservationStorage(archive, company, preservationTask, preservation);
-        }
-
-        public string GetLocalPreservationStorage(DocumentArchive archive, Company company, PreservationTask preservationTask, Objects.Preservation preservation)
-        {
-            PreservationFileManager fileManager = new PreservationFileManager(archive, company);
-            fileManager.Check(0);
-            return fileManager.CheckPreservationDirectory(preservation, preservationTask.TaskType.Type == PreservationTaskTypes.Verify);
         }
 
         public string GetAzurePreservationStorage(DocumentArchive archive, Company company, PreservationTask preservationTask, Objects.Preservation preservation)
@@ -1139,9 +1212,9 @@ namespace BiblosDS.Library.Common.Preservation.Services
             }
         }
 
-        public static List<Objects.Preservation> PreservationToClose()
+        public static List<Objects.Preservation> PreservationToClose(Guid idCompany)
         {
-            return DbProvider.PreservationToClose();
+            return DbProvider.PreservationToClose(idCompany);
         }
 
         public string PreservationDocumentFileName(Objects.Document document)
@@ -1167,6 +1240,55 @@ namespace BiblosDS.Library.Common.Preservation.Services
         public int CountPreservationDocumentsToPurge(Guid idPreservation)
         {
             return DbProvider.CountPreservationDocumentsToPurge(idPreservation);
-        }        
+        }
+
+        public ICollection<Guid> GetIdPreservationsInStorageDevice(Guid idStorageDevice)
+        {
+            return DbProvider.GetIdPreservationsInStorageDevice(idStorageDevice);
+        }
+
+        public void SavePreservationTaskStatus(PreservationTask task, Objects.Enums.PreservationTaskStatus taskStatus, bool hasError, string errorMessage)
+        {
+            DbProvider.SavePreservationTaskStatus(task, taskStatus, hasError, errorMessage);
+        }
+
+        public bool ExistPreservationsByArchive(DocumentArchive archive)
+        {
+            return DbProvider.ExistPreservationsByArchive(archive.IdArchive);
+        }
+
+        public string BuildPreservationIndexXSL(DocumentArchive archive)
+        {
+            ICollection<DocumentAttribute> preservationAttributes = AttributeService.GetAttributesFromArchive(archive.IdArchive)
+                .Where(x => x.ConservationPosition > 0)
+                .OrderBy(o => o.ConservationPosition)
+                .ToList();
+            string template = Resources.IndiceXSLTemplate;
+
+            StringBuilder headerBuilder = new StringBuilder();
+            StringBuilder bodyBuilder = new StringBuilder();
+            string attributeName;
+            foreach (DocumentAttribute preservationAttribute in preservationAttributes)
+            {
+                attributeName = string.IsNullOrEmpty(preservationAttribute.Description) ? preservationAttribute.Name : preservationAttribute.Description;
+                headerBuilder.Append($"<td>{attributeName}</td>");
+                bodyBuilder.Append($"<td>"+
+                    "<xsl:choose>"+
+                      $"<xsl:when test=\"count(Attributo[@Nome='{attributeName}']/child::node()) = 1\">"+
+                        $"<xsl:value-of select=\"Attributo[@Nome='{attributeName}']\" />"+
+                      "</xsl:when>"+
+                      "<xsl:otherwise>"+
+                        "<xsl:text disable-output-escaping=\"yes\">&amp;nbsp;</xsl:text>"+
+                      "</xsl:otherwise>"+
+                    "</xsl:choose>"+
+                  "</td>");
+            }
+            return template.Replace("<%ATTRIBUTES_HEADER%>", headerBuilder.ToString()).Replace("<%ATTRIBUTES_BODY%>", bodyBuilder.ToString());
+        }
+
+        public string GetAwardBatchXSL()
+        {
+            return Resources.AwardBatch;
+        }
     }
 }

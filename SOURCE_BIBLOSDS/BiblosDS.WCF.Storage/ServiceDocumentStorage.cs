@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
-using System.Reflection;
-using System.ComponentModel;
-using System.Security.Cryptography;
 using System.IO;
 
 using BiblosDS.Library.IStorage;
@@ -15,24 +10,22 @@ using BiblosDS.Library.Common.Enums;
 using BiblosDS.Library.Common.Services;
 using BiblosDS.Library.Common.Objects;
 using BiblosDS.Library.Common.Exceptions;
-using BiblosDS.WCF.Storage.ServiceReferenceDigitalSigned;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Configuration;
-using BiblosDS.Library.Common.Objects.Enums;
 using BiblosDS.Library.Common.Objects.UtilityService;
 using BiblosDS.Library.Common.Utility;
 using VecompSoftware.ServiceContract.BiblosDS.Documents;
+using VecompSoftware.BiblosDS.WCF.Common;
 
 namespace BiblosDS.WCF.Storage
 {
     public class ServiceDocumentStorage : IServiceDocumentStorage
     {
-        log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ServiceDocumentStorage));  
+        log4net.ILog logger = log4net.LogManager.GetLogger(typeof(ServiceDocumentStorage));
         #region IServiceDocumentStorage Members
 
-        public Guid AddDocument(BiblosDS.Library.Common.Objects.Document Document)
-        {            
+        public Guid AddDocument(Document Document)
+        {
             string localPath = string.Empty;
             Guid idCorrelation = Guid.NewGuid();
             DocumentContent docContent = null;
@@ -49,37 +42,42 @@ namespace BiblosDS.WCF.Storage
                 if (Document == null)
                 {
                     logger.WarnFormat("No Document Found with IdDocument: {0}", Document.IdDocument);
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
-                }   
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(Document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IServiceDocumentStorage).AddDocument(Document);
+                    }
+                }
 
                 //Change the state on the transiction path table(Lock)               
                 if (Document.Archive.TransitoEnabled)
                 {
                     transito = DocumentService.CheckOutTransitoDocument(Document.IdDocument);
                     if (transito == null)
-                        throw new BiblosDS.Library.Common.Exceptions.FileNotFound_Exception("Document not found in Transito:"+ Document.IdDocument);
+                        throw new FileNotFound_Exception("Document not found in Transito:" + Document.IdDocument);
                 }
                 Document.AttributeValues = AttributeService.GetAttributeValues(Document.IdDocument);
 
-                //BiblosDS Proxy
-                var servers = ServerService.GetServers();
-
-                var currentServer = servers.FirstOrDefault(x => x.ServerName == MachineService.GetServerName());                
-
                 //Retrive the document Storage
-                if (Document.Storage == null || currentServer != null)
+                if (Document.Storage == null)
                 {
-                    Document.Storage = DocumentService.GetStorage(Document.Archive, currentServer, Document.AttributeValues);
+                    Document.Storage = DocumentService.GetStorage(Document.Archive, null, Document.AttributeValues);
                     //if there is no configured storage throw exception
                     if (Document.Storage == null)
-                        throw new BiblosDS.Library.Common.Exceptions.StorageNotFound_Exception();
+                        throw new StorageNotFound_Exception();
                 }
-                                
+
                 //Retrive the document StorageArea    
                 Document.StorageArea = DocumentService.GetStorageArea(Document, Document.AttributeValues);
                 if (Document.StorageArea == null)
-                    throw new BiblosDS.Library.Common.Exceptions.StorageAreaConfiguration_Exception();
-                
+                    throw new StorageAreaConfiguration_Exception();
+
                 //If not is loaded the StorageType Try to load.
                 if (Document.Storage.StorageType == null)
                     Document.Storage = StorageService.GetStorage(Document.Storage.IdStorage);
@@ -88,7 +86,7 @@ namespace BiblosDS.WCF.Storage
                     Document.Permissions = DocumentService.GetDocumentPermissions(Document.IdDocument);
                 logger.DebugFormat("AddDocument to Storage: {0} - Storage Area: {1} - Storage Type = {2}", Document.Storage.Name, Document.StorageArea.Name, Document.Storage.StorageType);
                 //Find the store & put the document on the archive
-                var storageFromLoader = StorageAssemblyLoader.GetStorage(Document.Storage.StorageType.IdStorageType);                
+                var storageFromLoader = StorageAssemblyLoader.GetStorage(Document.Storage.StorageType.IdStorageType);
                 //if (Document.Archive.ThumbnailEmabled || Document.Archive.PdfConversionEmabled)
                 //{
                 //    logger.Debug("Write thumbnail and add document");
@@ -107,89 +105,56 @@ namespace BiblosDS.WCF.Storage
 
                     content = File.ReadAllBytes(localFilePath);
                 }
-                else if(Document.Content == null)
-                {                    
-                    content = (docContent == null) ? new byte[0] : docContent.Blob; 
-                }                
-
-                ServerRole currentServerRole = ServerRole.Undefined;
-                if (currentServer != null)
-                    currentServerRole = currentServer.ServerRole;
+                else if (Document.Content == null)
+                {
+                    content = (docContent == null) ? new byte[0] : docContent.Blob;
+                }
 
                 Document.Content = new DocumentContent(content);
 
-                var task = Task.Factory.StartNew( () =>
+                Task task = Task.Factory.StartNew(() =>
+                   {
+                       if (Document.Archive.ThumbnailEmabled || Document.Archive.PdfConversionEmabled)
+                       {
+                           try
+                           {
+
+                               BiblosDSConv.BiblosDSConv conv = new BiblosDSConv.BiblosDSConv();
+                               var pdfDoc = conv.ToRaster(new BiblosDSConv.stDoc { Blob = Convert.ToBase64String(content), FileExtension = Document.Name });
+                               if (Document.Archive.PdfConversionEmabled)
+                               {
+                                   string pdfName = Guid.NewGuid().ToString() + ".pdf";
+                                   storageFromLoader.AddConformAttach(Document, new DocumentContent(Convert.FromBase64String(pdfDoc.Blob)), pdfName);
+                                   DocumentService.SetDocumentPdf(Document.IdDocument, pdfName);
+                               }
+                               if (Document.Archive.ThumbnailEmabled)
+                               {
+                                   string thumbnailName = Guid.NewGuid().ToString() + ".png";
+                                   var thumbnailDoc = conv.PdfToPngThumbnail(pdfDoc);
+                                   storageFromLoader.AddConformAttach(Document, new DocumentContent(Convert.FromBase64String(thumbnailDoc.Blob)), thumbnailName);
+                                   DocumentService.SetDocumentThumbnail(Document.IdDocument, thumbnailName);
+                               }
+                           }
+                           catch (Exception ex)
+                           {
+                               logger.Error(ex);
+                           }
+                       }
+                   });
+
+                Task task1 = Task.Factory.StartNew(() =>
                     {
-                        if (Document.Archive.ThumbnailEmabled || Document.Archive.PdfConversionEmabled)
-                        {
-                            try
-                            {                               
-
-                                BiblosDSConv.BiblosDSConv conv = new BiblosDSConv.BiblosDSConv();
-                                var pdfDoc = conv.ToRaster(new BiblosDSConv.stDoc { Blob = Convert.ToBase64String(content), FileExtension = Document.Name });
-                                if (Document.Archive.PdfConversionEmabled)
-                                {
-                                    string pdfName = Guid.NewGuid().ToString() + ".pdf";
-                                    storageFromLoader.AddConformAttach(Document, new DocumentContent(Convert.FromBase64String(pdfDoc.Blob)), pdfName);
-                                    DocumentService.SetDocumentPdf(Document.IdDocument, pdfName);
-                                }
-                                if (Document.Archive.ThumbnailEmabled)
-                                {
-                                    string thumbnailName = Guid.NewGuid().ToString() + ".png";
-                                    var thumbnailDoc = conv.PdfToPngThumbnail(pdfDoc);
-                                    storageFromLoader.AddConformAttach(Document, new DocumentContent(Convert.FromBase64String(thumbnailDoc.Blob)), thumbnailName);
-                                    DocumentService.SetDocumentThumbnail(Document.IdDocument, thumbnailName);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                logger.Error(ex);                                
-                            }                           
-                        }                        
+                        storageFromLoader.AddDocument(Document, Document.AttributeValues);
                     });
 
-                var task1 = Task.Factory.StartNew(() =>
-                    {        
-                        if (currentServerRole != ServerRole.Proxy)
-                            storageFromLoader.AddDocument(Document, Document.AttributeValues);
-                        if (currentServerRole != ServerRole.Undefined)
-                            DocumentService.SaveDocumentToMaster(Document, currentServer, DocumentStatus.InStorage);
 
-                    });
+                Task.WaitAll(task, task1);
 
-                //Se il server è configurato come full-proxy il file viene caricato nel master
-                var task2 = Task.Factory.StartNew(() =>
+                if (!task.IsCompleted || !task1.IsCompleted)
                 {
-                    if (currentServerRole == ServerRole.FullProxy)
-                    {
-                        var masterServer = servers.FirstOrDefault(x => x.ServerRole == ServerRole.Master);
-                        if (masterServer != null)
-                        {                            
-                            using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(ServerService.WCF_Document_HostName, masterServer.ServerName))
-                            {
-                                var retVal = (clientChannel as IDocuments).AddDocumentToMaster(Document);
-                            }
-                        }
-                    }
-                });
-
-                Task.WaitAll(task, task1, task2);
-
-                if (!task.IsCompleted || !task1.IsCompleted || !task2.IsCompleted)
                     throw new Exception("Not completed all task exception.");
-                
+                }
 
-                // if (Document.Name.EndsWith(".p7m", StringComparison.InvariantCultureIgnoreCase)
-                //    || Document.Name.EndsWith(".m7m", StringComparison.InvariantCultureIgnoreCase))
-                //{
-                //    DocumentCertificate certificate = new DocumentCertificate();
-                //    using (ServiceDigitalSignClient cllient = new ServiceDigitalSignClient("ServiceDigitalSign"))
-                //    {
-                //        cllient.GetAllExpireDates(out certificate, Document.Name, Document.Content);
-                //    }
-                //    if (certificate != null)
-                //        Document.DateExpire = certificate.DateExpiration;
-                //}
                 logger.Debug("GetAttributesHash");
                 //Calculate the document Sign Header
                 Document.SignHeader = AttributeService.GetAttributesHash(Document.AttributeValues);
@@ -205,7 +170,7 @@ namespace BiblosDS.WCF.Storage
                 {
                     Document.Certificate = DocumentService.GetCertificateDefault();
                     if (Document.Certificate == null)
-                        throw new BiblosDS.Library.Common.Exceptions.CertificateNotFound_Exception();
+                        throw new CertificateNotFound_Exception();
                     logger.DebugFormat("GetCertificateDefault - {0}", Document.Certificate.Name);
                     Document.FullSign = UtilityService.GetStringFromBob(
                         DocumentService.Sign(
@@ -217,12 +182,13 @@ namespace BiblosDS.WCF.Storage
                             Document.AttributeValues,
                             Document.Certificate));
                     logger.Debug("Signed - ok");
-                }else
+                }
+                else
                     logger.Debug("Signed - DISABLED");
                 //Set the status to "In Storage"
                 Document.Status = new Status((short)DocumentStatus.InStorage);
-                
-                if(Document.Archive.TransitoEnabled)
+
+                if (Document.Archive.TransitoEnabled)
                     transito.TarnsitoStatus = DocumentTarnsitoStatus.EndProcessing;
                 logger.Debug("SaveAtomic - Init");
                 //Update the document value.
@@ -256,7 +222,7 @@ namespace BiblosDS.WCF.Storage
             }
             catch (Exception ex)
             {
-                logger.Error(ex);                
+                logger.Error(ex);
                 try
                 {
                     //TODO UNDO THE OPERATION (gestire il caso di fallimento cambio stato)
@@ -265,13 +231,13 @@ namespace BiblosDS.WCF.Storage
                 }
                 catch (Exception exundo)
                 {
-                    Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "AddDocument", exundo, LoggingOperationType.BiblosDS_InsertDocument, Document);                    
-                }                            
+                    Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "AddDocument", exundo, LoggingOperationType.BiblosDS_InsertDocument, Document);
+                }
                 Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "AddDocument", ex, LoggingOperationType.BiblosDS_InsertDocument, Document);
-                throw new FaultException(ex.Message);  
-            }                                                       
+                throw new FaultException(ex.Message);
+            }
         }
-       
+
 
         public Document GetDocumentConformAttach(Document doc, string fileName)
         {
@@ -284,17 +250,27 @@ namespace BiblosDS.WCF.Storage
                 //Load the document with the feature to retrive the storage & storage area of the docuemnt
                 document = DocumentService.GetDocument(doc.IdDocument);
                 if (document == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IServiceDocumentStorage).GetDocumentConformAttach(doc, fileName);
+                    }
+                }
 
                 if (document.Storage == null)
-                    throw new BiblosDS.Library.Common.Exceptions.StorageNotFound_Exception("Storage non configurato o Documento in transito.");
+                    throw new StorageNotFound_Exception("Storage non configurato o Documento in transito.");
                 if (document.Storage.StorageType == null)
-                    document.Storage = StorageService.GetStorage(document.Storage.IdStorage);                             
+                    document.Storage = StorageService.GetStorage(document.Storage.IdStorage);
                 IStorage loader = StorageAssemblyLoader.GetStorage(document.Storage.StorageType.IdStorageType);
                 //Verifica degli attributi del documento richiesto.
-               
-                document.Content = new DocumentContent(loader.GetAttach(document, fileName));                
-             
+
+                document.Content = new DocumentContent(loader.GetAttach(document, fileName));
+
 
                 Journaling.WriteJournaling(LoggingSource.BiblosDS_WCF_Storage, "GetDocument", "End GetDocument", LoggingOperationType.BiblosDS_General, LoggingLevel.BiblosDS_Trace, idCorrelation, document);
                 return document;
@@ -304,60 +280,34 @@ namespace BiblosDS.WCF.Storage
                 logger.Error(ex);
                 Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "GetDocumentAttach", ex, LoggingOperationType.BiblosDS_GetDocument, document);
                 throw new FaultException(ex.Message);
-            }            
+            }
         }
 
         public Document GetDocument(Document Document)
         {
-            logger.DebugFormat("GetDocument: {1} - {0}", Document.IdDocument, Document.IdBiblos);            
+            logger.DebugFormat("GetDocument: {1} - {0}", Document.IdDocument, Document.IdBiblos);
             Guid idCorrelation = Guid.NewGuid();
             Document document = null;
             try
             {
                 Journaling.WriteJournaling(LoggingSource.BiblosDS_WCF_Storage, "GetDocument", "Init GetDocument", LoggingOperationType.BiblosDS_General, LoggingLevel.BiblosDS_Trace, idCorrelation, Document);
-                ServerRole serverRole = ServerRole.Undefined;
-                //BiblosDS Proxy
-                var currentServer = ServerService.GetCurrentServer();
-                List<DocumentServer> documentInServer = null;
-                if (currentServer != null)
-                {
-                    documentInServer = ServerService.GetDocumentInServer(Document.IdDocument);
-                    serverRole = currentServer.ServerRole;
-                    if (serverRole == ServerRole.Proxy || !ServerService.CheckDocumentInServer(currentServer, documentInServer))
-                    {
-                        //Retrive document from master
-                        var requestServer = ServerService.GetMasterServer();
-                        if (!ServerService.CheckDocumentInServer(requestServer, documentInServer))
-                            requestServer = documentInServer.First().Server;
-                        logger.DebugFormat("Server is a proxy, Redirect to: {1} - IdDocument:{0}", Document.IdDocument, requestServer.ServerName);
-                        if (requestServer != null)
-                        {
-                            using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName, requestServer.ServerName))
-                            {
-                                document = (clientChannel as IServiceDocumentStorage).GetDocument(Document);
-                            }
-                            return document;
-                        }
-                        else
-                            throw new BiblosDS.Library.Common.Exceptions.ServerNotDefined_Exception("Nessun server master definito. Configurazione non valida per il server proxy: " + MachineService.GetServerName() + ".");
-                    }
-                    else
-                    {
-                        document = DocumentService.GetDocument(Document.IdDocument);
-                        var documentDetail = ServerService.GetDocumentInServer(currentServer, document.IdDocument);
-                        document.Status = documentDetail.Status;
-                        document.Storage = documentDetail.Storage;
-                        document.StorageArea = documentDetail.StorageArea;
-                        logger.DebugFormat("Server role: {0}, Status:{1}, Storage:{2}, StorageArea:{3}", currentServer.ServerName, document.Status.Description, document.Storage == null ? "" : document.Storage.Name, document.StorageArea == null ? "" : document.StorageArea.Name);
-                    }
-                }
-                else
-                {
-                    //Load the document with the feature to retrive the storage & storage area of the docuemnt                
-                    document = DocumentService.GetDocument(Document.IdDocument);
-                }
+                document = DocumentService.GetDocument(Document.IdDocument);
                 if (document == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();               
+                {
+                    logger.WarnFormat("No Document Found with IdDocument: {0}", Document.IdDocument);
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(Document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IServiceDocumentStorage).GetDocument(Document);
+                    }
+                }
+
                 try
                 {
                     switch ((DocumentStatus)document.Status.IdStatus)
@@ -374,7 +324,7 @@ namespace BiblosDS.WCF.Storage
                             break;
                         case DocumentStatus.ProfileOnly:
                             if (document.DocumentLink != null)
-                                document = GetDocument(document.DocumentLink);                            
+                                document = GetDocument(document.DocumentLink);
                             break;
                         case DocumentStatus.RemovedFromStorage:
                             document.Content = new DocumentContent(new byte[] { });
@@ -389,7 +339,7 @@ namespace BiblosDS.WCF.Storage
                 catch (FileNotFoundException ex)
                 {
                     logger.Error(ex);
-                    Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "GetDocument(" +Document.IdDocument.ToString()+")", ex, LoggingOperationType.BiblosDS_GetDocument, document);
+                    Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "GetDocument(" + Document.IdDocument.ToString() + ")", ex, LoggingOperationType.BiblosDS_GetDocument, document);
                     if (ConfigurationManager.AppSettings["DefaultFileOnError"] != null && File.Exists(ConfigurationManager.AppSettings["DefaultFileOnError"].ToString()))
                     {
                         logger.Info("Return default file..");
@@ -424,13 +374,28 @@ namespace BiblosDS.WCF.Storage
         public DocumentAttach GetDocumentAttach(DocumentAttach attach)
         {
             logger.DebugFormat("GetDocumentAttach: {1} - {0}", attach.IdDocumentAttach, attach.IdDocument);
-            DocumentAttach documentAttach = null;            
+            DocumentAttach documentAttach = null;
             try
-            {                
+            {
+                Document currentDocument = DocumentService.GetDocument(attach.IdDocument);
+                if (currentDocument == null)
+                {
+                    logger.WarnFormat("No Document Found with IdDocument: {0}", attach.IdDocument);
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IServiceDocumentStorage).GetDocumentAttach(attach);
+                    }
+                }
+
                 //Load the document with the feature to retrive the storage & storage area of the docuemnt
                 documentAttach = DocumentService.GetDocumentAttach(attach.IdDocumentAttach);
-                //if (documentAttach == null)
-                //    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
                 try
                 {
                     switch ((DocumentStatus)documentAttach.Status.IdStatus)
@@ -512,7 +477,7 @@ namespace BiblosDS.WCF.Storage
         private DocumentContent GetDocumentInCache(Document Document)
         {
             if (string.IsNullOrEmpty(Document.Archive.PathCache))
-                Document.Archive = ArchiveService.GetArchive(Document.Archive.IdArchive);         
+                Document.Archive = ArchiveService.GetArchive(Document.Archive.IdArchive);
             return new DocumentContent(File.ReadAllBytes(Path.Combine(Document.Archive.PathCache, Document.IdDocument.ToString() + Path.GetExtension(Document.Name))));
         }
 
@@ -525,9 +490,9 @@ namespace BiblosDS.WCF.Storage
         /// </returns>
         private DocumentContent GetDocumentInTransito(Document Document)
         {
-            var transito = DocumentService.GetTransito(Document.IdDocument);               
+            var transito = DocumentService.GetTransito(Document.IdDocument);
             if (transito == null)
-                throw new BiblosDS.Library.Common.Exceptions.FileNotFound_Exception("Documento configurato in transito ma non presente: "+ Document.IdDocument);
+                throw new FileNotFound_Exception("Documento configurato in transito ma non presente: " + Document.IdDocument);
             string transitoPath = transito.LocalPath;
             return new DocumentContent(File.ReadAllBytes(Path.Combine(transitoPath, Document.IdDocument.ToString() + Path.GetExtension(Document.Name))));
         }
@@ -548,7 +513,7 @@ namespace BiblosDS.WCF.Storage
         private DocumentContent GetDocumentInStorage(Document Document)
         {
             if (Document.Storage == null)
-                throw new BiblosDS.Library.Common.Exceptions.StorageNotFound_Exception("Storage non configurato o Documento in transito.");
+                throw new StorageNotFound_Exception("Storage non configurato o Documento in transito.");
             if (Document.AttributeValues == null || Document.AttributeValues.Count <= 0)
                 Document.AttributeValues = AttributeService.GetAttributeValues(Document.IdDocument);
             else
@@ -562,11 +527,11 @@ namespace BiblosDS.WCF.Storage
             {
                 var tmpDoc = Document.DocumentLink != null ? DocumentService.GetDocument(Document.DocumentLink.IdDocument) : Document;
                 var content = loader.GetDocument(tmpDoc);
-                Document.Content = new DocumentContent(content, tmpDoc.Name);                
+                Document.Content = new DocumentContent(content, tmpDoc.Name);
             }
             else
             {
-                throw new BiblosDS.Library.Common.Exceptions.Attribute_Exception("Attributi modificati.");
+                throw new Attribute_Exception("Attributi modificati.");
             }
 
             return Document.Content;
@@ -575,14 +540,14 @@ namespace BiblosDS.WCF.Storage
         private DocumentContent GetDocumentAttachInStorage(DocumentAttach attach)
         {
             if (attach.Document == null || attach.Document.Storage == null)
-                throw new BiblosDS.Library.Common.Exceptions.StorageNotFound_Exception("Storage non configurato o Documento in transito.");
+                throw new StorageNotFound_Exception("Storage non configurato o Documento in transito.");
             if (attach.Document.Storage.StorageType == null)
-                attach.Document.Storage = StorageService.GetStorage(attach.Document.Storage.IdStorage);            
-            IStorage loader = StorageAssemblyLoader.GetStorage(attach.Document.Storage.StorageType.IdStorageType);            
+                attach.Document.Storage = StorageService.GetStorage(attach.Document.Storage.IdStorage);
+            IStorage loader = StorageAssemblyLoader.GetStorage(attach.Document.Storage.StorageType.IdStorageType);
             attach.IdDocument = attach.IdDocumentAttach;
-            attach.Content = new DocumentContent(loader.GetDocument(attach));           
+            attach.Content = new DocumentContent(loader.GetDocument(attach));
             return attach.Content;
-        } 
+        }
 
         private DocumentContent GetDocumentInPreservation(Document document)
         {
@@ -618,7 +583,23 @@ namespace BiblosDS.WCF.Storage
         {
             try
             {
-                if (Document != null) Document = DocumentService.GetDocument(Document.IdDocument); else throw new DocumentNotFound_Exception();
+                if (Document != null)
+                {
+                    Document = DocumentService.GetDocument(Document.IdDocument);
+                }
+                else
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(Document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IServiceDocumentStorage).CheckIntegrity(Document);
+                    }
+                }
+
                 if (Document.Storage == null) throw new StorageNotFound_Exception("Storage non configurato o Documento in transito.");
                 if (Document.AttributeValues == null || Document.AttributeValues.Count <= 0) Document.AttributeValues = AttributeService.GetAttributeValues(Document.IdDocument);
                 else Document.AttributeValues = Document.AttributeValues;
@@ -632,11 +613,11 @@ namespace BiblosDS.WCF.Storage
                 logger.Error(ex);
                 Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "CheckIntegrity", ex, LoggingOperationType.BiblosDS_General, Document);
                 throw;
-            }           
+            }
         }
 
         public bool IsAlive()
-        {            
+        {
             return true;
         }
 
@@ -656,6 +637,17 @@ namespace BiblosDS.WCF.Storage
                     return;
                 }
 
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        (clientChannel as IServiceDocumentStorage).DeleteDocument(IdDocument);
+                        return;
+                    }
+                }
+
                 StorageAssemblyLoader.GetStorage(document.Storage.StorageType.IdStorageType).DeleteDocument(document);
             }
             catch (Exception ex)
@@ -663,8 +655,8 @@ namespace BiblosDS.WCF.Storage
                 logger.Error(ex);
                 Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "DeleteDocument", ex, LoggingOperationType.BiblosDS_General, document);
                 throw;
-            }           
-        }       
+            }
+        }
 
         public void RestoreAttribute(Guid IdDocument)
         {
@@ -673,6 +665,17 @@ namespace BiblosDS.WCF.Storage
             {
                 //Load the document with the feature to retrive the storage & storage area of the docuemnt
                 document = DocumentService.GetDocument(IdDocument);
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        (clientChannel as IServiceDocumentStorage).RestoreAttribute(IdDocument);
+                        return;
+                    }
+                }
+
                 document.AttributeValues = AttributeService.GetAttributeValues(document.IdDocument);
                 StorageAssemblyLoader.GetStorage(document.Storage.StorageType.IdStorageType).RestoreAttribute(document);
             }
@@ -681,13 +684,24 @@ namespace BiblosDS.WCF.Storage
                 logger.Error(ex);
                 Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "RestoreAttribute", ex, LoggingOperationType.BiblosDS_General, document);
                 throw;
-            }           
+            }
         }
 
         public void WriteAttribute(Document Document)
         {
             try
             {
+                if (ArchiveService.IsArchiveRedirectable(Document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        (clientChannel as IServiceDocumentStorage).WriteAttribute(Document);
+                        return;
+                    }
+                }
+
                 if (Document.Storage == null)
                     throw new StorageNotFound_Exception();
                 if (Document.Storage.StorageType == null)
@@ -699,7 +713,7 @@ namespace BiblosDS.WCF.Storage
                 logger.Error(ex);
                 Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "WriteAttribute", ex, LoggingOperationType.BiblosDS_General, Document);
                 throw;
-            }           
+            }
         }
 
         /// <summary>
@@ -714,6 +728,17 @@ namespace BiblosDS.WCF.Storage
                     throw new ArgumentNullException("Parameter document is null");
 
                 document = DocumentService.GetDocument(document.IdDocument);
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        (clientChannel as IServiceDocumentStorage).DeleteFullTextDocumentData(document);
+                        return;
+                    }
+                }
+
                 if (document.Storage == null)
                     throw new StorageNotFound_Exception(string.Format("Nessuno storage definito per il documento con Id {0}", document.IdDocument));
                 if (document.Storage.StorageType == null)
@@ -740,6 +765,17 @@ namespace BiblosDS.WCF.Storage
                     throw new ArgumentNullException("Parameter document is null");
 
                 document = DocumentService.GetDocument(document.IdDocument);
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        (clientChannel as IServiceDocumentStorage).WriteFullTextDocumentData(document);
+                        return;
+                    }
+                }
+
                 if (document.Storage == null)
                     throw new StorageNotFound_Exception(string.Format("Nessuno storage definito per il documento con Id {0}", document.IdDocument));
                 if (document.Storage.StorageType == null)
@@ -753,9 +789,9 @@ namespace BiblosDS.WCF.Storage
                 throw;
             }
         }
-        
-        #endregion        
-          
+
+        #endregion
+
         //Idem alla AddDocument ma sulla tabella attach
         public Guid AddAttachToDocument(DocumentAttach attach)
         {
@@ -770,14 +806,22 @@ namespace BiblosDS.WCF.Storage
                     throw new DocumentNotFound_Exception();
 
                 Journaling.WriteJournaling(LoggingSource.BiblosDS_WCF_Storage, "AddAttachToDocument", "Init add document attach", LoggingOperationType.BiblosDS_General, LoggingLevel.BiblosDS_Trace, idCorrelation, attach.Document);
-
                 var document = DocumentService.GetDocument(attach.IdDocument);
-
                 if (document == null)
                 {
                     logger.WarnFormat("No Document Found with IdDocument: {0}", document.IdDocument);
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
                 }
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.StorageServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(archiveServerConfig.Server.StorageServiceUrl,
+                        archiveServerConfig.Server.StorageServiceBinding, archiveServerConfig.Server.StorageServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IServiceDocumentStorage).AddAttachToDocument(attach);
+                    }
+                }                
 
                 if (document.Status == null || document.Status.IdStatus != (short)DocumentStatus.InStorage)
                 {
@@ -791,20 +835,20 @@ namespace BiblosDS.WCF.Storage
                 //Retrive the document StorageArea    
                 //document.StorageArea = StorageService.GetStorageArea(document.StorageArea.IdStorageArea);
                 if (document.StorageArea == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotReadyForAttach_Exception();
+                    throw new DocumentNotReadyForAttach_Exception();
 
                 if (document.Storage.StorageType == null)
                 {
                     //document.Storage = StorageService.GetStorage(document.Storage.IdStorage);
                     //if (document.Storage == null || document.Storage.StorageType == null)
-                        throw new StorageConfiguration_Exception();
+                    throw new StorageConfiguration_Exception();
                 }
 
                 if (attach.Content != null)
                     docContent = new DocumentContent { Blob = attach.Content.Blob, Description = attach.Content.Description };
                 else
                     throw new FileNotFound_Exception("Content of attach not specified. IdDocument:" + attach.IdDocument);
-                                              
+
                 //Change the state on the transiction path table(Lock)                
                 if (document.Archive.TransitoEnabled)
                     transito = DocumentService.CheckOutTransitoAttach(attach.IdDocumentAttach);
@@ -817,7 +861,7 @@ namespace BiblosDS.WCF.Storage
                 byte[] content = null;
                 if (document.Archive.TransitoEnabled)
                 {
-                    localPath = transito.LocalPath; 
+                    localPath = transito.LocalPath;
 
                     var localFilePath = Path.Combine(localPath,
                                                        attach.IdDocument + "_" + attach.IdDocumentAttach.ToString() +
@@ -889,7 +933,7 @@ namespace BiblosDS.WCF.Storage
                 }
                 Logging.WriteError(LoggingSource.BiblosDS_WCF_Storage, "AddAttachToDocument", ex, LoggingOperationType.BiblosDS_InsertDocument, attach.Document);
                 throw new FaultException(ex.Message);
-            }      
+            }
         }
     }
 }

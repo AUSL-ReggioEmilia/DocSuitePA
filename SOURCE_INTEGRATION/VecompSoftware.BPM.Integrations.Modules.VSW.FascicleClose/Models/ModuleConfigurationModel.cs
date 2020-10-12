@@ -4,5 +4,6 @@
     {
         public string TopicWorkflowIntegration { get; set; }
         public string CategoryFascicleDeleteSubscription { get; set; }
+        public string WorkflowFascicleCloseSubscription { get; set; }
     }
 }

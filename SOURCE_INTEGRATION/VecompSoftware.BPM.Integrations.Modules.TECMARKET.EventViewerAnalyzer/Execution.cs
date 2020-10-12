@@ -40,7 +40,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer
         private bool _needInitializeModule = false;
         private readonly IdentityContext _identityContext = null;
         private List<EventLogModel> _eventLogs;
-        private string _queryString;
+        private readonly string _queryString;
 
         #endregion
 
@@ -100,6 +100,8 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer
             }
             try
             {
+                InitializeModule();
+
                 _eventLogs = ReadEventLogsFromEventViewer();
                 WriteEventLogsInServiceBus().Wait();
             }
@@ -110,10 +112,27 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer
             }
         }
 
+        private void InitializeModule()
+        {
+            if (_needInitializeModule)
+            {
+                _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
+
+                _needInitializeModule = false;
+            }
+        }
 
         private List<EventLogModel> ReadEventLogsFromEventViewer()
         {
             List<EventLogModel> eventLogs = new List<EventLogModel>();
+
+            List<string> devices = new List<string>()
+            {
+                EventAttributeName.Processor.ToString(),
+                EventAttributeName.Memory.ToString(),
+                EventAttributeName.PhysicalDisk.ToString()
+            };
+
             int eventLogCount = 0;
             string pathValue;
 
@@ -125,7 +144,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer
             EventLogReader logReader = new EventLogReader(query);
             _logger.WriteDebug(new LogMessage("Read all event logs from QueryList"), LogCategories);
 
-            for (EventRecord eventRecord = logReader.ReadEvent(); null != eventRecord; eventRecord = logReader.ReadEvent())
+            for (EventRecord eventRecord = logReader.ReadEvent(); eventRecord != null; eventRecord = logReader.ReadEvent())
             {
                 _logger.WriteDebug(new LogMessage("Read event log and create EventLogModel"), LogCategories);
 
@@ -137,6 +156,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer
                     LogDate = eventRecord.TimeCreated.ToString(),
                     LogDescription = eventRecord.FormatDescription()
                 };
+                if (eventRecord.Properties.Count() == 2 && eventRecord.Properties.Any(x => devices.Any(d => d.Equals(x.Value))))
+                {
+                    eventLog.SourceDeviceName = eventRecord.Properties[1].Value.ToString();
+                }
 
                 eventLogs.Add(eventLog);
 
@@ -154,7 +177,8 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer
                 WorkflowStart workflowStart = BuildWorkflowStart(workflowReferenceModel);
 
                 _logger.WriteDebug(new LogMessage("Create EventWorkflowStartRequest for ServiceBus"), LogCategories);
-                EventWorkflowStartRequest eventWorkflowStartRequest = new EventWorkflowStartRequest(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _identityContext, workflowStart);
+                EventWorkflowStartRequest eventWorkflowStartRequest = new EventWorkflowStartRequest(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId,
+                    _moduleConfiguration.TenantAOOId, _identityContext, workflowStart);
 
                 _logger.WriteDebug(new LogMessage($"Write EventWorkflowStartRequest with id = {eventWorkflowStartRequest.Id} in Service Bus"), LogCategories);
                 ServiceBusMessage message = await _webAPIClient.SendEventAsync(eventWorkflowStartRequest);
@@ -171,9 +195,11 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.EventViewerAnalyzer
         private WorkflowReferenceModel CreateEventLogsReferenceModel(List<EventLogModel> eventLogs)
         {
             _logger.WriteDebug(new LogMessage("Create WorflowReferenceModel for event logs"), LogCategories);
-            WorkflowReferenceModel workflowReferenceModel = new WorkflowReferenceModel();
-            workflowReferenceModel.ReferenceId = new Guid();
-            workflowReferenceModel.ReferenceType = DocSuiteWeb.Model.Entities.Commons.DSWEnvironmentType.Build;
+            WorkflowReferenceModel workflowReferenceModel = new WorkflowReferenceModel
+            {
+                ReferenceId = new Guid(),
+                ReferenceType = DocSuiteWeb.Model.Entities.Commons.DSWEnvironmentType.Build
+            };
 
             _logger.WriteDebug(new LogMessage("Create Event Model for ServiceBus"), LogCategories);
             EventModel eventModel = new EventModel

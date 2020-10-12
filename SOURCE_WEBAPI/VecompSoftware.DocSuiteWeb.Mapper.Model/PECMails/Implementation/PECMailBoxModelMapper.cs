@@ -48,7 +48,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.PECMails
             modelTransformed.IdJeepServiceOutgoingHost = entity.IdJeepServiceOutgoingHost;
             modelTransformed.RulesetDefinition = entity.RulesetDefinition;
             modelTransformed.InvoiceType = (InvoiceType?)entity.InvoiceType;
-            modelTransformed.HumanEnabled = entity.HumanEnabled;
+            modelTransformed.LoginError = entity.LoginError;
 
             return modelTransformed;
         }

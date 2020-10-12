@@ -1,4 +1,5 @@
-﻿using VecompSoftware.Core.Command.CQRS.Events.Models.Workflows;
+﻿using System;
+using VecompSoftware.Core.Command.CQRS.Events.Models.Workflows;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Model.Workflow.Actions;
 using VecompSoftware.ServiceBus.WebAPI;
@@ -30,7 +31,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Workflows
         #region [ Methods ]
         public override IEvent BuildEvent(ICommandCQRS command, WorkflowActionFascicleModel workflowAction)
         {
-            EventWorkflowActionFascicle @event = new EventWorkflowActionFascicle(command.TenantName, command.TenantId, command.Identity, workflowAction);
+            EventWorkflowActionFascicle @event = new EventWorkflowActionFascicle(Guid.NewGuid(), workflowAction.CorrelationId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, workflowAction, null);
             return @event;
         }
         #endregion

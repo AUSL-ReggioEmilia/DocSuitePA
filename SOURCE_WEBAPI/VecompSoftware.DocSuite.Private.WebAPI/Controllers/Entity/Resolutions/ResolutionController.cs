@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VecompSoftware.Core.Command;
@@ -11,6 +12,7 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Finder.Resolutions;
 using VecompSoftware.DocSuiteWeb.Mapper.Model.Resolutions;
 using VecompSoftware.DocSuiteWeb.Mapper.ServiceBus.Messages;
@@ -71,7 +73,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Resolutions
                     _mapper.ResolutionRoles = _unitOfWork.Repository<ResolutionRole>().GetByResolution(resolution.EntityId);
                     IIdentityContext identity = new IdentityContext(_currentIdentity.FullUserName);
                     ResolutionModel resolutionModel = _mapper.Map(resolution, new ResolutionModel());
-                    ICommandUpdateResolution commandUpdate = new CommandUpdateResolution(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, identity, resolutionModel, categoryFascicle, null);
+
+                    ICommandUpdateResolution commandUpdate = new CommandUpdateResolution(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty, identity, resolutionModel, categoryFascicle, null);
 
                     ServiceBusMessage message = _cqrsMapper.Map(commandUpdate, new ServiceBusMessage());
                     if (string.IsNullOrEmpty(message.ChannelName))

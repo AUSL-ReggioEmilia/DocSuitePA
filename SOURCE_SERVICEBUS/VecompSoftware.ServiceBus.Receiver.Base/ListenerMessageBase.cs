@@ -5,12 +5,16 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using VecompSoftware.Core.Command.CQRS;
+using VecompSoftware.Core.Command.CQRS.Events.Models.Workflows;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
+using VecompSoftware.DocSuiteWeb.Model.Workflow;
 using VecompSoftware.ServiceBus.Receiver.Base.Exceptions;
+using VecompSoftware.ServiceBus.WebAPI;
 using VecompSoftware.Services.Command.CQRS.Commands;
+using VecompSoftware.Services.Command.CQRS.Events.Models.Workflows;
 
 namespace VecompSoftware.ServiceBus.Receiver.Base
 {
@@ -27,6 +31,7 @@ namespace VecompSoftware.ServiceBus.Receiver.Base
         private readonly MessageReceiver _receiver;
         private readonly IListenerExecution<TCommand> _listenerExecution;
         private readonly ILogger _logger;
+        private readonly IWebAPIClient _webApiClient;
 
         protected static IEnumerable<LogCategory> _logCategories = null;
 
@@ -54,13 +59,14 @@ namespace VecompSoftware.ServiceBus.Receiver.Base
 
         #region [ Costructors ]
         public ListenerMessageBase(MessageReceiver receiver, ILogger logger,
-            IListenerExecution<TCommand> listenerExecution, string commandName, bool commandNameFilterEnabled = true)
+            IListenerExecution<TCommand> listenerExecution, string commandName, IWebAPIClient webApiClient, bool commandNameFilterEnabled = true)
         {
             _logger = logger;
             _commandName = commandName;
             _commandNameFilterEnabled = commandNameFilterEnabled;
             _receiver = receiver;
             _listenerExecution = listenerExecution;
+            _webApiClient = webApiClient;
             _serializerSettings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
@@ -75,6 +81,7 @@ namespace VecompSoftware.ServiceBus.Receiver.Base
         #region [ Methods ]
         internal virtual async Task MessageCallAsync(BrokeredMessage message)
         {
+            TCommand command = default;
             try
             {
                 _logger.WriteInfo(new LogMessage($"Message arrive is: {message.MessageId}"), LogCategories);
@@ -101,12 +108,19 @@ namespace VecompSoftware.ServiceBus.Receiver.Base
                 }
                 if (currentCommandName.Equals(CommandName, StringComparison.CurrentCultureIgnoreCase))
                 {
-                    TCommand command = ReadMessageBody(message);
+                    command = ReadMessageBody(message);
                     if (ICommandFilterType.IsAssignableFrom(command.GetType()))
                     {
                         await _listenerExecution.ExecuteAsync(command);
                         _logger.WriteInfo(new LogMessage("Message has been processed correctly and it's going to be removed from queue"), LogCategories);
                         message.Complete();
+
+                        if (_listenerExecution.Properties.ContainsKey(CustomPropertyName.WORKFLOW_NAME) && _webApiClient != null)
+                        {
+                            string workflowName = _listenerExecution.Properties[CustomPropertyName.WORKFLOW_NAME].ToString();
+                            await SendInfoWorkflowNotificationAsync(command, $"Workflow {workflowName} has been completed successfully");
+                        }
+
                         return;
                     }
                 }
@@ -133,6 +147,11 @@ namespace VecompSoftware.ServiceBus.Receiver.Base
                     message.Abandon();
                 }
                 _logger.WriteWarning(new LogMessage("Message has been moved to dead letter queue with EvaluationException property setted"), LogCategories);
+
+                if (_listenerExecution.Properties.ContainsKey(CustomPropertyName.WORKFLOW_NAME) && _webApiClient != null)
+                {
+                    await SendErrorWorkflowNotificationAsync(command, ex.StackTrace, ex.Message);
+                }
             }
             catch (Exception ex)
             {
@@ -140,7 +159,68 @@ namespace VecompSoftware.ServiceBus.Receiver.Base
                 CompleteDeadletterProperties(ex, "Unexpected ListenerMessageBase error");
                 message.DeadLetter(_listenerExecution.Properties);
                 _logger.WriteWarning(new LogMessage("Message has been moved to dead letter queue."), LogCategories);
+
+                if (_listenerExecution.Properties.ContainsKey(CustomPropertyName.WORKFLOW_NAME) && _webApiClient != null)
+                {
+                    await SendErrorWorkflowNotificationAsync(command, ex.StackTrace, ex.Message);
+                }
             }
+        }
+
+        private async Task SendErrorWorkflowNotificationAsync(TCommand command, string stackTrace, string wfNotificationDescription)
+        {
+            WorkflowNotification errorWorkflowNotification = BuildWorkflowNotification(wfNotificationDescription, stackTrace);
+
+            if (errorWorkflowNotification != null)
+            {
+                IEventWorkflowNotificationError workflowErrorEvent = new EventWorkflowNotificationError(Guid.NewGuid(),
+                    command.CorrelationId,
+                    command.TenantName,
+                    command.TenantId,
+                    command.TenantAOOId,
+                    command.Identity,
+                    errorWorkflowNotification, null);
+
+                await _webApiClient.PushEventAsync(workflowErrorEvent);
+            }
+        }
+
+        private async Task SendInfoWorkflowNotificationAsync(TCommand command, string wfNotificationDescription)
+        {
+            WorkflowNotification infoWorkflowNotification = BuildWorkflowNotification(wfNotificationDescription);
+
+            if (infoWorkflowNotification != null)
+            {
+                IEventWorkflowNotificationInfo workflowInfoEvent = new EventWorkflowNotificationInfo(Guid.NewGuid(),
+                    command.CorrelationId,
+                    command.TenantName,
+                    command.TenantId,
+                    command.TenantAOOId,
+                    command.Identity,
+                    infoWorkflowNotification, null);
+
+                await _webApiClient.PushEventAsync(workflowInfoEvent);
+            }
+        }
+
+        private WorkflowNotification BuildWorkflowNotification(string wfNotificationDescription, string stackTrace = null)
+        {
+            WorkflowNotification workflowNotification = null;
+            if (_listenerExecution.IdWorkflowActivity.HasValue)
+            {
+                Guid idWorkflowActivity = _listenerExecution.IdWorkflowActivity.Value;
+                workflowNotification = new WorkflowNotification
+                {
+                    ModuleName = _listenerExecution.GetType().FullName,
+                    LogDate = DateTimeOffset.UtcNow,
+                    StackTrace = stackTrace,
+                    UniqueId = Guid.NewGuid(),
+                    IdWorkflowActivity = idWorkflowActivity,
+                    WorkflowName = _listenerExecution.Properties[CustomPropertyName.WORKFLOW_NAME] as string,
+                    Description = wfNotificationDescription
+                };
+            }
+            return workflowNotification;
         }
 
         private void CompleteDeadletterProperties(Exception ex, string deadLetterReason)
@@ -180,14 +260,14 @@ namespace VecompSoftware.ServiceBus.Receiver.Base
         public async Task StartListeningAsync(bool? autoComplete = null, int? maxConcurrentCalls = null)
         {
             await Task.Run(async () =>
-             {
-                 if (_receiver == null)
-                 {
-                     _logger.WriteError(new LogMessage("Receiver is not correctly configured"), LogCategories);
-                 }
+            {
+                if (_receiver == null)
+                {
+                    _logger.WriteError(new LogMessage("Receiver is not correctly configured"), LogCategories);
+                }
 
-                 _receiver.OnMessageAsync(MessageCallAsync, await SetMessageOptionAsync(autoComplete, maxConcurrentCalls));
-             });
+                _receiver.OnMessageAsync(MessageCallAsync, await SetMessageOptionAsync(autoComplete, maxConcurrentCalls));
+            });
         }
         public async Task CloseListeningAsync()
         {

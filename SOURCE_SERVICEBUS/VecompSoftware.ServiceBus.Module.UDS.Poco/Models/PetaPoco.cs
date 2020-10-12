@@ -95,7 +95,7 @@ namespace PetaPoco
             }
 
             // Work out connection string and provider name
-            var providerName = "System.Data.SqlClient";
+            string providerName = "System.Data.SqlClient";
             if (ConfigurationManager.ConnectionStrings[connectionStringName] != null)
             {
                 if (!string.IsNullOrEmpty(ConfigurationManager.ConnectionStrings[connectionStringName].ProviderName))
@@ -343,8 +343,8 @@ namespace PetaPoco
             // Convert value to from poco type to db type
             if (pi != null)
             {
-                var mapper = Mappers.GetMapper(pi.DeclaringType);
-                var fn = mapper.GetToDbConverter(pi);
+                IMapper mapper = Mappers.GetMapper(pi.DeclaringType);
+                Func<object, object> fn = mapper.GetToDbConverter(pi);
                 if (fn != null)
                 {
                     value = fn(value);
@@ -353,7 +353,7 @@ namespace PetaPoco
             }
 
             // Support passed in parameters
-            var idbParam = value as IDbDataParameter;
+            IDbDataParameter idbParam = value as IDbDataParameter;
             if (idbParam != null)
             {
                 idbParam.ParameterName = string.Format("{0}{1}", _paramPrefix, cmd.Parameters.Count);
@@ -362,7 +362,7 @@ namespace PetaPoco
             }
 
             // Create the parameter
-            var p = cmd.CreateParameter();
+            IDbDataParameter p = cmd.CreateParameter();
             p.ParameterName = string.Format("{0}{1}", _paramPrefix, cmd.Parameters.Count);
 
             // Assign the parmeter value
@@ -375,7 +375,7 @@ namespace PetaPoco
                 // Give the database type first crack at converting to DB required type
                 value = _dbType.MapParameterValue(value);
 
-                var t = value.GetType();
+                Type t = value.GetType();
                 if (t.IsEnum)       // PostgreSQL .NET driver wont cast enum to int
                 {
                     p.Value = (int)value;
@@ -432,7 +432,7 @@ namespace PetaPoco
             // Perform named argument replacements
             if (EnableNamedParams)
             {
-                var new_args = new List<object>();
+                List<object> new_args = new List<object>();
                 sql = ParametersHelper.ProcessParams(sql, args, new_args);
                 args = new_args.ToArray();
             }
@@ -450,7 +450,7 @@ namespace PetaPoco
             cmd.Connection = connection;
             cmd.CommandText = string.Concat("SET LANGUAGE Italian; ", sql);
             cmd.Transaction = _transaction;
-            foreach (var item in args)
+            foreach (object item in args)
             {
                 AddParam(cmd, item, null);
             }
@@ -540,9 +540,9 @@ namespace PetaPoco
                 OpenSharedConnection();
                 try
                 {
-                    using (var cmd = CreateCommand(_sharedConnection, sql, args))
+                    using (IDbCommand cmd = CreateCommand(_sharedConnection, sql, args))
                     {
-                        var retv = cmd.ExecuteNonQuery();
+                        int retv = cmd.ExecuteNonQuery();
                         OnExecutedCommand(cmd);
                         return retv;
                     }
@@ -591,7 +591,7 @@ namespace PetaPoco
                 OpenSharedConnection();
                 try
                 {
-                    using (var cmd = CreateCommand(_sharedConnection, sql, args))
+                    using (IDbCommand cmd = CreateCommand(_sharedConnection, sql, args))
                     {
                         object val = cmd.ExecuteScalar();
                         OnExecutedCommand(cmd);
@@ -684,8 +684,7 @@ namespace PetaPoco
             }
 
             // Split the SQL
-            PagingHelper.SQLParts parts;
-            if (!PagingHelper.SplitSQL(sql, out parts))
+            if (!PagingHelper.SplitSQL(sql, out PagingHelper.SQLParts parts))
             {
                 throw new Exception("Unable to parse SQL statement for paged query");
             }
@@ -712,10 +711,10 @@ namespace PetaPoco
         public Page<T> Page<T>(long page, long itemsPerPage, string sqlCount, object[] countArgs, string sqlPage, object[] pageArgs)
         {
             // Save the one-time command time out and use it for both queries
-            var saveTimeout = OneTimeCommandTimeout;
+            int saveTimeout = OneTimeCommandTimeout;
 
             // Setup the paged result
-            var result = new Page<T>
+            Page<T> result = new Page<T>
             {
                 CurrentPage = page,
                 ItemsPerPage = itemsPerPage,
@@ -754,8 +753,7 @@ namespace PetaPoco
         /// </remarks>
         public Page<T> Page<T>(long page, long itemsPerPage, string sql, params object[] args)
         {
-            string sqlCount, sqlPage;
-            BuildPageQueries<T>((page - 1) * itemsPerPage, itemsPerPage, sql, ref args, out sqlCount, out sqlPage);
+            BuildPageQueries<T>((page - 1) * itemsPerPage, itemsPerPage, sql, ref args, out string sqlCount, out string sqlPage);
             return Page<T>(page, itemsPerPage, sqlCount, args, sqlPage, args);
         }
 
@@ -853,8 +851,7 @@ namespace PetaPoco
         /// </remarks>
         public List<T> SkipTake<T>(long skip, long take, string sql, params object[] args)
         {
-            string sqlCount, sqlPage;
-            BuildPageQueries<T>(skip, take, sql, ref args, out sqlCount, out sqlPage);
+            BuildPageQueries<T>(skip, take, sql, ref args, out string sqlCount, out string sqlPage);
             return Fetch<T>(sqlPage, args);
         }
 
@@ -900,10 +897,10 @@ namespace PetaPoco
             OpenSharedConnection();
             try
             {
-                using (var cmd = CreateCommand(_sharedConnection, sql, args))
+                using (IDbCommand cmd = CreateCommand(_sharedConnection, sql, args))
                 {
                     IDataReader r;
-                    var pd = PocoData.ForType(typeof(T));
+                    PocoData pd = PocoData.ForType(typeof(T));
                     try
                     {
                         r = cmd.ExecuteReader();
@@ -918,7 +915,7 @@ namespace PetaPoco
 
                         yield break;
                     }
-                    var factory = pd.GetFactory(cmd.CommandText, _sharedConnection.ConnectionString, 0, r.FieldCount, r) as Func<IDataReader, T>;
+                    Func<IDataReader, T> factory = pd.GetFactory(cmd.CommandText, _sharedConnection.ConnectionString, 0, r.FieldCount, r) as Func<IDataReader, T>;
                     using (r)
                     {
                         while (true)
@@ -983,7 +980,7 @@ namespace PetaPoco
         /// <returns>True if a record matching the condition is found.</returns>
         public bool Exists<T>(string sqlCondition, params object[] args)
         {
-            var poco = PocoData.ForType(typeof(T)).TableInfo;
+            TableInfo poco = PocoData.ForType(typeof(T)).TableInfo;
 
             return ExecuteScalar<int>(string.Format(_dbType.GetExistsSql(), poco.TableName, sqlCondition), args) != 0;
         }
@@ -1165,13 +1162,13 @@ namespace PetaPoco
                 OpenSharedConnection();
                 try
                 {
-                    using (var cmd = CreateCommand(_sharedConnection, ""))
+                    using (IDbCommand cmd = CreateCommand(_sharedConnection, ""))
                     {
-                        var pd = PocoData.ForObject(poco, primaryKeyName);
-                        var names = new List<string>();
-                        var values = new List<string>();
-                        var index = 0;
-                        foreach (var i in pd.Columns)
+                        PocoData pd = PocoData.ForObject(poco, primaryKeyName);
+                        List<string> names = new List<string>();
+                        List<string> values = new List<string>();
+                        int index = 0;
+                        foreach (KeyValuePair<string, PocoColumn> i in pd.Columns)
                         {
                             // Don't insert result columns
                             if (i.Value.ResultColumn)
@@ -1217,8 +1214,7 @@ namespace PetaPoco
                             cmd.ExecuteNonQuery();
                             OnExecutedCommand(cmd);
 
-                            PocoColumn pkColumn;
-                            if (primaryKeyName != null && pd.Columns.TryGetValue(primaryKeyName, out pkColumn))
+                            if (primaryKeyName != null && pd.Columns.TryGetValue(primaryKeyName, out PocoColumn pkColumn))
                             {
                                 return pkColumn.GetValue(poco);
                             }
@@ -1235,8 +1231,7 @@ namespace PetaPoco
                         // Assign the ID back to the primary key property
                         if (primaryKeyName != null)
                         {
-                            PocoColumn pc;
-                            if (pd.Columns.TryGetValue(primaryKeyName, out pc))
+                            if (pd.Columns.TryGetValue(primaryKeyName, out PocoColumn pc))
                             {
                                 pc.SetValue(poco, pc.ChangeType(id));
                             }
@@ -1270,7 +1265,7 @@ namespace PetaPoco
         /// from the POCO's attributes</remarks>
         public object Insert(object poco)
         {
-            var pd = PocoData.ForType(poco.GetType());
+            PocoData pd = PocoData.ForType(poco.GetType());
             return Insert("dbo", pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, pd.TableInfo.AutoIncrement, poco);
         }
 
@@ -1297,12 +1292,12 @@ namespace PetaPoco
                 OpenSharedConnection();
                 try
                 {
-                    using (var cmd = CreateCommand(_sharedConnection, sql))
+                    using (IDbCommand cmd = CreateCommand(_sharedConnection, sql))
                     {
                         DoPreExecute(cmd);
 
                         // Do it
-                        var retv = cmd.ExecuteNonQuery();
+                        int retv = cmd.ExecuteNonQuery();
                         OnExecutedCommand(cmd);
                         return retv;
                     }
@@ -1339,14 +1334,14 @@ namespace PetaPoco
                 OpenSharedConnection();
                 try
                 {
-                    using (var cmd = CreateCommand(_sharedConnection, ""))
+                    using (IDbCommand cmd = CreateCommand(_sharedConnection, ""))
                     {
-                        var sb = new StringBuilder();
-                        var index = 0;
-                        var pd = PocoData.ForObject(poco, primaryKeyName);
+                        StringBuilder sb = new StringBuilder();
+                        int index = 0;
+                        PocoData pd = PocoData.ForObject(poco, primaryKeyName);
                         if (columns == null)
                         {
-                            foreach (var i in pd.Columns)
+                            foreach (KeyValuePair<string, PocoColumn> i in pd.Columns)
                             {
                                 // Don't update the primary key, but grab the value if we don't have it
                                 if (string.Compare(i.Key, primaryKeyName, true) == 0)
@@ -1379,9 +1374,9 @@ namespace PetaPoco
                         }
                         else
                         {
-                            foreach (var colname in columns)
+                            foreach (string colname in columns)
                             {
-                                var pc = pd.Columns[colname];
+                                PocoColumn pc = pd.Columns[colname];
 
                                 // Build the sql
                                 if (index > 0)
@@ -1398,7 +1393,7 @@ namespace PetaPoco
                             // Grab primary key value
                             if (primaryKeyValue == null)
                             {
-                                var pc = pd.Columns[primaryKeyName];
+                                PocoColumn pc = pd.Columns[primaryKeyName];
                                 primaryKeyValue = pc.GetValue(poco);
                             }
 
@@ -1418,7 +1413,7 @@ namespace PetaPoco
                         DoPreExecute(cmd);
 
                         // Do it
-                        var retv = cmd.ExecuteNonQuery();
+                        int retv = cmd.ExecuteNonQuery();
                         OnExecutedCommand(cmd);
                         return retv;
                     }
@@ -1505,7 +1500,7 @@ namespace PetaPoco
         /// <returns>The number of affected rows</returns>
         public int Update(object poco, object primaryKeyValue, IEnumerable<string> columns)
         {
-            var pd = PocoData.ForType(poco.GetType());
+            PocoData pd = PocoData.ForType(poco.GetType());
             return Update("dbo", pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco, primaryKeyValue, columns);
         }
 
@@ -1518,7 +1513,7 @@ namespace PetaPoco
         /// <returns>The number of affected rows</returns>
         public int Update<T>(string sql, params object[] args)
         {
-            var pd = PocoData.ForType(typeof(T));
+            PocoData pd = PocoData.ForType(typeof(T));
             return Execute(string.Format("SET LANGUAGE Italian; UPDATE {0} {1}", _dbType.EscapeTableName(pd.TableInfo.TableName), sql), args);
         }
 
@@ -1530,7 +1525,7 @@ namespace PetaPoco
         /// <returns>The number of affected rows</returns>
         public int Update<T>(Sql sql)
         {
-            var pd = PocoData.ForType(typeof(T));
+            PocoData pd = PocoData.ForType(typeof(T));
             return Execute(new Sql(string.Format("SET LANGUAGE Italian; UPDATE {0}", _dbType.EscapeTableName(pd.TableInfo.TableName))).Append(sql));
         }
         #endregion
@@ -1562,16 +1557,15 @@ namespace PetaPoco
             // If primary key value not specified, pick it up from the object
             if (primaryKeyValue == null)
             {
-                var pd = PocoData.ForObject(poco, primaryKeyName);
-                PocoColumn pc;
-                if (pd.Columns.TryGetValue(primaryKeyName, out pc))
+                PocoData pd = PocoData.ForObject(poco, primaryKeyName);
+                if (pd.Columns.TryGetValue(primaryKeyName, out PocoColumn pc))
                 {
                     primaryKeyValue = pc.GetValue(poco);
                 }
             }
 
             // Do it
-            var sql = string.Format("DELETE FROM {0} WHERE {1}=@0", _dbType.EscapeTableName(tableName), _dbType.EscapeSqlIdentifier(primaryKeyName));
+            string sql = string.Format("DELETE FROM {0} WHERE {1}=@0", _dbType.EscapeTableName(tableName), _dbType.EscapeSqlIdentifier(primaryKeyName));
             return Execute(sql, primaryKeyValue);
         }
 
@@ -1582,7 +1576,7 @@ namespace PetaPoco
         /// <returns>The number of rows affected</returns>
         public int Delete(object poco)
         {
-            var pd = PocoData.ForType(poco.GetType());
+            PocoData pd = PocoData.ForType(poco.GetType());
             return Delete(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco);
         }
 
@@ -1599,7 +1593,7 @@ namespace PetaPoco
                 return Delete(pocoOrPrimaryKey);
             }
 
-            var pd = PocoData.ForType(typeof(T));
+            PocoData pd = PocoData.ForType(typeof(T));
             return Delete(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, null, pocoOrPrimaryKey);
         }
 
@@ -1612,7 +1606,7 @@ namespace PetaPoco
         /// <returns>The number of affected rows</returns>
         public int Delete<T>(string sql, params object[] args)
         {
-            var pd = PocoData.ForType(typeof(T));
+            PocoData pd = PocoData.ForType(typeof(T));
             return Execute(string.Format("DELETE FROM {0} {1}", _dbType.EscapeTableName(pd.TableInfo.TableName), sql), args);
         }
 
@@ -1624,7 +1618,7 @@ namespace PetaPoco
         /// <returns>The number of affected rows</returns>
         public int Delete<T>(Sql sql)
         {
-            var pd = PocoData.ForType(typeof(T));
+            PocoData pd = PocoData.ForType(typeof(T));
             return Execute(new Sql(string.Format("DELETE FROM {0}", _dbType.EscapeTableName(pd.TableInfo.TableName))).Append(sql));
         }
         #endregion
@@ -1640,10 +1634,9 @@ namespace PetaPoco
         /// <remarks>This method simply tests if the POCO's primary key column property has been set to something non-zero.</remarks>
         public bool IsNew(string primaryKeyName, object poco)
         {
-            var pd = PocoData.ForObject(poco, primaryKeyName);
+            PocoData pd = PocoData.ForObject(poco, primaryKeyName);
             object pk;
-            PocoColumn pc;
-            if (pd.Columns.TryGetValue(primaryKeyName, out pc))
+            if (pd.Columns.TryGetValue(primaryKeyName, out PocoColumn pc))
             {
                 pk = pc.GetValue(poco);
             }
@@ -1655,7 +1648,7 @@ namespace PetaPoco
 #endif
             else
             {
-                var pi = poco.GetType().GetProperty(primaryKeyName);
+                PropertyInfo pi = poco.GetType().GetProperty(primaryKeyName);
                 if (pi == null)
                 {
                     throw new ArgumentException(string.Format("The object doesn't have a property matching the primary key column name '{0}'", primaryKeyName));
@@ -1669,7 +1662,7 @@ namespace PetaPoco
                 return true;
             }
 
-            var type = pk.GetType();
+            Type type = pk.GetType();
 
             if (type.IsValueType)
             {
@@ -1712,7 +1705,7 @@ namespace PetaPoco
         /// <remarks>This method simply tests if the POCO's primary key column property has been set to something non-zero.</remarks>
         public bool IsNew(object poco)
         {
-            var pd = PocoData.ForType(poco.GetType());
+            PocoData pd = PocoData.ForType(poco.GetType());
             if (!pd.TableInfo.AutoIncrement)
             {
                 throw new InvalidOperationException("IsNew() and Save() are only supported on tables with auto-increment/identity primary key columns");
@@ -1747,7 +1740,7 @@ namespace PetaPoco
         /// <param name="poco">The POCO object to be saved</param>
         public void Save(object poco)
         {
-            var pd = PocoData.ForType(poco.GetType());
+            PocoData pd = PocoData.ForType(poco.GetType());
             Save(pd.TableInfo.TableName, pd.TableInfo.PrimaryKey, poco);
         }
         #endregion
@@ -2043,7 +2036,7 @@ namespace PetaPoco
             OpenSharedConnection();
             try
             {
-                using (var cmd = CreateCommand(_sharedConnection, sql, args))
+                using (IDbCommand cmd = CreateCommand(_sharedConnection, sql, args))
                 {
                     IDataReader r;
                     try
@@ -2060,7 +2053,7 @@ namespace PetaPoco
 
                         yield break;
                     }
-                    var factory = MultiPocoFactory.GetFactory<TRet>(types, _sharedConnection.ConnectionString, sql, r);
+                    Func<IDataReader, object, TRet> factory = MultiPocoFactory.GetFactory<TRet>(types, _sharedConnection.ConnectionString, sql, r);
                     if (cb == null)
                     {
                         cb = MultiPocoFactory.GetAutoMapper(types.ToArray());
@@ -2102,7 +2095,7 @@ namespace PetaPoco
                         }
                         if (bNeedTerminator)
                         {
-                            var poco = (TRet)(cb as Delegate).DynamicInvoke(new object[types.Length]);
+                            TRet poco = (TRet)(cb as Delegate).DynamicInvoke(new object[types.Length]);
                             if (poco != null)
                             {
                                 yield return poco;
@@ -2162,7 +2155,7 @@ namespace PetaPoco
         /// <returns></returns>
         public string FormatCommand(string sql, object[] args)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             if (sql == null)
             {
                 return "";
@@ -2350,7 +2343,7 @@ namespace PetaPoco
         {
             DbCommand command = (DbCommand)Activator.CreateInstance(_commandType);
 
-            var oracleCommandBindByName = _commandType.GetProperty("BindByName");
+            PropertyInfo oracleCommandBindByName = _commandType.GetProperty("BindByName");
             oracleCommandBindByName.SetValue(command, true, null);
 
             return command;
@@ -2594,7 +2587,7 @@ namespace PetaPoco
             bool ExplicitColumns = pi.DeclaringType.GetCustomAttributes(typeof(ExplicitColumnsAttribute), true).Length > 0;
 
             // Check for [Column]/[Ignore] Attributes
-            var ColAttrs = pi.GetCustomAttributes(typeof(ColumnAttribute), true);
+            object[] ColAttrs = pi.GetCustomAttributes(typeof(ColumnAttribute), true);
             if (ExplicitColumns)
             {
                 if (ColAttrs.Length == 0)
@@ -2615,7 +2608,7 @@ namespace PetaPoco
             // Read attribute
             if (ColAttrs.Length > 0)
             {
-                var colattr = (ColumnAttribute)ColAttrs[0];
+                ColumnAttribute colattr = (ColumnAttribute)ColAttrs[0];
 
                 ci.ColumnName = colattr.Name == null ? pi.Name : colattr.Name;
                 ci.ForceToUtc = colattr.ForceToUtc;
@@ -2743,7 +2736,7 @@ namespace PetaPoco
             _lock.EnterWriteLock();
             try
             {
-                foreach (var i in _mappers.Where(kvp => kvp.Value == mapper).ToList())
+                foreach (KeyValuePair<object, IMapper> i in _mappers.Where(kvp => kvp.Value == mapper).ToList())
                 {
                     _mappers.Remove(i.Key);
                 }
@@ -2765,8 +2758,7 @@ namespace PetaPoco
             _lock.EnterReadLock();
             try
             {
-                IMapper val;
-                if (_mappers.TryGetValue(t, out val))
+                if (_mappers.TryGetValue(t, out IMapper val))
                 {
                     return val;
                 }
@@ -2930,8 +2922,8 @@ namespace PetaPoco
             }
 
             // Build it
-            var sb = new StringBuilder();
-            var args = new List<object>();
+            StringBuilder sb = new StringBuilder();
+            List<object> args = new List<object>();
             Build(sb, args, null);
             _sqlFinal = sb.ToString();
             _argsFinal = args.ToArray();
@@ -3006,7 +2998,7 @@ namespace PetaPoco
                     sb.Append("\n");
                 }
 
-                var sql = ParametersHelper.ProcessParams(_sql, _args, args);
+                string sql = ParametersHelper.ProcessParams(_sql, _args, args);
 
                 if (Is(lhs, "WHERE ") && Is(this, "WHERE "))
                 {
@@ -3212,7 +3204,7 @@ namespace PetaPoco
             TableInfo ti = new TableInfo();
 
             // Get the table name
-            var a = t.GetCustomAttributes(typeof(TableNameAttribute), true);
+            object[] a = t.GetCustomAttributes(typeof(TableNameAttribute), true);
             ti.TableName = a.Length == 0 ? t.Name : (a[0] as TableNameAttribute).Value;
 
             // Get the primary key
@@ -3311,7 +3303,7 @@ namespace PetaPoco
             /// <returns>The final SQL query that should be executed.</returns>
             public virtual string BuildPageQuery(long skip, long take, PagingHelper.SQLParts parts, ref object[] args)
             {
-                var sql = string.Format("{0}\nLIMIT @{1} OFFSET @{2}", parts.sql, args.Length, args.Length + 1);
+                string sql = string.Format("{0}\nLIMIT @{1} OFFSET @{2}", parts.sql, args.Length, args.Length + 1);
                 args = args.Concat(new object[] { take, skip }).ToArray();
                 return sql;
             }
@@ -3468,8 +3460,7 @@ namespace PetaPoco
             public override void SetValue(object target, object val) { (target as IDictionary<string, object>)[ColumnName] = val; }
             public override object GetValue(object target)
             {
-                object val = null;
-                (target as IDictionary<string, object>).TryGetValue(ColumnName, out val);
+                (target as IDictionary<string, object>).TryGetValue(ColumnName, out object val);
                 return val;
             }
             public override object ChangeType(object val) { return val; }
@@ -3485,13 +3476,13 @@ namespace PetaPoco
             public static object GetAutoMapper(Type[] types)
             {
                 // Build a key
-                var key = new ArrayKey<Type>(types);
+                ArrayKey<Type> key = new ArrayKey<Type>(types);
 
                 return AutoMappers.Get(key, () =>
                 {
                     // Create a method
-                    var m = new DynamicMethod("petapoco_automapper", types[0], types, true);
-                    var il = m.GetILGenerator();
+                    DynamicMethod m = new DynamicMethod("petapoco_automapper", types[0], types, true);
+                    ILGenerator il = m.GetILGenerator();
 
                     for (int i = 1; i < types.Length; i++)
                     {
@@ -3499,7 +3490,7 @@ namespace PetaPoco
                         for (int j = i - 1; j >= 0; j--)
                         {
                             // Find the property
-                            var candidates = from p in types[j].GetProperties() where p.PropertyType == types[i] select p;
+                            IEnumerable<PropertyInfo> candidates = from p in types[j].GetProperties() where p.PropertyType == types[i] select p;
                             if (candidates.Count() == 0)
                             {
                                 continue;
@@ -3547,7 +3538,7 @@ namespace PetaPoco
 
                 // Find split point
                 int firstColumn = pos;
-                var usedColumns = new Dictionary<string, bool>();
+                Dictionary<string, bool> usedColumns = new Dictionary<string, bool>();
                 for (; pos < r.FieldCount; pos++)
                 {
                     // Split if field name has already been used, or if the field doesn't exist in current poco but does in the next
@@ -3565,19 +3556,19 @@ namespace PetaPoco
             // Create a multi-poco factory
             private static Func<IDataReader, object, TRet> CreateMultiPocoFactory<TRet>(Type[] types, string ConnectionString, string sql, IDataReader r)
             {
-                var m = new DynamicMethod("petapoco_multipoco_factory", typeof(TRet), new Type[] { typeof(MultiPocoFactory), typeof(IDataReader), typeof(object) }, typeof(MultiPocoFactory));
-                var il = m.GetILGenerator();
+                DynamicMethod m = new DynamicMethod("petapoco_multipoco_factory", typeof(TRet), new Type[] { typeof(MultiPocoFactory), typeof(IDataReader), typeof(object) }, typeof(MultiPocoFactory));
+                ILGenerator il = m.GetILGenerator();
 
                 // Load the callback
                 il.Emit(OpCodes.Ldarg_2);
 
                 // Call each delegate
-                var dels = new List<Delegate>();
+                List<Delegate> dels = new List<Delegate>();
                 int pos = 0;
                 for (int i = 0; i < types.Length; i++)
                 {
                     // Add to list of delegates to call
-                    var del = FindSplitPoint(types[i], i + 1 < types.Length ? types[i + 1] : null, ConnectionString, sql, r, ref pos);
+                    Delegate del = FindSplitPoint(types[i], i + 1 < types.Length ? types[i + 1] : null, ConnectionString, sql, r, ref pos);
                     dels.Add(del);
 
                     // Get the delegate
@@ -3587,7 +3578,7 @@ namespace PetaPoco
                     il.Emit(OpCodes.Ldarg_1);                                                   // callback,delegate, datareader
 
                     // Call Invoke
-                    var tDelInvoke = del.GetType().GetMethod("Invoke");
+                    MethodInfo tDelInvoke = del.GetType().GetMethod("Invoke");
                     il.Emit(OpCodes.Callvirt, tDelInvoke);                                      // Poco left on stack
                 }
 
@@ -3612,7 +3603,7 @@ namespace PetaPoco
             // Get (or create) the multi-poco factory for a query
             public static Func<IDataReader, object, TRet> GetFactory<TRet>(Type[] types, string ConnectionString, string sql, IDataReader r)
             {
-                var key = Tuple.Create<Type, ArrayKey<Type>, string, string>(typeof(TRet), new ArrayKey<Type>(types), ConnectionString, sql);
+                Tuple<Type, ArrayKey<Type>, string, string> key = Tuple.Create<Type, ArrayKey<Type>, string, string>(typeof(TRet), new ArrayKey<Type>(types), ConnectionString, sql);
 
                 return (Func<IDataReader, object, TRet>)MultiPocoFactories.Get(key, () =>
                 {
@@ -3639,11 +3630,11 @@ namespace PetaPoco
         {
             public static PocoData ForObject(object o, string primaryKeyName)
             {
-                var t = o.GetType();
+                Type t = o.GetType();
 #if !PETAPOCO_NO_DYNAMIC
                 if (t == typeof(System.Dynamic.ExpandoObject))
                 {
-                    var pd = new PocoData
+                    PocoData pd = new PocoData
                     {
                         TableInfo = new TableInfo(),
                         Columns = new Dictionary<string, PocoColumn>(StringComparer.OrdinalIgnoreCase)
@@ -3651,7 +3642,7 @@ namespace PetaPoco
                     pd.Columns.Add(primaryKeyName, new ExpandoColumn() { ColumnName = primaryKeyName });
                     pd.TableInfo.PrimaryKey = primaryKeyName;
                     pd.TableInfo.AutoIncrement = true;
-                    foreach (var col in (o as IDictionary<string, object>).Keys)
+                    foreach (string col in (o as IDictionary<string, object>).Keys)
                     {
                         if (col != primaryKeyName)
                         {
@@ -3686,14 +3677,14 @@ namespace PetaPoco
                 type = t;
 
                 // Get the mapper for this type
-                var mapper = Mappers.GetMapper(t);
+                IMapper mapper = Mappers.GetMapper(t);
 
                 // Get the table info
                 TableInfo = mapper.GetTableInfo(t);
 
                 // Work out bound properties
                 Columns = new Dictionary<string, PocoColumn>(StringComparer.OrdinalIgnoreCase);
-                foreach (var pi in t.GetProperties())
+                foreach (PropertyInfo pi in t.GetProperties())
                 {
                     ColumnInfo ci = mapper.GetColumnInfo(pi);
                     if (ci == null)
@@ -3701,7 +3692,7 @@ namespace PetaPoco
                         continue;
                     }
 
-                    var pc = new PocoColumn
+                    PocoColumn pc = new PocoColumn
                     {
                         PropertyInfo = pi,
                         ColumnName = ci.ColumnName,
@@ -3720,7 +3711,7 @@ namespace PetaPoco
 
             private static bool IsIntegralType(Type t)
             {
-                var tc = Type.GetTypeCode(t);
+                TypeCode tc = Type.GetTypeCode(t);
                 return tc >= TypeCode.SByte && tc <= TypeCode.UInt64;
             }
 
@@ -3728,14 +3719,14 @@ namespace PetaPoco
             public Delegate GetFactory(string sql, string connString, int firstColumn, int countColumns, IDataReader r)
             {
                 // Check cache
-                var key = Tuple.Create<string, string, int, int>(sql, connString, firstColumn, countColumns);
+                Tuple<string, string, int, int> key = Tuple.Create<string, string, int, int>(sql, connString, firstColumn, countColumns);
 
                 return PocoFactories.Get(key, () =>
                 {
                     // Create the method
-                    var m = new DynamicMethod("petapoco_factory_" + PocoFactories.Count.ToString(), type, new Type[] { typeof(IDataReader) }, true);
-                    var il = m.GetILGenerator();
-                    var mapper = Mappers.GetMapper(type);
+                    DynamicMethod m = new DynamicMethod("petapoco_factory_" + PocoFactories.Count.ToString(), type, new Type[] { typeof(IDataReader) }, true);
+                    ILGenerator il = m.GetILGenerator();
+                    IMapper mapper = Mappers.GetMapper(type);
 
 #if !PETAPOCO_NO_DYNAMIC
                     if (type == typeof(object))
@@ -3748,13 +3739,13 @@ namespace PetaPoco
                         // Enumerate all fields generating a set assignment for the column
                         for (int i = firstColumn; i < firstColumn + countColumns; i++)
                         {
-                            var srcType = r.GetFieldType(i);
+                            Type srcType = r.GetFieldType(i);
 
                             il.Emit(OpCodes.Dup);                       // obj, obj
                             il.Emit(OpCodes.Ldstr, r.GetName(i));       // obj, obj, fieldname
 
                             // Get the converter
-                            Func<object, object> converter = mapper.GetFromDbConverter((PropertyInfo)null, srcType);
+                            Func<object, object> converter = mapper.GetFromDbConverter(null, srcType);
 
                             /*
 							if (ForceDateTimesToUtc && converter == null && srcType == typeof(DateTime))
@@ -3772,7 +3763,7 @@ namespace PetaPoco
                             // Convert DBNull to null
                             il.Emit(OpCodes.Dup);                       // obj, obj, fieldname, converter?,  value, value
                             il.Emit(OpCodes.Isinst, typeof(DBNull));    // obj, obj, fieldname, converter?,  value, (value or null)
-                            var lblNotNull = il.DefineLabel();
+                            Label lblNotNull = il.DefineLabel();
                             il.Emit(OpCodes.Brfalse_S, lblNotNull);     // obj, obj, fieldname, converter?,  value
                             il.Emit(OpCodes.Pop);                       // obj, obj, fieldname, converter?
                             if (converter != null)
@@ -3783,7 +3774,7 @@ namespace PetaPoco
                             il.Emit(OpCodes.Ldnull);                    // obj, obj, fieldname, null
                             if (converter != null)
                             {
-                                var lblReady = il.DefineLabel();
+                                Label lblReady = il.DefineLabel();
                                 il.Emit(OpCodes.Br_S, lblReady);
                                 il.MarkLabel(lblNotNull);
                                 il.Emit(OpCodes.Callvirt, fnInvoke);
@@ -3802,17 +3793,17 @@ namespace PetaPoco
                         if (type.IsValueType || type == typeof(string) || type == typeof(byte[]))
                     {
                         // Do we need to install a converter?
-                        var srcType = r.GetFieldType(0);
-                        var converter = GetConverter(mapper, null, srcType, type);
+                        Type srcType = r.GetFieldType(0);
+                        Func<object, object> converter = GetConverter(mapper, null, srcType, type);
 
                         // "if (!rdr.IsDBNull(i))"
                         il.Emit(OpCodes.Ldarg_0);                                       // rdr
                         il.Emit(OpCodes.Ldc_I4_0);                                      // rdr,0
                         il.Emit(OpCodes.Callvirt, fnIsDBNull);                          // bool
-                        var lblCont = il.DefineLabel();
+                        Label lblCont = il.DefineLabel();
                         il.Emit(OpCodes.Brfalse_S, lblCont);
                         il.Emit(OpCodes.Ldnull);                                        // null
-                        var lblFin = il.DefineLabel();
+                        Label lblFin = il.DefineLabel();
                         il.Emit(OpCodes.Br_S, lblFin);
 
                         il.MarkLabel(lblCont);
@@ -3842,33 +3833,32 @@ namespace PetaPoco
                         for (int i = firstColumn; i < firstColumn + countColumns; i++)
                         {
                             // Get the PocoColumn for this db column, ignore if not known
-                            PocoColumn pc;
-                            if (!Columns.TryGetValue(r.GetName(i), out pc))
+                            if (!Columns.TryGetValue(r.GetName(i), out PocoColumn pc))
                             {
                                 continue;
                             }
 
                             // Get the source type for this column
-                            var srcType = r.GetFieldType(i);
-                            var dstType = pc.PropertyInfo.PropertyType;
+                            Type srcType = r.GetFieldType(i);
+                            Type dstType = pc.PropertyInfo.PropertyType;
 
                             // "if (!rdr.IsDBNull(i))"
                             il.Emit(OpCodes.Ldarg_0);                                       // poco,rdr
                             il.Emit(OpCodes.Ldc_I4, i);                                     // poco,rdr,i
                             il.Emit(OpCodes.Callvirt, fnIsDBNull);                          // poco,bool
-                            var lblNext = il.DefineLabel();
+                            Label lblNext = il.DefineLabel();
                             il.Emit(OpCodes.Brtrue_S, lblNext);                             // poco
 
                             il.Emit(OpCodes.Dup);                                           // poco,poco
 
                             // Do we need to install a converter?
-                            var converter = GetConverter(mapper, pc, srcType, dstType);
+                            Func<object, object> converter = GetConverter(mapper, pc, srcType, dstType);
 
                             // Fast
                             bool Handled = false;
                             if (converter == null)
                             {
-                                var valuegetter = typeof(IDataRecord).GetMethod("Get" + srcType.Name, new Type[] { typeof(int) });
+                                MethodInfo valuegetter = typeof(IDataRecord).GetMethod("Get" + srcType.Name, new Type[] { typeof(int) });
                                 if (valuegetter != null
                                         && valuegetter.ReturnType == srcType
                                         && (valuegetter.ReturnType == dstType || valuegetter.ReturnType == Nullable.GetUnderlyingType(dstType)))
@@ -3913,7 +3903,7 @@ namespace PetaPoco
                             il.MarkLabel(lblNext);
                         }
 
-                        var fnOnLoaded = RecurseInheritedTypes<MethodInfo>(type, (x) => x.GetMethod("OnLoaded", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null));
+                        MethodInfo fnOnLoaded = RecurseInheritedTypes<MethodInfo>(type, (x) => x.GetMethod("OnLoaded", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[0], null));
                         if (fnOnLoaded != null)
                         {
                             il.Emit(OpCodes.Dup);
@@ -4032,7 +4022,7 @@ namespace PetaPoco
 
                 // Calculate the hashcode
                 _hashCode = 17;
-                foreach (var k in keys)
+                foreach (T k in keys)
                 {
                     _hashCode = _hashCode * 23 + (k == null ? 0 : k.GetHashCode());
                 }
@@ -4092,8 +4082,8 @@ namespace PetaPoco
 
                 if (!rxSelect.IsMatch(sql))
                 {
-                    var pd = PocoData.ForType(typeof(T));
-                    var tableName = DatabaseType.EscapeTableName(pd.TableInfo.TableName);
+                    PocoData pd = PocoData.ForType(typeof(T));
+                    string tableName = DatabaseType.EscapeTableName(pd.TableInfo.TableName);
                     string cols = pd.Columns.Count != 0 ? string.Join(", ", (from c in pd.QueryColumns select tableName + "." + DatabaseType.EscapeSqlIdentifier(c)).ToArray()) : "NULL";
                     if (!rxFrom.IsMatch(sql))
                     {
@@ -4183,11 +4173,11 @@ namespace PetaPoco
             {
                 Dictionary<string, object> map = _types.Get(enumType, () =>
                 {
-                    var values = Enum.GetValues(enumType);
+                    Array values = Enum.GetValues(enumType);
 
-                    var newmap = new Dictionary<string, object>(values.Length, StringComparer.InvariantCultureIgnoreCase);
+                    Dictionary<string, object> newmap = new Dictionary<string, object>(values.Length, StringComparer.InvariantCultureIgnoreCase);
 
-                    foreach (var v in values)
+                    foreach (object v in values)
                     {
                         newmap.Add(v.ToString(), v);
                     }
@@ -4220,7 +4210,7 @@ namespace PetaPoco
                 parts.sqlOrderBy = null;
 
                 // Extract the columns from "SELECT <whatever> FROM"
-                var m = rxColumns.Match(sql);
+                Match m = rxColumns.Match(sql);
                 if (!m.Success)
                 {
                     return false;
@@ -4272,8 +4262,7 @@ namespace PetaPoco
 
                     object arg_val;
 
-                    int paramIndex;
-                    if (int.TryParse(param, out paramIndex))
+                    if (int.TryParse(param, out int paramIndex))
                     {
                         // Numbered parameter
                         if (paramIndex < 0 || paramIndex >= args_src.Length)
@@ -4288,9 +4277,9 @@ namespace PetaPoco
                         // Look for a property on one of the arguments with this name
                         bool found = false;
                         arg_val = null;
-                        foreach (var o in args_src)
+                        foreach (object o in args_src)
                         {
-                            var pi = o.GetType().GetProperty(param);
+                            PropertyInfo pi = o.GetType().GetProperty(param);
                             if (pi != null)
                             {
                                 arg_val = pi.GetValue(o, null);
@@ -4310,8 +4299,8 @@ namespace PetaPoco
                         (arg_val as string) == null &&
                         (arg_val as byte[]) == null)
                     {
-                        var sb = new StringBuilder();
-                        foreach (var i in arg_val as System.Collections.IEnumerable)
+                        StringBuilder sb = new StringBuilder();
+                        foreach (object i in arg_val as System.Collections.IEnumerable)
                         {
                             sb.Append((sb.Length == 0 ? "@" : ",@") + args_dest.Count.ToString());
                             args_dest.Add(i);
@@ -4425,7 +4414,7 @@ namespace PetaPoco
                 if (PrimaryKeyName != null)
                 {
                     cmd.CommandText += string.Format(" returning {0} into :newid", EscapeSqlIdentifier(PrimaryKeyName));
-                    var param = cmd.CreateParameter();
+                    IDbDataParameter param = cmd.CreateParameter();
                     param.ParameterName = ":newid";
                     param.Value = DBNull.Value;
                     param.Direction = ParameterDirection.ReturnValue;
@@ -4513,7 +4502,7 @@ namespace PetaPoco
         {
             public override string BuildPageQuery(long skip, long take, PagingHelper.SQLParts parts, ref object[] args)
             {
-                var sqlPage = string.Format("{0}\nOFFSET @{1} ROWS FETCH NEXT @{2} ROWS ONLY", parts.sql, args.Length, args.Length + 1);
+                string sqlPage = string.Format("{0}\nOFFSET @{1} ROWS FETCH NEXT @{2} ROWS ONLY", parts.sql, args.Length, args.Length + 1);
                 args = args.Concat(new object[] { skip, take }).ToArray();
                 return sqlPage;
             }
@@ -4535,7 +4524,7 @@ namespace PetaPoco
                 {
                     parts.sqlSelectRemoved = "peta_inner.* FROM (SELECT " + parts.sqlSelectRemoved + ") peta_inner";
                 }
-                var sqlPage = string.Format("SELECT * FROM (SELECT ROW_NUMBER() OVER ({0}) peta_rn, {1}) peta_paged WHERE peta_rn>@{2} AND peta_rn<=@{3}",
+                string sqlPage = string.Format("SELECT * FROM (SELECT ROW_NUMBER() OVER ({0}) peta_rn, {1}) peta_paged WHERE peta_rn>@{2} AND peta_rn<=@{3}",
                                         parts.sqlOrderBy == null ? "ORDER BY (SELECT NULL)" : parts.sqlOrderBy, parts.sqlSelectRemoved, args.Length, args.Length + 1);
                 args = args.Concat(new object[] { skip, skip + take }).ToArray();
 

@@ -285,7 +285,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                     attrList.Add(fgAttr);
                 }
 
-                string fileName = string.Format("{0}{1}", PurgeFileName(doc.AttributeValues, string.IsNullOrEmpty(doc.PrimaryKeyValue) ? doc.PreservationIndex.GetValueOrDefault().ToString() : doc.PrimaryKeyValue), Path.GetExtension(doc.Name));
+                string fileName = string.Format("{0}{1}", PurgeFileName(docAttributes, string.IsNullOrEmpty(doc.PrimaryKeyValue) ? doc.PreservationIndex.GetValueOrDefault().ToString() : doc.PrimaryKeyValue), Path.GetExtension(doc.Name));
 
                 attrList.Insert(0, new FgAttributo
                 {

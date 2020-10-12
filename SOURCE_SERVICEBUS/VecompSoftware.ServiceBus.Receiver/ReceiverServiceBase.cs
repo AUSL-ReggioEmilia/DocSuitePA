@@ -25,6 +25,7 @@ namespace VecompSoftware.ServiceBus.Receiver
         protected static Type _type_iListenerMessage = typeof(IListenerMessage);
         protected static Type _type_biblosClient = typeof(BiblosDS.BiblosClient);
         protected static Type _type_stampaConformeClient = typeof(StampaConforme.StampaConformeClient);
+        protected static Type _type_serviceBusClient = typeof(ServiceBus.ServiceBusClient);
 
         #region [ Properties ]
         protected static IEnumerable<LogCategory> LogCategories
@@ -68,6 +69,7 @@ namespace VecompSoftware.ServiceBus.Receiver
                 Type currentListener = externalAssembly.GetTypes().Single(f => _type_iListenerMessage.IsAssignableFrom(f));
                 bool containsBiblosDocumentClient = currentListener.GetConstructors().Single().GetParameters().Any(f => f.ParameterType.Equals(_type_biblosClient));
                 bool containsStampaConformeClient = currentListener.GetConstructors().Single().GetParameters().Any(f => f.ParameterType.Equals(_type_stampaConformeClient));
+                bool containsServiceBusClient = currentListener.GetConstructors().Single().GetParameters().Any(f => f.ParameterType.Equals(_type_serviceBusClient));
                 List<object> constructorParameters = new List<object>
                 {
                     receiver,
@@ -81,6 +83,10 @@ namespace VecompSoftware.ServiceBus.Receiver
                 if (containsStampaConformeClient)
                 {
                     constructorParameters.Add(new StampaConforme.StampaConformeClient());
+                }
+                if (containsServiceBusClient)
+                {
+                    constructorParameters.Add(new ServiceBus.ServiceBusClient(logger));
                 }
                 _listener = (IListenerMessage)Activator.CreateInstance(currentListener, constructorParameters.ToArray());
             }
@@ -121,7 +127,7 @@ namespace VecompSoftware.ServiceBus.Receiver
             catch (Exception ex)
             {
                 if (!(ex.Message.Contains("VecompSoftware.Helpers.UDS.XmlSerializers.dll") || ex.Message.Contains("System.IO.FileSystem.Primitives.dll") ||
-                    ex.Message.Contains("System.IO.FileSystem.dll") || ex.Message.Contains(".resources.dll")))
+                    ex.Message.Contains("System.IO.FileSystem.dll") || ex.Message.Contains(".resources.dll") || !(ex.Message.Contains("VecompSoftware.Helpers.XmlSerializers.dll"))))
                 {
                     _logger.WriteError(ex, LogCategories);
                     throw ex;

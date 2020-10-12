@@ -83,8 +83,11 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .HasColumnName("IdRoleTenant")
                 .IsRequired();
 
-            Ignore(x => x.Timestamp)
-                .Ignore(x => x.EntityId);
+            Property(x => x.Timestamp)
+                .HasColumnName("Timestamp")
+                .IsRequired();
+
+            Ignore(x => x.EntityId);
             #endregion
 
             #region [ Configure Navigation Properties ]

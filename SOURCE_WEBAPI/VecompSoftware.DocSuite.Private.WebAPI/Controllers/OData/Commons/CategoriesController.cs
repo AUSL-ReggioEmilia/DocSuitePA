@@ -56,7 +56,18 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Commons
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
                 ICollection<CategoryFullTableValuedModel> categories = _unitOfWork.Repository<Category>().FindCategories(Username, Domain, finder.Name, (FascicleType?)finder.FascicleType, finder.HasFascicleInsertRights,
-                    finder.Manager, finder.Secretary, finder.IdRole, finder.LoadRoot, finder.ParentId, finder.ParentAllDescendants, finder.FullCode, finder.IdContainer, finder.FascicleFilterEnabled);
+                    finder.Manager, finder.Secretary, finder.IdRole, finder.LoadRoot, finder.ParentId, finder.ParentAllDescendants, finder.FullCode, finder.IdContainer, finder.FascicleFilterEnabled, finder.IdTenantAOO);
+                ICollection<CategoryModel> results = _mapperUnitOfWork.Repository<IDomainMapper<CategoryFullTableValuedModel, CategoryModel>>().MapCollection(categories);
+                return Ok(results);
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult FindFascicolableCategory(ODataQueryOptions<Category> options, short idCategory)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<CategoryFullTableValuedModel> categories = _unitOfWork.Repository<Category>().FindFascicolableCategoryById(Username, Domain, idCategory);
                 ICollection<CategoryModel> results = _mapperUnitOfWork.Repository<IDomainMapper<CategoryFullTableValuedModel, CategoryModel>>().MapCollection(categories);
                 return Ok(results);
             }, _logger, LogCategories);

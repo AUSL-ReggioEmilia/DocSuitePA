@@ -28,7 +28,8 @@ namespace VecompSoftware.BiblosDS.WindowsService.WebAPI.Receivers
                 { typeof(CommandPreservationNotify), () => new PreservationNotifyReceiver(this) },
                 { typeof(CommandExecutePreservation), () => new ExecutePreservationReceiver(this) },
                 { typeof(CommandInsertPreservationPDV), () => new InsertPreservationPDVReceiver(this) },
-                { typeof(CommandInsertPreservationRDV), () => new InsertPreservationRDVReceiver(this) }
+                { typeof(CommandInsertPreservationRDV), () => new InsertPreservationRDVReceiver(this) },
+                { typeof(CommandConfigureArchiveForPreservation), () => new ConfigureArchiveForPreservation(this) }
             };
         }
         #endregion

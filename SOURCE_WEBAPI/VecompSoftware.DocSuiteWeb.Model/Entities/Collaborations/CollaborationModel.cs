@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentArchives;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Resolutions;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 {
-    public class CollaborationModel
+    public class CollaborationModel : IContentBase
     {
         #region [ Constructor ]
 
@@ -20,6 +21,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
         #endregion
 
         #region [ Properties ]
+        public Guid UniqueId { get; set; }
 
         public DateTime? AlertDate { get; set; }
 

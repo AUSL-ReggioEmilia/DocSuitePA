@@ -1,13 +1,17 @@
 ﻿using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
+using VecompSoftware.DocSuiteWeb.Mapper.Model.Tenants;
 using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Model.DocumentUnits
 {
     public class DocumentUnitModelMapper : BaseModelMapper<DocumentUnit, DocumentUnitModel>, IDocumentUnitModelMapper
     {
-
-        public DocumentUnitModelMapper()
+        private readonly IMapperUnitOfWork _mapperUnitOfWork;
+        public DocumentUnitModelMapper(IMapperUnitOfWork mapperUnitOfWork)
         {
+            _mapperUnitOfWork = mapperUnitOfWork;
         }
 
         public override DocumentUnitModel Map(DocumentUnit entity, DocumentUnitModel modelTransformed)
@@ -22,6 +26,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.DocumentUnits
             modelTransformed.RegistrationDate = entity.RegistrationDate;
             modelTransformed.RegistrationUser = entity.RegistrationUser;
             modelTransformed.Subject = entity.Subject;
+
+            modelTransformed.TenantAOO = entity.TenantAOO != null ? _mapperUnitOfWork.Repository<IDomainMapper<TenantAOO, TenantAOOModel>>().Map(entity.TenantAOO, new TenantAOOModel()) : null;
 
             return modelTransformed;
         }

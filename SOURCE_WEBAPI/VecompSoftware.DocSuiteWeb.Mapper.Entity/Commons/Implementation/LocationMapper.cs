@@ -1,4 +1,5 @@
-﻿using VecompSoftware.DocSuiteWeb.Entity.Commons;
+﻿using System;
+using VecompSoftware.DocSuiteWeb.Entity.Commons;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Commons
 {
@@ -13,9 +14,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Commons
         {
             #region [ Base ]
             entityTransformed.ConservationArchive = entity.ConservationArchive;
-            entityTransformed.ConservationServer = entity.ConservationServer;
             entityTransformed.DossierArchive = entity.DossierArchive;
-            entityTransformed.DocumentServer = entity.DocumentServer;
             entityTransformed.Name = entity.Name;
             entityTransformed.ProtocolArchive = entity.ProtocolArchive;
             entityTransformed.ResolutionArchive = entity.ResolutionArchive;

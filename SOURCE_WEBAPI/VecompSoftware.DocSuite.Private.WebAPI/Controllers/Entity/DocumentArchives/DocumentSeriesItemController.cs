@@ -13,6 +13,7 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentArchives;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Finder.DocumentArchives;
 using VecompSoftware.DocSuiteWeb.Mapper.ServiceBus.Messages;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
@@ -66,7 +67,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.DocumentArch
                         categoryFascicle = categoryFascicles.FirstOrDefault(f => f.FascicleType == FascicleType.Period);
                     }
                     IIdentityContext identity = new IdentityContext(_currentIdentity.FullUserName);
-                    ICommandUpdateDocumentSeriesItem commandUpdate = new CommandUpdateDocumentSeriesItem(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, null, identity, item, categoryFascicle, null);
+
+                    ICommandUpdateDocumentSeriesItem commandUpdate = new CommandUpdateDocumentSeriesItem(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty, null, identity, item, categoryFascicle, null);
 
                     ServiceBusMessage message = _mapper_cqrsMessageMapper.Map(commandUpdate, new ServiceBusMessage());
                     if (string.IsNullOrEmpty(message.ChannelName))

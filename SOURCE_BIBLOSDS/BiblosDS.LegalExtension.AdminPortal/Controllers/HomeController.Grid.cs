@@ -17,6 +17,8 @@ using BiblosDS.LegalExtension.AdminPortal.ViewModel.Home;
 using System.Linq.Expressions;
 using Newtonsoft.Json;
 using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Models.Documents;
+using BiblosDS.LegalExtension.AdminPortal.ViewModel;
+using VecompSoftware.BiblosDS.WCF.Common;
 
 namespace BiblosDS.LegalExtension.AdminPortal.Controllers
 {
@@ -42,8 +44,9 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                 int take = request.PageSize;
 
                 skip = (skip < 1) ? 0 : skip * take;
+                CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
 
-                if (AzureService.GetSettingValue("DBAdminLoginConnection") == "false")
+                if (WCFUtility.GetSettingValue("DBAdminLoginConnection") == "false")
                 {
                     DocumentCondition conditions = new DocumentCondition();
 
@@ -71,11 +74,12 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                         sortConditions.Add(new DocumentSortCondition { Name = "Name", Dir = "ASC" });
                     }
 
-                    result.Data = ArchiveService.GetArchives(skip, take, conditions, sortConditions, out total).ToList();
+                    
+                    result.Data = ArchiveService.GetArchives(skip, take, conditions, sortConditions, out total, customerCompany.CompanyId).ToList();
                 }
                 else
                 {
-                    result.Data = UserArchive.GetUserArchivesPaged(User.Identity.Name, skip, take, out total);
+                    result.Data = UserArchive.GetUserArchivesPaged(User.Identity.Name, skip, take, out total, customerCompany.CompanyId);
                 }
 
                 result.Total = total;
@@ -155,8 +159,9 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                 int archiveSkip = 0, totalArchives;
 
                 List<DocumentArchive> archivi = null;
+                CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
 
-                if (AzureService.GetSettingValue("DBAdminLoginConnection") == "false")
+                if (WCFUtility.GetSettingValue("DBAdminLoginConnection") == "false")
                 {
                     DocumentCondition conditions = new DocumentCondition();
                     List<DocumentSortCondition> sortConditions = new List<DocumentSortCondition>();
@@ -180,17 +185,18 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                     {
                         sortConditions.Add(new DocumentSortCondition { Name = "Name", Dir = "ASC" });
                     }
-                    archivi = ArchiveService.GetArchives(skip, take, conditions, sortConditions, out total).ToList();
+
+                    archivi = ArchiveService.GetArchives(skip, take, conditions, sortConditions, out total, customerCompany.CompanyId).ToList();
                 }
                 else
                 {
-                    archivi = UserArchive.GetUserArchivesPaged(User.Identity.Name, archiveSkip, ARCHIVES_TAKE, out totalArchives);
+                    archivi = UserArchive.GetUserArchivesPaged(User.Identity.Name, archiveSkip, ARCHIVES_TAKE, out totalArchives, customerCompany.CompanyId);
 
                     if (archivi.Count < totalArchives)
                     {
                         for (archiveSkip += ARCHIVES_TAKE; archiveSkip < totalArchives; archiveSkip += ARCHIVES_TAKE)
                         {
-                            archivi.AddRange(UserArchive.GetUserArchivesPaged(User.Identity.Name, archiveSkip, ARCHIVES_TAKE, out totalArchives));
+                            archivi.AddRange(UserArchive.GetUserArchivesPaged(User.Identity.Name, archiveSkip, ARCHIVES_TAKE, out totalArchives, customerCompany.CompanyId));
                         }
                     }
 
@@ -271,14 +277,17 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         [Authorize]
         public ActionResult GetPreservationPendingTask([DataSourceRequest] DataSourceRequest request)
         {
-            var result = new DataSourceResult();
+            DataSourceResult result = new DataSourceResult();
+
+            CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
+
             ICollection<PreservationTask> items = new List<PreservationTask>();
             try
             {
                 BindingList<DocumentArchive> archives = null;
-                if (AzureService.GetSettingValue("DBAdminLoginConnection") == "false")
+                if (WCFUtility.GetSettingValue("DBAdminLoginConnection") == "false")
                 {
-                    archives = new BindingList<DocumentArchive>(ArchiveService.GetLegalArchives("").Select(x => x.Archive).ToList());
+                    archives = new BindingList<DocumentArchive>(ArchiveService.GetLegalArchives("", customerCompany.CompanyId).Select(x => x.Archive).ToList());
                 }
                 else
                     archives = CustomerService.GetCustomerArchivesByUsername(User.Identity.Name);
@@ -293,20 +302,23 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+       
+
         [NoCache]
         [Authorize]
         public ActionResult GetPreservationVerifyTask([DataSourceRequest] DataSourceRequest request)
         {
-            var result = new DataSourceResult();
+            DataSourceResult result = new DataSourceResult();
+            CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
             BindingList<DocumentArchive> archives = new BindingList<DocumentArchive>();
             try
             {
-                if (AzureService.GetSettingValue("DBAdminLoginConnection") == "false")
+                if (WCFUtility.GetSettingValue("DBAdminLoginConnection") == "false")
                 {
                     archives = CustomerService.GetCustomerArchivesByUsername(User.Identity.Name);
                 }
                 else
-                    archives = new BindingList<DocumentArchive>(ArchiveService.GetLegalArchives("").Select(x => x.Archive).ToList());
+                    archives = new BindingList<DocumentArchive>(ArchiveService.GetLegalArchives("", customerCompany.CompanyId).Select(x => x.Archive).ToList());
                 var tasks = new PreservationService().GetPreservationVerify(archives.Select(x => x.IdArchive).ToArray(), true);
                 result.Total = tasks.Count;
                 result.Data = tasks;
@@ -381,6 +393,10 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             }
             return attributeValue.Value.ToString();
         }
+
+
+     
+
         #endregion
     }
 }

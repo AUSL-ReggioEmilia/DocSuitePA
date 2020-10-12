@@ -1,0 +1,11 @@
+﻿{
+  "TenantName": "ASL-TO-CITTA",
+  "TenantId": "E5ED27AA-7FEA-432F-91F4-42B9A9250908",
+  "TenantAOOId": "ff2efa82-4ea3-471e-af22-f784bbf09c25",
+  "WorkflowIntegrationTopic": "workflow_integration",
+  "WorkflowStartArchiveInvoiceSubscription": "WorkflowStartArchiveInvoice",
+  "ReceivableInvoiceUDSName": "Fatture Passive",
+  "FolderLookingAttachmentInvoice": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\LookingAttachmentInvoices",
+  "FolderBackupAttachmentInvoice": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\BackupAttachmentInvoices",
+  "FolderRejectedAttachmentInvoice": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\RejectedAttachmentInvoices"
+}

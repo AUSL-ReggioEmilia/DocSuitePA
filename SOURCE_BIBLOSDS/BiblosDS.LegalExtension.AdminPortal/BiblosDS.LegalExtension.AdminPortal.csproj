@@ -66,8 +66,8 @@
     <Reference Include="EntityFramework, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.4.1.10331.0\lib\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="Kendo.Mvc">
       <HintPath>..\ExternalLibs\Telerik\Kendo.Mvc.dll</HintPath>
@@ -85,43 +85,27 @@
       <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.4.1\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.4.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.CloudDrive, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.CloudDrive.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=2.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.Diagnostics.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.ServiceRuntime.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
-    <Reference Include="SharpCompress, Version=0.23.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpCompress.0.23.0\lib\net45\SharpCompress.dll</HintPath>
+    <Reference Include="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.24.0\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -184,14 +168,22 @@
   <ItemGroup>
     <Compile Include="ApplicationCore\Interfaces\IInteractor.cs" />
     <Compile Include="ApplicationCore\Interfaces\ILogger.cs" />
+    <Compile Include="ApplicationCore\Models\Archives\ModifyArchivePreservationConfigurationRequestModel.cs" />
+    <Compile Include="ApplicationCore\Models\Archives\ModifyArchivePreservationAttributesRequestModel.cs" />
+    <Compile Include="ApplicationCore\Models\Archives\ValidateArchiveForPreservationRequestModel.cs" />
+    <Compile Include="ApplicationCore\Models\Archives\ValidateArchiveForPreservationResponseModel.cs" />
     <Compile Include="ApplicationCore\Models\AwardBatches\SaveAwardBatchXMLRequestModel.cs" />
     <Compile Include="ApplicationCore\Models\AwardBatches\SaveAwardBatchXMLResponseModel.cs" />
     <Compile Include="ApplicationCore\Models\Documents\SearchDocumentsRequestModel.cs" />
     <Compile Include="ApplicationCore\Models\Documents\SearchDocumentsResponseModel.cs" />
+    <Compile Include="ApplicationCore\Models\EmptyResponseModel.cs" />
     <Compile Include="ApplicationCore\Models\Preservations\ExecutePreservationVerifyRequestModel.cs" />
     <Compile Include="ApplicationCore\Models\Preservations\ExecutePreservationVerifyResponseModel.cs" />
     <Compile Include="ApplicationCore\Models\Preservations\PreservationVerifyReportRequestModel.cs" />
     <Compile Include="ApplicationCore\Models\Preservations\PreservationVerifyReportResponseModel.cs" />
+    <Compile Include="ApplicationCore\Services\Archives\Interactors\ModifyArchivePreservationConfigurationInteractor .cs" />
+    <Compile Include="ApplicationCore\Services\Archives\Interactors\ModifyArchivePreservationAttributesInteractor.cs" />
+    <Compile Include="ApplicationCore\Services\Archives\Interactors\ValidateArchiveForPreservationInteractor.cs" />
     <Compile Include="ApplicationCore\Services\AwardBatches\Interactors\SavePDVXmlInteractor.cs" />
     <Compile Include="ApplicationCore\Services\AwardBatches\Interactors\SaveRDVXmlInteractor.cs" />
     <Compile Include="ApplicationCore\Services\Documents\Interactors\SearchDocumentsInteractor.cs" />
@@ -201,6 +193,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ArchiveController.cs" />
     <Compile Include="Controllers\AwardBatchController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HomeController.Grid.cs" />
@@ -212,6 +205,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ActionResultHelper.cs" />
+    <Compile Include="Helpers\ArubaSignConfigurationHelper.cs" />
     <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Helpers\UploadHelper.cs" />
     <Compile Include="Helpers\VerifyReport.cs" />
@@ -221,11 +215,18 @@
     <Compile Include="Infrastructure\Services\Common\LoggerService.cs" />
     <Compile Include="Mappers\IMapper.cs" />
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\ArubaSignModel.cs" />
     <Compile Include="Models\AttributeModel.cs" />
     <Compile Include="Models\ChunkMetaData.cs" />
     <Compile Include="Models\DocumentItem.cs" />
     <Compile Include="Models\FileResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModel\Archives\ArchiveConfigurableViewModel.cs" />
+    <Compile Include="ViewModel\Archives\ArchiveConfigurationWizardViewModel.cs" />
+    <Compile Include="ViewModel\Archives\ArchivePreservationAttributesConfigurationViewModel.cs" />
+    <Compile Include="ViewModel\Archives\ArchiveWizardStepBaseViewModel.cs" />
+    <Compile Include="ViewModel\Archives\CheckPreservationArchiveConfigurationViewModel.cs" />
+    <Compile Include="ViewModel\Archives\ExecuteArchivePreservationMigratorViewModel.cs" />
     <Compile Include="ViewModel\AwardBatches\AwardBatchDetailsViewModel.cs" />
     <Compile Include="ViewModel\AwardBatches\AwardBatchRDVSignViewModel.cs" />
     <Compile Include="ViewModel\AwardBatches\AwardBatchViewModel.cs" />
@@ -246,6 +247,7 @@
     <Compile Include="ViewModel\ArchivePreservationConfigurationViewModel.cs" />
     <Compile Include="ViewModel\ArchiveCompanyViewModel.cs" />
     <Compile Include="ViewModel\ArchiveViewModel.cs" />
+    <Compile Include="ViewModel\CustomerCompanyViewModel.cs" />
     <Compile Include="ViewModel\Home\DistributionPackagesSearchGridViewModel.cs" />
     <Compile Include="ViewModel\DynamicControlViewModel.cs" />
     <Compile Include="ViewModel\DynamicFormFieldsViewModel.cs" />
@@ -263,9 +265,10 @@
     <Compile Include="ViewModel\ProgressMessageViewModel.cs" />
     <Compile Include="ViewModel\UnZipReportViewModel.cs" />
     <Compile Include="ViewModel\WindowFileContentViewModel.cs" />
-    <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\brands.css" />
+    <Content Include="Content\brands.min.css" />
     <Content Include="Content\css\error.css" />
     <Content Include="Content\css\extensions.css" />
     <Content Include="Content\css\k2.css" />
@@ -280,12 +283,6 @@
     <Content Include="Content\css\template-ie8.css" />
     <Content Include="Content\css\template.css" />
     <Content Include="Content\css\tz_filter.css" />
-    <Content Include="Content\fa-brands.css" />
-    <Content Include="Content\fa-brands.min.css" />
-    <Content Include="Content\fa-regular.css" />
-    <Content Include="Content\fa-regular.min.css" />
-    <Content Include="Content\fa-solid.css" />
-    <Content Include="Content\fa-solid.min.css" />
     <Content Include="Content\fontawesome-all.css" />
     <Content Include="Content\fontawesome-all.min.css" />
     <Content Include="Content\fontawesome.css" />
@@ -313,6 +310,7 @@
     <Content Include="Content\images\img03.jpg" />
     <Content Include="Content\images\imm_costi aggiuntivi.png" />
     <Content Include="Content\images\ios-sprite.png" />
+    <Content Include="Content\images\loadingSpinner.gif" />
     <Content Include="Content\images\pulsante costi aggiuntivi.png" />
     <Content Include="Content\images\rect_1.gif" />
     <Content Include="Content\images\rect_2.gif" />
@@ -321,6 +319,10 @@
     <Content Include="Content\images\tasto_scegli_piano_120x26.png" />
     <Content Include="Content\images\wait.gif" />
     <Content Include="Content\images\WhiteBackround.png" />
+    <Content Include="Content\regular.css" />
+    <Content Include="Content\regular.min.css" />
+    <Content Include="Content\solid.css" />
+    <Content Include="Content\solid.min.css" />
     <Content Include="Content\style.css" />
     <Content Include="Content\styles\Black\editor.png" />
     <Content Include="Content\styles\Black\imagebrowser.png" />
@@ -371,6 +373,7 @@
     <Content Include="Content\styles\Default\loading.gif" />
     <Content Include="Content\styles\Default\loading_2x.gif" />
     <Content Include="Content\styles\Default\markers.png" />
+    <Content Include="Content\styles\Default\markers_2x.png" />
     <Content Include="Content\styles\Default\slider-h.gif" />
     <Content Include="Content\styles\Default\slider-v.gif" />
     <Content Include="Content\styles\Default\sprite.png" />
@@ -470,6 +473,7 @@
     <Content Include="Content\styles\kendo.flat.mobile.min.css" />
     <Content Include="Content\styles\kendo.highcontrast.min.css" />
     <Content Include="Content\styles\kendo.highcontrast.mobile.min.css" />
+    <Content Include="Content\styles\kendo.material-v2.min.css" />
     <Content Include="Content\styles\kendo.material.min.css" />
     <Content Include="Content\styles\kendo.material.mobile.min.css" />
     <Content Include="Content\styles\kendo.materialblack.min.css" />
@@ -633,6 +637,7 @@
     <Content Include="Content\styles\textures\highlight.png" />
     <Content Include="Content\styles\textures\hsv-gradient.png" />
     <Content Include="Content\styles\textures\hue.png" />
+    <Content Include="Content\styles\textures\image-default.png" />
     <Content Include="Content\styles\textures\leather1.png" />
     <Content Include="Content\styles\textures\leather2.png" />
     <Content Include="Content\styles\textures\noise.png" />
@@ -642,6 +647,7 @@
     <Content Include="Content\styles\textures\stripe4.png" />
     <Content Include="Content\styles\textures\stripe5.png" />
     <Content Include="Content\styles\textures\stripe6.png" />
+    <Content Include="Content\styles\textures\transparency-reversed.png" />
     <Content Include="Content\styles\textures\transparency.png" />
     <Content Include="Content\styles\textures\transtexture.png" />
     <Content Include="Content\styles\Uniform\editor.png" />
@@ -659,6 +665,10 @@
     <Content Include="Content\styles\Uniform\sprite_kpi.png" />
     <Content Include="Content\styles\Uniform\sprite_kpi_2x.png" />
     <Content Include="Content\reports\VerifyReport.xsl" />
+    <Content Include="Content\svg-with-js.css" />
+    <Content Include="Content\svg-with-js.min.css" />
+    <Content Include="Content\v4-shims.css" />
+    <Content Include="Content\v4-shims.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Images\error.png" />
@@ -672,25 +682,66 @@
     <Content Include="Install\8.81\_readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Install\8.87\_readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\_readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Reports\leggimi.txt" />
     <Content Include="Scripts\ace\ace.min.js" />
     <Content Include="Scripts\ace\mode-xml.js" />
     <Content Include="Scripts\ace\theme-monokai.js" />
     <Content Include="Scripts\ace\worker-xml.js" />
-    <Content Include="Scripts\jquery-1.6.2-vsdoc.js" />
-    <Content Include="Scripts\jquery-1.6.2.js" />
-    <Content Include="Scripts\jquery-1.6.2.min.js" />
+    <Content Include="Scripts\fontawesome\all.js" />
+    <Content Include="Scripts\fontawesome\all.min.js" />
+    <Content Include="Scripts\fontawesome\brands.js" />
+    <Content Include="Scripts\fontawesome\brands.min.js" />
+    <Content Include="Scripts\fontawesome\conflict-detection.js" />
+    <Content Include="Scripts\fontawesome\conflict-detection.min.js" />
+    <Content Include="Scripts\fontawesome\fontawesome.js" />
+    <Content Include="Scripts\fontawesome\fontawesome.min.js" />
+    <Content Include="Scripts\fontawesome\regular.js" />
+    <Content Include="Scripts\fontawesome\regular.min.js" />
+    <Content Include="Scripts\fontawesome\solid.js" />
+    <Content Include="Scripts\fontawesome\solid.min.js" />
+    <Content Include="Scripts\fontawesome\v4-shims.js" />
+    <Content Include="Scripts\fontawesome\v4-shims.min.js" />
     <Content Include="Install\8.81\default_configurations\Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Scripts\jquery-1.8.0.intellisense.js" />
-    <Content Include="Scripts\jquery-1.8.0.js" />
-    <Content Include="Scripts\jquery-1.8.0.min.js" />
+    <Content Include="Install\8.87\default_configurations\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Install\8.87\default_configurations\Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Install\8.87\default_configurations\Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Install\9.03\default_configurations\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Install\9.03\default_configurations\Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Install\9.03\default_configurations\Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Scripts\jquery-3.4.1-vsdoc.js" />
+    <Content Include="Scripts\jquery-3.4.1.js" />
+    <Content Include="Scripts\jquery-3.4.1.min.js" />
+    <Content Include="Scripts\jquery-3.4.1.slim.js" />
+    <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <Content Include="Scripts\jquery.signalR-2.4.1.js" />
     <Content Include="Scripts\jquery.signalR-2.4.1.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.4.1.min.map" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -1533,10 +1584,13 @@
     <Content Include="Scripts\js\kendo.angular.min.js" />
     <Content Include="Scripts\js\kendo.aspnetmvc.min.js" />
     <Content Include="Scripts\js\kendo.autocomplete.min.js" />
+    <Content Include="Scripts\js\kendo.badge.min.js" />
     <Content Include="Scripts\js\kendo.binder.min.js" />
+    <Content Include="Scripts\js\kendo.breadcrumb.min.js" />
     <Content Include="Scripts\js\kendo.button.min.js" />
     <Content Include="Scripts\js\kendo.buttongroup.min.js" />
     <Content Include="Scripts\js\kendo.calendar.min.js" />
+    <Content Include="Scripts\js\kendo.chat.min.js" />
     <Content Include="Scripts\js\kendo.color.min.js" />
     <Content Include="Scripts\js\kendo.colorpicker.min.js" />
     <Content Include="Scripts\js\kendo.columnmenu.min.js" />
@@ -1552,7 +1606,6 @@
     <Content Include="Scripts\js\kendo.dataviz.core.min.js" />
     <Content Include="Scripts\js\kendo.dataviz.diagram.min.js" />
     <Content Include="Scripts\js\kendo.dataviz.gauge.min.js" />
-    <Content Include="Scripts\js\kendo.dataviz.map.min.js" />
     <Content Include="Scripts\js\kendo.dataviz.min.js" />
     <Content Include="Scripts\js\kendo.dataviz.mobile.min.js" />
     <Content Include="Scripts\js\kendo.dataviz.qrcode.min.js" />
@@ -1562,16 +1615,21 @@
     <Content Include="Scripts\js\kendo.dataviz.treemap.min.js" />
     <Content Include="Scripts\js\kendo.dateinput.min.js" />
     <Content Include="Scripts\js\kendo.datepicker.min.js" />
+    <Content Include="Scripts\js\kendo.daterangepicker.min.js" />
     <Content Include="Scripts\js\kendo.datetimepicker.min.js" />
     <Content Include="Scripts\js\kendo.dialog.min.js" />
     <Content Include="Scripts\js\kendo.dom.min.js" />
     <Content Include="Scripts\js\kendo.draganddrop.min.js" />
+    <Content Include="Scripts\js\kendo.drawer.min.js" />
     <Content Include="Scripts\js\kendo.drawing.min.js" />
     <Content Include="Scripts\js\kendo.dropdownlist.min.js" />
+    <Content Include="Scripts\js\kendo.dropdowntree.min.js" />
     <Content Include="Scripts\js\kendo.editable.min.js" />
     <Content Include="Scripts\js\kendo.editor.min.js" />
     <Content Include="Scripts\js\kendo.excel.min.js" />
     <Content Include="Scripts\js\kendo.filebrowser.min.js" />
+    <Content Include="Scripts\js\kendo.filemanager.min.js" />
+    <Content Include="Scripts\js\kendo.filter.min.js" />
     <Content Include="Scripts\js\kendo.filtercell.min.js" />
     <Content Include="Scripts\js\kendo.filtermenu.min.js" />
     <Content Include="Scripts\js\kendo.fx.min.js" />
@@ -1607,21 +1665,27 @@
     <Content Include="Scripts\js\kendo.mobile.switch.min.js" />
     <Content Include="Scripts\js\kendo.mobile.tabstrip.min.js" />
     <Content Include="Scripts\js\kendo.mobile.view.min.js" />
+    <Content Include="Scripts\js\kendo.multicolumncombobox.min.js" />
     <Content Include="Scripts\js\kendo.multiselect.min.js" />
+    <Content Include="Scripts\js\kendo.multiviewcalendar.min.js" />
     <Content Include="Scripts\js\kendo.notification.min.js" />
     <Content Include="Scripts\js\kendo.numerictextbox.min.js" />
     <Content Include="Scripts\js\kendo.ooxml.min.js" />
     <Content Include="Scripts\js\kendo.pager.min.js" />
+    <Content Include="Scripts\js\kendo.pane.min.js" />
     <Content Include="Scripts\js\kendo.panelbar.min.js" />
     <Content Include="Scripts\js\kendo.pdf.min.js" />
+    <Content Include="Scripts\js\kendo.pdfviewer.min.js" />
     <Content Include="Scripts\js\kendo.pivot.configurator.min.js" />
     <Content Include="Scripts\js\kendo.pivot.fieldmenu.min.js" />
     <Content Include="Scripts\js\kendo.pivotgrid.min.js" />
     <Content Include="Scripts\js\kendo.popup.min.js" />
     <Content Include="Scripts\js\kendo.progressbar.min.js" />
+    <Content Include="Scripts\js\kendo.rating.min.js" />
     <Content Include="Scripts\js\kendo.reorderable.min.js" />
     <Content Include="Scripts\js\kendo.resizable.min.js" />
     <Content Include="Scripts\js\kendo.responsivepanel.min.js" />
+    <Content Include="Scripts\js\kendo.ripple.min.js" />
     <Content Include="Scripts\js\kendo.router.min.js" />
     <Content Include="Scripts\js\kendo.scheduler.agendaview.min.js" />
     <Content Include="Scripts\js\kendo.scheduler.dayview.min.js" />
@@ -1630,12 +1694,15 @@
     <Content Include="Scripts\js\kendo.scheduler.recurrence.min.js" />
     <Content Include="Scripts\js\kendo.scheduler.timelineview.min.js" />
     <Content Include="Scripts\js\kendo.scheduler.view.min.js" />
+    <Content Include="Scripts\js\kendo.scrollview.min.js" />
     <Content Include="Scripts\js\kendo.selectable.min.js" />
     <Content Include="Scripts\js\kendo.slider.min.js" />
     <Content Include="Scripts\js\kendo.sortable.min.js" />
     <Content Include="Scripts\js\kendo.splitter.min.js" />
     <Content Include="Scripts\js\kendo.spreadsheet.min.js" />
+    <Content Include="Scripts\js\kendo.switch.min.js" />
     <Content Include="Scripts\js\kendo.tabstrip.min.js" />
+    <Content Include="Scripts\js\kendo.timeline.min.js" />
     <Content Include="Scripts\js\kendo.timepicker.min.js" />
     <Content Include="Scripts\js\kendo.timezones.min.js" />
     <Content Include="Scripts\js\kendo.toolbar.min.js" />
@@ -1957,6 +2024,7 @@
     <Content Include="Scripts\js\messages\kendo.messages.it-CH.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.it-IT.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.ja-JP.min.js" />
+    <Content Include="Scripts\js\messages\kendo.messages.mk-MK.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.nb-NO.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.nl-BE.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.nl-NL.min.js" />
@@ -1966,9 +2034,12 @@
     <Content Include="Scripts\js\messages\kendo.messages.ro-RO.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.ru-RU.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.sk-SK.min.js" />
+    <Content Include="Scripts\js\messages\kendo.messages.sq-AL.min.js" />
+    <Content Include="Scripts\js\messages\kendo.messages.sr-Latn-RS.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.sv-SE.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.tr-TR.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.uk-UA.min.js" />
+    <Content Include="Scripts\js\messages\kendo.messages.vi-VN.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.zh-CN.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.zh-HK.min.js" />
     <Content Include="Scripts\js\messages\kendo.messages.zh-TW.min.js" />
@@ -2038,6 +2109,9 @@
     <Content Include="Views\Home\_DistributionPackagesGrid.cshtml" />
     <Content Include="Views\AwardBatch\AwardBatchRDVSign.cshtml" />
     <Content Include="Views\Preservation\PreservationAudit.cshtml" />
+    <Content Include="Views\AwardBatch\ViewAwardRDV.cshtml" />
+    <Content Include="Views\Home\ExecutePurgePreservation.cshtml" />
+    <Content Include="Views\Shared\_CompanyPartial.cshtml" />
     <Content Include="webfonts\fa-brands-400.svg" />
     <Content Include="webfonts\fa-regular-400.svg" />
     <Content Include="webfonts\fa-solid-900.svg" />
@@ -2053,8 +2127,13 @@
     <Content Include="webfonts\fa-brands-400.woff" />
     <Content Include="webfonts\fa-brands-400.ttf" />
     <Content Include="webfonts\fa-brands-400.eot" />
-    <Content Include="Views\AwardBatch\ViewAwardRDV.cshtml" />
-    <Content Include="Views\Home\ExecutePurgePreservation.cshtml" />
+    <Content Include="Views\Archive\PreservationArchivesConfigurable.cshtml" />
+    <Content Include="Views\Archive\ArchiveConfigurationWizard.cshtml" />
+    <Content Include="Views\Archive\_CheckArchivePreservationConfiguration.cshtml" />
+    <Content Include="Views\Archive\_ArchivePreservationAttributesConfiguration.cshtml" />
+    <Content Include="Views\Archive\_ExecuteArchivePreservationMigrator.cshtml" />
+    <Content Include="Views\Archive\_ArchivePreservationConfigurationSummary.cshtml" />
+    <Content Include="Views\Home\_ClosePreviousArchiveTasks.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -2261,17 +2340,17 @@
       <Project>{db93d492-2ab1-42b8-a6ba-831ef3ef2841}</Project>
       <Name>BiblosDS.Library.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BiblosDS.Library.Helper\BiblosDS.Library.Helper.csproj">
-      <Project>{141c7da3-2000-4674-9895-e3766e8b2dfd}</Project>
-      <Name>BiblosDS.Library.Helper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BiblosDS.Cloud\BiblosDS.Cloud.csproj">
-      <Project>{d5ddf3d0-9198-41b6-abea-4a4af2d61128}</Project>
-      <Name>BiblosDS.Cloud</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.BiblosDS.Model\VecompSoftware.BiblosDS.Model.csproj">
       <Project>{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}</Project>
       <Name>VecompSoftware.BiblosDS.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BiblosDS.WCF.Common\VecompSoftware.BiblosDS.WCF.Common.csproj">
+      <Project>{B6988E8D-4B45-4D4B-8B8E-058BB6C18111}</Project>
+      <Name>VecompSoftware.BiblosDS.WCF.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.Sign\VecompSoftware.Sign.csproj">
+      <Project>{3EF78364-A8E5-4D94-AA7F-E276190E5C5C}</Project>
+      <Name>VecompSoftware.Sign</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

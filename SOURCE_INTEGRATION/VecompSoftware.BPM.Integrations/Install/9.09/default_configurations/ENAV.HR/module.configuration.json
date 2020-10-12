@@ -1,0 +1,15 @@
+{
+  "ConnectionString": "Data Source=srvbeeneardev.westeurope.cloudapp.azure.com,51433;Initial Catalog=AFOL_ERP;persist security info=True;MultipleActiveResultSets=True;Max Pool Size=1024;User Id=DocSuite;Password=#CoronaVirus2020|Beenear!;Application Name=DSW.PrivateWebAPI.Lazzarotto",
+  "DossierSubjectFormat": "Dossier {0:DossierReference}",
+  "TopicBuilderEvent": "builder_event",
+  "AutomaticProtocolWorkflowRepositoryName": "***REMOVED*** - EHC - Protocollazione automatica",
+  "FullProtocolWorkflowRepositoryName": "***REMOVED*** - EHC - Create full protocol",
+  "FascicleProtocolWorkflowRepositoryName": "***REMOVED*** - EHC - Create fascicle protocol",
+  "DossierMetadataRepositoryId": "D1A74B93-DD42-4E4E-BA0C-3EC028B96ED3",
+  "ManualProtocolWorkflowRepositoryName": "***REMOVED*** - EHC - Protocolla semplice",
+  "DigitalSignatureWorkflowRepositoryName": "***REMOVED*** - EHC - Firma digitale",
+  "WorkflowStartEHCDossierCreatedSubscription": "WorkflowStartEHCDossierCreated",
+  "WorkflowStartEHCFascicleCreatedSubscription": "WorkflowStartEHCFascicleCreated",
+  "WorkflowStartEHCProtocolCanceledSubscription": "WorkflowStartEHCProtocolCanceled",
+  "WorkflowStartEHCProtocolCreatedSubscription": "WorkflowStartEHCProtocolCreated"
+}

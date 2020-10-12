@@ -265,6 +265,7 @@ namespace BiblosDS.Library.Common.DB
                 var ret = db.PreservationTask
                     .Include(x => x.Archive)
                     .Include(x => x.PreservationTaskType)
+                    .Include(x => x.PreservationTaskStatus)
                     .Include(x => x.PreservationTask1)
                     .Include(x => x.PreservationTask1.First().Archive)
                     .Include(x => x.PreservationTask1.First().PreservationTaskType)
@@ -301,11 +302,16 @@ namespace BiblosDS.Library.Common.DB
                 IQueryable<Model.PreservationTask> query = db.PreservationTask
                     .Include(x => x.Archive)
                     .Include(x => x.PreservationTaskType)
-                    .Where(x => idArchives.Contains(x.IdArchive) &&
-                        ((!x.Executed || (x.Executed && x.HasError)) && (!x.IdCorrelatedPreservationTask.HasValue || (x.PreservationTask2.Executed && !x.PreservationTask2.HasError))))
-                    .OrderBy(x => x.EndDocumentDate).ThenByDescending(x => x.PreservationTaskType.KeyCode);
+                    .Where(x => idArchives.Any(xx => xx == x.IdArchive) &&
+                        ((!x.Executed || (x.Executed && x.HasError)) 
+                        && (!x.IdCorrelatedPreservationTask.HasValue || (x.PreservationTask2.Executed && !x.PreservationTask2.HasError))));
 
-                query.ToList().ForEach(f => results.Add(f.Convert()));
+                query.AsEnumerable()
+                    .GroupBy(g => g.Archive.IdArchive, (key, g) => g.OrderBy(o => o.EndDocumentDate).FirstOrDefault())
+                    .OrderBy(o => o.PreservationTaskType.KeyCode)
+                    .ThenBy(o => o.EndDocumentDate)
+                    .ToList()
+                    .ForEach(f => results.Add(f.Convert()));
                 return results;
             }
             finally
@@ -325,6 +331,7 @@ namespace BiblosDS.Library.Common.DB
                 var ret = db.PreservationTask
                     .Include(x => x.Archive)
                     .Include(x => x.PreservationTaskType)
+                    .Include(x => x.PreservationTaskStatus)
                     .Include(x => x.PreservationTask1)
                     .Include(x => x.PreservationTask1.First().Archive)
                     .Include(x => x.PreservationTask1.First().PreservationTaskType)

@@ -87,13 +87,13 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Roslyn.Generators.Classes
             Type metadataBiblosType;
             Type metadataPropertyType;
 
-            foreach (Section sezione in storage.UDS.Model.Metadata.ToList())
+            foreach (Section sezione in storage.UDS.Model.Metadata.Where(f=> f.Items != null).ToList())
             {
                 foreach (FieldBaseType element in sezione.Items)
                 {
                     metadataPropertyType = GetMetadataPropertyType(element);
                     metadataBiblosType = GetMetadataBiblosType(element);
-                    _log.WriteInfo(new LogMessage(string.Concat("Nuovo metadato individuato in ", entity.TableName, " di tipo ", metadataPropertyType.Name, " e colonna ", element.ColumnName)), LogCategories);
+                    _log.WriteInfo(new LogMessage($"Nuovo metadato individuato in {entity.TableName} di tipo {metadataPropertyType.Name} e colonna {element.ColumnName}"), LogCategories);
                     if (metadataPropertyType != null && metadataBiblosType != null)
                     {
                         entity.MetaData.Add(new Metadata()
@@ -107,7 +107,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Roslyn.Generators.Classes
                     }
                     else
                     {
-                        _log.WriteWarning(new LogMessage(string.Concat("Metadato ", element.ColumnName, " scartato per la tabella ", entity.TableName, " in quanto non valido : ", element.GetType().Name)), LogCategories);
+                        _log.WriteWarning(new LogMessage($"Metadato {element.ColumnName} scartato per la tabella {entity.TableName} in quanto non valido : {element.GetType().Name}"), LogCategories);
                     }
 
                 }

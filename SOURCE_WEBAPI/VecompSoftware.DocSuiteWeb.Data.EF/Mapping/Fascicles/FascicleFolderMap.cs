@@ -72,7 +72,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Fascicles
             #endregion
 
             #region [ Configure Navigation Properties ]
-
             HasRequired(t => t.Fascicle)
                 .WithMany(t => t.FascicleFolders)
                 .Map(p => p.MapKey("IdFascicle"));

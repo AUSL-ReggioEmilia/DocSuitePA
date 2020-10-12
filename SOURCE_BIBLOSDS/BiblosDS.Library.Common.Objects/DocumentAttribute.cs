@@ -112,6 +112,8 @@ namespace BiblosDS.Library.Common.Objects
             set { /* EMPTY */}
         }
 
+        public string DisplayName => string.IsNullOrEmpty(Description) ? Name : Description;        
+
         #endregion
 
         #region Constructor

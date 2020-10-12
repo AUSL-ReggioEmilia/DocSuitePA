@@ -53,8 +53,6 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.PECMails
             entityTransformed.ReceivedAsCc = entity.ReceivedAsCc;
             entityTransformed.Size = entity.Size;
             entityTransformed.MultipleType = entity.MultipleType;
-            entityTransformed.IdUDS = entity.IdUDS;
-            entityTransformed.DocumentUnitType = entity.DocumentUnitType;
             entityTransformed.InvoiceStatus = entity.InvoiceStatus;
 
             #endregion

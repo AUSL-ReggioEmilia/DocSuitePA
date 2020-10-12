@@ -90,10 +90,6 @@ namespace BiblosDS.Library.Common.Objects
         [DataMember]
         public bool FullSignEnabled { get; set; }
 
-        public bool VerifyPreservationIncrementalEnabled { get; set; }
-
-        public bool VerifyPreservationDateEnabled { get; set; }
-
         [DataMember]
         public string FiscalDocumentType { get; set; }
 
@@ -101,5 +97,7 @@ namespace BiblosDS.Library.Common.Objects
         public BindingList<ArchiveServerConfig> ServerConfigs { get; set; }
 
         public string ODBCConnection { get; set; }
+
+        public string PreservationConfiguration { get; set; }
     }
 }

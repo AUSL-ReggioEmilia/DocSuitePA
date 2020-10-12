@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ServiceModel;
 using BiblosDS.Library.Common;
 using BiblosDS.Library.Common.Objects;
 using BiblosDS.Library.Common.Enums;
@@ -8,8 +7,7 @@ using BiblosDS.Library.Common.Services;
 using System.ServiceModel.Activation;
 using BiblosDS.Library.Common.Objects.Response;
 using VecompSoftware.ServiceContract.BiblosDS.Documents;
-using BiblosDS.Library.Common.Objects.UtilityService;
-using BiblosDS.Library.Common.Utility;
+using VecompSoftware.BiblosDS.WCF.Common;
 
 [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
 public class Transit : ITransit

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.Core.Command.CQRS.Events.Models.PECMails;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
@@ -29,6 +30,8 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
     public class Execution : IListenerExecution<ICommandBuildPECMail>
     {
         #region [ Fields ]
+        private const int _retry_tentative = 5;
+        private readonly TimeSpan _threadWaiting = TimeSpan.FromSeconds(2);
         private readonly ILogger _logger;
         private readonly BiblosClient _biblosClient;
         private readonly IWebAPIClient _webApiClient;
@@ -52,6 +55,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
         }
         public IDictionary<string, object> Properties { get; set; }
         public EvaluationModel RetryPolicyEvaluation { get; set; }
+        public Guid? IdWorkflowActivity { get; set; }
 
         #endregion
 
@@ -84,7 +88,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
 
             PECMailBuildModel pecMailBuildModel = command.ContentType.ContentTypeValue;
             PECMailModel pecMailModel = pecMailBuildModel.PECMail;
-
+            IdWorkflowActivity = pecMailBuildModel.IdWorkflowActivity;
             try
             {
 
@@ -99,23 +103,26 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
 
                 #region Creazione Documeti Allegati (Attachments OPTIONAL)
 
-                Archive pecMailArchiveAttachment = _biblosArchives.Single(f => f.Name.Equals(pecMailModel.PECMailBox.Location.ProtocolArchive, StringComparison.InvariantCultureIgnoreCase));
                 if (!RetryPolicyEvaluation.Steps.Any(f => f.Name == "CREATE_ATTACHMENTS") && pecMailModel.Attachments.Any())
                 {
+                    Archive pecMailArchive = _biblosArchives.Single(f => f.Name.Equals(pecMailModel.PECMailBox.Location.ProtocolArchive, StringComparison.InvariantCultureIgnoreCase));
+                    _logger.WriteDebug(new LogMessage($"biblos attachment archive name is {pecMailArchive.Name}"), LogCategories);
 
-                    List<BiblosDS.BiblosDS.Attribute> attachmentAttributes = _biblosClient.Document.GetAttributesDefinition(pecMailArchiveAttachment.Name);
+                    List<BiblosDS.BiblosDS.Attribute> attachmentAttributes = _biblosClient.Document.GetAttributesDefinition(pecMailArchive.Name);
 
                     //CREO CATENA IDENTIFICATIVA
                     Guid? attachmentChainId = pecMailModel.IDAttachments;
                     if (!attachmentChainId.HasValue)
                     {
-                        attachmentChainId = _biblosClient.Document.CreateDocumentChain(pecMailArchiveAttachment.Name, new List<AttributeValue>());
+                        attachmentChainId = _biblosClient.Document.CreateDocumentChain(pecMailArchive.Name, new List<AttributeValue>());
                         pecMailModel.IDAttachments = attachmentChainId;
                     }
                     pecMail.IDAttachments = attachmentChainId.Value;
 
                     List<AttributeValue> attachmentAttributeValues;
-                    foreach (DocumentModel attachment in pecMailModel.Attachments.Where(f => !f.DocumentId.HasValue))
+                    Content documentContent;
+                    Dictionary<Guid, long> sizes = new Dictionary<Guid, long>();
+                    foreach (DocumentModel attachment in pecMailModel.Attachments.Where(f => !f.DocumentId.HasValue && f.DocumentToStoreId.HasValue))
                     {
                         attachmentAttributeValues = new List<AttributeValue>()
                         {
@@ -131,13 +138,15 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
                             },
                         };
                         attachment.ChainId = attachmentChainId;
-                        _logger.WriteDebug(new LogMessage(string.Concat("biblos attachment archive name is ", pecMailArchiveAttachment.Name)), LogCategories);
+
+                        _logger.WriteInfo(new LogMessage($"reading document content {attachment.DocumentToStoreId} ..."), LogCategories);
+                        documentContent = RetryingPolicyAction(() => _biblosClient.Document.GetDocumentContentById(attachment.DocumentToStoreId.Value));
 
                         //CREO IL DOCUMENTO
                         Document attachmentPECMailDocument = new Document
                         {
-                            Archive = pecMailArchiveAttachment,
-                            Content = new Content { Blob = attachment.ContentStream },
+                            Archive = pecMailArchive,
+                            Content = new Content { Blob = documentContent.Blob },
                             Name = attachment.FileName,
                             IsVisible = true,
                             AttributeValues = attachmentAttributeValues
@@ -146,14 +155,13 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
                         //ASSOCIO IL DOCUMENTO ALLA SUA CATENA DI COMPETENZA
                         attachmentPECMailDocument = _biblosClient.Document.AddDocumentToChain(attachmentPECMailDocument, attachmentChainId, ContentFormat.Binary);
 
-                        _logger.WriteInfo(new LogMessage(string.Concat("inserted document ", attachmentPECMailDocument.IdDocument.ToString(), " in archive ",
-                            pecMailArchiveAttachment.IdArchive.ToString())), LogCategories);
+                        _logger.WriteInfo(new LogMessage($"inserted document {attachmentPECMailDocument.IdDocument} in archive {pecMailArchive.IdArchive} with size {documentContent.Blob.LongLength}"), LogCategories);
                         attachment.DocumentId = attachmentPECMailDocument.IdDocument;
-
+                        sizes.Add(attachmentPECMailDocument.IdDocument, documentContent.Blob.LongLength);
                     }
 
                     //Assegno gli allegati all'entita
-                    foreach (DocumentModel attachment in pecMailModel.Attachments)
+                    foreach (DocumentModel attachment in pecMailModel.Attachments.Where(f => f.DocumentId.HasValue))
                     {
                         PECMailAttachment pecMailAttachment = new PECMailAttachment
                         {
@@ -161,7 +169,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
                             AttachmentName = attachment.FileName,
                             Parent = null,
                             IsMain = false,
-                            Size = attachment.ContentStream.Length
+                            Size = sizes[attachment.DocumentId.Value]
                         };
                         pecMail.Attachments.Add(pecMailAttachment);
                     }
@@ -185,7 +193,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
 
                 if (!RetryPolicyEvaluation.Steps.Any(f => f.Name == "ENTITY"))
                 {
-                    pecMail.InvoiceStatus = pecMailModel.InvoiceStatus == DocSuiteWeb.Model.Entities.PECMails.InvoiceStatus.None ? default(InvoiceStatus?) : (InvoiceStatus)pecMailModel.InvoiceStatus;
+                    pecMail.InvoiceStatus = !pecMailModel.InvoiceStatus.HasValue || pecMailModel.InvoiceStatus.Value== DocSuiteWeb.Model.Entities.PECMails.InvoiceStatus.None ? default(InvoiceStatus?) : (InvoiceStatus)pecMailModel.InvoiceStatus;
                     pecMail.MailBody = pecMailModel.MailBody;
                     pecMail.MailPriority = pecMailModel.MailPriority.HasValue ? (PECMailPriority)pecMailModel.MailPriority.Value : PECMailPriority.Normal;
                     pecMail.MailRecipients = pecMailModel.MailRecipients;
@@ -210,15 +218,18 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
                     {
                         pecMail.Year = protocol.Year;
                         pecMail.Number = protocol.Number;
-                        pecMail.DocumentUnitType = DocSuiteWeb.Entity.Commons.DSWEnvironmentType.Protocol;
+                        pecMail.DocumentUnit = new DocSuiteWeb.Entity.DocumentUnits.DocumentUnit() { UniqueId = protocol.UniqueId };
                         pecMail.RecordedInDocSuite = null;
                     }
-                    //foreach (IWorkflowAction workflowAction in pecMailBuildModel.WorkflowActions)
-                    //{
-                    //    pecMail.WorkflowActions.Add(workflowAction);
-                    //}
+
                     pecMail.WorkflowName = pecMailBuildModel.WorkflowName;
                     pecMail.IdWorkflowActivity = pecMailBuildModel.IdWorkflowActivity;
+                    pecMail.WorkflowAutoComplete = pecMailBuildModel.WorkflowAutoComplete;
+                    foreach (IWorkflowAction workflowAction in pecMailBuildModel.WorkflowActions)
+                    {
+                        pecMail.WorkflowActions.Add(workflowAction);
+                    }
+
                     pecMail = await _webApiClient.PostEntityAsync(pecMail);
                 }
                 else
@@ -229,19 +240,23 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
                 #endregion
 
                 #region [ EventCompletePECMailBuild ]
-                foreach (DocumentModel item in pecMailModel.Attachments)
-                {
-                    item.ContentStream = null;
-                }
                 pecMailBuildModel.PECMail = pecMailModel;
                 IEventCompletePECMailBuild eventCompletePECMailBuild = new EventCompletePECMailBuild(Guid.NewGuid(), pecMailBuildModel.UniqueId, command.TenantName, command.TenantId,
-                    command.Identity, pecMailBuildModel, null);
+                    command.TenantAOOId, command.Identity, pecMailBuildModel, null);
                 if (!await _webApiClient.PushEventAsync(eventCompletePECMailBuild))
                 {
                     _logger.WriteError(new LogMessage($"EventCompletePECMailBuild {pecMail.EntityId} has not been sended"), LogCategories);
                     throw new Exception("IEventCompletePECMailBuild not sended");
                 }
                 _logger.WriteInfo(new LogMessage($"IEventCompletePECMailBuild {eventCompletePECMailBuild.Id} has been sended"), LogCategories);
+                #endregion
+
+                #region Detach documenti archivio workflow
+                foreach (DocumentModel attachment in pecMailModel.Attachments.Where(f => f.DocumentToStoreId.HasValue))
+                {
+                    _logger.WriteInfo(new LogMessage($"detaching workflow document {attachment.DocumentToStoreId} ..."), LogCategories);
+                    RetryingPolicyAction(() => _biblosClient.Document.DocumentDetach(new Document() { IdDocument = attachment.DocumentToStoreId.Value }));
+                }
                 #endregion
             }
             catch (Exception ex)
@@ -252,5 +267,26 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
                 throw new ServiceBusEvaluationException(RetryPolicyEvaluation);
             }
         }
+
+        private T RetryingPolicyAction<T>(Func<T> func, int step = 1)
+        {
+            _logger.WriteDebug(new LogMessage($"RetryingPolicyAction : tentative {step}/{_retry_tentative} in progress..."), LogCategories);
+            if (step >= _retry_tentative)
+            {
+                _logger.WriteError(new LogMessage("VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail.RetryingPolicyAction: retry policy expired maximum tentatives"), LogCategories);
+                throw new Exception("InsertPECMail retry policy expired maximum tentatives");
+            }
+            try
+            {
+                return func();
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteWarning(new LogMessage($"SafeActionWithRetryPolicy : tentative {step}/{_retry_tentative} faild. Waiting {_threadWaiting} second before retrying action"), ex, LogCategories);
+                Task.Delay(_threadWaiting).Wait();
+                return RetryingPolicyAction(func, ++step);
+            }
+        }
+
     }
 }

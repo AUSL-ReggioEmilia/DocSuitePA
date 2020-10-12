@@ -45,9 +45,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Messages
         /// </summary>
         public MessageType MessageType { get; set; }
 
-        public string WorkflowName { get; set; }
-        public Guid? IdWorkflowActivity { get; set; }
-
         #endregion
 
         #region [ Navigation Properties ]
@@ -70,25 +67,19 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Messages
         /// </summary>
         /// <remarks>consente di accedere alle proprietà dell'invio effettivo</remarks>
         public virtual ICollection<MessageContact> MessageContacts { get; set; }
-        /// <summary>
-        /// Collezione di logs relativi al message corrente
-        /// </summary>
         public virtual ICollection<MessageLog> MessageLogs { get; set; }
         public virtual ICollection<DocumentSeriesItem> DocumentSeriesItems { get; set; }
-        /// <summary>
-        /// Collezione di Procotol message
-        /// </summary>
         public virtual ICollection<Protocol> Protocols { get; set; }
-        /// <summary>
-        /// Collezione di Dossier message
-        /// </summary>
         public virtual ICollection<Dossier> Dossiers { get; set; }
         public virtual ICollection<UDSMessage> UDSMessages { get; set; }
-
-        public ICollection<IWorkflowAction> WorkflowActions { get; set; }
-        
         public virtual ICollection<Resolution> Resolutions { get; set; }
+        #endregion
 
+        #region [ Not Mapping Properties ]
+        public bool WorkflowAutoComplete { get; set; }
+        public Guid? IdWorkflowActivity { get; set; }
+        public string WorkflowName { get; set; }
+        public ICollection<IWorkflowAction> WorkflowActions { get; set; }
         #endregion
     }
 }

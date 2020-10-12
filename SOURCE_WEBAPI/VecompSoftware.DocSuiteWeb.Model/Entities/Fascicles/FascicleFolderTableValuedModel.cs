@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
 {
@@ -15,6 +16,12 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
         public Guid? Fascicle_IdFascicle { get; set; }
 
         public short? Category_IdCategory { get; set; }
+
+        public Guid? Document_IdFascicleDocument { get; set; }
+
+        public Guid? Document_IdArchiveChain { get; set; }
+
+        public ChainType? Document_ChainType { get; set; }
 
         public bool HasDocuments { get; set; }
 

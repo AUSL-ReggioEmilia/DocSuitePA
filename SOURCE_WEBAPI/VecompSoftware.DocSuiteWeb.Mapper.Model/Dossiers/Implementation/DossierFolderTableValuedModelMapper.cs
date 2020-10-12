@@ -24,6 +24,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Dossiers
             modelTransformed.IdCategory = model.Category_IdCategory;
             modelTransformed.IdRole = model.Role_IdRole;
             modelTransformed.DossierFolderLevel = model.DossierFolderLevel;
+            modelTransformed.DossierFolderPath = model.DossierFolderPath;
 
             return modelTransformed;
         }

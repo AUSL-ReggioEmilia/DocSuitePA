@@ -18,7 +18,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 
         public int? IdContact { get; set; }
 
-        public Guid? UniqueIdFather { get; set; }
+        public int? IncrementalFather { get; set; }
 
         public Guid UniqueId { get; set; }
 

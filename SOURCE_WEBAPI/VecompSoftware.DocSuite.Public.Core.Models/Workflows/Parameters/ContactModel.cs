@@ -89,6 +89,11 @@ namespace VecompSoftware.DocSuite.Public.Core.Models.Workflows.Parameters
         public string City { get; set; }
 
         /// <summary>
+        /// Sigla città
+        /// </summary>
+        public string CityCode { get; set; }
+
+        /// <summary>
         /// Numero civico
         /// </summary>
         public string CivicNumber { get; set; }

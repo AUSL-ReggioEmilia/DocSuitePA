@@ -1,0 +1,648 @@
+﻿{
+  "TenantName": "CAP",
+  "TenantId": "36998F74-68B3-44D8-A757-E478277096A8",
+  "TopicBuilderEvent": "builder_event",
+  "TopicWorkflowIntegration": "workflow_integration",
+  "WorkflowStartUpdateReceiptMetadataInvoiceSubscription": "WorkflowStartUpdateReceiptMetadataInvoice",
+  "WorkflowStartUpdateMetadataInvoiceSubscription": "WorkflowStartUpdateMetadataInvoice",
+  "WorkflowInvoiceDeleteRepositoryName": "Fatturazione elettronica - Annulla fattura",
+  "WorkflowPayableInvoicePECMailBuildCompleteSubscription": "WorkflowPayableInvoicePECMailBuildComplete",
+  "DeleteLookingDirectoryEnabled": false,
+  "WaitingEnabled": false,
+  "WaitingSecondDuration": 5,
+  "MessageConfiguration": {
+    "EmailRecipients": [],
+    "Subject": ""
+  },
+  "WorkflowConfigurations": {
+    "IDEALFIN": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\RAFFAELLO\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\RAFFAELLO\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\RAFFAELLO\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\RAFFAELLO\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\RAFFAELLO\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\RAFFAELLO\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\RAFFAELLO\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\RAFFAELLO\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "IDEALFIN - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "IDEALFIN - Fatture Attive",
+          "MailRecipients": "sdi21@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "f3FvzHjT7yZL",
+            "DelegatedUser": "idealfin1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "lpieraccioli",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32629,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 115,
+          "ContactB2BParent": 230,
+          "ContactPAParent": 231,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "IDEALFIN - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "IDEALFIN - Fatture Attive PA",
+          "MailRecipients": "sdi21@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "f3FvzHjT7yZL",
+            "DelegatedUser": "idealfin1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "lpieraccioli",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32629,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 115,
+          "ContactB2BParent": 230,
+          "ContactPAParent": 231,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "CAP": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\CAP\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\CAP\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\CAP\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\CAP\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\CAP\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\CAP\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\CAP\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\CAP\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "CAP - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "CAP - Fatture Attive",
+          "MailRecipients": "sdi26@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "UpKLr4A3eGJ5",
+            "DelegatedUser": "capsc1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "giuseppegori",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32637,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 106,
+          "ContactB2BParent": 244,
+          "ContactPAParent": 245,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "CAP - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "CAP - Fatture Attive PA",
+          "MailRecipients": "sdi26@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "UpKLr4A3eGJ5",
+            "DelegatedUser": "capsc1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "giuseppegori",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32637,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 106,
+          "ContactB2BParent": 244,
+          "ContactPAParent": 245,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "CAPVIAGGI": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\CAPVIAGGI\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\CAPVIAGGI\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\CAPVIAGGI\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\CAPVIAGGI\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\CAPVIAGGI\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\CAPVIAGGI\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\CAPVIAGGI\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\CAPVIAGGI\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "CAPVIAGGI - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "CAPVIAGGI - Fatture Attive",
+          "MailRecipients": "sdi23@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "UpKLr4A3eGJ5",
+            "DelegatedUser": "capsc1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "giuseppegori",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32631,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 108,
+          "ContactB2BParent": 246,
+          "ContactPAParent": 247,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "CAPVIAGGI - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "CAPVIAGGI - Fatture Attive PA",
+          "MailRecipients": "sdi23@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "UpKLr4A3eGJ5",
+            "DelegatedUser": "capsc1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "giuseppegori",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32631,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 108,
+          "ContactB2BParent": 246,
+          "ContactPAParent": 247,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "TT": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\T_TRASPORT\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\T_TRASPORT\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\T_TRASPORT\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\T_TRASPORT\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\T_TRASPORT\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\T_TRASPORT\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\T_TRASPORT\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\T_TRASPORT\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "TT - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "TT - Fatture Attive",
+          "MailRecipients": "sdi21@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "FEQ85zcgPJ6q",
+            "DelegatedUser": "ttoscani1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pmartini",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32619,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 109,
+          "ContactB2BParent": 249,
+          "ContactPAParent": 250,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "TT - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "TT - Fatture Attive PA",
+          "MailRecipients": "sdi21@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "FEQ85zcgPJ6q",
+            "DelegatedUser": "ttoscani1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pmartini",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32619,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 109,
+          "ContactB2BParent": 249,
+          "ContactPAParent": 250,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "CAPSCRL": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\CONSORZIO\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\CONSORZIO\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\CONSORZIO\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\CONSORZIO\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\CONSORZIO\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\CONSORZIO\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\CONSORZIO\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\CONSORZIO\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "CAPSCRL - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "CAPSCRL - Fatture Attive",
+          "MailRecipients": "sdi41@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "DkvUQmMebTzg",
+            "DelegatedUser": "capsc2",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "abanci",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32633,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 110,
+          "ContactB2BParent": 252,
+          "ContactPAParent": 253,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "CAPSCRL - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "CAPSCRL - Fatture Attive PA",
+          "MailRecipients": "sdi41@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "DkvUQmMebTzg",
+            "DelegatedUser": "capsc2",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "abanci",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32633,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 110,
+          "ContactB2BParent": 252,
+          "ContactPAParent": 253,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "PIUBUS": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\CONTABPIU\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\CONTABPIU\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\CONTABPIU\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\CONTABPIU\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\CONTABPIU\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\CONTABPIU\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\CONTABPIU\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\CONTABPIU\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "PIUBUS - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "PIUBUS - Fatture Attive",
+          "MailRecipients": "sdi40@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "b7k7D3EpQNs7",
+            "DelegatedUser": "piubus1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "ftoscano",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32623,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 111,
+          "ContactB2BParent": 255,
+          "ContactPAParent": 256,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "PIUBUS - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "PIUBUS - Fatture Attive PA",
+          "MailRecipients": "sdi40@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "b7k7D3EpQNs7",
+            "DelegatedUser": "piubus1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "ftoscano",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32623,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 111,
+          "ContactB2BParent": 255,
+          "ContactPAParent": 256,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "MOBIT": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\MOBIT\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\MOBIT\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\MOBIT\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\MOBIT\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\MOBIT\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\MOBIT\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\MOBIT\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\MOBIT\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "MOBIT - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "MOBIT - Fatture Attive",
+          "MailRecipients": "sdi56@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "RhlahYtCrwcE",
+            "DelegatedUser": "mobit1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "giuseppegori",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32627,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 112,
+          "ContactB2BParent": 258,
+          "ContactPAParent": 259,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "MOBIT - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "MOBIT - Fatture Attive PA",
+          "MailRecipients": "sdi56@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "RhlahYtCrwcE",
+            "DelegatedUser": "mobit1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "giuseppegori",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32627,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 112,
+          "ContactB2BParent": 258,
+          "ContactPAParent": 259,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "CAPCASA": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\CAP_CASA\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\CAP_CASA\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\CAP_CASA\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\CAP_CASA\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\CAP_CASA\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\CAP_CASA\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\CAP_CASA\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\CAP_CASA\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "CAPCASA - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "CAPCASA - Fatture Attive",
+          "MailRecipients": "sdi22@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "rR6v5TBwYd86",
+            "DelegatedUser": "capcasa1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "giuseppegori",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32635,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 113,
+          "ContactB2BParent": 261,
+          "ContactPAParent": 262,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "CAPCASA - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "CAPCASA - Fatture Attive PA",
+          "MailRecipients": "sdi22@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "rR6v5TBwYd86",
+            "DelegatedUser": "capcasa1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "giuseppegori",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32635,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 113,
+          "ContactB2BParent": 261,
+          "ContactPAParent": 262,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "SGTM": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\ACGSGTM\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\ACGSGTM\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\ACGSGTM\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\ACGSGTM\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\ACGSGTM\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\ACGSGTM\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\ACGSGTM\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\ACGSGTM\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "SGTM - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "SGTM - Fatture Attive",
+          "MailRecipients": "sdi21@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "EuWtkebh6xyv",
+            "DelegatedUser": "sgtmspa1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "giuseppegori",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32621,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 114,
+          "ContactB2BParent": 264,
+          "ContactPAParent": 265,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "SGTM - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "SGTM - Fatture Attive PA",
+          "MailRecipients": "sdi21@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "EuWtkebh6xyv",
+            "DelegatedUser": "sgtmspa1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "giuseppegori",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32621,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 114,
+          "ContactB2BParent": 264,
+          "ContactPAParent": 265,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "3MT": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\ACG3MT\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\ACG3MT\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\ACG3MT\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\ACG3MT\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\ACG3MT\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\ACG3MT\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\ACG3MT\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\ACG3MT\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "3MT - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "3MT - Fatture Attive",
+          "MailRecipients": "sdi36@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "xFauyfxaSbXx",
+            "DelegatedUser": "3mtsrl1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pmartini",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32639,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 116,
+          "ContactB2BParent": 267,
+          "ContactPAParent": 268,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "3MT - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "3MT - Fatture Attive PA",
+          "MailRecipients": "sdi36@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "xFauyfxaSbXx",
+            "DelegatedUser": "3mtsrl1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pmartini",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32639,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 116,
+          "ContactB2BParent": 267,
+          "ContactPAParent": 268,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "OPITEC": {
+      "TenantAOOId": "FF2EFA82-4EA3-471E-AF22-F784BBF09C25",
+      "FolderLookingInvoice": "E:\\Integration\\OPITEC\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\OPITEC\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\OPITEC\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\OPITEC\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\OPITEC\\FattureAttive\\Backup",
+      "FolderLookingMetadata": "E:\\Integration\\OPITEC\\FattureAttive\\MetadataLooking",
+      "FolderRejectedMetadata": "E:\\Integration\\OPITEC\\FattureAttive\\MetadataRejected",
+      "FolderWorkingMetadata": "E:\\Integration\\OPITEC\\FattureAttive\\MetadataWorking",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "OPITEC - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "OPITEC - Fatture Attive",
+          "MailRecipients": "sdi36@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "gqL7p8Lh9Ew8",
+            "DelegatedUser": "opitec1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "ifiesoli",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32625,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 117,
+          "ContactB2BParent": 270,
+          "ContactPAParent": 271,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "OPITEC - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "OPITEC - Fatture Attive PA",
+          "MailRecipients": "sdi36@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "gqL7p8Lh9Ew8",
+            "DelegatedUser": "opitec1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "ifiesoli",
+            "CertificateId": "AS0",
+            "TSAUser": "TSA199969",
+            "TSAPassword": "RVrWCMhW"
+          },
+          "ProtocolContainerId": -32625,
+          "ProtocolCategoryId": -32735,
+          "PECMailBoxId": 117,
+          "ContactB2BParent": 270,
+          "ContactPAParent": 271,
+          "AuthorizationRoles": []
+        }
+      }
+    }
+  }
+}

@@ -16,6 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Workflows
             entityTransformed.InstanceId = entity.InstanceId;
             entityTransformed.Json = entity.Json;
             entityTransformed.Timestamp = entity.Timestamp;
+            entityTransformed.Subject = entity.Subject;
             #endregion
 
             #region [ Navigation Properties ]

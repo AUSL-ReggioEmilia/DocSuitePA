@@ -19,7 +19,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Roslyn.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -62,23 +62,13 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Roslyn.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///  &quot;Mappings&quot;: {
-        ///    &quot;Authorizations&quot;: {
-        ///      &quot;PropertyFieldName&quot;: &quot;Authorizations&quot;,
-        ///      &quot;BaseClassName&quot;: &quot;UDSAuthorizationBase&quot;,
-        ///      &quot;ClassName&quot;: &quot;Authorization&quot;,
-        ///      &quot;TableAnnotation&quot;: &quot;Authorizations&quot;
-        ///    },
-        ///    &quot;Contacts&quot;: {
-        ///      &quot;PropertyFieldName&quot;: &quot;Contacts&quot;,
-        ///      &quot;BaseClassName&quot;: &quot;UDSContactBase&quot;,
-        ///      &quot;ClassName&quot;: &quot;Contact&quot;,
-        ///      &quot;TableAnnotation&quot;: &quot;Contacts&quot;
-        ///    },
-        ///    &quot;Documents&quot;: {
-        ///      &quot;PropertyFieldName&quot;: &quot;Documents&quot;,
-        ///      &quot;BaseClassName&quot;: &quot;UDSDocumentBase&quot;,
-        ///     [rest of string was truncated]&quot;;.
+        ///	&quot;Documents&quot;: {
+        ///		&quot;PropertyFieldName&quot;: &quot;Documents&quot;,
+        ///		&quot;BaseClassName&quot;: &quot;UDSDocumentBase&quot;,
+        ///		&quot;ClassName&quot;: &quot;Document&quot;,
+        ///		&quot;TableAnnotation&quot;: &quot;Documents&quot;
+        ///	}
+        ///}.
         /// </summary>
         internal static string UDSEntityRelations {
             get {

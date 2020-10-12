@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Vecomp Software")]
 [assembly: AssemblyProduct("VecompSoftware.DocSuite.Document.TelerikReport")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2019")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyMetadata("tags", "VecompSoftware.DocSuite.Document.TelerikReport")]
@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("c391e159-a79d-4b7e-9868-c5a136e05832")]
 
-[assembly: AssemblyVersion("8.87.0.0")]
-[assembly: AssemblyFileVersion("8.87.0.0")]
+[assembly: AssemblyVersion("9.02.0.0")]
+[assembly: AssemblyFileVersion("9.02.0.0")]
 
 

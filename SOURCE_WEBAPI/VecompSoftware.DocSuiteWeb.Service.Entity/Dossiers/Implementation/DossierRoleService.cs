@@ -52,6 +52,21 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
             return query.Include(x => x.Role);
         }
 
+        protected override DossierRole BeforeUpdate(DossierRole entity, DossierRole entityTransformed)
+        {
+            if (entity.Role != null)
+            {
+                entityTransformed.Role = _unitOfWork.Repository<Role>().Find(entity.Role.EntityShortId);
+            }
+
+            if (entity.Dossier != null)
+            {
+                entityTransformed.Dossier = _unitOfWork.Repository<Dossier>().Find(entity.Dossier.UniqueId);
+            }
+
+            return base.BeforeUpdate(entity, entityTransformed);
+        }
+
         protected override DossierRole BeforeDelete(DossierRole entity, DossierRole entityTransformed)
         {
             _unitOfWork.Repository<DossierLog>().Insert(BaseDossierService<DossierLog>.CreateLog(entity.Dossier, null, DossierLogType.Authorize,

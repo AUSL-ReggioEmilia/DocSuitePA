@@ -23,7 +23,6 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Messages
             entityTransformed.ChainId = entity.ChainId;
             entityTransformed.DocumentEnum = entity.DocumentEnum;
             entityTransformed.Extension = entity.Extension;
-            entityTransformed.Server = entity.Server;
             entityTransformed.RegistrationDate = entity.RegistrationDate;
             entityTransformed.RegistrationUser = entity.RegistrationUser;
             return entityTransformed;

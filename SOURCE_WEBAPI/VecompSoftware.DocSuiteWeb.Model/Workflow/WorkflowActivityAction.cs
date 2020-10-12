@@ -20,8 +20,8 @@ namespace VecompSoftware.DocSuiteWeb.Model.Workflow
         ToSign = 6,
         [Description("ToAssignment")]
         ToAssignment = 7,
-        [Description("ToSecure")]
-        ToSecure = 8,
+        [Description("ToDossier")]
+        ToDossier = 8,
         [Description("ToFascicle")]
         ToFascicle = 9,
         [Description("ToDocumentUnit")]
@@ -42,6 +42,13 @@ namespace VecompSoftware.DocSuiteWeb.Model.Workflow
         ToShare = 17,
         [Description("UpdateArchive")]
         UpdateArchive = 18,
-
+        [Description("UpdateFascicle")]
+        UpdateFascicle = 19,
+        [Description("ToIntegration")]
+        ToIntegration = 20,
+        [Description("GenerateReport")]
+        GenerateReport = 21,
+        [Description("CopyFascicleContents")]
+        CopyFascicleContents = 22
     }
 }

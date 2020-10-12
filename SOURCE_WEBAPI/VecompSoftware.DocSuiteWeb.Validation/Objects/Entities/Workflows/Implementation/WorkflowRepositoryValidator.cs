@@ -32,7 +32,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Workflows
 
         public string Json { get; set; }
 
-        public WorkflowStatus Status { get; set; }
+        public WorkflowRepositoryStatus Status { get; set; }
 
         public string CustomActivities { get; set; }
 

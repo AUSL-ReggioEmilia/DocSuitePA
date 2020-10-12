@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
+using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations;
 using VecompSoftware.DocSuiteWeb.Repository.Parameters;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
@@ -31,6 +32,18 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Collaborations
 
             ICollection<CollaborationTableValuedModel> results = repository.ExecuteModelFunction<CollaborationTableValuedModel>(CommonDefinition.SQL_FX_Collaboration_CollaborationsSigning,
                 new QueryParameter(CommonDefinition.SQL_Param_Collaboration_UserName, userName), requiredParam);
+            return results.OrderByDescending(o => o.LastChangedDate).ToList();
+        }
+        public static ICollection<CollaborationTableValuedModel> GetDelegationSigning(this IRepositoryAsync<Collaboration> repository, ICollection<string> delegations)
+        {
+            
+            DataTable table = new DataTable();
+            table.Columns.Add("val", typeof(string));
+            foreach (string delegation in delegations)
+            {
+                table.Rows.Add(delegation);
+            }
+            ICollection<CollaborationTableValuedModel> results = repository.ExecuteModelFunction<CollaborationTableValuedModel>(CommonDefinition.SQL_FX_Collaboration_CollaborationsDelegationSigning, new QueryParameter(CommonDefinition.SQL_Param_Collaboration_Signers, table) { ParameterTypeName = "string_list_tbltype" });
             return results.OrderByDescending(o => o.LastChangedDate).ToList();
         }
 
@@ -88,7 +101,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Collaborations
 
         public static IQueryable<Collaboration> GetByProtocol(this IRepositoryAsync<Collaboration> repository, short year, int number)
         {
-            return repository.Query(x => x.Year == year && x.Number == number && x.DocumentType == "P", true).SelectAsQueryable();
+            return repository.Query(x => x.Year == year && x.Number == number && x.DocumentType == CollaborationDocumentType.Protocol, true).SelectAsQueryable();
         }
 
         public static IQueryable<Collaboration> GetByUniqueId(this IRepository<Collaboration> repository, Guid uniqueId)
@@ -97,6 +110,16 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Collaborations
                 .Query(x => x.UniqueId == uniqueId)
                 .SelectAsQueryable();
             return result;
+        }
+
+        public static bool HasViewableRight(this IRepositoryAsync<Collaboration> repository, string username, int idCollaboration, bool checkSecretary)
+        {
+            return repository.Query(x => x.EntityId == idCollaboration &&
+                                        (x.RegistrationUser == username ||
+                                        x.CollaborationSigns.Any(cs => cs.SignUser == username) ||
+                                        (checkSecretary && x.CollaborationUsers.Any(cu => cu.Role.RoleUsers.Any(ru => ru.Account == username && ru.Type == RoleUserType.Secretary)))), true)
+                .SelectAsQueryable()
+                .Any();
         }
     }
 }

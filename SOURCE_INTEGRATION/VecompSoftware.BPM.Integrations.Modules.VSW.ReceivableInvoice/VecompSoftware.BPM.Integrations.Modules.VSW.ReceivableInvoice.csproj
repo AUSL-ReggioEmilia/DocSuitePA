@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice</RootNamespace>
     <AssemblyName>VecompSoftware.BPM.Integrations.Modules.VSW.ReceivableInvoice</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -16,6 +16,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,7 +45,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
-      <HintPath>..\packages\Portable.BouncyCastle.1.8.5.2\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+      <HintPath>..\packages\Portable.BouncyCastle.1.8.5\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -61,61 +62,72 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Telerik.Windows.Zip, Version=2018.3.904.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.Windows.Zip.2018.3.904.40\lib\net45\Telerik.Windows.Zip.dll</HintPath>
+    <Reference Include="Telerik.Windows.Zip, Version=2020.1.109.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Windows.Zip.2020.1.109.40\lib\net45\Telerik.Windows.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Commons.Interfaces, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.8.87.19295.1\lib\net461\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    <Reference Include="VecompSoftware.Commons, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=cd4cbb031a2ae285, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.9.9.20267.1\lib\net48\VecompSoftware.Commons.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Core.Command, Version=8.87.19296.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Core.Command.8.87.19296.3\lib\net461\VecompSoftware.Core.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.9.20254.2\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
+    <Reference Include="VecompSoftware.Core.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Core.Command.9.9.20267.1\lib\net48\VecompSoftware.Core.Command.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.9.20254.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.9.20254.5\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.EInvoice, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.EInvoice.8.87.19296.1\lib\net461\VecompSoftware.Helpers.EInvoice.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.EInvoice.UDS, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.EInvoice.UDS.8.87.19296.1\lib\net461\VecompSoftware.Helpers.EInvoice.UDS.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.EInvoice, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.EInvoice.9.9.20267.1\lib\net48\VecompSoftware.Helpers.EInvoice.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.PEC.PA, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.PEC.PA.8.87.19296.1\lib\net461\VecompSoftware.Helpers.PEC.PA.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.EInvoice.UDS, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.EInvoice.UDS.9.9.20267.1\lib\net48\VecompSoftware.Helpers.EInvoice.UDS.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.UDS, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.UDS.8.87.19296.1\lib\net461\VecompSoftware.Helpers.UDS.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.PEC.PA, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.PEC.PA.9.9.20267.1\lib\net48\VecompSoftware.Helpers.PEC.PA.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Workflow, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.8.87.19296.2\lib\net461\VecompSoftware.Helpers.Workflow.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Signer, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=76f780eb4d2d0f1b, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Signer.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Signer.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.XML, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.XML.8.87.19296.1\lib\net461\VecompSoftware.Helpers.XML.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.UDS, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.UDS.9.9.20267.1\lib\net48\VecompSoftware.Helpers.UDS.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.XML.Converters, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.XML.Converters.8.87.19296.1\lib\net461\VecompSoftware.Helpers.XML.Converters.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Command, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Command.8.87.19296.2\lib\net461\VecompSoftware.Services.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.XML, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.9.9.20267.1\lib\net48\VecompSoftware.Helpers.XML.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.XML.Converters, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.Converters.9.9.20267.1\lib\net48\VecompSoftware.Helpers.XML.Converters.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ModuleConfigurationHelper.cs" />
     <Compile Include="Exceptions\AlreadyExistsInvoiceException.cs" />
     <Compile Include="Execution.cs" />
+    <Compile Include="Helpers\MessageHelpers.cs" />
     <Compile Include="InvoiceValidation.cs" />
     <Compile Include="Models\InvoiceConfiguration.cs" />
     <Compile Include="Models\InvoiceFilePersistance.cs" />
+    <Compile Include="Models\ProcessSummary.cs" />
+    <Compile Include="Models\MessageConfiguration.cs" />
     <Compile Include="Models\MetadatiSogei.cs" />
     <Compile Include="Models\ModuleConfigurationModel.cs" />
+    <Compile Include="Models\WorkflowConfigurationModel.cs" />
+    <Compile Include="Models\ZipEntryProcessSummary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

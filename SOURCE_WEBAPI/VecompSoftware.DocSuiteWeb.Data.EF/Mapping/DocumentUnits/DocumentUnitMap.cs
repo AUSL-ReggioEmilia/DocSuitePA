@@ -71,8 +71,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.DocumentUnits
                 .HasColumnName("Status")
                 .IsRequired();
 
-
             Ignore(x => x.EntityShortId)
+                .Ignore(x => x.WorkflowAutoComplete)
                 .Ignore(x => x.WorkflowName)
                 .Ignore(x => x.IdWorkflowActivity)
                 .Ignore(x => x.WorkflowActions);
@@ -100,6 +100,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.DocumentUnits
             HasOptional(t => t.UDSRepository)
                .WithMany(t => t.DocumentUnits)
                .Map(m => m.MapKey("IdUDSRepository"));
+
+            HasRequired(t => t.TenantAOO)
+               .WithMany(t => t.DocumentUnits)
+               .Map(m => m.MapKey("IdTenantAOO"));
 
             #endregion
         }

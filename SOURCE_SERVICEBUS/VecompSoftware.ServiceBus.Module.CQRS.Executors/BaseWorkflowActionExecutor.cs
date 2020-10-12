@@ -43,6 +43,11 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors
         #endregion
 
         #region [ Methods ]
+        IEvent IWorkflowActionExecutor.BuildEvent(ICommandCQRS command, IWorkflowAction workflowAction)
+        {
+            return BuildEvent(command, (TWFAction)workflowAction);
+        }
+
         public abstract IEvent BuildEvent(ICommandCQRS command, TWFAction workflowAction);
 
         async Task IWorkflowActionExecutor.CreateActionEventAsync(ICommandCQRS command, IWorkflowAction workflowAction)
@@ -55,6 +60,10 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors
             try
             {
                 IEvent @event = BuildEvent(command, workflowAction);
+                if (workflowAction.CorrelationId != Guid.Empty)
+                {
+                    @event.ReplyTo = ServiceBus.ServiceBusClient.WorkflowAggregationTopicName;
+                }
                 _logger.WriteInfo(new LogMessage(string.Concat("CreateActionEventAsync -> create action event ", @event.GetType(), " for command ", command.Name)), LogCategories);
                 bool res = await _webAPIClient.PushEventAsync(@event);
                 if (!res)

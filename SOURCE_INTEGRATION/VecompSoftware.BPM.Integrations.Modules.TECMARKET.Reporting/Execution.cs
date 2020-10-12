@@ -67,7 +67,8 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.Reporting
             if (_needInitializeModule)
             {
                 _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowStartRequest>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration, _moduleConfiguration.WorkflowStartEventAnalyzerSubscription, EventWorkflowStartedRequestCallbackAsync));
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowStartRequest>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
+                    _moduleConfiguration.WorkflowStartEventAnalyzerSubscription, EventWorkflowStartedRequestCallbackAsync));
                 _needInitializeModule = false;
             }
         }
@@ -83,7 +84,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.Reporting
             File.WriteAllText(filename, JsonConvert.SerializeObject(eventWorkflowStartRequest, ModuleConfigurationHelper.JsonSerializerSettings));
         }
 
-        private async Task EventWorkflowStartedRequestCallbackAsync(IEventWorkflowStartRequest evt)
+        private async Task EventWorkflowStartedRequestCallbackAsync(IEventWorkflowStartRequest evt, IDictionary<string, object> properties)
         {
             await Task.Run(() => SerializeToDisk((EventWorkflowStartRequest)evt));
         }

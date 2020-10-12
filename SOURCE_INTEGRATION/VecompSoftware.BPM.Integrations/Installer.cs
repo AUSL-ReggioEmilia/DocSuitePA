@@ -12,7 +12,7 @@ namespace VecompSoftware.BPM.Integrations
 
         private void RetrieveServiceName()
         {
-            var serviceName = Context.Parameters["servicename"];
+            string serviceName = Context.Parameters["servicename"];
             if (!string.IsNullOrEmpty(serviceName))
             {
                 serviceInstaller1.ServiceName = serviceName;

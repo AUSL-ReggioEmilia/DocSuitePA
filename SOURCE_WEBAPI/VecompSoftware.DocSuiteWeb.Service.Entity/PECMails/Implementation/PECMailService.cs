@@ -4,8 +4,10 @@ using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
+using VecompSoftware.DocSuiteWeb.Finder.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Finder.PECMails;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Security;
@@ -80,20 +82,15 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.PECMails
 
         protected override PECMail BeforeUpdate(PECMail entity, PECMail entityTransformed)
         {
-            if (entity.UDSRepository != null)
-            {
-                entityTransformed.UDSRepository = _unitOfWork.Repository<UDSRepository>().Find(entity.UDSRepository.UniqueId);
-            }
-
             if (CurrentUpdateActionType == UpdateActionType.PECMailManaged)
             {
                 entityTransformed.Year = entity.Year;
                 entityTransformed.Number = entity.Number;
-                entityTransformed.IdUDS = entity.IdUDS;
-                entityTransformed.DocumentUnitType = entity.DocumentUnitType;
                 entityTransformed.RecordedInDocSuite = Convert.ToByte(true);
+                entityTransformed.DocumentUnit = _unitOfWork.Repository<DocumentUnit>().GetByIdWithUDSRepository(entity.DocumentUnit.UniqueId).SingleOrDefault();
+
                 string logDescription = string.Empty;
-                switch (entityTransformed.DocumentUnitType.Value)
+                switch ((DSWEnvironmentType)entityTransformed.DocumentUnit.Environment)
                 {
                     case DSWEnvironmentType.Protocol:
                         {
@@ -102,7 +99,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.PECMails
                         }
                     case DSWEnvironmentType.UDS:
                         {
-                            logDescription = $"Pec collegata ad archivio {entityTransformed.UDSRepository.Name} numero {entityTransformed.Year.Value}/{entityTransformed.Number.Value:0000000}";
+                            logDescription = $"Pec collegata ad archivio {entityTransformed.DocumentUnit.UDSRepository.Name} numero {entityTransformed.Year.Value}/{entityTransformed.Number.Value:0000000}";
                             break;
                         }
                     default:

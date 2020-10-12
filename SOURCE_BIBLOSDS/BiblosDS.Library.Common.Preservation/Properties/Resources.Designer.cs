@@ -19,7 +19,7 @@ namespace BiblosDS.Library.Common.Preservation.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -57,6 +57,27 @@ namespace BiblosDS.Library.Common.Preservation.Properties {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot;?&gt;
+        ///&lt;xsl:stylesheet version=&quot;2.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+        ///  &lt;xsl:template match=&quot;/&quot;&gt;
+        ///    &lt;html&gt;
+        ///      &lt;head&gt;
+        ///        &lt;title&gt;Rapporto lotti di versamento&lt;/title&gt;
+        ///      &lt;/head&gt;
+        ///      &lt;body&gt;
+        ///        &lt;h2&gt;            Rapporto lotti di versamento          &lt;/h2&gt;
+        ///        &lt;xsl:if test=&quot;count(/AwardBatchReport/Lotto) = 0&quot;&gt;
+        ///          &lt;p&gt;Nessun lotto di versamento presente&lt;/p&gt;
+        ///        &lt;/xsl:if&gt;
+        ///        &lt;xsl:for-each select=&quot;/AwardBatchReport/ [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AwardBatch {
+            get {
+                return ResourceManager.GetString("AwardBatch", resourceCulture);
             }
         }
         
@@ -102,6 +123,28 @@ namespace BiblosDS.Library.Common.Preservation.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot;?&gt;
+        ///&lt;xsl:stylesheet version=&quot;2.0&quot; xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;&gt;
+        ///  &lt;xsl:template match=&quot;/&quot;&gt;
+        ///    &lt;html&gt;
+        ///      &lt;head&gt;
+        ///        &lt;title&gt;Lista&lt;/title&gt;
+        ///      &lt;/head&gt;
+        ///      &lt;body&gt;
+        ///        &lt;table style=&quot;width:100%;font-family:Verdana;font-size:small;&quot; cellpadding=&quot;4&quot;&gt;
+        ///          &lt;tr style=&quot;font-weight:bold;background-color:#aaaaaa&quot;&gt;
+        ///            &lt;td&gt;Nr&lt;/td&gt;
+        ///            &lt;td&gt;NomeFileInArchivio&lt;/td&gt;
+        ///            &lt;%ATTRIBUTES_HEADER%&gt;
+        ///            &lt;td&gt;I [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string IndiceXSLTemplate {
+            get {
+                return ResourceManager.GetString("IndiceXSLTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;Comunicazione xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;
         ///  &lt;DatiFornitura&gt;
@@ -113,7 +156,8 @@ namespace BiblosDS.Library.Common.Preservation.Properties {
         ///    &lt;DatiAnagr&gt;
         ///      &lt;CodFisc&gt;02062090234&lt;/CodFisc&gt;
         ///      &lt;Denominazione&gt;Dgroove Srl&lt;/Denominazione&gt;
-        ///      &lt;DomFiscaleSedeLegale&gt; [rest of string was truncated]&quot;;.
+        ///      &lt;DomFiscaleSedeLegale&gt;
+        ///       [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Template {
             get {

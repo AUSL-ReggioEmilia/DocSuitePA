@@ -58,9 +58,9 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataUpdate
                 collaborationUniqueId = udsEntityModel.Relations.Collaborations.FirstOrDefault()?.CollaborationUniqueId;
                 collaborationTemplateName = udsEntityModel.Relations.Collaborations.FirstOrDefault()?.CollaborationTemplateName;
 
-                IEventUpdateUDSData evt = new EventUpdateUDSData(Guid.NewGuid(), command.CorrelationId, command.TenantName, command.TenantId, command.Identity,
+                IEventUpdateUDSData evt = new EventUpdateUDSData(Guid.NewGuid(), command.CorrelationId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity,
                     command.ContentType.ContentTypeValue, null);
-                evt.CorrelatedCommands.Add(command);
+                evt.CorrelatedMessages.Add(command);
                 if (!await PushEventAsync(evt))
                 {
                     throw new Exception("EventUpdateUDSData not sent");
@@ -74,12 +74,12 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataUpdate
 
                 UDSBuildModel udsBuildModel = MapUDSModel(command.ContentType.ContentTypeValue, udsEntityModel);
 
-                ICommandCQRSUpdateUDSData commandCQRS = new CommandCQRSUpdateUDSData(command.TenantName, command.TenantId, command.Identity, udsBuildModel, categoryFascicle, null,
+                ICommandCQRSUpdateUDSData commandCQRS = new CommandCQRSUpdateUDSData(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, udsBuildModel, categoryFascicle, null,
                     collaborationUniqueId, collaborationId, collaborationTemplateName);
 
                 if (command.CorrelationId.HasValue)
                 {
-                    commandCQRS = new CommandCQRSUpdateUDSData(command.CorrelationId.Value, command.TenantName, command.TenantId, command.Identity, udsBuildModel, categoryFascicle, null,
+                    commandCQRS = new CommandCQRSUpdateUDSData(command.CorrelationId.Value, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, udsBuildModel, categoryFascicle, null,
                         collaborationUniqueId, collaborationId, collaborationTemplateName);
                 }
 
@@ -98,9 +98,9 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataUpdate
             catch (Exception ex)
             {
                 ResetModelXML(command.ContentType.ContentTypeValue);
-                IEventError evt = new EventError(command.CorrelationId, command.TenantName, command.TenantId, command.Identity, 
+                IEventError evt = new EventError(command.CorrelationId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity,
                     new ContentTypeString($"Errore in fase di aggiornamento nell'archivio [{ex.Message}]"), null);
-                evt.CorrelatedCommands.Add(command);
+                evt.CorrelatedMessages.Add(command);
                 if (!await PushEventAsync(evt))
                 {
                     throw new Exception("EventError not sent");
@@ -115,7 +115,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataUpdate
             try
             {
                 UDSDataFacade df = new UDSDataFacade(_logger, _biblosClient, model.XMLContent, CurrentUDSSchemaRepository.SchemaXML, DBSchema);
-                udsModel = df.UpdateUDS(ConnectionString, model.UniqueId, model.Roles.Where(f=> f.UniqueId.HasValue && f.IdRole.HasValue).Select(f=> new AuthorizationInstance()
+                udsModel = df.UpdateUDS(ConnectionString, model.UniqueId, model.Roles.Where(f => f.UniqueId.HasValue && f.IdRole.HasValue).Select(f => new AuthorizationInstance()
                 {
                     AuthorizationInstanceType = AuthorizationInstanceType.Role,
                     AuthorizationType = (AuthorizationType)f.AuthorizationType,
@@ -124,7 +124,6 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataUpdate
                 }), userName, creationTime);
                 await UpdateRelationsAsync(udsModel, model.UDSRepository.Id, model.UDSRepository.DSWEnvironment, userName, creationTime);
                 await InsertLogAsync(udsModel, model.UDSRepository.Id, model.UDSRepository.DSWEnvironment);
-                await ArchivePECMailAsync(udsModel, model.UDSRepository.Id);
             }
             catch (Exception ex)
             {

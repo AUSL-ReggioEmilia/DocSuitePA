@@ -9,6 +9,7 @@ using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Entity.Processes;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Commons;
 
@@ -46,6 +47,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
         public Category Parent { get; set; }
         public CategorySchema CategorySchema { get; set; }
         public MetadataRepository MetadataRepository { get; set; }
+        public TenantAOO TenantAOO { get; set; }
         public ICollection<Category> Categories { get; set; }
         public ICollection<Protocol> Protocols { get; set; }
         public ICollection<DocumentSeriesItem> DocumentSeriesItems { get; set; }

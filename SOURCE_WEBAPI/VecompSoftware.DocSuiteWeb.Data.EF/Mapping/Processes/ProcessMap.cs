@@ -20,9 +20,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Processes
             Property(x => x.Name)
                 .HasColumnName("Name")
                 .IsRequired();
-            Property(x => x.FascicleType)
-                .HasColumnName("FascicleType")
-                .IsRequired();
             Property(x => x.StartDate)
                 .HasColumnName("StartDate")
                 .IsRequired();

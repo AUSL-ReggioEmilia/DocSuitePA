@@ -1,0 +1,13 @@
+{
+  "Endpoints": [
+    {
+      "Name": "AOOPREFIX_01",
+      "WebAPIUrl": "http://localhost/dsw.webapi"
+    },
+    {
+      "Name": "AOOPREFIX_01",
+      "WebAPIUrl": "http://localhost/dsw.webapi"
+    }
+  ],
+  "ManagementAOOUrl": "http://localhost/ManagementAOO.WebAPI/"
+}

@@ -24,16 +24,16 @@ namespace VecompSoftware.DocSuite.Public.Core.Models.Commands.Workflows
         /// <param name="commandId">Valore guid che identifica univocamente il comando. 
         /// Questo valore sarà la chiave dell’istanza del workflow che funegrà da CorrelationId per gli eventi del Service Bus. 
         /// Diventerà ultile per determinare quali eventi sono associati a determinate istanze attive.</param>
-        /// <param name="tenantName">Nome del Tenant del Cliente. Contattare Vecomp Software per il valore</param>
-        /// <param name="tenantId">Guid del Tenant del Cliente. Contattare Vecomp Software per il valore</param>
+        /// <param name="tenantName">Nome del Tenant del Cliente. Contattare Dgroove per il valore</param>
+        /// <param name="tenantId">Guid del Tenant del Cliente. Contattare Dgroove per il valore</param>
+        /// <param name="tenantAOOId">Guid del TenantAOO del Cliente. Contattare Dgroove per il valore</param>
         /// <param name="identityContext">Classe che specifica l'Identità dell'utente che sta eseguento l'avvio del Workflow<see cref="IdentityContext"/></param>
         /// <param name="contentType">ContentType coi parametri necessari all'avvio del Workflow Documentale in DocSuite.
-        /// Per le specifiche contattare Vecomp Software<see cref="StartWorkflowContentType"/></param>
+        /// Per le specifiche contattare Dgroove<see cref="StartWorkflowContentType"/></param>
 
-        public StartWorkflowCommand(Guid commandId, string tenantName, Guid tenantId,
-            IdentityContext identityContext, StartWorkflowContentType contentType)
+        public StartWorkflowCommand(Guid commandId, string tenantName, Guid tenantId, Guid tenantAOOId, IdentityContext identityContext, StartWorkflowContentType contentType)
             : base(commandId, typeof(StartWorkflowCommand).Name, tenantName,
-                  tenantId, identityContext, contentType)
+                  tenantId, tenantAOOId, identityContext, contentType)
         {
         }
 

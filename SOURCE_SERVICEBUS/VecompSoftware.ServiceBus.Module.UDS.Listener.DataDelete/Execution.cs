@@ -7,7 +7,6 @@ using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
 using VecompSoftware.ServiceBus.Module.UDS.Storage;
 using VecompSoftware.ServiceBus.Module.UDS.Storage.Relations;
 using VecompSoftware.ServiceBus.WebAPI;
-using VecompSoftware.Services.Command;
 using VecompSoftware.Services.Command.CQRS.Commands.Models.UDS;
 using VecompSoftware.Services.Command.CQRS.Events.Models.UDS;
 
@@ -39,9 +38,9 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataDelete
         {
             _logger.WriteInfo(new LogMessage(string.Concat(command.CommandName, " is arrived")), LogCategories);
             UDSEntityModel udsEntityModel = await CancelDataAsync(command.ContentType.ContentTypeValue, command.Identity.User, command.CreationTime);
-            IEventDeleteUDSData evt = new EventDeleteUDSData(Guid.NewGuid(), command.CorrelationId, command.TenantName, command.TenantId, command.Identity,
+            IEventDeleteUDSData evt = new EventDeleteUDSData(Guid.NewGuid(), command.CorrelationId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity,
                 command.ContentType.ContentTypeValue, null);
-            evt.CorrelatedCommands.Add(command);
+            evt.CorrelatedMessages.Add(command);
             if (!await PushEventAsync(evt))
             {
                 throw new Exception("EventDeleteUDSData not sent");
@@ -50,7 +49,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataDelete
             UDSBuildModel udsBuildModel = MapUDSModel(command.ContentType.ContentTypeValue, udsEntityModel);
 
             IEventCompleteUDSDelete eventCompleteUDSDelete = new EventCompleteUDSDelete(Guid.NewGuid(), command.CorrelationId, command.TenantName, command.TenantId,
-                command.Identity, udsBuildModel, null);
+                command.TenantAOOId, command.Identity, udsBuildModel, null);
             if (!await PushEventAsync(eventCompleteUDSDelete))
             {
                 _logger.WriteError(new LogMessage($"EventCompleteUDSDelete {udsBuildModel.UniqueId} has not been sended"), LogCategories);

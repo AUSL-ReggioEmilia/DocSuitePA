@@ -65,7 +65,7 @@ namespace VecompSoftware.DocSuite.Public
             WorkflowParameterModel workflowParameterModel = new WorkflowParameterModel(new SignerModel(0, true, SignerType.AD, identityModel), WorkflowParameterNames.CollaborationNames.SIGNER); ;
             workflowModel.WorkflowParameters.Add(workflowParameterModel);
             StartWorkflowContentType startWorkflowContentType = new StartWorkflowContentType(workflowModel, accountName, Guid.NewGuid());
-            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, identityContext, startWorkflowContentType);
+            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, Guid.NewGuid(), identityContext, startWorkflowContentType);
             Assert.IsNotNull(startWorkflowCommand.MessageName);
         }
 
@@ -80,7 +80,7 @@ namespace VecompSoftware.DocSuite.Public
             WorkflowParameterModel workflowParameterModel = new WorkflowParameterModel(new SignerModel(0, true, SignerType.AD, identityModel), WorkflowParameterNames.CollaborationNames.SIGNER); ;
             workflowModel.WorkflowParameters.Add(workflowParameterModel);
             StartWorkflowContentType startWorkflowContentType = new StartWorkflowContentType(workflowModel, accountName, Guid.NewGuid());
-            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, identityContext, startWorkflowContentType);
+            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, Guid.NewGuid(), identityContext, startWorkflowContentType);
             string json = ManagerHelper.SerializeModel(startWorkflowCommand);
             Assert.IsNotNull(json);
         }
@@ -100,7 +100,7 @@ namespace VecompSoftware.DocSuite.Public
             WorkflowParameterModel workflowParameterModel2 = new WorkflowParameterModel(singner2, WorkflowParameterNames.CollaborationNames.SIGNER);
             workflowModel.WorkflowParameters.Add(workflowParameterModel2);
             StartWorkflowContentType startWorkflowContentType = new StartWorkflowContentType(workflowModel, accountName, Guid.NewGuid());
-            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, identityContext, startWorkflowContentType);
+            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, Guid.NewGuid(), identityContext, startWorkflowContentType);
             string json = ManagerHelper.SerializeModel(startWorkflowCommand);
             StartWorkflowCommand deJson = ManagerHelper.DeserializeModel<StartWorkflowCommand>(json);
             Assert.IsNotNull(deJson);
@@ -121,7 +121,7 @@ namespace VecompSoftware.DocSuite.Public
             WorkflowParameterModel workflowParameterModel2 = new WorkflowParameterModel(singner2, WorkflowParameterNames.CollaborationNames.SIGNER);
             workflowModel.WorkflowParameters.Add(workflowParameterModel2);
             StartWorkflowContentType startWorkflowContentType = new StartWorkflowContentType(workflowModel, accountName, Guid.NewGuid());
-            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, identityContext, startWorkflowContentType)
+            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, Guid.NewGuid(), identityContext, startWorkflowContentType)
             {
                 CorrelationId = Guid.NewGuid()
             };
@@ -145,7 +145,7 @@ namespace VecompSoftware.DocSuite.Public
             WorkflowParameterModel workflowParameterModel2 = new WorkflowParameterModel(singner2, WorkflowParameterNames.CollaborationNames.SIGNER);
             workflowModel.WorkflowParameters.Add(workflowParameterModel2);
             StartWorkflowContentType startWorkflowContentType = new StartWorkflowContentType(workflowModel, accountName, Guid.NewGuid());
-            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, identityContext, startWorkflowContentType);
+            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, Guid.NewGuid(), identityContext, startWorkflowContentType);
             string json = ManagerHelper.SerializeModel(startWorkflowCommand);
             StartWorkflowCommand deJson = ManagerHelper.DeserializeModel<StartWorkflowCommand>(json);
             Assert.AreEqual(startWorkflowCommand.Id, deJson.Id);
@@ -166,7 +166,7 @@ namespace VecompSoftware.DocSuite.Public
             WorkflowParameterModel workflowParameterModel2 = new WorkflowParameterModel(singner2, WorkflowParameterNames.CollaborationNames.SIGNER);
             workflowModel.WorkflowParameters.Add(workflowParameterModel2);
             StartWorkflowContentType startWorkflowContentType = new StartWorkflowContentType(workflowModel, accountName, Guid.NewGuid());
-            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, identityContext, startWorkflowContentType);
+            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, Guid.NewGuid(), identityContext, startWorkflowContentType);
             string json = ManagerHelper.SerializeModel(startWorkflowCommand);
             StartWorkflowCommand deJson = ManagerHelper.DeserializeModel<StartWorkflowCommand>(json);
             Assert.AreEqual(startWorkflowCommand.MessageDate, deJson.MessageDate);
@@ -187,7 +187,7 @@ namespace VecompSoftware.DocSuite.Public
             WorkflowParameterModel workflowParameterModel2 = new WorkflowParameterModel(singner2, WorkflowParameterNames.CollaborationNames.SIGNER);
             workflowModel.WorkflowParameters.Add(workflowParameterModel2);
             StartWorkflowContentType startWorkflowContentType = new StartWorkflowContentType(workflowModel, accountName, Guid.NewGuid());
-            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, identityContext, startWorkflowContentType);
+            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, Guid.NewGuid(), identityContext, startWorkflowContentType);
             string json = ManagerHelper.SerializeModel(startWorkflowCommand);
             StartWorkflowCommand deJson = ManagerHelper.DeserializeModel<StartWorkflowCommand>(json);
             Assert.IsTrue(startWorkflowCommand.CustomProperties.All(f => deJson.CustomProperties.Any(x => f.Key == x.Key)));
@@ -202,7 +202,7 @@ namespace VecompSoftware.DocSuite.Public
             identityContext.Roles.Add(roleModel);
             WorkflowModel workflowModel = new WorkflowModel("Archivia Fattura");
 
-            ArchiveModel archiveFattura = new ArchiveModel("Archivio Fatture");
+            ArchiveModel archiveFattura = new ArchiveModel("Archivio Fatture", "");
             MetadataModel modelAnnoIva = new MetadataModel("Anno Iva", 2016.ToString());
             archiveFattura.Metadatas.Add(modelAnnoIva);
             WorkflowParameterModel workflowParameterModel1 = new WorkflowParameterModel(archiveFattura, WorkflowParameterNames.DocumentUnitNames.METADATA);
@@ -221,7 +221,7 @@ namespace VecompSoftware.DocSuite.Public
             workflowModel.WorkflowParameters.Add(workflowParameterModel3);
 
             StartWorkflowContentType startWorkflowContentType = new StartWorkflowContentType(workflowModel, accountName, Guid.NewGuid());
-            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, identityContext, startWorkflowContentType);
+            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, Guid.NewGuid(), identityContext, startWorkflowContentType);
             string json = ManagerHelper.SerializeModel(startWorkflowCommand);
             StartWorkflowCommand deJson = ManagerHelper.DeserializeModel<StartWorkflowCommand>(json);
             Assert.IsNotNull(deJson);
@@ -263,7 +263,7 @@ namespace VecompSoftware.DocSuite.Public
             workflowModel.WorkflowParameters.Add(workflowParameterModel3);
 
             StartWorkflowContentType startWorkflowContentType = new StartWorkflowContentType(workflowModel, accountName, Guid.NewGuid());
-            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, identityContext, startWorkflowContentType);
+            StartWorkflowCommand startWorkflowCommand = new StartWorkflowCommand(Guid.NewGuid(), tenantName, tenantId, Guid.NewGuid(), identityContext, startWorkflowContentType);
             HttpClient client = new HttpClient
             {
                 BaseAddress = new Uri("http://localhost/PublicDSW.WebAPI/")

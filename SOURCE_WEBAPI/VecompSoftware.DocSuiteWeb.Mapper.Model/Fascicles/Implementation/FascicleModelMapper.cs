@@ -1,6 +1,10 @@
 ﻿using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
+using VecompSoftware.DocSuiteWeb.Entity.Processes;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Dossiers;
+using VecompSoftware.DocSuiteWeb.Model.Processes;
 using VecompSoftwareFascicle = VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Fascicles
@@ -38,10 +42,17 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Fascicles
             modelTransformed.FascicleType = (VecompSoftwareFascicle.FascicleType)entity.FascicleType;
             modelTransformed.VisibilityType = (VecompSoftwareFascicle.VisibilityType)entity.VisibilityType;
             modelTransformed.MetadataValues = entity.MetadataValues;
+            modelTransformed.MetadataDesigner = entity.MetadataDesigner;
+            modelTransformed.DSWEnvironment = entity.DSWEnvironment;
+            modelTransformed.CustomActions = entity.CustomActions;
             modelTransformed.FascicleDocumentUnits = _mapperUnitOfWork.Repository<IDomainMapper<FascicleDocumentUnit, VecompSoftwareFascicle.FascicleDocumentUnitModel>>().MapCollection(entity.FascicleDocumentUnits);
             modelTransformed.FascicleDocuments = _mapperUnitOfWork.Repository<IDomainMapper<FascicleDocument, VecompSoftwareFascicle.FascicleDocumentModel>>().MapCollection(entity.FascicleDocuments);
             modelTransformed.Category = entity.Category == null ? null : _mapperUnitOfWork.Repository<IDomainMapper<Category, CategoryModel>>().Map(entity.Category, new CategoryModel());
             modelTransformed.Container = entity.Container == null ? null : _mapperUnitOfWork.Repository<IDomainMapper<Container, ContainerModel>>().Map(entity.Container, new ContainerModel());
+            modelTransformed.Contacts = entity.Contacts == null ? null : _mapperUnitOfWork.Repository<IDomainMapper<Contact, ContactModel>>().MapCollection(entity.Contacts);
+            modelTransformed.DossierFolders = entity.DossierFolders == null ? null : _mapperUnitOfWork.Repository<IDomainMapper<DossierFolder, DossierFolderModel>>().MapCollection(entity.DossierFolders);
+            modelTransformed.FascicleTemplate = entity.FascicleTemplate == null ? null : _mapperUnitOfWork.Repository<IDomainMapper<ProcessFascicleTemplate, ProcessFascicleTemplateModel>>().Map(entity.FascicleTemplate, new ProcessFascicleTemplateModel());
+            modelTransformed.LastChangedDate = entity.LastChangedDate;
             return modelTransformed;
         }
         #endregion

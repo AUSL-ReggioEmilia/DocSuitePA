@@ -27,7 +27,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Processes
         #region [ Properties ]
 
         public string Name { get; set; }
-        public FascicleType FascicleType { get; set; }
         public ProcessType ProcessType { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
@@ -42,7 +41,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Processes
         public virtual ICollection<Role> Roles { get; set; }
         public virtual ICollection<ProcessFascicleTemplate> FascicleTemplates { get; set; }
         public virtual ICollection<ProcessFascicleWorkflowRepository> FascicleWorkflowRepositories { get; set; }
-
         #endregion
     }
 }

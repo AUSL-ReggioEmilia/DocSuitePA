@@ -9,7 +9,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertCollaboration
     public class Listener : ListenerMessageBase<ICommandBuildCollaboration>, IListenerMessageGeneric<ICommandBuildCollaboration>
     {
         public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandBuildCollaboration")
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandBuildCollaboration", webApiClient)
         {
 
         }

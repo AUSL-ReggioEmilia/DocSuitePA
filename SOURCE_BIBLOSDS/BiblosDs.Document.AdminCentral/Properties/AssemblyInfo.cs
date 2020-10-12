@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("BiblosDS.Document.AdminCentral")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2019")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -14,5 +14,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("1ada5bef-8c29-4fa4-aae2-85816f5ac897")]
 
-[assembly: AssemblyVersion("8.81.0.0")]
-[assembly: AssemblyFileVersion("8.81.0.0")]
+[assembly: AssemblyVersion("9.03.0.0")]
+[assembly: AssemblyFileVersion("9.03.0.0")]

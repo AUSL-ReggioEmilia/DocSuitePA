@@ -61,7 +61,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols
         {
             try
             {
-                _logger.WriteDebug(new LogMessage(string.Concat("VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols.AfterSave with entity UniqueId ", entity.UniqueId)), LogCategories);
+                _logger.WriteDebug(new LogMessage($"VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols.AfterSave with entity UniqueId {entity.UniqueId}"), LogCategories);
                 Protocol protocol = _unitOfWork.Repository<Protocol>().GetByUniqueIdWithRole(entity.UniqueId).FirstOrDefault();
                 if (protocol != null)
                 {
@@ -76,18 +76,18 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols
 
                     if (CurrentUpdateActionType.HasValue && CurrentUpdateActionType == UpdateActionType.ActivateProtocol)
                     {
-                        command = new CommandCreateProtocol(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, null, null, null, identity, protocol, categoryFascicle, null);
+                        command = new CommandCreateProtocol(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, protocol.TenantAOO.UniqueId, null, null, null, identity, protocol, categoryFascicle, null);
                     }
 
                     if (CurrentDeleteActionType.HasValue && CurrentDeleteActionType == DeleteActionType.DeleteProtocol)
                     {
-                        command = new CommandUpdateProtocol(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, null, null, null, identity, protocol, categoryFascicle, null);
+                        command = new CommandUpdateProtocol(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, protocol.TenantAOO.UniqueId, null, null, null, identity, protocol, categoryFascicle, null);
                     }
 
                     if (HttpContext.Current.Request.HttpMethod == HttpMethod.Put.Method &&
                         CurrentUpdateActionType.HasValue && CurrentUpdateActionType != UpdateActionType.ActivateProtocol)
                     {
-                        command = new CommandUpdateProtocol(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, null, null, null, identity, protocol, categoryFascicle, null);
+                        command = new CommandUpdateProtocol(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, protocol.TenantAOO.UniqueId, null, null, null, identity, protocol, categoryFascicle, null);
                     }
 
                     if (command != null)
@@ -96,7 +96,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols
                         DocumentUnitModel documentUnitModel;
                         foreach (IWorkflowAction workflowAction in WorkflowActions)
                         {
-                            workflowAction.IdWorkflowActivity = IdWorkflowActivity.Value;
+                            workflowAction.IdWorkflowActivity = IdWorkflowActivity;
                             if (workflowAction is IWorkflowActionDocumentUnitLink)
                             {
                                 workflowActionDocumentUnitLinkModel = (WorkflowActionDocumentUnitLinkModel)workflowAction;
@@ -113,7 +113,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols
                         ServiceBusMessage message = _cqrsMapper.Map(command, new ServiceBusMessage());
                         if (message == null || string.IsNullOrEmpty(message.ChannelName))
                         {
-                            throw new DSWException(string.Concat("Queue name to command [", command.ToString(), "] is not mapped"), null, DSWExceptionCode.SC_Mapper);
+                            throw new DSWException($"Queue name to command [{command}] is not mapped", null, DSWExceptionCode.SC_Mapper);
                         }
                         Task.Run(async () =>
                         {

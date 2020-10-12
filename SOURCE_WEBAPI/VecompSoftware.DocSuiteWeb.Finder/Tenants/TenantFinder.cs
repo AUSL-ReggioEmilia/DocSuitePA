@@ -21,11 +21,27 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Tenants
                 .Include(i => i.Containers)
                 .Include(i => i.PECMailBoxes)
                 .Include(i => i.TenantWorkflowRepositories)
+                .Include(i => i.TenantAOO)
                 .SelectAsQueryable();
         }
+
+        public static Tenant GetIncludeTenantAPP(this IRepository<Tenant> repository, Guid uniqueId, bool optimization = false)
+        {
+            return repository.Query(x => x.UniqueId == uniqueId, optimization)
+                 .Include(i => i.TenantAOO)
+                .SelectAsQueryable()
+                .SingleOrDefault();
+        }
+
         public static IQueryable<Tenant> GetByTenantName(this IRepository<Tenant> repository, string tenantName, bool optimization = false)
         {
             return repository.Query(x => x.TenantName == tenantName, optimization)
+                .SelectAsQueryable();
+        }
+
+        public static IQueryable<TenantAOO> GetByTenantAOOName(this IRepository<TenantAOO> repository, string tenantAOOName, bool optimization = false)
+        {
+            return repository.Query(x => x.Name == tenantAOOName, optimization)
                 .SelectAsQueryable();
         }
 

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 using VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini.Models;
 using VecompSoftware.BPM.Integrations.Services.ServiceBus;
@@ -14,7 +13,6 @@ using VecompSoftware.Core.Command.CQRS.Commands.Models.UDS;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
-using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
@@ -42,7 +40,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini
         #endregion
 
         #region [ UDS Metadata ]
-        private const string CEDOLINI_MATRICOLA_FIELD = "Matricola";
+        private const string CEDOLINI_MATRICOLA_FIELD = "CodiceDipendente";
         #endregion
 
         #region [ Properties ]
@@ -134,7 +132,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini
             _needInitializeModule = true;
         }
 
-        private async Task UDSCompletedCallbackAsync(IEventCQRSCreateUDSData eventMessage)
+        private async Task UDSCompletedCallbackAsync(IEventCQRSCreateUDSData eventMessage, IDictionary<string, object> properties)
         {
             if (Cancel)
             {
@@ -147,7 +145,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini
             {
                 DocumentUnit documentUnit = eventMessage.DocumentUnit;
                 UDSRepository udsRepository = (await _webAPIClient.GetUDSRepository(documentUnit.UDSRepository.UniqueId)).SingleOrDefault();
-                
+
                 _logger.WriteInfo(new LogMessage("Reading matricola from UDS"), LogCategories);
                 string controllerName = Utils.GetWebAPIControllerName(udsRepository.Name);
                 Dictionary<int, Guid> uds_documents = new Dictionary<int, Guid>();
@@ -161,7 +159,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini
                 UDSBuildModel toUpdateModel = await BuildAuthorizedUDSModelAsync(documentUnit, udsRepository, account, uds_metadatas, uds_documents);
 
                 _logger.WriteInfo(new LogMessage($"Authorize account {account.Account} for UDS {documentUnit.UniqueId}"), LogCategories);
-                CommandUpdateUDSData commandUpdateUDS = new CommandUpdateUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _identityContext, toUpdateModel);
+                CommandUpdateUDSData commandUpdateUDS = new CommandUpdateUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _moduleConfiguration.TenantAOOId, _identityContext, toUpdateModel);
                 await _webAPIClient.SendCommandAsync(commandUpdateUDS);
 
                 _logger.WriteDebug(new LogMessage($"Preparing starting workflow with udsUniqueId {documentUnit.UniqueId},"), LogCategories);
@@ -171,10 +169,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini
                     ReferenceType = DocSuiteWeb.Model.Entities.Commons.DSWEnvironmentType.UDS
                 };
                 WorkflowResult workflowResult = await StartWorkflowAsync(referenceModel, account, _moduleConfiguration.WorkflowRepositoryName);
-                if (!workflowResult.IsValid)
+                if (!workflowResult.IsValid || !workflowResult.InstanceId.HasValue)
                 {
                     _logger.WriteError(new LogMessage($"An error occured in start {_moduleConfiguration.WorkflowRepositoryName} workflow"), LogCategories);
-                    throw new Exception("VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini");
+                    throw new Exception(string.Join(", ", workflowResult.Errors));
                 }
             }
             catch (Exception ex)
@@ -232,8 +230,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini
             {
                 foreach (FieldBaseType item in metadata.Items)
                 {
-                    UDSModelField udsField = new UDSModelField(item);
-                    udsField.Value = uds_metadatas.Single(f => f.Key == item.ColumnName).Value;
+                    UDSModelField udsField = new UDSModelField(item)
+                    {
+                        Value = uds_metadatas.Single(f => f.Key == item.ColumnName).Value
+                    };
                 }
             }
 
@@ -297,7 +297,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini
             {
                 referenceModels = udsRoles.Select(s => new ReferenceModel() { EntityId = s.Relation.EntityShortId, UniqueId = s.UniqueId, AuthorizationType = AuthorizationType.Accounted });
                 model.FillAuthorizations(referenceModels, model.Model.Authorizations.Label);
-            }            
+            }
 
             referenceModels = udsDocumentUnits.Select(s => new ReferenceModel() { UniqueId = s.Relation.UniqueId });
             model.FillProtocols(referenceModels);
@@ -356,12 +356,18 @@ namespace VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini
                 Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID,
                 ValueGuid = _moduleConfiguration.TenantId
             });
+            workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, new WorkflowArgument()
+            {
+                PropertyType = ArgumentType.RelationGuid,
+                Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID,
+                ValueGuid = _moduleConfiguration.TenantAOOId
+            });
             workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, new WorkflowArgument()
             {
                 PropertyType = ArgumentType.PropertyString,
                 Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME,
                 ValueString = _moduleConfiguration.TenantName
-            });            
+            });
             WorkflowResult workflowResult = await _webAPIClient.StartWorkflow(workflowStart);
             _logger.WriteInfo(new LogMessage(string.Concat("Workflow started correctly [IsValid: ", workflowResult.IsValid, "] with instanceId ", workflowResult.InstanceId)), LogCategories);
             return workflowResult;

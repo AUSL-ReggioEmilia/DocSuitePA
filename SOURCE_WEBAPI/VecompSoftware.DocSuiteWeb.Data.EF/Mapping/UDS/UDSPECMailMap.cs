@@ -65,6 +65,11 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.UDS
                 .WithMany(t => t.UDSPECMails)
                 .Map(m => m.MapKey("IdPECMail"));
 
+            HasRequired(t => t.SourceUDS)
+                .WithMany(t => t.UDSPECMails)
+                .HasForeignKey(f => f.IdUDS);
+
+
             #endregion
         }
     }

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:tns="documentservice.acaris.acta.doqui.it" xmlns:common="common.acaris.acta.doqui.it" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:archive="archive.acaris.acta.doqui.it" targetNamespace="documentservice.acaris.acta.doqui.it" jaxb:version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="ACARIS-Archive.xsd" namespace="archive.acaris.acta.doqui.it" />
+  <xs:import schemaLocation="ACARIS-Common.xsd" namespace="common.acaris.acta.doqui.it" />
+  <xs:simpleType name="enumTipoOperazione">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="soloMetadati" />
+      <xs:enumeration value="elettronico" />
+      <xs:enumeration value="aggiuntaDocumentoFisico" />
+      <xs:enumeration value="aggiuntaContenutoFisico" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumTipoDocumentoCreazione">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="documentoArchivistico.semplice" />
+      <xs:enumeration value="documentoArchivistico.db" />
+      <xs:enumeration value="documentoArchivistico.registro" />
+      <xs:enumeration value="documentoFisico" />
+      <xs:enumeration value="contenutoFisico" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumTipoDocumentoArchivistico">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="DocumentoSemplice" />
+      <xs:enumeration value="DocumentoDB" />
+      <xs:enumeration value="DocumentoRegistro" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumParentFolder">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Aggregazione" />
+      <xs:enumeration value="Classificazione.GruppoAllegati" />
+      <xs:enumeration value="fascicoloTemporaneo" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumStepErrorAction">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="insert" />
+      <xs:enumeration value="exception" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="InfoRichiestaCreazione" abstract="true">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:complexType name="MappaIdentificazioneDocumento" abstract="true">
+    <xs:sequence>
+      <xs:element name="rappresentazioneLimitata" type="common:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IdentificatoreDocumento">
+    <xs:sequence>
+      <xs:element name="objectIdDocumento" type="common:ObjectIdType" />
+      <xs:element name="objectIdClassificazione" type="common:ObjectIdType" />
+      <xs:element name="tipoDocumento" type="tns:enumTipoDocumentoCreazione" />
+      <xs:element name="dataUltimoAggiornamento" type="common:ChangeTokenType" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="failedStepsInfo" type="tns:FailedStepsInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IdentificazioneTrasformazione">
+    <xs:sequence>
+      <xs:element name="relazione" type="archive:RelationshipPropertiesType" />
+      <xs:element name="dataUltimoAggiornamento" type="common:ChangeTokenType" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="failedSteps" type="tns:FailedStepsInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InfoRichiestaTrasformazione">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="tipoDocFisicoId" type="common:integer" />
+      <xs:element minOccurs="1" maxOccurs="1" name="composizioneId" type="common:integer" />
+      <xs:element minOccurs="1" maxOccurs="1" name="multiplo" type="common:boolean" />
+      <xs:element minOccurs="1" maxOccurs="1" name="diventaElettronico" type="common:boolean" />
+      <xs:element minOccurs="1" maxOccurs="1" name="statoDiEfficaciaId" type="common:integer" />
+      <xs:element minOccurs="1" maxOccurs="1" name="rimandareOperazioneSbustamento" type="common:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FailedStepsInfo">
+    <xs:sequence>
+      <xs:element name="fileName" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="7" name="failedSteps" type="common:integer" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DocumentoArchivisticoIRC">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:InfoRichiestaCreazione">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="parentFolderId" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tipoDocumento" type="tns:enumTipoDocumentoArchivistico" />
+          <xs:element minOccurs="1" maxOccurs="1" name="allegato" type="common:boolean" />
+          <xs:element minOccurs="0" maxOccurs="1" name="gruppoAllegati" type="archive:GruppoAllegatiPropertiesType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="classificazionePrincipale" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="propertiesDocumento" type="common:PropertiesType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="propertiesClassificazione" type="common:PropertiesType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="documentiFisici" type="tns:DocumentoFisicoIRC" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentoFisicoIRC">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:InfoRichiestaCreazione">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="documentoArchivistico" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="documentRootFolderId" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="propertiesDocumentoFisico" type="common:PropertiesType" />
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="contenutiFisici" type="tns:ContenutoFisicoIRC" />
+          <xs:element minOccurs="7" maxOccurs="7" name="azioniVerificaFirma" type="tns:StepErrorAction" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ContenutoFisicoIRC">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:InfoRichiestaCreazione">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="documentoFisico" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="dataUltimoAggiornamentoDocumento" type="common:ChangeTokenType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="propertiesContenutoFisico" type="common:PropertiesType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tipo" type="common:enumStreamId" />
+          <xs:element minOccurs="1" maxOccurs="1" name="stream" type="common:acarisContentStreamType" />
+          <xs:element minOccurs="0" maxOccurs="7" name="azioniVerificaFirma" type="tns:StepErrorAction" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="StepErrorAction">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="step" type="common:integer" />
+      <xs:element minOccurs="1" maxOccurs="1" name="action" type="tns:enumStepErrorAction" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CollocazioneDocumento">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="classificazioneId" type="common:ObjectIdType" />
+      <xs:element minOccurs="1" maxOccurs="1" name="parentId" type="common:ObjectIdType" />
+      <xs:element minOccurs="1" maxOccurs="1" name="parentFolderType" type="tns:enumParentFolder" />
+      <xs:element minOccurs="0" maxOccurs="1" name="classificazionePrincipaleId" type="common:ObjectIdType" />
+      <xs:element minOccurs="0" maxOccurs="1" name="gruppoAllegatiId" type="common:ObjectIdType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DocumentoArchivisticoIdMap">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:MappaIdentificazioneDocumento">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="documentoArchivisticoId" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="collocazioni" type="tns:CollocazioneDocumento" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="documentiFisiciIdMap" type="tns:DocumentoFisicoIdMap" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentoFisicoIdMap">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:MappaIdentificazioneDocumento">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="documentoFisicoId" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="documentoArchivisticoId" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="ContenutiFisiciIdMap" type="tns:ContenutoFisicoIdMap" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ContenutoFisicoIdMap">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:MappaIdentificazioneDocumento">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="contenutoFisicoId" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="documentoFisicoId" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="contentStreamId" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="tipoContenuto" type="common:enumStreamId" />
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="verifyReportList" type="common:ObjectIdType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

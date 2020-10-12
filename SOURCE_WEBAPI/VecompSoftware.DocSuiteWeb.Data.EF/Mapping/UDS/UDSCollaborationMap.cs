@@ -65,6 +65,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.UDS
                 .WithMany(t => t.UDSCollaborations)
                 .Map(m => m.MapKey("IdCollaboration"));
 
+            HasRequired(t => t.SourceUDS)
+                .WithMany(t => t.UDSCollaborations)
+                .HasForeignKey(f => f.IdUDS);
+
             #endregion
         }
     }

@@ -11,8 +11,6 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Parameters
             entityTransformed.LastUsedNumber = entity.LastUsedNumber;
             entityTransformed.Locked = entity.Locked;
             entityTransformed.Password = entity.Password;
-            entityTransformed.LastChangedUser = entity.LastChangedUser;
-            entityTransformed.LastChangedDate = entity.LastChangedDate;
             entityTransformed.LastUsedIdCategory = entity.LastUsedIdCategory;
             entityTransformed.LastUsedIdRecipient = entity.LastUsedIdRecipient;
             entityTransformed.LastUsedIdContainer = entity.LastUsedIdContainer;

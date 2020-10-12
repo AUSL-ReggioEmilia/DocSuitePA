@@ -14,6 +14,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Commons
             #region [ Base ]
             entityTransformed.DSWEnvironment = entity.DSWEnvironment;
             entityTransformed.FascicleType = entity.FascicleType;
+            entityTransformed.CustomActions = entity.CustomActions;
             #endregion
 
             return entityTransformed;

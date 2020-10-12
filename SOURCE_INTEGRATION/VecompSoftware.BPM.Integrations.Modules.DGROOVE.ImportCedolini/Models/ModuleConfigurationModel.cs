@@ -7,6 +7,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini.Models
     {
         public string TenantName { get; set; }
         public Guid TenantId { get; set; }
+        public Guid TenantAOOId { get; set; }
         public string TopicWorkflowIntegration { get; set; }
         public string WorkflowUDSCedoliniCompleteSubscription { get; set; }
         public string WorkflowRepositoryName { get; set; }

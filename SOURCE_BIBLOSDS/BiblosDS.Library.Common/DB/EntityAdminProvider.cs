@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Configuration;
-using BiblosDS.Library.Common.Model;
+﻿using BiblosDS.Library.Common.Model;
 using BiblosDS.Library.Common.Objects;
+using System;
 using System.ComponentModel;
+using System.Configuration;
+using System.Linq;
 using Document = BiblosDS.Library.Common.Objects.Document;
-using BiblosDS.Library.Common.Utility;
-using Microsoft.WindowsAzure.ServiceRuntime;
 
 namespace BiblosDS.Library.Common.DB
 {
@@ -20,19 +16,9 @@ namespace BiblosDS.Library.Common.DB
         {
             get
             {
-                if (AzureService.IsAvailable)
-                {
-                    var cnn = RoleEnvironment.GetConfigurationSettingValue("BiblosDS");
-                    if (string.IsNullOrEmpty(cnn))
-                        throw new Exception("Impostare una connessione \"BiblosDS\" nel file .cscfg.");
-                    return cnn;
-                }
-                else
-                {
-                    if (ConfigurationManager.ConnectionStrings["BiblosDS"] == null)
-                        throw new Exception("Impostare una connessione \"BiblosDS\" nel file .config.");
-                    return ConfigurationManager.ConnectionStrings["BiblosDS"].ConnectionString;
-                }
+                if (ConfigurationManager.ConnectionStrings["BiblosDS"] == null)
+                    throw new Exception("Impostare una connessione \"BiblosDS\" nel file .config.");
+                return ConfigurationManager.ConnectionStrings["BiblosDS"].ConnectionString;
             }
         }
 

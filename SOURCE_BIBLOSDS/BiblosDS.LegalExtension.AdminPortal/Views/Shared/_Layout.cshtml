@@ -19,6 +19,9 @@
                 <div style="float:right; margin:20px;">
                     @Html.Partial("_LoginPartial")
                 </div>
+                <div style="float:right; margin: 20px 10px;">
+                    @Html.Partial("_CompanyPartial", Session["idCompany"] != null ? Session["idCompany"] : new BiblosDS.LegalExtension.AdminPortal.ViewModel.CustomerCompanyViewModel())
+                </div>
                 <div style="padding:10px; padding-bottom:20px; color:#5c97d1">
                     <div class="site-title"><a href="@Url.Action("Index", "Home")">Biblos preservation portal</a></div>
                 </div>
@@ -32,7 +35,8 @@
                                 items.Add().Text("LogIn").Action("LogIn", "Account").SpriteCssClasses("fas fa-lock");
                             }
                             items.Add().Text("Home").Action("Index", "Home").SpriteCssClasses("fas fa-home");
-                            items.Add().Text("Archivi").Action("ArchiveAdmin", "Home").SpriteCssClasses("fas fa-archive");
+                            items.Add().Text("Archivi da configurare").Action("PreservationArchivesConfigurable", "Archive").SpriteCssClasses("fas fa-box-open");
+                            items.Add().Text("Archivi abilitati").Action("ArchiveAdmin", "Home").SpriteCssClasses("fas fa-archive");
                             items.Add().Text("Conservazioni da chiudere").Action("PreservationToClose", "Ipda").SpriteCssClasses("fas fa-list-ul");
                             items.Add().Text("Verifica conservazioni").Action("Index", "PreservationVerify").SpriteCssClasses("fas fa-tasks");
                             items.Add().Text("Pacchetto di distribuzione").Action("DistributionPackages", "Home").SpriteCssClasses("fas fa-file-archive");
@@ -57,7 +61,7 @@
     <footer>
         <div class="content-wrapper">
             <div>
-                <p><b>Biblos preservation portal</b> &copy; 2019 Dgroove Srl </p>
+                <p><b>Biblos preservation portal</b> &copy; @DateTime.Now.Year Dgroove Srl </p>
             </div>
         </div>
     </footer>

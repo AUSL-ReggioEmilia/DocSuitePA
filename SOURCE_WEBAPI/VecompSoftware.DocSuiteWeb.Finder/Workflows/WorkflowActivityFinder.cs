@@ -19,12 +19,11 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
                 .Include(f => f.WorkflowInstance.WorkflowRepository)
                 .Include(f => f.WorkflowProperties)
                 .Select();
-
         }
 
         public static bool HasHandler(this IRepository<WorkflowActivity> repository, Guid workflowActivityId)
         {
-            return repository.Queryable(true).Count(x => x.UniqueId == workflowActivityId && x.WorkflowAuthorizations.Any(w => w.IsHandler)) > 0;
+            return repository.Queryable(true).Count(x => x.UniqueId == workflowActivityId && x.WorkflowAuthorizations.Any(w => w.IsHandler) && x.Status < WorkflowStatus.Done) > 0;
         }
 
         public static bool IsWorkflowActivityHandler(this IRepository<WorkflowActivity> repository, string username, string domain, Guid workflowActivityId)

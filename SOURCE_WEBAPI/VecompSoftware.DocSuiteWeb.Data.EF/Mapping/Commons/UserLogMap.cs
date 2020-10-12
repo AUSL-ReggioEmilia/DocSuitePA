@@ -94,7 +94,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
 
             Property(x => x.CurrentTenantId)
                .HasColumnName("CurrentTenantId")
-               .IsOptional();
+               .IsRequired();
 
             Property(x => x.UserProfile)
                .HasColumnName("UserProfile")

@@ -21,6 +21,7 @@ using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Finder.Collaborations;
 using VecompSoftware.DocSuiteWeb.Finder.DocumentArchives;
 using VecompSoftware.DocSuiteWeb.Finder.DocumentUnits;
@@ -102,12 +103,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
                 .Include(c => c.Fascicle.Category)
                 .Include(c => c.DocumentUnit.UDSRepository);
         }
+
         protected override void AfterSave(FascicleDocumentUnit entity)
         {
             try
             {
                 _logger.WriteDebug(new LogMessage(string.Concat("VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles.FascicleDocumentUnit.AfterSave with entity UniqueId ", entity.UniqueId)), LogCategories);
                 ServiceBusMessage message = null;
+
                 if (entity.ReferenceType == ReferenceType.Fascicle)
                 {
                     switch (entity.DocumentUnit.Environment)
@@ -130,7 +133,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
                                     }
                                 }
                                 message = GenerateMessage(entity.DocumentUnit.Category, (int)DSWEnvironmentType.Protocol,
-                                    (categoryFascicle) => new CommandUpdateProtocol(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId,
+                                    (categoryFascicle) => new CommandUpdateProtocol(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, protocol.TenantAOO.UniqueId,
                                     collaborationUniqueId, collaborationId, collaborationTemplateName, new IdentityContext(_currentIdentity.FullUserName), protocol, categoryFascicle, null));
                                 Task.Run(async () =>
                                 {
@@ -147,7 +150,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
                                     _mapper.FileResolution = _unitOfWork.Repository<FileResolution>().GetByResolution(resolution.EntityId).SingleOrDefault();
                                     _mapper.ResolutionRoles = _unitOfWork.Repository<ResolutionRole>().GetByResolution(resolution.EntityId);
                                     message = GenerateMessage(entity.DocumentUnit.Category, (int)DSWEnvironmentType.Resolution,
-                                        (categoryFascicle) => new CommandUpdateResolution(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId,
+                                        (categoryFascicle) => new CommandUpdateResolution(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty,
                                         new IdentityContext(_currentIdentity.FullUserName), resolutionModel, categoryFascicle, null));
                                     Task.Run(async () =>
                                     {
@@ -160,7 +163,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
                             {
                                 DocumentSeriesItem documentSeriesItem = _unitOfWork.Repository<DocumentSeriesItem>().GetFullByUniqueId(entity.DocumentUnit.UniqueId).SingleOrDefault();
                                 message = GenerateMessage(entity.DocumentUnit.Category, (int)DSWEnvironmentType.DocumentSeries,
-                                    (categoryFascicle) => new CommandUpdateDocumentSeriesItem(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, null,
+                                    (categoryFascicle) => new CommandUpdateDocumentSeriesItem(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty, null,
                                     new IdentityContext(_currentIdentity.FullUserName), documentSeriesItem, categoryFascicle, null));
                                 Task.Run(async () =>
                                 {
@@ -178,7 +181,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
                                     commandModel.RegistrationDate = entity.DocumentUnit.RegistrationDate;
                                     commandModel.RegistrationUser = entity.DocumentUnit.RegistrationUser;
                                     message = GenerateMessage(entity.DocumentUnit.Category, entity.DocumentUnit.Environment,
-                                        (categoryFascicle) => new CommandCQRSUpdateUDSData(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId,
+                                        (categoryFascicle) => new CommandCQRSUpdateUDSData(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, entity.DocumentUnit.TenantAOO?.UniqueId ?? Guid.Empty,
                                         new IdentityContext(_currentIdentity.FullUserName), commandModel, categoryFascicle, entity.DocumentUnit, null, null, null));
                                     Task.Run(async () =>
                                     {
@@ -195,7 +198,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
                     message = GenerateMessage(entity.DocumentUnit.Category, (int)DSWEnvironmentType.Fascicle,
                         (categoryFascicle) =>
                         {
-                            return new CommandCreateFascicleDocumentUnit(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId,
+                            return new CommandCreateFascicleDocumentUnit(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty,
                                 new IdentityContext(_currentIdentity.FullUserName), entity);
                         });
                     Task.Run(async () =>
@@ -209,7 +212,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
                     message = GenerateMessage(entity.DocumentUnit.Category, (int)DSWEnvironmentType.Fascicle,
                         (categoryFascicle) =>
                         {
-                            return new CommandDeleteFascicleDocumentUnit(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId,
+                            return new CommandDeleteFascicleDocumentUnit(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty,
                                 new IdentityContext(_currentIdentity.FullUserName), entity);
                         });
                     Task.Run(async () =>

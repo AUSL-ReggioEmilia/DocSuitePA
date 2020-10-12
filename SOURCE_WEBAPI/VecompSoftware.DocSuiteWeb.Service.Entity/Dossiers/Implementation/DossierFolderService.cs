@@ -8,6 +8,7 @@ using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Entity.Processes;
+using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Finder.Dossiers;
 using VecompSoftware.DocSuiteWeb.Finder.Fascicles;
 using VecompSoftware.DocSuiteWeb.Mapper;
@@ -41,6 +42,26 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
         #region [ Methods ]
         protected override DossierFolder BeforeCreate(DossierFolder entity)
         {
+            if (CurrentInsertActionType.HasValue && CurrentInsertActionType == Common.Infrastructures.InsertActionType.CloneProcessDetails)
+            {
+                //TODO: The UniqueId of the clicked folder which will server as the source folder is stored in JsonMetadata (should I move it?)
+                DossierFolder sourceDossierFolder = ExtractSourceToClone(Guid.Parse(entity.JsonMetadata));
+
+                entity = CloneDossierFolder(sourceDossierFolder, entity);
+                entity.JsonMetadata = "parent";
+                entity.Name = $"1-{entity.Name}"; //establish reorder in SQL after Entity Framework insert.
+                _unitOfWork.Repository<DossierFolder>().Insert(entity);
+
+                /*Load children inside sourceDossier Folder*/
+                List<DossierFolder> dossierChildren = _unitOfWork.Repository<DossierFolder>()
+                    .Query(x => x.DossierFolderPath.StartsWith(sourceDossierFolder.DossierFolderPath) &&
+                    x.DossierFolderLevel > sourceDossierFolder.DossierFolderLevel && x.Status != DossierFolderStatus.Fascicle, true)
+                    .SelectAsQueryable().ToList();
+
+                AddClonedChildren(entity, dossierChildren);
+
+                return base.BeforeCreate(entity);
+            }
             if (entity.Dossier != null)
             {
                 entity.Dossier = _unitOfWork.Repository<Dossier>().GetWithProcesses(entity.Dossier.UniqueId).SingleOrDefault();
@@ -52,6 +73,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
             }
 
             entity.Status = entity.Status == DossierFolderStatus.DoAction ? DossierFolderStatus.DoAction : DossierFolderStatus.InProgress;
+
             if (entity.Fascicle != null)
             {
                 entity.Fascicle = _unitOfWork.Repository<Fascicle>().Find(entity.Fascicle.UniqueId);
@@ -90,10 +112,10 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
                         string.Concat("Aggiornata la tipologia della cartella '", parentFolder.Name, "' da 'Cartella' a 'Cartella con sotto cartelle'"), CurrentDomainUser.Account));
                 }
             }
-            
+
             if (entity.Dossier != null)
             {
-                foreach (Process item in entity.Dossier.Processes.Where(f=> f.ProcessType == ProcessType.Created))
+                foreach (Process item in entity.Dossier.Processes.Where(f => f.ProcessType == ProcessType.Created))
                 {
                     item.ProcessType = ProcessType.Defined;
                     _unitOfWork.Repository<Process>().Update(item);
@@ -103,6 +125,105 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
             return base.BeforeCreate(entity);
         }
 
+        private void AddClonedChildren(DossierFolder entity, List<DossierFolder> dossierChildren)
+        {
+            DossierFolder child = null;
+            DossierFolder clonedChild = null;
+            if (dossierChildren != null && dossierChildren.Count > 0)
+            {
+                short minLevel = dossierChildren.Min(y => y.DossierFolderLevel);
+                foreach (DossierFolder dossierFolder in dossierChildren.Where(x => x.DossierFolderLevel == minLevel))
+                {
+                    child = new DossierFolder()
+                    {
+                        UniqueId = Guid.NewGuid(),
+                        Status = dossierFolder.Status,
+                        JsonMetadata = entity.UniqueId.ToString(), //parent id
+                        ParentInsertId = null, //will be updated in store procedure
+                        Name = $"{minLevel - 1}-{dossierFolder.Name}",//this will be used to order the query
+                        Dossier = _unitOfWork.Repository<Dossier>().Find(entity.Dossier.UniqueId)
+                    };
+                    clonedChild = CloneDossierFolder(ExtractSourceToClone(dossierFolder.UniqueId), child);
+                    _unitOfWork.Repository<DossierFolder>().Insert(clonedChild);
+                    AddClonedChildren(clonedChild, dossierChildren.Where(x => x.DossierFolderLevel > minLevel &&
+                               x.DossierFolderPath.StartsWith(dossierFolder.DossierFolderPath)).ToList());
+                }
+            }
+        }
+
+
+        private DossierFolder ExtractSourceToClone(Guid id)
+        {
+            return _unitOfWork
+            .Repository<DossierFolder>()
+            .Query(x => x.UniqueId == id, true)
+            .Include(x => x.Dossier)
+            .Include(x => x.Category)
+            .Include(x => x.FascicleTemplates.Select(ft => ft.Process))
+            .Include(x => x.Fascicle)
+            .Include(x => x.FascicleWorkflowRepositories.Select(p => p.Process))
+            .Include(x => x.FascicleWorkflowRepositories.Select(w => w.WorkflowRepository))
+            .Include(x => x.DossierFolderRoles.Select(r => r.Role))
+            .SelectAsQueryable()
+            .FirstOrDefault();
+
+        }
+        private DossierFolder CloneDossierFolder(DossierFolder sourceDossierFolder, DossierFolder entity)
+        {
+            entity.Category = sourceDossierFolder.Category;
+            entity.Status = sourceDossierFolder.Status;
+
+            entity.Dossier = _unitOfWork.Repository<Dossier>().GetWithProcesses(sourceDossierFolder.Dossier.UniqueId).SingleOrDefault();
+
+            //attach cloned roles
+            if (sourceDossierFolder.DossierFolderRoles != null && sourceDossierFolder.DossierFolderRoles.Count > 0)
+            {
+                HashSet<DossierFolderRole> dossierFolderRoles = new HashSet<DossierFolderRole>();
+                foreach (DossierFolderRole item in sourceDossierFolder.DossierFolderRoles)
+                {
+                    dossierFolderRoles.Add(CreateDossierFolderRole(item, entity, _unitOfWork.Repository<Role>().Find(item.Role.EntityShortId)));
+                }
+                entity.DossierFolderRoles = dossierFolderRoles.Where(f => f != null).ToList();
+                _unitOfWork.Repository<DossierFolderRole>().InsertRange(entity.DossierFolderRoles);
+            }
+
+            //attach cloned fascicletemplate
+            if (sourceDossierFolder.FascicleTemplates != null && sourceDossierFolder.FascicleTemplates.Count > 0)
+            {
+                HashSet<ProcessFascicleTemplate> processFascicleTemplates = new HashSet<ProcessFascicleTemplate>();
+                foreach (ProcessFascicleTemplate ft in sourceDossierFolder.FascicleTemplates)
+                {
+                    processFascicleTemplates.Add(new ProcessFascicleTemplate()
+                    {
+                        Process = _unitOfWork.Repository<Process>().Find(ft.Process.UniqueId),
+                        Name = ft.Name,
+                        JsonModel = ft.JsonModel,
+                        StartDate = ft.StartDate,
+                        EndDate = ft.EndDate
+                    });
+                }
+                entity.FascicleTemplates = processFascicleTemplates;
+                _unitOfWork.Repository<ProcessFascicleTemplate>().InsertRange(entity.FascicleTemplates);
+            }
+
+            //attach workflowrepository
+            if (sourceDossierFolder.FascicleWorkflowRepositories != null && sourceDossierFolder.FascicleWorkflowRepositories.Count > 0)
+            {
+                HashSet<ProcessFascicleWorkflowRepository> processFascicleWorkflowRepositories = new HashSet<ProcessFascicleWorkflowRepository>();
+                foreach (ProcessFascicleWorkflowRepository pfwr in sourceDossierFolder.FascicleWorkflowRepositories)
+                {
+                    processFascicleWorkflowRepositories.Add(new ProcessFascicleWorkflowRepository()
+                    {
+                        Process = _unitOfWork.Repository<Process>().Find(pfwr.Process.UniqueId),
+                        WorkflowRepository = _unitOfWork.Repository<WorkflowRepository>().Find(pfwr.WorkflowRepository.UniqueId),
+                    });
+                }
+                entity.FascicleWorkflowRepositories = processFascicleWorkflowRepositories;
+                _unitOfWork.Repository<ProcessFascicleWorkflowRepository>().InsertRange(entity.FascicleWorkflowRepositories);
+            }
+
+            return entity;
+        }
         private DossierFolderRole CreateDossierFolderRole(DossierFolderRole entity, DossierFolder dossierFolder, Role role)
         {
             DossierFolderRole dossierFolderRole = null;
@@ -185,7 +306,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
             if (actualIdFascicle.HasValue && (currentFascicleRole = _unitOfWork.Repository<FascicleRole>().GetFascicleRoleAccounted(actualIdFascicle.Value, roleId).SingleOrDefault()) != null)
             {
                 _unitOfWork.Repository<FascicleLog>().Insert(FascicleService.CreateLog(currentFascicleRole.Fascicle, FascicleLogType.Authorize,
-                    string.Concat("Rimossa autorizzazione '", currentFascicleRole.AuthorizationRoleType.ToString(), "' al settore ", roleName, " (", roleId, ")"), CurrentDomainUser.Account));
+                    $"Rimossa autorizzazione '{currentFascicleRole.AuthorizationRoleType}' al settore {roleName} ({roleId})", CurrentDomainUser.Account));
 
                 _unitOfWork.Repository<FascicleRole>().Delete(currentFascicleRole);
 
@@ -212,6 +333,16 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
 
         protected override DossierFolder BeforeUpdate(DossierFolder entity, DossierFolder entityTransformed)
         {
+
+            if (CurrentUpdateActionType.HasValue && CurrentUpdateActionType == Common.Infrastructures.UpdateActionType.CloneProcessDetails)
+            {
+                _unitOfWork.Repository<DossierFolder>().ExecuteProcedure(CommonDefinition.SQL_SP_DossierFolder_UpdateHierarchy,
+                 new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_IdDossier, entity.Dossier.UniqueId));
+                entityTransformed.JsonMetadata = null;
+                entityTransformed.Name = entity.Name.Substring(2, entity.Name.Length - 2);
+                return base.BeforeUpdate(entity, entityTransformed);
+            }
+
             bool hasFascicle = entityTransformed.Fascicle != null;
             entityTransformed.Status = DossierFolderStatus.InProgress;
 

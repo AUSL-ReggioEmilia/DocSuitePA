@@ -59,6 +59,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Protocols
             #endregion
 
             #region [ Configure Navigation Properties ]
+            HasOptional(t => t.Protocol)
+                .WithOptionalDependent()
+                .Map(m => m.MapKey("UniqueIdProtocol"));
+
             HasOptional(t => t.Collaboration)
                 .WithOptionalDependent()
                 .Map(m => m.MapKey("IdCollaboration"));

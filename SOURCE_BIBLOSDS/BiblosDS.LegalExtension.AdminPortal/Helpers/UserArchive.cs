@@ -9,7 +9,7 @@ namespace BiblosDS.LegalExtension.AdminPortal.Helpers
 {
   public class UserArchive
   {
-    public static List<DocumentArchive> GetUserArchivesPaged(string userName, int skip, int take, out int total)
+    public static List<DocumentArchive> GetUserArchivesPaged(string userName, int skip, int take, out int total, Guid idCompany)
     {
       var customerEnabledArchives = CustomerService.GetCustomerArchivesByUsername(userName);
       var archives = new List<DocumentArchive>();
@@ -20,7 +20,7 @@ namespace BiblosDS.LegalExtension.AdminPortal.Helpers
       {
         var ids = customerEnabledArchives
             .Select(x => x.IdArchive);
-        archives.AddRange(ArchiveService.GetArchivesByIdPaged(ids, skip, take, out total));
+        archives.AddRange(ArchiveService.GetArchivesByIdPaged(ids, skip, take, out total, idCompany));
       }
 
       return archives;

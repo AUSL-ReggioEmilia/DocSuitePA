@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Threading.Tasks;
 using VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging.Configuration;
 using VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging.Models;
@@ -10,6 +9,7 @@ using VecompSoftware.BPM.Integrations.Services.WebAPI;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
+using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.Workflow;
 using VecompSoftware.Services.Command.CQRS.Events.Models.Workflows;
@@ -98,7 +98,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging
                 _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowNotificationError>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.WorkflowLoggingNotificationErrorSubscription, EventWorkflowNotificationErrorCallback));
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowNotificationInfo>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration, 
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowNotificationInfo>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.WorkflowLoggingNotificationInfoSubscription, EventWorkflowNotificationInfoCallback));
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowNotificationWarning>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.WorkflowLoggingNotificationWarningSubscription, EventWorkflowNotificationWarningCallback));
@@ -121,14 +121,18 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging
             _needInitializeModule = true;
         }
 
-        private async Task EventWorkflowNotificationErrorCallback(IEventWorkflowNotificationError evt)
+        private async Task EventWorkflowNotificationErrorCallback(IEventWorkflowNotificationError evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage(string.Concat("EventWorkflowNotificationErrorCallback -> evaluate event id ", evt.Id)), LogCategories);
 
             try
             {
                 WorkflowNotification workflowNotification = evt.ContentType.ContentTypeValue;
-                await CreateWorkflowInstanceLog(null);
+
+                WorkflowActivity wfActivity = await GetWorkflowActivityFromNotificationAsync(workflowNotification, "EventWorkflowNotificationErrorCallback");
+
+                await CreateWorkflowInstanceLog(wfActivity.WorkflowInstance, WorkflowInstanceLogType.WFRefused, SeverityLog.Error, workflowNotification.Description);
+                await CreateWorkflowActivityLog(wfActivity, WorkflowStatus.Error, SeverityLog.Error, workflowNotification.Description);
             }
             catch (Exception ex)
             {
@@ -137,14 +141,18 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging
             }
         }
 
-        private async Task EventWorkflowNotificationInfoCallback(IEventWorkflowNotificationInfo evt)
+        private async Task EventWorkflowNotificationInfoCallback(IEventWorkflowNotificationInfo evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage(string.Concat("EventWorkflowNotificationInfoCallback -> evaluate event id ", evt.Id)), LogCategories);
 
             try
             {
                 WorkflowNotification workflowNotification = evt.ContentType.ContentTypeValue;
-                await CreateWorkflowInstanceLog(null);
+
+                WorkflowActivity wfActivity = await GetWorkflowActivityFromNotificationAsync(workflowNotification, "EventWorkflowNotificationInfoCallback");
+
+                await CreateWorkflowInstanceLog(wfActivity.WorkflowInstance, WorkflowInstanceLogType.Information, SeverityLog.Info, workflowNotification.Description);
+                await CreateWorkflowActivityLog(wfActivity, WorkflowStatus.Done, SeverityLog.Info, workflowNotification.Description);
             }
             catch (Exception ex)
             {
@@ -153,14 +161,17 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging
             }
         }
 
-        private async Task EventWorkflowNotificationWarningCallback(IEventWorkflowNotificationWarning evt)
+        private async Task EventWorkflowNotificationWarningCallback(IEventWorkflowNotificationWarning evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage(string.Concat("EventWorkflowNotificationWarningCallback -> evaluate event id ", evt.Id)), LogCategories);
 
             try
             {
                 WorkflowNotification workflowNotification = evt.ContentType.ContentTypeValue;
-                await CreateWorkflowInstanceLog(null);
+
+                WorkflowActivity wfActivity = await GetWorkflowActivityFromNotificationAsync(workflowNotification, "EventWorkflowNotificationWarningCallback");
+
+                await CreateWorkflowInstanceLog(wfActivity.WorkflowInstance, WorkflowInstanceLogType.Information, SeverityLog.Warning, workflowNotification.Description);
             }
             catch (Exception ex)
             {
@@ -169,14 +180,15 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging
             }
         }
 
-        private async Task EventWorkflowStartRequestDoneCallback(IEventWorkflowStartRequestDone evt)
+        private async Task EventWorkflowStartRequestDoneCallback(IEventWorkflowStartRequestDone evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage(string.Concat("EventWorkflowStartRequestDoneCallback -> evaluate event id ", evt.Id)), LogCategories);
 
             try
             {
                 WorkflowRequestStatus workflowRequestStatus = evt.ContentType.ContentTypeValue;
-                await CreateWorkflowInstanceLog(null);
+
+                await CreateWorkflowInstanceLog(new WorkflowInstance(workflowRequestStatus.WorkflowInstanceId), WorkflowInstanceLogType.WFStarted, SeverityLog.Info, workflowRequestStatus.Description);
             }
             catch (Exception ex)
             {
@@ -185,14 +197,15 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging
             }
         }
 
-        private async Task EventWorkflowStartRequestErrorCallback(IEventWorkflowStartRequestError evt)
+        private async Task EventWorkflowStartRequestErrorCallback(IEventWorkflowStartRequestError evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage(string.Concat("EventWorkflowStartRequestErrorCallback -> evaluate event id ", evt.Id)), LogCategories);
 
             try
             {
                 WorkflowRequestStatus workflowRequestStatus = evt.ContentType.ContentTypeValue;
-                await CreateWorkflowInstanceLog(null);
+
+                await CreateWorkflowInstanceLog(new WorkflowInstance(workflowRequestStatus.WorkflowInstanceId), WorkflowInstanceLogType.WFRefused, SeverityLog.Error, workflowRequestStatus.Description);
             }
             catch (Exception ex)
             {
@@ -201,18 +214,54 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging
             }
         }
 
-        private async Task CreateWorkflowInstanceLog(WorkflowInstanceLog workflowInstanceLog)
+        private async Task CreateWorkflowInstanceLog(WorkflowInstance workflowInstance, WorkflowInstanceLogType logType, SeverityLog severity, string description)
         {
+            WorkflowInstanceLog workflowInstanceLog = new WorkflowInstanceLog
+            {
+                Entity = workflowInstance,
+                SystemComputer = Environment.MachineName,
+                LogType = logType,
+                Severity = severity,
+                LogDescription = description
+            };
+
             await _webAPIClient.PostAsync(workflowInstanceLog, retryPolicyEnabled: false);
             _logger.WriteInfo(new LogMessage($"WorkflowInstanceLog {workflowInstanceLog.UniqueId} has been successfully inserted"), LogCategories);
         }
 
-        private async Task CreateWorkflowActivityLog(WorkflowActivityLog workflowActivityLog)
+        private async Task CreateWorkflowActivityLog(WorkflowActivity workflowActivity, WorkflowStatus logType, SeverityLog severityLog, string description)
         {
+            WorkflowActivityLog workflowActivityLog = new WorkflowActivityLog
+            {
+                Entity = workflowActivity,
+                SystemComputer = Environment.MachineName,
+                LogType = logType,
+                Severity = severityLog,
+                LogDescription = description
+            };
+
             await _webAPIClient.PostAsync(workflowActivityLog, retryPolicyEnabled: false);
             _logger.WriteInfo(new LogMessage($"WorkflowActivityLog {workflowActivityLog.Entity.UniqueId} referenced {workflowActivityLog.Entity.WorkflowInstance?.UniqueId} to has been successfully inserted"), LogCategories);
         }
 
+        private async Task<WorkflowActivity> GetWorkflowActivityFromNotificationAsync(WorkflowNotification workflowNotification, string callbackName)
+        {
+            if (workflowNotification == null)
+            {
+                _logger.WriteError(new LogMessage($"{callbackName} -> WorkflowNotification is null"), LogCategories);
+                throw new ArgumentNullException("WorkflowNotification", "WorkflowNotification is null.");
+            }
+
+            WorkflowActivity workflowActivity = await _webAPIClient.GetWorkflowActivityAsync(workflowNotification.IdWorkflowActivity, "$expand=WorkflowInstance");
+
+            if (workflowActivity == null)
+            {
+                _logger.WriteError(new LogMessage($"{callbackName} -> WorkflowActivity with id {workflowNotification.IdWorkflowActivity} not found"), LogCategories);
+                throw new ArgumentNullException("WorkflowActivity", "WorkflowActivity is null.");
+            }
+
+            return workflowActivity;
+        }
 
         #endregion
     }

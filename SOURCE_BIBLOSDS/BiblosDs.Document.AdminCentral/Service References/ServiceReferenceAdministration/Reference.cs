@@ -15,40 +15,186 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+    [System.SerializableAttribute()]
+    public partial class BiblosDsException : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.FaultCode CodeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MessageField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string StackTraceField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.FaultCode Code {
+            get {
+                return this.CodeField;
+            }
+            set {
+                if ((this.CodeField.Equals(value) != true)) {
+                    this.CodeField = value;
+                    this.RaisePropertyChanged("Code");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Message {
+            get {
+                return this.MessageField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
+                    this.MessageField = value;
+                    this.RaisePropertyChanged("Message");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string StackTrace {
+            get {
+                return this.StackTraceField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StackTraceField, value) != true)) {
+                    this.StackTraceField = value;
+                    this.RaisePropertyChanged("StackTrace");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="FaultCode", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+    public enum FaultCode : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        GENERIC_ERROR = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Archive_Exception = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        ArchiveStorage_Exception = 2,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Attribute_Exception = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        AttributeRequired_Exception = 4,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DocumentCheckOut_Exception = 5,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DocumentNotConvertible_Exception = 6,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DocumentNotFound_Exception = 7,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DocumentPrimaryKey_Exception = 8,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DocumentReadOnly_Exception = 9,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        FileNotFound_Exception = 10,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        FileNotUploaded_Exception = 11,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Permission_Exception = 12,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        StorageAreaConfiguration_Exception = 13,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        StorageConfiguration_Exception = 14,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        StorageIsProcessingFile_Exception = 15,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        StorageNotFound_Exception = 16,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DocumentNotReadyForAttach_Exception = 17,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DocumentWithoutContent_Exception = 18,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DocumentConnectionExists_Exception = 19,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        DocumentAttachNotFound_Exception = 20,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="BiblosDSObject", Namespace="http://BiblosDS/2009/10/BiblosDSObject")]
     [System.SerializableAttribute()]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Content))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeMode))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveServerConfig))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageType))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationRole))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUser))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentServer))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeValue))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeMode))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Certificate))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentServer))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Content))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Permission))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Preservation))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationJournaling))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUser))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationRole))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTask))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationAlert))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationAlertType))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskType))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationScheduleTaskType))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationSchedule))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentAttach))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Company))]
     public partial class BiblosDSObject : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
         [System.NonSerializedAttribute()]
@@ -76,43 +222,15 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Content", Namespace="http://BiblosDS/2009/10/Content")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AttributeMode", Namespace="http://BiblosDS/2009/10/AttributeMode")]
     [System.SerializableAttribute()]
-    public partial class Content : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
-        
-        private byte[] BlobField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string BlobStringField;
+    public partial class AttributeMode : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string DescriptionField;
         
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
-        public byte[] Blob {
-            get {
-                return this.BlobField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.BlobField, value) != true)) {
-                    this.BlobField = value;
-                    this.RaisePropertyChanged("Blob");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string BlobString {
-            get {
-                return this.BlobStringField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.BlobStringField, value) != true)) {
-                    this.BlobStringField = value;
-                    this.RaisePropertyChanged("BlobString");
-                }
-            }
-        }
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdModeField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string Description {
@@ -126,25 +244,41 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                 }
             }
         }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int IdMode {
+            get {
+                return this.IdModeField;
+            }
+            set {
+                if ((this.IdModeField.Equals(value) != true)) {
+                    this.IdModeField = value;
+                    this.RaisePropertyChanged("IdMode");
+                }
+            }
+        }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="PreservationUserRole", Namespace="http://BiblosDS/2009/10/PreservationUserRole")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ArchiveServerConfig", Namespace="http://BiblosDS/2009/10/ArchiveServerConfig")]
     [System.SerializableAttribute()]
-    public partial class PreservationUserRole : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+    public partial class ArchiveServerConfig : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive ArchiveField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid IdPreservationRoleField;
+        private System.Guid IdArchiveServerConfigField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationRole PreservationRoleField;
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server ServerField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUser PreservationUserField;
+        private bool TransitEnabledField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TransitPathField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive Archive {
@@ -160,40 +294,53 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid IdPreservationRole {
+        public System.Guid IdArchiveServerConfig {
             get {
-                return this.IdPreservationRoleField;
+                return this.IdArchiveServerConfigField;
             }
             set {
-                if ((this.IdPreservationRoleField.Equals(value) != true)) {
-                    this.IdPreservationRoleField = value;
-                    this.RaisePropertyChanged("IdPreservationRole");
+                if ((this.IdArchiveServerConfigField.Equals(value) != true)) {
+                    this.IdArchiveServerConfigField = value;
+                    this.RaisePropertyChanged("IdArchiveServerConfig");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationRole PreservationRole {
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server Server {
             get {
-                return this.PreservationRoleField;
+                return this.ServerField;
             }
             set {
-                if ((object.ReferenceEquals(this.PreservationRoleField, value) != true)) {
-                    this.PreservationRoleField = value;
-                    this.RaisePropertyChanged("PreservationRole");
+                if ((object.ReferenceEquals(this.ServerField, value) != true)) {
+                    this.ServerField = value;
+                    this.RaisePropertyChanged("Server");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUser PreservationUser {
+        public bool TransitEnabled {
             get {
-                return this.PreservationUserField;
+                return this.TransitEnabledField;
             }
             set {
-                if ((object.ReferenceEquals(this.PreservationUserField, value) != true)) {
-                    this.PreservationUserField = value;
-                    this.RaisePropertyChanged("PreservationUser");
+                if ((this.TransitEnabledField.Equals(value) != true)) {
+                    this.TransitEnabledField = value;
+                    this.RaisePropertyChanged("TransitEnabled");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TransitPath {
+            get {
+                return this.TransitPathField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TransitPathField, value) != true)) {
+                    this.TransitPathField = value;
+                    this.RaisePropertyChanged("TransitPath");
                 }
             }
         }
@@ -544,148 +691,6 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ArchiveServerConfig", Namespace="http://BiblosDS/2009/10/ArchiveServerConfig")]
-    [System.SerializableAttribute()]
-    public partial class ArchiveServerConfig : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive ArchiveField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid IdArchiveServerConfigField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server ServerField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool TransitEnabledField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string TransitPathField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive Archive {
-            get {
-                return this.ArchiveField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ArchiveField, value) != true)) {
-                    this.ArchiveField = value;
-                    this.RaisePropertyChanged("Archive");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid IdArchiveServerConfig {
-            get {
-                return this.IdArchiveServerConfigField;
-            }
-            set {
-                if ((this.IdArchiveServerConfigField.Equals(value) != true)) {
-                    this.IdArchiveServerConfigField = value;
-                    this.RaisePropertyChanged("IdArchiveServerConfig");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server Server {
-            get {
-                return this.ServerField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ServerField, value) != true)) {
-                    this.ServerField = value;
-                    this.RaisePropertyChanged("Server");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool TransitEnabled {
-            get {
-                return this.TransitEnabledField;
-            }
-            set {
-                if ((this.TransitEnabledField.Equals(value) != true)) {
-                    this.TransitEnabledField = value;
-                    this.RaisePropertyChanged("TransitEnabled");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string TransitPath {
-            get {
-                return this.TransitPathField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TransitPathField, value) != true)) {
-                    this.TransitPathField = value;
-                    this.RaisePropertyChanged("TransitPath");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Server", Namespace="http://BiblosDS/2009/10/Server")]
-    [System.SerializableAttribute()]
-    public partial class Server : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid IdServerField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ServerNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ServerRole ServerRoleField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid IdServer {
-            get {
-                return this.IdServerField;
-            }
-            set {
-                if ((this.IdServerField.Equals(value) != true)) {
-                    this.IdServerField = value;
-                    this.RaisePropertyChanged("IdServer");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ServerName {
-            get {
-                return this.ServerNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ServerNameField, value) != true)) {
-                    this.ServerNameField = value;
-                    this.RaisePropertyChanged("ServerName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ServerRole ServerRole {
-            get {
-                return this.ServerRoleField;
-            }
-            set {
-                if ((this.ServerRoleField.Equals(value) != true)) {
-                    this.ServerRoleField = value;
-                    this.RaisePropertyChanged("ServerRole");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="Storage", Namespace="http://BiblosDS/2009/10/Storage")]
     [System.SerializableAttribute()]
     public partial class Storage : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
@@ -885,6 +890,157 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Server", Namespace="http://BiblosDS/2009/10/Server")]
+    [System.SerializableAttribute()]
+    public partial class Server : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string DocumentServiceBindingField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string DocumentServiceBindingConfigurationField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string DocumentServiceUrlField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid IdServerField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ServerNameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ServerRole ServerRoleField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string StorageServiceBindingField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string StorageServiceBindingConfigurationField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string StorageServiceUrlField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DocumentServiceBinding {
+            get {
+                return this.DocumentServiceBindingField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DocumentServiceBindingField, value) != true)) {
+                    this.DocumentServiceBindingField = value;
+                    this.RaisePropertyChanged("DocumentServiceBinding");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DocumentServiceBindingConfiguration {
+            get {
+                return this.DocumentServiceBindingConfigurationField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DocumentServiceBindingConfigurationField, value) != true)) {
+                    this.DocumentServiceBindingConfigurationField = value;
+                    this.RaisePropertyChanged("DocumentServiceBindingConfiguration");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DocumentServiceUrl {
+            get {
+                return this.DocumentServiceUrlField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DocumentServiceUrlField, value) != true)) {
+                    this.DocumentServiceUrlField = value;
+                    this.RaisePropertyChanged("DocumentServiceUrl");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid IdServer {
+            get {
+                return this.IdServerField;
+            }
+            set {
+                if ((this.IdServerField.Equals(value) != true)) {
+                    this.IdServerField = value;
+                    this.RaisePropertyChanged("IdServer");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ServerName {
+            get {
+                return this.ServerNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ServerNameField, value) != true)) {
+                    this.ServerNameField = value;
+                    this.RaisePropertyChanged("ServerName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ServerRole ServerRole {
+            get {
+                return this.ServerRoleField;
+            }
+            set {
+                if ((this.ServerRoleField.Equals(value) != true)) {
+                    this.ServerRoleField = value;
+                    this.RaisePropertyChanged("ServerRole");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string StorageServiceBinding {
+            get {
+                return this.StorageServiceBindingField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StorageServiceBindingField, value) != true)) {
+                    this.StorageServiceBindingField = value;
+                    this.RaisePropertyChanged("StorageServiceBinding");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string StorageServiceBindingConfiguration {
+            get {
+                return this.StorageServiceBindingConfigurationField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StorageServiceBindingConfigurationField, value) != true)) {
+                    this.StorageServiceBindingConfigurationField = value;
+                    this.RaisePropertyChanged("StorageServiceBindingConfiguration");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string StorageServiceUrl {
+            get {
+                return this.StorageServiceUrlField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StorageServiceUrlField, value) != true)) {
+                    this.StorageServiceUrlField = value;
+                    this.RaisePropertyChanged("StorageServiceUrl");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="StorageType", Namespace="http://BiblosDS/2009/10/StorageType")]
     [System.SerializableAttribute()]
     public partial class StorageType : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
@@ -956,269 +1112,118 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="PreservationRole", Namespace="http://BiblosDS/2009/10/PreservationRole")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="DocumentServer", Namespace="http://BiblosDS/2009/10/DocumentServer")]
     [System.SerializableAttribute()]
-    public partial class PreservationRole : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+    public partial class DocumentServer : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool AlertEnabledField;
+        private System.Nullable<System.DateTime> DateCreatedField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool EnabledField;
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document DocumentField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid IdPreservationRoleField;
+        private string DocumentHashField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int KeyCodeField;
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server ServerField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NameField;
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status StatusField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole> UserRolesField;
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage StorageField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea StorageAreaField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool AlertEnabled {
+        public System.Nullable<System.DateTime> DateCreated {
             get {
-                return this.AlertEnabledField;
+                return this.DateCreatedField;
             }
             set {
-                if ((this.AlertEnabledField.Equals(value) != true)) {
-                    this.AlertEnabledField = value;
-                    this.RaisePropertyChanged("AlertEnabled");
+                if ((this.DateCreatedField.Equals(value) != true)) {
+                    this.DateCreatedField = value;
+                    this.RaisePropertyChanged("DateCreated");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Enabled {
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document Document {
             get {
-                return this.EnabledField;
+                return this.DocumentField;
             }
             set {
-                if ((this.EnabledField.Equals(value) != true)) {
-                    this.EnabledField = value;
-                    this.RaisePropertyChanged("Enabled");
+                if ((object.ReferenceEquals(this.DocumentField, value) != true)) {
+                    this.DocumentField = value;
+                    this.RaisePropertyChanged("Document");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid IdPreservationRole {
+        public string DocumentHash {
             get {
-                return this.IdPreservationRoleField;
+                return this.DocumentHashField;
             }
             set {
-                if ((this.IdPreservationRoleField.Equals(value) != true)) {
-                    this.IdPreservationRoleField = value;
-                    this.RaisePropertyChanged("IdPreservationRole");
+                if ((object.ReferenceEquals(this.DocumentHashField, value) != true)) {
+                    this.DocumentHashField = value;
+                    this.RaisePropertyChanged("DocumentHash");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int KeyCode {
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server Server {
             get {
-                return this.KeyCodeField;
+                return this.ServerField;
             }
             set {
-                if ((this.KeyCodeField.Equals(value) != true)) {
-                    this.KeyCodeField = value;
-                    this.RaisePropertyChanged("KeyCode");
+                if ((object.ReferenceEquals(this.ServerField, value) != true)) {
+                    this.ServerField = value;
+                    this.RaisePropertyChanged("Server");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Name {
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status Status {
             get {
-                return this.NameField;
+                return this.StatusField;
             }
             set {
-                if ((object.ReferenceEquals(this.NameField, value) != true)) {
-                    this.NameField = value;
-                    this.RaisePropertyChanged("Name");
+                if ((object.ReferenceEquals(this.StatusField, value) != true)) {
+                    this.StatusField = value;
+                    this.RaisePropertyChanged("Status");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole> UserRoles {
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage Storage {
             get {
-                return this.UserRolesField;
+                return this.StorageField;
             }
             set {
-                if ((object.ReferenceEquals(this.UserRolesField, value) != true)) {
-                    this.UserRolesField = value;
-                    this.RaisePropertyChanged("UserRoles");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="PreservationUser", Namespace="http://BiblosDS/2009/10/PreservationUser")]
-    [System.SerializableAttribute()]
-    public partial class PreservationUser : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string AddressField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ArchiveNameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string DomainUserField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string EMailField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool EnabledField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string FiscalIdField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid IdPreservationUserField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string SurnameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole> UserRolesField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Address {
-            get {
-                return this.AddressField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.AddressField, value) != true)) {
-                    this.AddressField = value;
-                    this.RaisePropertyChanged("Address");
+                if ((object.ReferenceEquals(this.StorageField, value) != true)) {
+                    this.StorageField = value;
+                    this.RaisePropertyChanged("Storage");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string ArchiveName {
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea StorageArea {
             get {
-                return this.ArchiveNameField;
+                return this.StorageAreaField;
             }
             set {
-                if ((object.ReferenceEquals(this.ArchiveNameField, value) != true)) {
-                    this.ArchiveNameField = value;
-                    this.RaisePropertyChanged("ArchiveName");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string DomainUser {
-            get {
-                return this.DomainUserField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.DomainUserField, value) != true)) {
-                    this.DomainUserField = value;
-                    this.RaisePropertyChanged("DomainUser");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string EMail {
-            get {
-                return this.EMailField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.EMailField, value) != true)) {
-                    this.EMailField = value;
-                    this.RaisePropertyChanged("EMail");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Enabled {
-            get {
-                return this.EnabledField;
-            }
-            set {
-                if ((this.EnabledField.Equals(value) != true)) {
-                    this.EnabledField = value;
-                    this.RaisePropertyChanged("Enabled");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string FiscalId {
-            get {
-                return this.FiscalIdField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.FiscalIdField, value) != true)) {
-                    this.FiscalIdField = value;
-                    this.RaisePropertyChanged("FiscalId");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid IdPreservationUser {
-            get {
-                return this.IdPreservationUserField;
-            }
-            set {
-                if ((this.IdPreservationUserField.Equals(value) != true)) {
-                    this.IdPreservationUserField = value;
-                    this.RaisePropertyChanged("IdPreservationUser");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Name {
-            get {
-                return this.NameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NameField, value) != true)) {
-                    this.NameField = value;
-                    this.RaisePropertyChanged("Name");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Surname {
-            get {
-                return this.SurnameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.SurnameField, value) != true)) {
-                    this.SurnameField = value;
-                    this.RaisePropertyChanged("Surname");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole> UserRoles {
-            get {
-                return this.UserRolesField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.UserRolesField, value) != true)) {
-                    this.UserRolesField = value;
-                    this.RaisePropertyChanged("UserRoles");
+                if ((object.ReferenceEquals(this.StorageAreaField, value) != true)) {
+                    this.StorageAreaField = value;
+                    this.RaisePropertyChanged("StorageArea");
                 }
             }
         }
@@ -1271,6 +1276,12 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         private string FullSignField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> IdArchiveCertificateField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> IdAwardBatchField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<int> IdBiblosField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -1293,6 +1304,9 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<bool> IsLinkedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool IsRemovedField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool IsVisibleField;
@@ -1503,6 +1517,32 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> IdArchiveCertificate {
+            get {
+                return this.IdArchiveCertificateField;
+            }
+            set {
+                if ((this.IdArchiveCertificateField.Equals(value) != true)) {
+                    this.IdArchiveCertificateField = value;
+                    this.RaisePropertyChanged("IdArchiveCertificate");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> IdAwardBatch {
+            get {
+                return this.IdAwardBatchField;
+            }
+            set {
+                if ((this.IdAwardBatchField.Equals(value) != true)) {
+                    this.IdAwardBatchField = value;
+                    this.RaisePropertyChanged("IdAwardBatch");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Nullable<int> IdBiblos {
             get {
                 return this.IdBiblosField;
@@ -1602,6 +1642,19 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                 if ((this.IsLinkedField.Equals(value) != true)) {
                     this.IsLinkedField = value;
                     this.RaisePropertyChanged("IsLinked");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsRemoved {
+            get {
+                return this.IsRemovedField;
+            }
+            set {
+                if ((this.IsRemovedField.Equals(value) != true)) {
+                    this.IsRemovedField = value;
+                    this.RaisePropertyChanged("IsRemoved");
                 }
             }
         }
@@ -1780,72 +1833,76 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="AttributeValue", Namespace="http://BiblosDS/2009/10/AttributeValue")]
     [System.SerializableAttribute()]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Content))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ServerRole))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentAttach))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<string>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PermissionMode))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskType>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskType))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Preservation))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationScheduleTaskType>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationScheduleTaskType))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageType))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageType>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationAlert>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationAlert))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeMode))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeMode>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUser))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskGroupType))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Certificate))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Permission>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Permission))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationAlertType))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentServer>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentServer))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationRole))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationRole>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTask))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTask>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroupType))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.FaultCode))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskTypes))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveServerConfig>))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveServerConfig))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server>))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationJournalingActivity))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskGroup))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeValue>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentServer>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentServer))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationAlertType))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationRole))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationRole>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.FaultCode))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskType>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskType))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PermissionMode))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTask))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTask>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentArchiveCertificate))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroupType))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationSchedule))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationJournaling>))]
     [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationJournaling))]
-    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationSchedule))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Content))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskGroupType))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<System.Guid>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<string>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationJournalingActivity))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Company))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeValue>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Permission>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Permission))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ServerRole))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Certificate))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskGroup))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUser))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentAttach))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationScheduleTaskType>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationScheduleTaskType))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Preservation))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageType))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageType>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationAlert>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationAlert))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator>))]
     public partial class AttributeValue : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
         
         private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute AttributeField;
@@ -2317,17 +2374,24 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="AttributeMode", Namespace="http://BiblosDS/2009/10/AttributeMode")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AttributeGroup", Namespace="http://BiblosDS/2009/10/AttributeGroup")]
     [System.SerializableAttribute()]
-    public partial class AttributeMode : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+    public partial class AttributeGroup : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string DescriptionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int IdModeField;
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroupType GroupTypeField;
         
-        [System.Runtime.Serialization.DataMemberAttribute()]
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid IdArchiveField;
+        
+        private System.Guid IdAttributeGroupField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> IsVisibleField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
         public string Description {
             get {
                 return this.DescriptionField;
@@ -2341,14 +2405,53 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int IdMode {
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroupType GroupType {
             get {
-                return this.IdModeField;
+                return this.GroupTypeField;
             }
             set {
-                if ((this.IdModeField.Equals(value) != true)) {
-                    this.IdModeField = value;
-                    this.RaisePropertyChanged("IdMode");
+                if ((this.GroupTypeField.Equals(value) != true)) {
+                    this.GroupTypeField = value;
+                    this.RaisePropertyChanged("GroupType");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid IdArchive {
+            get {
+                return this.IdArchiveField;
+            }
+            set {
+                if ((this.IdArchiveField.Equals(value) != true)) {
+                    this.IdArchiveField = value;
+                    this.RaisePropertyChanged("IdArchive");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public System.Guid IdAttributeGroup {
+            get {
+                return this.IdAttributeGroupField;
+            }
+            set {
+                if ((this.IdAttributeGroupField.Equals(value) != true)) {
+                    this.IdAttributeGroupField = value;
+                    this.RaisePropertyChanged("IdAttributeGroup");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> IsVisible {
+            get {
+                return this.IsVisibleField;
+            }
+            set {
+                if ((this.IsVisibleField.Equals(value) != true)) {
+                    this.IsVisibleField = value;
+                    this.RaisePropertyChanged("IsVisible");
                 }
             }
         }
@@ -2603,134 +2706,43 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="DocumentServer", Namespace="http://BiblosDS/2009/10/DocumentServer")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Content", Namespace="http://BiblosDS/2009/10/Content")]
     [System.SerializableAttribute()]
-    public partial class DocumentServer : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+    public partial class Content : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+        
+        private byte[] BlobField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<System.DateTime> DateCreatedField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document DocumentField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string DocumentHashField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server ServerField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status StatusField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage StorageField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea StorageAreaField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<System.DateTime> DateCreated {
-            get {
-                return this.DateCreatedField;
-            }
-            set {
-                if ((this.DateCreatedField.Equals(value) != true)) {
-                    this.DateCreatedField = value;
-                    this.RaisePropertyChanged("DateCreated");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document Document {
-            get {
-                return this.DocumentField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.DocumentField, value) != true)) {
-                    this.DocumentField = value;
-                    this.RaisePropertyChanged("Document");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string DocumentHash {
-            get {
-                return this.DocumentHashField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.DocumentHashField, value) != true)) {
-                    this.DocumentHashField = value;
-                    this.RaisePropertyChanged("DocumentHash");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server Server {
-            get {
-                return this.ServerField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ServerField, value) != true)) {
-                    this.ServerField = value;
-                    this.RaisePropertyChanged("Server");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status Status {
-            get {
-                return this.StatusField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.StatusField, value) != true)) {
-                    this.StatusField = value;
-                    this.RaisePropertyChanged("Status");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage Storage {
-            get {
-                return this.StorageField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.StorageField, value) != true)) {
-                    this.StorageField = value;
-                    this.RaisePropertyChanged("Storage");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea StorageArea {
-            get {
-                return this.StorageAreaField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.StorageAreaField, value) != true)) {
-                    this.StorageAreaField = value;
-                    this.RaisePropertyChanged("StorageArea");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="Status", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects")]
-    [System.SerializableAttribute()]
-    public partial class Status : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+        private string BlobStringField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string DescriptionField;
         
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private short IdStatusField;
+        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
+        public byte[] Blob {
+            get {
+                return this.BlobField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.BlobField, value) != true)) {
+                    this.BlobField = value;
+                    this.RaisePropertyChanged("Blob");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string BlobString {
+            get {
+                return this.BlobStringField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.BlobStringField, value) != true)) {
+                    this.BlobStringField = value;
+                    this.RaisePropertyChanged("BlobString");
+                }
+            }
+        }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string Description {
@@ -2741,218 +2753,6 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                 if ((object.ReferenceEquals(this.DescriptionField, value) != true)) {
                     this.DescriptionField = value;
                     this.RaisePropertyChanged("Description");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public short IdStatus {
-            get {
-                return this.IdStatusField;
-            }
-            set {
-                if ((this.IdStatusField.Equals(value) != true)) {
-                    this.IdStatusField = value;
-                    this.RaisePropertyChanged("IdStatus");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="StorageArea", Namespace="http://BiblosDS/2009/10/StorageArea")]
-    [System.SerializableAttribute()]
-    public partial class StorageArea : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive ArchiveField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<long> CurrentFileNumberField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private long CurrentSizeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool EnableField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Guid IdStorageAreaField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private long MaxFileNumberField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private long MaxSizeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string NameField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string PathField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int PriorityField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status StatusField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage StorageField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive Archive {
-            get {
-                return this.ArchiveField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ArchiveField, value) != true)) {
-                    this.ArchiveField = value;
-                    this.RaisePropertyChanged("Archive");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<long> CurrentFileNumber {
-            get {
-                return this.CurrentFileNumberField;
-            }
-            set {
-                if ((this.CurrentFileNumberField.Equals(value) != true)) {
-                    this.CurrentFileNumberField = value;
-                    this.RaisePropertyChanged("CurrentFileNumber");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public long CurrentSize {
-            get {
-                return this.CurrentSizeField;
-            }
-            set {
-                if ((this.CurrentSizeField.Equals(value) != true)) {
-                    this.CurrentSizeField = value;
-                    this.RaisePropertyChanged("CurrentSize");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Enable {
-            get {
-                return this.EnableField;
-            }
-            set {
-                if ((this.EnableField.Equals(value) != true)) {
-                    this.EnableField = value;
-                    this.RaisePropertyChanged("Enable");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Guid IdStorageArea {
-            get {
-                return this.IdStorageAreaField;
-            }
-            set {
-                if ((this.IdStorageAreaField.Equals(value) != true)) {
-                    this.IdStorageAreaField = value;
-                    this.RaisePropertyChanged("IdStorageArea");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public long MaxFileNumber {
-            get {
-                return this.MaxFileNumberField;
-            }
-            set {
-                if ((this.MaxFileNumberField.Equals(value) != true)) {
-                    this.MaxFileNumberField = value;
-                    this.RaisePropertyChanged("MaxFileNumber");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public long MaxSize {
-            get {
-                return this.MaxSizeField;
-            }
-            set {
-                if ((this.MaxSizeField.Equals(value) != true)) {
-                    this.MaxSizeField = value;
-                    this.RaisePropertyChanged("MaxSize");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Name {
-            get {
-                return this.NameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.NameField, value) != true)) {
-                    this.NameField = value;
-                    this.RaisePropertyChanged("Name");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Path {
-            get {
-                return this.PathField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.PathField, value) != true)) {
-                    this.PathField = value;
-                    this.RaisePropertyChanged("Path");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public int Priority {
-            get {
-                return this.PriorityField;
-            }
-            set {
-                if ((this.PriorityField.Equals(value) != true)) {
-                    this.PriorityField = value;
-                    this.RaisePropertyChanged("Priority");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status Status {
-            get {
-                return this.StatusField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.StatusField, value) != true)) {
-                    this.StatusField = value;
-                    this.RaisePropertyChanged("Status");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage Storage {
-            get {
-                return this.StorageField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.StorageField, value) != true)) {
-                    this.StorageField = value;
-                    this.RaisePropertyChanged("Storage");
                 }
             }
         }
@@ -3033,6 +2833,27 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         private System.Nullable<System.DateTime> EndDateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> IdArchiveBiblosStoreField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> IdDocumentCloseFileField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> IdDocumentIndexFileField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> IdDocumentIndexFileXMLField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> IdDocumentIndexFileXSLTField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> IdDocumentSignedCloseFileField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> IdDocumentSignedIndexFileField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid IdPreservationField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -3048,10 +2869,16 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         private System.Nullable<System.DateTime> LastVerifiedDateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<bool> LockOnDocumentInsertField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string PathField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PathHashField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<System.DateTime> PreservationDateField;
@@ -3137,6 +2964,97 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> IdArchiveBiblosStore {
+            get {
+                return this.IdArchiveBiblosStoreField;
+            }
+            set {
+                if ((this.IdArchiveBiblosStoreField.Equals(value) != true)) {
+                    this.IdArchiveBiblosStoreField = value;
+                    this.RaisePropertyChanged("IdArchiveBiblosStore");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> IdDocumentCloseFile {
+            get {
+                return this.IdDocumentCloseFileField;
+            }
+            set {
+                if ((this.IdDocumentCloseFileField.Equals(value) != true)) {
+                    this.IdDocumentCloseFileField = value;
+                    this.RaisePropertyChanged("IdDocumentCloseFile");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> IdDocumentIndexFile {
+            get {
+                return this.IdDocumentIndexFileField;
+            }
+            set {
+                if ((this.IdDocumentIndexFileField.Equals(value) != true)) {
+                    this.IdDocumentIndexFileField = value;
+                    this.RaisePropertyChanged("IdDocumentIndexFile");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> IdDocumentIndexFileXML {
+            get {
+                return this.IdDocumentIndexFileXMLField;
+            }
+            set {
+                if ((this.IdDocumentIndexFileXMLField.Equals(value) != true)) {
+                    this.IdDocumentIndexFileXMLField = value;
+                    this.RaisePropertyChanged("IdDocumentIndexFileXML");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> IdDocumentIndexFileXSLT {
+            get {
+                return this.IdDocumentIndexFileXSLTField;
+            }
+            set {
+                if ((this.IdDocumentIndexFileXSLTField.Equals(value) != true)) {
+                    this.IdDocumentIndexFileXSLTField = value;
+                    this.RaisePropertyChanged("IdDocumentIndexFileXSLT");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> IdDocumentSignedCloseFile {
+            get {
+                return this.IdDocumentSignedCloseFileField;
+            }
+            set {
+                if ((this.IdDocumentSignedCloseFileField.Equals(value) != true)) {
+                    this.IdDocumentSignedCloseFileField = value;
+                    this.RaisePropertyChanged("IdDocumentSignedCloseFile");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> IdDocumentSignedIndexFile {
+            get {
+                return this.IdDocumentSignedIndexFileField;
+            }
+            set {
+                if ((this.IdDocumentSignedIndexFileField.Equals(value) != true)) {
+                    this.IdDocumentSignedIndexFileField = value;
+                    this.RaisePropertyChanged("IdDocumentSignedIndexFile");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Guid IdPreservation {
             get {
                 return this.IdPreservationField;
@@ -3202,6 +3120,19 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<bool> LockOnDocumentInsert {
+            get {
+                return this.LockOnDocumentInsertField;
+            }
+            set {
+                if ((this.LockOnDocumentInsertField.Equals(value) != true)) {
+                    this.LockOnDocumentInsertField = value;
+                    this.RaisePropertyChanged("LockOnDocumentInsert");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string Name {
             get {
                 return this.NameField;
@@ -3223,6 +3154,19 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                 if ((object.ReferenceEquals(this.PathField, value) != true)) {
                     this.PathField = value;
                     this.RaisePropertyChanged("Path");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string PathHash {
+            get {
+                return this.PathHashField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PathHashField, value) != true)) {
+                    this.PathHashField = value;
+                    this.RaisePropertyChanged("PathHash");
                 }
             }
         }
@@ -3443,9 +3387,353 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PreservationUser", Namespace="http://BiblosDS/2009/10/PreservationUser")]
+    [System.SerializableAttribute()]
+    public partial class PreservationUser : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string AddressField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ArchiveNameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string DomainUserField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EMailField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EnabledField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FiscalIdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid IdPreservationUserField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string SurnameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole> UserRolesField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Address {
+            get {
+                return this.AddressField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AddressField, value) != true)) {
+                    this.AddressField = value;
+                    this.RaisePropertyChanged("Address");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ArchiveName {
+            get {
+                return this.ArchiveNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ArchiveNameField, value) != true)) {
+                    this.ArchiveNameField = value;
+                    this.RaisePropertyChanged("ArchiveName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DomainUser {
+            get {
+                return this.DomainUserField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DomainUserField, value) != true)) {
+                    this.DomainUserField = value;
+                    this.RaisePropertyChanged("DomainUser");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string EMail {
+            get {
+                return this.EMailField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EMailField, value) != true)) {
+                    this.EMailField = value;
+                    this.RaisePropertyChanged("EMail");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Enabled {
+            get {
+                return this.EnabledField;
+            }
+            set {
+                if ((this.EnabledField.Equals(value) != true)) {
+                    this.EnabledField = value;
+                    this.RaisePropertyChanged("Enabled");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FiscalId {
+            get {
+                return this.FiscalIdField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FiscalIdField, value) != true)) {
+                    this.FiscalIdField = value;
+                    this.RaisePropertyChanged("FiscalId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid IdPreservationUser {
+            get {
+                return this.IdPreservationUserField;
+            }
+            set {
+                if ((this.IdPreservationUserField.Equals(value) != true)) {
+                    this.IdPreservationUserField = value;
+                    this.RaisePropertyChanged("IdPreservationUser");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Surname {
+            get {
+                return this.SurnameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SurnameField, value) != true)) {
+                    this.SurnameField = value;
+                    this.RaisePropertyChanged("Surname");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole> UserRoles {
+            get {
+                return this.UserRolesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.UserRolesField, value) != true)) {
+                    this.UserRolesField = value;
+                    this.RaisePropertyChanged("UserRoles");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PreservationUserRole", Namespace="http://BiblosDS/2009/10/PreservationUserRole")]
+    [System.SerializableAttribute()]
+    public partial class PreservationUserRole : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive ArchiveField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid IdPreservationRoleField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationRole PreservationRoleField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUser PreservationUserField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive Archive {
+            get {
+                return this.ArchiveField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ArchiveField, value) != true)) {
+                    this.ArchiveField = value;
+                    this.RaisePropertyChanged("Archive");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid IdPreservationRole {
+            get {
+                return this.IdPreservationRoleField;
+            }
+            set {
+                if ((this.IdPreservationRoleField.Equals(value) != true)) {
+                    this.IdPreservationRoleField = value;
+                    this.RaisePropertyChanged("IdPreservationRole");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationRole PreservationRole {
+            get {
+                return this.PreservationRoleField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PreservationRoleField, value) != true)) {
+                    this.PreservationRoleField = value;
+                    this.RaisePropertyChanged("PreservationRole");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUser PreservationUser {
+            get {
+                return this.PreservationUserField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PreservationUserField, value) != true)) {
+                    this.PreservationUserField = value;
+                    this.RaisePropertyChanged("PreservationUser");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PreservationRole", Namespace="http://BiblosDS/2009/10/PreservationRole")]
+    [System.SerializableAttribute()]
+    public partial class PreservationRole : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool AlertEnabledField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EnabledField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid IdPreservationRoleField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int KeyCodeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole> UserRolesField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool AlertEnabled {
+            get {
+                return this.AlertEnabledField;
+            }
+            set {
+                if ((this.AlertEnabledField.Equals(value) != true)) {
+                    this.AlertEnabledField = value;
+                    this.RaisePropertyChanged("AlertEnabled");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Enabled {
+            get {
+                return this.EnabledField;
+            }
+            set {
+                if ((this.EnabledField.Equals(value) != true)) {
+                    this.EnabledField = value;
+                    this.RaisePropertyChanged("Enabled");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid IdPreservationRole {
+            get {
+                return this.IdPreservationRoleField;
+            }
+            set {
+                if ((this.IdPreservationRoleField.Equals(value) != true)) {
+                    this.IdPreservationRoleField = value;
+                    this.RaisePropertyChanged("IdPreservationRole");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int KeyCode {
+            get {
+                return this.KeyCodeField;
+            }
+            set {
+                if ((this.KeyCodeField.Equals(value) != true)) {
+                    this.KeyCodeField = value;
+                    this.RaisePropertyChanged("KeyCode");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUserRole> UserRoles {
+            get {
+                return this.UserRolesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.UserRolesField, value) != true)) {
+                    this.UserRolesField = value;
+                    this.RaisePropertyChanged("UserRoles");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="PreservationTask", Namespace="http://BiblosDS/2009/10/PreservationTask")]
     [System.SerializableAttribute()]
     public partial class PreservationTask : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> ActivationPinField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationAlert> AlertsField;
@@ -3454,16 +3742,40 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive ArchiveField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTask> CorrelatedTasksField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EnabledField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> EndDateField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<System.DateTime> EndDocumentDateField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ErrorMessagesField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.DateTime EstimatedDateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool ExecutedField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<System.DateTime> ExecutedDateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool HasErrorField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.Guid> IdPreservationField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid IdPreservationTaskField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<System.DateTime> StartDateField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Nullable<System.DateTime> StartDocumentDateField;
@@ -3476,6 +3788,19 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationUser UserField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> ActivationPin {
+            get {
+                return this.ActivationPinField;
+            }
+            set {
+                if ((this.ActivationPinField.Equals(value) != true)) {
+                    this.ActivationPinField = value;
+                    this.RaisePropertyChanged("ActivationPin");
+                }
+            }
+        }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationAlert> Alerts {
@@ -3504,6 +3829,45 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTask> CorrelatedTasks {
+            get {
+                return this.CorrelatedTasksField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CorrelatedTasksField, value) != true)) {
+                    this.CorrelatedTasksField = value;
+                    this.RaisePropertyChanged("CorrelatedTasks");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Enabled {
+            get {
+                return this.EnabledField;
+            }
+            set {
+                if ((this.EnabledField.Equals(value) != true)) {
+                    this.EnabledField = value;
+                    this.RaisePropertyChanged("Enabled");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> EndDate {
+            get {
+                return this.EndDateField;
+            }
+            set {
+                if ((this.EndDateField.Equals(value) != true)) {
+                    this.EndDateField = value;
+                    this.RaisePropertyChanged("EndDate");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Nullable<System.DateTime> EndDocumentDate {
             get {
                 return this.EndDocumentDateField;
@@ -3512,6 +3876,19 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                 if ((this.EndDocumentDateField.Equals(value) != true)) {
                     this.EndDocumentDateField = value;
                     this.RaisePropertyChanged("EndDocumentDate");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ErrorMessages {
+            get {
+                return this.ErrorMessagesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ErrorMessagesField, value) != true)) {
+                    this.ErrorMessagesField = value;
+                    this.RaisePropertyChanged("ErrorMessages");
                 }
             }
         }
@@ -3530,6 +3907,19 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Executed {
+            get {
+                return this.ExecutedField;
+            }
+            set {
+                if ((this.ExecutedField.Equals(value) != true)) {
+                    this.ExecutedField = value;
+                    this.RaisePropertyChanged("Executed");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Nullable<System.DateTime> ExecutedDate {
             get {
                 return this.ExecutedDateField;
@@ -3543,6 +3933,32 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool HasError {
+            get {
+                return this.HasErrorField;
+            }
+            set {
+                if ((this.HasErrorField.Equals(value) != true)) {
+                    this.HasErrorField = value;
+                    this.RaisePropertyChanged("HasError");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.Guid> IdPreservation {
+            get {
+                return this.IdPreservationField;
+            }
+            set {
+                if ((this.IdPreservationField.Equals(value) != true)) {
+                    this.IdPreservationField = value;
+                    this.RaisePropertyChanged("IdPreservation");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public System.Guid IdPreservationTask {
             get {
                 return this.IdPreservationTaskField;
@@ -3551,6 +3967,19 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                 if ((this.IdPreservationTaskField.Equals(value) != true)) {
                     this.IdPreservationTaskField = value;
                     this.RaisePropertyChanged("IdPreservationTask");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<System.DateTime> StartDate {
+            get {
+                return this.StartDateField;
+            }
+            set {
+                if ((this.StartDateField.Equals(value) != true)) {
+                    this.StartDateField = value;
+                    this.RaisePropertyChanged("StartDate");
                 }
             }
         }
@@ -3835,6 +4264,9 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationScheduleTaskType> ScheduleTaskTypesField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskTypes TypeField;
+        
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string Description {
             get {
@@ -3896,6 +4328,19 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                 if ((object.ReferenceEquals(this.ScheduleTaskTypesField, value) != true)) {
                     this.ScheduleTaskTypesField = value;
                     this.RaisePropertyChanged("ScheduleTaskTypes");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.PreservationTaskTypes Type {
+            get {
+                return this.TypeField;
+            }
+            set {
+                if ((this.TypeField.Equals(value) != true)) {
+                    this.TypeField = value;
+                    this.RaisePropertyChanged("Type");
                 }
             }
         }
@@ -4093,6 +4538,244 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Status", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects")]
+    [System.SerializableAttribute()]
+    public partial class Status : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string DescriptionField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private short IdStatusField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Description {
+            get {
+                return this.DescriptionField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DescriptionField, value) != true)) {
+                    this.DescriptionField = value;
+                    this.RaisePropertyChanged("Description");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public short IdStatus {
+            get {
+                return this.IdStatusField;
+            }
+            set {
+                if ((this.IdStatusField.Equals(value) != true)) {
+                    this.IdStatusField = value;
+                    this.RaisePropertyChanged("IdStatus");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="StorageArea", Namespace="http://BiblosDS/2009/10/StorageArea")]
+    [System.SerializableAttribute()]
+    public partial class StorageArea : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive ArchiveField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Nullable<long> CurrentFileNumberField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private long CurrentSizeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EnableField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid IdStorageAreaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private long MaxFileNumberField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private long MaxSizeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string NameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PathField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int PriorityField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status StatusField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage StorageField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive Archive {
+            get {
+                return this.ArchiveField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ArchiveField, value) != true)) {
+                    this.ArchiveField = value;
+                    this.RaisePropertyChanged("Archive");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Nullable<long> CurrentFileNumber {
+            get {
+                return this.CurrentFileNumberField;
+            }
+            set {
+                if ((this.CurrentFileNumberField.Equals(value) != true)) {
+                    this.CurrentFileNumberField = value;
+                    this.RaisePropertyChanged("CurrentFileNumber");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public long CurrentSize {
+            get {
+                return this.CurrentSizeField;
+            }
+            set {
+                if ((this.CurrentSizeField.Equals(value) != true)) {
+                    this.CurrentSizeField = value;
+                    this.RaisePropertyChanged("CurrentSize");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Enable {
+            get {
+                return this.EnableField;
+            }
+            set {
+                if ((this.EnableField.Equals(value) != true)) {
+                    this.EnableField = value;
+                    this.RaisePropertyChanged("Enable");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid IdStorageArea {
+            get {
+                return this.IdStorageAreaField;
+            }
+            set {
+                if ((this.IdStorageAreaField.Equals(value) != true)) {
+                    this.IdStorageAreaField = value;
+                    this.RaisePropertyChanged("IdStorageArea");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public long MaxFileNumber {
+            get {
+                return this.MaxFileNumberField;
+            }
+            set {
+                if ((this.MaxFileNumberField.Equals(value) != true)) {
+                    this.MaxFileNumberField = value;
+                    this.RaisePropertyChanged("MaxFileNumber");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public long MaxSize {
+            get {
+                return this.MaxSizeField;
+            }
+            set {
+                if ((this.MaxSizeField.Equals(value) != true)) {
+                    this.MaxSizeField = value;
+                    this.RaisePropertyChanged("MaxSize");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Name {
+            get {
+                return this.NameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.NameField, value) != true)) {
+                    this.NameField = value;
+                    this.RaisePropertyChanged("Name");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Path {
+            get {
+                return this.PathField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PathField, value) != true)) {
+                    this.PathField = value;
+                    this.RaisePropertyChanged("Path");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Priority {
+            get {
+                return this.PriorityField;
+            }
+            set {
+                if ((this.PriorityField.Equals(value) != true)) {
+                    this.PriorityField = value;
+                    this.RaisePropertyChanged("Priority");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status Status {
+            get {
+                return this.StatusField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StatusField, value) != true)) {
+                    this.StatusField = value;
+                    this.RaisePropertyChanged("Status");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage Storage {
+            get {
+                return this.StorageField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StorageField, value) != true)) {
+                    this.StorageField = value;
+                    this.RaisePropertyChanged("Storage");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="DocumentAttach", Namespace="http://BiblosDS/2009/10/DocumentAttach")]
     [System.SerializableAttribute()]
     public partial class DocumentAttach : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document {
@@ -4141,6 +4824,61 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                 if ((this.IdDocumentAttachField.Equals(value) != true)) {
                     this.IdDocumentAttachField = value;
                     this.RaisePropertyChanged("IdDocumentAttach");
+                }
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ArchiveStorage", Namespace="http://BiblosDS/2009/10/ArchiveStorage")]
+    [System.SerializableAttribute()]
+    public partial class ArchiveStorage : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool ActiveField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive ArchiveField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage StorageField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Active {
+            get {
+                return this.ActiveField;
+            }
+            set {
+                if ((this.ActiveField.Equals(value) != true)) {
+                    this.ActiveField = value;
+                    this.RaisePropertyChanged("Active");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive Archive {
+            get {
+                return this.ArchiveField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ArchiveField, value) != true)) {
+                    this.ArchiveField = value;
+                    this.RaisePropertyChanged("Archive");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage Storage {
+            get {
+                return this.StorageField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StorageField, value) != true)) {
+                    this.StorageField = value;
+                    this.RaisePropertyChanged("Storage");
                 }
             }
         }
@@ -4290,61 +5028,6 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ArchiveStorage", Namespace="http://BiblosDS/2009/10/ArchiveStorage")]
-    [System.SerializableAttribute()]
-    public partial class ArchiveStorage : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private bool ActiveField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive ArchiveField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage StorageField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public bool Active {
-            get {
-                return this.ActiveField;
-            }
-            set {
-                if ((this.ActiveField.Equals(value) != true)) {
-                    this.ActiveField = value;
-                    this.RaisePropertyChanged("Active");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive Archive {
-            get {
-                return this.ArchiveField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.ArchiveField, value) != true)) {
-                    this.ArchiveField = value;
-                    this.RaisePropertyChanged("Archive");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage Storage {
-            get {
-                return this.StorageField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.StorageField, value) != true)) {
-                    this.StorageField = value;
-                    this.RaisePropertyChanged("Storage");
-                }
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="StorageAreaRule", Namespace="http://BiblosDS/2009/10/DocumentStorageAreaRule")]
     [System.SerializableAttribute()]
     public partial class StorageAreaRule : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
@@ -4464,45 +5147,72 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="AttributeGroup", Namespace="http://BiblosDS/2009/10/AttributeGroup")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Company", Namespace="http://BiblosDS/2009/10/Company")]
     [System.SerializableAttribute()]
-    public partial class AttributeGroup : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
-        
-        private string DescriptionField;
+    public partial class Company : BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDSObject {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroupType GroupTypeField;
+        private string AddressField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CompanyNameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FiscalCodeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid IdArchiveField;
         
-        private System.Guid IdAttributeGroupField;
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid IdCompanyField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private System.Nullable<bool> IsVisibleField;
+        private string PECEmailField;
         
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
-        public string Description {
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TemplateADEFileField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TemplateCloseFileField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TemplateIndexFileField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Address {
             get {
-                return this.DescriptionField;
+                return this.AddressField;
             }
             set {
-                if ((object.ReferenceEquals(this.DescriptionField, value) != true)) {
-                    this.DescriptionField = value;
-                    this.RaisePropertyChanged("Description");
+                if ((object.ReferenceEquals(this.AddressField, value) != true)) {
+                    this.AddressField = value;
+                    this.RaisePropertyChanged("Address");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroupType GroupType {
+        public string CompanyName {
             get {
-                return this.GroupTypeField;
+                return this.CompanyNameField;
             }
             set {
-                if ((this.GroupTypeField.Equals(value) != true)) {
-                    this.GroupTypeField = value;
-                    this.RaisePropertyChanged("GroupType");
+                if ((object.ReferenceEquals(this.CompanyNameField, value) != true)) {
+                    this.CompanyNameField = value;
+                    this.RaisePropertyChanged("CompanyName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FiscalCode {
+            get {
+                return this.FiscalCodeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FiscalCodeField, value) != true)) {
+                    this.FiscalCodeField = value;
+                    this.RaisePropertyChanged("FiscalCode");
                 }
             }
         }
@@ -4520,45 +5230,70 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
             }
         }
         
-        [System.Runtime.Serialization.DataMemberAttribute(IsRequired=true)]
-        public System.Guid IdAttributeGroup {
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid IdCompany {
             get {
-                return this.IdAttributeGroupField;
+                return this.IdCompanyField;
             }
             set {
-                if ((this.IdAttributeGroupField.Equals(value) != true)) {
-                    this.IdAttributeGroupField = value;
-                    this.RaisePropertyChanged("IdAttributeGroup");
+                if ((this.IdCompanyField.Equals(value) != true)) {
+                    this.IdCompanyField = value;
+                    this.RaisePropertyChanged("IdCompany");
                 }
             }
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public System.Nullable<bool> IsVisible {
+        public string PECEmail {
             get {
-                return this.IsVisibleField;
+                return this.PECEmailField;
             }
             set {
-                if ((this.IsVisibleField.Equals(value) != true)) {
-                    this.IsVisibleField = value;
-                    this.RaisePropertyChanged("IsVisible");
+                if ((object.ReferenceEquals(this.PECEmailField, value) != true)) {
+                    this.PECEmailField = value;
+                    this.RaisePropertyChanged("PECEmail");
                 }
             }
         }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="AttributeGroupType", Namespace="http://BiblosDS/2009/10/FilterOperator")]
-    public enum AttributeGroupType : int {
         
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Undefined = 0,
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TemplateADEFile {
+            get {
+                return this.TemplateADEFileField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TemplateADEFileField, value) != true)) {
+                    this.TemplateADEFileField = value;
+                    this.RaisePropertyChanged("TemplateADEFile");
+                }
+            }
+        }
         
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Chain = 1,
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TemplateCloseFile {
+            get {
+                return this.TemplateCloseFileField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TemplateCloseFileField, value) != true)) {
+                    this.TemplateCloseFileField = value;
+                    this.RaisePropertyChanged("TemplateCloseFile");
+                }
+            }
+        }
         
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Primary = 2,
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string TemplateIndexFile {
+            get {
+                return this.TemplateIndexFileField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TemplateIndexFileField, value) != true)) {
+                    this.TemplateIndexFileField = value;
+                    this.RaisePropertyChanged("TemplateIndexFile");
+                }
+            }
+        }
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
@@ -4569,13 +5304,24 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         Undefined = 0,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        Master = 1,
+        Remote = 1,
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="PreservationTaskTypes", Namespace="http://BiblosDS/2009/10/PreservationTaskTypes")]
+    public enum PreservationTaskTypes : int {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        FullProxy = 2,
+        Unknown = 0,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
-        Proxy = 3,
+        Preservation = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Verify = 3,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        VerifyPreservation = 4,
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
@@ -4593,6 +5339,129 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         Modify = 3,
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="DocumentArchiveCertificate", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects")]
+    [System.SerializableAttribute()]
+    public partial class DocumentArchiveCertificate : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private byte[] CertificateBlobField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FileNameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid IdArchiveCertificateField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PinField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string UserNameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public byte[] CertificateBlob {
+            get {
+                return this.CertificateBlobField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CertificateBlobField, value) != true)) {
+                    this.CertificateBlobField = value;
+                    this.RaisePropertyChanged("CertificateBlob");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FileName {
+            get {
+                return this.FileNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FileNameField, value) != true)) {
+                    this.FileNameField = value;
+                    this.RaisePropertyChanged("FileName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid IdArchiveCertificate {
+            get {
+                return this.IdArchiveCertificateField;
+            }
+            set {
+                if ((this.IdArchiveCertificateField.Equals(value) != true)) {
+                    this.IdArchiveCertificateField = value;
+                    this.RaisePropertyChanged("IdArchiveCertificate");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Pin {
+            get {
+                return this.PinField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PinField, value) != true)) {
+                    this.PinField = value;
+                    this.RaisePropertyChanged("Pin");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string UserName {
+            get {
+                return this.UserNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.UserNameField, value) != true)) {
+                    this.UserNameField = value;
+                    this.RaisePropertyChanged("UserName");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="AttributeGroupType", Namespace="http://BiblosDS/2009/10/FilterOperator")]
+    public enum AttributeGroupType : int {
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Undefined = 0,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Chain = 1,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        Primary = 2,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -4654,148 +5523,6 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                 propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
             }
         }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-    [System.SerializableAttribute()]
-    public partial class BiblosDsException : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.FaultCode CodeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string MessageField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string StackTraceField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.FaultCode Code {
-            get {
-                return this.CodeField;
-            }
-            set {
-                if ((this.CodeField.Equals(value) != true)) {
-                    this.CodeField = value;
-                    this.RaisePropertyChanged("Code");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Message {
-            get {
-                return this.MessageField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.MessageField, value) != true)) {
-                    this.MessageField = value;
-                    this.RaisePropertyChanged("Message");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string StackTrace {
-            get {
-                return this.StackTraceField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.StackTraceField, value) != true)) {
-                    this.StackTraceField = value;
-                    this.RaisePropertyChanged("StackTrace");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="FaultCode", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-    public enum FaultCode : int {
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        GENERIC_ERROR = 0,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Archive_Exception = 1,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        ArchiveStorage_Exception = 2,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Attribute_Exception = 3,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        AttributeRequired_Exception = 4,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        DocumentCheckOut_Exception = 5,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        DocumentNotConvertible_Exception = 6,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        DocumentNotFound_Exception = 7,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        DocumentPrimaryKey_Exception = 8,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        DocumentReadOnly_Exception = 9,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        FileNotFound_Exception = 10,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        FileNotUploaded_Exception = 11,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        Permission_Exception = 12,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        StorageAreaConfiguration_Exception = 13,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        StorageConfiguration_Exception = 14,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        StorageIsProcessingFile_Exception = 15,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        StorageNotFound_Exception = 16,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        DocumentNotReadyForAttach_Exception = 17,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        DocumentWithoutContent_Exception = 18,
-        
-        [System.Runtime.Serialization.EnumMemberAttribute()]
-        DocumentConnectionExists_Exception = 19,
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -5084,119 +5811,297 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     [System.ServiceModel.ServiceContractAttribute(Namespace="http://Vecomp.BiblosDs.Administration", ConfigurationName="ServiceReferenceAdministration.IAdministration")]
     public interface IAdministration {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroupRespons" +
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/DoWork", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DoWorkResponse")]
+        void DoWork();
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/DoWork", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DoWorkResponse")]
+        System.IAsyncResult BeginDoWork(System.AsyncCallback callback, object asyncState);
+        
+        void EndDoWork(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchiveResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchiveBiblosDsExcepti" +
+            "onFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        System.Guid CloneArchive(string templateName, string archiveName);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchiveResponse")]
+        System.IAsyncResult BeginCloneArchive(string templateName, string archiveName, System.AsyncCallback callback, object asyncState);
+        
+        System.Guid EndCloneArchive(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/CloneCompanyArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/CloneCompanyArchiveResponse" +
+            "")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/CloneCompanyArchiveBiblosDs" +
+            "ExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        System.Guid CloneCompanyArchive(string templateName, string archiveName, BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Company company);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/CloneCompanyArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/CloneCompanyArchiveResponse" +
+            "")]
+        System.IAsyncResult BeginCloneCompanyArchive(string templateName, string archiveName, BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Company company, System.AsyncCallback callback, object asyncState);
+        
+        System.Guid EndCloneCompanyArchive(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/CheckConnection", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/CheckConnectionResponse")]
+        bool CheckConnection();
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/CheckConnection", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/CheckConnectionResponse")]
+        System.IAsyncResult BeginCheckConnection(System.AsyncCallback callback, object asyncState);
+        
+        bool EndCheckConnection(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInTransito", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInTransitoRespo" +
+            "nse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> GetDocumentsInTransito();
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInTransito", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInTransitoRespo" +
+            "nse")]
+        System.IAsyncResult BeginGetDocumentsInTransito(System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> EndGetDocumentsInTransito(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInStorageRespon" +
+            "se")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> GetDocumentsInStorage(System.Guid IdStorage);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInStorageRespon" +
+            "se")]
+        System.IAsyncResult BeginGetDocumentsInStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> EndGetDocumentsInStorage(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorages", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetAllStorages();
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorages", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesResponse")]
+        System.IAsyncResult BeginGetAllStorages(System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetAllStorages(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesWithServer", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesWithServerRes" +
+            "ponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetAllStoragesWithServer();
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesWithServer", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesWithServerRes" +
+            "ponse")]
+        System.IAsyncResult BeginGetAllStoragesWithServer(System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetAllStoragesWithServer(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesFromArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesFromArchiveRespo" +
+            "nse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetStoragesFromArchive(System.Guid IdArchive);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesFromArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesFromArchiveRespo" +
+            "nse")]
+        System.IAsyncResult BeginGetStoragesFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetStoragesFromArchive(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageResponse")]
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage GetStorage(System.Guid IdStorage);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageResponse")]
+        System.IAsyncResult BeginGetStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
+        
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage EndGetStorage(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageWithServer", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageWithServerRespons" +
             "e")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroupBiblosD" +
-            "sExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        void UpdateAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup);
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage GetStorageWithServer(System.Guid IdStorage);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroupRespons" +
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageWithServer", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageWithServerRespons" +
             "e")]
-        System.IAsyncResult BeginUpdateAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginGetStorageWithServer(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
         
-        void EndUpdateAttributeGroup(System.IAsyncResult result);
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage EndGetStorageWithServer(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroupRespons" +
-            "e")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroupBiblosD" +
-            "sExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        void DeleteAttributeGroup(System.Guid IdAttributeGroup);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreas", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> GetStorageAreas(System.Guid IdStorage);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroupRespons" +
-            "e")]
-        System.IAsyncResult BeginDeleteAttributeGroup(System.Guid IdAttributeGroup, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreas", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasResponse")]
+        System.IAsyncResult BeginGetStorageAreas(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
         
-        void EndDeleteAttributeGroup(System.IAsyncResult result);
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> EndGetStorageAreas(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeBiblosDsExce" +
-            "ptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        void UpdateAttribute(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasFromStorageA" +
+            "rchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasFromStorageA" +
+            "rchiveResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> GetStorageAreasFromStorageArchive(System.Guid IdStorage, System.Guid IdArchive);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeResponse")]
-        System.IAsyncResult BeginUpdateAttribute(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasFromStorageA" +
+            "rchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasFromStorageA" +
+            "rchiveResponse")]
+        System.IAsyncResult BeginGetStorageAreasFromStorageArchive(System.Guid IdStorage, System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
         
-        void EndUpdateAttribute(System.IAsyncResult result);
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> EndGetStorageAreasFromStorageArchive(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeBiblosDsExce" +
-            "ptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        void DeleteAttribute(System.Guid IdAttribute);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArea", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreaResponse")]
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea GetStorageArea(System.Guid IdStorageArea);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeResponse")]
-        System.IAsyncResult BeginDeleteAttribute(System.Guid IdAttribute, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArea", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreaResponse")]
+        System.IAsyncResult BeginGetStorageArea(System.Guid IdStorageArea, System.AsyncCallback callback, object asyncState);
         
-        void EndDeleteAttribute(System.IAsyncResult result);
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea EndGetStorageArea(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorageResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorageBiblosDsExcept" +
-            "ionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        void UpdateStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorageAreaStatus", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorageAreaStatusResp" +
+            "onse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status> GetAllStorageAreaStatus();
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorageResponse")]
-        System.IAsyncResult BeginUpdateStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorageAreaStatus", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorageAreaStatusResp" +
+            "onse")]
+        System.IAsyncResult BeginGetAllStorageAreaStatus(System.AsyncCallback callback, object asyncState);
         
-        void EndUpdateStorage(System.IAsyncResult result);
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status> EndGetAllStorageAreaStatus(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorageRespons" +
-            "e")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorageBiblosD" +
-            "sExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        void UpdateArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageA" +
+            "reaArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageA" +
+            "reaArchiveResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> GetStorageRulesFromStorageAreaArchive(System.Guid IdStorageArea, System.Guid IdArchive);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorageRespons" +
-            "e")]
-        System.IAsyncResult BeginUpdateArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageA" +
+            "reaArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageA" +
+            "reaArchiveResponse")]
+        System.IAsyncResult BeginGetStorageRulesFromStorageAreaArchive(System.Guid IdStorageArea, System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
         
-        void EndUpdateArchiveStorage(System.IAsyncResult result);
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> EndGetStorageRulesFromStorageAreaArchive(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorageResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorageBiblosDsEx" +
-            "ceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        void AddArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesNotRelatedToArch" +
+            "ive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesNotRelatedToArch" +
+            "iveResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetStoragesNotRelatedToArchive(System.Guid IdArchive);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorageResponse")]
-        System.IAsyncResult BeginAddArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesNotRelatedToArch" +
+            "ive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesNotRelatedToArch" +
+            "iveResponse")]
+        System.IAsyncResult BeginGetStoragesNotRelatedToArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
         
-        void EndAddArchiveStorage(System.IAsyncResult result);
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetStoragesNotRelatedToArchive(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorageRespons" +
-            "e")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorageBiblosD" +
-            "sExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        void DeleteArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveResponse")]
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive GetArchive(System.Guid IdArchive);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorageRespons" +
-            "e")]
-        System.IAsyncResult BeginDeleteArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveResponse")]
+        System.IAsyncResult BeginGetArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
         
-        void EndDeleteArchiveStorage(System.IAsyncResult result);
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive EndGetArchive(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroupRe" +
-            "sponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroupBi" +
-            "blosDsExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        void AddDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveWithServerConfigs" +
+            "", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveWithServerConfigs" +
+            "Response")]
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive GetArchiveWithServerConfigs(System.Guid IdArchive);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroupRe" +
-            "sponse")]
-        System.IAsyncResult BeginAddDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveWithServerConfigs" +
+            "", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveWithServerConfigs" +
+            "Response")]
+        System.IAsyncResult BeginGetArchiveWithServerConfigs(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
         
-        void EndAddDocumentAttributeGroup(System.IAsyncResult result);
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive EndGetArchiveWithServerConfigs(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGrou" +
-            "p", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGrou" +
-            "pResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGrou" +
-            "pBiblosDsExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        void UpdateDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchives", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchives();
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGrou" +
-            "p", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGrou" +
-            "pResponse")]
-        System.IAsyncResult BeginUpdateDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchives", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesResponse")]
+        System.IAsyncResult BeginGetArchives(System.AsyncCallback callback, object asyncState);
         
-        void EndUpdateDocumentAttributeGroup(System.IAsyncResult result);
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchives(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesById", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesByIdResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchivesById(System.ComponentModel.BindingList<System.Guid> idsArchive);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesById", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesByIdResponse")]
+        System.IAsyncResult BeginGetArchivesById(System.ComponentModel.BindingList<System.Guid> idsArchive, System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchivesById(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesFromStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesFromStorageRespo" +
+            "nse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchivesFromStorage(System.Guid IdStorage);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesFromStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesFromStorageRespo" +
+            "nse")]
+        System.IAsyncResult BeginGetArchivesFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchivesFromStorage(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesNotRelatedToStor" +
+            "age", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesNotRelatedToStor" +
+            "ageResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchivesNotRelatedToStorage(System.Guid IdStorage);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesNotRelatedToStor" +
+            "age", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesNotRelatedToStor" +
+            "ageResponse")]
+        System.IAsyncResult BeginGetArchivesNotRelatedToStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchivesNotRelatedToStorage(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
+            "romStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
+            "romStorageResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> GetStorageArchiveRelationsFromStorage(System.Guid IdStorage);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
+            "romStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
+            "romStorageResponse")]
+        System.IAsyncResult BeginGetStorageArchiveRelationsFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> EndGetStorageArchiveRelationsFromStorage(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
+            "romArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
+            "romArchiveResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> GetStorageArchiveRelationsFromArchive(System.Guid IdArchive);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
+            "romArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
+            "romArchiveResponse")]
+        System.IAsyncResult BeginGetStorageArchiveRelationsFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> EndGetStorageArchiveRelationsFromArchive(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributesFromArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributesFromArchiveRes" +
+            "ponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute> GetAttributesFromArchive(System.Guid IdArchive);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributesFromArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributesFromArchiveRes" +
+            "ponse")]
+        System.IAsyncResult BeginGetAttributesFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute> EndGetAttributesFromArchive(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeResponse")]
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute GetAttribute(System.Guid IdAttribute);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeResponse")]
+        System.IAsyncResult BeginGetAttribute(System.Guid IdAttribute, System.AsyncCallback callback, object asyncState);
+        
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute EndGetAttribute(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeGroupResponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup> GetAttributeGroup(System.Guid IdArchive);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeGroupResponse")]
+        System.IAsyncResult BeginGetAttributeGroup(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup> EndGetAttributeGroup(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageR" +
+            "esponse")]
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> GetStorageRulesFromStorage(System.Guid IdStorage);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageR" +
+            "esponse")]
+        System.IAsyncResult BeginGetStorageRulesFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
+        
+        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> EndGetStorageRulesFromStorage(System.IAsyncResult result);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRule", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRuleResponse")]
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule GetStorageRule(System.Guid IdStorage, System.Guid IdAttribute);
+        
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRule", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRuleResponse")]
+        System.IAsyncResult BeginGetStorageRule(System.Guid IdStorage, System.Guid IdAttribute, System.AsyncCallback callback, object asyncState);
+        
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule EndGetStorageRule(System.IAsyncResult result);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRules", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesResponse")]
         System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> GetStorageRules(System.Guid IdStorage, System.Guid IdArchive);
@@ -5468,277 +6373,143 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         
         void EndAddAttributeGroup(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/DoWork", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DoWorkResponse")]
-        void DoWork();
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/DoWork", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DoWorkResponse")]
-        System.IAsyncResult BeginDoWork(System.AsyncCallback callback, object asyncState);
-        
-        void EndDoWork(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchiveResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchiveBiblosDsExcepti" +
-            "onFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
-        System.Guid CloneArchive(string templateName, string archiveName);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/CloneArchiveResponse")]
-        System.IAsyncResult BeginCloneArchive(string templateName, string archiveName, System.AsyncCallback callback, object asyncState);
-        
-        System.Guid EndCloneArchive(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/CheckConnection", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/CheckConnectionResponse")]
-        bool CheckConnection();
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/CheckConnection", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/CheckConnectionResponse")]
-        System.IAsyncResult BeginCheckConnection(System.AsyncCallback callback, object asyncState);
-        
-        bool EndCheckConnection(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInTransito", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInTransitoRespo" +
-            "nse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> GetDocumentsInTransito();
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInTransito", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInTransitoRespo" +
-            "nse")]
-        System.IAsyncResult BeginGetDocumentsInTransito(System.AsyncCallback callback, object asyncState);
-        
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> EndGetDocumentsInTransito(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInStorageRespon" +
-            "se")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> GetDocumentsInStorage(System.Guid IdStorage);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetDocumentsInStorageRespon" +
-            "se")]
-        System.IAsyncResult BeginGetDocumentsInStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
-        
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> EndGetDocumentsInStorage(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorages", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesResponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetAllStorages();
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorages", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesResponse")]
-        System.IAsyncResult BeginGetAllStorages(System.AsyncCallback callback, object asyncState);
-        
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetAllStorages(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesWithServer", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesWithServerRes" +
-            "ponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetAllStoragesWithServer();
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesWithServer", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStoragesWithServerRes" +
-            "ponse")]
-        System.IAsyncResult BeginGetAllStoragesWithServer(System.AsyncCallback callback, object asyncState);
-        
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetAllStoragesWithServer(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesFromArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesFromArchiveRespo" +
-            "nse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetStoragesFromArchive(System.Guid IdArchive);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesFromArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesFromArchiveRespo" +
-            "nse")]
-        System.IAsyncResult BeginGetStoragesFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
-        
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetStoragesFromArchive(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageResponse")]
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage GetStorage(System.Guid IdStorage);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageResponse")]
-        System.IAsyncResult BeginGetStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
-        
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage EndGetStorage(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageWithServer", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageWithServerRespons" +
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroupRespons" +
             "e")]
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage GetStorageWithServer(System.Guid IdStorage);
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroupBiblosD" +
+            "sExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void UpdateAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageWithServer", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageWithServerRespons" +
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeGroupRespons" +
             "e")]
-        System.IAsyncResult BeginGetStorageWithServer(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
+        System.IAsyncResult BeginUpdateAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState);
         
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage EndGetStorageWithServer(System.IAsyncResult result);
+        void EndUpdateAttributeGroup(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreas", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasResponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> GetStorageAreas(System.Guid IdStorage);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroupRespons" +
+            "e")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroupBiblosD" +
+            "sExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void DeleteAttributeGroup(System.Guid IdAttributeGroup);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreas", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasResponse")]
-        System.IAsyncResult BeginGetStorageAreas(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeGroupRespons" +
+            "e")]
+        System.IAsyncResult BeginDeleteAttributeGroup(System.Guid IdAttributeGroup, System.AsyncCallback callback, object asyncState);
         
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> EndGetStorageAreas(System.IAsyncResult result);
+        void EndDeleteAttributeGroup(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasFromStorageA" +
-            "rchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasFromStorageA" +
-            "rchiveResponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> GetStorageAreasFromStorageArchive(System.Guid IdStorage, System.Guid IdArchive);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeBiblosDsExce" +
+            "ptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void UpdateAttribute(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasFromStorageA" +
-            "rchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreasFromStorageA" +
-            "rchiveResponse")]
-        System.IAsyncResult BeginGetStorageAreasFromStorageArchive(System.Guid IdStorage, System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateAttributeResponse")]
+        System.IAsyncResult BeginUpdateAttribute(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute, System.AsyncCallback callback, object asyncState);
         
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> EndGetStorageAreasFromStorageArchive(System.IAsyncResult result);
+        void EndUpdateAttribute(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArea", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreaResponse")]
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea GetStorageArea(System.Guid IdStorageArea);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeBiblosDsExce" +
+            "ptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void DeleteAttribute(System.Guid IdAttribute);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArea", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageAreaResponse")]
-        System.IAsyncResult BeginGetStorageArea(System.Guid IdStorageArea, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteAttributeResponse")]
+        System.IAsyncResult BeginDeleteAttribute(System.Guid IdAttribute, System.AsyncCallback callback, object asyncState);
         
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea EndGetStorageArea(System.IAsyncResult result);
+        void EndDeleteAttribute(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorageAreaStatus", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorageAreaStatusResp" +
-            "onse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status> GetAllStorageAreaStatus();
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorageResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorageBiblosDsExcept" +
+            "ionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void UpdateStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorageAreaStatus", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAllStorageAreaStatusResp" +
-            "onse")]
-        System.IAsyncResult BeginGetAllStorageAreaStatus(System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateStorageResponse")]
+        System.IAsyncResult BeginUpdateStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage, System.AsyncCallback callback, object asyncState);
         
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status> EndGetAllStorageAreaStatus(System.IAsyncResult result);
+        void EndUpdateStorage(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageA" +
-            "reaArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageA" +
-            "reaArchiveResponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> GetStorageRulesFromStorageAreaArchive(System.Guid IdStorageArea, System.Guid IdArchive);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorageRespons" +
+            "e")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorageBiblosD" +
+            "sExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void UpdateArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageA" +
-            "reaArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageA" +
-            "reaArchiveResponse")]
-        System.IAsyncResult BeginGetStorageRulesFromStorageAreaArchive(System.Guid IdStorageArea, System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateArchiveStorageRespons" +
+            "e")]
+        System.IAsyncResult BeginUpdateArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState);
         
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> EndGetStorageRulesFromStorageAreaArchive(System.IAsyncResult result);
+        void EndUpdateArchiveStorage(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesNotRelatedToArch" +
-            "ive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesNotRelatedToArch" +
-            "iveResponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetStoragesNotRelatedToArchive(System.Guid IdArchive);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorageResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorageBiblosDsEx" +
+            "ceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void AddArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesNotRelatedToArch" +
-            "ive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStoragesNotRelatedToArch" +
-            "iveResponse")]
-        System.IAsyncResult BeginGetStoragesNotRelatedToArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveStorageResponse")]
+        System.IAsyncResult BeginAddArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState);
         
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetStoragesNotRelatedToArchive(System.IAsyncResult result);
+        void EndAddArchiveStorage(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveResponse")]
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive GetArchive(System.Guid IdArchive);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorageRespons" +
+            "e")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorageBiblosD" +
+            "sExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void DeleteArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveResponse")]
-        System.IAsyncResult BeginGetArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/DeleteArchiveStorageRespons" +
+            "e")]
+        System.IAsyncResult BeginDeleteArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState);
         
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive EndGetArchive(System.IAsyncResult result);
+        void EndDeleteArchiveStorage(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveWithServerConfigs" +
-            "", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveWithServerConfigs" +
-            "Response")]
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive GetArchiveWithServerConfigs(System.Guid IdArchive);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroupRe" +
+            "sponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroupBi" +
+            "blosDsExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void AddDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveWithServerConfigs" +
-            "", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveWithServerConfigs" +
-            "Response")]
-        System.IAsyncResult BeginGetArchiveWithServerConfigs(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddDocumentAttributeGroupRe" +
+            "sponse")]
+        System.IAsyncResult BeginAddDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState);
         
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive EndGetArchiveWithServerConfigs(System.IAsyncResult result);
+        void EndAddDocumentAttributeGroup(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchives", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesResponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchives();
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGrou" +
+            "p", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGrou" +
+            "pResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGrou" +
+            "pBiblosDsExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void UpdateDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchives", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesResponse")]
-        System.IAsyncResult BeginGetArchives(System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGrou" +
+            "p", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/UpdateDocumentAttributeGrou" +
+            "pResponse")]
+        System.IAsyncResult BeginUpdateDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState);
         
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchives(System.IAsyncResult result);
+        void EndUpdateDocumentAttributeGroup(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesFromStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesFromStorageRespo" +
-            "nse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchivesFromStorage(System.Guid IdStorage);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveCertificate", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveCertificateRespon" +
+            "se")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveCertificateBiblos" +
+            "DsExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        void AddArchiveCertificate(System.Guid idArchive, string userName, string pin, string fileName, byte[] certificateBlob);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesFromStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesFromStorageRespo" +
-            "nse")]
-        System.IAsyncResult BeginGetArchivesFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveCertificate", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/AddArchiveCertificateRespon" +
+            "se")]
+        System.IAsyncResult BeginAddArchiveCertificate(System.Guid idArchive, string userName, string pin, string fileName, byte[] certificateBlob, System.AsyncCallback callback, object asyncState);
         
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchivesFromStorage(System.IAsyncResult result);
+        void EndAddArchiveCertificate(System.IAsyncResult result);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesNotRelatedToStor" +
-            "age", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesNotRelatedToStor" +
-            "ageResponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchivesNotRelatedToStorage(System.Guid IdStorage);
+        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveCertificate", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveCertificateRespon" +
+            "se")]
+        [System.ServiceModel.FaultContractAttribute(typeof(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.BiblosDsException), Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveCertificateBiblos" +
+            "DsExceptionFault", Name="BiblosDsException", Namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Exceptions")]
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentArchiveCertificate GetArchiveCertificate(System.Guid idArchive);
         
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesNotRelatedToStor" +
-            "age", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchivesNotRelatedToStor" +
-            "ageResponse")]
-        System.IAsyncResult BeginGetArchivesNotRelatedToStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
+        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveCertificate", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetArchiveCertificateRespon" +
+            "se")]
+        System.IAsyncResult BeginGetArchiveCertificate(System.Guid idArchive, System.AsyncCallback callback, object asyncState);
         
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchivesNotRelatedToStorage(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
-            "romStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
-            "romStorageResponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> GetStorageArchiveRelationsFromStorage(System.Guid IdStorage);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
-            "romStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
-            "romStorageResponse")]
-        System.IAsyncResult BeginGetStorageArchiveRelationsFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
-        
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> EndGetStorageArchiveRelationsFromStorage(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
-            "romArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
-            "romArchiveResponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> GetStorageArchiveRelationsFromArchive(System.Guid IdArchive);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
-            "romArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageArchiveRelationsF" +
-            "romArchiveResponse")]
-        System.IAsyncResult BeginGetStorageArchiveRelationsFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
-        
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> EndGetStorageArchiveRelationsFromArchive(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributesFromArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributesFromArchiveRes" +
-            "ponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute> GetAttributesFromArchive(System.Guid IdArchive);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributesFromArchive", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributesFromArchiveRes" +
-            "ponse")]
-        System.IAsyncResult BeginGetAttributesFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
-        
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute> EndGetAttributesFromArchive(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeResponse")]
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute GetAttribute(System.Guid IdAttribute);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttribute", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeResponse")]
-        System.IAsyncResult BeginGetAttribute(System.Guid IdAttribute, System.AsyncCallback callback, object asyncState);
-        
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute EndGetAttribute(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeGroupResponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup> GetAttributeGroup(System.Guid IdArchive);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeGroup", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetAttributeGroupResponse")]
-        System.IAsyncResult BeginGetAttributeGroup(System.Guid IdArchive, System.AsyncCallback callback, object asyncState);
-        
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup> EndGetAttributeGroup(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageR" +
-            "esponse")]
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> GetStorageRulesFromStorage(System.Guid IdStorage);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorage", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRulesFromStorageR" +
-            "esponse")]
-        System.IAsyncResult BeginGetStorageRulesFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState);
-        
-        System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> EndGetStorageRulesFromStorage(System.IAsyncResult result);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRule", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRuleResponse")]
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule GetStorageRule(System.Guid IdStorage, System.Guid IdAttribute);
-        
-        [System.ServiceModel.OperationContractAttribute(AsyncPattern=true, Action="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRule", ReplyAction="http://Vecomp.BiblosDs.Administration/IAdministration/GetStorageRuleResponse")]
-        System.IAsyncResult BeginGetStorageRule(System.Guid IdStorage, System.Guid IdAttribute, System.AsyncCallback callback, object asyncState);
-        
-        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule EndGetStorageRule(System.IAsyncResult result);
+        BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentArchiveCertificate EndGetArchiveCertificate(System.IAsyncResult result);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -5747,277 +6518,11 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetStorageRulesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class CloneArchiveCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        public GetStorageRulesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule>)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetStoragesTypeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetStoragesTypeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageType> Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageType>)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetDocumentCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetDocumentCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetAttributeModesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetAttributeModesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeMode> Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeMode>)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetStorageAreaRuleFromStorageAreaCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetStorageAreaRuleFromStorageAreaCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule> Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule>)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetStorageAreaRuleCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetStorageAreaRuleCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetRuleOperatorsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetRuleOperatorsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator> Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator>)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetPreservationFiscalDocumentsTypesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetPreservationFiscalDocumentsTypesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public System.ComponentModel.BindingList<string> Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((System.ComponentModel.BindingList<string>)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetServersCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetServersCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server> Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server>)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class GetServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public GetServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class UpdateServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public UpdateServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class AddServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public AddServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class DeleteServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public DeleteServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public bool Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((bool)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class AddArchiveServerConfigCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public AddArchiveServerConfigCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveServerConfig Result {
-            get {
-                base.RaiseExceptionIfNecessary();
-                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveServerConfig)(this.results[0]));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class AddArchiveCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        public AddArchiveCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        public CloneArchiveCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -6032,11 +6537,11 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class CloneArchiveCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class CloneCompanyArchiveCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        public CloneArchiveCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        public CloneCompanyArchiveCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -6374,6 +6879,25 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetArchivesByIdCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetArchivesByIdCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class GetArchivesFromStorageCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
@@ -6545,67 +7069,491 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetStorageRulesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetStorageRulesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetStoragesTypeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetStoragesTypeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageType> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageType>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetDocumentCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetDocumentCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetAttributeModesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetAttributeModesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeMode> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeMode>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetStorageAreaRuleFromStorageAreaCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetStorageAreaRuleFromStorageAreaCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetStorageAreaRuleCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetStorageAreaRuleCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageAreaRule)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetRuleOperatorsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetRuleOperatorsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetPreservationFiscalDocumentsTypesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetPreservationFiscalDocumentsTypesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.ComponentModel.BindingList<string> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.ComponentModel.BindingList<string>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetServersCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetServersCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server> Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server>)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class UpdateServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public UpdateServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class AddServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public AddServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Server)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class DeleteServerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public DeleteServerCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public bool Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class AddArchiveServerConfigCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public AddArchiveServerConfigCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveServerConfig Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveServerConfig)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class AddArchiveCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public AddArchiveCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public System.Guid Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((System.Guid)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public partial class GetArchiveCertificateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        public GetArchiveCertificateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentArchiveCertificate Result {
+            get {
+                base.RaiseExceptionIfNecessary();
+                return ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentArchiveCertificate)(this.results[0]));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public partial class AdministrationClient : System.ServiceModel.ClientBase<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.IAdministration>, BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.IAdministration {
         
-        private BeginOperationDelegate onBeginUpdateAttributeGroupDelegate;
+        private BeginOperationDelegate onBeginDoWorkDelegate;
         
-        private EndOperationDelegate onEndUpdateAttributeGroupDelegate;
+        private EndOperationDelegate onEndDoWorkDelegate;
         
-        private System.Threading.SendOrPostCallback onUpdateAttributeGroupCompletedDelegate;
+        private System.Threading.SendOrPostCallback onDoWorkCompletedDelegate;
         
-        private BeginOperationDelegate onBeginDeleteAttributeGroupDelegate;
+        private BeginOperationDelegate onBeginCloneArchiveDelegate;
         
-        private EndOperationDelegate onEndDeleteAttributeGroupDelegate;
+        private EndOperationDelegate onEndCloneArchiveDelegate;
         
-        private System.Threading.SendOrPostCallback onDeleteAttributeGroupCompletedDelegate;
+        private System.Threading.SendOrPostCallback onCloneArchiveCompletedDelegate;
         
-        private BeginOperationDelegate onBeginUpdateAttributeDelegate;
+        private BeginOperationDelegate onBeginCloneCompanyArchiveDelegate;
         
-        private EndOperationDelegate onEndUpdateAttributeDelegate;
+        private EndOperationDelegate onEndCloneCompanyArchiveDelegate;
         
-        private System.Threading.SendOrPostCallback onUpdateAttributeCompletedDelegate;
+        private System.Threading.SendOrPostCallback onCloneCompanyArchiveCompletedDelegate;
         
-        private BeginOperationDelegate onBeginDeleteAttributeDelegate;
+        private BeginOperationDelegate onBeginCheckConnectionDelegate;
         
-        private EndOperationDelegate onEndDeleteAttributeDelegate;
+        private EndOperationDelegate onEndCheckConnectionDelegate;
         
-        private System.Threading.SendOrPostCallback onDeleteAttributeCompletedDelegate;
+        private System.Threading.SendOrPostCallback onCheckConnectionCompletedDelegate;
         
-        private BeginOperationDelegate onBeginUpdateStorageDelegate;
+        private BeginOperationDelegate onBeginGetDocumentsInTransitoDelegate;
         
-        private EndOperationDelegate onEndUpdateStorageDelegate;
+        private EndOperationDelegate onEndGetDocumentsInTransitoDelegate;
         
-        private System.Threading.SendOrPostCallback onUpdateStorageCompletedDelegate;
+        private System.Threading.SendOrPostCallback onGetDocumentsInTransitoCompletedDelegate;
         
-        private BeginOperationDelegate onBeginUpdateArchiveStorageDelegate;
+        private BeginOperationDelegate onBeginGetDocumentsInStorageDelegate;
         
-        private EndOperationDelegate onEndUpdateArchiveStorageDelegate;
+        private EndOperationDelegate onEndGetDocumentsInStorageDelegate;
         
-        private System.Threading.SendOrPostCallback onUpdateArchiveStorageCompletedDelegate;
+        private System.Threading.SendOrPostCallback onGetDocumentsInStorageCompletedDelegate;
         
-        private BeginOperationDelegate onBeginAddArchiveStorageDelegate;
+        private BeginOperationDelegate onBeginGetAllStoragesDelegate;
         
-        private EndOperationDelegate onEndAddArchiveStorageDelegate;
+        private EndOperationDelegate onEndGetAllStoragesDelegate;
         
-        private System.Threading.SendOrPostCallback onAddArchiveStorageCompletedDelegate;
+        private System.Threading.SendOrPostCallback onGetAllStoragesCompletedDelegate;
         
-        private BeginOperationDelegate onBeginDeleteArchiveStorageDelegate;
+        private BeginOperationDelegate onBeginGetAllStoragesWithServerDelegate;
         
-        private EndOperationDelegate onEndDeleteArchiveStorageDelegate;
+        private EndOperationDelegate onEndGetAllStoragesWithServerDelegate;
         
-        private System.Threading.SendOrPostCallback onDeleteArchiveStorageCompletedDelegate;
+        private System.Threading.SendOrPostCallback onGetAllStoragesWithServerCompletedDelegate;
         
-        private BeginOperationDelegate onBeginAddDocumentAttributeGroupDelegate;
+        private BeginOperationDelegate onBeginGetStoragesFromArchiveDelegate;
         
-        private EndOperationDelegate onEndAddDocumentAttributeGroupDelegate;
+        private EndOperationDelegate onEndGetStoragesFromArchiveDelegate;
         
-        private System.Threading.SendOrPostCallback onAddDocumentAttributeGroupCompletedDelegate;
+        private System.Threading.SendOrPostCallback onGetStoragesFromArchiveCompletedDelegate;
         
-        private BeginOperationDelegate onBeginUpdateDocumentAttributeGroupDelegate;
+        private BeginOperationDelegate onBeginGetStorageDelegate;
         
-        private EndOperationDelegate onEndUpdateDocumentAttributeGroupDelegate;
+        private EndOperationDelegate onEndGetStorageDelegate;
         
-        private System.Threading.SendOrPostCallback onUpdateDocumentAttributeGroupCompletedDelegate;
+        private System.Threading.SendOrPostCallback onGetStorageCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStorageWithServerDelegate;
+        
+        private EndOperationDelegate onEndGetStorageWithServerDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStorageWithServerCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStorageAreasDelegate;
+        
+        private EndOperationDelegate onEndGetStorageAreasDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStorageAreasCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStorageAreasFromStorageArchiveDelegate;
+        
+        private EndOperationDelegate onEndGetStorageAreasFromStorageArchiveDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStorageAreasFromStorageArchiveCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStorageAreaDelegate;
+        
+        private EndOperationDelegate onEndGetStorageAreaDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStorageAreaCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetAllStorageAreaStatusDelegate;
+        
+        private EndOperationDelegate onEndGetAllStorageAreaStatusDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetAllStorageAreaStatusCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStorageRulesFromStorageAreaArchiveDelegate;
+        
+        private EndOperationDelegate onEndGetStorageRulesFromStorageAreaArchiveDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStorageRulesFromStorageAreaArchiveCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStoragesNotRelatedToArchiveDelegate;
+        
+        private EndOperationDelegate onEndGetStoragesNotRelatedToArchiveDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStoragesNotRelatedToArchiveCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetArchiveDelegate;
+        
+        private EndOperationDelegate onEndGetArchiveDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetArchiveCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetArchiveWithServerConfigsDelegate;
+        
+        private EndOperationDelegate onEndGetArchiveWithServerConfigsDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetArchiveWithServerConfigsCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetArchivesDelegate;
+        
+        private EndOperationDelegate onEndGetArchivesDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetArchivesCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetArchivesByIdDelegate;
+        
+        private EndOperationDelegate onEndGetArchivesByIdDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetArchivesByIdCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetArchivesFromStorageDelegate;
+        
+        private EndOperationDelegate onEndGetArchivesFromStorageDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetArchivesFromStorageCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetArchivesNotRelatedToStorageDelegate;
+        
+        private EndOperationDelegate onEndGetArchivesNotRelatedToStorageDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetArchivesNotRelatedToStorageCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStorageArchiveRelationsFromStorageDelegate;
+        
+        private EndOperationDelegate onEndGetStorageArchiveRelationsFromStorageDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStorageArchiveRelationsFromStorageCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStorageArchiveRelationsFromArchiveDelegate;
+        
+        private EndOperationDelegate onEndGetStorageArchiveRelationsFromArchiveDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStorageArchiveRelationsFromArchiveCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetAttributesFromArchiveDelegate;
+        
+        private EndOperationDelegate onEndGetAttributesFromArchiveDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetAttributesFromArchiveCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetAttributeDelegate;
+        
+        private EndOperationDelegate onEndGetAttributeDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetAttributeCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetAttributeGroupDelegate;
+        
+        private EndOperationDelegate onEndGetAttributeGroupDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetAttributeGroupCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStorageRulesFromStorageDelegate;
+        
+        private EndOperationDelegate onEndGetStorageRulesFromStorageDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStorageRulesFromStorageCompletedDelegate;
+        
+        private BeginOperationDelegate onBeginGetStorageRuleDelegate;
+        
+        private EndOperationDelegate onEndGetStorageRuleDelegate;
+        
+        private System.Threading.SendOrPostCallback onGetStorageRuleCompletedDelegate;
         
         private BeginOperationDelegate onBeginGetStorageRulesDelegate;
         
@@ -6775,173 +7723,77 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         
         private System.Threading.SendOrPostCallback onAddAttributeGroupCompletedDelegate;
         
-        private BeginOperationDelegate onBeginDoWorkDelegate;
+        private BeginOperationDelegate onBeginUpdateAttributeGroupDelegate;
         
-        private EndOperationDelegate onEndDoWorkDelegate;
+        private EndOperationDelegate onEndUpdateAttributeGroupDelegate;
         
-        private System.Threading.SendOrPostCallback onDoWorkCompletedDelegate;
+        private System.Threading.SendOrPostCallback onUpdateAttributeGroupCompletedDelegate;
         
-        private BeginOperationDelegate onBeginCloneArchiveDelegate;
+        private BeginOperationDelegate onBeginDeleteAttributeGroupDelegate;
         
-        private EndOperationDelegate onEndCloneArchiveDelegate;
+        private EndOperationDelegate onEndDeleteAttributeGroupDelegate;
         
-        private System.Threading.SendOrPostCallback onCloneArchiveCompletedDelegate;
+        private System.Threading.SendOrPostCallback onDeleteAttributeGroupCompletedDelegate;
         
-        private BeginOperationDelegate onBeginCheckConnectionDelegate;
+        private BeginOperationDelegate onBeginUpdateAttributeDelegate;
         
-        private EndOperationDelegate onEndCheckConnectionDelegate;
+        private EndOperationDelegate onEndUpdateAttributeDelegate;
         
-        private System.Threading.SendOrPostCallback onCheckConnectionCompletedDelegate;
+        private System.Threading.SendOrPostCallback onUpdateAttributeCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetDocumentsInTransitoDelegate;
+        private BeginOperationDelegate onBeginDeleteAttributeDelegate;
         
-        private EndOperationDelegate onEndGetDocumentsInTransitoDelegate;
+        private EndOperationDelegate onEndDeleteAttributeDelegate;
         
-        private System.Threading.SendOrPostCallback onGetDocumentsInTransitoCompletedDelegate;
+        private System.Threading.SendOrPostCallback onDeleteAttributeCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetDocumentsInStorageDelegate;
+        private BeginOperationDelegate onBeginUpdateStorageDelegate;
         
-        private EndOperationDelegate onEndGetDocumentsInStorageDelegate;
+        private EndOperationDelegate onEndUpdateStorageDelegate;
         
-        private System.Threading.SendOrPostCallback onGetDocumentsInStorageCompletedDelegate;
+        private System.Threading.SendOrPostCallback onUpdateStorageCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetAllStoragesDelegate;
+        private BeginOperationDelegate onBeginUpdateArchiveStorageDelegate;
         
-        private EndOperationDelegate onEndGetAllStoragesDelegate;
+        private EndOperationDelegate onEndUpdateArchiveStorageDelegate;
         
-        private System.Threading.SendOrPostCallback onGetAllStoragesCompletedDelegate;
+        private System.Threading.SendOrPostCallback onUpdateArchiveStorageCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetAllStoragesWithServerDelegate;
+        private BeginOperationDelegate onBeginAddArchiveStorageDelegate;
         
-        private EndOperationDelegate onEndGetAllStoragesWithServerDelegate;
+        private EndOperationDelegate onEndAddArchiveStorageDelegate;
         
-        private System.Threading.SendOrPostCallback onGetAllStoragesWithServerCompletedDelegate;
+        private System.Threading.SendOrPostCallback onAddArchiveStorageCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetStoragesFromArchiveDelegate;
+        private BeginOperationDelegate onBeginDeleteArchiveStorageDelegate;
         
-        private EndOperationDelegate onEndGetStoragesFromArchiveDelegate;
+        private EndOperationDelegate onEndDeleteArchiveStorageDelegate;
         
-        private System.Threading.SendOrPostCallback onGetStoragesFromArchiveCompletedDelegate;
+        private System.Threading.SendOrPostCallback onDeleteArchiveStorageCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetStorageDelegate;
+        private BeginOperationDelegate onBeginAddDocumentAttributeGroupDelegate;
         
-        private EndOperationDelegate onEndGetStorageDelegate;
+        private EndOperationDelegate onEndAddDocumentAttributeGroupDelegate;
         
-        private System.Threading.SendOrPostCallback onGetStorageCompletedDelegate;
+        private System.Threading.SendOrPostCallback onAddDocumentAttributeGroupCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetStorageWithServerDelegate;
+        private BeginOperationDelegate onBeginUpdateDocumentAttributeGroupDelegate;
         
-        private EndOperationDelegate onEndGetStorageWithServerDelegate;
+        private EndOperationDelegate onEndUpdateDocumentAttributeGroupDelegate;
         
-        private System.Threading.SendOrPostCallback onGetStorageWithServerCompletedDelegate;
+        private System.Threading.SendOrPostCallback onUpdateDocumentAttributeGroupCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetStorageAreasDelegate;
+        private BeginOperationDelegate onBeginAddArchiveCertificateDelegate;
         
-        private EndOperationDelegate onEndGetStorageAreasDelegate;
+        private EndOperationDelegate onEndAddArchiveCertificateDelegate;
         
-        private System.Threading.SendOrPostCallback onGetStorageAreasCompletedDelegate;
+        private System.Threading.SendOrPostCallback onAddArchiveCertificateCompletedDelegate;
         
-        private BeginOperationDelegate onBeginGetStorageAreasFromStorageArchiveDelegate;
+        private BeginOperationDelegate onBeginGetArchiveCertificateDelegate;
         
-        private EndOperationDelegate onEndGetStorageAreasFromStorageArchiveDelegate;
+        private EndOperationDelegate onEndGetArchiveCertificateDelegate;
         
-        private System.Threading.SendOrPostCallback onGetStorageAreasFromStorageArchiveCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetStorageAreaDelegate;
-        
-        private EndOperationDelegate onEndGetStorageAreaDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetStorageAreaCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetAllStorageAreaStatusDelegate;
-        
-        private EndOperationDelegate onEndGetAllStorageAreaStatusDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetAllStorageAreaStatusCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetStorageRulesFromStorageAreaArchiveDelegate;
-        
-        private EndOperationDelegate onEndGetStorageRulesFromStorageAreaArchiveDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetStorageRulesFromStorageAreaArchiveCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetStoragesNotRelatedToArchiveDelegate;
-        
-        private EndOperationDelegate onEndGetStoragesNotRelatedToArchiveDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetStoragesNotRelatedToArchiveCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetArchiveDelegate;
-        
-        private EndOperationDelegate onEndGetArchiveDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetArchiveCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetArchiveWithServerConfigsDelegate;
-        
-        private EndOperationDelegate onEndGetArchiveWithServerConfigsDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetArchiveWithServerConfigsCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetArchivesDelegate;
-        
-        private EndOperationDelegate onEndGetArchivesDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetArchivesCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetArchivesFromStorageDelegate;
-        
-        private EndOperationDelegate onEndGetArchivesFromStorageDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetArchivesFromStorageCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetArchivesNotRelatedToStorageDelegate;
-        
-        private EndOperationDelegate onEndGetArchivesNotRelatedToStorageDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetArchivesNotRelatedToStorageCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetStorageArchiveRelationsFromStorageDelegate;
-        
-        private EndOperationDelegate onEndGetStorageArchiveRelationsFromStorageDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetStorageArchiveRelationsFromStorageCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetStorageArchiveRelationsFromArchiveDelegate;
-        
-        private EndOperationDelegate onEndGetStorageArchiveRelationsFromArchiveDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetStorageArchiveRelationsFromArchiveCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetAttributesFromArchiveDelegate;
-        
-        private EndOperationDelegate onEndGetAttributesFromArchiveDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetAttributesFromArchiveCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetAttributeDelegate;
-        
-        private EndOperationDelegate onEndGetAttributeDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetAttributeCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetAttributeGroupDelegate;
-        
-        private EndOperationDelegate onEndGetAttributeGroupDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetAttributeGroupCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetStorageRulesFromStorageDelegate;
-        
-        private EndOperationDelegate onEndGetStorageRulesFromStorageDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetStorageRulesFromStorageCompletedDelegate;
-        
-        private BeginOperationDelegate onBeginGetStorageRuleDelegate;
-        
-        private EndOperationDelegate onEndGetStorageRuleDelegate;
-        
-        private System.Threading.SendOrPostCallback onGetStorageRuleCompletedDelegate;
+        private System.Threading.SendOrPostCallback onGetArchiveCertificateCompletedDelegate;
         
         public AdministrationClient() {
         }
@@ -6962,25 +7814,65 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                 base(binding, remoteAddress) {
         }
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> UpdateAttributeGroupCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DoWorkCompleted;
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DeleteAttributeGroupCompleted;
+        public event System.EventHandler<CloneArchiveCompletedEventArgs> CloneArchiveCompleted;
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> UpdateAttributeCompleted;
+        public event System.EventHandler<CloneCompanyArchiveCompletedEventArgs> CloneCompanyArchiveCompleted;
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DeleteAttributeCompleted;
+        public event System.EventHandler<CheckConnectionCompletedEventArgs> CheckConnectionCompleted;
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> UpdateStorageCompleted;
+        public event System.EventHandler<GetDocumentsInTransitoCompletedEventArgs> GetDocumentsInTransitoCompleted;
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> UpdateArchiveStorageCompleted;
+        public event System.EventHandler<GetDocumentsInStorageCompletedEventArgs> GetDocumentsInStorageCompleted;
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddArchiveStorageCompleted;
+        public event System.EventHandler<GetAllStoragesCompletedEventArgs> GetAllStoragesCompleted;
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DeleteArchiveStorageCompleted;
+        public event System.EventHandler<GetAllStoragesWithServerCompletedEventArgs> GetAllStoragesWithServerCompleted;
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddDocumentAttributeGroupCompleted;
+        public event System.EventHandler<GetStoragesFromArchiveCompletedEventArgs> GetStoragesFromArchiveCompleted;
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> UpdateDocumentAttributeGroupCompleted;
+        public event System.EventHandler<GetStorageCompletedEventArgs> GetStorageCompleted;
+        
+        public event System.EventHandler<GetStorageWithServerCompletedEventArgs> GetStorageWithServerCompleted;
+        
+        public event System.EventHandler<GetStorageAreasCompletedEventArgs> GetStorageAreasCompleted;
+        
+        public event System.EventHandler<GetStorageAreasFromStorageArchiveCompletedEventArgs> GetStorageAreasFromStorageArchiveCompleted;
+        
+        public event System.EventHandler<GetStorageAreaCompletedEventArgs> GetStorageAreaCompleted;
+        
+        public event System.EventHandler<GetAllStorageAreaStatusCompletedEventArgs> GetAllStorageAreaStatusCompleted;
+        
+        public event System.EventHandler<GetStorageRulesFromStorageAreaArchiveCompletedEventArgs> GetStorageRulesFromStorageAreaArchiveCompleted;
+        
+        public event System.EventHandler<GetStoragesNotRelatedToArchiveCompletedEventArgs> GetStoragesNotRelatedToArchiveCompleted;
+        
+        public event System.EventHandler<GetArchiveCompletedEventArgs> GetArchiveCompleted;
+        
+        public event System.EventHandler<GetArchiveWithServerConfigsCompletedEventArgs> GetArchiveWithServerConfigsCompleted;
+        
+        public event System.EventHandler<GetArchivesCompletedEventArgs> GetArchivesCompleted;
+        
+        public event System.EventHandler<GetArchivesByIdCompletedEventArgs> GetArchivesByIdCompleted;
+        
+        public event System.EventHandler<GetArchivesFromStorageCompletedEventArgs> GetArchivesFromStorageCompleted;
+        
+        public event System.EventHandler<GetArchivesNotRelatedToStorageCompletedEventArgs> GetArchivesNotRelatedToStorageCompleted;
+        
+        public event System.EventHandler<GetStorageArchiveRelationsFromStorageCompletedEventArgs> GetStorageArchiveRelationsFromStorageCompleted;
+        
+        public event System.EventHandler<GetStorageArchiveRelationsFromArchiveCompletedEventArgs> GetStorageArchiveRelationsFromArchiveCompleted;
+        
+        public event System.EventHandler<GetAttributesFromArchiveCompletedEventArgs> GetAttributesFromArchiveCompleted;
+        
+        public event System.EventHandler<GetAttributeCompletedEventArgs> GetAttributeCompleted;
+        
+        public event System.EventHandler<GetAttributeGroupCompletedEventArgs> GetAttributeGroupCompleted;
+        
+        public event System.EventHandler<GetStorageRulesFromStorageCompletedEventArgs> GetStorageRulesFromStorageCompleted;
+        
+        public event System.EventHandler<GetStorageRuleCompletedEventArgs> GetStorageRuleCompleted;
         
         public event System.EventHandler<GetStorageRulesCompletedEventArgs> GetStorageRulesCompleted;
         
@@ -7038,550 +7930,1525 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
         
         public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddAttributeGroupCompleted;
         
-        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DoWorkCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> UpdateAttributeGroupCompleted;
         
-        public event System.EventHandler<CloneArchiveCompletedEventArgs> CloneArchiveCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DeleteAttributeGroupCompleted;
         
-        public event System.EventHandler<CheckConnectionCompletedEventArgs> CheckConnectionCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> UpdateAttributeCompleted;
         
-        public event System.EventHandler<GetDocumentsInTransitoCompletedEventArgs> GetDocumentsInTransitoCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DeleteAttributeCompleted;
         
-        public event System.EventHandler<GetDocumentsInStorageCompletedEventArgs> GetDocumentsInStorageCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> UpdateStorageCompleted;
         
-        public event System.EventHandler<GetAllStoragesCompletedEventArgs> GetAllStoragesCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> UpdateArchiveStorageCompleted;
         
-        public event System.EventHandler<GetAllStoragesWithServerCompletedEventArgs> GetAllStoragesWithServerCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddArchiveStorageCompleted;
         
-        public event System.EventHandler<GetStoragesFromArchiveCompletedEventArgs> GetStoragesFromArchiveCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> DeleteArchiveStorageCompleted;
         
-        public event System.EventHandler<GetStorageCompletedEventArgs> GetStorageCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddDocumentAttributeGroupCompleted;
         
-        public event System.EventHandler<GetStorageWithServerCompletedEventArgs> GetStorageWithServerCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> UpdateDocumentAttributeGroupCompleted;
         
-        public event System.EventHandler<GetStorageAreasCompletedEventArgs> GetStorageAreasCompleted;
+        public event System.EventHandler<System.ComponentModel.AsyncCompletedEventArgs> AddArchiveCertificateCompleted;
         
-        public event System.EventHandler<GetStorageAreasFromStorageArchiveCompletedEventArgs> GetStorageAreasFromStorageArchiveCompleted;
+        public event System.EventHandler<GetArchiveCertificateCompletedEventArgs> GetArchiveCertificateCompleted;
         
-        public event System.EventHandler<GetStorageAreaCompletedEventArgs> GetStorageAreaCompleted;
-        
-        public event System.EventHandler<GetAllStorageAreaStatusCompletedEventArgs> GetAllStorageAreaStatusCompleted;
-        
-        public event System.EventHandler<GetStorageRulesFromStorageAreaArchiveCompletedEventArgs> GetStorageRulesFromStorageAreaArchiveCompleted;
-        
-        public event System.EventHandler<GetStoragesNotRelatedToArchiveCompletedEventArgs> GetStoragesNotRelatedToArchiveCompleted;
-        
-        public event System.EventHandler<GetArchiveCompletedEventArgs> GetArchiveCompleted;
-        
-        public event System.EventHandler<GetArchiveWithServerConfigsCompletedEventArgs> GetArchiveWithServerConfigsCompleted;
-        
-        public event System.EventHandler<GetArchivesCompletedEventArgs> GetArchivesCompleted;
-        
-        public event System.EventHandler<GetArchivesFromStorageCompletedEventArgs> GetArchivesFromStorageCompleted;
-        
-        public event System.EventHandler<GetArchivesNotRelatedToStorageCompletedEventArgs> GetArchivesNotRelatedToStorageCompleted;
-        
-        public event System.EventHandler<GetStorageArchiveRelationsFromStorageCompletedEventArgs> GetStorageArchiveRelationsFromStorageCompleted;
-        
-        public event System.EventHandler<GetStorageArchiveRelationsFromArchiveCompletedEventArgs> GetStorageArchiveRelationsFromArchiveCompleted;
-        
-        public event System.EventHandler<GetAttributesFromArchiveCompletedEventArgs> GetAttributesFromArchiveCompleted;
-        
-        public event System.EventHandler<GetAttributeCompletedEventArgs> GetAttributeCompleted;
-        
-        public event System.EventHandler<GetAttributeGroupCompletedEventArgs> GetAttributeGroupCompleted;
-        
-        public event System.EventHandler<GetStorageRulesFromStorageCompletedEventArgs> GetStorageRulesFromStorageCompleted;
-        
-        public event System.EventHandler<GetStorageRuleCompletedEventArgs> GetStorageRuleCompleted;
-        
-        public void UpdateAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
-            base.Channel.UpdateAttributeGroup(AttributeGroup);
+        public void DoWork() {
+            base.Channel.DoWork();
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginUpdateAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginUpdateAttributeGroup(AttributeGroup, callback, asyncState);
+        public System.IAsyncResult BeginDoWork(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginDoWork(callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndUpdateAttributeGroup(System.IAsyncResult result) {
-            base.Channel.EndUpdateAttributeGroup(result);
+        public void EndDoWork(System.IAsyncResult result) {
+            base.Channel.EndDoWork(result);
         }
         
-        private System.IAsyncResult OnBeginUpdateAttributeGroup(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup)(inValues[0]));
-            return this.BeginUpdateAttributeGroup(AttributeGroup, callback, asyncState);
+        private System.IAsyncResult OnBeginDoWork(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginDoWork(callback, asyncState);
         }
         
-        private object[] OnEndUpdateAttributeGroup(System.IAsyncResult result) {
-            this.EndUpdateAttributeGroup(result);
+        private object[] OnEndDoWork(System.IAsyncResult result) {
+            this.EndDoWork(result);
             return null;
         }
         
-        private void OnUpdateAttributeGroupCompleted(object state) {
-            if ((this.UpdateAttributeGroupCompleted != null)) {
+        private void OnDoWorkCompleted(object state) {
+            if ((this.DoWorkCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.UpdateAttributeGroupCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+                this.DoWorkCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void UpdateAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
-            this.UpdateAttributeGroupAsync(AttributeGroup, null);
+        public void DoWorkAsync() {
+            this.DoWorkAsync(null);
         }
         
-        public void UpdateAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, object userState) {
-            if ((this.onBeginUpdateAttributeGroupDelegate == null)) {
-                this.onBeginUpdateAttributeGroupDelegate = new BeginOperationDelegate(this.OnBeginUpdateAttributeGroup);
+        public void DoWorkAsync(object userState) {
+            if ((this.onBeginDoWorkDelegate == null)) {
+                this.onBeginDoWorkDelegate = new BeginOperationDelegate(this.OnBeginDoWork);
             }
-            if ((this.onEndUpdateAttributeGroupDelegate == null)) {
-                this.onEndUpdateAttributeGroupDelegate = new EndOperationDelegate(this.OnEndUpdateAttributeGroup);
+            if ((this.onEndDoWorkDelegate == null)) {
+                this.onEndDoWorkDelegate = new EndOperationDelegate(this.OnEndDoWork);
             }
-            if ((this.onUpdateAttributeGroupCompletedDelegate == null)) {
-                this.onUpdateAttributeGroupCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnUpdateAttributeGroupCompleted);
+            if ((this.onDoWorkCompletedDelegate == null)) {
+                this.onDoWorkCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnDoWorkCompleted);
             }
-            base.InvokeAsync(this.onBeginUpdateAttributeGroupDelegate, new object[] {
-                        AttributeGroup}, this.onEndUpdateAttributeGroupDelegate, this.onUpdateAttributeGroupCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginDoWorkDelegate, null, this.onEndDoWorkDelegate, this.onDoWorkCompletedDelegate, userState);
         }
         
-        public void DeleteAttributeGroup(System.Guid IdAttributeGroup) {
-            base.Channel.DeleteAttributeGroup(IdAttributeGroup);
+        public System.Guid CloneArchive(string templateName, string archiveName) {
+            return base.Channel.CloneArchive(templateName, archiveName);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginDeleteAttributeGroup(System.Guid IdAttributeGroup, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginDeleteAttributeGroup(IdAttributeGroup, callback, asyncState);
+        public System.IAsyncResult BeginCloneArchive(string templateName, string archiveName, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginCloneArchive(templateName, archiveName, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndDeleteAttributeGroup(System.IAsyncResult result) {
-            base.Channel.EndDeleteAttributeGroup(result);
+        public System.Guid EndCloneArchive(System.IAsyncResult result) {
+            return base.Channel.EndCloneArchive(result);
         }
         
-        private System.IAsyncResult OnBeginDeleteAttributeGroup(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdAttributeGroup = ((System.Guid)(inValues[0]));
-            return this.BeginDeleteAttributeGroup(IdAttributeGroup, callback, asyncState);
+        private System.IAsyncResult OnBeginCloneArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            string templateName = ((string)(inValues[0]));
+            string archiveName = ((string)(inValues[1]));
+            return this.BeginCloneArchive(templateName, archiveName, callback, asyncState);
         }
         
-        private object[] OnEndDeleteAttributeGroup(System.IAsyncResult result) {
-            this.EndDeleteAttributeGroup(result);
-            return null;
+        private object[] OnEndCloneArchive(System.IAsyncResult result) {
+            System.Guid retVal = this.EndCloneArchive(result);
+            return new object[] {
+                    retVal};
         }
         
-        private void OnDeleteAttributeGroupCompleted(object state) {
-            if ((this.DeleteAttributeGroupCompleted != null)) {
+        private void OnCloneArchiveCompleted(object state) {
+            if ((this.CloneArchiveCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.DeleteAttributeGroupCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+                this.CloneArchiveCompleted(this, new CloneArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void DeleteAttributeGroupAsync(System.Guid IdAttributeGroup) {
-            this.DeleteAttributeGroupAsync(IdAttributeGroup, null);
+        public void CloneArchiveAsync(string templateName, string archiveName) {
+            this.CloneArchiveAsync(templateName, archiveName, null);
         }
         
-        public void DeleteAttributeGroupAsync(System.Guid IdAttributeGroup, object userState) {
-            if ((this.onBeginDeleteAttributeGroupDelegate == null)) {
-                this.onBeginDeleteAttributeGroupDelegate = new BeginOperationDelegate(this.OnBeginDeleteAttributeGroup);
+        public void CloneArchiveAsync(string templateName, string archiveName, object userState) {
+            if ((this.onBeginCloneArchiveDelegate == null)) {
+                this.onBeginCloneArchiveDelegate = new BeginOperationDelegate(this.OnBeginCloneArchive);
             }
-            if ((this.onEndDeleteAttributeGroupDelegate == null)) {
-                this.onEndDeleteAttributeGroupDelegate = new EndOperationDelegate(this.OnEndDeleteAttributeGroup);
+            if ((this.onEndCloneArchiveDelegate == null)) {
+                this.onEndCloneArchiveDelegate = new EndOperationDelegate(this.OnEndCloneArchive);
             }
-            if ((this.onDeleteAttributeGroupCompletedDelegate == null)) {
-                this.onDeleteAttributeGroupCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnDeleteAttributeGroupCompleted);
+            if ((this.onCloneArchiveCompletedDelegate == null)) {
+                this.onCloneArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnCloneArchiveCompleted);
             }
-            base.InvokeAsync(this.onBeginDeleteAttributeGroupDelegate, new object[] {
-                        IdAttributeGroup}, this.onEndDeleteAttributeGroupDelegate, this.onDeleteAttributeGroupCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginCloneArchiveDelegate, new object[] {
+                        templateName,
+                        archiveName}, this.onEndCloneArchiveDelegate, this.onCloneArchiveCompletedDelegate, userState);
         }
         
-        public void UpdateAttribute(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute) {
-            base.Channel.UpdateAttribute(DocumentAttribute);
+        public System.Guid CloneCompanyArchive(string templateName, string archiveName, BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Company company) {
+            return base.Channel.CloneCompanyArchive(templateName, archiveName, company);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginUpdateAttribute(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginUpdateAttribute(DocumentAttribute, callback, asyncState);
+        public System.IAsyncResult BeginCloneCompanyArchive(string templateName, string archiveName, BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Company company, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginCloneCompanyArchive(templateName, archiveName, company, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndUpdateAttribute(System.IAsyncResult result) {
-            base.Channel.EndUpdateAttribute(result);
+        public System.Guid EndCloneCompanyArchive(System.IAsyncResult result) {
+            return base.Channel.EndCloneCompanyArchive(result);
         }
         
-        private System.IAsyncResult OnBeginUpdateAttribute(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute)(inValues[0]));
-            return this.BeginUpdateAttribute(DocumentAttribute, callback, asyncState);
+        private System.IAsyncResult OnBeginCloneCompanyArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            string templateName = ((string)(inValues[0]));
+            string archiveName = ((string)(inValues[1]));
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Company company = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Company)(inValues[2]));
+            return this.BeginCloneCompanyArchive(templateName, archiveName, company, callback, asyncState);
         }
         
-        private object[] OnEndUpdateAttribute(System.IAsyncResult result) {
-            this.EndUpdateAttribute(result);
-            return null;
+        private object[] OnEndCloneCompanyArchive(System.IAsyncResult result) {
+            System.Guid retVal = this.EndCloneCompanyArchive(result);
+            return new object[] {
+                    retVal};
         }
         
-        private void OnUpdateAttributeCompleted(object state) {
-            if ((this.UpdateAttributeCompleted != null)) {
+        private void OnCloneCompanyArchiveCompleted(object state) {
+            if ((this.CloneCompanyArchiveCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.UpdateAttributeCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+                this.CloneCompanyArchiveCompleted(this, new CloneCompanyArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void UpdateAttributeAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute) {
-            this.UpdateAttributeAsync(DocumentAttribute, null);
+        public void CloneCompanyArchiveAsync(string templateName, string archiveName, BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Company company) {
+            this.CloneCompanyArchiveAsync(templateName, archiveName, company, null);
         }
         
-        public void UpdateAttributeAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute, object userState) {
-            if ((this.onBeginUpdateAttributeDelegate == null)) {
-                this.onBeginUpdateAttributeDelegate = new BeginOperationDelegate(this.OnBeginUpdateAttribute);
+        public void CloneCompanyArchiveAsync(string templateName, string archiveName, BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Company company, object userState) {
+            if ((this.onBeginCloneCompanyArchiveDelegate == null)) {
+                this.onBeginCloneCompanyArchiveDelegate = new BeginOperationDelegate(this.OnBeginCloneCompanyArchive);
             }
-            if ((this.onEndUpdateAttributeDelegate == null)) {
-                this.onEndUpdateAttributeDelegate = new EndOperationDelegate(this.OnEndUpdateAttribute);
+            if ((this.onEndCloneCompanyArchiveDelegate == null)) {
+                this.onEndCloneCompanyArchiveDelegate = new EndOperationDelegate(this.OnEndCloneCompanyArchive);
             }
-            if ((this.onUpdateAttributeCompletedDelegate == null)) {
-                this.onUpdateAttributeCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnUpdateAttributeCompleted);
+            if ((this.onCloneCompanyArchiveCompletedDelegate == null)) {
+                this.onCloneCompanyArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnCloneCompanyArchiveCompleted);
             }
-            base.InvokeAsync(this.onBeginUpdateAttributeDelegate, new object[] {
-                        DocumentAttribute}, this.onEndUpdateAttributeDelegate, this.onUpdateAttributeCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginCloneCompanyArchiveDelegate, new object[] {
+                        templateName,
+                        archiveName,
+                        company}, this.onEndCloneCompanyArchiveDelegate, this.onCloneCompanyArchiveCompletedDelegate, userState);
         }
         
-        public void DeleteAttribute(System.Guid IdAttribute) {
-            base.Channel.DeleteAttribute(IdAttribute);
+        public bool CheckConnection() {
+            return base.Channel.CheckConnection();
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginDeleteAttribute(System.Guid IdAttribute, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginDeleteAttribute(IdAttribute, callback, asyncState);
+        public System.IAsyncResult BeginCheckConnection(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginCheckConnection(callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndDeleteAttribute(System.IAsyncResult result) {
-            base.Channel.EndDeleteAttribute(result);
+        public bool EndCheckConnection(System.IAsyncResult result) {
+            return base.Channel.EndCheckConnection(result);
         }
         
-        private System.IAsyncResult OnBeginDeleteAttribute(object[] inValues, System.AsyncCallback callback, object asyncState) {
+        private System.IAsyncResult OnBeginCheckConnection(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginCheckConnection(callback, asyncState);
+        }
+        
+        private object[] OnEndCheckConnection(System.IAsyncResult result) {
+            bool retVal = this.EndCheckConnection(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnCheckConnectionCompleted(object state) {
+            if ((this.CheckConnectionCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.CheckConnectionCompleted(this, new CheckConnectionCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void CheckConnectionAsync() {
+            this.CheckConnectionAsync(null);
+        }
+        
+        public void CheckConnectionAsync(object userState) {
+            if ((this.onBeginCheckConnectionDelegate == null)) {
+                this.onBeginCheckConnectionDelegate = new BeginOperationDelegate(this.OnBeginCheckConnection);
+            }
+            if ((this.onEndCheckConnectionDelegate == null)) {
+                this.onEndCheckConnectionDelegate = new EndOperationDelegate(this.OnEndCheckConnection);
+            }
+            if ((this.onCheckConnectionCompletedDelegate == null)) {
+                this.onCheckConnectionCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnCheckConnectionCompleted);
+            }
+            base.InvokeAsync(this.onBeginCheckConnectionDelegate, null, this.onEndCheckConnectionDelegate, this.onCheckConnectionCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> GetDocumentsInTransito() {
+            return base.Channel.GetDocumentsInTransito();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetDocumentsInTransito(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetDocumentsInTransito(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> EndGetDocumentsInTransito(System.IAsyncResult result) {
+            return base.Channel.EndGetDocumentsInTransito(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetDocumentsInTransito(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginGetDocumentsInTransito(callback, asyncState);
+        }
+        
+        private object[] OnEndGetDocumentsInTransito(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> retVal = this.EndGetDocumentsInTransito(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetDocumentsInTransitoCompleted(object state) {
+            if ((this.GetDocumentsInTransitoCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetDocumentsInTransitoCompleted(this, new GetDocumentsInTransitoCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetDocumentsInTransitoAsync() {
+            this.GetDocumentsInTransitoAsync(null);
+        }
+        
+        public void GetDocumentsInTransitoAsync(object userState) {
+            if ((this.onBeginGetDocumentsInTransitoDelegate == null)) {
+                this.onBeginGetDocumentsInTransitoDelegate = new BeginOperationDelegate(this.OnBeginGetDocumentsInTransito);
+            }
+            if ((this.onEndGetDocumentsInTransitoDelegate == null)) {
+                this.onEndGetDocumentsInTransitoDelegate = new EndOperationDelegate(this.OnEndGetDocumentsInTransito);
+            }
+            if ((this.onGetDocumentsInTransitoCompletedDelegate == null)) {
+                this.onGetDocumentsInTransitoCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetDocumentsInTransitoCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetDocumentsInTransitoDelegate, null, this.onEndGetDocumentsInTransitoDelegate, this.onGetDocumentsInTransitoCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> GetDocumentsInStorage(System.Guid IdStorage) {
+            return base.Channel.GetDocumentsInStorage(IdStorage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetDocumentsInStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetDocumentsInStorage(IdStorage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> EndGetDocumentsInStorage(System.IAsyncResult result) {
+            return base.Channel.EndGetDocumentsInStorage(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetDocumentsInStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorage = ((System.Guid)(inValues[0]));
+            return this.BeginGetDocumentsInStorage(IdStorage, callback, asyncState);
+        }
+        
+        private object[] OnEndGetDocumentsInStorage(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> retVal = this.EndGetDocumentsInStorage(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetDocumentsInStorageCompleted(object state) {
+            if ((this.GetDocumentsInStorageCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetDocumentsInStorageCompleted(this, new GetDocumentsInStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetDocumentsInStorageAsync(System.Guid IdStorage) {
+            this.GetDocumentsInStorageAsync(IdStorage, null);
+        }
+        
+        public void GetDocumentsInStorageAsync(System.Guid IdStorage, object userState) {
+            if ((this.onBeginGetDocumentsInStorageDelegate == null)) {
+                this.onBeginGetDocumentsInStorageDelegate = new BeginOperationDelegate(this.OnBeginGetDocumentsInStorage);
+            }
+            if ((this.onEndGetDocumentsInStorageDelegate == null)) {
+                this.onEndGetDocumentsInStorageDelegate = new EndOperationDelegate(this.OnEndGetDocumentsInStorage);
+            }
+            if ((this.onGetDocumentsInStorageCompletedDelegate == null)) {
+                this.onGetDocumentsInStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetDocumentsInStorageCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetDocumentsInStorageDelegate, new object[] {
+                        IdStorage}, this.onEndGetDocumentsInStorageDelegate, this.onGetDocumentsInStorageCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetAllStorages() {
+            return base.Channel.GetAllStorages();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetAllStorages(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetAllStorages(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetAllStorages(System.IAsyncResult result) {
+            return base.Channel.EndGetAllStorages(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetAllStorages(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginGetAllStorages(callback, asyncState);
+        }
+        
+        private object[] OnEndGetAllStorages(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> retVal = this.EndGetAllStorages(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetAllStoragesCompleted(object state) {
+            if ((this.GetAllStoragesCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetAllStoragesCompleted(this, new GetAllStoragesCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetAllStoragesAsync() {
+            this.GetAllStoragesAsync(null);
+        }
+        
+        public void GetAllStoragesAsync(object userState) {
+            if ((this.onBeginGetAllStoragesDelegate == null)) {
+                this.onBeginGetAllStoragesDelegate = new BeginOperationDelegate(this.OnBeginGetAllStorages);
+            }
+            if ((this.onEndGetAllStoragesDelegate == null)) {
+                this.onEndGetAllStoragesDelegate = new EndOperationDelegate(this.OnEndGetAllStorages);
+            }
+            if ((this.onGetAllStoragesCompletedDelegate == null)) {
+                this.onGetAllStoragesCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAllStoragesCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetAllStoragesDelegate, null, this.onEndGetAllStoragesDelegate, this.onGetAllStoragesCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetAllStoragesWithServer() {
+            return base.Channel.GetAllStoragesWithServer();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetAllStoragesWithServer(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetAllStoragesWithServer(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetAllStoragesWithServer(System.IAsyncResult result) {
+            return base.Channel.EndGetAllStoragesWithServer(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetAllStoragesWithServer(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginGetAllStoragesWithServer(callback, asyncState);
+        }
+        
+        private object[] OnEndGetAllStoragesWithServer(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> retVal = this.EndGetAllStoragesWithServer(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetAllStoragesWithServerCompleted(object state) {
+            if ((this.GetAllStoragesWithServerCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetAllStoragesWithServerCompleted(this, new GetAllStoragesWithServerCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetAllStoragesWithServerAsync() {
+            this.GetAllStoragesWithServerAsync(null);
+        }
+        
+        public void GetAllStoragesWithServerAsync(object userState) {
+            if ((this.onBeginGetAllStoragesWithServerDelegate == null)) {
+                this.onBeginGetAllStoragesWithServerDelegate = new BeginOperationDelegate(this.OnBeginGetAllStoragesWithServer);
+            }
+            if ((this.onEndGetAllStoragesWithServerDelegate == null)) {
+                this.onEndGetAllStoragesWithServerDelegate = new EndOperationDelegate(this.OnEndGetAllStoragesWithServer);
+            }
+            if ((this.onGetAllStoragesWithServerCompletedDelegate == null)) {
+                this.onGetAllStoragesWithServerCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAllStoragesWithServerCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetAllStoragesWithServerDelegate, null, this.onEndGetAllStoragesWithServerDelegate, this.onGetAllStoragesWithServerCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetStoragesFromArchive(System.Guid IdArchive) {
+            return base.Channel.GetStoragesFromArchive(IdArchive);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStoragesFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStoragesFromArchive(IdArchive, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetStoragesFromArchive(System.IAsyncResult result) {
+            return base.Channel.EndGetStoragesFromArchive(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStoragesFromArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdArchive = ((System.Guid)(inValues[0]));
+            return this.BeginGetStoragesFromArchive(IdArchive, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStoragesFromArchive(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> retVal = this.EndGetStoragesFromArchive(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStoragesFromArchiveCompleted(object state) {
+            if ((this.GetStoragesFromArchiveCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStoragesFromArchiveCompleted(this, new GetStoragesFromArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStoragesFromArchiveAsync(System.Guid IdArchive) {
+            this.GetStoragesFromArchiveAsync(IdArchive, null);
+        }
+        
+        public void GetStoragesFromArchiveAsync(System.Guid IdArchive, object userState) {
+            if ((this.onBeginGetStoragesFromArchiveDelegate == null)) {
+                this.onBeginGetStoragesFromArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetStoragesFromArchive);
+            }
+            if ((this.onEndGetStoragesFromArchiveDelegate == null)) {
+                this.onEndGetStoragesFromArchiveDelegate = new EndOperationDelegate(this.OnEndGetStoragesFromArchive);
+            }
+            if ((this.onGetStoragesFromArchiveCompletedDelegate == null)) {
+                this.onGetStoragesFromArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStoragesFromArchiveCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStoragesFromArchiveDelegate, new object[] {
+                        IdArchive}, this.onEndGetStoragesFromArchiveDelegate, this.onGetStoragesFromArchiveCompletedDelegate, userState);
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage GetStorage(System.Guid IdStorage) {
+            return base.Channel.GetStorage(IdStorage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStorage(IdStorage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage EndGetStorage(System.IAsyncResult result) {
+            return base.Channel.EndGetStorage(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorage = ((System.Guid)(inValues[0]));
+            return this.BeginGetStorage(IdStorage, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStorage(System.IAsyncResult result) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage retVal = this.EndGetStorage(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStorageCompleted(object state) {
+            if ((this.GetStorageCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStorageCompleted(this, new GetStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStorageAsync(System.Guid IdStorage) {
+            this.GetStorageAsync(IdStorage, null);
+        }
+        
+        public void GetStorageAsync(System.Guid IdStorage, object userState) {
+            if ((this.onBeginGetStorageDelegate == null)) {
+                this.onBeginGetStorageDelegate = new BeginOperationDelegate(this.OnBeginGetStorage);
+            }
+            if ((this.onEndGetStorageDelegate == null)) {
+                this.onEndGetStorageDelegate = new EndOperationDelegate(this.OnEndGetStorage);
+            }
+            if ((this.onGetStorageCompletedDelegate == null)) {
+                this.onGetStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStorageDelegate, new object[] {
+                        IdStorage}, this.onEndGetStorageDelegate, this.onGetStorageCompletedDelegate, userState);
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage GetStorageWithServer(System.Guid IdStorage) {
+            return base.Channel.GetStorageWithServer(IdStorage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStorageWithServer(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStorageWithServer(IdStorage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage EndGetStorageWithServer(System.IAsyncResult result) {
+            return base.Channel.EndGetStorageWithServer(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStorageWithServer(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorage = ((System.Guid)(inValues[0]));
+            return this.BeginGetStorageWithServer(IdStorage, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStorageWithServer(System.IAsyncResult result) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage retVal = this.EndGetStorageWithServer(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStorageWithServerCompleted(object state) {
+            if ((this.GetStorageWithServerCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStorageWithServerCompleted(this, new GetStorageWithServerCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStorageWithServerAsync(System.Guid IdStorage) {
+            this.GetStorageWithServerAsync(IdStorage, null);
+        }
+        
+        public void GetStorageWithServerAsync(System.Guid IdStorage, object userState) {
+            if ((this.onBeginGetStorageWithServerDelegate == null)) {
+                this.onBeginGetStorageWithServerDelegate = new BeginOperationDelegate(this.OnBeginGetStorageWithServer);
+            }
+            if ((this.onEndGetStorageWithServerDelegate == null)) {
+                this.onEndGetStorageWithServerDelegate = new EndOperationDelegate(this.OnEndGetStorageWithServer);
+            }
+            if ((this.onGetStorageWithServerCompletedDelegate == null)) {
+                this.onGetStorageWithServerCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageWithServerCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStorageWithServerDelegate, new object[] {
+                        IdStorage}, this.onEndGetStorageWithServerDelegate, this.onGetStorageWithServerCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> GetStorageAreas(System.Guid IdStorage) {
+            return base.Channel.GetStorageAreas(IdStorage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStorageAreas(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStorageAreas(IdStorage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> EndGetStorageAreas(System.IAsyncResult result) {
+            return base.Channel.EndGetStorageAreas(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStorageAreas(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorage = ((System.Guid)(inValues[0]));
+            return this.BeginGetStorageAreas(IdStorage, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStorageAreas(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> retVal = this.EndGetStorageAreas(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStorageAreasCompleted(object state) {
+            if ((this.GetStorageAreasCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStorageAreasCompleted(this, new GetStorageAreasCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStorageAreasAsync(System.Guid IdStorage) {
+            this.GetStorageAreasAsync(IdStorage, null);
+        }
+        
+        public void GetStorageAreasAsync(System.Guid IdStorage, object userState) {
+            if ((this.onBeginGetStorageAreasDelegate == null)) {
+                this.onBeginGetStorageAreasDelegate = new BeginOperationDelegate(this.OnBeginGetStorageAreas);
+            }
+            if ((this.onEndGetStorageAreasDelegate == null)) {
+                this.onEndGetStorageAreasDelegate = new EndOperationDelegate(this.OnEndGetStorageAreas);
+            }
+            if ((this.onGetStorageAreasCompletedDelegate == null)) {
+                this.onGetStorageAreasCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageAreasCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStorageAreasDelegate, new object[] {
+                        IdStorage}, this.onEndGetStorageAreasDelegate, this.onGetStorageAreasCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> GetStorageAreasFromStorageArchive(System.Guid IdStorage, System.Guid IdArchive) {
+            return base.Channel.GetStorageAreasFromStorageArchive(IdStorage, IdArchive);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStorageAreasFromStorageArchive(System.Guid IdStorage, System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStorageAreasFromStorageArchive(IdStorage, IdArchive, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> EndGetStorageAreasFromStorageArchive(System.IAsyncResult result) {
+            return base.Channel.EndGetStorageAreasFromStorageArchive(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStorageAreasFromStorageArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorage = ((System.Guid)(inValues[0]));
+            System.Guid IdArchive = ((System.Guid)(inValues[1]));
+            return this.BeginGetStorageAreasFromStorageArchive(IdStorage, IdArchive, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStorageAreasFromStorageArchive(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> retVal = this.EndGetStorageAreasFromStorageArchive(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStorageAreasFromStorageArchiveCompleted(object state) {
+            if ((this.GetStorageAreasFromStorageArchiveCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStorageAreasFromStorageArchiveCompleted(this, new GetStorageAreasFromStorageArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStorageAreasFromStorageArchiveAsync(System.Guid IdStorage, System.Guid IdArchive) {
+            this.GetStorageAreasFromStorageArchiveAsync(IdStorage, IdArchive, null);
+        }
+        
+        public void GetStorageAreasFromStorageArchiveAsync(System.Guid IdStorage, System.Guid IdArchive, object userState) {
+            if ((this.onBeginGetStorageAreasFromStorageArchiveDelegate == null)) {
+                this.onBeginGetStorageAreasFromStorageArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetStorageAreasFromStorageArchive);
+            }
+            if ((this.onEndGetStorageAreasFromStorageArchiveDelegate == null)) {
+                this.onEndGetStorageAreasFromStorageArchiveDelegate = new EndOperationDelegate(this.OnEndGetStorageAreasFromStorageArchive);
+            }
+            if ((this.onGetStorageAreasFromStorageArchiveCompletedDelegate == null)) {
+                this.onGetStorageAreasFromStorageArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageAreasFromStorageArchiveCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStorageAreasFromStorageArchiveDelegate, new object[] {
+                        IdStorage,
+                        IdArchive}, this.onEndGetStorageAreasFromStorageArchiveDelegate, this.onGetStorageAreasFromStorageArchiveCompletedDelegate, userState);
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea GetStorageArea(System.Guid IdStorageArea) {
+            return base.Channel.GetStorageArea(IdStorageArea);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStorageArea(System.Guid IdStorageArea, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStorageArea(IdStorageArea, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea EndGetStorageArea(System.IAsyncResult result) {
+            return base.Channel.EndGetStorageArea(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStorageArea(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorageArea = ((System.Guid)(inValues[0]));
+            return this.BeginGetStorageArea(IdStorageArea, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStorageArea(System.IAsyncResult result) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea retVal = this.EndGetStorageArea(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStorageAreaCompleted(object state) {
+            if ((this.GetStorageAreaCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStorageAreaCompleted(this, new GetStorageAreaCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStorageAreaAsync(System.Guid IdStorageArea) {
+            this.GetStorageAreaAsync(IdStorageArea, null);
+        }
+        
+        public void GetStorageAreaAsync(System.Guid IdStorageArea, object userState) {
+            if ((this.onBeginGetStorageAreaDelegate == null)) {
+                this.onBeginGetStorageAreaDelegate = new BeginOperationDelegate(this.OnBeginGetStorageArea);
+            }
+            if ((this.onEndGetStorageAreaDelegate == null)) {
+                this.onEndGetStorageAreaDelegate = new EndOperationDelegate(this.OnEndGetStorageArea);
+            }
+            if ((this.onGetStorageAreaCompletedDelegate == null)) {
+                this.onGetStorageAreaCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageAreaCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStorageAreaDelegate, new object[] {
+                        IdStorageArea}, this.onEndGetStorageAreaDelegate, this.onGetStorageAreaCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status> GetAllStorageAreaStatus() {
+            return base.Channel.GetAllStorageAreaStatus();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetAllStorageAreaStatus(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetAllStorageAreaStatus(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status> EndGetAllStorageAreaStatus(System.IAsyncResult result) {
+            return base.Channel.EndGetAllStorageAreaStatus(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetAllStorageAreaStatus(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginGetAllStorageAreaStatus(callback, asyncState);
+        }
+        
+        private object[] OnEndGetAllStorageAreaStatus(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status> retVal = this.EndGetAllStorageAreaStatus(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetAllStorageAreaStatusCompleted(object state) {
+            if ((this.GetAllStorageAreaStatusCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetAllStorageAreaStatusCompleted(this, new GetAllStorageAreaStatusCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetAllStorageAreaStatusAsync() {
+            this.GetAllStorageAreaStatusAsync(null);
+        }
+        
+        public void GetAllStorageAreaStatusAsync(object userState) {
+            if ((this.onBeginGetAllStorageAreaStatusDelegate == null)) {
+                this.onBeginGetAllStorageAreaStatusDelegate = new BeginOperationDelegate(this.OnBeginGetAllStorageAreaStatus);
+            }
+            if ((this.onEndGetAllStorageAreaStatusDelegate == null)) {
+                this.onEndGetAllStorageAreaStatusDelegate = new EndOperationDelegate(this.OnEndGetAllStorageAreaStatus);
+            }
+            if ((this.onGetAllStorageAreaStatusCompletedDelegate == null)) {
+                this.onGetAllStorageAreaStatusCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAllStorageAreaStatusCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetAllStorageAreaStatusDelegate, null, this.onEndGetAllStorageAreaStatusDelegate, this.onGetAllStorageAreaStatusCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> GetStorageRulesFromStorageAreaArchive(System.Guid IdStorageArea, System.Guid IdArchive) {
+            return base.Channel.GetStorageRulesFromStorageAreaArchive(IdStorageArea, IdArchive);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStorageRulesFromStorageAreaArchive(System.Guid IdStorageArea, System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStorageRulesFromStorageAreaArchive(IdStorageArea, IdArchive, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> EndGetStorageRulesFromStorageAreaArchive(System.IAsyncResult result) {
+            return base.Channel.EndGetStorageRulesFromStorageAreaArchive(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStorageRulesFromStorageAreaArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorageArea = ((System.Guid)(inValues[0]));
+            System.Guid IdArchive = ((System.Guid)(inValues[1]));
+            return this.BeginGetStorageRulesFromStorageAreaArchive(IdStorageArea, IdArchive, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStorageRulesFromStorageAreaArchive(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> retVal = this.EndGetStorageRulesFromStorageAreaArchive(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStorageRulesFromStorageAreaArchiveCompleted(object state) {
+            if ((this.GetStorageRulesFromStorageAreaArchiveCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStorageRulesFromStorageAreaArchiveCompleted(this, new GetStorageRulesFromStorageAreaArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStorageRulesFromStorageAreaArchiveAsync(System.Guid IdStorageArea, System.Guid IdArchive) {
+            this.GetStorageRulesFromStorageAreaArchiveAsync(IdStorageArea, IdArchive, null);
+        }
+        
+        public void GetStorageRulesFromStorageAreaArchiveAsync(System.Guid IdStorageArea, System.Guid IdArchive, object userState) {
+            if ((this.onBeginGetStorageRulesFromStorageAreaArchiveDelegate == null)) {
+                this.onBeginGetStorageRulesFromStorageAreaArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetStorageRulesFromStorageAreaArchive);
+            }
+            if ((this.onEndGetStorageRulesFromStorageAreaArchiveDelegate == null)) {
+                this.onEndGetStorageRulesFromStorageAreaArchiveDelegate = new EndOperationDelegate(this.OnEndGetStorageRulesFromStorageAreaArchive);
+            }
+            if ((this.onGetStorageRulesFromStorageAreaArchiveCompletedDelegate == null)) {
+                this.onGetStorageRulesFromStorageAreaArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageRulesFromStorageAreaArchiveCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStorageRulesFromStorageAreaArchiveDelegate, new object[] {
+                        IdStorageArea,
+                        IdArchive}, this.onEndGetStorageRulesFromStorageAreaArchiveDelegate, this.onGetStorageRulesFromStorageAreaArchiveCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetStoragesNotRelatedToArchive(System.Guid IdArchive) {
+            return base.Channel.GetStoragesNotRelatedToArchive(IdArchive);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStoragesNotRelatedToArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStoragesNotRelatedToArchive(IdArchive, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetStoragesNotRelatedToArchive(System.IAsyncResult result) {
+            return base.Channel.EndGetStoragesNotRelatedToArchive(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStoragesNotRelatedToArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdArchive = ((System.Guid)(inValues[0]));
+            return this.BeginGetStoragesNotRelatedToArchive(IdArchive, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStoragesNotRelatedToArchive(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> retVal = this.EndGetStoragesNotRelatedToArchive(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStoragesNotRelatedToArchiveCompleted(object state) {
+            if ((this.GetStoragesNotRelatedToArchiveCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStoragesNotRelatedToArchiveCompleted(this, new GetStoragesNotRelatedToArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStoragesNotRelatedToArchiveAsync(System.Guid IdArchive) {
+            this.GetStoragesNotRelatedToArchiveAsync(IdArchive, null);
+        }
+        
+        public void GetStoragesNotRelatedToArchiveAsync(System.Guid IdArchive, object userState) {
+            if ((this.onBeginGetStoragesNotRelatedToArchiveDelegate == null)) {
+                this.onBeginGetStoragesNotRelatedToArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetStoragesNotRelatedToArchive);
+            }
+            if ((this.onEndGetStoragesNotRelatedToArchiveDelegate == null)) {
+                this.onEndGetStoragesNotRelatedToArchiveDelegate = new EndOperationDelegate(this.OnEndGetStoragesNotRelatedToArchive);
+            }
+            if ((this.onGetStoragesNotRelatedToArchiveCompletedDelegate == null)) {
+                this.onGetStoragesNotRelatedToArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStoragesNotRelatedToArchiveCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStoragesNotRelatedToArchiveDelegate, new object[] {
+                        IdArchive}, this.onEndGetStoragesNotRelatedToArchiveDelegate, this.onGetStoragesNotRelatedToArchiveCompletedDelegate, userState);
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive GetArchive(System.Guid IdArchive) {
+            return base.Channel.GetArchive(IdArchive);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetArchive(IdArchive, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive EndGetArchive(System.IAsyncResult result) {
+            return base.Channel.EndGetArchive(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdArchive = ((System.Guid)(inValues[0]));
+            return this.BeginGetArchive(IdArchive, callback, asyncState);
+        }
+        
+        private object[] OnEndGetArchive(System.IAsyncResult result) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive retVal = this.EndGetArchive(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetArchiveCompleted(object state) {
+            if ((this.GetArchiveCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetArchiveCompleted(this, new GetArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetArchiveAsync(System.Guid IdArchive) {
+            this.GetArchiveAsync(IdArchive, null);
+        }
+        
+        public void GetArchiveAsync(System.Guid IdArchive, object userState) {
+            if ((this.onBeginGetArchiveDelegate == null)) {
+                this.onBeginGetArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetArchive);
+            }
+            if ((this.onEndGetArchiveDelegate == null)) {
+                this.onEndGetArchiveDelegate = new EndOperationDelegate(this.OnEndGetArchive);
+            }
+            if ((this.onGetArchiveCompletedDelegate == null)) {
+                this.onGetArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchiveCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetArchiveDelegate, new object[] {
+                        IdArchive}, this.onEndGetArchiveDelegate, this.onGetArchiveCompletedDelegate, userState);
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive GetArchiveWithServerConfigs(System.Guid IdArchive) {
+            return base.Channel.GetArchiveWithServerConfigs(IdArchive);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetArchiveWithServerConfigs(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetArchiveWithServerConfigs(IdArchive, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive EndGetArchiveWithServerConfigs(System.IAsyncResult result) {
+            return base.Channel.EndGetArchiveWithServerConfigs(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetArchiveWithServerConfigs(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdArchive = ((System.Guid)(inValues[0]));
+            return this.BeginGetArchiveWithServerConfigs(IdArchive, callback, asyncState);
+        }
+        
+        private object[] OnEndGetArchiveWithServerConfigs(System.IAsyncResult result) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive retVal = this.EndGetArchiveWithServerConfigs(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetArchiveWithServerConfigsCompleted(object state) {
+            if ((this.GetArchiveWithServerConfigsCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetArchiveWithServerConfigsCompleted(this, new GetArchiveWithServerConfigsCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetArchiveWithServerConfigsAsync(System.Guid IdArchive) {
+            this.GetArchiveWithServerConfigsAsync(IdArchive, null);
+        }
+        
+        public void GetArchiveWithServerConfigsAsync(System.Guid IdArchive, object userState) {
+            if ((this.onBeginGetArchiveWithServerConfigsDelegate == null)) {
+                this.onBeginGetArchiveWithServerConfigsDelegate = new BeginOperationDelegate(this.OnBeginGetArchiveWithServerConfigs);
+            }
+            if ((this.onEndGetArchiveWithServerConfigsDelegate == null)) {
+                this.onEndGetArchiveWithServerConfigsDelegate = new EndOperationDelegate(this.OnEndGetArchiveWithServerConfigs);
+            }
+            if ((this.onGetArchiveWithServerConfigsCompletedDelegate == null)) {
+                this.onGetArchiveWithServerConfigsCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchiveWithServerConfigsCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetArchiveWithServerConfigsDelegate, new object[] {
+                        IdArchive}, this.onEndGetArchiveWithServerConfigsDelegate, this.onGetArchiveWithServerConfigsCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchives() {
+            return base.Channel.GetArchives();
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetArchives(System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetArchives(callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchives(System.IAsyncResult result) {
+            return base.Channel.EndGetArchives(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetArchives(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            return this.BeginGetArchives(callback, asyncState);
+        }
+        
+        private object[] OnEndGetArchives(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> retVal = this.EndGetArchives(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetArchivesCompleted(object state) {
+            if ((this.GetArchivesCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetArchivesCompleted(this, new GetArchivesCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetArchivesAsync() {
+            this.GetArchivesAsync(null);
+        }
+        
+        public void GetArchivesAsync(object userState) {
+            if ((this.onBeginGetArchivesDelegate == null)) {
+                this.onBeginGetArchivesDelegate = new BeginOperationDelegate(this.OnBeginGetArchives);
+            }
+            if ((this.onEndGetArchivesDelegate == null)) {
+                this.onEndGetArchivesDelegate = new EndOperationDelegate(this.OnEndGetArchives);
+            }
+            if ((this.onGetArchivesCompletedDelegate == null)) {
+                this.onGetArchivesCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchivesCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetArchivesDelegate, null, this.onEndGetArchivesDelegate, this.onGetArchivesCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchivesById(System.ComponentModel.BindingList<System.Guid> idsArchive) {
+            return base.Channel.GetArchivesById(idsArchive);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetArchivesById(System.ComponentModel.BindingList<System.Guid> idsArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetArchivesById(idsArchive, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchivesById(System.IAsyncResult result) {
+            return base.Channel.EndGetArchivesById(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetArchivesById(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.ComponentModel.BindingList<System.Guid> idsArchive = ((System.ComponentModel.BindingList<System.Guid>)(inValues[0]));
+            return this.BeginGetArchivesById(idsArchive, callback, asyncState);
+        }
+        
+        private object[] OnEndGetArchivesById(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> retVal = this.EndGetArchivesById(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetArchivesByIdCompleted(object state) {
+            if ((this.GetArchivesByIdCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetArchivesByIdCompleted(this, new GetArchivesByIdCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetArchivesByIdAsync(System.ComponentModel.BindingList<System.Guid> idsArchive) {
+            this.GetArchivesByIdAsync(idsArchive, null);
+        }
+        
+        public void GetArchivesByIdAsync(System.ComponentModel.BindingList<System.Guid> idsArchive, object userState) {
+            if ((this.onBeginGetArchivesByIdDelegate == null)) {
+                this.onBeginGetArchivesByIdDelegate = new BeginOperationDelegate(this.OnBeginGetArchivesById);
+            }
+            if ((this.onEndGetArchivesByIdDelegate == null)) {
+                this.onEndGetArchivesByIdDelegate = new EndOperationDelegate(this.OnEndGetArchivesById);
+            }
+            if ((this.onGetArchivesByIdCompletedDelegate == null)) {
+                this.onGetArchivesByIdCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchivesByIdCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetArchivesByIdDelegate, new object[] {
+                        idsArchive}, this.onEndGetArchivesByIdDelegate, this.onGetArchivesByIdCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchivesFromStorage(System.Guid IdStorage) {
+            return base.Channel.GetArchivesFromStorage(IdStorage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetArchivesFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetArchivesFromStorage(IdStorage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchivesFromStorage(System.IAsyncResult result) {
+            return base.Channel.EndGetArchivesFromStorage(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetArchivesFromStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorage = ((System.Guid)(inValues[0]));
+            return this.BeginGetArchivesFromStorage(IdStorage, callback, asyncState);
+        }
+        
+        private object[] OnEndGetArchivesFromStorage(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> retVal = this.EndGetArchivesFromStorage(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetArchivesFromStorageCompleted(object state) {
+            if ((this.GetArchivesFromStorageCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetArchivesFromStorageCompleted(this, new GetArchivesFromStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetArchivesFromStorageAsync(System.Guid IdStorage) {
+            this.GetArchivesFromStorageAsync(IdStorage, null);
+        }
+        
+        public void GetArchivesFromStorageAsync(System.Guid IdStorage, object userState) {
+            if ((this.onBeginGetArchivesFromStorageDelegate == null)) {
+                this.onBeginGetArchivesFromStorageDelegate = new BeginOperationDelegate(this.OnBeginGetArchivesFromStorage);
+            }
+            if ((this.onEndGetArchivesFromStorageDelegate == null)) {
+                this.onEndGetArchivesFromStorageDelegate = new EndOperationDelegate(this.OnEndGetArchivesFromStorage);
+            }
+            if ((this.onGetArchivesFromStorageCompletedDelegate == null)) {
+                this.onGetArchivesFromStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchivesFromStorageCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetArchivesFromStorageDelegate, new object[] {
+                        IdStorage}, this.onEndGetArchivesFromStorageDelegate, this.onGetArchivesFromStorageCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchivesNotRelatedToStorage(System.Guid IdStorage) {
+            return base.Channel.GetArchivesNotRelatedToStorage(IdStorage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetArchivesNotRelatedToStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetArchivesNotRelatedToStorage(IdStorage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchivesNotRelatedToStorage(System.IAsyncResult result) {
+            return base.Channel.EndGetArchivesNotRelatedToStorage(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetArchivesNotRelatedToStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorage = ((System.Guid)(inValues[0]));
+            return this.BeginGetArchivesNotRelatedToStorage(IdStorage, callback, asyncState);
+        }
+        
+        private object[] OnEndGetArchivesNotRelatedToStorage(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> retVal = this.EndGetArchivesNotRelatedToStorage(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetArchivesNotRelatedToStorageCompleted(object state) {
+            if ((this.GetArchivesNotRelatedToStorageCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetArchivesNotRelatedToStorageCompleted(this, new GetArchivesNotRelatedToStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetArchivesNotRelatedToStorageAsync(System.Guid IdStorage) {
+            this.GetArchivesNotRelatedToStorageAsync(IdStorage, null);
+        }
+        
+        public void GetArchivesNotRelatedToStorageAsync(System.Guid IdStorage, object userState) {
+            if ((this.onBeginGetArchivesNotRelatedToStorageDelegate == null)) {
+                this.onBeginGetArchivesNotRelatedToStorageDelegate = new BeginOperationDelegate(this.OnBeginGetArchivesNotRelatedToStorage);
+            }
+            if ((this.onEndGetArchivesNotRelatedToStorageDelegate == null)) {
+                this.onEndGetArchivesNotRelatedToStorageDelegate = new EndOperationDelegate(this.OnEndGetArchivesNotRelatedToStorage);
+            }
+            if ((this.onGetArchivesNotRelatedToStorageCompletedDelegate == null)) {
+                this.onGetArchivesNotRelatedToStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchivesNotRelatedToStorageCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetArchivesNotRelatedToStorageDelegate, new object[] {
+                        IdStorage}, this.onEndGetArchivesNotRelatedToStorageDelegate, this.onGetArchivesNotRelatedToStorageCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> GetStorageArchiveRelationsFromStorage(System.Guid IdStorage) {
+            return base.Channel.GetStorageArchiveRelationsFromStorage(IdStorage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStorageArchiveRelationsFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStorageArchiveRelationsFromStorage(IdStorage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> EndGetStorageArchiveRelationsFromStorage(System.IAsyncResult result) {
+            return base.Channel.EndGetStorageArchiveRelationsFromStorage(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStorageArchiveRelationsFromStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorage = ((System.Guid)(inValues[0]));
+            return this.BeginGetStorageArchiveRelationsFromStorage(IdStorage, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStorageArchiveRelationsFromStorage(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> retVal = this.EndGetStorageArchiveRelationsFromStorage(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStorageArchiveRelationsFromStorageCompleted(object state) {
+            if ((this.GetStorageArchiveRelationsFromStorageCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStorageArchiveRelationsFromStorageCompleted(this, new GetStorageArchiveRelationsFromStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStorageArchiveRelationsFromStorageAsync(System.Guid IdStorage) {
+            this.GetStorageArchiveRelationsFromStorageAsync(IdStorage, null);
+        }
+        
+        public void GetStorageArchiveRelationsFromStorageAsync(System.Guid IdStorage, object userState) {
+            if ((this.onBeginGetStorageArchiveRelationsFromStorageDelegate == null)) {
+                this.onBeginGetStorageArchiveRelationsFromStorageDelegate = new BeginOperationDelegate(this.OnBeginGetStorageArchiveRelationsFromStorage);
+            }
+            if ((this.onEndGetStorageArchiveRelationsFromStorageDelegate == null)) {
+                this.onEndGetStorageArchiveRelationsFromStorageDelegate = new EndOperationDelegate(this.OnEndGetStorageArchiveRelationsFromStorage);
+            }
+            if ((this.onGetStorageArchiveRelationsFromStorageCompletedDelegate == null)) {
+                this.onGetStorageArchiveRelationsFromStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageArchiveRelationsFromStorageCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStorageArchiveRelationsFromStorageDelegate, new object[] {
+                        IdStorage}, this.onEndGetStorageArchiveRelationsFromStorageDelegate, this.onGetStorageArchiveRelationsFromStorageCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> GetStorageArchiveRelationsFromArchive(System.Guid IdArchive) {
+            return base.Channel.GetStorageArchiveRelationsFromArchive(IdArchive);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetStorageArchiveRelationsFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStorageArchiveRelationsFromArchive(IdArchive, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> EndGetStorageArchiveRelationsFromArchive(System.IAsyncResult result) {
+            return base.Channel.EndGetStorageArchiveRelationsFromArchive(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetStorageArchiveRelationsFromArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdArchive = ((System.Guid)(inValues[0]));
+            return this.BeginGetStorageArchiveRelationsFromArchive(IdArchive, callback, asyncState);
+        }
+        
+        private object[] OnEndGetStorageArchiveRelationsFromArchive(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> retVal = this.EndGetStorageArchiveRelationsFromArchive(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetStorageArchiveRelationsFromArchiveCompleted(object state) {
+            if ((this.GetStorageArchiveRelationsFromArchiveCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetStorageArchiveRelationsFromArchiveCompleted(this, new GetStorageArchiveRelationsFromArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetStorageArchiveRelationsFromArchiveAsync(System.Guid IdArchive) {
+            this.GetStorageArchiveRelationsFromArchiveAsync(IdArchive, null);
+        }
+        
+        public void GetStorageArchiveRelationsFromArchiveAsync(System.Guid IdArchive, object userState) {
+            if ((this.onBeginGetStorageArchiveRelationsFromArchiveDelegate == null)) {
+                this.onBeginGetStorageArchiveRelationsFromArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetStorageArchiveRelationsFromArchive);
+            }
+            if ((this.onEndGetStorageArchiveRelationsFromArchiveDelegate == null)) {
+                this.onEndGetStorageArchiveRelationsFromArchiveDelegate = new EndOperationDelegate(this.OnEndGetStorageArchiveRelationsFromArchive);
+            }
+            if ((this.onGetStorageArchiveRelationsFromArchiveCompletedDelegate == null)) {
+                this.onGetStorageArchiveRelationsFromArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageArchiveRelationsFromArchiveCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetStorageArchiveRelationsFromArchiveDelegate, new object[] {
+                        IdArchive}, this.onEndGetStorageArchiveRelationsFromArchiveDelegate, this.onGetStorageArchiveRelationsFromArchiveCompletedDelegate, userState);
+        }
+        
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute> GetAttributesFromArchive(System.Guid IdArchive) {
+            return base.Channel.GetAttributesFromArchive(IdArchive);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetAttributesFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetAttributesFromArchive(IdArchive, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute> EndGetAttributesFromArchive(System.IAsyncResult result) {
+            return base.Channel.EndGetAttributesFromArchive(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetAttributesFromArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdArchive = ((System.Guid)(inValues[0]));
+            return this.BeginGetAttributesFromArchive(IdArchive, callback, asyncState);
+        }
+        
+        private object[] OnEndGetAttributesFromArchive(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute> retVal = this.EndGetAttributesFromArchive(result);
+            return new object[] {
+                    retVal};
+        }
+        
+        private void OnGetAttributesFromArchiveCompleted(object state) {
+            if ((this.GetAttributesFromArchiveCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.GetAttributesFromArchiveCompleted(this, new GetAttributesFromArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void GetAttributesFromArchiveAsync(System.Guid IdArchive) {
+            this.GetAttributesFromArchiveAsync(IdArchive, null);
+        }
+        
+        public void GetAttributesFromArchiveAsync(System.Guid IdArchive, object userState) {
+            if ((this.onBeginGetAttributesFromArchiveDelegate == null)) {
+                this.onBeginGetAttributesFromArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetAttributesFromArchive);
+            }
+            if ((this.onEndGetAttributesFromArchiveDelegate == null)) {
+                this.onEndGetAttributesFromArchiveDelegate = new EndOperationDelegate(this.OnEndGetAttributesFromArchive);
+            }
+            if ((this.onGetAttributesFromArchiveCompletedDelegate == null)) {
+                this.onGetAttributesFromArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAttributesFromArchiveCompleted);
+            }
+            base.InvokeAsync(this.onBeginGetAttributesFromArchiveDelegate, new object[] {
+                        IdArchive}, this.onEndGetAttributesFromArchiveDelegate, this.onGetAttributesFromArchiveCompletedDelegate, userState);
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute GetAttribute(System.Guid IdAttribute) {
+            return base.Channel.GetAttribute(IdAttribute);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetAttribute(System.Guid IdAttribute, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetAttribute(IdAttribute, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute EndGetAttribute(System.IAsyncResult result) {
+            return base.Channel.EndGetAttribute(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetAttribute(object[] inValues, System.AsyncCallback callback, object asyncState) {
             System.Guid IdAttribute = ((System.Guid)(inValues[0]));
-            return this.BeginDeleteAttribute(IdAttribute, callback, asyncState);
+            return this.BeginGetAttribute(IdAttribute, callback, asyncState);
         }
         
-        private object[] OnEndDeleteAttribute(System.IAsyncResult result) {
-            this.EndDeleteAttribute(result);
-            return null;
+        private object[] OnEndGetAttribute(System.IAsyncResult result) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute retVal = this.EndGetAttribute(result);
+            return new object[] {
+                    retVal};
         }
         
-        private void OnDeleteAttributeCompleted(object state) {
-            if ((this.DeleteAttributeCompleted != null)) {
+        private void OnGetAttributeCompleted(object state) {
+            if ((this.GetAttributeCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.DeleteAttributeCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+                this.GetAttributeCompleted(this, new GetAttributeCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void DeleteAttributeAsync(System.Guid IdAttribute) {
-            this.DeleteAttributeAsync(IdAttribute, null);
+        public void GetAttributeAsync(System.Guid IdAttribute) {
+            this.GetAttributeAsync(IdAttribute, null);
         }
         
-        public void DeleteAttributeAsync(System.Guid IdAttribute, object userState) {
-            if ((this.onBeginDeleteAttributeDelegate == null)) {
-                this.onBeginDeleteAttributeDelegate = new BeginOperationDelegate(this.OnBeginDeleteAttribute);
+        public void GetAttributeAsync(System.Guid IdAttribute, object userState) {
+            if ((this.onBeginGetAttributeDelegate == null)) {
+                this.onBeginGetAttributeDelegate = new BeginOperationDelegate(this.OnBeginGetAttribute);
             }
-            if ((this.onEndDeleteAttributeDelegate == null)) {
-                this.onEndDeleteAttributeDelegate = new EndOperationDelegate(this.OnEndDeleteAttribute);
+            if ((this.onEndGetAttributeDelegate == null)) {
+                this.onEndGetAttributeDelegate = new EndOperationDelegate(this.OnEndGetAttribute);
             }
-            if ((this.onDeleteAttributeCompletedDelegate == null)) {
-                this.onDeleteAttributeCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnDeleteAttributeCompleted);
+            if ((this.onGetAttributeCompletedDelegate == null)) {
+                this.onGetAttributeCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAttributeCompleted);
             }
-            base.InvokeAsync(this.onBeginDeleteAttributeDelegate, new object[] {
-                        IdAttribute}, this.onEndDeleteAttributeDelegate, this.onDeleteAttributeCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginGetAttributeDelegate, new object[] {
+                        IdAttribute}, this.onEndGetAttributeDelegate, this.onGetAttributeCompletedDelegate, userState);
         }
         
-        public void UpdateStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage) {
-            base.Channel.UpdateStorage(storage);
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup> GetAttributeGroup(System.Guid IdArchive) {
+            return base.Channel.GetAttributeGroup(IdArchive);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginUpdateStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginUpdateStorage(storage, callback, asyncState);
+        public System.IAsyncResult BeginGetAttributeGroup(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetAttributeGroup(IdArchive, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndUpdateStorage(System.IAsyncResult result) {
-            base.Channel.EndUpdateStorage(result);
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup> EndGetAttributeGroup(System.IAsyncResult result) {
+            return base.Channel.EndGetAttributeGroup(result);
         }
         
-        private System.IAsyncResult OnBeginUpdateStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage)(inValues[0]));
-            return this.BeginUpdateStorage(storage, callback, asyncState);
+        private System.IAsyncResult OnBeginGetAttributeGroup(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdArchive = ((System.Guid)(inValues[0]));
+            return this.BeginGetAttributeGroup(IdArchive, callback, asyncState);
         }
         
-        private object[] OnEndUpdateStorage(System.IAsyncResult result) {
-            this.EndUpdateStorage(result);
-            return null;
+        private object[] OnEndGetAttributeGroup(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup> retVal = this.EndGetAttributeGroup(result);
+            return new object[] {
+                    retVal};
         }
         
-        private void OnUpdateStorageCompleted(object state) {
-            if ((this.UpdateStorageCompleted != null)) {
+        private void OnGetAttributeGroupCompleted(object state) {
+            if ((this.GetAttributeGroupCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.UpdateStorageCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+                this.GetAttributeGroupCompleted(this, new GetAttributeGroupCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void UpdateStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage) {
-            this.UpdateStorageAsync(storage, null);
+        public void GetAttributeGroupAsync(System.Guid IdArchive) {
+            this.GetAttributeGroupAsync(IdArchive, null);
         }
         
-        public void UpdateStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage, object userState) {
-            if ((this.onBeginUpdateStorageDelegate == null)) {
-                this.onBeginUpdateStorageDelegate = new BeginOperationDelegate(this.OnBeginUpdateStorage);
+        public void GetAttributeGroupAsync(System.Guid IdArchive, object userState) {
+            if ((this.onBeginGetAttributeGroupDelegate == null)) {
+                this.onBeginGetAttributeGroupDelegate = new BeginOperationDelegate(this.OnBeginGetAttributeGroup);
             }
-            if ((this.onEndUpdateStorageDelegate == null)) {
-                this.onEndUpdateStorageDelegate = new EndOperationDelegate(this.OnEndUpdateStorage);
+            if ((this.onEndGetAttributeGroupDelegate == null)) {
+                this.onEndGetAttributeGroupDelegate = new EndOperationDelegate(this.OnEndGetAttributeGroup);
             }
-            if ((this.onUpdateStorageCompletedDelegate == null)) {
-                this.onUpdateStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnUpdateStorageCompleted);
+            if ((this.onGetAttributeGroupCompletedDelegate == null)) {
+                this.onGetAttributeGroupCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAttributeGroupCompleted);
             }
-            base.InvokeAsync(this.onBeginUpdateStorageDelegate, new object[] {
-                        storage}, this.onEndUpdateStorageDelegate, this.onUpdateStorageCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginGetAttributeGroupDelegate, new object[] {
+                        IdArchive}, this.onEndGetAttributeGroupDelegate, this.onGetAttributeGroupCompletedDelegate, userState);
         }
         
-        public void UpdateArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
-            base.Channel.UpdateArchiveStorage(ArchiveStorage);
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> GetStorageRulesFromStorage(System.Guid IdStorage) {
+            return base.Channel.GetStorageRulesFromStorage(IdStorage);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginUpdateArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginUpdateArchiveStorage(ArchiveStorage, callback, asyncState);
+        public System.IAsyncResult BeginGetStorageRulesFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStorageRulesFromStorage(IdStorage, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndUpdateArchiveStorage(System.IAsyncResult result) {
-            base.Channel.EndUpdateArchiveStorage(result);
+        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> EndGetStorageRulesFromStorage(System.IAsyncResult result) {
+            return base.Channel.EndGetStorageRulesFromStorage(result);
         }
         
-        private System.IAsyncResult OnBeginUpdateArchiveStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage)(inValues[0]));
-            return this.BeginUpdateArchiveStorage(ArchiveStorage, callback, asyncState);
+        private System.IAsyncResult OnBeginGetStorageRulesFromStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorage = ((System.Guid)(inValues[0]));
+            return this.BeginGetStorageRulesFromStorage(IdStorage, callback, asyncState);
         }
         
-        private object[] OnEndUpdateArchiveStorage(System.IAsyncResult result) {
-            this.EndUpdateArchiveStorage(result);
-            return null;
+        private object[] OnEndGetStorageRulesFromStorage(System.IAsyncResult result) {
+            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> retVal = this.EndGetStorageRulesFromStorage(result);
+            return new object[] {
+                    retVal};
         }
         
-        private void OnUpdateArchiveStorageCompleted(object state) {
-            if ((this.UpdateArchiveStorageCompleted != null)) {
+        private void OnGetStorageRulesFromStorageCompleted(object state) {
+            if ((this.GetStorageRulesFromStorageCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.UpdateArchiveStorageCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+                this.GetStorageRulesFromStorageCompleted(this, new GetStorageRulesFromStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void UpdateArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
-            this.UpdateArchiveStorageAsync(ArchiveStorage, null);
+        public void GetStorageRulesFromStorageAsync(System.Guid IdStorage) {
+            this.GetStorageRulesFromStorageAsync(IdStorage, null);
         }
         
-        public void UpdateArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, object userState) {
-            if ((this.onBeginUpdateArchiveStorageDelegate == null)) {
-                this.onBeginUpdateArchiveStorageDelegate = new BeginOperationDelegate(this.OnBeginUpdateArchiveStorage);
+        public void GetStorageRulesFromStorageAsync(System.Guid IdStorage, object userState) {
+            if ((this.onBeginGetStorageRulesFromStorageDelegate == null)) {
+                this.onBeginGetStorageRulesFromStorageDelegate = new BeginOperationDelegate(this.OnBeginGetStorageRulesFromStorage);
             }
-            if ((this.onEndUpdateArchiveStorageDelegate == null)) {
-                this.onEndUpdateArchiveStorageDelegate = new EndOperationDelegate(this.OnEndUpdateArchiveStorage);
+            if ((this.onEndGetStorageRulesFromStorageDelegate == null)) {
+                this.onEndGetStorageRulesFromStorageDelegate = new EndOperationDelegate(this.OnEndGetStorageRulesFromStorage);
             }
-            if ((this.onUpdateArchiveStorageCompletedDelegate == null)) {
-                this.onUpdateArchiveStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnUpdateArchiveStorageCompleted);
+            if ((this.onGetStorageRulesFromStorageCompletedDelegate == null)) {
+                this.onGetStorageRulesFromStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageRulesFromStorageCompleted);
             }
-            base.InvokeAsync(this.onBeginUpdateArchiveStorageDelegate, new object[] {
-                        ArchiveStorage}, this.onEndUpdateArchiveStorageDelegate, this.onUpdateArchiveStorageCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginGetStorageRulesFromStorageDelegate, new object[] {
+                        IdStorage}, this.onEndGetStorageRulesFromStorageDelegate, this.onGetStorageRulesFromStorageCompletedDelegate, userState);
         }
         
-        public void AddArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
-            base.Channel.AddArchiveStorage(ArchiveStorage);
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule GetStorageRule(System.Guid IdStorage, System.Guid IdAttribute) {
+            return base.Channel.GetStorageRule(IdStorage, IdAttribute);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginAddArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginAddArchiveStorage(ArchiveStorage, callback, asyncState);
+        public System.IAsyncResult BeginGetStorageRule(System.Guid IdStorage, System.Guid IdAttribute, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetStorageRule(IdStorage, IdAttribute, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndAddArchiveStorage(System.IAsyncResult result) {
-            base.Channel.EndAddArchiveStorage(result);
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule EndGetStorageRule(System.IAsyncResult result) {
+            return base.Channel.EndGetStorageRule(result);
         }
         
-        private System.IAsyncResult OnBeginAddArchiveStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage)(inValues[0]));
-            return this.BeginAddArchiveStorage(ArchiveStorage, callback, asyncState);
+        private System.IAsyncResult OnBeginGetStorageRule(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdStorage = ((System.Guid)(inValues[0]));
+            System.Guid IdAttribute = ((System.Guid)(inValues[1]));
+            return this.BeginGetStorageRule(IdStorage, IdAttribute, callback, asyncState);
         }
         
-        private object[] OnEndAddArchiveStorage(System.IAsyncResult result) {
-            this.EndAddArchiveStorage(result);
-            return null;
+        private object[] OnEndGetStorageRule(System.IAsyncResult result) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule retVal = this.EndGetStorageRule(result);
+            return new object[] {
+                    retVal};
         }
         
-        private void OnAddArchiveStorageCompleted(object state) {
-            if ((this.AddArchiveStorageCompleted != null)) {
+        private void OnGetStorageRuleCompleted(object state) {
+            if ((this.GetStorageRuleCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.AddArchiveStorageCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+                this.GetStorageRuleCompleted(this, new GetStorageRuleCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void AddArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
-            this.AddArchiveStorageAsync(ArchiveStorage, null);
+        public void GetStorageRuleAsync(System.Guid IdStorage, System.Guid IdAttribute) {
+            this.GetStorageRuleAsync(IdStorage, IdAttribute, null);
         }
         
-        public void AddArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, object userState) {
-            if ((this.onBeginAddArchiveStorageDelegate == null)) {
-                this.onBeginAddArchiveStorageDelegate = new BeginOperationDelegate(this.OnBeginAddArchiveStorage);
+        public void GetStorageRuleAsync(System.Guid IdStorage, System.Guid IdAttribute, object userState) {
+            if ((this.onBeginGetStorageRuleDelegate == null)) {
+                this.onBeginGetStorageRuleDelegate = new BeginOperationDelegate(this.OnBeginGetStorageRule);
             }
-            if ((this.onEndAddArchiveStorageDelegate == null)) {
-                this.onEndAddArchiveStorageDelegate = new EndOperationDelegate(this.OnEndAddArchiveStorage);
+            if ((this.onEndGetStorageRuleDelegate == null)) {
+                this.onEndGetStorageRuleDelegate = new EndOperationDelegate(this.OnEndGetStorageRule);
             }
-            if ((this.onAddArchiveStorageCompletedDelegate == null)) {
-                this.onAddArchiveStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAddArchiveStorageCompleted);
+            if ((this.onGetStorageRuleCompletedDelegate == null)) {
+                this.onGetStorageRuleCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageRuleCompleted);
             }
-            base.InvokeAsync(this.onBeginAddArchiveStorageDelegate, new object[] {
-                        ArchiveStorage}, this.onEndAddArchiveStorageDelegate, this.onAddArchiveStorageCompletedDelegate, userState);
-        }
-        
-        public void DeleteArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
-            base.Channel.DeleteArchiveStorage(ArchiveStorage);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginDeleteArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginDeleteArchiveStorage(ArchiveStorage, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndDeleteArchiveStorage(System.IAsyncResult result) {
-            base.Channel.EndDeleteArchiveStorage(result);
-        }
-        
-        private System.IAsyncResult OnBeginDeleteArchiveStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage)(inValues[0]));
-            return this.BeginDeleteArchiveStorage(ArchiveStorage, callback, asyncState);
-        }
-        
-        private object[] OnEndDeleteArchiveStorage(System.IAsyncResult result) {
-            this.EndDeleteArchiveStorage(result);
-            return null;
-        }
-        
-        private void OnDeleteArchiveStorageCompleted(object state) {
-            if ((this.DeleteArchiveStorageCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.DeleteArchiveStorageCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void DeleteArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
-            this.DeleteArchiveStorageAsync(ArchiveStorage, null);
-        }
-        
-        public void DeleteArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, object userState) {
-            if ((this.onBeginDeleteArchiveStorageDelegate == null)) {
-                this.onBeginDeleteArchiveStorageDelegate = new BeginOperationDelegate(this.OnBeginDeleteArchiveStorage);
-            }
-            if ((this.onEndDeleteArchiveStorageDelegate == null)) {
-                this.onEndDeleteArchiveStorageDelegate = new EndOperationDelegate(this.OnEndDeleteArchiveStorage);
-            }
-            if ((this.onDeleteArchiveStorageCompletedDelegate == null)) {
-                this.onDeleteArchiveStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnDeleteArchiveStorageCompleted);
-            }
-            base.InvokeAsync(this.onBeginDeleteArchiveStorageDelegate, new object[] {
-                        ArchiveStorage}, this.onEndDeleteArchiveStorageDelegate, this.onDeleteArchiveStorageCompletedDelegate, userState);
-        }
-        
-        public void AddDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
-            base.Channel.AddDocumentAttributeGroup(AttributeGroup);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginAddDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginAddDocumentAttributeGroup(AttributeGroup, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndAddDocumentAttributeGroup(System.IAsyncResult result) {
-            base.Channel.EndAddDocumentAttributeGroup(result);
-        }
-        
-        private System.IAsyncResult OnBeginAddDocumentAttributeGroup(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup)(inValues[0]));
-            return this.BeginAddDocumentAttributeGroup(AttributeGroup, callback, asyncState);
-        }
-        
-        private object[] OnEndAddDocumentAttributeGroup(System.IAsyncResult result) {
-            this.EndAddDocumentAttributeGroup(result);
-            return null;
-        }
-        
-        private void OnAddDocumentAttributeGroupCompleted(object state) {
-            if ((this.AddDocumentAttributeGroupCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.AddDocumentAttributeGroupCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void AddDocumentAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
-            this.AddDocumentAttributeGroupAsync(AttributeGroup, null);
-        }
-        
-        public void AddDocumentAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, object userState) {
-            if ((this.onBeginAddDocumentAttributeGroupDelegate == null)) {
-                this.onBeginAddDocumentAttributeGroupDelegate = new BeginOperationDelegate(this.OnBeginAddDocumentAttributeGroup);
-            }
-            if ((this.onEndAddDocumentAttributeGroupDelegate == null)) {
-                this.onEndAddDocumentAttributeGroupDelegate = new EndOperationDelegate(this.OnEndAddDocumentAttributeGroup);
-            }
-            if ((this.onAddDocumentAttributeGroupCompletedDelegate == null)) {
-                this.onAddDocumentAttributeGroupCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAddDocumentAttributeGroupCompleted);
-            }
-            base.InvokeAsync(this.onBeginAddDocumentAttributeGroupDelegate, new object[] {
-                        AttributeGroup}, this.onEndAddDocumentAttributeGroupDelegate, this.onAddDocumentAttributeGroupCompletedDelegate, userState);
-        }
-        
-        public void UpdateDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
-            base.Channel.UpdateDocumentAttributeGroup(AttributeGroup);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginUpdateDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginUpdateDocumentAttributeGroup(AttributeGroup, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndUpdateDocumentAttributeGroup(System.IAsyncResult result) {
-            base.Channel.EndUpdateDocumentAttributeGroup(result);
-        }
-        
-        private System.IAsyncResult OnBeginUpdateDocumentAttributeGroup(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup)(inValues[0]));
-            return this.BeginUpdateDocumentAttributeGroup(AttributeGroup, callback, asyncState);
-        }
-        
-        private object[] OnEndUpdateDocumentAttributeGroup(System.IAsyncResult result) {
-            this.EndUpdateDocumentAttributeGroup(result);
-            return null;
-        }
-        
-        private void OnUpdateDocumentAttributeGroupCompleted(object state) {
-            if ((this.UpdateDocumentAttributeGroupCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.UpdateDocumentAttributeGroupCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void UpdateDocumentAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
-            this.UpdateDocumentAttributeGroupAsync(AttributeGroup, null);
-        }
-        
-        public void UpdateDocumentAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, object userState) {
-            if ((this.onBeginUpdateDocumentAttributeGroupDelegate == null)) {
-                this.onBeginUpdateDocumentAttributeGroupDelegate = new BeginOperationDelegate(this.OnBeginUpdateDocumentAttributeGroup);
-            }
-            if ((this.onEndUpdateDocumentAttributeGroupDelegate == null)) {
-                this.onEndUpdateDocumentAttributeGroupDelegate = new EndOperationDelegate(this.OnEndUpdateDocumentAttributeGroup);
-            }
-            if ((this.onUpdateDocumentAttributeGroupCompletedDelegate == null)) {
-                this.onUpdateDocumentAttributeGroupCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnUpdateDocumentAttributeGroupCompleted);
-            }
-            base.InvokeAsync(this.onBeginUpdateDocumentAttributeGroupDelegate, new object[] {
-                        AttributeGroup}, this.onEndUpdateDocumentAttributeGroupDelegate, this.onUpdateDocumentAttributeGroupCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginGetStorageRuleDelegate, new object[] {
+                        IdStorage,
+                        IdAttribute}, this.onEndGetStorageRuleDelegate, this.onGetStorageRuleCompletedDelegate, userState);
         }
         
         public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> GetStorageRules(System.Guid IdStorage, System.Guid IdArchive) {
@@ -8973,1397 +10840,601 @@ namespace BiblosDs.Document.AdminCentral.ServiceReferenceAdministration {
                         AttributeGroup}, this.onEndAddAttributeGroupDelegate, this.onAddAttributeGroupCompletedDelegate, userState);
         }
         
-        public void DoWork() {
-            base.Channel.DoWork();
+        public void UpdateAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
+            base.Channel.UpdateAttributeGroup(AttributeGroup);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginDoWork(System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginDoWork(callback, asyncState);
+        public System.IAsyncResult BeginUpdateAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginUpdateAttributeGroup(AttributeGroup, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public void EndDoWork(System.IAsyncResult result) {
-            base.Channel.EndDoWork(result);
+        public void EndUpdateAttributeGroup(System.IAsyncResult result) {
+            base.Channel.EndUpdateAttributeGroup(result);
         }
         
-        private System.IAsyncResult OnBeginDoWork(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            return this.BeginDoWork(callback, asyncState);
+        private System.IAsyncResult OnBeginUpdateAttributeGroup(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup)(inValues[0]));
+            return this.BeginUpdateAttributeGroup(AttributeGroup, callback, asyncState);
         }
         
-        private object[] OnEndDoWork(System.IAsyncResult result) {
-            this.EndDoWork(result);
+        private object[] OnEndUpdateAttributeGroup(System.IAsyncResult result) {
+            this.EndUpdateAttributeGroup(result);
             return null;
         }
         
-        private void OnDoWorkCompleted(object state) {
-            if ((this.DoWorkCompleted != null)) {
+        private void OnUpdateAttributeGroupCompleted(object state) {
+            if ((this.UpdateAttributeGroupCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.DoWorkCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+                this.UpdateAttributeGroupCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void DoWorkAsync() {
-            this.DoWorkAsync(null);
+        public void UpdateAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
+            this.UpdateAttributeGroupAsync(AttributeGroup, null);
         }
         
-        public void DoWorkAsync(object userState) {
-            if ((this.onBeginDoWorkDelegate == null)) {
-                this.onBeginDoWorkDelegate = new BeginOperationDelegate(this.OnBeginDoWork);
+        public void UpdateAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, object userState) {
+            if ((this.onBeginUpdateAttributeGroupDelegate == null)) {
+                this.onBeginUpdateAttributeGroupDelegate = new BeginOperationDelegate(this.OnBeginUpdateAttributeGroup);
             }
-            if ((this.onEndDoWorkDelegate == null)) {
-                this.onEndDoWorkDelegate = new EndOperationDelegate(this.OnEndDoWork);
+            if ((this.onEndUpdateAttributeGroupDelegate == null)) {
+                this.onEndUpdateAttributeGroupDelegate = new EndOperationDelegate(this.OnEndUpdateAttributeGroup);
             }
-            if ((this.onDoWorkCompletedDelegate == null)) {
-                this.onDoWorkCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnDoWorkCompleted);
+            if ((this.onUpdateAttributeGroupCompletedDelegate == null)) {
+                this.onUpdateAttributeGroupCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnUpdateAttributeGroupCompleted);
             }
-            base.InvokeAsync(this.onBeginDoWorkDelegate, null, this.onEndDoWorkDelegate, this.onDoWorkCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginUpdateAttributeGroupDelegate, new object[] {
+                        AttributeGroup}, this.onEndUpdateAttributeGroupDelegate, this.onUpdateAttributeGroupCompletedDelegate, userState);
         }
         
-        public System.Guid CloneArchive(string templateName, string archiveName) {
-            return base.Channel.CloneArchive(templateName, archiveName);
+        public void DeleteAttributeGroup(System.Guid IdAttributeGroup) {
+            base.Channel.DeleteAttributeGroup(IdAttributeGroup);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginCloneArchive(string templateName, string archiveName, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginCloneArchive(templateName, archiveName, callback, asyncState);
+        public System.IAsyncResult BeginDeleteAttributeGroup(System.Guid IdAttributeGroup, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginDeleteAttributeGroup(IdAttributeGroup, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.Guid EndCloneArchive(System.IAsyncResult result) {
-            return base.Channel.EndCloneArchive(result);
+        public void EndDeleteAttributeGroup(System.IAsyncResult result) {
+            base.Channel.EndDeleteAttributeGroup(result);
         }
         
-        private System.IAsyncResult OnBeginCloneArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            string templateName = ((string)(inValues[0]));
-            string archiveName = ((string)(inValues[1]));
-            return this.BeginCloneArchive(templateName, archiveName, callback, asyncState);
+        private System.IAsyncResult OnBeginDeleteAttributeGroup(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid IdAttributeGroup = ((System.Guid)(inValues[0]));
+            return this.BeginDeleteAttributeGroup(IdAttributeGroup, callback, asyncState);
         }
         
-        private object[] OnEndCloneArchive(System.IAsyncResult result) {
-            System.Guid retVal = this.EndCloneArchive(result);
-            return new object[] {
-                    retVal};
+        private object[] OnEndDeleteAttributeGroup(System.IAsyncResult result) {
+            this.EndDeleteAttributeGroup(result);
+            return null;
         }
         
-        private void OnCloneArchiveCompleted(object state) {
-            if ((this.CloneArchiveCompleted != null)) {
+        private void OnDeleteAttributeGroupCompleted(object state) {
+            if ((this.DeleteAttributeGroupCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.CloneArchiveCompleted(this, new CloneArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+                this.DeleteAttributeGroupCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void CloneArchiveAsync(string templateName, string archiveName) {
-            this.CloneArchiveAsync(templateName, archiveName, null);
+        public void DeleteAttributeGroupAsync(System.Guid IdAttributeGroup) {
+            this.DeleteAttributeGroupAsync(IdAttributeGroup, null);
         }
         
-        public void CloneArchiveAsync(string templateName, string archiveName, object userState) {
-            if ((this.onBeginCloneArchiveDelegate == null)) {
-                this.onBeginCloneArchiveDelegate = new BeginOperationDelegate(this.OnBeginCloneArchive);
+        public void DeleteAttributeGroupAsync(System.Guid IdAttributeGroup, object userState) {
+            if ((this.onBeginDeleteAttributeGroupDelegate == null)) {
+                this.onBeginDeleteAttributeGroupDelegate = new BeginOperationDelegate(this.OnBeginDeleteAttributeGroup);
             }
-            if ((this.onEndCloneArchiveDelegate == null)) {
-                this.onEndCloneArchiveDelegate = new EndOperationDelegate(this.OnEndCloneArchive);
+            if ((this.onEndDeleteAttributeGroupDelegate == null)) {
+                this.onEndDeleteAttributeGroupDelegate = new EndOperationDelegate(this.OnEndDeleteAttributeGroup);
             }
-            if ((this.onCloneArchiveCompletedDelegate == null)) {
-                this.onCloneArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnCloneArchiveCompleted);
+            if ((this.onDeleteAttributeGroupCompletedDelegate == null)) {
+                this.onDeleteAttributeGroupCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnDeleteAttributeGroupCompleted);
             }
-            base.InvokeAsync(this.onBeginCloneArchiveDelegate, new object[] {
-                        templateName,
-                        archiveName}, this.onEndCloneArchiveDelegate, this.onCloneArchiveCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginDeleteAttributeGroupDelegate, new object[] {
+                        IdAttributeGroup}, this.onEndDeleteAttributeGroupDelegate, this.onDeleteAttributeGroupCompletedDelegate, userState);
         }
         
-        public bool CheckConnection() {
-            return base.Channel.CheckConnection();
+        public void UpdateAttribute(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute) {
+            base.Channel.UpdateAttribute(DocumentAttribute);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginCheckConnection(System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginCheckConnection(callback, asyncState);
+        public System.IAsyncResult BeginUpdateAttribute(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginUpdateAttribute(DocumentAttribute, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public bool EndCheckConnection(System.IAsyncResult result) {
-            return base.Channel.EndCheckConnection(result);
+        public void EndUpdateAttribute(System.IAsyncResult result) {
+            base.Channel.EndUpdateAttribute(result);
         }
         
-        private System.IAsyncResult OnBeginCheckConnection(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            return this.BeginCheckConnection(callback, asyncState);
+        private System.IAsyncResult OnBeginUpdateAttribute(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute)(inValues[0]));
+            return this.BeginUpdateAttribute(DocumentAttribute, callback, asyncState);
         }
         
-        private object[] OnEndCheckConnection(System.IAsyncResult result) {
-            bool retVal = this.EndCheckConnection(result);
-            return new object[] {
-                    retVal};
+        private object[] OnEndUpdateAttribute(System.IAsyncResult result) {
+            this.EndUpdateAttribute(result);
+            return null;
         }
         
-        private void OnCheckConnectionCompleted(object state) {
-            if ((this.CheckConnectionCompleted != null)) {
+        private void OnUpdateAttributeCompleted(object state) {
+            if ((this.UpdateAttributeCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.CheckConnectionCompleted(this, new CheckConnectionCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+                this.UpdateAttributeCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void CheckConnectionAsync() {
-            this.CheckConnectionAsync(null);
+        public void UpdateAttributeAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute) {
+            this.UpdateAttributeAsync(DocumentAttribute, null);
         }
         
-        public void CheckConnectionAsync(object userState) {
-            if ((this.onBeginCheckConnectionDelegate == null)) {
-                this.onBeginCheckConnectionDelegate = new BeginOperationDelegate(this.OnBeginCheckConnection);
+        public void UpdateAttributeAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute DocumentAttribute, object userState) {
+            if ((this.onBeginUpdateAttributeDelegate == null)) {
+                this.onBeginUpdateAttributeDelegate = new BeginOperationDelegate(this.OnBeginUpdateAttribute);
             }
-            if ((this.onEndCheckConnectionDelegate == null)) {
-                this.onEndCheckConnectionDelegate = new EndOperationDelegate(this.OnEndCheckConnection);
+            if ((this.onEndUpdateAttributeDelegate == null)) {
+                this.onEndUpdateAttributeDelegate = new EndOperationDelegate(this.OnEndUpdateAttribute);
             }
-            if ((this.onCheckConnectionCompletedDelegate == null)) {
-                this.onCheckConnectionCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnCheckConnectionCompleted);
+            if ((this.onUpdateAttributeCompletedDelegate == null)) {
+                this.onUpdateAttributeCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnUpdateAttributeCompleted);
             }
-            base.InvokeAsync(this.onBeginCheckConnectionDelegate, null, this.onEndCheckConnectionDelegate, this.onCheckConnectionCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginUpdateAttributeDelegate, new object[] {
+                        DocumentAttribute}, this.onEndUpdateAttributeDelegate, this.onUpdateAttributeCompletedDelegate, userState);
         }
         
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> GetDocumentsInTransito() {
-            return base.Channel.GetDocumentsInTransito();
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetDocumentsInTransito(System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetDocumentsInTransito(callback, asyncState);
+        public void DeleteAttribute(System.Guid IdAttribute) {
+            base.Channel.DeleteAttribute(IdAttribute);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> EndGetDocumentsInTransito(System.IAsyncResult result) {
-            return base.Channel.EndGetDocumentsInTransito(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetDocumentsInTransito(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            return this.BeginGetDocumentsInTransito(callback, asyncState);
-        }
-        
-        private object[] OnEndGetDocumentsInTransito(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> retVal = this.EndGetDocumentsInTransito(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetDocumentsInTransitoCompleted(object state) {
-            if ((this.GetDocumentsInTransitoCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetDocumentsInTransitoCompleted(this, new GetDocumentsInTransitoCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetDocumentsInTransitoAsync() {
-            this.GetDocumentsInTransitoAsync(null);
-        }
-        
-        public void GetDocumentsInTransitoAsync(object userState) {
-            if ((this.onBeginGetDocumentsInTransitoDelegate == null)) {
-                this.onBeginGetDocumentsInTransitoDelegate = new BeginOperationDelegate(this.OnBeginGetDocumentsInTransito);
-            }
-            if ((this.onEndGetDocumentsInTransitoDelegate == null)) {
-                this.onEndGetDocumentsInTransitoDelegate = new EndOperationDelegate(this.OnEndGetDocumentsInTransito);
-            }
-            if ((this.onGetDocumentsInTransitoCompletedDelegate == null)) {
-                this.onGetDocumentsInTransitoCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetDocumentsInTransitoCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetDocumentsInTransitoDelegate, null, this.onEndGetDocumentsInTransitoDelegate, this.onGetDocumentsInTransitoCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> GetDocumentsInStorage(System.Guid IdStorage) {
-            return base.Channel.GetDocumentsInStorage(IdStorage);
+        public System.IAsyncResult BeginDeleteAttribute(System.Guid IdAttribute, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginDeleteAttribute(IdAttribute, callback, asyncState);
         }
         
         [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetDocumentsInStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetDocumentsInStorage(IdStorage, callback, asyncState);
+        public void EndDeleteAttribute(System.IAsyncResult result) {
+            base.Channel.EndDeleteAttribute(result);
         }
         
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> EndGetDocumentsInStorage(System.IAsyncResult result) {
-            return base.Channel.EndGetDocumentsInStorage(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetDocumentsInStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorage = ((System.Guid)(inValues[0]));
-            return this.BeginGetDocumentsInStorage(IdStorage, callback, asyncState);
-        }
-        
-        private object[] OnEndGetDocumentsInStorage(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document> retVal = this.EndGetDocumentsInStorage(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetDocumentsInStorageCompleted(object state) {
-            if ((this.GetDocumentsInStorageCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetDocumentsInStorageCompleted(this, new GetDocumentsInStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetDocumentsInStorageAsync(System.Guid IdStorage) {
-            this.GetDocumentsInStorageAsync(IdStorage, null);
-        }
-        
-        public void GetDocumentsInStorageAsync(System.Guid IdStorage, object userState) {
-            if ((this.onBeginGetDocumentsInStorageDelegate == null)) {
-                this.onBeginGetDocumentsInStorageDelegate = new BeginOperationDelegate(this.OnBeginGetDocumentsInStorage);
-            }
-            if ((this.onEndGetDocumentsInStorageDelegate == null)) {
-                this.onEndGetDocumentsInStorageDelegate = new EndOperationDelegate(this.OnEndGetDocumentsInStorage);
-            }
-            if ((this.onGetDocumentsInStorageCompletedDelegate == null)) {
-                this.onGetDocumentsInStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetDocumentsInStorageCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetDocumentsInStorageDelegate, new object[] {
-                        IdStorage}, this.onEndGetDocumentsInStorageDelegate, this.onGetDocumentsInStorageCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetAllStorages() {
-            return base.Channel.GetAllStorages();
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetAllStorages(System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetAllStorages(callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetAllStorages(System.IAsyncResult result) {
-            return base.Channel.EndGetAllStorages(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetAllStorages(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            return this.BeginGetAllStorages(callback, asyncState);
-        }
-        
-        private object[] OnEndGetAllStorages(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> retVal = this.EndGetAllStorages(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetAllStoragesCompleted(object state) {
-            if ((this.GetAllStoragesCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetAllStoragesCompleted(this, new GetAllStoragesCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetAllStoragesAsync() {
-            this.GetAllStoragesAsync(null);
-        }
-        
-        public void GetAllStoragesAsync(object userState) {
-            if ((this.onBeginGetAllStoragesDelegate == null)) {
-                this.onBeginGetAllStoragesDelegate = new BeginOperationDelegate(this.OnBeginGetAllStorages);
-            }
-            if ((this.onEndGetAllStoragesDelegate == null)) {
-                this.onEndGetAllStoragesDelegate = new EndOperationDelegate(this.OnEndGetAllStorages);
-            }
-            if ((this.onGetAllStoragesCompletedDelegate == null)) {
-                this.onGetAllStoragesCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAllStoragesCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetAllStoragesDelegate, null, this.onEndGetAllStoragesDelegate, this.onGetAllStoragesCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetAllStoragesWithServer() {
-            return base.Channel.GetAllStoragesWithServer();
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetAllStoragesWithServer(System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetAllStoragesWithServer(callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetAllStoragesWithServer(System.IAsyncResult result) {
-            return base.Channel.EndGetAllStoragesWithServer(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetAllStoragesWithServer(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            return this.BeginGetAllStoragesWithServer(callback, asyncState);
-        }
-        
-        private object[] OnEndGetAllStoragesWithServer(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> retVal = this.EndGetAllStoragesWithServer(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetAllStoragesWithServerCompleted(object state) {
-            if ((this.GetAllStoragesWithServerCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetAllStoragesWithServerCompleted(this, new GetAllStoragesWithServerCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetAllStoragesWithServerAsync() {
-            this.GetAllStoragesWithServerAsync(null);
-        }
-        
-        public void GetAllStoragesWithServerAsync(object userState) {
-            if ((this.onBeginGetAllStoragesWithServerDelegate == null)) {
-                this.onBeginGetAllStoragesWithServerDelegate = new BeginOperationDelegate(this.OnBeginGetAllStoragesWithServer);
-            }
-            if ((this.onEndGetAllStoragesWithServerDelegate == null)) {
-                this.onEndGetAllStoragesWithServerDelegate = new EndOperationDelegate(this.OnEndGetAllStoragesWithServer);
-            }
-            if ((this.onGetAllStoragesWithServerCompletedDelegate == null)) {
-                this.onGetAllStoragesWithServerCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAllStoragesWithServerCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetAllStoragesWithServerDelegate, null, this.onEndGetAllStoragesWithServerDelegate, this.onGetAllStoragesWithServerCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetStoragesFromArchive(System.Guid IdArchive) {
-            return base.Channel.GetStoragesFromArchive(IdArchive);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStoragesFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStoragesFromArchive(IdArchive, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetStoragesFromArchive(System.IAsyncResult result) {
-            return base.Channel.EndGetStoragesFromArchive(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStoragesFromArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdArchive = ((System.Guid)(inValues[0]));
-            return this.BeginGetStoragesFromArchive(IdArchive, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStoragesFromArchive(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> retVal = this.EndGetStoragesFromArchive(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStoragesFromArchiveCompleted(object state) {
-            if ((this.GetStoragesFromArchiveCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStoragesFromArchiveCompleted(this, new GetStoragesFromArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStoragesFromArchiveAsync(System.Guid IdArchive) {
-            this.GetStoragesFromArchiveAsync(IdArchive, null);
-        }
-        
-        public void GetStoragesFromArchiveAsync(System.Guid IdArchive, object userState) {
-            if ((this.onBeginGetStoragesFromArchiveDelegate == null)) {
-                this.onBeginGetStoragesFromArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetStoragesFromArchive);
-            }
-            if ((this.onEndGetStoragesFromArchiveDelegate == null)) {
-                this.onEndGetStoragesFromArchiveDelegate = new EndOperationDelegate(this.OnEndGetStoragesFromArchive);
-            }
-            if ((this.onGetStoragesFromArchiveCompletedDelegate == null)) {
-                this.onGetStoragesFromArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStoragesFromArchiveCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStoragesFromArchiveDelegate, new object[] {
-                        IdArchive}, this.onEndGetStoragesFromArchiveDelegate, this.onGetStoragesFromArchiveCompletedDelegate, userState);
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage GetStorage(System.Guid IdStorage) {
-            return base.Channel.GetStorage(IdStorage);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStorage(IdStorage, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage EndGetStorage(System.IAsyncResult result) {
-            return base.Channel.EndGetStorage(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorage = ((System.Guid)(inValues[0]));
-            return this.BeginGetStorage(IdStorage, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStorage(System.IAsyncResult result) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage retVal = this.EndGetStorage(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStorageCompleted(object state) {
-            if ((this.GetStorageCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStorageCompleted(this, new GetStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStorageAsync(System.Guid IdStorage) {
-            this.GetStorageAsync(IdStorage, null);
-        }
-        
-        public void GetStorageAsync(System.Guid IdStorage, object userState) {
-            if ((this.onBeginGetStorageDelegate == null)) {
-                this.onBeginGetStorageDelegate = new BeginOperationDelegate(this.OnBeginGetStorage);
-            }
-            if ((this.onEndGetStorageDelegate == null)) {
-                this.onEndGetStorageDelegate = new EndOperationDelegate(this.OnEndGetStorage);
-            }
-            if ((this.onGetStorageCompletedDelegate == null)) {
-                this.onGetStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStorageDelegate, new object[] {
-                        IdStorage}, this.onEndGetStorageDelegate, this.onGetStorageCompletedDelegate, userState);
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage GetStorageWithServer(System.Guid IdStorage) {
-            return base.Channel.GetStorageWithServer(IdStorage);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStorageWithServer(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStorageWithServer(IdStorage, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage EndGetStorageWithServer(System.IAsyncResult result) {
-            return base.Channel.EndGetStorageWithServer(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStorageWithServer(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorage = ((System.Guid)(inValues[0]));
-            return this.BeginGetStorageWithServer(IdStorage, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStorageWithServer(System.IAsyncResult result) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage retVal = this.EndGetStorageWithServer(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStorageWithServerCompleted(object state) {
-            if ((this.GetStorageWithServerCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStorageWithServerCompleted(this, new GetStorageWithServerCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStorageWithServerAsync(System.Guid IdStorage) {
-            this.GetStorageWithServerAsync(IdStorage, null);
-        }
-        
-        public void GetStorageWithServerAsync(System.Guid IdStorage, object userState) {
-            if ((this.onBeginGetStorageWithServerDelegate == null)) {
-                this.onBeginGetStorageWithServerDelegate = new BeginOperationDelegate(this.OnBeginGetStorageWithServer);
-            }
-            if ((this.onEndGetStorageWithServerDelegate == null)) {
-                this.onEndGetStorageWithServerDelegate = new EndOperationDelegate(this.OnEndGetStorageWithServer);
-            }
-            if ((this.onGetStorageWithServerCompletedDelegate == null)) {
-                this.onGetStorageWithServerCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageWithServerCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStorageWithServerDelegate, new object[] {
-                        IdStorage}, this.onEndGetStorageWithServerDelegate, this.onGetStorageWithServerCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> GetStorageAreas(System.Guid IdStorage) {
-            return base.Channel.GetStorageAreas(IdStorage);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStorageAreas(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStorageAreas(IdStorage, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> EndGetStorageAreas(System.IAsyncResult result) {
-            return base.Channel.EndGetStorageAreas(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStorageAreas(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorage = ((System.Guid)(inValues[0]));
-            return this.BeginGetStorageAreas(IdStorage, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStorageAreas(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> retVal = this.EndGetStorageAreas(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStorageAreasCompleted(object state) {
-            if ((this.GetStorageAreasCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStorageAreasCompleted(this, new GetStorageAreasCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStorageAreasAsync(System.Guid IdStorage) {
-            this.GetStorageAreasAsync(IdStorage, null);
-        }
-        
-        public void GetStorageAreasAsync(System.Guid IdStorage, object userState) {
-            if ((this.onBeginGetStorageAreasDelegate == null)) {
-                this.onBeginGetStorageAreasDelegate = new BeginOperationDelegate(this.OnBeginGetStorageAreas);
-            }
-            if ((this.onEndGetStorageAreasDelegate == null)) {
-                this.onEndGetStorageAreasDelegate = new EndOperationDelegate(this.OnEndGetStorageAreas);
-            }
-            if ((this.onGetStorageAreasCompletedDelegate == null)) {
-                this.onGetStorageAreasCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageAreasCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStorageAreasDelegate, new object[] {
-                        IdStorage}, this.onEndGetStorageAreasDelegate, this.onGetStorageAreasCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> GetStorageAreasFromStorageArchive(System.Guid IdStorage, System.Guid IdArchive) {
-            return base.Channel.GetStorageAreasFromStorageArchive(IdStorage, IdArchive);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStorageAreasFromStorageArchive(System.Guid IdStorage, System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStorageAreasFromStorageArchive(IdStorage, IdArchive, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> EndGetStorageAreasFromStorageArchive(System.IAsyncResult result) {
-            return base.Channel.EndGetStorageAreasFromStorageArchive(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStorageAreasFromStorageArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorage = ((System.Guid)(inValues[0]));
-            System.Guid IdArchive = ((System.Guid)(inValues[1]));
-            return this.BeginGetStorageAreasFromStorageArchive(IdStorage, IdArchive, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStorageAreasFromStorageArchive(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea> retVal = this.EndGetStorageAreasFromStorageArchive(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStorageAreasFromStorageArchiveCompleted(object state) {
-            if ((this.GetStorageAreasFromStorageArchiveCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStorageAreasFromStorageArchiveCompleted(this, new GetStorageAreasFromStorageArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStorageAreasFromStorageArchiveAsync(System.Guid IdStorage, System.Guid IdArchive) {
-            this.GetStorageAreasFromStorageArchiveAsync(IdStorage, IdArchive, null);
-        }
-        
-        public void GetStorageAreasFromStorageArchiveAsync(System.Guid IdStorage, System.Guid IdArchive, object userState) {
-            if ((this.onBeginGetStorageAreasFromStorageArchiveDelegate == null)) {
-                this.onBeginGetStorageAreasFromStorageArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetStorageAreasFromStorageArchive);
-            }
-            if ((this.onEndGetStorageAreasFromStorageArchiveDelegate == null)) {
-                this.onEndGetStorageAreasFromStorageArchiveDelegate = new EndOperationDelegate(this.OnEndGetStorageAreasFromStorageArchive);
-            }
-            if ((this.onGetStorageAreasFromStorageArchiveCompletedDelegate == null)) {
-                this.onGetStorageAreasFromStorageArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageAreasFromStorageArchiveCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStorageAreasFromStorageArchiveDelegate, new object[] {
-                        IdStorage,
-                        IdArchive}, this.onEndGetStorageAreasFromStorageArchiveDelegate, this.onGetStorageAreasFromStorageArchiveCompletedDelegate, userState);
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea GetStorageArea(System.Guid IdStorageArea) {
-            return base.Channel.GetStorageArea(IdStorageArea);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStorageArea(System.Guid IdStorageArea, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStorageArea(IdStorageArea, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea EndGetStorageArea(System.IAsyncResult result) {
-            return base.Channel.EndGetStorageArea(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStorageArea(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorageArea = ((System.Guid)(inValues[0]));
-            return this.BeginGetStorageArea(IdStorageArea, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStorageArea(System.IAsyncResult result) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageArea retVal = this.EndGetStorageArea(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStorageAreaCompleted(object state) {
-            if ((this.GetStorageAreaCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStorageAreaCompleted(this, new GetStorageAreaCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStorageAreaAsync(System.Guid IdStorageArea) {
-            this.GetStorageAreaAsync(IdStorageArea, null);
-        }
-        
-        public void GetStorageAreaAsync(System.Guid IdStorageArea, object userState) {
-            if ((this.onBeginGetStorageAreaDelegate == null)) {
-                this.onBeginGetStorageAreaDelegate = new BeginOperationDelegate(this.OnBeginGetStorageArea);
-            }
-            if ((this.onEndGetStorageAreaDelegate == null)) {
-                this.onEndGetStorageAreaDelegate = new EndOperationDelegate(this.OnEndGetStorageArea);
-            }
-            if ((this.onGetStorageAreaCompletedDelegate == null)) {
-                this.onGetStorageAreaCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageAreaCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStorageAreaDelegate, new object[] {
-                        IdStorageArea}, this.onEndGetStorageAreaDelegate, this.onGetStorageAreaCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status> GetAllStorageAreaStatus() {
-            return base.Channel.GetAllStorageAreaStatus();
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetAllStorageAreaStatus(System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetAllStorageAreaStatus(callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status> EndGetAllStorageAreaStatus(System.IAsyncResult result) {
-            return base.Channel.EndGetAllStorageAreaStatus(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetAllStorageAreaStatus(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            return this.BeginGetAllStorageAreaStatus(callback, asyncState);
-        }
-        
-        private object[] OnEndGetAllStorageAreaStatus(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Status> retVal = this.EndGetAllStorageAreaStatus(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetAllStorageAreaStatusCompleted(object state) {
-            if ((this.GetAllStorageAreaStatusCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetAllStorageAreaStatusCompleted(this, new GetAllStorageAreaStatusCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetAllStorageAreaStatusAsync() {
-            this.GetAllStorageAreaStatusAsync(null);
-        }
-        
-        public void GetAllStorageAreaStatusAsync(object userState) {
-            if ((this.onBeginGetAllStorageAreaStatusDelegate == null)) {
-                this.onBeginGetAllStorageAreaStatusDelegate = new BeginOperationDelegate(this.OnBeginGetAllStorageAreaStatus);
-            }
-            if ((this.onEndGetAllStorageAreaStatusDelegate == null)) {
-                this.onEndGetAllStorageAreaStatusDelegate = new EndOperationDelegate(this.OnEndGetAllStorageAreaStatus);
-            }
-            if ((this.onGetAllStorageAreaStatusCompletedDelegate == null)) {
-                this.onGetAllStorageAreaStatusCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAllStorageAreaStatusCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetAllStorageAreaStatusDelegate, null, this.onEndGetAllStorageAreaStatusDelegate, this.onGetAllStorageAreaStatusCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> GetStorageRulesFromStorageAreaArchive(System.Guid IdStorageArea, System.Guid IdArchive) {
-            return base.Channel.GetStorageRulesFromStorageAreaArchive(IdStorageArea, IdArchive);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStorageRulesFromStorageAreaArchive(System.Guid IdStorageArea, System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStorageRulesFromStorageAreaArchive(IdStorageArea, IdArchive, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> EndGetStorageRulesFromStorageAreaArchive(System.IAsyncResult result) {
-            return base.Channel.EndGetStorageRulesFromStorageAreaArchive(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStorageRulesFromStorageAreaArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorageArea = ((System.Guid)(inValues[0]));
-            System.Guid IdArchive = ((System.Guid)(inValues[1]));
-            return this.BeginGetStorageRulesFromStorageAreaArchive(IdStorageArea, IdArchive, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStorageRulesFromStorageAreaArchive(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> retVal = this.EndGetStorageRulesFromStorageAreaArchive(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStorageRulesFromStorageAreaArchiveCompleted(object state) {
-            if ((this.GetStorageRulesFromStorageAreaArchiveCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStorageRulesFromStorageAreaArchiveCompleted(this, new GetStorageRulesFromStorageAreaArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStorageRulesFromStorageAreaArchiveAsync(System.Guid IdStorageArea, System.Guid IdArchive) {
-            this.GetStorageRulesFromStorageAreaArchiveAsync(IdStorageArea, IdArchive, null);
-        }
-        
-        public void GetStorageRulesFromStorageAreaArchiveAsync(System.Guid IdStorageArea, System.Guid IdArchive, object userState) {
-            if ((this.onBeginGetStorageRulesFromStorageAreaArchiveDelegate == null)) {
-                this.onBeginGetStorageRulesFromStorageAreaArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetStorageRulesFromStorageAreaArchive);
-            }
-            if ((this.onEndGetStorageRulesFromStorageAreaArchiveDelegate == null)) {
-                this.onEndGetStorageRulesFromStorageAreaArchiveDelegate = new EndOperationDelegate(this.OnEndGetStorageRulesFromStorageAreaArchive);
-            }
-            if ((this.onGetStorageRulesFromStorageAreaArchiveCompletedDelegate == null)) {
-                this.onGetStorageRulesFromStorageAreaArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageRulesFromStorageAreaArchiveCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStorageRulesFromStorageAreaArchiveDelegate, new object[] {
-                        IdStorageArea,
-                        IdArchive}, this.onEndGetStorageRulesFromStorageAreaArchiveDelegate, this.onGetStorageRulesFromStorageAreaArchiveCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> GetStoragesNotRelatedToArchive(System.Guid IdArchive) {
-            return base.Channel.GetStoragesNotRelatedToArchive(IdArchive);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStoragesNotRelatedToArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStoragesNotRelatedToArchive(IdArchive, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> EndGetStoragesNotRelatedToArchive(System.IAsyncResult result) {
-            return base.Channel.EndGetStoragesNotRelatedToArchive(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStoragesNotRelatedToArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdArchive = ((System.Guid)(inValues[0]));
-            return this.BeginGetStoragesNotRelatedToArchive(IdArchive, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStoragesNotRelatedToArchive(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage> retVal = this.EndGetStoragesNotRelatedToArchive(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStoragesNotRelatedToArchiveCompleted(object state) {
-            if ((this.GetStoragesNotRelatedToArchiveCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStoragesNotRelatedToArchiveCompleted(this, new GetStoragesNotRelatedToArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStoragesNotRelatedToArchiveAsync(System.Guid IdArchive) {
-            this.GetStoragesNotRelatedToArchiveAsync(IdArchive, null);
-        }
-        
-        public void GetStoragesNotRelatedToArchiveAsync(System.Guid IdArchive, object userState) {
-            if ((this.onBeginGetStoragesNotRelatedToArchiveDelegate == null)) {
-                this.onBeginGetStoragesNotRelatedToArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetStoragesNotRelatedToArchive);
-            }
-            if ((this.onEndGetStoragesNotRelatedToArchiveDelegate == null)) {
-                this.onEndGetStoragesNotRelatedToArchiveDelegate = new EndOperationDelegate(this.OnEndGetStoragesNotRelatedToArchive);
-            }
-            if ((this.onGetStoragesNotRelatedToArchiveCompletedDelegate == null)) {
-                this.onGetStoragesNotRelatedToArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStoragesNotRelatedToArchiveCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStoragesNotRelatedToArchiveDelegate, new object[] {
-                        IdArchive}, this.onEndGetStoragesNotRelatedToArchiveDelegate, this.onGetStoragesNotRelatedToArchiveCompletedDelegate, userState);
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive GetArchive(System.Guid IdArchive) {
-            return base.Channel.GetArchive(IdArchive);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetArchive(IdArchive, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive EndGetArchive(System.IAsyncResult result) {
-            return base.Channel.EndGetArchive(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdArchive = ((System.Guid)(inValues[0]));
-            return this.BeginGetArchive(IdArchive, callback, asyncState);
-        }
-        
-        private object[] OnEndGetArchive(System.IAsyncResult result) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive retVal = this.EndGetArchive(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetArchiveCompleted(object state) {
-            if ((this.GetArchiveCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetArchiveCompleted(this, new GetArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetArchiveAsync(System.Guid IdArchive) {
-            this.GetArchiveAsync(IdArchive, null);
-        }
-        
-        public void GetArchiveAsync(System.Guid IdArchive, object userState) {
-            if ((this.onBeginGetArchiveDelegate == null)) {
-                this.onBeginGetArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetArchive);
-            }
-            if ((this.onEndGetArchiveDelegate == null)) {
-                this.onEndGetArchiveDelegate = new EndOperationDelegate(this.OnEndGetArchive);
-            }
-            if ((this.onGetArchiveCompletedDelegate == null)) {
-                this.onGetArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchiveCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetArchiveDelegate, new object[] {
-                        IdArchive}, this.onEndGetArchiveDelegate, this.onGetArchiveCompletedDelegate, userState);
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive GetArchiveWithServerConfigs(System.Guid IdArchive) {
-            return base.Channel.GetArchiveWithServerConfigs(IdArchive);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetArchiveWithServerConfigs(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetArchiveWithServerConfigs(IdArchive, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive EndGetArchiveWithServerConfigs(System.IAsyncResult result) {
-            return base.Channel.EndGetArchiveWithServerConfigs(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetArchiveWithServerConfigs(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdArchive = ((System.Guid)(inValues[0]));
-            return this.BeginGetArchiveWithServerConfigs(IdArchive, callback, asyncState);
-        }
-        
-        private object[] OnEndGetArchiveWithServerConfigs(System.IAsyncResult result) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive retVal = this.EndGetArchiveWithServerConfigs(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetArchiveWithServerConfigsCompleted(object state) {
-            if ((this.GetArchiveWithServerConfigsCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetArchiveWithServerConfigsCompleted(this, new GetArchiveWithServerConfigsCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetArchiveWithServerConfigsAsync(System.Guid IdArchive) {
-            this.GetArchiveWithServerConfigsAsync(IdArchive, null);
-        }
-        
-        public void GetArchiveWithServerConfigsAsync(System.Guid IdArchive, object userState) {
-            if ((this.onBeginGetArchiveWithServerConfigsDelegate == null)) {
-                this.onBeginGetArchiveWithServerConfigsDelegate = new BeginOperationDelegate(this.OnBeginGetArchiveWithServerConfigs);
-            }
-            if ((this.onEndGetArchiveWithServerConfigsDelegate == null)) {
-                this.onEndGetArchiveWithServerConfigsDelegate = new EndOperationDelegate(this.OnEndGetArchiveWithServerConfigs);
-            }
-            if ((this.onGetArchiveWithServerConfigsCompletedDelegate == null)) {
-                this.onGetArchiveWithServerConfigsCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchiveWithServerConfigsCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetArchiveWithServerConfigsDelegate, new object[] {
-                        IdArchive}, this.onEndGetArchiveWithServerConfigsDelegate, this.onGetArchiveWithServerConfigsCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchives() {
-            return base.Channel.GetArchives();
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetArchives(System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetArchives(callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchives(System.IAsyncResult result) {
-            return base.Channel.EndGetArchives(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetArchives(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            return this.BeginGetArchives(callback, asyncState);
-        }
-        
-        private object[] OnEndGetArchives(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> retVal = this.EndGetArchives(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetArchivesCompleted(object state) {
-            if ((this.GetArchivesCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetArchivesCompleted(this, new GetArchivesCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetArchivesAsync() {
-            this.GetArchivesAsync(null);
-        }
-        
-        public void GetArchivesAsync(object userState) {
-            if ((this.onBeginGetArchivesDelegate == null)) {
-                this.onBeginGetArchivesDelegate = new BeginOperationDelegate(this.OnBeginGetArchives);
-            }
-            if ((this.onEndGetArchivesDelegate == null)) {
-                this.onEndGetArchivesDelegate = new EndOperationDelegate(this.OnEndGetArchives);
-            }
-            if ((this.onGetArchivesCompletedDelegate == null)) {
-                this.onGetArchivesCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchivesCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetArchivesDelegate, null, this.onEndGetArchivesDelegate, this.onGetArchivesCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchivesFromStorage(System.Guid IdStorage) {
-            return base.Channel.GetArchivesFromStorage(IdStorage);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetArchivesFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetArchivesFromStorage(IdStorage, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchivesFromStorage(System.IAsyncResult result) {
-            return base.Channel.EndGetArchivesFromStorage(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetArchivesFromStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorage = ((System.Guid)(inValues[0]));
-            return this.BeginGetArchivesFromStorage(IdStorage, callback, asyncState);
-        }
-        
-        private object[] OnEndGetArchivesFromStorage(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> retVal = this.EndGetArchivesFromStorage(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetArchivesFromStorageCompleted(object state) {
-            if ((this.GetArchivesFromStorageCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetArchivesFromStorageCompleted(this, new GetArchivesFromStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetArchivesFromStorageAsync(System.Guid IdStorage) {
-            this.GetArchivesFromStorageAsync(IdStorage, null);
-        }
-        
-        public void GetArchivesFromStorageAsync(System.Guid IdStorage, object userState) {
-            if ((this.onBeginGetArchivesFromStorageDelegate == null)) {
-                this.onBeginGetArchivesFromStorageDelegate = new BeginOperationDelegate(this.OnBeginGetArchivesFromStorage);
-            }
-            if ((this.onEndGetArchivesFromStorageDelegate == null)) {
-                this.onEndGetArchivesFromStorageDelegate = new EndOperationDelegate(this.OnEndGetArchivesFromStorage);
-            }
-            if ((this.onGetArchivesFromStorageCompletedDelegate == null)) {
-                this.onGetArchivesFromStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchivesFromStorageCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetArchivesFromStorageDelegate, new object[] {
-                        IdStorage}, this.onEndGetArchivesFromStorageDelegate, this.onGetArchivesFromStorageCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> GetArchivesNotRelatedToStorage(System.Guid IdStorage) {
-            return base.Channel.GetArchivesNotRelatedToStorage(IdStorage);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetArchivesNotRelatedToStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetArchivesNotRelatedToStorage(IdStorage, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> EndGetArchivesNotRelatedToStorage(System.IAsyncResult result) {
-            return base.Channel.EndGetArchivesNotRelatedToStorage(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetArchivesNotRelatedToStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorage = ((System.Guid)(inValues[0]));
-            return this.BeginGetArchivesNotRelatedToStorage(IdStorage, callback, asyncState);
-        }
-        
-        private object[] OnEndGetArchivesNotRelatedToStorage(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive> retVal = this.EndGetArchivesNotRelatedToStorage(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetArchivesNotRelatedToStorageCompleted(object state) {
-            if ((this.GetArchivesNotRelatedToStorageCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetArchivesNotRelatedToStorageCompleted(this, new GetArchivesNotRelatedToStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetArchivesNotRelatedToStorageAsync(System.Guid IdStorage) {
-            this.GetArchivesNotRelatedToStorageAsync(IdStorage, null);
-        }
-        
-        public void GetArchivesNotRelatedToStorageAsync(System.Guid IdStorage, object userState) {
-            if ((this.onBeginGetArchivesNotRelatedToStorageDelegate == null)) {
-                this.onBeginGetArchivesNotRelatedToStorageDelegate = new BeginOperationDelegate(this.OnBeginGetArchivesNotRelatedToStorage);
-            }
-            if ((this.onEndGetArchivesNotRelatedToStorageDelegate == null)) {
-                this.onEndGetArchivesNotRelatedToStorageDelegate = new EndOperationDelegate(this.OnEndGetArchivesNotRelatedToStorage);
-            }
-            if ((this.onGetArchivesNotRelatedToStorageCompletedDelegate == null)) {
-                this.onGetArchivesNotRelatedToStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchivesNotRelatedToStorageCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetArchivesNotRelatedToStorageDelegate, new object[] {
-                        IdStorage}, this.onEndGetArchivesNotRelatedToStorageDelegate, this.onGetArchivesNotRelatedToStorageCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> GetStorageArchiveRelationsFromStorage(System.Guid IdStorage) {
-            return base.Channel.GetStorageArchiveRelationsFromStorage(IdStorage);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStorageArchiveRelationsFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStorageArchiveRelationsFromStorage(IdStorage, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> EndGetStorageArchiveRelationsFromStorage(System.IAsyncResult result) {
-            return base.Channel.EndGetStorageArchiveRelationsFromStorage(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStorageArchiveRelationsFromStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorage = ((System.Guid)(inValues[0]));
-            return this.BeginGetStorageArchiveRelationsFromStorage(IdStorage, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStorageArchiveRelationsFromStorage(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> retVal = this.EndGetStorageArchiveRelationsFromStorage(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStorageArchiveRelationsFromStorageCompleted(object state) {
-            if ((this.GetStorageArchiveRelationsFromStorageCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStorageArchiveRelationsFromStorageCompleted(this, new GetStorageArchiveRelationsFromStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStorageArchiveRelationsFromStorageAsync(System.Guid IdStorage) {
-            this.GetStorageArchiveRelationsFromStorageAsync(IdStorage, null);
-        }
-        
-        public void GetStorageArchiveRelationsFromStorageAsync(System.Guid IdStorage, object userState) {
-            if ((this.onBeginGetStorageArchiveRelationsFromStorageDelegate == null)) {
-                this.onBeginGetStorageArchiveRelationsFromStorageDelegate = new BeginOperationDelegate(this.OnBeginGetStorageArchiveRelationsFromStorage);
-            }
-            if ((this.onEndGetStorageArchiveRelationsFromStorageDelegate == null)) {
-                this.onEndGetStorageArchiveRelationsFromStorageDelegate = new EndOperationDelegate(this.OnEndGetStorageArchiveRelationsFromStorage);
-            }
-            if ((this.onGetStorageArchiveRelationsFromStorageCompletedDelegate == null)) {
-                this.onGetStorageArchiveRelationsFromStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageArchiveRelationsFromStorageCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStorageArchiveRelationsFromStorageDelegate, new object[] {
-                        IdStorage}, this.onEndGetStorageArchiveRelationsFromStorageDelegate, this.onGetStorageArchiveRelationsFromStorageCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> GetStorageArchiveRelationsFromArchive(System.Guid IdArchive) {
-            return base.Channel.GetStorageArchiveRelationsFromArchive(IdArchive);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStorageArchiveRelationsFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStorageArchiveRelationsFromArchive(IdArchive, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> EndGetStorageArchiveRelationsFromArchive(System.IAsyncResult result) {
-            return base.Channel.EndGetStorageArchiveRelationsFromArchive(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStorageArchiveRelationsFromArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdArchive = ((System.Guid)(inValues[0]));
-            return this.BeginGetStorageArchiveRelationsFromArchive(IdArchive, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStorageArchiveRelationsFromArchive(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage> retVal = this.EndGetStorageArchiveRelationsFromArchive(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStorageArchiveRelationsFromArchiveCompleted(object state) {
-            if ((this.GetStorageArchiveRelationsFromArchiveCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStorageArchiveRelationsFromArchiveCompleted(this, new GetStorageArchiveRelationsFromArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStorageArchiveRelationsFromArchiveAsync(System.Guid IdArchive) {
-            this.GetStorageArchiveRelationsFromArchiveAsync(IdArchive, null);
-        }
-        
-        public void GetStorageArchiveRelationsFromArchiveAsync(System.Guid IdArchive, object userState) {
-            if ((this.onBeginGetStorageArchiveRelationsFromArchiveDelegate == null)) {
-                this.onBeginGetStorageArchiveRelationsFromArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetStorageArchiveRelationsFromArchive);
-            }
-            if ((this.onEndGetStorageArchiveRelationsFromArchiveDelegate == null)) {
-                this.onEndGetStorageArchiveRelationsFromArchiveDelegate = new EndOperationDelegate(this.OnEndGetStorageArchiveRelationsFromArchive);
-            }
-            if ((this.onGetStorageArchiveRelationsFromArchiveCompletedDelegate == null)) {
-                this.onGetStorageArchiveRelationsFromArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageArchiveRelationsFromArchiveCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStorageArchiveRelationsFromArchiveDelegate, new object[] {
-                        IdArchive}, this.onEndGetStorageArchiveRelationsFromArchiveDelegate, this.onGetStorageArchiveRelationsFromArchiveCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute> GetAttributesFromArchive(System.Guid IdArchive) {
-            return base.Channel.GetAttributesFromArchive(IdArchive);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetAttributesFromArchive(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetAttributesFromArchive(IdArchive, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute> EndGetAttributesFromArchive(System.IAsyncResult result) {
-            return base.Channel.EndGetAttributesFromArchive(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetAttributesFromArchive(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdArchive = ((System.Guid)(inValues[0]));
-            return this.BeginGetAttributesFromArchive(IdArchive, callback, asyncState);
-        }
-        
-        private object[] OnEndGetAttributesFromArchive(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute> retVal = this.EndGetAttributesFromArchive(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetAttributesFromArchiveCompleted(object state) {
-            if ((this.GetAttributesFromArchiveCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetAttributesFromArchiveCompleted(this, new GetAttributesFromArchiveCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetAttributesFromArchiveAsync(System.Guid IdArchive) {
-            this.GetAttributesFromArchiveAsync(IdArchive, null);
-        }
-        
-        public void GetAttributesFromArchiveAsync(System.Guid IdArchive, object userState) {
-            if ((this.onBeginGetAttributesFromArchiveDelegate == null)) {
-                this.onBeginGetAttributesFromArchiveDelegate = new BeginOperationDelegate(this.OnBeginGetAttributesFromArchive);
-            }
-            if ((this.onEndGetAttributesFromArchiveDelegate == null)) {
-                this.onEndGetAttributesFromArchiveDelegate = new EndOperationDelegate(this.OnEndGetAttributesFromArchive);
-            }
-            if ((this.onGetAttributesFromArchiveCompletedDelegate == null)) {
-                this.onGetAttributesFromArchiveCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAttributesFromArchiveCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetAttributesFromArchiveDelegate, new object[] {
-                        IdArchive}, this.onEndGetAttributesFromArchiveDelegate, this.onGetAttributesFromArchiveCompletedDelegate, userState);
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute GetAttribute(System.Guid IdAttribute) {
-            return base.Channel.GetAttribute(IdAttribute);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetAttribute(System.Guid IdAttribute, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetAttribute(IdAttribute, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute EndGetAttribute(System.IAsyncResult result) {
-            return base.Channel.EndGetAttribute(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetAttribute(object[] inValues, System.AsyncCallback callback, object asyncState) {
+        private System.IAsyncResult OnBeginDeleteAttribute(object[] inValues, System.AsyncCallback callback, object asyncState) {
             System.Guid IdAttribute = ((System.Guid)(inValues[0]));
-            return this.BeginGetAttribute(IdAttribute, callback, asyncState);
+            return this.BeginDeleteAttribute(IdAttribute, callback, asyncState);
         }
         
-        private object[] OnEndGetAttribute(System.IAsyncResult result) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Attribute retVal = this.EndGetAttribute(result);
+        private object[] OnEndDeleteAttribute(System.IAsyncResult result) {
+            this.EndDeleteAttribute(result);
+            return null;
+        }
+        
+        private void OnDeleteAttributeCompleted(object state) {
+            if ((this.DeleteAttributeCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.DeleteAttributeCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void DeleteAttributeAsync(System.Guid IdAttribute) {
+            this.DeleteAttributeAsync(IdAttribute, null);
+        }
+        
+        public void DeleteAttributeAsync(System.Guid IdAttribute, object userState) {
+            if ((this.onBeginDeleteAttributeDelegate == null)) {
+                this.onBeginDeleteAttributeDelegate = new BeginOperationDelegate(this.OnBeginDeleteAttribute);
+            }
+            if ((this.onEndDeleteAttributeDelegate == null)) {
+                this.onEndDeleteAttributeDelegate = new EndOperationDelegate(this.OnEndDeleteAttribute);
+            }
+            if ((this.onDeleteAttributeCompletedDelegate == null)) {
+                this.onDeleteAttributeCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnDeleteAttributeCompleted);
+            }
+            base.InvokeAsync(this.onBeginDeleteAttributeDelegate, new object[] {
+                        IdAttribute}, this.onEndDeleteAttributeDelegate, this.onDeleteAttributeCompletedDelegate, userState);
+        }
+        
+        public void UpdateStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage) {
+            base.Channel.UpdateStorage(storage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginUpdateStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginUpdateStorage(storage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndUpdateStorage(System.IAsyncResult result) {
+            base.Channel.EndUpdateStorage(result);
+        }
+        
+        private System.IAsyncResult OnBeginUpdateStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage)(inValues[0]));
+            return this.BeginUpdateStorage(storage, callback, asyncState);
+        }
+        
+        private object[] OnEndUpdateStorage(System.IAsyncResult result) {
+            this.EndUpdateStorage(result);
+            return null;
+        }
+        
+        private void OnUpdateStorageCompleted(object state) {
+            if ((this.UpdateStorageCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.UpdateStorageCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void UpdateStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage) {
+            this.UpdateStorageAsync(storage, null);
+        }
+        
+        public void UpdateStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Storage storage, object userState) {
+            if ((this.onBeginUpdateStorageDelegate == null)) {
+                this.onBeginUpdateStorageDelegate = new BeginOperationDelegate(this.OnBeginUpdateStorage);
+            }
+            if ((this.onEndUpdateStorageDelegate == null)) {
+                this.onEndUpdateStorageDelegate = new EndOperationDelegate(this.OnEndUpdateStorage);
+            }
+            if ((this.onUpdateStorageCompletedDelegate == null)) {
+                this.onUpdateStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnUpdateStorageCompleted);
+            }
+            base.InvokeAsync(this.onBeginUpdateStorageDelegate, new object[] {
+                        storage}, this.onEndUpdateStorageDelegate, this.onUpdateStorageCompletedDelegate, userState);
+        }
+        
+        public void UpdateArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
+            base.Channel.UpdateArchiveStorage(ArchiveStorage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginUpdateArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginUpdateArchiveStorage(ArchiveStorage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndUpdateArchiveStorage(System.IAsyncResult result) {
+            base.Channel.EndUpdateArchiveStorage(result);
+        }
+        
+        private System.IAsyncResult OnBeginUpdateArchiveStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage)(inValues[0]));
+            return this.BeginUpdateArchiveStorage(ArchiveStorage, callback, asyncState);
+        }
+        
+        private object[] OnEndUpdateArchiveStorage(System.IAsyncResult result) {
+            this.EndUpdateArchiveStorage(result);
+            return null;
+        }
+        
+        private void OnUpdateArchiveStorageCompleted(object state) {
+            if ((this.UpdateArchiveStorageCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.UpdateArchiveStorageCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void UpdateArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
+            this.UpdateArchiveStorageAsync(ArchiveStorage, null);
+        }
+        
+        public void UpdateArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, object userState) {
+            if ((this.onBeginUpdateArchiveStorageDelegate == null)) {
+                this.onBeginUpdateArchiveStorageDelegate = new BeginOperationDelegate(this.OnBeginUpdateArchiveStorage);
+            }
+            if ((this.onEndUpdateArchiveStorageDelegate == null)) {
+                this.onEndUpdateArchiveStorageDelegate = new EndOperationDelegate(this.OnEndUpdateArchiveStorage);
+            }
+            if ((this.onUpdateArchiveStorageCompletedDelegate == null)) {
+                this.onUpdateArchiveStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnUpdateArchiveStorageCompleted);
+            }
+            base.InvokeAsync(this.onBeginUpdateArchiveStorageDelegate, new object[] {
+                        ArchiveStorage}, this.onEndUpdateArchiveStorageDelegate, this.onUpdateArchiveStorageCompletedDelegate, userState);
+        }
+        
+        public void AddArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
+            base.Channel.AddArchiveStorage(ArchiveStorage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginAddArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginAddArchiveStorage(ArchiveStorage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndAddArchiveStorage(System.IAsyncResult result) {
+            base.Channel.EndAddArchiveStorage(result);
+        }
+        
+        private System.IAsyncResult OnBeginAddArchiveStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage)(inValues[0]));
+            return this.BeginAddArchiveStorage(ArchiveStorage, callback, asyncState);
+        }
+        
+        private object[] OnEndAddArchiveStorage(System.IAsyncResult result) {
+            this.EndAddArchiveStorage(result);
+            return null;
+        }
+        
+        private void OnAddArchiveStorageCompleted(object state) {
+            if ((this.AddArchiveStorageCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.AddArchiveStorageCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void AddArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
+            this.AddArchiveStorageAsync(ArchiveStorage, null);
+        }
+        
+        public void AddArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, object userState) {
+            if ((this.onBeginAddArchiveStorageDelegate == null)) {
+                this.onBeginAddArchiveStorageDelegate = new BeginOperationDelegate(this.OnBeginAddArchiveStorage);
+            }
+            if ((this.onEndAddArchiveStorageDelegate == null)) {
+                this.onEndAddArchiveStorageDelegate = new EndOperationDelegate(this.OnEndAddArchiveStorage);
+            }
+            if ((this.onAddArchiveStorageCompletedDelegate == null)) {
+                this.onAddArchiveStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAddArchiveStorageCompleted);
+            }
+            base.InvokeAsync(this.onBeginAddArchiveStorageDelegate, new object[] {
+                        ArchiveStorage}, this.onEndAddArchiveStorageDelegate, this.onAddArchiveStorageCompletedDelegate, userState);
+        }
+        
+        public void DeleteArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
+            base.Channel.DeleteArchiveStorage(ArchiveStorage);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginDeleteArchiveStorage(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginDeleteArchiveStorage(ArchiveStorage, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndDeleteArchiveStorage(System.IAsyncResult result) {
+            base.Channel.EndDeleteArchiveStorage(result);
+        }
+        
+        private System.IAsyncResult OnBeginDeleteArchiveStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage)(inValues[0]));
+            return this.BeginDeleteArchiveStorage(ArchiveStorage, callback, asyncState);
+        }
+        
+        private object[] OnEndDeleteArchiveStorage(System.IAsyncResult result) {
+            this.EndDeleteArchiveStorage(result);
+            return null;
+        }
+        
+        private void OnDeleteArchiveStorageCompleted(object state) {
+            if ((this.DeleteArchiveStorageCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.DeleteArchiveStorageCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void DeleteArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage) {
+            this.DeleteArchiveStorageAsync(ArchiveStorage, null);
+        }
+        
+        public void DeleteArchiveStorageAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.ArchiveStorage ArchiveStorage, object userState) {
+            if ((this.onBeginDeleteArchiveStorageDelegate == null)) {
+                this.onBeginDeleteArchiveStorageDelegate = new BeginOperationDelegate(this.OnBeginDeleteArchiveStorage);
+            }
+            if ((this.onEndDeleteArchiveStorageDelegate == null)) {
+                this.onEndDeleteArchiveStorageDelegate = new EndOperationDelegate(this.OnEndDeleteArchiveStorage);
+            }
+            if ((this.onDeleteArchiveStorageCompletedDelegate == null)) {
+                this.onDeleteArchiveStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnDeleteArchiveStorageCompleted);
+            }
+            base.InvokeAsync(this.onBeginDeleteArchiveStorageDelegate, new object[] {
+                        ArchiveStorage}, this.onEndDeleteArchiveStorageDelegate, this.onDeleteArchiveStorageCompletedDelegate, userState);
+        }
+        
+        public void AddDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
+            base.Channel.AddDocumentAttributeGroup(AttributeGroup);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginAddDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginAddDocumentAttributeGroup(AttributeGroup, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndAddDocumentAttributeGroup(System.IAsyncResult result) {
+            base.Channel.EndAddDocumentAttributeGroup(result);
+        }
+        
+        private System.IAsyncResult OnBeginAddDocumentAttributeGroup(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup)(inValues[0]));
+            return this.BeginAddDocumentAttributeGroup(AttributeGroup, callback, asyncState);
+        }
+        
+        private object[] OnEndAddDocumentAttributeGroup(System.IAsyncResult result) {
+            this.EndAddDocumentAttributeGroup(result);
+            return null;
+        }
+        
+        private void OnAddDocumentAttributeGroupCompleted(object state) {
+            if ((this.AddDocumentAttributeGroupCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.AddDocumentAttributeGroupCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void AddDocumentAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
+            this.AddDocumentAttributeGroupAsync(AttributeGroup, null);
+        }
+        
+        public void AddDocumentAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, object userState) {
+            if ((this.onBeginAddDocumentAttributeGroupDelegate == null)) {
+                this.onBeginAddDocumentAttributeGroupDelegate = new BeginOperationDelegate(this.OnBeginAddDocumentAttributeGroup);
+            }
+            if ((this.onEndAddDocumentAttributeGroupDelegate == null)) {
+                this.onEndAddDocumentAttributeGroupDelegate = new EndOperationDelegate(this.OnEndAddDocumentAttributeGroup);
+            }
+            if ((this.onAddDocumentAttributeGroupCompletedDelegate == null)) {
+                this.onAddDocumentAttributeGroupCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAddDocumentAttributeGroupCompleted);
+            }
+            base.InvokeAsync(this.onBeginAddDocumentAttributeGroupDelegate, new object[] {
+                        AttributeGroup}, this.onEndAddDocumentAttributeGroupDelegate, this.onAddDocumentAttributeGroupCompletedDelegate, userState);
+        }
+        
+        public void UpdateDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
+            base.Channel.UpdateDocumentAttributeGroup(AttributeGroup);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginUpdateDocumentAttributeGroup(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginUpdateDocumentAttributeGroup(AttributeGroup, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndUpdateDocumentAttributeGroup(System.IAsyncResult result) {
+            base.Channel.EndUpdateDocumentAttributeGroup(result);
+        }
+        
+        private System.IAsyncResult OnBeginUpdateDocumentAttributeGroup(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup = ((BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup)(inValues[0]));
+            return this.BeginUpdateDocumentAttributeGroup(AttributeGroup, callback, asyncState);
+        }
+        
+        private object[] OnEndUpdateDocumentAttributeGroup(System.IAsyncResult result) {
+            this.EndUpdateDocumentAttributeGroup(result);
+            return null;
+        }
+        
+        private void OnUpdateDocumentAttributeGroupCompleted(object state) {
+            if ((this.UpdateDocumentAttributeGroupCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.UpdateDocumentAttributeGroupCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void UpdateDocumentAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup) {
+            this.UpdateDocumentAttributeGroupAsync(AttributeGroup, null);
+        }
+        
+        public void UpdateDocumentAttributeGroupAsync(BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup AttributeGroup, object userState) {
+            if ((this.onBeginUpdateDocumentAttributeGroupDelegate == null)) {
+                this.onBeginUpdateDocumentAttributeGroupDelegate = new BeginOperationDelegate(this.OnBeginUpdateDocumentAttributeGroup);
+            }
+            if ((this.onEndUpdateDocumentAttributeGroupDelegate == null)) {
+                this.onEndUpdateDocumentAttributeGroupDelegate = new EndOperationDelegate(this.OnEndUpdateDocumentAttributeGroup);
+            }
+            if ((this.onUpdateDocumentAttributeGroupCompletedDelegate == null)) {
+                this.onUpdateDocumentAttributeGroupCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnUpdateDocumentAttributeGroupCompleted);
+            }
+            base.InvokeAsync(this.onBeginUpdateDocumentAttributeGroupDelegate, new object[] {
+                        AttributeGroup}, this.onEndUpdateDocumentAttributeGroupDelegate, this.onUpdateDocumentAttributeGroupCompletedDelegate, userState);
+        }
+        
+        public void AddArchiveCertificate(System.Guid idArchive, string userName, string pin, string fileName, byte[] certificateBlob) {
+            base.Channel.AddArchiveCertificate(idArchive, userName, pin, fileName, certificateBlob);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginAddArchiveCertificate(System.Guid idArchive, string userName, string pin, string fileName, byte[] certificateBlob, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginAddArchiveCertificate(idArchive, userName, pin, fileName, certificateBlob, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public void EndAddArchiveCertificate(System.IAsyncResult result) {
+            base.Channel.EndAddArchiveCertificate(result);
+        }
+        
+        private System.IAsyncResult OnBeginAddArchiveCertificate(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid idArchive = ((System.Guid)(inValues[0]));
+            string userName = ((string)(inValues[1]));
+            string pin = ((string)(inValues[2]));
+            string fileName = ((string)(inValues[3]));
+            byte[] certificateBlob = ((byte[])(inValues[4]));
+            return this.BeginAddArchiveCertificate(idArchive, userName, pin, fileName, certificateBlob, callback, asyncState);
+        }
+        
+        private object[] OnEndAddArchiveCertificate(System.IAsyncResult result) {
+            this.EndAddArchiveCertificate(result);
+            return null;
+        }
+        
+        private void OnAddArchiveCertificateCompleted(object state) {
+            if ((this.AddArchiveCertificateCompleted != null)) {
+                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
+                this.AddArchiveCertificateCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
+            }
+        }
+        
+        public void AddArchiveCertificateAsync(System.Guid idArchive, string userName, string pin, string fileName, byte[] certificateBlob) {
+            this.AddArchiveCertificateAsync(idArchive, userName, pin, fileName, certificateBlob, null);
+        }
+        
+        public void AddArchiveCertificateAsync(System.Guid idArchive, string userName, string pin, string fileName, byte[] certificateBlob, object userState) {
+            if ((this.onBeginAddArchiveCertificateDelegate == null)) {
+                this.onBeginAddArchiveCertificateDelegate = new BeginOperationDelegate(this.OnBeginAddArchiveCertificate);
+            }
+            if ((this.onEndAddArchiveCertificateDelegate == null)) {
+                this.onEndAddArchiveCertificateDelegate = new EndOperationDelegate(this.OnEndAddArchiveCertificate);
+            }
+            if ((this.onAddArchiveCertificateCompletedDelegate == null)) {
+                this.onAddArchiveCertificateCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnAddArchiveCertificateCompleted);
+            }
+            base.InvokeAsync(this.onBeginAddArchiveCertificateDelegate, new object[] {
+                        idArchive,
+                        userName,
+                        pin,
+                        fileName,
+                        certificateBlob}, this.onEndAddArchiveCertificateDelegate, this.onAddArchiveCertificateCompletedDelegate, userState);
+        }
+        
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentArchiveCertificate GetArchiveCertificate(System.Guid idArchive) {
+            return base.Channel.GetArchiveCertificate(idArchive);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public System.IAsyncResult BeginGetArchiveCertificate(System.Guid idArchive, System.AsyncCallback callback, object asyncState) {
+            return base.Channel.BeginGetArchiveCertificate(idArchive, callback, asyncState);
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentArchiveCertificate EndGetArchiveCertificate(System.IAsyncResult result) {
+            return base.Channel.EndGetArchiveCertificate(result);
+        }
+        
+        private System.IAsyncResult OnBeginGetArchiveCertificate(object[] inValues, System.AsyncCallback callback, object asyncState) {
+            System.Guid idArchive = ((System.Guid)(inValues[0]));
+            return this.BeginGetArchiveCertificate(idArchive, callback, asyncState);
+        }
+        
+        private object[] OnEndGetArchiveCertificate(System.IAsyncResult result) {
+            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentArchiveCertificate retVal = this.EndGetArchiveCertificate(result);
             return new object[] {
                     retVal};
         }
         
-        private void OnGetAttributeCompleted(object state) {
-            if ((this.GetAttributeCompleted != null)) {
+        private void OnGetArchiveCertificateCompleted(object state) {
+            if ((this.GetArchiveCertificateCompleted != null)) {
                 InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetAttributeCompleted(this, new GetAttributeCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
+                this.GetArchiveCertificateCompleted(this, new GetArchiveCertificateCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
             }
         }
         
-        public void GetAttributeAsync(System.Guid IdAttribute) {
-            this.GetAttributeAsync(IdAttribute, null);
+        public void GetArchiveCertificateAsync(System.Guid idArchive) {
+            this.GetArchiveCertificateAsync(idArchive, null);
         }
         
-        public void GetAttributeAsync(System.Guid IdAttribute, object userState) {
-            if ((this.onBeginGetAttributeDelegate == null)) {
-                this.onBeginGetAttributeDelegate = new BeginOperationDelegate(this.OnBeginGetAttribute);
+        public void GetArchiveCertificateAsync(System.Guid idArchive, object userState) {
+            if ((this.onBeginGetArchiveCertificateDelegate == null)) {
+                this.onBeginGetArchiveCertificateDelegate = new BeginOperationDelegate(this.OnBeginGetArchiveCertificate);
             }
-            if ((this.onEndGetAttributeDelegate == null)) {
-                this.onEndGetAttributeDelegate = new EndOperationDelegate(this.OnEndGetAttribute);
+            if ((this.onEndGetArchiveCertificateDelegate == null)) {
+                this.onEndGetArchiveCertificateDelegate = new EndOperationDelegate(this.OnEndGetArchiveCertificate);
             }
-            if ((this.onGetAttributeCompletedDelegate == null)) {
-                this.onGetAttributeCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAttributeCompleted);
+            if ((this.onGetArchiveCertificateCompletedDelegate == null)) {
+                this.onGetArchiveCertificateCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetArchiveCertificateCompleted);
             }
-            base.InvokeAsync(this.onBeginGetAttributeDelegate, new object[] {
-                        IdAttribute}, this.onEndGetAttributeDelegate, this.onGetAttributeCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup> GetAttributeGroup(System.Guid IdArchive) {
-            return base.Channel.GetAttributeGroup(IdArchive);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetAttributeGroup(System.Guid IdArchive, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetAttributeGroup(IdArchive, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup> EndGetAttributeGroup(System.IAsyncResult result) {
-            return base.Channel.EndGetAttributeGroup(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetAttributeGroup(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdArchive = ((System.Guid)(inValues[0]));
-            return this.BeginGetAttributeGroup(IdArchive, callback, asyncState);
-        }
-        
-        private object[] OnEndGetAttributeGroup(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.AttributeGroup> retVal = this.EndGetAttributeGroup(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetAttributeGroupCompleted(object state) {
-            if ((this.GetAttributeGroupCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetAttributeGroupCompleted(this, new GetAttributeGroupCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetAttributeGroupAsync(System.Guid IdArchive) {
-            this.GetAttributeGroupAsync(IdArchive, null);
-        }
-        
-        public void GetAttributeGroupAsync(System.Guid IdArchive, object userState) {
-            if ((this.onBeginGetAttributeGroupDelegate == null)) {
-                this.onBeginGetAttributeGroupDelegate = new BeginOperationDelegate(this.OnBeginGetAttributeGroup);
-            }
-            if ((this.onEndGetAttributeGroupDelegate == null)) {
-                this.onEndGetAttributeGroupDelegate = new EndOperationDelegate(this.OnEndGetAttributeGroup);
-            }
-            if ((this.onGetAttributeGroupCompletedDelegate == null)) {
-                this.onGetAttributeGroupCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetAttributeGroupCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetAttributeGroupDelegate, new object[] {
-                        IdArchive}, this.onEndGetAttributeGroupDelegate, this.onGetAttributeGroupCompletedDelegate, userState);
-        }
-        
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> GetStorageRulesFromStorage(System.Guid IdStorage) {
-            return base.Channel.GetStorageRulesFromStorage(IdStorage);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStorageRulesFromStorage(System.Guid IdStorage, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStorageRulesFromStorage(IdStorage, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> EndGetStorageRulesFromStorage(System.IAsyncResult result) {
-            return base.Channel.EndGetStorageRulesFromStorage(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStorageRulesFromStorage(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorage = ((System.Guid)(inValues[0]));
-            return this.BeginGetStorageRulesFromStorage(IdStorage, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStorageRulesFromStorage(System.IAsyncResult result) {
-            System.ComponentModel.BindingList<BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule> retVal = this.EndGetStorageRulesFromStorage(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStorageRulesFromStorageCompleted(object state) {
-            if ((this.GetStorageRulesFromStorageCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStorageRulesFromStorageCompleted(this, new GetStorageRulesFromStorageCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStorageRulesFromStorageAsync(System.Guid IdStorage) {
-            this.GetStorageRulesFromStorageAsync(IdStorage, null);
-        }
-        
-        public void GetStorageRulesFromStorageAsync(System.Guid IdStorage, object userState) {
-            if ((this.onBeginGetStorageRulesFromStorageDelegate == null)) {
-                this.onBeginGetStorageRulesFromStorageDelegate = new BeginOperationDelegate(this.OnBeginGetStorageRulesFromStorage);
-            }
-            if ((this.onEndGetStorageRulesFromStorageDelegate == null)) {
-                this.onEndGetStorageRulesFromStorageDelegate = new EndOperationDelegate(this.OnEndGetStorageRulesFromStorage);
-            }
-            if ((this.onGetStorageRulesFromStorageCompletedDelegate == null)) {
-                this.onGetStorageRulesFromStorageCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageRulesFromStorageCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStorageRulesFromStorageDelegate, new object[] {
-                        IdStorage}, this.onEndGetStorageRulesFromStorageDelegate, this.onGetStorageRulesFromStorageCompletedDelegate, userState);
-        }
-        
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule GetStorageRule(System.Guid IdStorage, System.Guid IdAttribute) {
-            return base.Channel.GetStorageRule(IdStorage, IdAttribute);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public System.IAsyncResult BeginGetStorageRule(System.Guid IdStorage, System.Guid IdAttribute, System.AsyncCallback callback, object asyncState) {
-            return base.Channel.BeginGetStorageRule(IdStorage, IdAttribute, callback, asyncState);
-        }
-        
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        public BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule EndGetStorageRule(System.IAsyncResult result) {
-            return base.Channel.EndGetStorageRule(result);
-        }
-        
-        private System.IAsyncResult OnBeginGetStorageRule(object[] inValues, System.AsyncCallback callback, object asyncState) {
-            System.Guid IdStorage = ((System.Guid)(inValues[0]));
-            System.Guid IdAttribute = ((System.Guid)(inValues[1]));
-            return this.BeginGetStorageRule(IdStorage, IdAttribute, callback, asyncState);
-        }
-        
-        private object[] OnEndGetStorageRule(System.IAsyncResult result) {
-            BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.StorageRule retVal = this.EndGetStorageRule(result);
-            return new object[] {
-                    retVal};
-        }
-        
-        private void OnGetStorageRuleCompleted(object state) {
-            if ((this.GetStorageRuleCompleted != null)) {
-                InvokeAsyncCompletedEventArgs e = ((InvokeAsyncCompletedEventArgs)(state));
-                this.GetStorageRuleCompleted(this, new GetStorageRuleCompletedEventArgs(e.Results, e.Error, e.Cancelled, e.UserState));
-            }
-        }
-        
-        public void GetStorageRuleAsync(System.Guid IdStorage, System.Guid IdAttribute) {
-            this.GetStorageRuleAsync(IdStorage, IdAttribute, null);
-        }
-        
-        public void GetStorageRuleAsync(System.Guid IdStorage, System.Guid IdAttribute, object userState) {
-            if ((this.onBeginGetStorageRuleDelegate == null)) {
-                this.onBeginGetStorageRuleDelegate = new BeginOperationDelegate(this.OnBeginGetStorageRule);
-            }
-            if ((this.onEndGetStorageRuleDelegate == null)) {
-                this.onEndGetStorageRuleDelegate = new EndOperationDelegate(this.OnEndGetStorageRule);
-            }
-            if ((this.onGetStorageRuleCompletedDelegate == null)) {
-                this.onGetStorageRuleCompletedDelegate = new System.Threading.SendOrPostCallback(this.OnGetStorageRuleCompleted);
-            }
-            base.InvokeAsync(this.onBeginGetStorageRuleDelegate, new object[] {
-                        IdStorage,
-                        IdAttribute}, this.onEndGetStorageRuleDelegate, this.onGetStorageRuleCompletedDelegate, userState);
+            base.InvokeAsync(this.onBeginGetArchiveCertificateDelegate, new object[] {
+                        idArchive}, this.onEndGetArchiveCertificateDelegate, this.onGetArchiveCertificateCompletedDelegate, userState);
         }
     }
 }

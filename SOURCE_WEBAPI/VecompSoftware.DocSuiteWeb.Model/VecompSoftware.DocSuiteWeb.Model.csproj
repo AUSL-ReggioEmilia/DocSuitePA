@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.DocSuiteWeb.Model</RootNamespace>
     <AssemblyName>VecompSoftware.DocSuiteWeb.Model</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -67,19 +67,37 @@
     <Compile Include="Documents\Document.cs" />
     <Compile Include="Documents\SearchableDocumentModel.cs" />
     <Compile Include="Documents\FilterDocumentModel.cs" />
+    <Compile Include="Documents\Signs\DelegateUser.cs" />
     <Compile Include="Documents\Signs\OTPType.cs" />
+    <Compile Include="Entities\Audits\AuditBuildModel.cs" />
+    <Compile Include="Entities\Audits\AuditModel.cs" />
     <Compile Include="Entities\Collaborations\CollaborationBuildModel.cs" />
     <Compile Include="Entities\Collaborations\CollaborationDocumentGroupName.cs" />
     <Compile Include="Entities\Commons\CategoryFascicleRightTableValuedModel.cs" />
     <Compile Include="Entities\Commons\CategoryModelType.cs" />
+    <Compile Include="Entities\Commons\ContactBuildModel.cs" />
     <Compile Include="Entities\Commons\RoleFinderModel.cs" />
     <Compile Include="Entities\Commons\RoleFullTableValuedModel.cs" />
+    <Compile Include="Entities\Dossiers\DossierStatus.cs" />
+    <Compile Include="Entities\Dossiers\DossierType.cs" />
+    <Compile Include="Entities\Commons\RoleUserFinderModel.cs" />
+    <Compile Include="Entities\Commons\RoleUserModel.cs" />
+    <Compile Include="Entities\Workflows\WorkflowMetadataDraftModel.cs" />
+    <Compile Include="Entities\Dossiers\DossierBuildModel.cs" />
+    <Compile Include="Integrations\GenericProcesses\FascicleCustomAction.cs" />
     <Compile Include="Entities\Fascicles\FascicleDocumentUnitModel.cs" />
     <Compile Include="Entities\Processes\IProcessTableValuedModel.cs" />
     <Compile Include="Entities\Processes\ProcessFascicleTemplateModel.cs" />
     <Compile Include="Entities\Processes\ProcessModel.cs" />
     <Compile Include="Entities\Processes\ProcessTableValuedModel.cs" />
     <Compile Include="Entities\Processes\ProcessType.cs" />
+    <Compile Include="Entities\Tenants\ITenantAOOTableValuedModel.cs" />
+    <Compile Include="Entities\Tenants\TenantAOOBuildModel.cs" />
+    <Compile Include="Entities\Tenants\TenantAOOModel.cs" />
+    <Compile Include="Entities\Tenants\TenantBuildModel.cs" />
+    <Compile Include="Entities\Tenants\TenantModel.cs" />
+    <Compile Include="Entities\Tenants\TenantType.cs" />
+    <Compile Include="Entities\Tenants\TenantTypologyType.cs" />
     <Compile Include="Entities\Workflows\WorkflowStatus.cs" />
     <Compile Include="ExternalModels\DocSuiteEvent.cs" />
     <Compile Include="ExternalModels\DocSuiteModel.cs" />
@@ -95,6 +113,8 @@
     <Compile Include="Integrations\ZenDesk\SectionModel.cs" />
     <Compile Include="Integrations\ZenDesk\CategoriesModel.cs" />
     <Compile Include="Integrations\ZenDesk\SectionsModel.cs" />
+    <Compile Include="Parameters\JsonParameterNames.cs" />
+    <Compile Include="Metadata\MetadataValueModel.cs" />
     <Compile Include="Parameters\ODATA\Finders\CategoryFinderModel.cs" />
     <Compile Include="Entities\Commons\CategoryFullTableValuedModel.cs" />
     <Compile Include="Entities\Commons\ContactType.cs" />
@@ -184,8 +204,6 @@
     <Compile Include="Entities\Monitors\TransparentAdministrationMonitorLogTableValuedModel.cs" />
     <Compile Include="Entities\Parameter\ParameterModel.cs" />
     <Compile Include="Entities\Parameter\ParameterTableValuedModel.cs" />
-    <Compile Include="Entities\PECMails\PECMailErrorSummaryModel.cs" />
-    <Compile Include="Entities\PECMails\PECMailErrorStreamModel.cs" />
     <Compile Include="Entities\Commons\ComunicationType.cs" />
     <Compile Include="Entities\Commons\ContactBagDraftModel.cs" />
     <Compile Include="Entities\Protocols\ProtocolContactType.cs" />
@@ -201,6 +219,20 @@
     <Compile Include="Entities\Protocols\ProtocolUserType.cs" />
     <Compile Include="Entities\Workflows\WorkflowActivityModel.cs" />
     <Compile Include="Parameters\ODATA\Finders\ContactFinderModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\DocumentUnitFinderModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\DossierFinderModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\MetadataFinderModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\IMetadataFilterFactory.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\IMetadataFilterModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\MetadataFilterFactory.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\MetadataFinderType.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\MetadataDateFilterModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\MetadataBoolFilterModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\MetadataEnumFilterModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\MetadataDiscussionFilterModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\MetadataContactFilterModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\MetadataNumberFilterModel.cs" />
+    <Compile Include="Parameters\ODATA\Finders\Metadata\MetadataTextFilterModel.cs" />
     <Compile Include="Parameters\ODATA\Finders\WorkflowActivityFinderModel.cs" />
     <Compile Include="Reports\Implementation\ReportBuildModel.cs" />
     <Compile Include="Reports\Implementation\ReportCategoryModel.cs" />
@@ -238,7 +270,7 @@
     <Compile Include="Metadata\CommentFieldModel.cs" />
     <Compile Include="Metadata\DiscussionFieldModel.cs" />
     <Compile Include="Metadata\EnumFieldModel.cs" />
-    <Compile Include="Metadata\MetadataModel.cs" />
+    <Compile Include="Metadata\MetadataDesignerModel.cs" />
     <Compile Include="Metadata\TextFieldModel.cs" />
     <Compile Include="Metadata\BaseFieldModel.cs" />
     <Compile Include="Parameters\CollaborationManagersModel.cs" />
@@ -295,6 +327,7 @@
     <Compile Include="Parameters\TenantModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Securities\HostIdentify.cs" />
+    <Compile Include="Securities\SecurityRight.cs" />
     <Compile Include="Securities\TokenSecurityModel.cs" />
     <Compile Include="ServiceBus\EvaluationModel.cs" />
     <Compile Include="ServiceBus\ServiceBusResponseState.cs" />
@@ -310,6 +343,10 @@
     <Compile Include="Documents\Signs\StorageInformationType.cs" />
     <Compile Include="Documents\Signs\RemoteSignProperty.cs" />
     <Compile Include="Documents\Signs\UserProfile.cs" />
+    <Compile Include="SignalR\MessageWorkflowResume.cs" />
+    <Compile Include="SignalR\MessageWorkflowResumeStatus.cs" />
+    <Compile Include="SignalR\WorflowFeedMessage.cs" />
+    <Compile Include="SignalR\WorkflowFeedMessageType.cs" />
     <Compile Include="Validations\ValidationMessageModel.cs" />
     <Compile Include="Validations\ValidationModel.cs" />
     <Compile Include="WebAPI\Client\IBaseAddress.cs" />
@@ -320,20 +357,21 @@
     <Compile Include="WebAPI\Client\Implementation\HttpClientConfiguration.cs" />
     <Compile Include="WebAPI\Client\Implementation\WebApiControllerEndpoint.cs" />
     <Compile Include="WebAPI\Client\IWebApiControllerEndpoint.cs" />
+    <Compile Include="WebAPI\ODATAModelResult.cs" />
     <Compile Include="Workflow\AcceptanceStatus.cs" />
+    <Compile Include="Workflow\Actions\WorkflowActionFascicleCloseModel.cs" />
     <Compile Include="Workflow\Actions\WorkflowActionDocumentUnitLinkModel.cs" />
     <Compile Include="Workflow\Actions\WorkflowActionFascicleModel.cs" />
     <Compile Include="Workflow\Actions\WorkflowActionModel.cs" />
+    <Compile Include="Workflow\Actions\WorkflowActionShareDocumentUnitModel.cs" />
     <Compile Include="Workflow\ActivityModel.cs" />
     <Compile Include="Workflow\ArgumentType.cs" />
-    <Compile Include="Workflow\Client\WorkflowClientConfiguration.cs" />
-    <Compile Include="Workflow\TranslationError.cs" />
-    <Compile Include="Workflow\TranslationErrorExtended.cs" />
     <Compile Include="Workflow\WorkflowAccount.cs" />
     <Compile Include="Workflow\WorkflowMessageLinkType.cs" />
     <Compile Include="Workflow\WorkflowDocumentModel.cs" />
     <Compile Include="Workflow\WorkflowNotification.cs" />
     <Compile Include="Workflow\WorkflowReferenceBiblosModel.cs" />
+    <Compile Include="Workflow\WorkflowReferenceDocumentUnitModel.cs" />
     <Compile Include="Workflow\WorkflowReferenceModel.cs" />
     <Compile Include="Workflow\WorkflowAcceptanceModel.cs" />
     <Compile Include="Workflow\WorkflowActivityAction.cs" />
@@ -345,21 +383,22 @@
     <Compile Include="Workflow\WorkflowComplete.cs" />
     <Compile Include="Workflow\WorkflowMapping.cs" />
     <Compile Include="Workflow\WorkflowNotify.cs" />
-    <Compile Include="Workflow\WorkflowPublish.cs" />
     <Compile Include="Workflow\WorkflowRequestStatus.cs" />
     <Compile Include="Workflow\WorkflowResult.cs" />
     <Compile Include="Workflow\WorkflowRole.cs" />
+    <Compile Include="Workflow\WorkflowRule.cs" />
     <Compile Include="Workflow\WorkflowStart.cs" />
     <Compile Include="Workflow\WorkflowStep.cs" />
-    <Compile Include="Workflow\WorkflowValidate.cs" />
+    <Compile Include="Workflow\WorkflowRuleDefinition.cs" />
+    <Compile Include="Workflow\WorkflowValidationRulesType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="VecompSoftware.DocSuiteWeb.Model.nuspec">
+    <Content Include="VecompSoftware.DocSuiteWeb.Model.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commons\" />

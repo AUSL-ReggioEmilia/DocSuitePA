@@ -66,6 +66,11 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.UDS
             HasRequired(t => t.Relation)
                 .WithMany(t => t.UDSAuthorizations)
                 .Map(m => m.MapKey("IdRole"));
+
+            HasRequired(t => t.SourceUDS)
+                .WithMany(t => t.UDSRoles)
+                .HasForeignKey(f => f.IdUDS);
+
             #endregion
 
         }

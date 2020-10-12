@@ -57,5 +57,9 @@
         /// Contenitore della DocSuite
         /// </summary>
         Container = OChartItem * 2,
+        /// <summary>
+        /// Evento di intgrazione esterno 
+        /// </summary>
+        IntegrationEvent = Container * 2,
     }
 }

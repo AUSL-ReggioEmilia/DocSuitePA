@@ -1,5 +1,7 @@
 ﻿using VecompSoftware.DocSuiteWeb.Entity.Parameters;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Parameter;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Parameters
 {
@@ -37,6 +39,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Parameters
             modelTransformed.LastUsedNumberReg = entity.LastUsedNumberReg;
             modelTransformed.RegistrationUser = entity.RegistrationUser;
             modelTransformed.RegistrationDate = entity.RegistrationDate;
+
+            modelTransformed.TenantAOO = entity.TenantAOO != null ? _mapperUnitOfWork.Repository<IDomainMapper<TenantAOO, TenantAOOModel>>().Map(entity.TenantAOO, new TenantAOOModel()) : null;
 
             return modelTransformed;
         }

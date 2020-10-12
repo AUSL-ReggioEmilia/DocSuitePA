@@ -12,6 +12,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Tenants
             entityTransformed.StartDate = entity.StartDate;
             entityTransformed.EndDate = entity.EndDate;
             entityTransformed.Note = entity.Note;
+            entityTransformed.TenantTypology = entity.TenantTypology;
             #endregion
 
             return entityTransformed;

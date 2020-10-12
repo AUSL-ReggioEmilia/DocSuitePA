@@ -27,7 +27,7 @@
                 "CounterName": "",
                 "InstanceName": ""
             },
-            "Threshold": 5
+            "Threshold": 95
         }
     ]
 }

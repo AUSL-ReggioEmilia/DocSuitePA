@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.DocSuiteWeb.Finder</RootNamespace>
     <AssemblyName>VecompSoftware.DocSuiteWeb.Finder</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -45,25 +45,29 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="VecompSoftware.Helpers.Workflow, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.8.87.19296.2\lib\net461\VecompSoftware.Helpers.Workflow.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonDefinition.cs" />
     <Compile Include="Commons\CategoryFascicleRightFinder.cs" />
+    <Compile Include="Commons\CategorySchemaFinder.cs" />
     <Compile Include="Commons\ContactFinder.cs" />
     <Compile Include="Commons\ContainerFinder.cs" />
     <Compile Include="Commons\IncrementalFinder.cs" />
     <Compile Include="Collaborations\CollaborationFinder.cs" />
     <Compile Include="Commons\CategoryFinder.cs" />
     <Compile Include="Commons\CategoryFascicleFinder.cs" />
+    <Compile Include="Commons\LocationFinder.cs" />
     <Compile Include="Commons\MetadataRepositoryFinder.cs" />
+    <Compile Include="Commons\MetadataValueFinder.cs" />
     <Compile Include="Commons\ParameterEnvFinder.cs" />
     <Compile Include="Commons\RoleFinder.cs" />
     <Compile Include="Commons\RoleGroupFinder.cs" />
     <Compile Include="Commons\PrivacyLevelFinder.cs" />
     <Compile Include="Commons\RoleUserFinder.cs" />
+    <Compile Include="Commons\UserLogFinder.cs" />
     <Compile Include="Conservations\ConservationFinder.cs" />
     <Compile Include="DocumentArchives\DocumentSeriesConstraintFinder.cs" />
     <Compile Include="DocumentArchives\DocumentSeriesFinder.cs" />
@@ -89,6 +93,7 @@
     <Compile Include="PECMails\PECMailBoxConfigurationFinder.cs" />
     <Compile Include="PECMails\PECMailBoxFinder.cs" />
     <Compile Include="PECMails\PECMailFinder.cs" />
+    <Compile Include="PosteWeb\POLRequestFinder.cs" />
     <Compile Include="Processes\ProcessFascicleTemplateFinder.cs" />
     <Compile Include="Processes\ProcessFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -123,6 +128,8 @@
     <Compile Include="UDS\UDSLogFinder.cs" />
     <Compile Include="UDS\UDSUserFinder.cs" />
     <Compile Include="Workflows\WorkflowActivityFinder.cs" />
+    <Compile Include="Workflows\WorkflowAuthorizationFinder.cs" />
+    <Compile Include="Workflows\WorkflowEvaluationPropertyFinder.cs" />
     <Compile Include="Workflows\WorkflowInstanceFinder.cs" />
     <Compile Include="Workflows\WorkflowRepositoryFinder.cs" />
     <Compile Include="Workflows\WorkflowRoleMappingFinder.cs" />
@@ -131,17 +138,15 @@
     <Content Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="VecompSoftware.DocSuiteWeb.Finder.nuspec">
+    <Content Include="VecompSoftware.DocSuiteWeb.Finder.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Desks\" />
     <Folder Include="Messages\" />
     <Folder Include="OCharts\" />
     <Folder Include="Tasks\" />
-    <Folder Include="Tenders\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
@@ -164,6 +169,9 @@
       <Project>{27D8FCBB-8A8E-430B-8747-A5ACE9B4FFCA}</Project>
       <Name>VecompSoftware.DocSuiteWeb.Repository</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

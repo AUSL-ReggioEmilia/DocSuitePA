@@ -20,6 +20,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Commons
         {
 
             entityTransformed.Id = entity.EntityId;
+            entityTransformed.EntityId = entity.EntityId;
             entityTransformed.Description = entity.Description;
             entityTransformed.Email = entity.EmailAddress;
 

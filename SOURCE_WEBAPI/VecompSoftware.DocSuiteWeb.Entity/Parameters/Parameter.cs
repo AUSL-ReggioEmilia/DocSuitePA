@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Parameters
 {
@@ -33,6 +34,10 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Parameters
         public short LastUsedBillNumber { get; set; }
         public short LastUsedYearReg { get; set; }
         public int? LastUsedNumberReg { get; set; }
+        #endregion
+
+        #region [ Navigation Properties ]
+        public virtual TenantAOO TenantAOO { get; set; }
         #endregion
     }
 }

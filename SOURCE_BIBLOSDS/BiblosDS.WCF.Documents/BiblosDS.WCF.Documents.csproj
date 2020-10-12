@@ -162,8 +162,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -279,6 +279,10 @@
     <ProjectReference Include="..\BiblosDS.Library.Common\BiblosDS.Library.Common.csproj">
       <Project>{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}</Project>
       <Name>BiblosDS.Library.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BiblosDS.WCF.Common\VecompSoftware.BiblosDS.WCF.Common.csproj">
+      <Project>{b6988e8d-4b45-4d4b-8b8e-058bb6c18111}</Project>
+      <Name>VecompSoftware.BiblosDS.WCF.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.Commons\VecompSoftware.Common.csproj">
       <Project>{54ad4b78-46b4-4a62-8ec2-228f29c0ae56}</Project>

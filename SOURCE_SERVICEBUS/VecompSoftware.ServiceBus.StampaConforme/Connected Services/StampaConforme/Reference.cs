@@ -37,6 +37,9 @@ namespace VecompSoftware.ServiceBus.StampaConforme.StampaConforme {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ReferenceIdField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string SimpleSignersAttributeField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -108,6 +111,19 @@ namespace VecompSoftware.ServiceBus.StampaConforme.StampaConforme {
                 if ((object.ReferenceEquals(this.ReferenceIdField, value) != true)) {
                     this.ReferenceIdField = value;
                     this.RaisePropertyChanged("ReferenceId");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=5)]
+        public string SimpleSignersAttribute {
+            get {
+                return this.SimpleSignersAttributeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.SimpleSignersAttributeField, value) != true)) {
+                    this.SimpleSignersAttributeField = value;
+                    this.RaisePropertyChanged("SimpleSignersAttribute");
                 }
             }
         }

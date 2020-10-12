@@ -12,7 +12,9 @@ using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
+using VecompSoftware.DocSuiteWeb.Model.Workflow.Actions;
 using VecompSoftware.Services.Command.CQRS.Events.Entities.Commons;
+using VecompSoftware.Services.Command.CQRS.Events.Models.Workflows;
 
 namespace VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose
 {
@@ -101,8 +103,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose
             if (_needInitializeModule)
             {
                 _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventDeleteCategoryFascicle>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration, 
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventDeleteCategoryFascicle>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.CategoryFascicleDeleteSubscription, CategoryFascicleDeleteCallback));
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowActionFascicleClose>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
+                    _moduleConfiguration.WorkflowFascicleCloseSubscription, WorkflowFascicleCloseCallback));
 
                 _needInitializeModule = false;
             }
@@ -118,7 +122,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose
             _needInitializeModule = true;
         }
 
-        private async Task CategoryFascicleDeleteCallback(IEventDeleteCategoryFascicle evt)
+        private async Task CategoryFascicleDeleteCallback(IEventDeleteCategoryFascicle evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage(string.Concat("CategoryFascicleDeleteCallback -> evaluate event id ", evt.Id)), LogCategories);
 
@@ -151,7 +155,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose
             }
 
             ICollection<Fascicle> activeFascicles = await _webAPIClient.GetFasciclesAsync($@"$filter=Category/EntityShortId eq {categoryFascicle.Category.EntityShortId} 
-                and DSWEnvironment eq {categoryFascicle.DSWEnvironment} and EndDate eq null and FascicleType eq '{categoryFascicle.FascicleType}'");
+                and DSWEnvironment eq {categoryFascicle.DSWEnvironment} and EndDate eq null and FascicleType eq '{categoryFascicle.FascicleType}'&$expand=Contacts");
             return activeFascicles;
         }
 
@@ -172,6 +176,34 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.FascicleClose
                 return UpdateActionType.FascicleClose;
             }
             return _closeFascicleActionType[fascicle.FascicleType];
+        }
+
+        private async Task WorkflowFascicleCloseCallback(IEventWorkflowActionFascicleClose evt, IDictionary<string, object> properties)
+        {
+            _logger.WriteDebug(new LogMessage(string.Concat("WorkflowFascicleCloseCallback -> evaluate event id ", evt.Id)), LogCategories);
+
+            try
+            {
+                if (evt.ContentType == null || evt.ContentType.ContentTypeValue == null)
+                {
+                    _logger.WriteError(new LogMessage("WorkflowFascicleCloseCallback -> FascicleModel is null"), LogCategories);
+                    throw new Exception("Non e' presente un FascicleModel nell'evento di chiusura");
+                }
+
+                DocSuiteWeb.Model.Entities.Fascicles.FascicleModel fascicleModel = (evt.ContentType.ContentTypeValue as WorkflowActionFascicleCloseModel).GetReferenced();                
+                Fascicle fascicle = await _webAPIClient.GetFascicleAsync($"$filter=UniqueId eq {fascicleModel.UniqueId}&$expand=Contacts");
+                if (fascicle == null)
+                {
+                    _logger.WriteError(new LogMessage($"WorkflowFascicleCloseCallback -> Fascicle {fascicleModel.UniqueId} not found"), LogCategories);
+                    throw new Exception($"Non e' stato trovato un fascicolo con id {fascicleModel.UniqueId}");
+                }
+                await CloseFasciclesAsync(new List<Fascicle>() { fascicle });
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteError(new LogMessage("WorkflowFascicleCloseCallback -> error complete call"), ex, LogCategories);
+                throw;
+            }
         }
         #endregion
     }

@@ -18,11 +18,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Messages
                 .HasColumnName("IDMessageAttachment")
                 .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
-            Property(x => x.Server)
-                .HasColumnName("Server")
-                .IsRequired()
-                .HasMaxLength(255);
-
             Property(x => x.Archive)
                 .HasColumnName("Archive")
                 .IsRequired()

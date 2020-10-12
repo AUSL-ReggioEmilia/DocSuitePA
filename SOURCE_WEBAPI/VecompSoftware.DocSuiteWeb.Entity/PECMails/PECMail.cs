@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.PECMails
@@ -119,18 +120,14 @@ namespace VecompSoftware.DocSuiteWeb.Entity.PECMails
 
         public PECMailMultipleType? MultipleType { get; set; }
 
-        public Guid? IdUDS { get; set; }
-
         public InvoiceStatus? InvoiceStatus { get; set; }
-
-        public DSWEnvironmentType? DocumentUnitType { get; set; }
         #endregion
 
         #region[ Navigation Properties ]
 
         public virtual Location Location { get; set; }
         public virtual PECMailBox PECMailBox { get; set; }
-        public virtual UDSRepository UDSRepository { get; set; }
+        public virtual DocumentUnit DocumentUnit { get; set; }
         public virtual ICollection<PECMailLog> PECMailLogs { get; set; }
         public virtual ICollection<PECMailReceipt> PECMailChildrenReceipts { get; set; }
         public virtual ICollection<PECMailReceipt> PECMailReceipts { get; set; }
@@ -142,9 +139,9 @@ namespace VecompSoftware.DocSuiteWeb.Entity.PECMails
         #endregion
 
         #region [ Not Mapping Properties ]
+        public bool WorkflowAutoComplete { get; set; }
         public Guid? IdWorkflowActivity { get; set; }
         public string WorkflowName { get; set; }
-
         public ICollection<IWorkflowAction> WorkflowActions { get; set; }
 
         #endregion

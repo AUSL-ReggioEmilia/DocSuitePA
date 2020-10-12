@@ -1,0 +1,6 @@
+{
+  "TopicBuilderEvent": "builder_event",
+  "TopicWorkflowActivityCompleted": "workflow_activity_completed",
+  "WorkflowAutoCompleteBuildCompleteSubscription": "WorkflowAutoCompleteBuildComplete",
+  "WorkflowActivityAutoCompleteSubscription": "WorkflowActivityAutoComplete"
+}

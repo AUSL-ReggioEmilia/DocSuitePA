@@ -40,6 +40,15 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Fascicles
             foreach (IGrouping<Guid, FascicleFolderTableValuedModel> fascicleFolderLookup in model.ToLookup(x => x.IdFascicleFolder))
             {
                 modelTransformed = Map(fascicleFolderLookup.First(), new FascicleFolderModel());
+                if (fascicleFolderLookup.Any(x => x.Document_IdFascicleDocument.HasValue))
+                {
+                    modelTransformed.FascicleDocuments = fascicleFolderLookup.Select(x => new FascicleDocumentModel()
+                    {
+                        UniqueId = x.Document_IdFascicleDocument.Value,
+                        IdArchiveChain = x.Document_IdArchiveChain.Value,
+                        ChainType = x.Document_ChainType.Value
+                    }).ToList();
+                }
                 modelsTransformed.Add(modelTransformed);
             }
             return modelsTransformed;

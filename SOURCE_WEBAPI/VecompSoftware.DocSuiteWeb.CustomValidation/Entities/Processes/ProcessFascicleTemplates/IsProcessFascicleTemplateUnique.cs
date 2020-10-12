@@ -16,7 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Processes.Process
         #region [ Constructor ]
 
         public IsProcessFascicleTemplateNameUnique(NameValueCollection attributes)
-            : base("Un processo con il nome scelto è già esistente.", nameof(IsProcessFascicleTemplateNameUnique))
+            : base("Il template con il nome scelto è già stato creato.", nameof(IsProcessFascicleTemplateNameUnique))
         {
         }
 
@@ -26,11 +26,7 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Processes.Process
 
         protected override void ValidateObject(ProcessFascicleTemplateValidator objectToValidate)
         {
-            bool result = true;
-            if (!string.IsNullOrEmpty(objectToValidate.Name))
-            {
-                result = CurrentUnitOfWork.Repository<ProcessFascicleTemplate>().NameAlreadyExists(objectToValidate.Name, objectToValidate.UniqueId);
-            }
+            bool result = objectToValidate.DossierFolder == null ? false : CurrentUnitOfWork.Repository<ProcessFascicleTemplate>().NameAlreadyExists(objectToValidate.Name, objectToValidate.DossierFolder.UniqueId);
             if (result)
             {
                 GenerateInvalidateResult();

@@ -1,6 +1,7 @@
 ﻿using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Parameters;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation;
@@ -29,6 +30,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Parameters
         #region [ Methods ]
         protected override Parameter BeforeCreate(Parameter entity)
         {
+            if (entity.TenantAOO != null)
+            {
+                entity.TenantAOO = _unitOfWork.Repository<TenantAOO>().Find(entity.TenantAOO.UniqueId);
+            }
+
             return base.BeforeCreate(entity);
         }
 

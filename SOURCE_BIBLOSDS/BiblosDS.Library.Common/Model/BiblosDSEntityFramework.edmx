@@ -27,11 +27,10 @@
           <Property Name="ThumbnailEnabled" Type="bit" />
           <Property Name="PdfConversionEnabled" Type="bit" />
           <Property Name="FullSignEnabled" Type="bit" />
-          <Property Name="VerifyPreservationDateEnabled" Type="bit" />
-          <Property Name="VerifyPreservationIncrementalEnabled" Type="bit" />
           <Property Name="TransitoEnabled" Type="bit" />
           <Property Name="FiscalDocumentType" Type="varchar" MaxLength="255" />
           <Property Name="ODBCConnection" Type="varchar" MaxLength="500" />
+          <Property Name="PreservationConfiguration" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="ArchiveCertificate">
           <Key>
@@ -182,6 +181,7 @@
           <Property Name="TemplateIndexFile" Type="text" />
           <Property Name="TemplateADEFile" Type="text" />
           <Property Name="PECEmail" Type="varchar" MaxLength="500" />
+          <Property Name="SignInfo" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Component">
           <Key>
@@ -192,6 +192,14 @@
           <Property Name="Server" Type="varchar" MaxLength="50" />
           <Property Name="InstallPath" Type="varchar" MaxLength="250" />
           <Property Name="Enable" Type="smallint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CustomerCompany">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdCustomer" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="IdCompany" Type="uniqueidentifier" Nullable="false" />
         </EntityType>
         <EntityType Name="Document">
           <Key>
@@ -224,13 +232,10 @@
           <Property Name="IdDocumentStatus" Type="smallint" Nullable="false" />
           <Property Name="IsCheckOut" Type="smallint" Nullable="false" />
           <Property Name="DateMain" Type="datetime" />
-          <Property Name="IdPreservation" Type="uniqueidentifier" />
           <Property Name="IsDetached" Type="bit" />
           <Property Name="IdUserCheckOut" Type="varchar" MaxLength="250" />
           <Property Name="PrimaryKeyValue" Type="varchar" MaxLength="250" />
           <Property Name="PrimaryKeyValueIndex" Type="nvarchar" MaxLength="250" StoreGeneratedPattern="Computed" />
-          <Property Name="IdPreservationException" Type="uniqueidentifier" />
-          <Property Name="PreservationIndex" Type="bigint" />
           <Property Name="IdThumbnail" Type="varchar" MaxLength="250" />
           <Property Name="IdPdf" Type="varchar" MaxLength="250" />
           <Property Name="PreservationName" Type="varchar" MaxLength="250" />
@@ -769,6 +774,12 @@
           <Property Name="IdServer" Type="uniqueidentifier" Nullable="false" />
           <Property Name="ServerName" Type="varchar" MaxLength="250" />
           <Property Name="ServerRole" Type="varchar" MaxLength="50" />
+          <Property Name="DocumentServiceUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="DocumentServiceBinding" Type="nvarchar" MaxLength="256" />
+          <Property Name="DocumentServiceBindingConfiguration" Type="nvarchar" MaxLength="256" />
+          <Property Name="StorageServiceUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="StorageServiceBinding" Type="nvarchar" MaxLength="256" />
+          <Property Name="StorageServiceBindingConfiguration" Type="nvarchar" MaxLength="256" />
         </EntityType>
         <EntityType Name="Storage">
           <Key>
@@ -859,6 +870,15 @@
           <Property Name="DateRetry" Type="datetime" />
           <Property Name="ServerName" Type="varchar" MaxLength="255" />
         </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="IdCustomer" />
+          </Key>
+          <Property Name="IdCustomer" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="DateCreated" Type="datetime" />
+          <Property Name="SignInfo" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="CustomerKey">
           <Key>
             <PropertyRef Name="DocumentClass" />
@@ -903,6 +923,34 @@ warning 6002: The table/view 'BiblosDS2010.dbo.DataBaseVersion' does not have a 
           </Key>
           <Property Name="LocalPath" Type="varchar" MaxLength="5" Nullable="false" />
         </EntityType>
+        <Association Name="FK__CustomerC__IdCom__641990EE">
+          <End Role="Company" Type="Self.Company" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CustomerCompany" Type="Self.CustomerCompany" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="IdCompany" />
+            </Principal>
+            <Dependent Role="CustomerCompany">
+              <PropertyRef Name="IdCompany" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CustomerC__IdCus__63256CB5">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CustomerCompany" Type="Self.CustomerCompany" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="IdCustomer" />
+            </Principal>
+            <Dependent Role="CustomerCompany">
+              <PropertyRef Name="IdCustomer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AlertTask_AlertType">
           <End Role="PreservationAlertType" Type="Self.PreservationAlertType" Multiplicity="1" />
           <End Role="PreservationAlertTask" Type="Self.PreservationAlertTask" Multiplicity="*" />
@@ -2164,6 +2212,7 @@ warning 6002: The table/view 'BiblosDS2010.dbo.DataBaseVersion' does not have a 
           <Parameter Name="IdArchive" Type="uniqueidentifier" Mode="In" />
           <Parameter Name="IdPreservation" Type="uniqueidentifier" Mode="In" />
           <Parameter Name="IdPreservationActivity" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="IdCompany" Type="uniqueidentifier" Mode="In" />
           <Parameter Name="StartDate" Type="datetime" Mode="In" />
           <Parameter Name="EndDate" Type="datetime" Mode="In" />
           <Parameter Name="Skip" Type="int" Mode="In" />
@@ -2279,11 +2328,10 @@ warning 6002: The table/view 'BiblosDS2010.dbo.DataBaseVersion' does not have a 
                 <Property Name="Archive_ThumbnailEnabled" Type="bit" />
                 <Property Name="Archive_PdfConversionEnabled" Type="bit" />
                 <Property Name="Archive_FullSignEnabled" Type="bit" />
-                <Property Name="Archive_VerifyPreservationDateEnabled" Type="bit" />
-                <Property Name="Archive_VerifyPreservationIncrementalEnabled" Type="bit" />
                 <Property Name="Archive_TransitoEnabled" Type="bit" />
                 <Property Name="Archive_FiscalDocumentType" Type="varchar" MaxLength="255" />
                 <Property Name="Archive_ODBCConnection" Type="varchar" MaxLength="500" />
+                <Property Name="Archive_PreservationConfiguration" Type="nvarchar(max)" />
                 <Property Name="PreservationTaskGroup_IdPreservationTaskGroup" Type="uniqueidentifier" />
                 <Property Name="PreservationTaskGroup_IdPreservationTaskGroupType" Type="uniqueidentifier" />
                 <Property Name="PreservationTaskGroup_Name" Type="varchar" MaxLength="255" />
@@ -2379,6 +2427,7 @@ warning 6002: The table/view 'BiblosDS2010.dbo.DataBaseVersion' does not have a 
           <EntitySet Name="CertificateStore" EntityType="Self.CertificateStore" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Component" EntityType="Self.Component" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerCompany" EntityType="Self.CustomerCompany" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document" EntityType="Self.Document" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DocumentAttach" EntityType="Self.DocumentAttach" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DocumentAttachTransit" EntityType="Self.DocumentAttachTransit" Schema="dbo" store:Type="Tables" />
@@ -2435,6 +2484,7 @@ warning 6002: The table/view 'BiblosDS2010.dbo.DataBaseVersion' does not have a 
           <EntitySet Name="StorageStatus" EntityType="Self.StorageStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StorageType" EntityType="Self.StorageType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Transit" EntityType="Self.Transit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="ext" store:Type="Tables" />
           <EntitySet Name="CustomerKey" EntityType="Self.CustomerKey" Schema="ext" store:Type="Tables" />
           <EntitySet Name="CustomerLogin" EntityType="Self.CustomerLogin" Schema="ext" store:Type="Tables" />
           <EntitySet Name="PreservationVerify" EntityType="Self.PreservationVerify" Schema="ext" store:Type="Tables" />
@@ -2443,6 +2493,14 @@ warning 6002: The table/view 'BiblosDS2010.dbo.DataBaseVersion' does not have a 
 [DataBaseVersion].[LocalPath] AS [LocalPath]
 FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK__CustomerC__IdCom__641990EE" Association="Self.FK__CustomerC__IdCom__641990EE">
+            <End Role="Company" EntitySet="Company" />
+            <End Role="CustomerCompany" EntitySet="CustomerCompany" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CustomerC__IdCus__63256CB5" Association="Self.FK__CustomerC__IdCus__63256CB5">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="CustomerCompany" EntitySet="CustomerCompany" />
+          </AssociationSet>
           <AssociationSet Name="FK_AlertTask_AlertType" Association="Self.FK_AlertTask_AlertType">
             <End Role="PreservationAlertType" EntitySet="PreservationAlertType" />
             <End Role="PreservationAlertTask" EntitySet="PreservationAlertTask" />
@@ -3363,6 +3421,7 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
             <Parameter Name="IdArchive" Mode="In" Type="Guid" />
             <Parameter Name="IdPreservation" Mode="In" Type="Guid" />
             <Parameter Name="IdPreservationActivity" Mode="In" Type="Guid" />
+            <Parameter Name="IdCompany" Mode="In" Type="Guid" />
             <Parameter Name="StartDate" Mode="In" Type="DateTime" />
             <Parameter Name="EndDate" Mode="In" Type="DateTime" />
             <Parameter Name="Skip" Mode="In" Type="Int32" />
@@ -3390,6 +3449,16 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
             <Parameter Name="OnlyError" Mode="In" Type="Boolean" />
             <Parameter Name="ForceAutoInc" Mode="In" Type="Boolean" />
           </FunctionImport>
+          <EntitySet Name="Customer" EntityType="BiblosDS2010Model.Customer" />
+          <EntitySet Name="CustomerCompany" EntityType="BiblosDS2010Model.CustomerCompany" />
+          <AssociationSet Name="FK__CustomerC__IdCom__641990EE" Association="BiblosDS2010Model.FK__CustomerC__IdCom__641990EE">
+            <End Role="Company" EntitySet="Company" />
+            <End Role="CustomerCompany" EntitySet="CustomerCompany" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CustomerC__IdCus__63256CB5" Association="BiblosDS2010Model.FK__CustomerC__IdCus__63256CB5">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="CustomerCompany" EntitySet="CustomerCompany" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Archive">
           <Key>
@@ -3417,8 +3486,6 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
           <Property Type="Boolean" Name="ThumbnailEnabled" />
           <Property Type="Boolean" Name="PdfConversionEnabled" />
           <Property Type="Boolean" Name="FullSignEnabled" />
-          <Property Type="Boolean" Name="VerifyPreservationDateEnabled" />
-          <Property Type="Boolean" Name="VerifyPreservationIncrementalEnabled" />
           <NavigationProperty Name="PreservationParameters" Relationship="BiblosDS2010Model.FK_ParameterConservazione_Archive" FromRole="Archive" ToRole="PreservationParameters" />
           <Property Type="Boolean" Name="TransitoEnabled" />
           <NavigationProperty Name="PreservationTaskGroup" Relationship="BiblosDS2010Model.FK_PreservationTaskGroup_Archive" FromRole="Archive" ToRole="PreservationTaskGroup" />
@@ -3433,6 +3500,7 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
           <NavigationProperty Name="PreservationScheduleArchive" Relationship="BiblosDS2010Model.FK_PreservationScheduleArchive_Archive" FromRole="Archive" ToRole="PreservationScheduleArchive" />
           <Property Type="String" Name="ODBCConnection" MaxLength="500" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="AwardBatch" Relationship="BiblosDS2010Model.FK_AwardBatch_Archive" FromRole="Archive" ToRole="AwardBatch" />
+          <Property Name="PreservationConfiguration" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="ArchiveStorage">
           <Key>
@@ -4921,6 +4989,12 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
           <NavigationProperty Name="ArchiveServerConfig" Relationship="BiblosDS2010Model.FK_ArchiveServerConfig_Server" FromRole="Server" ToRole="ArchiveServerConfig" />
           <NavigationProperty Name="DocumentServer" Relationship="BiblosDS2010Model.FK_DocumentServer_Server" FromRole="Server" ToRole="DocumentServer" />
           <NavigationProperty Name="Transit" Relationship="BiblosDS2010Model.FK_Transit_Server" FromRole="Server" ToRole="Transit" />
+          <Property Name="DocumentServiceUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentServiceBinding" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentServiceBindingConfiguration" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="StorageServiceUrl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="StorageServiceBinding" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="StorageServiceBindingConfiguration" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_Storage_Server">
           <End Type="BiblosDS2010Model.Server" Role="Server" Multiplicity="0..1" />
@@ -5454,6 +5528,8 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
           <Property Type="String" Name="PECEmail" MaxLength="500" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="ArchiveCompany" Relationship="BiblosDS2010Model.FK_ArchiveCompany_Company" FromRole="Company" ToRole="ArchiveCompany" />
           <NavigationProperty Name="PreservationStorageDevice" Relationship="BiblosDS2010Model.FK_PreservationStorageDevice_Company" FromRole="Company" ToRole="PreservationStorageDevice" />
+          <NavigationProperty Name="CustomerCompany" Relationship="BiblosDS2010Model.FK__CustomerC__IdCom__641990EE" FromRole="Company" ToRole="CustomerCompany" />
+          <Property Name="SignInfo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_ArchiveCompany_Company">
           <End Type="BiblosDS2010Model.Company" Role="Company" Multiplicity="1" />
@@ -5689,8 +5765,6 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
           <Property Type="Boolean" Name="Archive_ThumbnailEnabled" Nullable="true" />
           <Property Type="Boolean" Name="Archive_PdfConversionEnabled" Nullable="true" />
           <Property Type="Boolean" Name="Archive_FullSignEnabled" Nullable="true" />
-          <Property Type="Boolean" Name="Archive_VerifyPreservationDateEnabled" Nullable="true" />
-          <Property Type="Boolean" Name="Archive_VerifyPreservationIncrementalEnabled" Nullable="true" />
           <Property Type="Boolean" Name="Archive_TransitoEnabled" Nullable="true" />
           <Property Type="String" Name="Archive_FiscalDocumentType" Nullable="true" MaxLength="255" />
           <Property Type="String" Name="Archive_ODBCConnection" Nullable="true" MaxLength="500" />
@@ -5735,6 +5809,7 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
           <Property Type="String" Name="PreservationUser_Password" Nullable="true" MaxLength="500" />
           <Property Type="Guid" Name="PreservationTaskGroup_IdPreservationTaskGroup" Nullable="true" />
           <Property Type="DateTime" Name="PreservationTaskGroup_Closed" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Archive_PreservationConfiguration" Nullable="true" />
         </ComplexType>
         <ComplexType Name="PreservationJournalingTableValuedResult">
           <Property Type="Guid" Name="IdPreservationJournaling" Nullable="false" />
@@ -5877,6 +5952,54 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="IdCustomer" />
+          </Key>
+          <Property Name="IdCustomer" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="DateCreated" Type="DateTime" Precision="3" />
+          <Property Name="SignInfo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="CustomerCompany" Relationship="BiblosDS2010Model.FK__CustomerC__IdCus__63256CB5" FromRole="Customer" ToRole="CustomerCompany" />
+        </EntityType>
+        <EntityType Name="CustomerCompany">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdCustomer" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="IdCompany" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Company" Relationship="BiblosDS2010Model.FK__CustomerC__IdCom__641990EE" FromRole="CustomerCompany" ToRole="Company" />
+          <NavigationProperty Name="Customer" Relationship="BiblosDS2010Model.FK__CustomerC__IdCus__63256CB5" FromRole="CustomerCompany" ToRole="Customer" />
+        </EntityType>
+        <Association Name="FK__CustomerC__IdCom__641990EE">
+          <End Type="BiblosDS2010Model.Company" Role="Company" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="BiblosDS2010Model.CustomerCompany" Role="CustomerCompany" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="IdCompany" />
+            </Principal>
+            <Dependent Role="CustomerCompany">
+              <PropertyRef Name="IdCompany" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CustomerC__IdCus__63256CB5">
+          <End Type="BiblosDS2010Model.Customer" Role="Customer" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="BiblosDS2010Model.CustomerCompany" Role="CustomerCompany" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="IdCustomer" />
+            </Principal>
+            <Dependent Role="CustomerCompany">
+              <PropertyRef Name="IdCustomer" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5884,11 +6007,10 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="BiblosDS2010ModelStoreContainer" CdmEntityContainer="BiblosDS2010Entities">
           <EntitySetMapping Name="Archive"><EntityTypeMapping TypeName="BiblosDS2010Model.Archive"><MappingFragment StoreEntitySet="Archive">
+                <ScalarProperty Name="PreservationConfiguration" ColumnName="PreservationConfiguration" />
                 <ScalarProperty Name="ODBCConnection" ColumnName="ODBCConnection" />
                 <ScalarProperty Name="FiscalDocumentType" ColumnName="FiscalDocumentType" />
                 <ScalarProperty Name="TransitoEnabled" ColumnName="TransitoEnabled" />
-                <ScalarProperty Name="VerifyPreservationIncrementalEnabled" ColumnName="VerifyPreservationIncrementalEnabled" />
-                <ScalarProperty Name="VerifyPreservationDateEnabled" ColumnName="VerifyPreservationDateEnabled" />
                 <ScalarProperty Name="FullSignEnabled" ColumnName="FullSignEnabled" />
                 <ScalarProperty Name="PdfConversionEnabled" ColumnName="PdfConversionEnabled" />
                 <ScalarProperty Name="ThumbnailEnabled" ColumnName="ThumbnailEnabled" />
@@ -6481,6 +6603,12 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
           <EntitySetMapping Name="Server">
             <EntityTypeMapping TypeName="BiblosDS2010Model.Server">
               <MappingFragment StoreEntitySet="Server">
+                <ScalarProperty Name="StorageServiceBindingConfiguration" ColumnName="StorageServiceBindingConfiguration" />
+                <ScalarProperty Name="StorageServiceBinding" ColumnName="StorageServiceBinding" />
+                <ScalarProperty Name="StorageServiceUrl" ColumnName="StorageServiceUrl" />
+                <ScalarProperty Name="DocumentServiceBindingConfiguration" ColumnName="DocumentServiceBindingConfiguration" />
+                <ScalarProperty Name="DocumentServiceBinding" ColumnName="DocumentServiceBinding" />
+                <ScalarProperty Name="DocumentServiceUrl" ColumnName="DocumentServiceUrl" />
                 <ScalarProperty Name="ServerRole" ColumnName="ServerRole" />
                 <ScalarProperty Name="ServerName" ColumnName="ServerName" />
                 <ScalarProperty Name="IdServer" ColumnName="IdServer" />
@@ -6647,6 +6775,7 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
           <EntitySetMapping Name="Company">
             <EntityTypeMapping TypeName="BiblosDS2010Model.Company">
               <MappingFragment StoreEntitySet="Company">
+                <ScalarProperty Name="SignInfo" ColumnName="SignInfo" />
                 <ScalarProperty Name="PECEmail" ColumnName="PECEmail" />
                 <ScalarProperty Name="TemplateADEFile" ColumnName="TemplateADEFile" />
                 <ScalarProperty Name="TemplateIndexFile" ColumnName="TemplateIndexFile" />
@@ -6789,8 +6918,6 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
                 <ScalarProperty Name="Archive_ThumbnailEnabled" ColumnName="Archive_ThumbnailEnabled" />
                 <ScalarProperty Name="Archive_PdfConversionEnabled" ColumnName="Archive_PdfConversionEnabled" />
                 <ScalarProperty Name="Archive_FullSignEnabled" ColumnName="Archive_FullSignEnabled" />
-                <ScalarProperty Name="Archive_VerifyPreservationDateEnabled" ColumnName="Archive_VerifyPreservationDateEnabled" />
-                <ScalarProperty Name="Archive_VerifyPreservationIncrementalEnabled" ColumnName="Archive_VerifyPreservationIncrementalEnabled" />
                 <ScalarProperty Name="Archive_TransitoEnabled" ColumnName="Archive_TransitoEnabled" />
                 <ScalarProperty Name="Archive_FiscalDocumentType" ColumnName="Archive_FiscalDocumentType" />
                 <ScalarProperty Name="Archive_ODBCConnection" ColumnName="Archive_ODBCConnection" />
@@ -6835,6 +6962,7 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
                 <ScalarProperty Name="PreservationUser_Password" ColumnName="PreservationUser_Password" />
                 <ScalarProperty Name="PreservationTaskGroup_IdPreservationTaskGroup" ColumnName="PreservationTaskGroup_IdPreservationTaskGroup" />
                 <ScalarProperty Name="PreservationTaskGroup_Closed" ColumnName="PreservationTaskGroup_Closed" />
+                <ScalarProperty Name="Archive_PreservationConfiguration" ColumnName="Archive_PreservationConfiguration" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -6950,6 +7078,25 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
             </EntityTypeMapping>
           </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="Preservation_SP_ResetPreservationTask" FunctionName="BiblosDS2010Model.Store.Preservation_SP_ResetPreservationTask" />
+          <EntitySetMapping Name="Customer">
+            <EntityTypeMapping TypeName="BiblosDS2010Model.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="SignInfo" ColumnName="SignInfo" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerCompany">
+            <EntityTypeMapping TypeName="BiblosDS2010Model.CustomerCompany">
+              <MappingFragment StoreEntitySet="CustomerCompany">
+                <ScalarProperty Name="IdCompany" ColumnName="IdCompany" />
+                <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -6973,7 +7120,7 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
     <Diagrams>
       <Diagram Name="BiblosDSEntityFramework" ZoomLevel="89">
         <EntityTypeShape EntityType="BiblosDS2010Model.Archive" Width="1.5" PointX="0.75" PointY="21" Height="6.0296842447916674" IsExpanded="true" />
-        <EntityTypeShape EntityType="BiblosDS2010Model.ArchiveStorage" Width="1.5" PointX="3" PointY="22.5" Height="1.9802864583333317" IsExpanded="true" />
+        <EntityTypeShape EntityType="BiblosDS2010Model.ArchiveStorage" Width="1.5" PointX="3.375" PointY="22.375" Height="1.9802864583333317" IsExpanded="true" />
         <EntityTypeShape EntityType="BiblosDS2010Model.Attributes" Width="1.5" PointX="6" PointY="20.375" Height="6.210917968749996" IsExpanded="true" />
         <EntityTypeShape EntityType="BiblosDS2010Model.AttributesGroup" Width="2.375" PointX="3.125" PointY="1.625" Height="1.9210009765624996" IsExpanded="true" />
         <EntityTypeShape EntityType="BiblosDS2010Model.AttributesMode" Width="1.5" PointX="3.75" PointY="43.125" Height="1.595683593749996" IsExpanded="true" />
@@ -7490,7 +7637,7 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
         <EntityTypeShape EntityType="BiblosDS2010Model.PreservationJournalingActivity" Width="1.5" PointX="19.5" PointY="31.5" Height="1.756653645833353" />
         <EntityTypeShape EntityType="BiblosDS2010Model.PreservationInStorageDevice" Width="1.5" PointX="21.75" PointY="23.5" Height="1.7566536458333246" />
         <EntityTypeShape EntityType="BiblosDS2010Model.PreservationStorageDeviceStatus" Width="1.5" PointX="0.75" PointY="13.375" Height="1.7879850260416674" />
-        <EntityTypeShape EntityType="BiblosDS2010Model.PreservationJournaling" Width="1.5" PointX="21.75" PointY="28.125" Height="3.1340950520833246" />
+        <EntityTypeShape EntityType="BiblosDS2010Model.PreservationJournaling" Width="2.25" PointX="21.75" PointY="28.125" Height="3.1340950520833246" />
         <AssociationConnector Association="BiblosDS2010Model.FK_PreservationJournaling_PreservationJournalingActivity">
           <ConnectorPoint PointX="21" PointY="32.5862939453125" />
           <ConnectorPoint PointX="22.5" PointY="32.5862939453125" />
@@ -8371,7 +8518,7 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
           <ConnectorPoint PointX="4.34375" PointY="35.588694661458334" />
           <ConnectorPoint PointX="4.34375" PointY="30.989889322916667" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BiblosDS2010Model.Company" Width="1.5" PointX="0.5" PointY="17.25" Height="2.9417936197916674" />
+        <EntityTypeShape EntityType="BiblosDS2010Model.Company" Width="2" PointX="13.5" PointY="3.125" Height="2.9417936197916674" />
         <AssociationConnector Association="BiblosDS2010Model.FK_ArchiveCompany_Company">
           <ConnectorPoint PointX="2.25" PointY="19.004484927483976" />
           <ConnectorPoint PointX="2.5660744349011213" PointY="19.320559362385097" />
@@ -8400,6 +8547,10 @@ FROM [dbo].[DataBaseVersion] AS [DataBaseVersion]</DefiningQuery>
         <AssociationConnector Association="BiblosDS2010Model.FK_PreservationDocuments_Document" />
         <AssociationConnector Association="BiblosDS2010Model.FK_PreservationDocuments_Preservation" />
         <AssociationConnector Association="BiblosDS2010Model.FK_PreservationDocuments_PreservationException" />
+        <EntityTypeShape EntityType="BiblosDS2010Model.Customer" Width="1.625" PointX="17" PointY="3.75" />
+        <EntityTypeShape EntityType="BiblosDS2010Model.CustomerCompany" Width="1.875" PointX="15.25" PointY="0.5" />
+        <AssociationConnector Association="BiblosDS2010Model.FK__CustomerC__IdCom__641990EE" />
+        <AssociationConnector Association="BiblosDS2010Model.FK__CustomerC__IdCus__63256CB5" />
         </Diagram>
     </Diagrams>
   </Designer>

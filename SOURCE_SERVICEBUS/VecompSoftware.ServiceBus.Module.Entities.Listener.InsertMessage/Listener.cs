@@ -9,7 +9,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage
     public class Listener : ListenerMessageBase<ICommandBuildMessage>, IListenerMessageGeneric<ICommandBuildMessage>
     {
         public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandBuildMessage")
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandBuildMessage", webApiClient)
         {
         }
     }

@@ -22,10 +22,11 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             return repository.Query(x => x.UniqueId == roleUniqueId, optimization: optimization)
                 .SelectAsQueryable();
         }
-        public static ICollection<RoleFullTableValuedModel> FindRoles(this IRepository<Role> repository, string username, string domain, string name, short? parentId, 
+        public static ICollection<RoleFullTableValuedModel> FindRoles(this IRepository<Role> repository, string username, string domain, string name, Guid? uniqueId, short? parentId,
             string serviceCode, Guid? tenantId, int? environment, bool? loadOnlyRoot, bool? loadOnlyMy, bool? loadAlsoParent)
         {
             QueryParameter nameParameter = new QueryParameter(CommonDefinition.SQL_Param_Role_Name, DBNull.Value);
+            QueryParameter uniqueIdParameter = new QueryParameter(CommonDefinition.SQL_Param_Role_UniqueId, DBNull.Value);
             QueryParameter parentParameter = new QueryParameter(CommonDefinition.SQL_Param_Role_ParentId, DBNull.Value);
             QueryParameter serviceCodeParameter = new QueryParameter(CommonDefinition.SQL_Param_Role_ServiceCode, DBNull.Value);
             QueryParameter tenantIdParameter = new QueryParameter(CommonDefinition.SQL_Param_Role_TenantId, DBNull.Value);
@@ -37,6 +38,10 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             if (!string.IsNullOrEmpty(name))
             {
                 nameParameter.ParameterValue = name;
+            }
+            if (uniqueId.HasValue)
+            {
+                uniqueIdParameter.ParameterValue = uniqueId;
             }
             if (parentId.HasValue)
             {
@@ -70,8 +75,15 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             return repository.ExecuteModelFunction<RoleFullTableValuedModel>(CommonDefinition.SQL_FX_Role_FindRoles,
                 new QueryParameter(CommonDefinition.SQL_Param_Role_UserName, username),
                 new QueryParameter(CommonDefinition.SQL_Param_Role_Domain, domain),
-                nameParameter, parentParameter, serviceCodeParameter, tenantIdParameter, environmentParameter, loadOnlyRootParameter, 
+                nameParameter, uniqueIdParameter, parentParameter, serviceCodeParameter, tenantIdParameter, environmentParameter, loadOnlyRootParameter,
                 loadOnlyMyParameter, loadAlsoParentParameter);
+        }
+
+        public static bool HasCategoryFascicleRole(this IRepository<Role> repository, string account, short idCategory)
+        {
+            int lastNumber = repository.Queryable(true).Count(x => x.RoleUsers.Any(y => y.Account == account)
+              && x.CategoryFascicleRights.Any(y => y.CategoryFascicle.Category.EntityShortId == idCategory));
+            return lastNumber > 0;
         }
     }
 }

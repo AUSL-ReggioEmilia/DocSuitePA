@@ -1,13 +1,19 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using VecompSoftware.DocSuite.Document.BiblosDS.DocumentService;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
+using VecompSoftware.DocSuiteWeb.Model.Documents;
+using VecompSoftware.DocSuiteWeb.Model.WebAPI;
 using ModelDocument = VecompSoftware.DocSuiteWeb.Model.Documents;
 
 namespace VecompSoftware.DocSuite.Document.BiblosDS
@@ -19,6 +25,7 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
 
         private readonly Guid _instanceId;
         private readonly ILogger _logger;
+        private readonly IParameterEnvService _parameterEnvService;
         private readonly DocumentsClient _documentsClient;
         private ICollection<Archive> _archives = null;
         private bool _disposed;
@@ -55,10 +62,11 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
         #endregion
 
         #region [ Constructor ]
-        public DocumentBiblosDS(ILogger logger)
+        public DocumentBiblosDS(ILogger logger, IParameterEnvService parameterEnvService)
         {
             _instanceId = Guid.NewGuid();
             _logger = logger;
+            _parameterEnvService = parameterEnvService;
             _documentsClient = new DocumentsClient();
         }
 
@@ -170,6 +178,10 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
         {
             return await DocumentHelper.TryCatchWithLogger(async () =>
             {
+                if (!documents.Any())
+                {
+                    return documents;
+                }
                 DocumentService.Document documentChain;
                 DocumentService.Document document = null;
                 string archiveName = documents.First().Archive;
@@ -209,26 +221,26 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
 
         public bool HasActiveDocuments(Guid idChain)
         {
-            bool hasActiveDocument =  _documentsClient.HasActiveDocuments(idChain);
+            bool hasActiveDocument = _documentsClient.HasActiveDocuments(idChain);
             return hasActiveDocument;
         }
 
-
         private async Task<DocumentService.Document> InsertDocument(ModelDocument.ArchiveDocument documentModel, KeyValuePair<Archive, List<DocumentService.Attribute>> archive)
         {
+            _logger.WriteDebug(new LogMessage($"Inserting {documentModel?.Name} into archive {documentModel?.Archive} with {documentModel?.ContentStream?.Length} bytes"), LogCategories);
             DocumentService.Document document = new DocumentService.Document
             {
                 Content = new Content() { Blob = documentModel.ContentStream },
                 Name = documentModel.Name,
                 Archive = Archives.Single(f => f.Name.Equals(documentModel.Archive, StringComparison.InvariantCultureIgnoreCase)),
-                AttributeValues = new List<AttributeValue>()
+                AttributeValues = new List<DocumentService.AttributeValue>()
             };
-            document.AttributeValues.Add(new AttributeValue()
+            document.AttributeValues.Add(new DocumentService.AttributeValue()
             {
                 Value = documentModel.Name,
                 Attribute = archive.Value.Single(f => f.Name.Equals(_biblos_attribute_filename, StringComparison.InvariantCultureIgnoreCase))
             });
-            document.AttributeValues.Add(new AttributeValue()
+            document.AttributeValues.Add(new DocumentService.AttributeValue()
             {
                 Value = documentModel.Name,
                 Attribute = archive.Value.Single(f => f.Name.Equals(_biblos_attribute_signature, StringComparison.InvariantCultureIgnoreCase))
@@ -273,6 +285,50 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
             }, _logger, LogCategories);
         }
 
+        public async Task<ICollection<Guid>> FullTextFindDocumentsAsync(IList<string> archiveNames, string filter)
+        {
+            return await DocumentHelper.TryCatchWithLogger(async () =>
+            {
+                ICollection<Guid> chains = new List<Guid>();
+                using (HttpClient client = new HttpClient())
+                {
+                    FilterDocumentModel finder = new FilterDocumentModel()
+                    {
+                        ArchiveNames = archiveNames,
+                        Filter = filter
+                    };
+
+                    string finderSerialized = JsonConvert.SerializeObject(finder);
+                    HttpContent content = new StringContent(finderSerialized, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage responseMessage = client.PostAsync(_parameterEnvService.CurrentTenantModel.BiblosWebAPIUrl, content).Result;
+                    if (responseMessage.IsSuccessStatusCode)
+                    {
+                        string json = await responseMessage.Content.ReadAsStringAsync();
+                        ICollection<SearchableDocumentModel> result = JsonConvert.DeserializeObject<ODATAModelResult<ICollection<SearchableDocumentModel>>>(json).value;
+                        chains = result.Select(s => s.Id).ToList();
+                    }
+                }
+                return chains;
+            }, _logger, LogCategories);
+        }
+
+        public async Task<bool> IsDocumentsSignedAsync(List<Guid> idDocuments)
+        {
+            return await DocumentHelper.TryCatchWithLogger(async () =>
+            {
+                bool hasSignDocument = false;
+                foreach (Guid idDocument in idDocuments)
+                {
+                    hasSignDocument = await _documentsClient.IsDocumentSignedAsync(idDocument);
+                    if (hasSignDocument)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }, _logger, LogCategories);
+        }
         #endregion
     }
 }

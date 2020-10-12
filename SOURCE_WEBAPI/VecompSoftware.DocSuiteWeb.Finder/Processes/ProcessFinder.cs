@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Processes;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Processes;
 using VecompSoftware.DocSuiteWeb.Repository.Parameters;
@@ -11,9 +10,9 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Processes
 {
     public static class ProcessFinder
     {
-        public static bool NameAlreadyExists(this IRepository<Process> repository, string name, Guid idProcess, bool optimization = true)
+        public static bool NameAlreadyExists(this IRepository<Process> repository, string name, Guid idProcess, Guid idCategory, bool optimization = true)
         {
-            return repository.Queryable(optimization).Count(x => x.Name == name && x.UniqueId != idProcess) > 0;
+            return repository.Queryable(optimization).Count(x => x.Name == name && x.UniqueId != idProcess && x.Category.UniqueId == idCategory) > 0;
         }
 
         public static ICollection<ProcessTableValuedModel> FindProcesses(this IRepository<Process> repository, string username, string domain, string name, short? categoryId, Guid? dossierId, bool loadOnlyMy)

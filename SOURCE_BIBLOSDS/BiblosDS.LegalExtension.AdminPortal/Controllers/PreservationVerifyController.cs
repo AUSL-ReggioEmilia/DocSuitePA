@@ -4,6 +4,7 @@ using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Services.Preservations
 using BiblosDS.LegalExtension.AdminPortal.Helpers;
 using BiblosDS.LegalExtension.AdminPortal.Infrastructure.Services.Common;
 using BiblosDS.LegalExtension.AdminPortal.Models;
+using BiblosDS.LegalExtension.AdminPortal.ViewModel;
 using BiblosDS.Library.Common.Objects;
 using BiblosDS.Library.Common.Preservation.Services;
 using BiblosDS.Library.Common.Services;
@@ -20,6 +21,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using VecompSoftware.BiblosDS.WCF.Common;
 
 namespace BiblosDS.LegalExtension.AdminPortal.Controllers
 {
@@ -53,7 +55,9 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             return ActionResultHelper.TryCatchWithLogger(() =>
             {
                 PreservationVerifyIndexModel model = new PreservationVerifyIndexModel();
-                if (AzureService.GetSettingValue("DBAdminLoginConnection") == "false")
+                CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
+
+                if (WCFUtility.GetSettingValue("DBAdminLoginConnection") == "false")
                 {
                     DocumentCondition conditions = new DocumentCondition();
 
@@ -62,11 +66,11 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                     conditions.DocumentAttributeConditions.Add(new DocumentCondition() { Name = "IsLegal", Value = 1, Operator = Library.Common.Enums.DocumentConditionFilterOperator.IsEqualTo, Condition = Library.Common.Enums.DocumentConditionFilterCondition.And });
                     sortConditions.Add(new DocumentSortCondition { Name = "Name", Dir = "ASC" });
 
-                    model.archives = ArchiveService.GetArchives(0, int.MaxValue, conditions, sortConditions, out int total).ToList();
+                    model.archives = ArchiveService.GetArchives(0, int.MaxValue, conditions, sortConditions, out int total, customerCompany.CompanyId).ToList();
                 }
                 else
                 {
-                    model.archives = UserArchive.GetUserArchivesPaged(User.Identity.Name, 0, int.MaxValue, out int total);
+                    model.archives = UserArchive.GetUserArchivesPaged(User.Identity.Name, 0, int.MaxValue, out int total, customerCompany.CompanyId);
                 }
 
                 return View(model);

@@ -2,28 +2,28 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>VecompSoftware.Commons.Interfaces</id>
-    <version>8.87.0.0</version>
+    <version>9.09.0.0</version>
     <authors>Dgroove Srl</authors>
     <owners>Dgroove Srl</owners>
     <iconUrl>https://vecompsoftwarenugetserver.azurewebsites.net/favicon.ico</iconUrl>
     <description>VecompSoftware.Commons.Interfaces</description>
-    <copyright>Copyright © Dgroove 2019</copyright>
+    <copyright>Copyright © Dgroove 2020</copyright>
     <tags>VecompSoftware.DocSuiteWeb.Common, YAC, Project_WebAPI</tags>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net461" />
-      <frameworkAssembly assemblyName="mscorlib" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Core" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Data" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Net.Http" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Xml" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net461" />
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net48" />
+      <frameworkAssembly assemblyName="mscorlib" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System.Core" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System.Data" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System.Net.Http" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System.Xml" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="net48" />
     </frameworkAssemblies>
     <references />
   </metadata>
   <files>
-    <file src="VecompSoftware.Commons.Interfaces.pdb" target="lib\net461" />
-    <file src="VecompSoftware.Commons.Interfaces.dll" target="lib\net461" />
+    <file src="VecompSoftware.Commons.Interfaces.pdb" target="lib\net48" />
+    <file src="VecompSoftware.Commons.Interfaces.dll" target="lib\net48" />
   </files>
 </package>

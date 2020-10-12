@@ -21,6 +21,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Fascicles
             entityTransformed.FascicleType = entity.FascicleType;
             entityTransformed.VisibilityType = entity.VisibilityType;
             entityTransformed.MetadataValues = entity.MetadataValues;
+            entityTransformed.MetadataDesigner = entity.MetadataDesigner;
+            entityTransformed.CustomActions = entity.CustomActions;
             #endregion
 
             return entityTransformed;

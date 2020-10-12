@@ -24,7 +24,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.DocumentUnits
             entityTransformed.RegistrationUser = entity.RegistrationUser;
             entityTransformed.LastChangedDate = entity.LastChangedDate;
             entityTransformed.LastChangedUser = entity.LastChangedUser;
-            entityTransformed.Timestamp = entity.Timestamp;
+            entityTransformed.Timestamp = entity.Timestamp;            
             #endregion
 
             #region [ Navigation Properties ]
@@ -33,6 +33,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.DocumentUnits
             entityTransformed.FascicleDocumentUnits = entity.FascicleDocumentUnits;
             entityTransformed.UDSRepository = entity.UDSRepository;
             entityTransformed.Fascicle = entity.Fascicle;
+            entityTransformed.TenantAOO = entity.TenantAOO;
             entityTransformed.DocumentUnitChains = entity.DocumentUnitChains;
             entityTransformed.DocumentUnitRoles = entity.DocumentUnitRoles;
             entityTransformed.DocumentUnitUsers = entity.DocumentUnitUsers;

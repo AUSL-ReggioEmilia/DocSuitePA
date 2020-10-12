@@ -1,0 +1,56 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.Archives.ArchiveWizardStepBaseViewModel
+
+<h2>Riepilogo attività per l'archivio <b>@Model.ArchiveName</b></h2>
+<br />
+
+@Html.HiddenFor(x => x.IdArchive)
+@Html.HiddenFor(x => x.ActiveStep, new { Value = 4 })
+<table class="form-vertical-table k-block" style="width: 100%;">
+    <tr>
+        <td>
+            <div class="k-block @(Model.IsCompleteWithErrors == true ? "k-error-colored" : "k-success-colored")" style="margin-bottom: 5px;">
+                <b>La configurazione dell'archivio è stata terminata con @(Model.IsCompleteWithErrors == true ? "errori" : "successo"), di seguito si riepilogano le informazioni configurate.</b>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td><b>Percorso definito per la conservazione:</b></td>
+    </tr>
+    <tr>
+        <td>
+            <label>@(Model.PathPreservation)</label>
+        </td>
+    </tr>
+    <tr>
+        <td><b>Attributo di tipo MainDate selezionato:</b></td>
+    </tr>
+    <tr>
+        <td>
+            <label>@(Model.MainDateAttribute)</label>
+        </td>
+    </tr>
+    <tr>
+        <td><b>Attributi selezionati per la chiave primaria del documento:</b></td>
+    </tr>
+    <tr>
+        <td>
+            <label>@(string.Join(", ", Model.SelectedPrimaryKeyAttributes))</label>
+        </td>
+    </tr>
+    <tr>
+        <td><b>Attributi selezionati per la conservazione:</b></td>
+    </tr>
+    <tr>
+        <td>
+            <label>@(string.Join(", ", Model.SelectedPreservationAttributes))</label>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">
+            @(Html.ActionLink("Visualizza configurazione", "ArchivePreservationConfiguration", "Home", new { id = Model.IdArchive }, new { @class = "k-button" }))
+            @(Html.Kendo().Button()
+                .Name("btnConfirm")
+                .Content("Chiudi"))
+        </td>
+    </tr>
+</table>

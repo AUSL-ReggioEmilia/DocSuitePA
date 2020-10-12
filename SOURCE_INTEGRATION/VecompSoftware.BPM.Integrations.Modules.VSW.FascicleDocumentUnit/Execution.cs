@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit.Configuration;
 using VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit.Models;
 using VecompSoftware.BPM.Integrations.Services.ServiceBus;
 using VecompSoftware.BPM.Integrations.Services.WebAPI;
+using VecompSoftware.Commons.Interfaces.CQRS.Events;
+using VecompSoftware.Core.Command.CQRS;
+using VecompSoftware.Core.Command.CQRS.Events.Models.Workflows;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
@@ -99,7 +103,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit
             if (_needInitializeModule)
             {
                 _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowActionFascicle>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration, 
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowActionFascicle>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.DocumentUnitIntoFascicleSubscription, DocumentUnitIntoFascicleCallback));
 
                 _needInitializeModule = false;
@@ -116,7 +120,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit
             _needInitializeModule = true;
         }
 
-        private async Task DocumentUnitIntoFascicleCallback(IEventWorkflowActionFascicle evt)
+        private async Task DocumentUnitIntoFascicleCallback(IEventWorkflowActionFascicle evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage(string.Concat("DocumentUnitIntoFascicleCallback -> evaluate event id ", evt.Id)),
                 LogCategories);
@@ -137,6 +141,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit
             }
 
             await FascicolateDocumentUnitAsync(referenced.UniqueId, fascicle, fascicleFolderId);
+            await EvaluateReplyToAggregationCallbackAsync(evt, item, properties);
         }
 
         private async Task FascicolateDocumentUnitAsync(Guid documentUnitId, Fascicle fascicle, Guid? fascicleFolderId)
@@ -154,7 +159,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit
                     Fascicle = fascicle,
                     DocumentUnit = new DocumentUnit(documentUnitId),
                 };
-                if (!fascicleFolderId.HasValue) 
+                if (!fascicleFolderId.HasValue)
                 {
                     fascicleFolderId = (await _webAPIClient.GetDefaultFascicleFolderAsync(fascicle.UniqueId)).UniqueId;
                 }
@@ -167,6 +172,32 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.FascicleDocumentUnit
             {
                 _logger.WriteError(new LogMessage("FascicolateDocumentUnit -> error complete call"), ex, LogCategories);
                 throw;
+            }
+        }
+
+        private async Task EvaluateReplyToAggregationCallbackAsync(IEventWorkflowActionFascicle evt, WorkflowActionFascicleModel workflowAction, IDictionary<string, object> properties)
+        {
+            try
+            {
+                if (properties.Any(x => x.Key == CustomPropertyName.REPLY_TO && x.Value != null && !string.IsNullOrEmpty(x.Value.ToString()))
+                && properties.Any(x => x.Key == CustomPropertyName.REPLY_TO_SESSION_ID && x.Value != null && !string.IsNullOrEmpty(x.Value.ToString())))
+                {
+                    string replyTo = properties[CustomPropertyName.REPLY_TO].ToString();
+                    if (!Guid.TryParse(properties[CustomPropertyName.REPLY_TO_SESSION_ID].ToString(), out Guid replyToSessionId))
+                    {
+                        throw new Exception($"The value \"{properties[CustomPropertyName.REPLY_TO_SESSION_ID]}\" of property {CustomPropertyName.REPLY_TO_SESSION_ID} is not a valid guid");
+                    }
+                    _logger.WriteDebug(new LogMessage($"EvaluateReplyToAggregationCallbackAsync -> send callback to {replyTo}"), LogCategories);
+
+                    EventWorkflowActionAggregation callbackEvent = new EventWorkflowActionAggregation(Guid.NewGuid(), replyToSessionId, evt.TenantName, evt.TenantId, evt.TenantAOOId, evt.Identity, workflowAction, null);
+                    callbackEvent.CorrelatedMessages.Add(evt);
+                    await _serviceBusClient.SendEventAsync<IEventWorkflowActionAggregation>(callbackEvent, replyTo, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteError(new LogMessage($"EvaluateReplyToAggregationCallbackAsync -> Error occured during callback for message {evt.Id}"), ex, LogCategories);
+                throw ex;
             }
         }
         #endregion

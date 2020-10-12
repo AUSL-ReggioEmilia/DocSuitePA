@@ -12,17 +12,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             config.Filters.Add(new AuthorizeAttribute());
             config.Filters.Add(new DSWExceptionFilterAttribute());
 
-
             // Web API configuration and services
             config.MapHttpAttributeRoutes(new DSWWebApiRouteProvider());
-
+            config.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
             config.EnableCors();
 
             ODataConfig.Register(config);
             config.EnableDependencyInjection();
             config.EnsureInitialized();
-
-
         }
 
     }

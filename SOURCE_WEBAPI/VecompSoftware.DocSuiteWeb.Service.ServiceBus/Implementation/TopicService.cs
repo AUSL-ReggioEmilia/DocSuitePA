@@ -22,6 +22,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.ServiceBus
         private const string TOPIC_SUBSCRIPTION_IS_EMPTY = "TopicName has not been defined";
         private const string SUBSCRIPTION_IS_EMPTY = "SubscriptionName has not been defined";
         private const string COMMANDNAME_IS_EMPTY = "CommandName has not been defined";
+        private const string COMMANDNAME_IS_NOT_MAPPED = "CommandName has not been mapped";
         private const string DEFAULTFILTER_IS_EMPTY = "Default Filter has not been defined";
         private const string SERVICE_BASE_CONNECTIONSTRING_IS_EMPTY = "Service Bus ConnectionString is empty";
 
@@ -153,6 +154,20 @@ namespace VecompSoftware.DocSuiteWeb.Service.ServiceBus
             }, _logger, LogCategories);
         }
 
+        public async Task<ICollection<ServiceBusMessage>> GetMessagesAsync(string topicName, string subscriptionName)
+        {
+            if (string.IsNullOrEmpty(topicName))
+            {
+                throw new DSWException($"SubscribeTopicAsync: {TOPIC_SUBSCRIPTION_IS_EMPTY}", null, DSWExceptionCode.SS_Mapper);
+            }
+            if (string.IsNullOrEmpty(subscriptionName))
+            {
+                throw new DSWException($"SubscribeTopicAsync: {SUBSCRIPTION_IS_EMPTY}", null, DSWExceptionCode.SS_Mapper);
+            }
+            await _topicContext.BeginContextAsync(topicName);
+            return _mapper_to_message.MapCollection(await _topicContext.GetMessagesAsync(subscriptionName));
+        }
+
         /// <summary>
         /// Get queue status
         /// </summary>
@@ -163,17 +178,29 @@ namespace VecompSoftware.DocSuiteWeb.Service.ServiceBus
                 return ServiceBusMessageStateHelper.ConvertState(await _topicContext.GetStatusAsync());
             }, _logger, LogCategories);
         }
-
-        public async Task<ITopicService> SubscribeTopicAsync(string topicName, string subscriptionName, string commandName, string correlationId,
-            Action<ServiceBusMessage> callback)
+        public async Task<bool> SubscriptionExists(string topicName, string subscriptionName)
         {
             if (string.IsNullOrEmpty(topicName))
             {
-                throw new DSWException(string.Concat("SubscribeTopicAsync: ", TOPIC_SUBSCRIPTION_IS_EMPTY), null, DSWExceptionCode.SS_Mapper);
+                throw new DSWException($"SubscribeTopicAsync: {TOPIC_SUBSCRIPTION_IS_EMPTY}", null, DSWExceptionCode.SS_Mapper);
             }
             if (string.IsNullOrEmpty(subscriptionName))
             {
-                throw new DSWException(string.Concat("SubscribeTopicAsync: ", SUBSCRIPTION_IS_EMPTY), null, DSWExceptionCode.SS_Mapper);
+                throw new DSWException($"SubscribeTopicAsync: {SUBSCRIPTION_IS_EMPTY}", null, DSWExceptionCode.SS_Mapper);
+            }
+            await _topicContext.BeginContextAsync(topicName);
+            return _topicContext.SubscriptionExists(subscriptionName);
+        }
+
+        public async Task<ITopicService> CreateSubscriptionAsync(string topicName, string subscriptionName, string correlationId, string commandName)
+        {
+            if (string.IsNullOrEmpty(topicName))
+            {
+                throw new DSWException($"SubscribeTopicAsync: {TOPIC_SUBSCRIPTION_IS_EMPTY}", null, DSWExceptionCode.SS_Mapper);
+            }
+            if (string.IsNullOrEmpty(subscriptionName))
+            {
+                throw new DSWException($"SubscribeTopicAsync: {SUBSCRIPTION_IS_EMPTY}", null, DSWExceptionCode.SS_Mapper);
             }
             if (string.IsNullOrEmpty(commandName))
             {
@@ -181,13 +208,39 @@ namespace VecompSoftware.DocSuiteWeb.Service.ServiceBus
             }
             if (!_messageConfiguration.ContainsKey(commandName))
             {
-                throw new DSWException(DEFAULTFILTER_IS_EMPTY, null, DSWExceptionCode.SS_Mapper);
+                throw new DSWException(COMMANDNAME_IS_NOT_MAPPED, null, DSWExceptionCode.SS_Mapper);
+            }
+
+            await _topicContext.BeginContextAsync(topicName);
+            await _topicContext.CreateSubscriptionAsync(subscriptionName, correlationId, _messageConfiguration[commandName].DefaultFilterEvent, true);
+            return this;
+        }
+
+        public async Task<ITopicService> SubscribeTopicAsync(string topicName, string subscriptionName, string commandName, string correlationId,
+            Action<ServiceBusMessage> callback)
+        {
+            if (string.IsNullOrEmpty(topicName))
+            {
+                throw new DSWException($"SubscribeTopicAsync: {TOPIC_SUBSCRIPTION_IS_EMPTY}", null, DSWExceptionCode.SS_Mapper);
+            }
+            if (string.IsNullOrEmpty(subscriptionName))
+            {
+                throw new DSWException($"SubscribeTopicAsync: {SUBSCRIPTION_IS_EMPTY}", null, DSWExceptionCode.SS_Mapper);
+            }
+            if (string.IsNullOrEmpty(commandName))
+            {
+                throw new DSWException(COMMANDNAME_IS_EMPTY, null, DSWExceptionCode.SS_Mapper);
+            }
+            if (!_messageConfiguration.ContainsKey(commandName))
+            {
+                throw new DSWException(COMMANDNAME_IS_NOT_MAPPED, null, DSWExceptionCode.SS_Mapper);
             }
 
             await _topicContext.BeginContextAsync(topicName);
             await _topicContext.CreateSubscriptionAsync(subscriptionName, correlationId, _messageConfiguration[commandName].DefaultFilterEvent, (message) => OnMessage(callback, message));
             return this;
         }
+
         public async Task<ITopicService> UnsubscribeTopicAsync(string topicName, string subscriptionName)
         {
             if (string.IsNullOrEmpty(topicName))

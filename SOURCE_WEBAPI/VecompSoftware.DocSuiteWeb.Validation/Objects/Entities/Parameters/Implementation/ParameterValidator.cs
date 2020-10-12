@@ -1,6 +1,7 @@
 ﻿using System;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Parameters;
 using VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Parameters;
@@ -48,7 +49,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Parameter
         #endregion
 
         #region [ Navigation Properties ]
-
+        public TenantAOO TenantAOO { get; set; }
         #endregion
     }
 }

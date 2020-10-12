@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using System.ComponentModel;
+using BiblosDS.Library.Common.Objects.Enums;
 
 namespace BiblosDS.Library.Common.Objects
 {
@@ -76,5 +77,7 @@ namespace BiblosDS.Library.Common.Objects
         public string VerifyPath { get; set; }
 
         public DateTime? LockDate { get; set; }
+
+        public PreservationTaskStatus? TaskStatus { get; set; }
     }
 }

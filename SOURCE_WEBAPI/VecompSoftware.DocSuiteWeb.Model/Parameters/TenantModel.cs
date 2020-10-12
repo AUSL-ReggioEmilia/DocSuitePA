@@ -25,6 +25,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Parameters
         public string SignalRAddress { get; set; }
         public string DSWUrl { get; set; }
         public string ODATAUrl { get; set; }
+        public string BiblosWebAPIUrl { get; set; }
         public HttpClientConfiguration WebApiClientConfig { get; set; }
         public HttpClientConfiguration OriginalConfiguration { get; set; }
         public Dictionary<string, TenantEntityConfiguration> Entities { get; set; }

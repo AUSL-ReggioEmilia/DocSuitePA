@@ -1,0 +1,1348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:tns="archive.acaris.acta.doqui.it" xmlns:common="common.acaris.acta.doqui.it" elementFormDefault="qualified" targetNamespace="archive.acaris.acta.doqui.it" jaxb:version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="ACARIS-Common.xsd" namespace="common.acaris.acta.doqui.it" />
+  <xs:simpleType name="IdTipoClasseType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="PolicyNameType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:complexType name="IdFascicoloStandardType">
+    <xs:sequence>
+      <xs:element name="value" type="common:IDDBType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IdFormaDocumentariaType">
+    <xs:sequence>
+      <xs:element name="value" type="common:IDDBType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IdStatoDiEfficaciaType">
+    <xs:sequence>
+      <xs:element name="value" type="common:IDDBType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="IndiceClassificazioneEstesaXMLType">
+    <xs:restriction base="common:XMLType" />
+  </xs:simpleType>
+  <xs:simpleType name="DatiCertificatoMarcaTemporaleXMLType">
+    <xs:restriction base="common:XMLType" />
+  </xs:simpleType>
+  <xs:simpleType name="DatiCertificatoFirmaDigitaleXMLType">
+    <xs:restriction base="common:XMLType" />
+  </xs:simpleType>
+  <xs:simpleType name="IndiceClassificazioneXMLType">
+    <xs:restriction base="common:XMLType" />
+  </xs:simpleType>
+  <xs:simpleType name="InfoFormatoXMLType">
+    <xs:restriction base="common:XMLType" />
+  </xs:simpleType>
+  <xs:simpleType name="RapportoVerificaXMLType">
+    <xs:restriction base="common:XMLType" />
+  </xs:simpleType>
+  <xs:simpleType name="DocMimeTypesXMLType">
+    <xs:restriction base="common:XMLType" />
+  </xs:simpleType>
+  <xs:simpleType name="RenditionXMLType">
+    <xs:restriction base="common:XMLType" />
+  </xs:simpleType>
+  <xs:complexType name="FascicoloStandardType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FolderPropertiesType">
+        <xs:sequence>
+          <xs:element name="idFascicoloStandard" type="tns:IdFascicoloStandardType" />
+          <xs:element name="codice" type="common:string" />
+          <xs:element name="descrizione" type="common:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FormaDocumentariaType">
+    <xs:sequence>
+      <xs:element name="idFormaDocumentaria" type="tns:IdFormaDocumentariaType" />
+      <xs:element name="descrizione" type="common:string" />
+      <xs:element name="firmato" type="common:boolean" />
+      <xs:element name="dataFineValidita" type="common:date" />
+      <xs:element name="daConservareSostitutiva" type="common:boolean" />
+      <xs:element name="originale" type="common:boolean" />
+      <xs:element name="unico" type="common:boolean" />
+      <xs:element name="idVitalRecordCode" type="common:IdVitalRecordCodeType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="StatoDiEfficaciaType">
+    <xs:sequence>
+      <xs:element name="idStatoDiEfficacia" type="tns:IdStatoDiEfficaciaType" />
+      <xs:element name="descrizione" type="common:string" />
+      <xs:element name="dataFineValidita" type="common:date" />
+      <xs:element name="valoreDefault" type="common:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="enumFirmaDigitaleType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="NA" />
+      <xs:enumeration value="MarcaDetached" />
+      <xs:enumeration value="Enveloped" />
+      <xs:enumeration value="EnvelopedMultipart" />
+      <xs:enumeration value="FirmaDetached" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumStrutturaDocCompostoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="NA" />
+      <xs:enumeration value="DocumentoEngine" />
+      <xs:enumeration value="DocumentoRendition" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumDocPrimarioType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="SignatureDetached" />
+      <xs:enumeration value="AllegatoXML" />
+      <xs:enumeration value="DocumentoSingolo" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumTipoDocumentoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Semplice" />
+      <xs:enumeration value="Firmato" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumTipoFirmaDigitaleType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="FirmaSemplice" />
+      <xs:enumeration value="FirmaMultiplaParallela" />
+      <xs:enumeration value="FirmaMultiplaControfirma" />
+      <xs:enumeration value="FirmaMultiplaCatena" />
+      <xs:enumeration value="MarcaTemporale" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumEsitoPassoRapportoVerificaType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="NonOk" />
+      <xs:enumeration value="Ok" />
+      <xs:enumeration value="DaVerificare" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="DatiCertificatoType">
+    <xs:choice>
+      <xs:element name="DatiCertificatoMarcaTemporale" type="tns:DatiCertificatoMarcaTemporaleXMLType" />
+      <xs:element name="DatiCertificatoFirmaDigitale" type="tns:DatiCertificatoFirmaDigitaleXMLType" />
+    </xs:choice>
+  </xs:complexType>
+  <xs:simpleType name="DataTrasformazioneType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="enumMotivazioneTrasformazioneType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="ScomposizioneDocumentoAggregato" />
+      <xs:enumeration value="Sbustamento" />
+      <xs:enumeration value="TrasformazionePerObsolescenza" />
+      <xs:enumeration value="PassaggiodiStato" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="BypassControlliType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="NumeroVersioneType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="DataVersioneType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="MotivazioneVersioneType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="IdStatoDocumentoType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="ModificheTecnicheType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="WorkingCopyType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="SbustamentoType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DocPrimarioType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="MIMETypeBustaType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="RegistratoType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="ModificabileType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DefinitivoType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="OrigineInternaType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="AnalogicoType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="RappresentazioneDigitaleType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DaConservareType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="ProntoPerConservazioneType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DaConservareDopoIlType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DaConservarePrimaDelType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="ConservatoType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DatiPersonaliType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DatiSensibiliType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DatiRiservatiType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DataCreazioneType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="ParoleChiaveType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="ModSMSQuarantenaType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="CongelatoType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="ReferenziabileType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="IdentificativoConservazioneType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="AutoreGiuridicoType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="AutoreFisicoType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="ScrittoreType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="OriginatoreType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DestinatarioGiuridicoType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DestinatarioFisicoType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="SoggettoProduttoreType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="OggettoType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DataDocTopicaType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DataDocCronicaType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DataTrasmissioneType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DataRicevimentoType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="NumRepertorioType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DocConAllegatiType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DocAllegatoType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="FirmaElettronicaDigitaleType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DocAutenticatoType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DocAutenticatoFirmaAutenticataType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DocAutenticatoCopiaAutenticaType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="FirmaElettronicaType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="ApplicativoAlimentanteType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DataCancellazioneType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DataEsportazioneType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DataDocChiusuraType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DataDocChiusuraRifTempUTCType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="MultiploType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DataUltimoAggiornamType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="AttivoType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="UbicazioneType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="VersioneSWType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DataAperturaType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DataChiusuraType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="CodiceRegistroType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="AnnoRegistroType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="NumeroPrimaRegistrazioneType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DataPrimaRegistrazioneType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="NumeroUltimaRegistrazioneType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DataUltimaRegistrazioneType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="NumeroAllegatiType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="DataInizioType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DataFineType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="CodBarreType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="CodiceType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DescrizioneType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="enumTitolarioStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Bozza" />
+      <xs:enumeration value="Preattivo" />
+      <xs:enumeration value="Attivo" />
+      <xs:enumeration value="Disattivo" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="IdRaggruppamentoAOOType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="DataCreazType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="NumeroMaxlivelliType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="NumeroLivSottofascicoliAmmessiType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="CreaAutomaPrimaSerieType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="SerieMultipleVoceType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="InsertContenutIinVociConSottovociType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="InsertDocInFascConSottofascType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="InsertFuoriVolumiType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="ScartoSoloConVolumiType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="CodiceVoceType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="DescrBreveType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="enumVoceStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Bozza" />
+      <xs:enumeration value="Preattiva" />
+      <xs:enumeration value="Attiva" />
+      <xs:enumeration value="Disattiva" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="PresenzaFascStandType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="PresenzaFascRealeAnnualeNVType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="PresenzaFascRealeContinuoNVType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="PresenzaFascRealeLegislaturaNVType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="PresenzaFascRealeEreditatoNVType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="PresenzaFascRealeLiberoNVType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="PresenzaFascTempType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="PresenzaSerieDocType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="PresenzaSerieFascType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="PresenzaSerieDossType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="InsertSottoVociGestContType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="CreataGestContType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DataUltimaModificaType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="ConservazioneCorrenteType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="ConservazioneGeneraleType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="DataBloccoPassaggioInDepositoType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DataSbloccoPassaggioInDepositoType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="NumeroType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="CollocazioneCartaceaType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="CopiaCartaceaType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="CartaceoType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="LegislaturaType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="enumClassificazioneStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Attiva" />
+      <xs:enumeration value="Ri-classificato" />
+      <xs:enumeration value="Cancellato" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumFascicoloTemporaneoStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Attivo" />
+      <xs:enumeration value="Disattivo" />
+      <xs:enumeration value="Congelato" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ProgressivoPerDocumentoType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="DataMemorizzazioneType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DataPassaggioInDepositoType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="DataScartoType">
+    <xs:restriction base="common:date" />
+  </xs:simpleType>
+  <xs:simpleType name="ArchivioCorrenteType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="CollocazioneCartaceoType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="EstremiProvvedimentoDiScartoType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="CreatoFascStdType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="enumSottofascicoloStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Aperto" />
+      <xs:enumeration value="AttesaDiChiusura" />
+      <xs:enumeration value="ChiusoInCorrente" />
+      <xs:enumeration value="ChiusoInDeposito" />
+      <xs:enumeration value="Congelato" />
+      <xs:enumeration value="Spostato" />
+      <xs:enumeration value="Scartato" />
+      <xs:enumeration value="Cancellato" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="CreazioneFascicoliType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="RiclassificazioneFascicoliType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="InserimentoDocumentiType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="AggiuntaOriClassificazioneDocumentiType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="enumDossierStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Aperto" />
+      <xs:enumeration value="AttesaDiChiusura" />
+      <xs:enumeration value="ChiusoInCorrente" />
+      <xs:enumeration value="ChiusoInDeposito" />
+      <xs:enumeration value="Congelato" />
+      <xs:enumeration value="Spostato" />
+      <xs:enumeration value="Scartato" />
+      <xs:enumeration value="Cancellato" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="IntervalloNumericoDaType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="IntervalloNumericoAType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="enumVolumeStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Aperto" />
+      <xs:enumeration value="ChiusoInCorrente" />
+      <xs:enumeration value="ChiusoInDeposito" />
+      <xs:enumeration value="Scartato" />
+      <xs:enumeration value="Cancellato" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumModalitaCalcoloProgDocType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="IncrementoAutomatico" />
+      <xs:enumeration value="Ereditato" />
+      <xs:enumeration value="Libero" />
+      <xs:enumeration value="IncrementoAutomaticoConAzzeramentoInizioAnno" />
+      <xs:enumeration value="IncrementoAutomaticoConAzzeramentoInizioLegislatura" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ParteFissaType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="RegistriType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="DocAltraClassificazioneType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="enumSerieTipologicaDocumentiStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Attiva" />
+      <xs:enumeration value="Disattiva" />
+      <xs:enumeration value="Congelata" />
+      <xs:enumeration value="ChiusaInCorrente" />
+      <xs:enumeration value="ChiusaInDeposito" />
+      <xs:enumeration value="Cancellata" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ObbligoFascStandType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="enumTipologiaNumerazioneType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Annuale" />
+      <xs:enumeration value="Legislatura" />
+      <xs:enumeration value="Libera" />
+      <xs:enumeration value="Continua" />
+      <xs:enumeration value="Ereditata" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumSerieFascicoliStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Attiva" />
+      <xs:enumeration value="Disattiva" />
+      <xs:enumeration value="Congelata" />
+      <xs:enumeration value="ChiusaInCorrente" />
+      <xs:enumeration value="ChiusaInDeposito" />
+      <xs:enumeration value="Cancellata" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumSerieDossierStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Attiva" />
+      <xs:enumeration value="Disattiva" />
+      <xs:enumeration value="Congelata" />
+      <xs:enumeration value="ChiusaInCorrente" />
+      <xs:enumeration value="ChiusaInDeposito" />
+      <xs:enumeration value="Cancellata" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AnnoType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="SoggettoType">
+    <xs:restriction base="common:string" />
+  </xs:simpleType>
+  <xs:simpleType name="ModificatoFascStdType">
+    <xs:restriction base="common:boolean" />
+  </xs:simpleType>
+  <xs:simpleType name="NumeroInternoType">
+    <xs:restriction base="common:integer" />
+  </xs:simpleType>
+  <xs:simpleType name="enumFascicoloRealeStatoType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Aperto" />
+      <xs:enumeration value="AttesaDiChiusura" />
+      <xs:enumeration value="ChiusoInCorrente" />
+      <xs:enumeration value="ChiusoInDeposito" />
+      <xs:enumeration value="Congelato" />
+      <xs:enumeration value="Spostato" />
+      <xs:enumeration value="Scartato" />
+      <xs:enumeration value="Cancellato" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumBaseObjectType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="DocumentPropertiesType" />
+      <xs:enumeration value="FolderPropertiesType" />
+      <xs:enumeration value="RelationshipPropertiesType" />
+      <xs:enumeration value="PolicyPropertiesType" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumDocumentObjectType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="ContenutoFisicoPropertiesType" />
+      <xs:enumeration value="DocumentoDBPropertiesType" />
+      <xs:enumeration value="DocumentoRegistroPropertiesType" />
+      <xs:enumeration value="DocumentoSemplicePropertiesType" />
+      <xs:enumeration value="ClipsMetallicaPropertiesType" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumFolderObjectType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="TitolarioPropertiesType" />
+      <xs:enumeration value="VocePropertiesType" />
+      <xs:enumeration value="ClassificazionePropertiesType" />
+      <xs:enumeration value="FascicoloTemporaneoPropertiesType" />
+      <xs:enumeration value="DocumentoFisicoPropertiesType" />
+      <xs:enumeration value="SottofascicoloPropertiesType" />
+      <xs:enumeration value="DossierPropertiesType" />
+      <xs:enumeration value="VolumeSerieFascicoliPropertiesType" />
+      <xs:enumeration value="VolumeSerieTipologicaDocumentiPropertiesType" />
+      <xs:enumeration value="VolumeFascicoliPropertiesType" />
+      <xs:enumeration value="VolumeSottofascicoliPropertiesType" />
+      <xs:enumeration value="SerieDossierPropertiesType" />
+      <xs:enumeration value="SerieTipologicaDocumentiPropertiesType" />
+      <xs:enumeration value="SerieFascicoliPropertiesType" />
+      <xs:enumeration value="FascicoloRealeEreditatoPropertiesType" />
+      <xs:enumeration value="FascicoloRealeLiberoPropertiesType" />
+      <xs:enumeration value="FascicoloRealeLegislaturaPropertiesType" />
+      <xs:enumeration value="FascicoloRealeAnnualePropertiesType" />
+      <xs:enumeration value="FascicoloRealeContinuoPropertiesType" />
+      <xs:enumeration value="GruppoAllegatiPropertiesType" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumRelationshipObjectType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="DocumentAssociationPropertiesType" />
+      <xs:enumeration value="HistoryModificheTecnichePropertiesType" />
+      <xs:enumeration value="DocumentCompositionPropertiesType" />
+      <xs:enumeration value="HistoryVecchieVersioniPropertiesType" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumPolicyObjectType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="ActaACEPropertiesType" />
+      <xs:enumeration value="PrincipalId" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumArchiveObjectType">
+    <xs:annotation>
+      <xs:documentation>
+			Lista di valori ottenuta dall'unione di enumDocumentObjectType 
+			enumFolderObjectType, enumPolicyObjectType e enumRelationshipObjectType.
+			</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="common:string">
+      <xs:enumeration value="ContenutoFisicoPropertiesType" />
+      <xs:enumeration value="GruppoAllegatiPropertiesType" />
+      <xs:enumeration value="DocumentoDBPropertiesType" />
+      <xs:enumeration value="DocumentoRegistroPropertiesType" />
+      <xs:enumeration value="DocumentoSemplicePropertiesType" />
+      <xs:enumeration value="ClipsMetallicaPropertiesType" />
+      <xs:enumeration value="TitolarioPropertiesType" />
+      <xs:enumeration value="VocePropertiesType" />
+      <xs:enumeration value="ClassificazionePropertiesType" />
+      <xs:enumeration value="FascicoloTemporaneoPropertiesType" />
+      <xs:enumeration value="DocumentoFisicoPropertiesType" />
+      <xs:enumeration value="SottofascicoloPropertiesType" />
+      <xs:enumeration value="DossierPropertiesType" />
+      <xs:enumeration value="VolumeSerieFascicoliPropertiesType" />
+      <xs:enumeration value="VolumeSerieTipologicaDocumentiPropertiesType" />
+      <xs:enumeration value="VolumeFascicoliPropertiesType" />
+      <xs:enumeration value="VolumeSottofascicoliPropertiesType" />
+      <xs:enumeration value="SerieDossierPropertiesType" />
+      <xs:enumeration value="SerieTipologicaDocumentiPropertiesType" />
+      <xs:enumeration value="SerieFascicoliPropertiesType" />
+      <xs:enumeration value="FascicoloRealeEreditatoPropertiesType" />
+      <xs:enumeration value="FascicoloRealeLiberoPropertiesType" />
+      <xs:enumeration value="FascicoloRealeLegislaturaPropertiesType" />
+      <xs:enumeration value="FascicoloRealeAnnualePropertiesType" />
+      <xs:enumeration value="FascicoloRealeContinuoPropertiesType" />
+      <xs:enumeration value="DocumentAssociationPropertiesType" />
+      <xs:enumeration value="HistoryModificheTecnichePropertiesType" />
+      <xs:enumeration value="DocumentCompositionPropertiesType" />
+      <xs:enumeration value="HistoryVecchieVersioniPropertiesType" />
+      <xs:enumeration value="ActaACEPropertiesType" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ArchivePropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="common:CommonPropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentPropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ArchivePropertiesType">
+        <xs:sequence>
+          <xs:element name="objectTypeId" type="tns:enumArchiveObjectType" />
+          <xs:element name="contentStreamLength" type="common:contentStreamLengthType" />
+          <xs:element name="contentStreamMimeType" type="common:enumMimeTypeType" />
+          <xs:element name="contentStreamFilename" type="common:contentStreamFilenameType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FolderPropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ArchivePropertiesType">
+        <xs:sequence>
+          <xs:element name="objectTypeId" type="tns:enumArchiveObjectType" />
+          <xs:element name="parentId" type="common:ObjectIdType" />
+          <xs:element name="allowedChildObjectTypeIds" type="common:AllowedChildObjectTypeIdsType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="RelationshipPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ArchivePropertiesType">
+        <xs:sequence>
+          <xs:element name="relationType" type="tns:enumRelationshipObjectType" />
+          <xs:element name="sourceId" type="common:ObjectIdType" />
+          <xs:element name="sourceType" type="tns:enumArchiveObjectType" />
+          <xs:element name="targetId" type="common:ObjectIdType" />
+          <xs:element name="targetType" type="tns:enumArchiveObjectType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PolicyPropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:ArchivePropertiesType">
+        <xs:sequence>
+          <xs:element name="objectTypeId" type="tns:enumArchiveObjectType" />
+          <xs:element name="policyName" type="tns:PolicyNameType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="GenericACEPropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:PolicyPropertiesType">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="principalList" type="common:PrincipalIdType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ActaACEPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:GenericACEPropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentAssociationPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:RelationshipPropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="HistoryModificheTecnichePropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:RelationshipPropertiesType">
+        <xs:sequence>
+          <xs:element name="dataTrasformazione" type="tns:DataTrasformazioneType" />
+          <xs:element name="motivazioneTrasformazione" type="tns:enumMotivazioneTrasformazioneType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentCompositionPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:RelationshipPropertiesType">
+        <xs:sequence>
+          <xs:element name="bypassControlli" type="tns:BypassControlliType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="HistoryVecchieVersioniPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:RelationshipPropertiesType">
+        <xs:sequence>
+          <xs:element name="numeroVersione" type="tns:NumeroVersioneType" />
+          <xs:element name="dataVersione" type="tns:DataVersioneType" />
+          <xs:element name="motivazioneVersione" type="tns:MotivazioneVersioneType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ContenutoFisicoPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DocumentPropertiesType">
+        <xs:sequence>
+          <xs:element name="numeroVersione" type="tns:NumeroVersioneType" />
+          <xs:element name="modificheTecniche" type="tns:ModificheTecnicheType" />
+          <xs:element name="workingCopy" type="tns:WorkingCopyType" />
+          <xs:element name="infoFormato" type="tns:InfoFormatoXMLType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="rapportoVerifica" type="tns:RapportoVerificaXMLType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="datiCertificato" type="tns:DatiCertificatoType" />
+          <xs:element name="sbustamento" type="tns:SbustamentoType" />
+          <xs:element name="modificabile" type="tns:ModificabileType" />
+          <xs:element name="docPrimario" type="tns:DocPrimarioType" />
+          <xs:element name="mimeTypeBusta" type="tns:MIMETypeBustaType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentoPropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DocumentPropertiesType">
+        <xs:sequence>
+          <xs:element name="idCorrente" type="common:ObjectIdType" />
+          <xs:element name="registrato" type="tns:RegistratoType" />
+          <xs:element name="modificabile" type="tns:ModificabileType" />
+          <xs:element name="definitivo" type="tns:DefinitivoType" />
+          <xs:element name="origineInterna" type="tns:OrigineInternaType" />
+          <xs:element name="analogico" type="tns:AnalogicoType" />
+          <xs:element name="rappresentazioneDigitale" type="tns:RappresentazioneDigitaleType" />
+          <xs:element name="daConservare" type="tns:DaConservareType" />
+          <xs:element name="prontoPerConservazione" type="tns:ProntoPerConservazioneType" />
+          <xs:element name="daConservareDopoIl" type="tns:DaConservareDopoIlType" />
+          <xs:element name="daConservarePrimaDel" type="tns:DaConservarePrimaDelType" />
+          <xs:element name="conservato" type="tns:ConservatoType" />
+          <xs:element name="datiPersonali" type="tns:DatiPersonaliType" />
+          <xs:element name="datiSensibili" type="tns:DatiSensibiliType" />
+          <xs:element name="datiRiservati" type="tns:DatiRiservatiType" />
+          <xs:element name="dataCreazione" type="tns:DataCreazioneType" />
+          <xs:element name="paroleChiave" type="tns:ParoleChiaveType" />
+          <xs:element name="modSMSQuarantena" type="tns:ModSMSQuarantenaType" />
+          <xs:element name="congelato" type="tns:CongelatoType" />
+          <xs:element name="referenziabile" type="tns:ReferenziabileType" />
+          <xs:element name="identificativoConservazione" type="tns:IdentificativoConservazioneType" />
+          <xs:element name="indiceEstesoOrigineEstratto" type="tns:IndiceClassificazioneEstesaXMLType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="indiciEstesiEstrattiGenerati" type="tns:IndiceClassificazioneEstesaXMLType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="autoreGiuridico" type="tns:AutoreGiuridicoType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="autoreFisico" type="tns:AutoreFisicoType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="scrittore" type="tns:ScrittoreType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="originatore" type="tns:OriginatoreType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="destinatarioGiuridico" type="tns:DestinatarioGiuridicoType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="destinatarioFisico" type="tns:DestinatarioFisicoType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="soggettoProduttore" type="tns:SoggettoProduttoreType" />
+          <xs:element name="oggetto" type="tns:OggettoType" />
+          <xs:element name="dataDocTopica" type="tns:DataDocTopicaType" />
+          <xs:element name="dataDocCronica" type="tns:DataDocCronicaType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="dataTrasmissione" type="tns:DataTrasmissioneType" />
+          <xs:element name="dataRicevimento" type="tns:DataRicevimentoType" />
+          <xs:element name="numRepertorio" type="tns:NumRepertorioType" />
+          <xs:element name="forzareSeNumRepertorioEsistente" type="common:boolean" />
+          <xs:element name="docConAllegati" type="tns:DocConAllegatiType" />
+          <xs:element name="docAllegato" type="tns:DocAllegatoType" />
+          <xs:element name="firmaElettronicaDigitale" type="tns:FirmaElettronicaDigitaleType" />
+          <xs:element name="docAutenticato" type="tns:DocAutenticatoType" />
+          <xs:element name="docAutenticatoFirmaAutenticata" type="tns:DocAutenticatoFirmaAutenticataType" />
+          <xs:element name="docAutenticatoCopiaAutentica" type="tns:DocAutenticatoCopiaAutenticaType" />
+          <xs:element name="idStatoDiEfficacia" type="tns:IdStatoDiEfficaciaType" />
+          <xs:element name="idFormaDocumentaria" type="tns:IdFormaDocumentariaType" />
+          <xs:element name="firmaElettronica" type="tns:FirmaElettronicaType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idProtocollo" type="common:ObjectIdType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="indiceClassificazione" type="tns:IndiceClassificazioneXMLType" />
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="indiceClassificazioneEstesa" type="tns:IndiceClassificazioneEstesaXMLType" />
+          <xs:element name="applicativoAlimentante" type="tns:ApplicativoAlimentanteType" />
+          <xs:element name="dataCancellazione" type="tns:DataCancellazioneType" />
+          <xs:element name="dataEsportazione" type="tns:DataEsportazioneType" />
+          <xs:element name="idVitalRecordCode" type="common:IdVitalRecordCodeType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idAnnotazioniList" type="common:ObjectIdType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="renditionXMLList" type="tns:RenditionXMLType" />
+          <xs:element name="dataDocChiusuraRifTempUTC" type="tns:DataDocChiusuraRifTempUTCType" />
+          <xs:element name="dataDocChiusura" type="tns:DataDocChiusuraType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentoDBPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DocumentoPropertiesType">
+        <xs:sequence>
+          <xs:element name="dataUltimoAggiornam" type="tns:DataUltimoAggiornamType" />
+          <xs:element name="attivo" type="tns:AttivoType" />
+          <xs:element name="ubicazione" type="tns:UbicazioneType" />
+          <xs:element name="versioneSW" type="tns:VersioneSWType" />
+          <xs:element name="tipoDocFisico" type="tns:enumTipoDocumentoType" />
+          <xs:element name="composizione" type="tns:enumDocPrimarioType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentoRegistroPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DocumentoPropertiesType">
+        <xs:sequence>
+          <xs:element name="codiceRegistro" type="tns:CodiceRegistroType" />
+          <xs:element name="annoRegistro" type="tns:AnnoRegistroType" />
+          <xs:element name="numeroPrimaRegistrazione" type="tns:NumeroPrimaRegistrazioneType" />
+          <xs:element name="dataPrimaRegistrazione" type="tns:DataPrimaRegistrazioneType" />
+          <xs:element name="numeroUltimaRegistrazione" type="tns:NumeroUltimaRegistrazioneType" />
+          <xs:element name="dataUltimaRegistrazione" type="tns:DataUltimaRegistrazioneType" />
+          <xs:element name="dataApertura" type="tns:DataAperturaType" />
+          <xs:element name="dataChiusura" type="tns:DataChiusuraType" />
+          <xs:element name="ubicazione" type="tns:UbicazioneType" />
+          <xs:element name="versioneSW" type="tns:VersioneSWType" />
+          <xs:element name="tipoDocFisico" type="tns:enumTipoDocumentoType" />
+          <xs:element name="composizione" type="tns:enumDocPrimarioType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentoSemplicePropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DocumentoPropertiesType">
+        <xs:sequence>
+          <xs:element name="codBarre" type="tns:CodBarreType" />
+          <xs:element name="multiplo" type="tns:MultiploType" />
+          <xs:element name="tipoDocFisico" type="tns:enumTipoDocumentoType" />
+          <xs:element name="composizione" type="tns:enumDocPrimarioType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ClipsMetallicaPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:DocumentPropertiesType">
+        <xs:sequence>
+          <xs:element name="descrizione" type="tns:DescrizioneType" />
+          <xs:element name="dataCreazione" type="tns:DataCreazioneType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="GruppoAllegatiPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FolderPropertiesType">
+        <xs:sequence>
+          <xs:element name="numeroAllegati" type="tns:NumeroAllegatiType" />
+          <xs:element name="dataInizio" type="tns:DataInizioType" />
+          <xs:element name="dataFine" type="tns:DataFineType" />
+          <xs:element name="classificazionePrincipale" type="common:ObjectIdType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="TitolarioPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FolderPropertiesType">
+        <xs:sequence>
+          <xs:element name="codice" type="tns:CodiceType" />
+          <xs:element name="descrizione" type="tns:DescrizioneType" />
+          <xs:element name="stato" type="tns:enumTitolarioStatoType" />
+          <xs:element name="idRaggruppamentoAOO" type="tns:IdRaggruppamentoAOOType" />
+          <xs:element name="dataCreaz" type="tns:DataCreazType" />
+          <xs:element name="dataInizio" type="tns:DataInizioType" />
+          <xs:element name="dataFine" type="tns:DataFineType" />
+          <xs:element name="numeroMaxLivelli" type="tns:NumeroMaxlivelliType" />
+          <xs:element name="numeroLivSottofascicoliAmmessi" type="tns:NumeroLivSottofascicoliAmmessiType" />
+          <xs:element name="creaAutomaPrimaSerie" type="tns:CreaAutomaPrimaSerieType" />
+          <xs:element name="serieMultipleVoce" type="tns:SerieMultipleVoceType" />
+          <xs:element name="insertContenutiInVociConSottovoci" type="tns:InsertContenutIinVociConSottovociType" />
+          <xs:element name="insertDocInFascConSottofasc" type="tns:InsertDocInFascConSottofascType" />
+          <xs:element name="insertFuoriVolumi" type="tns:InsertFuoriVolumiType" />
+          <xs:element name="scartoSoloConVolumi" type="tns:ScartoSoloConVolumiType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idProvvedimentoAutorizzatList" type="common:IdProvvedimentoAutorizzatType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="VocePropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FolderPropertiesType">
+        <xs:sequence>
+          <xs:element name="codice" type="tns:CodiceVoceType" />
+          <xs:element name="descrizione" type="tns:DescrizioneType" />
+          <xs:element name="stato" type="tns:enumVoceStatoType" />
+          <xs:element name="indiceDiClassificazioneEsteso" type="tns:IndiceClassificazioneEstesaXMLType" />
+          <xs:element name="descrBreve" type="tns:DescrBreveType" />
+          <xs:element name="dataCreazione" type="tns:DataCreazioneType" />
+          <xs:element name="dataInizio" type="tns:DataInizioType" />
+          <xs:element name="dataFine" type="tns:DataFineType" />
+          <xs:element name="presenzaFascStand" type="tns:PresenzaFascStandType" />
+          <xs:element name="presenzaFascRealeAnnualeNV" type="tns:PresenzaFascRealeAnnualeNVType" />
+          <xs:element name="presenzaFascRealeContinuoNV" type="tns:PresenzaFascRealeContinuoNVType" />
+          <xs:element name="presenzaFascRealeLegislaturaNV" type="tns:PresenzaFascRealeLegislaturaNVType" />
+          <xs:element name="presenzaFascRealeEreditatoNV" type="tns:PresenzaFascRealeEreditatoNVType" />
+          <xs:element name="presenzaFascRealeLiberoNV" type="tns:PresenzaFascRealeLiberoNVType" />
+          <xs:element name="presenzaFascTemp" type="tns:PresenzaFascTempType" />
+          <xs:element name="presenzaSerieDoc" type="tns:PresenzaSerieDocType" />
+          <xs:element name="presenzaSerieFasc" type="tns:PresenzaSerieFascType" />
+          <xs:element name="presenzaSerieDoss" type="tns:PresenzaSerieDossType" />
+          <xs:element name="insertSottoVociGestCont" type="tns:InsertSottoVociGestContType" />
+          <xs:element name="creataGestCont" type="tns:CreataGestContType" />
+          <xs:element name="paroleChiave" type="tns:ParoleChiaveType" />
+          <xs:element name="dataUltimaModifica" type="tns:DataUltimaModificaType" />
+          <xs:element name="conservazioneCorrente" type="tns:ConservazioneCorrenteType" />
+          <xs:element name="conservazioneGenerale" type="tns:ConservazioneGeneraleType" />
+          <xs:element name="dataBloccoPassaggioInDeposito" type="tns:DataBloccoPassaggioInDepositoType" />
+          <xs:element name="dataSbloccoPassaggioInDeposito" type="tns:DataSbloccoPassaggioInDepositoType" />
+          <xs:element name="dataCancellazione" type="tns:DataCancellazioneType" />
+          <xs:element name="dataEsportazione" type="tns:DataEsportazioneType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idFascicoloStandardList" type="tns:IdFascicoloStandardType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idProvvedimentoAutorizzatList" type="common:IdProvvedimentoAutorizzatType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idAnnotazioniList" type="common:IdAnnotazioniType" />
+          <xs:element name="idTipoClasse" type="tns:IdTipoClasseType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ClassificazionePropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FolderPropertiesType">
+        <xs:sequence>
+          <xs:element name="numero" type="tns:NumeroType" />
+          <xs:element name="codice" type="tns:CodiceType" />
+          <xs:element name="numeroInput" type="common:string" />
+          <xs:element name="stato" type="tns:enumClassificazioneStatoType" />
+          <xs:element name="dataInizio" type="tns:DataInizioType" />
+          <xs:element name="dataFine" type="tns:DataFineType" />
+          <xs:element name="utenteCreazione" type="common:CodiceFiscaleType" />
+          <xs:element name="collocazioneCartacea" type="tns:CollocazioneCartaceaType" />
+          <xs:element name="copiaCartacea" type="tns:CopiaCartaceaType" />
+          <xs:element name="cartaceo" type="tns:CartaceoType" />
+          <xs:element name="legislatura" type="tns:LegislaturaType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idAnnotazioniList" type="common:IdAnnotazioniType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idMovimentazioneList" type="common:IdMovimentazioneType" />
+          <xs:element name="idStatoDocumento" type="tns:IdStatoDocumentoType" />
+          <xs:element name="idTipoClasse" type="tns:IdTipoClasseType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FascicoloTemporaneoPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FolderPropertiesType">
+        <xs:sequence>
+          <xs:element name="codice" type="tns:CodiceType" />
+          <xs:element name="descrizione" type="tns:DescrizioneType" />
+          <xs:element name="stato" type="tns:enumFascicoloTemporaneoStatoType" />
+          <xs:element name="dataInizio" type="tns:DataInizioType" />
+          <xs:element name="dataFine" type="tns:DataFineType" />
+          <xs:element name="idTipoClasse" type="tns:IdTipoClasseType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DocumentoFisicoPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FolderPropertiesType">
+        <xs:sequence>
+          <xs:element name="descrizione" type="tns:DescrizioneType" />
+          <xs:element name="progressivoPerDocumento" type="tns:ProgressivoPerDocumentoType" />
+          <xs:element name="dataMemorizzazione" type="tns:DataMemorizzazioneType" />
+          <xs:element name="docMimeTypes" type="tns:DocMimeTypesXMLType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AggregazionePropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FolderPropertiesType">
+        <xs:sequence>
+          <xs:element name="codice" type="tns:CodiceType" />
+          <xs:element name="descrizione" type="tns:DescrizioneType" />
+          <xs:element name="indiceDiClassificazioneEsteso" type="tns:IndiceClassificazioneEstesaXMLType" />
+          <xs:element name="dataCreazione" type="tns:DataCreazioneType" />
+          <xs:element name="dataInizio" type="tns:DataInizioType" />
+          <xs:element name="dataFine" type="tns:DataFineType" />
+          <xs:element name="conservazioneCorrente" type="tns:ConservazioneCorrenteType" />
+          <xs:element name="conservazioneGenerale" type="tns:ConservazioneGeneraleType" />
+          <xs:element name="dataPassaggioInDeposito" type="tns:DataPassaggioInDepositoType" />
+          <xs:element name="dataBloccoPassaggioInDeposito" type="tns:DataBloccoPassaggioInDepositoType" />
+          <xs:element name="dataSbloccoPassaggioInDeposito" type="tns:DataSbloccoPassaggioInDepositoType" />
+          <xs:element name="dataScarto" type="tns:DataScartoType" />
+          <xs:element name="archivioCorrente" type="tns:ArchivioCorrenteType" />
+          <xs:element name="datiPersonali" type="tns:DatiPersonaliType" />
+          <xs:element name="datiSensibili" type="tns:DatiSensibiliType" />
+          <xs:element name="datiRiservati" type="tns:DatiRiservatiType" />
+          <xs:element name="collocazioneCartaceo" type="tns:CollocazioneCartaceoType" />
+          <xs:element name="paroleChiave" type="tns:ParoleChiaveType" />
+          <xs:element name="dataUltimaModifica" type="tns:DataUltimaModificaType" />
+          <xs:element name="dataCancellazione" type="tns:DataCancellazioneType" />
+          <xs:element name="dataEsportazione" type="tns:DataEsportazioneType" />
+          <xs:element name="estremiProvvedimentoDiScarto" type="tns:EstremiProvvedimentoDiScartoType" />
+          <xs:element name="utenteCreazione" type="common:CodiceFiscaleType" />
+          <xs:element name="idDeposito" type="common:ObjectIdType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idMovimentazioneList" type="common:IdMovimentazioneType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idAnnotazioniList" type="common:IdAnnotazioniType" />
+          <xs:element name="idTipoClasse" type="tns:IdTipoClasseType" />
+          <xs:element name="idAOORespMat" type="common:IdAOOType" />
+          <xs:element name="idAOORespCons" type="common:IdAOOType" />
+          <xs:element name="idStrutturaRespMat" type="common:IdStrutturaType" />
+          <xs:element name="idStrutturaRespCons" type="common:IdStrutturaType" />
+          <xs:element name="idNodoRespMat" type="common:IdNodoType" />
+          <xs:element name="idNodoRespCons" type="common:IdNodoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SottofascicoloPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:AggregazionePropertiesType">
+        <xs:sequence>
+          <xs:element name="creatoFascStd" type="tns:CreatoFascStdType" />
+          <xs:element name="stato" type="tns:enumSottofascicoloStatoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DossierPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:AggregazionePropertiesType">
+        <xs:sequence>
+          <xs:element name="creazioneFascicoli" type="tns:CreazioneFascicoliType" />
+          <xs:element name="riclassificazioneFascicoli" type="tns:RiclassificazioneFascicoliType" />
+          <xs:element name="inserimentoDocumenti" type="tns:InserimentoDocumentiType" />
+          <xs:element name="aggiuntaOriClassificazioneDocumenti" type="tns:AggiuntaOriClassificazioneDocumentiType" />
+          <xs:element name="stato" type="tns:enumDossierStatoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="VolumePropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:AggregazionePropertiesType">
+        <xs:sequence>
+          <xs:element name="intervalloNumericoDa" type="tns:IntervalloNumericoDaType" />
+          <xs:element name="intervalloNumericoA" type="tns:IntervalloNumericoAType" />
+          <xs:element name="stato" type="tns:enumVolumeStatoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="VolumeSerieFascicoliPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:VolumePropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="VolumeSerieTipologicaDocumentiPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:VolumePropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="VolumeFascicoliPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:VolumePropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="VolumeSottofascicoliPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:VolumePropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SeriePropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:AggregazionePropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SerieDossierPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:SeriePropertiesType">
+        <xs:sequence>
+          <xs:element name="stato" type="tns:enumSerieDossierStatoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SerieTipologicaDocumentiPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:SeriePropertiesType">
+        <xs:sequence>
+          <xs:element name="modalitaCalcoloProgDoc" type="tns:enumModalitaCalcoloProgDocType" />
+          <xs:element name="parteFissa" type="tns:ParteFissaType" />
+          <xs:element name="registri" type="tns:RegistriType" />
+          <xs:element name="docAltraClassificazione" type="tns:DocAltraClassificazioneType" />
+          <xs:element name="stato" type="tns:enumSerieTipologicaDocumentiStatoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SerieFascicoliPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:SeriePropertiesType">
+        <xs:sequence>
+          <xs:element name="obbligoFascStand" type="tns:ObbligoFascStandType" />
+          <xs:element name="tipologiaNumerazione" type="tns:enumTipologiaNumerazioneType" />
+          <xs:element name="idFascicoloStandard" type="tns:IdFascicoloStandardType" />
+          <xs:element name="stato" type="tns:enumSerieFascicoliStatoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FascicoloRealePropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:AggregazionePropertiesType">
+        <xs:sequence>
+          <xs:element name="anno" type="tns:AnnoType" />
+          <xs:element name="numero" type="common:string" />
+          <xs:element name="oggetto" type="tns:OggettoType" />
+          <xs:element name="soggetto" type="tns:SoggettoType" />
+          <xs:element name="creatoFascStd" type="tns:CreatoFascStdType" />
+          <xs:element name="modificatoFascStd" type="tns:ModificatoFascStdType" />
+          <xs:element name="numeroInterno" type="tns:NumeroInternoType" />
+          <xs:element name="idVitalRecordCode" type="common:IdVitalRecordCodeType" />
+          <xs:element name="idFascicoloStdRiferimento" type="tns:IdFascicoloStandardType" />
+          <xs:element name="stato" type="tns:enumFascicoloRealeStatoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FascicoloRealeEreditatoPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FascicoloRealePropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FascicoloRealeLiberoPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FascicoloRealePropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FascicoloRealeLegislaturaPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FascicoloRealePropertiesType">
+        <xs:sequence>
+          <xs:element name="legislatura" type="tns:LegislaturaType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FascicoloRealeAnnualePropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FascicoloRealePropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FascicoloRealeContinuoPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FascicoloRealePropertiesType">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="titolarioProperties" type="tns:TitolarioPropertiesType" />
+  <xs:element name="classificazioneProperties" type="tns:ClassificazionePropertiesType" />
+  <xs:element name="voceProperties" type="tns:VocePropertiesType" />
+  <xs:element name="sottofascicoloProperties" type="tns:SottofascicoloPropertiesType" />
+  <xs:element name="dossierProperties" type="tns:DossierPropertiesType" />
+  <xs:element name="volumeSerieFascicoliProperties" type="tns:VolumeSerieFascicoliPropertiesType" />
+  <xs:element name="volumeSerieTipologicaDocumentiProperties" type="tns:VolumeSerieTipologicaDocumentiPropertiesType" />
+  <xs:element name="volumeFascicoliProperties" type="tns:VolumeFascicoliPropertiesType" />
+  <xs:element name="volumeSottofascicoliProperties" type="tns:VolumeSottofascicoliPropertiesType" />
+  <xs:element name="serieFascicoliProperties" type="tns:SerieFascicoliPropertiesType" />
+  <xs:element name="serieTipologicaDocumentiProperties" type="tns:SerieTipologicaDocumentiPropertiesType" />
+  <xs:element name="serieDossierProperties" type="tns:SerieDossierPropertiesType" />
+  <xs:element name="fascicoloRealeLiberoProperties" type="tns:FascicoloRealeLiberoPropertiesType" />
+  <xs:element name="fascicoloRealeAnnualeProperties" type="tns:FascicoloRealeAnnualePropertiesType" />
+  <xs:element name="fascicoloRealeLegislaturaProperties" type="tns:FascicoloRealeLegislaturaPropertiesType" />
+  <xs:element name="fascicoloRealeEreditatoProperties" type="tns:FascicoloRealeEreditatoPropertiesType" />
+  <xs:element name="fascicoloRealeContinuoProperties" type="tns:FascicoloRealeContinuoPropertiesType" />
+  <xs:element name="fascicoloTemporaneoProperties" type="tns:FascicoloTemporaneoPropertiesType" />
+  <xs:element name="documentoFisicoProperties" type="tns:DocumentoFisicoPropertiesType" />
+  <xs:element name="gruppoAllegatiProperties" type="tns:GruppoAllegatiPropertiesType" />
+  <xs:element name="clipsMetallicaProperties" type="tns:ClipsMetallicaPropertiesType" />
+  <xs:element name="documentoSempliceProperties" type="tns:DocumentoSemplicePropertiesType" />
+  <xs:element name="documentoRegistroProperties" type="tns:DocumentoRegistroPropertiesType" />
+  <xs:element name="documentoDBProperties" type="tns:DocumentoDBPropertiesType" />
+  <xs:element name="contenutoFisicoProperties" type="tns:ContenutoFisicoPropertiesType" />
+  <xs:element name="documentAssociationProperties" type="tns:DocumentAssociationPropertiesType" />
+  <xs:element name="historyModificheTecnicheProperties" type="tns:HistoryModificheTecnichePropertiesType" />
+  <xs:element name="documentCompositionProperties" type="tns:DocumentCompositionPropertiesType" />
+  <xs:element name="historyVecchieVersioniProperties" type="tns:HistoryVecchieVersioniPropertiesType" />
+</xs:schema>

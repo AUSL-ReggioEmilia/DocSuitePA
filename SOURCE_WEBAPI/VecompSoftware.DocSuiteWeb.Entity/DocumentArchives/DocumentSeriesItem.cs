@@ -63,9 +63,9 @@ namespace VecompSoftware.DocSuiteWeb.Entity.DocumentArchives
         #endregion
 
         #region [ Not Mapping Properties ]
+        public bool WorkflowAutoComplete { get; set; }
         public Guid? IdWorkflowActivity { get; set; }
         public string WorkflowName { get; set; }
-
         public ICollection<IWorkflowAction> WorkflowActions { get; set; }
 
         #endregion

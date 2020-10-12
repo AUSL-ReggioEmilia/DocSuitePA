@@ -122,6 +122,14 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Parameters
 
             Ignore(x => x.EntityId)
                 .Ignore(x => x.EntityShortId);
+
+            MapToStoredProcedures();
+            #endregion
+
+            #region [ Configure navigation properties ]
+            HasRequired(t => t.TenantAOO)
+               .WithMany(t => t.Parameters)
+               .Map(m => m.MapKey("IdTenantAOO"));
             #endregion
         }
     }

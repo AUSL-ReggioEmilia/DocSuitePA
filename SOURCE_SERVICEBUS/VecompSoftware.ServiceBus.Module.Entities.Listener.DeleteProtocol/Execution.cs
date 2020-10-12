@@ -49,6 +49,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol
         }
         public IDictionary<string, object> Properties { get; set; }
         public EvaluationModel RetryPolicyEvaluation { get; set; }
+        public Guid? IdWorkflowActivity { get; set; }
         #endregion
 
         #region [ Constructor ]
@@ -75,6 +76,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol
 
             ProtocolBuildModel protocolBuildModel = command.ContentType.ContentTypeValue;
             ProtocolModel protocolModel = protocolBuildModel.Protocol;
+            IdWorkflowActivity = protocolBuildModel.IdWorkflowActivity;
             Document toDelete = null;
             try
             {
@@ -101,6 +103,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol
                     protocol.LastChangedUser = protocolBuildModel.RegistrationUser;
                     protocol.WorkflowName = protocolBuildModel.WorkflowName;
                     protocol.IdWorkflowActivity = protocolBuildModel.IdWorkflowActivity;
+                    protocol.WorkflowAutoComplete = protocolBuildModel.WorkflowAutoComplete;
                     foreach (IWorkflowAction workflowAction in protocolBuildModel.WorkflowActions)
                     {
                         protocol.WorkflowActions.Add(workflowAction);
@@ -228,7 +231,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol
 
                 protocolBuildModel.Protocol = protocolModel;
                 IEventCompleteProtocolDelete eventDeleteProtocol = new EventCompleteProtocolDelete(Guid.NewGuid(), protocolBuildModel.UniqueId, command.TenantName, command.TenantId,
-                    command.Identity, protocolBuildModel, null);
+                    command.TenantAOOId, command.Identity, protocolBuildModel, null);
 
                 if (!await _webApiClient.PushEventAsync(eventDeleteProtocol))
                 {

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/Archive" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/Archive" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/ArchiveServerConfig" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd10" namespace="http://BiblosDS/2009/10/Storage" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="Archive">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AuthorizationAssembly" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="AuthorizationClassName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="AutoVersion" type="xs:boolean" />
+          <xs:element minOccurs="0" name="EnableSecurity" type="xs:boolean" />
+          <xs:element minOccurs="0" name="FiscalDocumentType" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="FullSignEnabled" type="xs:boolean" />
+          <xs:element minOccurs="0" name="IdArchive" type="ser:guid" />
+          <xs:element minOccurs="0" name="IsLegal" type="xs:boolean" />
+          <xs:element minOccurs="0" name="LastIdBiblos" type="xs:int" />
+          <xs:element minOccurs="0" name="LowerCache" nillable="true" type="xs:long" />
+          <xs:element minOccurs="0" name="MaxCache" nillable="true" type="xs:long" />
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="PathCache" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="PathPreservation" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="PathTransito" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="PdfConversionEmabled" type="xs:boolean" />
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/ArchiveServerConfig" minOccurs="0" name="ServerConfigs" nillable="true" type="q2:ArrayOfArchiveServerConfig" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/Storage" minOccurs="0" name="Storage" nillable="true" type="q3:Storage" />
+          <xs:element minOccurs="0" name="ThumbnailEmabled" type="xs:boolean" />
+          <xs:element minOccurs="0" name="TransitoEnabled" type="xs:boolean" />
+          <xs:element minOccurs="0" name="UpperCache" nillable="true" type="xs:long" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Archive" nillable="true" type="tns:Archive" />
+  <xs:complexType name="ArrayOfArchive">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Archive" nillable="true" type="tns:Archive" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfArchive" nillable="true" type="tns:ArrayOfArchive" />
+</xs:schema>

@@ -4,59 +4,38 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="BiblosDS2010APIModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityContainer Name="BiblosDS2010APIModelStoreContainer">
-          <EntitySet Name="Customer" EntityType="BiblosDS2010APIModel.Store.Customer" store:Type="Tables" Schema="ext" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="CustomerKey" EntityType="BiblosDS2010APIModel.Store.CustomerKey" store:Type="Tables" Schema="ext" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="CustomerLogin" EntityType="BiblosDS2010APIModel.Store.CustomerLogin" store:Type="Tables" Schema="ext" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="DocumentKey" EntityType="BiblosDS2010APIModel.Store.DocumentKey" store:Type="Tables" Schema="ext" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="ErrorMessageDecode" EntityType="BiblosDS2010APIModel.Store.ErrorMessageDecode" store:Type="Tables" Schema="ext" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <EntitySet Name="LoginToken" EntityType="BiblosDS2010APIModel.Store.LoginToken" store:Type="Tables" Schema="ext" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" />
-          <AssociationSet Name="FK_CustomerKey_Customer" Association="BiblosDS2010APIModel.Store.FK_CustomerKey_Customer">
-            <End Role="Customer" EntitySet="Customer" />
-            <End Role="CustomerKey" EntitySet="CustomerKey" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CustomerLogin_Customer" Association="BiblosDS2010APIModel.Store.FK_CustomerLogin_Customer">
-            <End Role="Customer" EntitySet="Customer" />
-            <End Role="CustomerLogin" EntitySet="CustomerLogin" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DocumentKey_Customer" Association="BiblosDS2010APIModel.Store.FK_DocumentKey_Customer">
-            <End Role="Customer" EntitySet="Customer" />
-            <End Role="DocumentKey" EntitySet="DocumentKey" />
-          </AssociationSet>
-          <AssociationSet Name="FK_LoginToken_CustomerLogin" Association="BiblosDS2010APIModel.Store.FK_LoginToken_CustomerLogin">
-            <End Role="CustomerLogin" EntitySet="CustomerLogin" />
-            <End Role="LoginToken" EntitySet="LoginToken" />
-          </AssociationSet>
-        </EntityContainer>
+    <Schema Namespace="BiblosDS2010APIModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="IdCustomer" />
           </Key>
-          <Property Name="IdCustomer" Type="varchar" Nullable="false" MaxLength="255" />
-          <Property Name="Name" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="IdCustomer" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="DateCreated" Type="datetime" />
+          <Property Name="SignInfo" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="CustomerKey">
           <Key>
             <PropertyRef Name="DocumentClass" />
             <PropertyRef Name="IdCustomer" />
           </Key>
-          <Property Name="DocumentClass" Type="varchar" Nullable="false" MaxLength="255" />
-          <Property Name="IdCustomer" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="DocumentClass" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="IdCustomer" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="IdArchive" Type="uniqueidentifier" Nullable="false" />
           <Property Name="DateCreated" Type="datetime" />
           <Property Name="Description" Type="varchar" MaxLength="255" />
+          <Property Name="FlagAddNewDocument" Type="bit" />
         </EntityType>
         <EntityType Name="CustomerLogin">
           <Key>
             <PropertyRef Name="IdCustomerLogin" />
           </Key>
           <Property Name="IdCustomerLogin" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="IdCustomer" Type="varchar" Nullable="false" MaxLength="255" />
-          <Property Name="UserName" Type="varchar" Nullable="false" MaxLength="255" />
-          <Property Name="Password" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="IdCustomer" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="DateCreated" Type="datetime" />
+          <Property Name="Roles" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="DocumentKey">
           <Key>
@@ -64,9 +43,9 @@
             <PropertyRef Name="IdCustomer" />
             <PropertyRef Name="Code" />
           </Key>
-          <Property Name="DocumentClass" Type="varchar" Nullable="false" MaxLength="255" />
-          <Property Name="IdCustomer" Type="varchar" Nullable="false" MaxLength="255" />
-          <Property Name="Code" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="DocumentClass" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="IdCustomer" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="IdDocument" Type="uniqueidentifier" />
           <Property Name="CreatedDate" Type="datetime" />
         </EntityType>
@@ -85,37 +64,13 @@
           </Key>
           <Property Name="IdLoginToken" Type="uniqueidentifier" Nullable="false" />
           <Property Name="IdCustomerLogin" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="IdCustomer" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="IdCustomer" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="DateCreated" Type="datetime" Nullable="false" />
           <Property Name="DateExpire" Type="datetime" Nullable="false" />
         </EntityType>
-        <Association Name="FK_CustomerKey_Customer">
-          <End Role="Customer" Type="BiblosDS2010APIModel.Store.Customer" Multiplicity="1" />
-          <End Role="CustomerKey" Type="BiblosDS2010APIModel.Store.CustomerKey" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="IdCustomer" />
-            </Principal>
-            <Dependent Role="CustomerKey">
-              <PropertyRef Name="IdCustomer" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CustomerLogin_Customer">
-          <End Role="Customer" Type="BiblosDS2010APIModel.Store.Customer" Multiplicity="1" />
-          <End Role="CustomerLogin" Type="BiblosDS2010APIModel.Store.CustomerLogin" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customer">
-              <PropertyRef Name="IdCustomer" />
-            </Principal>
-            <Dependent Role="CustomerLogin">
-              <PropertyRef Name="IdCustomer" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_DocumentKey_Customer">
-          <End Role="Customer" Type="BiblosDS2010APIModel.Store.Customer" Multiplicity="1" />
-          <End Role="DocumentKey" Type="BiblosDS2010APIModel.Store.DocumentKey" Multiplicity="*" />
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="DocumentKey" Type="Self.DocumentKey" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Customer">
               <PropertyRef Name="IdCustomer" />
@@ -126,8 +81,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_LoginToken_CustomerLogin">
-          <End Role="CustomerLogin" Type="BiblosDS2010APIModel.Store.CustomerLogin" Multiplicity="1" />
-          <End Role="LoginToken" Type="BiblosDS2010APIModel.Store.LoginToken" Multiplicity="*" />
+          <End Role="CustomerLogin" Type="Self.CustomerLogin" Multiplicity="1" />
+          <End Role="LoginToken" Type="Self.LoginToken" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="CustomerLogin">
               <PropertyRef Name="IdCustomerLogin" />
@@ -137,6 +92,22 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="BiblosDS2010APIModelStoreContainer">
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="ext" store:Type="Tables" />
+          <EntitySet Name="CustomerKey" EntityType="Self.CustomerKey" Schema="ext" store:Type="Tables" />
+          <EntitySet Name="CustomerLogin" EntityType="Self.CustomerLogin" Schema="ext" store:Type="Tables" />
+          <EntitySet Name="DocumentKey" EntityType="Self.DocumentKey" Schema="ext" store:Type="Tables" />
+          <EntitySet Name="ErrorMessageDecode" EntityType="Self.ErrorMessageDecode" Schema="ext" store:Type="Tables" />
+          <EntitySet Name="LoginToken" EntityType="Self.LoginToken" Schema="ext" store:Type="Tables" />
+          <AssociationSet Name="FK_DocumentKey_Customer" Association="Self.FK_DocumentKey_Customer">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="DocumentKey" EntitySet="DocumentKey" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LoginToken_CustomerLogin" Association="Self.FK_LoginToken_CustomerLogin">
+            <End Role="CustomerLogin" EntitySet="CustomerLogin" />
+            <End Role="LoginToken" EntitySet="LoginToken" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -171,10 +142,11 @@
           </Key>
           <Property Type="String" Name="IdCustomer" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Type="String" Name="Name" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Type="DateTime" Name="DateCreated" />
+          <Property Type="DateTime" Name="DateCreated" Precision="3" />
           <NavigationProperty Name="CustomerKeys" Relationship="BiblosDS2010APIModel.FK_CustomerKey_Customer" FromRole="Customer" ToRole="CustomerKey" />
           <NavigationProperty Name="CustomerLogins" Relationship="BiblosDS2010APIModel.FK_CustomerLogin_Customer" FromRole="Customer" ToRole="CustomerLogin" />
           <NavigationProperty Name="DocumentKeys" Relationship="BiblosDS2010APIModel.FK_DocumentKey_Customer" FromRole="Customer" ToRole="DocumentKey" />
+          <Property Name="SignInfo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="CustomerKey">
           <Key>
@@ -184,9 +156,10 @@
           <Property Type="String" Name="DocumentClass" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Type="String" Name="IdCustomer" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Type="Guid" Name="IdArchive" Nullable="false" />
-          <Property Type="DateTime" Name="DateCreated" />
+          <Property Type="DateTime" Name="DateCreated" Precision="3" />
           <Property Type="String" Name="Description" MaxLength="255" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Customer" Relationship="BiblosDS2010APIModel.FK_CustomerKey_Customer" FromRole="CustomerKey" ToRole="Customer" />
+          <Property Name="FlagAddNewDocument" Type="Boolean" />
         </EntityType>
         <EntityType Name="CustomerLogin">
           <Key>
@@ -196,9 +169,10 @@
           <Property Type="String" Name="IdCustomer" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Type="String" Name="UserName" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Type="String" Name="Password" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Type="DateTime" Name="DateCreated" />
+          <Property Type="DateTime" Name="DateCreated" Precision="3" />
           <NavigationProperty Name="Customer" Relationship="BiblosDS2010APIModel.FK_CustomerLogin_Customer" FromRole="CustomerLogin" ToRole="Customer" />
           <NavigationProperty Name="LoginTokens" Relationship="BiblosDS2010APIModel.FK_LoginToken_CustomerLogin" FromRole="CustomerLogin" ToRole="LoginToken" />
+          <Property Name="Roles" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="DocumentKey">
           <Key>
@@ -210,7 +184,7 @@
           <Property Type="String" Name="IdCustomer" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Type="String" Name="Code" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Type="Guid" Name="IdDocument" />
-          <Property Type="DateTime" Name="CreatedDate" />
+          <Property Type="DateTime" Name="CreatedDate" Precision="3" />
           <NavigationProperty Name="Customer" Relationship="BiblosDS2010APIModel.FK_DocumentKey_Customer" FromRole="DocumentKey" ToRole="Customer" />
         </EntityType>
         <EntityType Name="ErrorMessageDecode">
@@ -265,8 +239,8 @@
           <Property Type="Guid" Name="IdLoginToken" Nullable="false" />
           <Property Type="Guid" Name="IdCustomerLogin" Nullable="false" />
           <Property Type="String" Name="IdCustomer" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Type="DateTime" Name="DateCreated" Nullable="false" />
-          <Property Type="DateTime" Name="DateExpire" Nullable="false" />
+          <Property Type="DateTime" Name="DateCreated" Nullable="false" Precision="3" />
+          <Property Type="DateTime" Name="DateExpire" Nullable="false" Precision="3" />
           <NavigationProperty Name="CustomerLogin" Relationship="BiblosDS2010APIModel.FK_LoginToken_CustomerLogin" FromRole="LoginToken" ToRole="CustomerLogin" />
         </EntityType>
         <Association Name="FK_LoginToken_CustomerLogin">
@@ -290,6 +264,7 @@
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="BiblosDS2010APIModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="SignInfo" ColumnName="SignInfo" />
                 <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="IdCustomer" ColumnName="IdCustomer" />
@@ -299,6 +274,7 @@
           <EntitySetMapping Name="CustomerKeys">
             <EntityTypeMapping TypeName="BiblosDS2010APIModel.CustomerKey">
               <MappingFragment StoreEntitySet="CustomerKey">
+                <ScalarProperty Name="FlagAddNewDocument" ColumnName="FlagAddNewDocument" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
                 <ScalarProperty Name="IdArchive" ColumnName="IdArchive" />
@@ -310,6 +286,7 @@
           <EntitySetMapping Name="CustomerLogins">
             <EntityTypeMapping TypeName="BiblosDS2010APIModel.CustomerLogin">
               <MappingFragment StoreEntitySet="CustomerLogin">
+                <ScalarProperty Name="Roles" ColumnName="Roles" />
                 <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
@@ -366,6 +343,8 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="True" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Default" />
       </DesignerInfoPropertySet>
     </Options>
     <!-- Diagram content (shape and connector positions) -->
@@ -373,7 +352,7 @@
       <Diagram Name="BiblosDsAPIModel">
         <EntityTypeShape EntityType="BiblosDS2010APIModel.Customer" Width="1.5" PointX="0.75" PointY="4.125" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="BiblosDS2010APIModel.CustomerKey" Width="1.5" PointX="3" PointY="1.25" Height="2.1725878906249996" />
-        <EntityTypeShape EntityType="BiblosDS2010APIModel.CustomerLogin" Width="1.5" PointX="3" PointY="4.125" Height="2.1725878906249996" />
+        <EntityTypeShape EntityType="BiblosDS2010APIModel.CustomerLogin" Width="1.5" PointX="4.375" PointY="4" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="BiblosDS2010APIModel.DocumentKey" Width="1.5" PointX="3" PointY="7.125" Height="2.1725878906249996" />
         <EntityTypeShape EntityType="BiblosDS2010APIModel.ErrorMessageDecode" Width="1.5" PointX="5.75" PointY="0.75" Height="1.7879850260416674" />
         <AssociationConnector Association="BiblosDS2010APIModel.FK_CustomerKey_Customer">
@@ -390,7 +369,7 @@
           <ConnectorPoint PointX="1.5" PointY="8.2112939453125" />
           <ConnectorPoint PointX="3" PointY="8.2112939453125" />
         </AssociationConnector>
-        <EntityTypeShape EntityType="BiblosDS2010APIModel.LoginToken" Width="1.5" PointX="6.625" PointY="4.25" Height="2.1725878906250031" />
+        <EntityTypeShape EntityType="BiblosDS2010APIModel.LoginToken" Width="1.5" PointX="8.375" PointY="4.125" Height="2.1725878906250031" />
         <AssociationConnector Association="BiblosDS2010APIModel.FK_LoginToken_CustomerLogin">
           <ConnectorPoint PointX="4.5" PointY="5.3362939453125016" />
           <ConnectorPoint PointX="6.625" PointY="5.3362939453125016" />

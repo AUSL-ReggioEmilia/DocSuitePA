@@ -65,7 +65,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Processes
         {
             _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.UPDATE, $"Modificata tipologia atto {entity.Name} con ID {entity.UniqueId}", typeof(ProcessFascicleTemplate).Name, CurrentDomainUser.Account));
 
-            entityTransformed.JsonModel = entity.JsonModel;
             if (entity.Process != null)
             {
                 entityTransformed.Process = _unitOfWork.Repository<Process>().Find(entity.Process.UniqueId);

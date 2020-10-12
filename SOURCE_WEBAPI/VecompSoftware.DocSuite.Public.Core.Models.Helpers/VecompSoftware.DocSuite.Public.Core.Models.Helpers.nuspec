@@ -2,31 +2,35 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>VecompSoftware.DocSuite.Public.Core.Models.Helpers</id>
-    <version>8.87.0.0</version>
+    <version>9.09.0.0</version>
     <title>VecompSoftware DocSuite Public Models Helpers</title>
     <authors>Dgroove Srl</authors>
     <owners>Dgroove Srl</owners>
     <iconUrl>https://vecompsoftwarenugetserver.azurewebsites.net/favicon.ico</iconUrl>
     <description>Libreria coi metodi di helpers dei modelli per l'integrazione, tramite WebAPI, con il sistema documentale DocSuite</description>
-    <copyright>Copyright © Dgroove 2019</copyright>
+    <copyright>Copyright © Dgroove 2020</copyright>
     <tags>VecompSoftware, Models, DocSuite, Integrazioni, Helpers, DocSuite.Public.WebAPI</tags>
     <dependencies>
-      <group targetFramework="net461">
-        <dependency id="Newtonsoft.Json" version="12.0.2" />
-        <dependency id="VecompSoftware.DocSuite.Public.Core.Models" version="8.87.0.0" />
+      <group targetFramework="net48">
+        <dependency id="VecompSoftware.DocSuite.Public.Core.Models" version="9.09.0.0" />
       </group>
+		<group targetFramework="netstandard2.1">
+			<dependency id="VecompSoftware.DocSuite.Public.Core.Models" version="9.09.0.0" />
+		</group>
     </dependencies>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System" targetFramework="net461" />
-      <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework="net461" />
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework="net48" />
     </frameworkAssemblies>
     <references />
-    <projectUrl>http://www.vecompsoftware.it/</projectUrl>
+    <projectUrl>http://ged.dgroove.it/</projectUrl>
     <summary>Libreria coi metodi di helpers dei modelli per l'integrazione, tramite WebAPI, con il sistema documentale DocSuite</summary>
   </metadata>
   <files>
-    <file src="VecompSoftware.DocSuite.Public.Core.Models.Helpers.pdb" target="lib\net461" />
-    <file src="VecompSoftware.DocSuite.Public.Core.Models.Helpers.dll" target="lib\net461" />
+    <file src="net48\VecompSoftware.DocSuite.Public.Core.Models.Helpers.pdb" target="lib\net48" />
+    <file src="net48\VecompSoftware.DocSuite.Public.Core.Models.Helpers.dll" target="lib\net48" />
+	<file src="netstandard2.1\VecompSoftware.DocSuite.Public.Core.Models.Helpers.pdb" target="lib\netstandard2.1" />
+	<file src="netstandard2.1\VecompSoftware.DocSuite.Public.Core.Models.Helpers.dll" target="lib\netstandard2.1" />
   </files>
 </package>

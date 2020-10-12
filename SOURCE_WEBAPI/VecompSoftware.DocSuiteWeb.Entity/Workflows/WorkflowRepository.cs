@@ -38,7 +38,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Workflows
 
         public string Json { get; set; }
 
-        public WorkflowStatus Status { get; set; }
+        public WorkflowRepositoryStatus Status { get; set; }
 
         public string CustomActivities { get; set; }
 

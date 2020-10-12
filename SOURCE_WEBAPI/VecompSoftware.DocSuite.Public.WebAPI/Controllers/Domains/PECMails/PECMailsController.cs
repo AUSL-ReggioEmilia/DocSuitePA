@@ -39,11 +39,11 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Domains.Protocols
 
         [EnableQuery(MaxExpansionDepth = 10, PageSize = 100, AllowedQueryOptions = AllowedQueryOptions.All)]
         [HttpGet]
-        public IHttpActionResult GetProtocolPECMails(short year, int number, PECMailDirection direction)
+        public IHttpActionResult GetProtocolPECMails(Guid uniqueId, PECMailDirection direction)
         {
             return ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                IList<PECMail> pecMails = _unitOfWork.Repository<PECMail>().GetByProtocol(year, number, direction).ToList();
+                IList<PECMail> pecMails = _unitOfWork.Repository<PECMail>().GetByProtocol(uniqueId, direction).ToList();
                 if (pecMails == null)
                 {
                     throw new ArgumentNullException("PECMails not found");

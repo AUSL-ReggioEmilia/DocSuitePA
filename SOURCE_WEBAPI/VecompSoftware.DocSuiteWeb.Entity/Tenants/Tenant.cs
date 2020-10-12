@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
+using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Tenants
 {
@@ -21,6 +22,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Tenants
             PECMailBoxes = new HashSet<PECMailBox>();
             TenantWorkflowRepositories = new HashSet<TenantWorkflowRepository>();
             Contacts = new HashSet<Contact>();
+            WorkflowActivities = new HashSet<WorkflowActivity>();
         }
 
         #endregion
@@ -28,7 +30,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Tenants
         #region [ Properties ]
         public string TenantName { get; set; }
         public string CompanyName { get; set; }
-
+        public TenantTypologyType TenantTypology { get; set; }
         #endregion
 
         #region[ Navigation Properties ]
@@ -39,6 +41,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Tenants
         public virtual ICollection<PECMailBox> PECMailBoxes { get; set; }
         public virtual ICollection<TenantWorkflowRepository> TenantWorkflowRepositories { get; set; }
         public virtual ICollection<Contact> Contacts { get; set; }
+        public virtual ICollection<WorkflowActivity> WorkflowActivities { get; set; }
+        public virtual TenantAOO TenantAOO { get; set; }
 
         #endregion
     }

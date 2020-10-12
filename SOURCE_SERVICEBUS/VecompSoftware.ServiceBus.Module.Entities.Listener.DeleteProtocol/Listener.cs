@@ -12,7 +12,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol
     public class Listener : ListenerMessageBase<ICommandDeleteProtocol>, IListenerMessageGeneric<ICommandDeleteProtocol>
     {
         public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandDeleteProtocol")
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandDeleteProtocol", webApiClient)
         {
 
         }

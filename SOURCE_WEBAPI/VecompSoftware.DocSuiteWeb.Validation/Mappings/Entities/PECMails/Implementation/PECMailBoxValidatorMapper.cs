@@ -44,7 +44,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.PECMails
             entityTransformed.IdJeepServiceOutgoingHost = entity.IdJeepServiceOutgoingHost;
             entityTransformed.UniqueId = entity.UniqueId;
             entityTransformed.InvoiceType = entity.InvoiceType;
-            entityTransformed.HumanEnabled = entity.HumanEnabled;
+            entityTransformed.LoginError = entity.LoginError;
             #endregion
 
             #region [ Navigation Properties ]

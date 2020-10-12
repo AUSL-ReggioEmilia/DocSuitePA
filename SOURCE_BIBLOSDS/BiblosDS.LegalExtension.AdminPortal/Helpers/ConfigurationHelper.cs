@@ -5,11 +5,6 @@ namespace BiblosDS.LegalExtension.AdminPortal.Helpers
 {
     public static class ConfigurationHelper
     {
-        public static string GetArchiveConfigurationFilePath(string archiveName)
-        {
-            return HostingEnvironment.MapPath(string.Format("~/App_Data/{0}.json", archiveName));
-        }
-
         public static string GetAppDataPath()
         {
             return HostingEnvironment.MapPath("~/App_Data");

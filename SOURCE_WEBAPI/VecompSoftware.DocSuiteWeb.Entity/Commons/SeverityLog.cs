@@ -1,6 +1,6 @@
 ﻿namespace VecompSoftware.DocSuiteWeb.Entity.Commons
 {
-    public enum SeverityLog
+    public enum SeverityLog : short
     {
         /// <summary>
         /// Log disabilitato

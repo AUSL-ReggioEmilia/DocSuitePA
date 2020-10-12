@@ -40,6 +40,11 @@ namespace VecompSoftware.DocSuite.Public.Core.Models.Securities
         /// </summary>
         public string Account { get; private set; }
 
+        /// <summary>
+        /// Email dell'Identity
+        /// </summary>
+        public string Email { get; set; }
+
         #endregion
     }
 }

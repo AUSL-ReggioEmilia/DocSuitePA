@@ -26,8 +26,6 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 
         public string Name { get; set; }
 
-        public string DocumentServer { get; set; }
-
         public string ProtocolArchive { get; set; }
 
         public string DossierArchive { get; set; }
@@ -36,7 +34,6 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 
         public string ConservationArchive { get; set; }
 
-        public string ConservationServer { get; set; }
 
         #endregion
     }

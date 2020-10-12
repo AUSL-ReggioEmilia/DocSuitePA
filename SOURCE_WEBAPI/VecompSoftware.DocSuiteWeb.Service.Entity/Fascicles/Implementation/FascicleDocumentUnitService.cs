@@ -81,6 +81,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                 entity = AutomaticFascicleDetection(entity);
             }
 
+            entity.Fascicle.LastChangedDate = DateTimeOffset.UtcNow;
             FascicleLog fascicleLog = FascicleService.CreateLog(entity.Fascicle, entity.ReferenceType.Equals(ReferenceType.Fascicle) ? FascicleLogType.UDInsert : FascicleLogType.UDReferenceInsert,
                 string.Format("Inserimento ({0}) {1} n. {2} in fascicolo n. {3}",
                 entity.ReferenceType.Equals(ReferenceType.Fascicle) ? EnumHelper.GetDescription(ReferenceType.Fascicle) : EnumHelper.GetDescription(ReferenceType.Reference),
@@ -153,16 +154,10 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
             }
 
             entityTransformed = AutomaticFascicleDetection(entityTransformed);
+            _unitOfWork.Repository<FascicleLog>().Insert(FascicleService.CreateLog(entityTransformed.Fascicle, FascicleLogType.Modify,
+                 $"Spostato documento {entityTransformed.DocumentUnit.GetTitle()} nella cartella {entityTransformed.FascicleFolder.Name} ({entityTransformed.FascicleFolder.GetTitle()})", 
+                 CurrentDomainUser.Account));
 
-            FascicleLog fascicleLog = new FascicleLog()
-            {
-                LogType = FascicleLogType.Modify,
-                LogDescription = $"Spostato documento {entityTransformed.DocumentUnit.GetTitle()} nella cartella {entityTransformed.FascicleFolder.Name} ({entityTransformed.FascicleFolder.GetTitle()})",
-                SystemComputer = Environment.MachineName,
-                Entity = entityTransformed.Fascicle
-            };
-            fascicleLog.Hash = HashGenerator.GenerateHash(string.Concat(fascicleLog.RegistrationUser, "|", fascicleLog.LogType, "|", fascicleLog.LogDescription, "|", fascicleLog.UniqueId, "|", fascicleLog.Entity.UniqueId, "|", fascicleLog.RegistrationDate.ToString("yyyyMMddHHmmss")));
-            _unitOfWork.Repository<FascicleLog>().Insert(fascicleLog);
             return base.BeforeUpdate(entity, entityTransformed);
         }
 

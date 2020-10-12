@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Parameters;
@@ -28,6 +29,7 @@ namespace VecompSoftware.DocSuite.Service.Models.Parameters
         private const string PROCESS_CONTAINER = "ProcessContainer";
         private const string PROCESS_ROLE = "ProcessRole";
         private const string PROCESS_ENABLED = "ProcessEnabled";
+        private const string ROLEGROUPPECRIGHT_ENABLED = "RoleGroupPECRightEnabled";
         private const string ARCHIVE_SECURITYGROUPS_GENERATION_ENABLED = "ArchiveSecurityGroupsGenerationEnabled";
         private const string SECURE_DOCUMENT_SIGNATURE_ENABLED = "SecureDocumentSignatureEnabled";
         private const string SECURE_PAPER_ID = "SecurePaperServiceId";
@@ -43,6 +45,15 @@ namespace VecompSoftware.DocSuite.Service.Models.Parameters
         private const string FASCICLE_CONTAINER_ENABLED = "FascicleContainerEnabled";
         private const string ROLE_CONTACT_ENABLED = "RoleContactEnabled";
         private const string GROUP_TBL_CONTACT = "GroupTblContact";
+        private const string SHIBBOLETH_ENABLED = "ShibbolethEnabled";
+        private const string CONTACT_AOO_PARENT = "ContactAOOParentId";
+        private const string SIGNATURE_TEMPLATE = "SignatureTemplate";
+        private const string FORCE_DESCENDING_ORDER_ELEMENTS = "ForceDescendingOrderElements";
+        private const string FASCICLE_AUTOCLOSE_THRESHOLDDAYS = "FascicleAutoCloseThresholdDays";
+        private const string FASCICLE_CONTACT_ID = "FascicleContactId";
+        private const string FASCICLE_MISCELLANEA_LOCATION = "FascicleMiscellaneaLocation";
+        private const string MULTI_AOO_FASCICLE_ENABLED = "MultiAOOFascicleEnabled";
+
         private static short? _collaborationLocationId = null;
         private static short? _workflowLocationId = null;
         private static short? _messageLocationId = null;
@@ -66,11 +77,18 @@ namespace VecompSoftware.DocSuite.Service.Models.Parameters
         private static bool? _roleContactEnabled;
         private static string _groupTblContact;
         private static bool? _processEnabled;
-
+        private static bool? _roleGroupPECRightEnabled;
+        private static bool? _shibbolethEnabled;
+        private static short? _contactAOOParentId = null;
+        private static string _signatureTemplate;
+        private static bool? _forceDescendingOrderElements;
+        private static int? _fascicleAutoCloseThresholdDays;
+        private static int? _fascicleContactId;
+        private static int? _fascicleMiscellaneaLocation;
+        private static bool? _multiAOOFascicleEnabled;
         private static AbsentManagerCertificateModel _absentManagersCertificates = null;
         private static List<TenantModel> _tenantModels = null;
         private static TenantModel _currentTenantModel = null;        
-
 
         #endregion
 
@@ -457,6 +475,140 @@ namespace VecompSoftware.DocSuite.Service.Models.Parameters
                 return _processEnabled.Value;
             }
         }
+
+        public bool RoleGroupPECRightEnabled
+        {
+            get
+            {
+                if (!_roleGroupPECRightEnabled.HasValue)
+                {
+                    _roleGroupPECRightEnabled = false;
+                    string value = GetParameter(ROLEGROUPPECRIGHT_ENABLED);
+                    _roleGroupPECRightEnabled = _mapperUnitOfWork.Repository<IMapper<string, bool>>().Map(value, _roleGroupPECRightEnabled.Value);
+                }
+                return _roleGroupPECRightEnabled.Value;
+            }
+        }
+
+        public bool ShibbolethEnabled
+        {
+            get
+            {
+                if (!_shibbolethEnabled.HasValue)
+                {
+                    _shibbolethEnabled = false;
+                    string value = GetParameter(SHIBBOLETH_ENABLED);
+                    _shibbolethEnabled = _mapperUnitOfWork.Repository<IMapper<string, bool>>().Map(value, _shibbolethEnabled.Value);
+                }
+                return _shibbolethEnabled.Value;
+            }
+        }
+
+        public short ContactAOOParentId
+        {
+            get
+            {
+                if (!_contactAOOParentId.HasValue)
+                {
+                    _contactAOOParentId = -1;
+                    string value = GetParameter(CONTACT_AOO_PARENT);
+                    _contactAOOParentId = _mapperUnitOfWork.Repository<IMapper<string, short>>().Map(value, _contactAOOParentId.Value);
+                }
+                return _contactAOOParentId.Value;
+            }
+        }
+
+        public string SignatureTemplate
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_signatureTemplate))
+                {
+                    _signatureTemplate = GetParameter(SIGNATURE_TEMPLATE);
+                }
+                if (string.IsNullOrEmpty(_signatureTemplate))
+                {
+                    _signatureTemplate = "<Label><Text>(SIGNATURE) Pagina (pagina) di (pagine)</Text><Font Face=\"Arial\" Size=\"10\" Style=\"Bold\" /></Label>";
+                }
+                if (!string.IsNullOrEmpty(_signatureTemplate))
+                {
+                    XmlDocument xmlDocument = new XmlDocument();
+                    xmlDocument.LoadXml(_signatureTemplate);
+                    _signatureTemplate = xmlDocument.OuterXml;
+                }
+                return _signatureTemplate;
+            }
+        }
+
+        public bool ForceDescendingOrderElements
+        {
+            get
+            {
+                if (!_forceDescendingOrderElements.HasValue)
+                {
+                    _forceDescendingOrderElements = false;
+                    string value = GetParameter(FORCE_DESCENDING_ORDER_ELEMENTS);
+                    _forceDescendingOrderElements = _mapperUnitOfWork.Repository<IMapper<string, bool>>().Map(value, _forceDescendingOrderElements.Value);
+                }
+                return _forceDescendingOrderElements.Value;
+            }
+        }
+
+        public int FascicleAutoCloseThresholdDays
+        {
+            get
+            {
+                if (!_fascicleAutoCloseThresholdDays.HasValue)
+                {
+                    string value = GetParameter(FASCICLE_AUTOCLOSE_THRESHOLDDAYS);
+                    _fascicleAutoCloseThresholdDays = 60;
+                    _fascicleAutoCloseThresholdDays = _mapperUnitOfWork.Repository<IMapper<string, int>>().Map(value, _fascicleAutoCloseThresholdDays.Value);
+                }
+                return _fascicleAutoCloseThresholdDays.Value;
+            }
+        }
+
+        public int FascicleContactId
+        {
+            get
+            {
+                if (!_fascicleContactId.HasValue)
+                {
+                    string value = GetParameter(FASCICLE_CONTACT_ID);
+                    _fascicleContactId = -1;
+                    _fascicleContactId = _mapperUnitOfWork.Repository<IMapper<string, int>>().Map(value, _fascicleContactId.Value);
+                }
+                return _fascicleContactId.Value;
+            }
+        }
+
+        public int FascicleMiscellaneaLocation
+        {
+            get
+            {
+                if (!_fascicleMiscellaneaLocation.HasValue)
+                {
+                    string value = GetParameter(FASCICLE_MISCELLANEA_LOCATION);
+                    _fascicleMiscellaneaLocation = -1;
+                    _fascicleMiscellaneaLocation = _mapperUnitOfWork.Repository<IMapper<string, int>>().Map(value, _fascicleMiscellaneaLocation.Value);
+                }
+                return _fascicleMiscellaneaLocation.Value;
+            }
+        }
+
+        public bool MultiAOOFascicleEnabled
+        {
+            get
+            {
+                if (!_multiAOOFascicleEnabled.HasValue)
+                {
+                    _multiAOOFascicleEnabled = false;
+                    string value = GetParameter(MULTI_AOO_FASCICLE_ENABLED);
+                    _multiAOOFascicleEnabled = _mapperUnitOfWork.Repository<IMapper<string, bool>>().Map(value, _multiAOOFascicleEnabled.Value);
+                }
+                return _multiAOOFascicleEnabled.Value;
+            }
+        }
         #endregion
 
         #region [ Constructor ]
@@ -487,10 +639,9 @@ namespace VecompSoftware.DocSuite.Service.Models.Parameters
             {
                 parameter = _unitOfWork.Repository<ParameterEnv>().GetParameter(name).FirstOrDefault();
             }
-            _logger.WriteDebug(new LogMessage($"ParemeterENV service - get  {parameterName} with value {parameter?.Value}"), LogCategories);
+            _logger.WriteDebug(new LogMessage($"ParemeterENV service - get {parameterName} with value {(parameterName.EndsWith(TENANT_MODEL) ? "TENANT_MODEL IS HIDDEN" : parameter?.Value)}"), LogCategories);
             return parameter?.Value;
         }
-
 
         #endregion
 

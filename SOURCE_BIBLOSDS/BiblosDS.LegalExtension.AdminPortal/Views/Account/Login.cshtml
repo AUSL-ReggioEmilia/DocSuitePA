@@ -17,7 +17,7 @@
             <td>@Html.LabelFor(m => m.UserName, new { @style = "text-transform: uppercase; font-weight: bold;" })</td>
             <td>
                 <span class="k-textbox k-space-left">
-                    @Html.Kendo().TextBoxFor(t => t.UserName)
+                    @Html.Kendo().TextBoxFor(t => t.UserName).HtmlAttributes(new { tabindex = "1" })
                     <a href="#" class="k-icon k-i-user">&nbsp;</a>
                 </span>
             </td>
@@ -27,7 +27,7 @@
             <td>@Html.LabelFor(m => m.Password, new { @style = "text-transform: uppercase; font-weight: bold;" })</td>
             <td>
                 <span class="k-textbox k-space-left">
-                    @(Html.Kendo().TextBoxFor(m => m.Password).HtmlAttributes(new { type = "password" }))
+                    @(Html.Kendo().TextBoxFor(m => m.Password).HtmlAttributes(new { type = "password", tabindex = "2" }))
                     <a href="#" class="k-icon k-i-password">&nbsp;</a>
                 </span>                
             </td>

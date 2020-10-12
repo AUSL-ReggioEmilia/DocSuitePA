@@ -45,8 +45,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
                 LoggedEntityId = entityId,
                 LoggedEntityUniqueId = uniqueId
             };
-            tableLog.Hash = HashGenerator.GenerateHash(string.Concat(tableLog.RegistrationUser, "|", tableLog.LogType, "|", tableLog.LogDescription, "|",
-                tableLog.UniqueId, "|", tableLog.RegistrationDate.ToString("yyyyMMddHHmmss")));
+            tableLog.Hash = HashGenerator.GenerateHash($"{tableLog.RegistrationUser}|{tableLog.LogType}|{tableLog.LogDescription}|{tableLog.UniqueId}|{tableLog.RegistrationDate:yyyyMMddHHmmss}");
             return tableLog;
         }
         #endregion

@@ -58,6 +58,12 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.ServiceBus.Messages
             {
                 serviceBusMessage.ScheduledEnqueueTimeUtc = message.ScheduledTime.Value.DateTime;
             }
+
+            if (!string.IsNullOrEmpty(message.ReplyTo))
+            {
+                serviceBusMessage.ReplyTo = message.ReplyTo;
+                serviceBusMessage.ReplyToSessionId = message.CorrelationId.ToString();
+            }
             #endregion
 
             #region [ Navigation Properties ]

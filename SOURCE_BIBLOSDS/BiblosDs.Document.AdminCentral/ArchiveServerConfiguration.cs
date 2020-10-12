@@ -56,15 +56,9 @@ namespace BiblosDs.Document.AdminCentral
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (ckEnabled.Checked && string.IsNullOrWhiteSpace(txtTransitPath.Text))
-            {
-                MessageBox.Show(this, "Input the transit path in order to proceed", "Biblos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             if (cbServer.SelectedItem == null)
             {
-                MessageBox.Show(this, "Selecte a server to proceed", "Biblos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(this, "Select a server to proceed", "Biblos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 

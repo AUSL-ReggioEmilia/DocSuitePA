@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -9,13 +10,12 @@ using System.Threading.Tasks;
 using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract.Configurations;
 using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract.Models;
 using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data;
-using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Entities;
+using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Entities.ERP;
 using VecompSoftware.BPM.Integrations.Services.BiblosDS;
 using VecompSoftware.BPM.Integrations.Services.BiblosDS.DocumentService;
 using VecompSoftware.BPM.Integrations.Services.ServiceBus;
 using VecompSoftware.BPM.Integrations.Services.WebAPI;
 using VecompSoftware.Core.Command;
-using VecompSoftware.Core.Command.CQRS.Events.Entities.Workflows;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
@@ -30,7 +30,7 @@ using VecompSoftware.DocSuiteWeb.Model.Workflow;
 using VecompSoftware.Helpers.Workflow;
 using VecompSoftware.Services.Command.CQRS.Events.Entities.Workflow;
 using VecompSoftware.Services.Command.CQRS.Events.Models.ExternalSecurities;
-using ERPDocumentType = VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Entities.DocumentType;
+using ERPDocumentType = VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Entities.ERP.DocumentType;
 
 namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract
 {
@@ -64,7 +64,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract
         private readonly IList<Guid> _subscriptions = new List<Guid>();
         private bool _needInitializeModule = false;
         private ERPDbContext _dbContext;
-        private readonly MetadataModel _metadataModel;
+        MetadataRepository _metadataRepository;
         #endregion
 
         #region [ Properties ]
@@ -100,8 +100,6 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract
                     username = WindowsIdentity.GetCurrent().Name;
                 }
                 _identityContext = new IdentityContext(username);
-                MetadataRepository metadataRepository = _webAPIClient.GetMetadataRepositoryAsync($"$filter=UniqueId eq {_moduleConfiguration.MetadataRepositoryId}").Result.Single();
-                _metadataModel = JsonConvert.DeserializeObject<MetadataModel>(metadataRepository.JsonMetadata);
             }
             catch (Exception ex)
             {
@@ -204,8 +202,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract
                 _dbContext = new ERPDbContext(_logger, ModuleConfigurationHelper.JsonSerializerSettings, _moduleConfiguration.ConnectionString);
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventTokenSecurity>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.WorkflowIntegrationTopic,
                     _moduleConfiguration.SecurityTopicSubscription, EventTokenSecurityCallbackAsync));
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventCompleteWorkflowInstance>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.WorkflowCompletedTopic, 
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventCompleteWorkflowInstance>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.WorkflowCompletedTopic,
                     _moduleConfiguration.WorkflowERPContrattiSubscription, EventCompleteWorkflowInstanceCallbackAsync));
+
+                _metadataRepository = _webAPIClient.GetMetadataRepositoryAsync($"$filter=UniqueId eq {_moduleConfiguration.MetadataRepositoryId}").Result.Single();
 
                 _needInitializeModule = false;
             }
@@ -258,16 +258,22 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract
 
         private Fascicle CreateFascicle(WorkflowRoleMapping workflowRoleMapping, string erpFascicleId, Command command)
         {
-            _metadataModel.TextFields.Single(f => f.Label.Equals(_fascicle_metadata_oda, StringComparison.InvariantCultureIgnoreCase)).Value = command.ODA;
-            _metadataModel.TextFields.Single(f => f.Label.Equals(_fascicle_metadata_erpFascicleId, StringComparison.InvariantCultureIgnoreCase)).Value = erpFascicleId;
+            ICollection<MetadataValueModel> metadataValues = new List<MetadataValueModel>
+            {
+                new MetadataValueModel { KeyName = _fascicle_metadata_oda, Value = command.ODA},
+                new MetadataValueModel { KeyName = _fascicle_metadata_erpFascicleId, Value = erpFascicleId}
+            };
+
             Fascicle fascicle = new Fascicle()
             {
                 Category = new Category() { EntityShortId = _moduleConfiguration.CategoryId },
                 FascicleType = FascicleType.Procedure,
-                MetadataValues = JsonConvert.SerializeObject(_metadataModel),
+                MetadataValues = JsonConvert.SerializeObject(metadataValues),
                 VisibilityType = VisibilityType.Confidential,
                 FascicleObject = $"Contratto {command.Contact}[{command.ODA}]",
-                Conservation = _moduleConfiguration.FascicleConservation
+                Conservation = _moduleConfiguration.FascicleConservation,
+                MetadataRepository = _metadataRepository,
+                MetadataDesigner = _metadataRepository.JsonMetadata
 
             };
             fascicle.FascicleRoles.Add(new FascicleRole() { Role = workflowRoleMapping.Role, IsMaster = true, AuthorizationRoleType = AuthorizationRoleType.Responsible });
@@ -329,6 +335,13 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract
                     ValueGuid = _moduleConfiguration.TenantId
                 });
 
+                workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, new WorkflowArgument()
+                {
+                    PropertyType = ArgumentType.RelationGuid,
+                    Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID,
+                    ValueGuid = _moduleConfiguration.TenantAOOId
+                });
+
                 workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, new WorkflowArgument()
                 {
                     PropertyType = ArgumentType.PropertyString,
@@ -388,7 +401,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract
             }
         }
 
-        private async Task EventTokenSecurityCallbackAsync(IEventTokenSecurity eventTokenSecurity)
+        private async Task EventTokenSecurityCallbackAsync(IEventTokenSecurity eventTokenSecurity, IDictionary<string, object> properties)
         {
             if (Cancel)
             {
@@ -402,10 +415,11 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract
                 using (ERPDbContext dbContext = new ERPDbContext(_logger, ModuleConfigurationHelper.JsonSerializerSettings, _moduleConfiguration.ConnectionString))
                 {
                     TokenSecurityModel tokenSecurityModel = eventTokenSecurity.ContentType.ContentTypeValue;
-                    _dbContext.Claims.Remove(_dbContext.Claims.First());
-                    _dbContext.Claims.Add(new Claim() { Token = tokenSecurityModel.Token.ToString() });
-                    await _dbContext.SaveChangesAsync();
-                    _logger.WriteInfo(new LogMessage("EventTokenSecurityCallbackAsync -> Claim token has been saved"), LogCategories);
+                    int results = await _dbContext.Database.ExecuteSqlCommandAsync("UPDATE APPS.XX_SKYRC_CLAIM SET CLAIM = '@p1'", new OracleParameter("@p1", tokenSecurityModel.Token.ToString()));
+                    //_dbContext.Claims.Remove(_dbContext.Claims.First());
+                    //_dbContext.Claims.Add(new Claim() { Token = tokenSecurityModel.Token.ToString() });
+                    //await _dbContext.SaveChangesAsync();
+                    _logger.WriteInfo(new LogMessage($"EventTokenSecurityCallbackAsync -> Claim token has been saved {results}"), LogCategories);
                 }
             }
             catch (Exception ex)
@@ -416,7 +430,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract
             }
         }
 
-        private async Task EventCompleteWorkflowInstanceCallbackAsync(IEventCompleteWorkflowInstance eventCompleteWorkflowInstance)
+        private async Task EventCompleteWorkflowInstanceCallbackAsync(IEventCompleteWorkflowInstance eventCompleteWorkflowInstance, IDictionary<string, object> properties)
         {
             if (Cancel)
             {

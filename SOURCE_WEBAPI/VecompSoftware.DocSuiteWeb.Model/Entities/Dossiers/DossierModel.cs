@@ -1,11 +1,11 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Dossiers
 {
-    public class DossierModel
+    public class DossierModel : IContentBase
     {
         #region [ Constructor ]
         public DossierModel()
@@ -46,10 +46,20 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Dossiers
 
         public string ContainerName { get; set; }
 
-        public string JsonMetadata { get; set; }
+        public string MetadataDesigner { get; set; }
+
+        public string MetadataValues { get; set; }
+
+        public CategoryModel Category { get; set; }
+
+        public DossierType DossierType { get; set; }
+
+        public DossierStatus Status { get; set; }
         #endregion
 
         #region [ Navigation Proprieties ]
+        public MetadataRepositoryModel MetadataRepository { get; set; }
+
         public ICollection<DossierRoleModel> Roles { get; set; }
 
         public ICollection<ContactModel> Contacts { get; set; }

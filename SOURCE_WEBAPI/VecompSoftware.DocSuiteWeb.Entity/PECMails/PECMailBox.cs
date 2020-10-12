@@ -88,7 +88,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.PECMails
 
         public InvoiceType? InvoiceType { get; set; }
 
-        public bool HumanEnabled { get; set; }
+        public bool LoginError { get; set; }
 
         #endregion
 

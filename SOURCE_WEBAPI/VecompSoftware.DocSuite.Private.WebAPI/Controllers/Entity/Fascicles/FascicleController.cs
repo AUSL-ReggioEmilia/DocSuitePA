@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.Core.Command;
 using VecompSoftware.Core.Command.CQRS.Commands.Entities.DocumentArchives;
@@ -12,6 +11,7 @@ using VecompSoftware.Core.Command.CQRS.Commands.Entities.Protocols;
 using VecompSoftware.Core.Command.CQRS.Commands.Models.Resolutions;
 using VecompSoftware.Core.Command.CQRS.Commands.Models.UDS;
 using VecompSoftware.DocSuite.Service.Models.Parameters;
+using VecompSoftware.DocSuite.WebAPI.Common;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
@@ -28,6 +28,7 @@ using VecompSoftware.DocSuiteWeb.Finder.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Finder.Fascicles;
 using VecompSoftware.DocSuiteWeb.Finder.Protocols;
 using VecompSoftware.DocSuiteWeb.Finder.Resolutions;
+using VecompSoftware.DocSuiteWeb.Finder.Tenants;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Mapper.Model.Resolutions;
 using VecompSoftware.DocSuiteWeb.Mapper.ServiceBus.Messages;
@@ -89,16 +90,44 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
             message = _cqrsMapper.Map(command, new ServiceBusMessage());
             if (string.IsNullOrEmpty(message.ChannelName))
             {
-                throw new DSWException(string.Concat("Queue name to command [", command.ToString(), "] is not mapped"), null, DSWExceptionCode.SC_Mapper);
+                throw new DSWException($"Queue name to command [{command}] is not mapped", null, DSWExceptionCode.SC_Mapper);
             }
             return message;
+        }
+        
+        private async Task RecursiveInsertFascicleFoldersAsync(Fascicle fascicle, FascicleFolder parent,
+            IEnumerable<FascicleFolder> fascicleFolders, IEnumerable<FascicleFolder> foldersToEvaluate)
+        {
+            if (foldersToEvaluate == null || !foldersToEvaluate.Any())
+            {
+                return;
+            }
+
+            FascicleFolder fascicleNode;
+            foreach (FascicleFolder folder in foldersToEvaluate)
+            {
+                fascicleNode = new FascicleFolder
+                {
+                    UniqueId = Guid.NewGuid(),
+                    Fascicle = fascicle,
+                    Name = folder.Name,
+                    Category = folder.Category,
+                    Status = FascicleFolderStatus.Active,
+                    Typology = FascicleFolderTypology.SubFascicle,
+                    ParentInsertId = parent.UniqueId
+                };
+                _unitOfWork.Repository<FascicleFolder>().Insert(fascicleNode);
+                await _unitOfWork.SaveChangesAsync();
+                await RecursiveInsertFascicleFoldersAsync(fascicle, fascicleNode, fascicleFolders,
+                    fascicleFolders.Where(f => f.ParentInsertId.HasValue && f.ParentInsertId.Value == folder.UniqueId));
+            }
         }
 
         protected override void AfterSave(Fascicle entity)
         {
             try
             {
-                _logger.WriteDebug(new LogMessage(string.Concat("VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles.AfterSave with entity UniqueId ", entity.UniqueId)), LogCategories);
+                _logger.WriteDebug(new LogMessage($"VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles.AfterSave with entity UniqueId {entity.UniqueId}"), LogCategories);
 
                 if (CurrentDeleteActionType.HasValue && CurrentDeleteActionType == DeleteActionType.CancelFascicle)
                 {
@@ -109,85 +138,104 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
                     {
                         if (item.DocumentUnit.Environment == (int)DSWEnvironmentType.Protocol)
                         {
-                            Protocol protocol = _unitOfWork.Repository<Protocol>().GetByUniqueId(entity.UniqueId).Single();
+                            Protocol protocol = _unitOfWork.Repository<Protocol>().GetByUniqueId(item.DocumentUnit.UniqueId).Single();
                             message = GenerateMessage(item.DocumentUnit.Category, (int)DSWEnvironmentType.Protocol,
-                                 (categoryFascicle) => new CommandUpdateProtocol(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, null, null, null,
+                                 (categoryFascicle) => new CommandUpdateProtocol(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, item.DocumentUnit.TenantAOO.UniqueId, null, null, null,
                                  new IdentityContext(_currentIdentity.FullUserName), protocol, categoryFascicle, null));
                             Task.Run(async () =>
                             {
                                 await _queueService.SubscribeQueue(message.ChannelName).SendToQueueAsync(message);
                             }).Wait();
                         }
-
                         if (item.DocumentUnit.Environment == (int)DSWEnvironmentType.Resolution)
                         {
-                            Resolution resolution = _unitOfWork.Repository<Resolution>().GetByUniqueId(entity.UniqueId).Single();
+                            Resolution resolution = _unitOfWork.Repository<Resolution>().GetByUniqueId(item.DocumentUnit.UniqueId).Single();
                             ResolutionModel resolutionModel = _mapper.Map(resolution, new ResolutionModel());
                             _mapper.FileResolution = _unitOfWork.Repository<FileResolution>().GetByResolution(item.DocumentUnit.EntityId).SingleOrDefault();
                             _mapper.ResolutionRoles = _unitOfWork.Repository<ResolutionRole>().GetByResolution(item.DocumentUnit.EntityId);
                             message = GenerateMessage(item.DocumentUnit.Category, (int)DSWEnvironmentType.Resolution,
-                             (categoryFascicle) => new CommandUpdateResolution(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId,
+                             (categoryFascicle) => new CommandUpdateResolution(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, item.DocumentUnit.TenantAOO.UniqueId,
                              new IdentityContext(_currentIdentity.FullUserName), resolutionModel, categoryFascicle, null));
                             Task.Run(async () =>
                             {
                                 await _queueService.SubscribeQueue(message.ChannelName).SendToQueueAsync(message);
                             }).Wait();
                         }
-
                         if (item.DocumentUnit.Environment == (int)DSWEnvironmentType.DocumentSeries)
                         {
-                            DocumentSeriesItem documentSeriesItem = _unitOfWork.Repository<DocumentSeriesItem>().GetFullByUniqueId(entity.UniqueId).SingleOrDefault();
+                            DocumentSeriesItem documentSeriesItem = _unitOfWork.Repository<DocumentSeriesItem>().GetFullByUniqueId(item.DocumentUnit.UniqueId).SingleOrDefault();
                             message = GenerateMessage(item.DocumentUnit.Category, (int)DSWEnvironmentType.DocumentSeries,
-                                (categoryFascicle) => new CommandUpdateDocumentSeriesItem(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, null,
+                                (categoryFascicle) => new CommandUpdateDocumentSeriesItem(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, item.DocumentUnit.TenantAOO.UniqueId, null,
                                 new IdentityContext(_currentIdentity.FullUserName), documentSeriesItem, categoryFascicle, null));
                             Task.Run(async () =>
                             {
                                 await _queueService.SubscribeQueue(message.ChannelName).SendToQueueAsync(message);
                             }).Wait();
                         }
-
                         if (item.DocumentUnit.Environment >= 100)
                         {
-                            if (item.DocumentUnit != null)
+                            UDSBuildModel commandModel = _mapperUnitOfwork.Repository<IDomainMapper<DocumentUnit, UDSBuildModel>>().Map(item.DocumentUnit, new UDSBuildModel());
+                            commandModel.UniqueId = item.DocumentUnit.UniqueId;
+                            commandModel.RegistrationDate = item.DocumentUnit.RegistrationDate;
+                            commandModel.RegistrationUser = item.DocumentUnit.RegistrationUser;
+                            message = GenerateMessage(item.DocumentUnit.Category, item.DocumentUnit.Environment,
+                             (categoryFascicle) => new CommandCQRSUpdateUDSData(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, item.DocumentUnit.TenantAOO.UniqueId,
+                             new IdentityContext(_currentIdentity.FullUserName), commandModel, categoryFascicle, null, null, null, null));
+                            Task.Run(async () =>
                             {
-                                UDSBuildModel commandModel = _mapperUnitOfwork.Repository<IDomainMapper<DocumentUnit, UDSBuildModel>>().Map(item.DocumentUnit, new UDSBuildModel());
-                                commandModel.UniqueId = item.DocumentUnit.UniqueId;
-                                commandModel.RegistrationDate = item.DocumentUnit.RegistrationDate;
-                                commandModel.RegistrationUser = item.DocumentUnit.RegistrationUser;
-                                message = GenerateMessage(item.DocumentUnit.Category, item.DocumentUnit.Environment,
-                                 (categoryFascicle) => new CommandCQRSUpdateUDSData(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId,
-                                 new IdentityContext(_currentIdentity.FullUserName), commandModel, categoryFascicle, null, null, null, null));
-                                Task.Run(async () =>
-                                {
-                                    await _queueService.SubscribeQueue(message.ChannelName).SendToQueueAsync(message);
-                                }).Wait();
-                            }
+                                await _queueService.SubscribeQueue(message.ChannelName).SendToQueueAsync(message);
+                            }).Wait();
                         }
                     }
                 }
-
                 if (CurrentInsertActionType.HasValue || CurrentUpdateActionType.HasValue)
                 {
+                    if (CurrentInsertActionType.HasValue)
+                    {
+                        Task.Run(async () =>
+                        {
+                            FascicleFolder fascicleNode = new FascicleFolder
+                            {
+                                UniqueId = Guid.NewGuid(),
+                                Fascicle = entity,
+                                Name = "Fascicolo",
+                                Category = entity.Category,
+                                Status = FascicleFolderStatus.Active,
+                                Typology = FascicleFolderTypology.Fascicle
+                            };
+                            _unitOfWork.Repository<FascicleFolder>().Insert(fascicleNode);
+                            await _unitOfWork.SaveChangesAsync();
+                            _logger.WriteDebug(new LogMessage($"Created principal folder from Fascicle.UniqueId {entity.UniqueId}"), LogCategories);
+                            Fascicle fascicleTemplateModel = null;
+                            if (entity.FascicleTemplate != null && !string.IsNullOrEmpty(entity.FascicleTemplate.JsonModel))
+                            {
+                                fascicleTemplateModel = JsonConvert.DeserializeObject<Fascicle>(entity.FascicleTemplate.JsonModel, Defaults.DefaultJsonSerializer);
+                                if (fascicleTemplateModel != null && fascicleTemplateModel.FascicleFolders.Any())
+                                {
+                                    _logger.WriteDebug(new LogMessage($"Evaluating fascicle template {entity.FascicleTemplate.UniqueId} with {fascicleTemplateModel.FascicleFolders.Count} folders from Fascicle.UniqueId {entity.UniqueId}"), LogCategories);
+                                    IEnumerable<FascicleFolder> results = fascicleTemplateModel.FascicleFolders.Where(f => f.Typology == FascicleFolderTypology.SubFascicle);
+                                    await RecursiveInsertFascicleFoldersAsync(entity, fascicleNode, results, results.Where(f => !f.ParentInsertId.HasValue));
+                                }
+                            }
+                        }).Wait();
+                    }
                     IIdentityContext identity = new IdentityContext(_currentIdentity.FullUserName);
                     Fascicle fascicle = _unitOfWork.Repository<Fascicle>().GetByUniqueId(entity.UniqueId);
-                    ICQRS command = new CommandCreateFascicle(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, identity, fascicle);
+                    ICQRS command = new CommandCreateFascicle(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty, identity, fascicle);
                     if (CurrentUpdateActionType.HasValue)
                     {
-                        command = new CommandUpdateFascicle(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, identity, fascicle);
+                        command = new CommandUpdateFascicle(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty, identity, fascicle);
                     }
 
                     foreach (IWorkflowAction workflowAction in WorkflowActions)
                     {
-                        if (IdWorkflowActivity.HasValue)
-                        {
-                            workflowAction.IdWorkflowActivity = IdWorkflowActivity.Value;
-                        }
+                        workflowAction.IdWorkflowActivity = IdWorkflowActivity;
                         command.WorkflowActions.Add(workflowAction);
                     }
                     ServiceBusMessage message = _cqrsMapper.Map(command, new ServiceBusMessage());
                     if (message == null || string.IsNullOrEmpty(message.ChannelName))
                     {
-                        throw new DSWException(string.Concat("Queue name to command [", command.ToString(), "] is not mapped"), null, DSWExceptionCode.SC_Mapper);
+                        throw new DSWException($"Queue name to command [{command}] is not mapped", null, DSWExceptionCode.SC_Mapper);
                     }
                     Task.Run(async () =>
                     {

@@ -727,135 +727,141 @@
     <Compile Include="WaitForm.designer.cs">
       <DependentUpon>WaitForm.cs</DependentUpon>
     </Compile>
-    <None Include="Service References\ServiceReferenceAdministration\Administration.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration.wsdl" />
+    <None Include="Service References\ServiceReferenceAdministration\Administration1.wsdl" />
+    <None Include="Service References\ServiceReferenceAdministration\Administration4.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration1.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration41.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration11.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration410.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration110.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration411.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration111.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration412.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2.wsdl" />
-    <None Include="Service References\ServiceReferenceAdministration\Administration2.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration413.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration21.wsdl" />
-    <None Include="Service References\ServiceReferenceAdministration\Administration22.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration414.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration221.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration415.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2210.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration416.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2211.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration417.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2212.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration418.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2213.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration419.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2214.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration42.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2215.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration420.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2216.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration421.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2217.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration422.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2218.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration423.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2219.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration424.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration222.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration425.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2220.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration426.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2221.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration427.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2222.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration428.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2223.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration429.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2224.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration43.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2225.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration430.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2226.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration431.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2227.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration432.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2228.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration433.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2229.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration434.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration223.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration435.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2230.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration436.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2231.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration437.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2232.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration438.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2233.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration439.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2234.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration44.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration2235.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration440.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration224.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration441.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration225.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration442.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration226.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration443.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration227.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration444.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration228.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration45.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration229.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration46.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\ServiceReferenceAdministration\Administration3.xsd">
+    <None Include="Service References\ServiceReferenceAdministration\Administration47.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration48.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\Administration49.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Archive.datasource">
@@ -877,6 +883,9 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.Document.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.DocumentArchiveCertificate.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\ServiceReferenceAdministration\BiblosDs.Document.AdminCentral.ServiceReferenceAdministration.RuleOperator.datasource">
@@ -1421,9 +1430,9 @@
     <Content Include="Resources\1270712252_Temporary.png" />
     <Content Include="Resources\1270712252_Temporary1.png" />
     <Content Include="Resources\1270712252_Temporary2.png" />
+    <None Include="Service References\ServiceReferenceAdministration\Administration.disco" />
     <None Include="Service References\ServiceReferenceTransit\Transit1.disco" />
     <None Include="Service References\ServiceReferenceContentSearch\ContentSearch1.disco" />
-    <None Include="Service References\ServiceReferenceAdministration\Administration1.disco" />
     <None Include="Service References\ServiceReferenceDocument\Documents1.disco" />
     <None Include="Resources\Toolbar_20Documents_20Icon.jpg" />
     <None Include="Resources\Toolbar%2520Documents%2520Icon.jpg" />

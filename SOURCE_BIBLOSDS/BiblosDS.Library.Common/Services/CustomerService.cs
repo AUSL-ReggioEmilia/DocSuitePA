@@ -50,6 +50,38 @@ namespace BiblosDS.Library.Common.Services
             }
         }
 
+
+        public static string GetCustomerIdByUsernameAndPassword(string userName, string password)
+        {
+            string encryptedPassword = PasswordService.GenerateHash(password);
+            string customerId = DbProvider.GetCustomerIdByLogin(userName, encryptedPassword);
+            if (string.IsNullOrEmpty(customerId))
+            {
+                throw new Exception($"Username { userName } not found");
+            }
+            return customerId;
+        }
+
+        public static string GetCustomerIdByUsername(string username)
+        {
+            string customerId =  DbProvider.GetCustomerIdByName(username);
+            if (string.IsNullOrEmpty(customerId))
+            {
+                throw new Exception($"Username not found");
+            }
+            return customerId;
+        }
+
+        public static string GetCustomerOrCompanySignInfo(Guid idCompany, string username)
+        {
+            if (idCompany == null && string.IsNullOrEmpty(username))
+            {
+                throw new Exception($"Customer and Company names are required");
+            }
+
+            return DbProvider.GetCustomerOrCompanySignInfo(idCompany, username); 
+        }
+
         public static BindingList<DocumentArchive> GetCustomerArchivesByUsername(string userName)
         {
             logger.InfoFormat("username {0}", userName);

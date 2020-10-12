@@ -253,10 +253,9 @@ namespace System
                 PdfConversionEmabled = valuedResult.Archive_PdfConversionEnabled.GetValueOrDefault(),
                 FullSignEnabled = valuedResult.Archive_FullSignEnabled.GetValueOrDefault(true),
                 TransitoEnabled = valuedResult.Archive_TransitoEnabled.GetValueOrDefault(true),
-                VerifyPreservationDateEnabled = valuedResult.Archive_VerifyPreservationDateEnabled.GetValueOrDefault(true),
-                VerifyPreservationIncrementalEnabled = valuedResult.Archive_VerifyPreservationIncrementalEnabled.GetValueOrDefault(true),
                 FiscalDocumentType = valuedResult.Archive_FiscalDocumentType,
-                ODBCConnection = valuedResult.Archive_ODBCConnection
+                ODBCConnection = valuedResult.Archive_ODBCConnection,
+                PreservationConfiguration = valuedResult.Archive_PreservationConfiguration
             };
         }
 
@@ -294,11 +293,10 @@ namespace System
                 PdfConversionEmabled = arc.PdfConversionEnabled.GetValueOrDefault(),
                 FullSignEnabled = arc.FullSignEnabled.GetValueOrDefault(true),
                 TransitoEnabled = arc.TransitoEnabled.GetValueOrDefault(true),
-                VerifyPreservationDateEnabled = arc.VerifyPreservationDateEnabled.GetValueOrDefault(true),
-                VerifyPreservationIncrementalEnabled = arc.VerifyPreservationIncrementalEnabled.GetValueOrDefault(true),
                 FiscalDocumentType = arc.FiscalDocumentType,
                 ServerConfigs = serverConf,
-                ODBCConnection = arc.ODBCConnection
+                ODBCConnection = arc.ODBCConnection,
+                PreservationConfiguration = arc.PreservationConfiguration
             };
         }
 
@@ -442,12 +440,12 @@ namespace System
             if (srv == null || level > deepLevel)
                 return null;
 
-            var role = BiblosDS.Library.Common.Enums.ServerRole.Undefined;
+            var role = ServerRole.Undefined;
             //TryParse.
             try
             {
                 if (!string.IsNullOrEmpty(srv.ServerRole))
-                    role = (BiblosDS.Library.Common.Enums.ServerRole)Enum.Parse(typeof(BiblosDS.Library.Common.Enums.ServerRole), srv.ServerRole);
+                    role = (ServerRole)Enum.Parse(typeof(ServerRole), srv.ServerRole);
             }
             catch
             {
@@ -459,6 +457,12 @@ namespace System
                 IdServer = srv.IdServer,
                 ServerName = srv.ServerName,
                 ServerRole = role,
+                DocumentServiceUrl = srv.DocumentServiceUrl,
+                DocumentServiceBinding = srv.DocumentServiceBinding,
+                DocumentServiceBindingConfiguration = srv.DocumentServiceBindingConfiguration,
+                StorageServiceUrl = srv.StorageServiceUrl,
+                StorageServiceBinding = srv.StorageServiceBinding,
+                StorageServiceBindingConfiguration = srv.StorageServiceBindingConfiguration
             };
         }
 

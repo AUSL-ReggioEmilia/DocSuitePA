@@ -8,13 +8,14 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data;
-using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Entities;
+using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Data.Entities.Invoices;
 using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice.Configurations;
 using VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice.Models;
 using VecompSoftware.BPM.Integrations.Services.BiblosDS;
 using VecompSoftware.BPM.Integrations.Services.ServiceBus;
 using VecompSoftware.BPM.Integrations.Services.SignServices;
 using VecompSoftware.BPM.Integrations.Services.WebAPI;
+using VecompSoftware.Commons;
 using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.Core.Command;
 using VecompSoftware.Core.Command.CQRS;
@@ -33,7 +34,6 @@ using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Model.Entities.PECMails;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Protocols;
 using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
-using VecompSoftware.DocSuiteWeb.Model.Metadata;
 using VecompSoftware.DocSuiteWeb.Model.Securities;
 using VecompSoftware.DocSuiteWeb.Model.Workflow;
 using VecompSoftware.DocSuiteWeb.Model.Workflow.Actions;
@@ -44,9 +44,7 @@ using VecompSoftware.Helpers.PEC.PA;
 using VecompSoftware.Helpers.PEC.PA.Models;
 using VecompSoftware.Helpers.UDS;
 using VecompSoftware.Helpers.Workflow;
-using VecompSoftware.Helpers.XML;
 using VecompSoftware.Services.Command.CQRS.Events.Entities.PECMails;
-using VecompSoftware.Services.Command.CQRS.Events.Models.PECMails;
 using VecompSoftware.Services.Command.CQRS.Events.Models.Protocols;
 using VecompSoftware.Services.Command.CQRS.Events.Models.UDS;
 using BiblosDocument = VecompSoftware.BPM.Integrations.Services.BiblosDS.DocumentService.Document;
@@ -79,9 +77,9 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
         private readonly IdentityContext _identityContext = null;
         private readonly IList<Guid> _subscriptions = new List<Guid>();
         private bool _needInitializeModule = false;
-        private decimal _databaseTenantId = 0;
+        private readonly decimal _databaseTenantId = 0;
         private ERPDbContext _dbContext;
-        private readonly MetadataModel _metadataModel;
+        private Location _workflowLocation;
         private readonly IEnumerable<KeyValuePair<XMLModelKind, InvoiceConfiguration>> _receivableWorkflowConfigurations;
         private readonly IEnumerable<KeyValuePair<XMLModelKind, InvoiceConfiguration>> _payableWorkflowConfigurations;
         #endregion
@@ -123,8 +121,6 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                     username = WindowsIdentity.GetCurrent().Name;
                 }
                 _identityContext = new IdentityContext(username);
-                //MetadataRepository metadataRepository = _webAPIClient.GetMetadataRepositoryAsync(string.Concat("$filter=UniqueId eq ", _moduleConfiguration.MetadataRepositoryId)).Result.Single();
-                //_metadataModel = JsonConvert.DeserializeObject<MetadataModel>(metadataRepository.JsonMetadata);
             }
             catch (Exception ex)
             {
@@ -242,15 +238,6 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                             companyName = protocolContactSender.Contact.Description;
                             vatId = protocolContactSender.Contact.FiscalCode;
                         }
-                        //if (protocolContactManualSender != null)
-                        //{
-                        //    companyName = protocolContactManualSender.Description;
-                        //    vatId = protocolContactManualSender.FiscalCode;
-                        //}
-                        if (protocolDocumentUnit == null)
-                        {
-                            throw new ArgumentException($"Protocol contact sender {protocolDocumentUnit.Title} has no valid conservation information. Check FiscalCode and Descripion informations.");
-                        }
                         uds_metadatas = new Dictionary<string, object>
                         {
                             { UDSEInvoiceHelper.UDSMetadata_DataFattura, new DateTimeOffset(receivableInvoice.InvoiceDate.Value) },
@@ -284,6 +271,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                         }
 
                         uds_metadatas = UDSEInvoiceHelper.MappingReceivableInvoiceFiscalMetadatas(receivableInvoiceMetadata, uds_metadatas.ToDictionary(f => f.Key, f => f.Value));
+                        //TODO: verificare se è un bug perché qui sta facendo una insert UDS al posto di UPDATE
                         BuildReceivableInvoiceAsync(protocolDocumentUnit, uds_metadatas, uDSRepository, protocolContactSender?.Contact, roleModels).Wait();
                         receivableInvoice.WorkflowStatus = 1;
                         receivableInvoice.WorkflowProcessed = DateTime.UtcNow;
@@ -347,7 +335,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                 throw;
             }
         }
-        
+
         protected override void OnStop()
         {
             CleanSubscriptions();
@@ -363,16 +351,19 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                 _dbContext = new ERPDbContext(_logger, ModuleConfigurationHelper.JsonSerializerSettings, _moduleConfiguration.ConnectionString);
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventCompleteUDSBuild>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicBuilderEvent,
                     _moduleConfiguration.WorkflowReceivableInvoiceUDSBuildCompleteSubscription, WorkflowReceivableInvoiceUDSBuildCompleteCallback));
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventCompleteUDSBuild>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicBuilderEvent,
-                    _moduleConfiguration.WorkflowPayableInvoiceUDSBuildCompleteSubscription, WorkflowPayableInvoiceUDSBuildCompleteCallback));
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventCompleteProtocolBuild>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicBuilderEvent,
                     _moduleConfiguration.WorkflowPayableInvoiceProtocolBuildCompleteSubscription, WorkflowProtocolBuildCompleteCallback));
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventCompletePECMailBuild>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicBuilderEvent, 
-                    _moduleConfiguration.WorkflowPayableInvoicePECMailBuildCompleteSubscription, WorkflowPECMailBuildCompleteCallback));
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventReceivedReceiptPECMail>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.WorkflowStartUpdateReceiptMetadataInvoiceSubscription, WorkflowPECMailReceiptCallback));
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventCreatePECMail>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
                     _moduleConfiguration.WorkflowStartUpdateMetadataInvoiceSubscription, WorkflowCreatePECMailCallback));
+
+                int? workflowLocationId = _webAPIClient.GetParameterWorkflowLocationIdAsync().Result;
+                if (!workflowLocationId.HasValue)
+                {
+                    throw new ArgumentNullException("Parameter WorkflowLocationId is not defined");
+                }
+                _workflowLocation = _webAPIClient.GetLocationAsync(workflowLocationId.Value).Result.Single();
 
                 _needInitializeModule = false;
             }
@@ -399,16 +390,17 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                 XMLModelKind xmlModelKind = XMLModelKind.Invalid;
                 List<Role> roles = new List<Role>();
                 bool isInvoice = false;
-                InvoiceContactModel invoiceContactModel = null;
                 IDictionary<string, object> invoice_metadatas = new Dictionary<string, object>();
                 IDictionary<string, byte[]> invoiceAttachments = new Dictionary<string, byte[]>();
                 invoice_metadatas = EInvoiceHelper.FillPayableInvoiceMetadatas(payableInvoice.Invoice, invoice_metadatas, (a) => _logger.WriteDebug(new LogMessage(a), LogCategories),
-                    out invoiceContactModel, out xmlModelKind, out invoiceAttachments);
+                    out InvoiceContactModel invoiceContactModel, out xmlModelKind, out invoiceAttachments);
 
                 isInvoice |= xmlModelKind == XMLModelKind.InvoicePA_V12 || xmlModelKind == XMLModelKind.InvoicePR_V12;
                 Guid correlationId = Guid.NewGuid();
                 Guid protocolUniqueId = Guid.NewGuid();
                 Guid udsID = Guid.NewGuid();
+
+                #region [ Validations ]
 
                 if (!isInvoice || !_payableWorkflowConfigurations.Any(f => f.Key == xmlModelKind))
                 {
@@ -469,36 +461,71 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                     throw new ArgumentException($"Invoice {payableInvoice.InvoiceFilename} already inserted in UDS archive {invoiceConfiguration.UDSRepositoryName} with UDSId {uds_metadatas[UDSEInvoiceHelper.UDSMetadata_UDSId]}");
                 }
 
+                #endregion
+
                 _logger.WriteDebug(new LogMessage($"Preaparing starting workflow with correlationId {correlationId}, protocolUniqueId {protocolUniqueId}, udsID {udsID}"), LogCategories);
-                InvoiceFileModel invoiceFileModel = new InvoiceFileModel()
-                {
-                    InvoiceContent = Encoding.Default.GetBytes(payableInvoice.Invoice),
-                    InvoiceFilename = payableInvoice.InvoiceFilename
-                };
+
+                #region [ Prepare workflow documents ]
+                Encoding encoding = EncodingUtil.GetEncoding(payableInvoice.Invoice);
+                ArchiveDocument archiveDocument;
+                byte[] invoiceContent = encoding.GetBytes(payableInvoice.Invoice);
+                string invoiceFilename = payableInvoice.InvoiceFilename;
                 if (invoiceConfiguration.SignInvoiceType == SignInvoiceType.AutomaticAruba && invoiceConfiguration.SignerParameter != null)
                 {
 
                     _logger.WriteDebug(new LogMessage($"Preaparing Aruba ARSS request for delegated user {invoiceConfiguration.SignerParameter.DelegatedUser}"), LogCategories);
-                    byte[] signDocument = _signServiceClient.SignDocument(invoiceConfiguration.SignerParameter, Encoding.Default.GetBytes(payableInvoice.Invoice));
-                    _logger.WriteDebug(new LogMessage($"Aruba ARSS response document {signDocument.Length}"), LogCategories);
-                    invoiceFileModel = new InvoiceFileModel()
-                    {
-                        InvoiceContent = signDocument,
-                        InvoiceFilename = $"{payableInvoice.InvoiceFilename}.p7m"
-                    };
+                    invoiceContent = _signServiceClient.SignDocument(invoiceConfiguration.SignerParameter, invoiceContent);
+                    _logger.WriteDebug(new LogMessage($"Aruba ARSS response document {invoiceContent.Length}"), LogCategories);
+                    invoiceFilename = $"{payableInvoice.InvoiceFilename}.p7m";
                 }
-                WorkflowReferenceModel workflowReferenceModelUDS = CreateUDSBuildModel(payableInvoice, invoiceFileModel, contact, udsRepository, roleModels, udsID, protocolUniqueId, correlationId, invoice_metadatas,
+                archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+                {
+                    Archive = _workflowLocation.ProtocolArchive,
+                    ContentStream = invoiceContent,
+                    Name = invoiceFilename,
+                });
+                InvoiceFileModel invoiceUDSFileModel = new InvoiceFileModel()
+                {
+                    InvoiceBiblosDocumentId = archiveDocument.IdDocument,
+                    InvoiceFilename = invoiceFilename
+                };
+                archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+                {
+                    Archive = _workflowLocation.ProtocolArchive,
+                    ContentStream = invoiceContent,
+                    Name = invoiceFilename,
+                });
+                InvoiceFileModel invoiceProtocolFileModel = new InvoiceFileModel()
+                {
+                    InvoiceBiblosDocumentId = archiveDocument.IdDocument,
+                    InvoiceFilename = invoiceFilename
+                };
+                archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+                {
+                    Archive = _workflowLocation.ProtocolArchive,
+                    ContentStream = invoiceContent,
+                    Name = invoiceFilename,
+                });
+                InvoiceFileModel invoicePECMailModel = new InvoiceFileModel()
+                {
+                    InvoiceBiblosDocumentId = archiveDocument.IdDocument,
+                    InvoiceFilename = invoiceFilename
+                };
+                #endregion
+
+                WorkflowReferenceModel workflowReferenceModelUDS = await CreateUDSBuildModelAsync(payableInvoice, invoiceUDSFileModel, contact, udsRepository, roleModels, udsID, protocolUniqueId, correlationId, invoice_metadatas,
                     invoiceAttachments, invoiceConfiguration.WorkflowRepositoryName);
-                WorkflowReferenceModel workflowReferenceModelProtocol = CreateProtocolBuildModel(payableInvoice, invoiceFileModel, container, contact, udsRepository, roleModels, protocolUniqueId, udsID, invoiceConfiguration.ProtocolCategoryId,
+                WorkflowReferenceModel workflowReferenceModelProtocol = await CreateProtocolBuildModelAsync(payableInvoice, invoiceProtocolFileModel, container, contact, udsRepository, roleModels, protocolUniqueId, udsID, invoiceConfiguration.ProtocolCategoryId,
                     correlationId, invoice_metadatas, invoiceAttachments, invoiceConfiguration.WorkflowRepositoryName);
-                WorkflowReferenceModel workflowReferenceModelPECMail = CreatePECMailBuildModel(payableInvoice, invoiceFileModel, container, contact, pecMailBox, invoiceConfiguration.MailRecipients, udsRepository, roleModels, protocolUniqueId,
+                WorkflowReferenceModel workflowReferenceModelPECMail = CreatePECMailBuildModel(payableInvoice, invoicePECMailModel, container, contact, pecMailBox, invoiceConfiguration.MailRecipients, udsRepository, roleModels, protocolUniqueId,
                     udsID, correlationId, invoice_metadatas, invoiceConfiguration.WorkflowRepositoryName);
 
-                WorkflowResult workflowResult = await StartWorkflowAsync(workflowReferenceModelUDS, workflowReferenceModelProtocol, workflowReferenceModelPECMail, invoiceConfiguration.WorkflowRepositoryName);
+                WorkflowResult workflowResult = await StartWorkflowAsync(workflowReferenceModelUDS, workflowReferenceModelProtocol, workflowReferenceModelPECMail, invoiceConfiguration.WorkflowRepositoryName,
+                    $"{invoice_metadatas[EInvoiceHelper.Metadata_Denominazione]} - Fattura n° {invoice_metadatas[EInvoiceHelper.Metadata_NumeroFattura]} del {((DateTimeOffset)invoice_metadatas[EInvoiceHelper.Metadata_DataFattura]).LocalDateTime.ToShortDateString()} ({invoiceProtocolFileModel.InvoiceFilename})");
                 if (!workflowResult.IsValid || !workflowResult.InstanceId.HasValue)
                 {
                     _logger.WriteError(new LogMessage("An error occured in start payable invoice workflow"), LogCategories);
-                    throw new Exception("VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice");
+                    throw new Exception(string.Join(", ", workflowResult.Errors));
                 }
                 payableInvoice.WorkflowId = correlationId.ToString();
             }
@@ -535,7 +562,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             return contact;
         }
 
-        private WorkflowReferenceModel CreateProtocolBuildModel(PayableInvoice payableInvoice, InvoiceFileModel invoiceFileModel, Container container, Contact contact,
+        private async Task<WorkflowReferenceModel> CreateProtocolBuildModelAsync(PayableInvoice payableInvoice, InvoiceFileModel invoiceFileModel, Container container, Contact contact,
             UDSRepository uDSRepository, List<RoleModel> roles, Guid protocolUniqueId, Guid udsID, short categoryId, Guid correlationId,
             IDictionary<string, object> invoice_metadatas, IDictionary<string, byte[]> invoiceAttachments, string workflowName)
         {
@@ -546,6 +573,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             ProtocolBuildModel protocolBuildModel = new ProtocolBuildModel
             {
                 WorkflowName = workflowName,
+                WorkflowAutoComplete = true,
                 UniqueId = workflowReferenceModel.ReferenceId,
                 Protocol = new ProtocolModel
                 {
@@ -571,11 +599,6 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             protocolBuildModel.Protocol.ProtocolType = new ProtocolTypeModel(ProtocolTypology.Outgoing);
             protocolBuildModel.Protocol.Object = $"{invoice_metadatas[EInvoiceHelper.Metadata_Denominazione]} - Fattura n° {invoice_metadatas[EInvoiceHelper.Metadata_NumeroFattura]} del {((DateTimeOffset)invoice_metadatas[EInvoiceHelper.Metadata_DataFattura]).LocalDateTime.ToShortDateString()}";
             protocolBuildModel.Protocol.DocumentCode = invoiceFileModel.InvoiceFilename;
-            //protocolBuildModel.Protocol.Contacts.Add(new ProtocolContactModel()
-            //{
-            //    ComunicationType = ComunicationType.Recipient,
-            //    IdContact = 206,
-            //});
             protocolBuildModel.Protocol.Contacts.Add(new ProtocolContactModel()
             {
                 ComunicationType = ComunicationType.Recipient,
@@ -594,20 +617,29 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             protocolBuildModel.Protocol.MainDocument = new DocumentModel()
             {
                 FileName = invoiceFileModel.InvoiceFilename,
-                ContentStream = invoiceFileModel.InvoiceContent
+                DocumentToStoreId = invoiceFileModel.InvoiceBiblosDocumentId
             };
-            protocolBuildModel.Protocol.Attachments = invoiceAttachments.Select(f => new DocumentModel() { FileName = f.Key, ContentStream = f.Value }).ToList();
+            ArchiveDocument archiveDocument;
+            List<DocumentModel> invoiceAttachmentFiles = new List<DocumentModel>();
+            foreach (KeyValuePair<string, byte[]> item in invoiceAttachments)
+            {
+                archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+                {
+                    Archive = _workflowLocation.ProtocolArchive,
+                    ContentStream = item.Value,
+                    Name = item.Key,
+                });
+                invoiceAttachmentFiles.Add(new DocumentModel()
+                {
+                    FileName = item.Key,
+                    DocumentToStoreId = archiveDocument.IdDocument
+                });
+            }
+            protocolBuildModel.Protocol.Attachments = invoiceAttachmentFiles;
 
             protocolBuildModel.WorkflowActions.Add(new WorkflowActionDocumentUnitLinkModel(
                 new DocumentUnitModel() { UniqueId = protocolUniqueId, Environment = (int)DSWEnvironmentType.Protocol },
                 new DocumentUnitModel() { UniqueId = udsID, Environment = uDSRepository.DSWEnvironment, IdUDSRepository = uDSRepository.UniqueId }));
-
-            /*protocolBuildModel.WorkflowActions.Add(new WorkflowActionDocumentUnitLinkModel(
-               new DocumentUnitModel() { UniqueId = protocolUniqueId, Environment = (int)DSWEnvironmentType.Protocol },
-               new DocumentUnitModel() { UniqueId = pecMail.UniqueId, EntityId = pecMail.EntityId, Environment = (int)DSWEnvironmentType.PECMail }));*/
-            //protocolBuildModel.WorkflowActions.Add(new WorkflowActionFascicleModel(
-            //    new FascicleModel() { UniqueId = Guid.NewGuid() },
-            //    new DocumentUnitModel() { UniqueId = protocolUniqueId, Environment = 1 }));
 
             workflowReferenceModel.ReferenceType = DSWEnvironmentType.Build;
             workflowReferenceModel.ReferenceModel = JsonConvert.SerializeObject(protocolBuildModel, ModuleConfigurationHelper.JsonSerializerSettings);
@@ -625,6 +657,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             PECMailBuildModel pecMailBuildModel = new PECMailBuildModel
             {
                 WorkflowName = workflowName,
+                WorkflowAutoComplete = true,
                 UniqueId = workflowReferenceModel.ReferenceId,
                 PECMail = new PECMailModel
                 {
@@ -653,22 +686,19 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             pecMailBuildModel.PECMail.Attachments.Add(new DocumentModel()
             {
                 FileName = invoiceFileModel.InvoiceFilename,
-                ContentStream = invoiceFileModel.InvoiceContent
+                DocumentToStoreId = invoiceFileModel.InvoiceBiblosDocumentId
             });
 
             pecMailBuildModel.WorkflowActions.Add(new WorkflowActionDocumentUnitLinkModel(
                new DocumentUnitModel() { UniqueId = protocolUniqueId, Environment = (int)DSWEnvironmentType.Protocol },
                new DocumentUnitModel() { Environment = (int)DSWEnvironmentType.PECMail }));
-            //protocolBuildModel.WorkflowActions.Add(new WorkflowActionFascicleModel(
-            //    new FascicleModel() { UniqueId = Guid.NewGuid() },
-            //    new DocumentUnitModel() { UniqueId = protocolUniqueId, Environment = 1 }));
 
             workflowReferenceModel.ReferenceType = DSWEnvironmentType.Build;
             workflowReferenceModel.ReferenceModel = JsonConvert.SerializeObject(pecMailBuildModel, ModuleConfigurationHelper.JsonSerializerSettings);
             return workflowReferenceModel;
         }
 
-        private WorkflowReferenceModel CreateUDSBuildModel(PayableInvoice payableInvoice, InvoiceFileModel invoiceFileModel, Contact contact,
+        private async Task<WorkflowReferenceModel> CreateUDSBuildModelAsync(PayableInvoice payableInvoice, InvoiceFileModel invoiceFileModel, Contact contact,
             UDSRepository uDSRepository, List<RoleModel> roleModels, Guid udsID, Guid protocolUniqueId, Guid correlationId,
             IDictionary<string, object> invoice_metadatas, IDictionary<string, byte[]> invoiceAttachments, string workflowName)
         {
@@ -691,7 +721,24 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             model.FillMetaData(uds_metadatas);
             model = UDSEInvoiceHelper.InitDocumentStructures(model);
             model.Model.Documents.Document.Instances = UDSEInvoiceHelper.FillDocumentInstances(new List<InvoiceFileModel>() { invoiceFileModel });
-            model.Model.Documents.DocumentAttachment.Instances = UDSEInvoiceHelper.FillDocumentInstances(invoiceAttachments.Select(f => new InvoiceFileModel() { InvoiceFilename = f.Key, InvoiceContent = f.Value }).ToList());
+
+            List<InvoiceFileModel> invoiceAttachmentFiles = new List<InvoiceFileModel>();
+            ArchiveDocument archiveDocument;
+            foreach (KeyValuePair<string, byte[]> item in invoiceAttachments)
+            {
+                archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+                {
+                    Archive = _workflowLocation.ProtocolArchive,
+                    ContentStream = item.Value,
+                    Name = item.Key,
+                });
+                invoiceAttachmentFiles.Add(new InvoiceFileModel()
+                {
+                    InvoiceFilename = item.Key,
+                    InvoiceBiblosDocumentId = archiveDocument.IdDocument
+                });
+            }
+            model.Model.Documents.DocumentAttachment.Instances = UDSEInvoiceHelper.FillDocumentInstances(invoiceAttachmentFiles);
 
             Contacts contacts = model.Model.Contacts.Single();
             if (contacts.ContactInstances == null)
@@ -707,6 +754,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             UDSBuildModel udsBuildModel = new UDSBuildModel(model.SerializeToXml())
             {
                 WorkflowName = workflowName,
+                WorkflowAutoComplete = true,
                 WorkflowActions = new List<IWorkflowAction>(),
                 Documents = new List<UDSDocumentModel>(),
                 Roles = new List<RoleModel>(),
@@ -725,9 +773,8 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             return workflowReferenceModel;
         }
 
-
-        private async Task<WorkflowResult> StartWorkflowAsync(WorkflowReferenceModel workflowReferenceModelUDS,
-            WorkflowReferenceModel workflowReferenceModelProtocol, WorkflowReferenceModel workflowReferenceModelPECMail, string workflowName)
+        private async Task<WorkflowResult> StartWorkflowAsync(WorkflowReferenceModel workflowReferenceModelUDS, WorkflowReferenceModel workflowReferenceModelProtocol, 
+            WorkflowReferenceModel workflowReferenceModelPECMail, string workflowName, string subject)
         {
             WorkflowStart workflowStart = new WorkflowStart
             {
@@ -760,17 +807,28 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                 Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID,
                 ValueGuid = _moduleConfiguration.TenantId
             });
+            workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, new WorkflowArgument()
+            {
+                PropertyType = ArgumentType.RelationGuid,
+                Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID,
+                ValueGuid = _moduleConfiguration.TenantAOOId
+            });
             workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, new WorkflowArgument()
             {
                 PropertyType = ArgumentType.PropertyString,
                 Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME,
                 ValueString = _moduleConfiguration.TenantName
             });
+            workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_INSTANCE_SUBJECT, new WorkflowArgument()
+            {
+                PropertyType = ArgumentType.PropertyString,
+                Name = WorkflowPropertyHelper.DSW_PROPERTY_INSTANCE_SUBJECT,
+                ValueString = subject
+            });
             WorkflowResult workflowResult = await _webAPIClient.StartWorkflow(workflowStart);
             _logger.WriteInfo(new LogMessage(string.Concat("Workflow started correctly [IsValid: ", workflowResult.IsValid, "] with instanceId ", workflowResult.InstanceId)), LogCategories);
             return workflowResult;
         }
-
 
         #endregion
 
@@ -821,15 +879,22 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             List<InvoiceFileModel> invoiceFiles = new List<InvoiceFileModel>();
             if (!string.IsNullOrEmpty(receivableInvoice.AutoInvoice) && !string.IsNullOrEmpty(receivableInvoice.AutoInvoiceFilename))
             {
+                Encoding encoding = EncodingUtil.GetEncoding(receivableInvoice.AutoInvoice);
+                ArchiveDocument archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+                {
+                    Archive = _workflowLocation.ProtocolArchive,
+                    ContentStream = encoding.GetBytes(receivableInvoice.AutoInvoice),
+                    Name = receivableInvoice.AutoInvoiceFilename,
+                });
                 invoiceFiles.Add(new InvoiceFileModel()
                 {
-                    InvoiceContent = Encoding.Default.GetBytes(receivableInvoice.AutoInvoice),
+                    InvoiceBiblosDocumentId = archiveDocument.IdDocument,
                     InvoiceFilename = receivableInvoice.AutoInvoiceFilename
                 });
             }
             UDSBuildModel udsBuildModel = UDSEInvoiceHelper.PrepareUpdateUDSBuildModel(udsRepository, idUDS, uds_metadatas, documents, udsRoles, udsContacts,
                 udsMessages, udsPECMails, udsDocumentUnits, invoiceFiles, _identityContext.User);
-            CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _identityContext, udsBuildModel);
+            CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _moduleConfiguration.TenantAOOId, _identityContext, udsBuildModel);
             await _webAPIClient.SendCommandAsync(commandUpdateUDSData);
             _logger.WriteInfo(new LogMessage($"Updating metadata invoice {commandUpdateUDSData.Id} has been sended"), LogCategories);
         }
@@ -848,10 +913,17 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             List<InvoiceFileModel> invoiceFileModels = new List<InvoiceFileModel>();
             DocumentUnitChain documentUnitChain = protocolDocumentUnit.DocumentUnitChains.Single(f => f.ChainType == DocSuiteWeb.Entity.DocumentUnits.ChainType.MainChain);
             BiblosDocument biblosDocument = (await _documentClient.GetDocumentChildrenAsync(documentUnitChain.IdArchiveChain)).First();
-            Content documentContent = (await _documentClient.GetDocumentContentByIdAsync(biblosDocument.IdDocument));
+            Content documentContent = await _documentClient.GetDocumentContentByIdAsync(biblosDocument.IdDocument);
+            ArchiveDocument archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+            {
+                Archive = _workflowLocation.ProtocolArchive,
+                ContentStream = documentContent.Blob,
+                Name = biblosDocument.Name,
+            });
+
             invoiceFileModels.Add(new InvoiceFileModel()
             {
-                InvoiceContent = documentContent.Blob,
+                InvoiceBiblosDocumentId = archiveDocument.IdDocument,
                 InvoiceFilename = biblosDocument.Name
             });
             model.Model.Documents.Document.Instances = UDSEInvoiceHelper.FillDocumentInstances(invoiceFileModels);
@@ -861,9 +933,15 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             foreach (BiblosDocument document in (await _documentClient.GetDocumentChildrenAsync(documentUnitChain.IdArchiveChain)))
             {
                 documentContent = (await _documentClient.GetDocumentContentByIdAsync(biblosDocument.IdDocument));
+                archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+                {
+                    Archive = _workflowLocation.ProtocolArchive,
+                    ContentStream = documentContent.Blob,
+                    Name = document.Name,
+                });
                 invoiceFileModels.Add(new InvoiceFileModel()
                 {
-                    InvoiceContent = documentContent.Blob,
+                    InvoiceBiblosDocumentId = archiveDocument.IdDocument,
                     InvoiceFilename = document.Name
                 });
             }
@@ -901,7 +979,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
             udsBuildModel.WorkflowActions.Add(new WorkflowActionDocumentUnitLinkModel(
                 new DocumentUnitModel() { UniqueId = protocolUniqueId, Environment = (int)DSWEnvironmentType.Protocol },
                 new DocumentUnitModel() { UniqueId = udsID, Environment = uDSRepository.DSWEnvironment, IdUDSRepository = uDSRepository.UniqueId }));
-            CommandInsertUDSData commandInsertUDSData = new CommandInsertUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _identityContext, udsBuildModel);
+            CommandInsertUDSData commandInsertUDSData = new CommandInsertUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _moduleConfiguration.TenantAOOId, _identityContext, udsBuildModel);
 
             await _webAPIClient.SendCommandAsync(commandInsertUDSData);
             _logger.WriteInfo(new LogMessage($"Insert invoice command {commandInsertUDSData.Id} has been sended"), LogCategories);
@@ -910,7 +988,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
         #endregion
 
         #region [ WorkflowReceivableInvoiceUDSBuildCompleteCallback ]
-        private async Task WorkflowReceivableInvoiceUDSBuildCompleteCallback(IEventCompleteUDSBuild evt)
+        private async Task WorkflowReceivableInvoiceUDSBuildCompleteCallback(IEventCompleteUDSBuild evt, IDictionary<string, object> properties)
         {
             try
             {
@@ -948,14 +1026,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                 invoiceConfiguration = _receivableWorkflowConfigurations.SingleOrDefault(f => f.Value.UDSRepositoryName == protocolDocumentUnit.Repository.Name);
                 _logger.WriteDebug(new LogMessage($"Found protocol {protocolDocumentUnit.Relation.UniqueId} associated to UDS {protocolDocumentUnit.IdUDS}"), LogCategories);
 
-                protocol = (await _webAPIClient.GetProtocolAsync($"$filter=Year eq {protocolDocumentUnit.Relation.Year} and Number eq {protocolDocumentUnit.Relation.Number}&$expand=AdvancedProtocol")).SingleOrDefault();
+                protocol = (await _webAPIClient.GetProtocolAsync($"$filter=UniqueId eq {protocolDocumentUnit.Relation.UniqueId}&$expand=AdvancedProtocol")).SingleOrDefault();
                 if (protocol == null)
                 {
                     throw new ArgumentNullException($"protocol not found for identification {protocolDocumentUnit.Relation.Year}/ {protocolDocumentUnit.Relation.Number}");
                 }
                 _logger.WriteDebug(new LogMessage($"Found protocol {protocol.UniqueId} associated to UDS {protocolDocumentUnit.Relation.UniqueId}"), LogCategories);
                 mailBoxRecipient = string.Empty;
-                pecMail = (await _webAPIClient.GetPECMailFromProtocol(protocolDocumentUnit.Relation.Year, protocolDocumentUnit.Relation.Number)).FirstOrDefault();
+                pecMail = (await _webAPIClient.GetPECMailFromProtocol(protocol.UniqueId)).FirstOrDefault();
                 if (pecMail != null)
                 {
                     _logger.WriteDebug(new LogMessage($"Found PECMail {pecMail.UniqueId} associated to protocol {protocolDocumentUnit.Relation.UniqueId}"), LogCategories);
@@ -993,7 +1071,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                 invoiceContent = await _documentClient.GetDocumentContentByIdAsync(invoiceDocument.IdDocument);
                 if (new FileInfo(invoiceDocument.Name).Extension.Equals(".xml", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    xmlContent = XmlConvert.GetEncoding(invoiceContent.Blob).GetString(invoiceContent.Blob);
+                    xmlContent = EncodingUtil.GetEncoding(invoiceContent.Blob).GetString(invoiceContent.Blob);
                 }
                 if (new FileInfo(invoiceDocument.Name).Extension.Equals(".p7m", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -1063,50 +1141,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
 
         #endregion
 
-        #region [ WorkflowUDSBuildCompleteCallback ]
-        private async Task WorkflowPayableInvoiceUDSBuildCompleteCallback(IEventCompleteUDSBuild evt)
-        {
-            try
-            {
-                _logger.WriteDebug(new LogMessage($"WorkflowPayableInvoiceUDSBuildCompleteCallback -> evaluate event id {evt.Id}"), LogCategories);
-                _logger.WriteInfo(new LogMessage($"Notifying UDSBuildComplete for WorkflowInstanceId {evt.CorrelationId}"), LogCategories);
-                WorkflowNotify workflowNotify = null;
-                WorkflowResult workflowResult = null;
-
-                UDSBuildModel udsBuildModel = evt.ContentType.ContentTypeValue;
-                _logger.WriteInfo(new LogMessage($"Notifying UDSBuildComplete for IdWorkflowActivity {udsBuildModel.IdWorkflowActivity}"), LogCategories);
-                workflowNotify = new WorkflowNotify(udsBuildModel.IdWorkflowActivity.Value)
-                {
-                    WorkflowName = udsBuildModel.WorkflowName,
-                    ModuleName = ModuleConfigurationHelper.MODULE_NAME
-                };
-                workflowResult = await _webAPIClient.WorkflowNotify(workflowNotify);
-                _logger.WriteInfo(new LogMessage(string.Concat("Workflow notify correctly [IsValid: ", workflowResult.IsValid, "] with instanceId ", workflowResult.InstanceId)), LogCategories);
-                if (!workflowResult.IsValid)
-                {
-                    _logger.WriteError(new LogMessage("An error occured in notify workflow activity"), LogCategories);
-                    throw new Exception("VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice.WorkflowPayableInvoiceUDSBuildCompleteCallback");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.WriteError(new LogMessage("WorkflowPayableInvoiceUDSBuildCompleteCallback -> Critical Error"), ex, LogCategories);
-                throw;
-            }
-        }
-
-        #endregion
-
         #region [ WorkflowProtocolBuildCompleteCallback ]
-        private async Task WorkflowProtocolBuildCompleteCallback(IEventCompleteProtocolBuild evt)
+        private async Task WorkflowProtocolBuildCompleteCallback(IEventCompleteProtocolBuild evt, IDictionary<string, object> properties)
         {
             try
             {
                 _logger.WriteDebug(new LogMessage($"WorkflowProtocolBuildCompleteCallback -> evaluate event id {evt.Id}"), LogCategories);
                 _logger.WriteInfo(new LogMessage($"Notifying ProtocolBuildComplete for WorkflowInstanceId {evt.CorrelationId}"), LogCategories);
 
-                WorkflowNotify workflowNotify = null;
-                WorkflowResult workflowResult = null;
                 ProtocolBuildModel protocolBuildModel = evt.ContentType.ContentTypeValue;
                 using (ERPDbContext dbContext = new ERPDbContext(_logger, ModuleConfigurationHelper.JsonSerializerSettings, _moduleConfiguration.ConnectionString))
                 {
@@ -1117,24 +1159,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                         _logger.WriteError(new LogMessage($"PayableInvoice not found with WorkflowId: {key}"), LogCategories);
                         throw new Exception($"PayableInvoice not found with WorkflowId: {key}");
                     }
-                    _logger.WriteInfo(new LogMessage($"Setting Protocol reference {protocolBuildModel.Protocol.Year}/{protocolBuildModel.Protocol.Number.ToString("0000000")} to invoice WorkflowInstanceId {evt.CorrelationId}"), LogCategories);
+                    _logger.WriteInfo(new LogMessage($"Setting Protocol reference {protocolBuildModel.Protocol.Year}/{protocolBuildModel.Protocol.Number:0000000} to invoice WorkflowInstanceId {evt.CorrelationId}"), LogCategories);
                     payableInvoice.DocSuiteProtocolYear = protocolBuildModel.Protocol.Year;
                     payableInvoice.DocSuiteProtocolNumber = protocolBuildModel.Protocol.Number.ToString("0000000");
-                    dbContext.SaveChanges();
-                }
-
-                _logger.WriteInfo(new LogMessage($"Notifying ProtocolBuildComplete for IdWorkflowActivity {protocolBuildModel.IdWorkflowActivity}"), LogCategories);
-                workflowNotify = new WorkflowNotify(protocolBuildModel.IdWorkflowActivity.Value)
-                {
-                    WorkflowName = protocolBuildModel.WorkflowName,
-                    ModuleName = ModuleConfigurationHelper.MODULE_NAME
-                };
-                workflowResult = await _webAPIClient.WorkflowNotify(workflowNotify);
-                _logger.WriteInfo(new LogMessage(string.Concat("Workflow notify correctly [IsValid: ", workflowResult.IsValid, "] with instanceId ", workflowResult.InstanceId)), LogCategories);
-                if (!workflowResult.IsValid)
-                {
-                    _logger.WriteError(new LogMessage("An error occured in notify workflow activity"), LogCategories);
-                    throw new Exception("VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice.WorkflowProtocolBuildCompleteCallback");
+                    await dbContext.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
@@ -1146,41 +1174,9 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
 
         #endregion
 
-        #region [ WorkflowPECMailBuildCompleteCallback ]
-        private async Task WorkflowPECMailBuildCompleteCallback(IEventCompletePECMailBuild evt)
-        {
-            try
-            {
-                _logger.WriteDebug(new LogMessage($"WorkflowPECMailBuildCompleteCallback -> evaluate event id {evt.Id}"), LogCategories);
-                _logger.WriteInfo(new LogMessage($"Notifying PECMailBuildComplete for WorkflowInstanceId {evt.CorrelationId}"), LogCategories);
-                WorkflowNotify workflowNotify = null;
-                WorkflowResult workflowResult = null;
-                PECMailBuildModel pecMailBuildModel = evt.ContentType.ContentTypeValue;
-                _logger.WriteInfo(new LogMessage($"Notifying PECMailBuildComplete for IdWorkflowActivity {pecMailBuildModel.IdWorkflowActivity}"), LogCategories);
-                workflowNotify = new WorkflowNotify(pecMailBuildModel.IdWorkflowActivity.Value)
-                {
-                    WorkflowName = pecMailBuildModel.WorkflowName,
-                    ModuleName = ModuleConfigurationHelper.MODULE_NAME
-                };
-                workflowResult = await _webAPIClient.WorkflowNotify(workflowNotify);
-                _logger.WriteInfo(new LogMessage(string.Concat("Workflow notify correctly [IsValid: ", workflowResult.IsValid, "] with instanceId ", workflowResult.InstanceId)), LogCategories);
-                if (!workflowResult.IsValid)
-                {
-                    _logger.WriteError(new LogMessage("An error occured in notify workflow activity"), LogCategories);
-                    throw new Exception("VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice.WorkflowPECMailBuildCompleteCallback");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.WriteError(new LogMessage("WorkflowReceivableInvoicePECMailBuildCompleteCallback -> Critical Error"), ex, LogCategories);
-                throw;
-            }
-        }
-        #endregion
-
         #region [ WorkflowPECMailReceiptCallback ]
 
-        private async Task WorkflowPECMailReceiptCallback(IEventReceivedReceiptPECMail evt)
+        private async Task WorkflowPECMailReceiptCallback(IEventReceivedReceiptPECMail evt, IDictionary<string, object> properties)
         {
             try
             {
@@ -1252,7 +1248,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
 
                 UDSBuildModel udsBuildModel = UDSEInvoiceHelper.PrepareUpdateUDSBuildModel(udsDocumentUnit.Repository, udsDocumentUnit.IdUDS, uds_metadatas, documents,
                     udsRoles, udsContacts, udsMessages, udsPECMails, udsDocumentUnits, null, evt.Identity.User);
-                CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(evt.Name, evt.TenantId, evt.Identity, udsBuildModel);
+                CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(evt.Name, evt.TenantId, evt.TenantAOOId, evt.Identity, udsBuildModel);
                 await _webAPIClient.SendCommandAsync(commandUpdateUDSData);
                 _logger.WriteInfo(new LogMessage($"Updating metadata invoice {commandUpdateUDSData.Id} has been sended"), LogCategories);
             }
@@ -1267,7 +1263,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
 
         #region [ WorkflowCreatePECMailCallback ]
 
-        private async Task WorkflowCreatePECMailCallback(IEventCreatePECMail evt)
+        private async Task WorkflowCreatePECMailCallback(IEventCreatePECMail evt, IDictionary<string, object> properties)
         {
             try
             {
@@ -1275,9 +1271,9 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                 _logger.WriteInfo(new LogMessage($"Notifying CreatePECMail"), LogCategories);
 
                 PECMail pecMail = evt.ContentType.ContentTypeValue;
-                if (!pecMail.Year.HasValue || !pecMail.Number.HasValue)
+                if (pecMail.DocumentUnit == null)
                 {
-                    throw new ArgumentNullException($"Undefined protocol year {pecMail.Year} or number {pecMail.Number} in PECMail {pecMail.EntityId}");
+                    throw new ArgumentNullException($"Undefined protocol in PECMail {pecMail.EntityId}");
                 }
                 IEnumerable<PECMailAttachment> attachments = pecMail.Attachments
                     .Where(f => f.IDDocument.HasValue && f.IDDocument.Value != Guid.Empty && new FileInfo(f.AttachmentName).Extension.Equals(".xml", StringComparison.InvariantCultureIgnoreCase));
@@ -1286,7 +1282,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
                     throw new ArgumentNullException($"Undefined valid SDI attachment to evaluate in PECMail {pecMail.EntityId}");
                 }
 
-                Protocol protocol = (await _webAPIClient.GetProtocolAsync($"$filter=Year eq {pecMail.Year.Value} and Number eq {pecMail.Number.Value}&$expand=AdvancedProtocol")).SingleOrDefault();
+                Protocol protocol = (await _webAPIClient.GetProtocolAsync($"$filter=UniqueId eq {pecMail.DocumentUnit.UniqueId}&$expand=AdvancedProtocol")).SingleOrDefault();
                 if (protocol == null)
                 {
                     throw new ArgumentNullException($"Protocol not found for identification {pecMail.Year}/{pecMail.Number}");
@@ -1353,7 +1349,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Invoice
 
                 UDSBuildModel udsBuildModel = UDSEInvoiceHelper.PrepareUpdateUDSBuildModel(udsDocumentUnit.Repository, udsDocumentUnit.IdUDS, uds_metadatas, documents,
                     udsRoles, udsContacts, udsMessages, udsPECMails, udsDocumentUnits, null, evt.Identity.User);
-                CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(evt.Name, evt.TenantId, evt.Identity, udsBuildModel);
+                CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(evt.Name, evt.TenantId, evt.TenantAOOId, evt.Identity, udsBuildModel);
                 await _webAPIClient.SendCommandAsync(commandUpdateUDSData);
                 _logger.WriteInfo(new LogMessage($"Updating metadata invoice {commandUpdateUDSData.Id} has been sended"), LogCategories);
             }

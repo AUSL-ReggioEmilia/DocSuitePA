@@ -30,12 +30,14 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
                 .Include(i => i.Fascicle)
                 .SelectAsQueryable();
         }
+
         public static IQueryable<FascicleDocumentUnit> GetByFascicle(this IRepository<FascicleDocumentUnit> repository, Guid idFascicle, bool optimization = false)
         {
             return repository.Query(x => x.Fascicle.UniqueId == idFascicle, optimization: optimization)
                 .Include(f => f.FascicleFolder)
                 .Include(f => f.DocumentUnit.Category)
                 .Include(f => f.DocumentUnit.Container)
+                .Include(f => f.DocumentUnit.TenantAOO)
                 .SelectAsQueryable();
         }
 
@@ -61,6 +63,10 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
                 .Where(x => x.DocumentUnit.UniqueId == uniqueIdDocumentUnit && x.Fascicle.UniqueId == idFascicle)
                 .Count();
         }
-
+        public static bool HasFascicleDocumentUnit(this IRepository<FascicleDocumentUnit> repository, string folderName, Guid idFascicle)
+        {
+            bool res = repository.Queryable(true).Any(x => x.FascicleFolder.Name == folderName && x.Fascicle.UniqueId == idFascicle);
+            return res;
+        }
     }
 }

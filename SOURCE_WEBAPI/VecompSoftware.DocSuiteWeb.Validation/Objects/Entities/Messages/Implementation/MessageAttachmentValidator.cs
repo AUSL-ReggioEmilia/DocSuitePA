@@ -18,10 +18,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Messages
 
         #region [ Properties ]
         public int EntityId { get; set; }
-        /// <summary>
-        /// Server in cui è archiviato l'attachment
-        /// </summary>
-        public string Server { get; set; }
+    
         /// <summary>
         /// Archive in cui è archiviato l'attacment
         /// </summary>

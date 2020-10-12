@@ -43,17 +43,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.Module.UDS.Listener.DataDelete", "VecompSoftware.ServiceBus.Module.UDS.Listener.DataDelete\VecompSoftware.ServiceBus.Module.UDS.Listener.DataDelete.csproj", "{073AC3A1-C8A1-4C77-BA63-A36748EEE101}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{1B8A96B0-C498-40A4-B0F9-0D8AF926D6C8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.Module.Workflow.Listener.Dematerialisation", "VecompSoftware.ServiceBus.Module.Workflow.Listener.Dematerialisation\VecompSoftware.ServiceBus.Module.Workflow.Listener.Dematerialisation.csproj", "{F5506772-A90D-403C-B31A-D34EAC7A1BF1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.Module.CQRS.Executors", "VecompSoftware.ServiceBus.Module.CQRS.Executors\VecompSoftware.ServiceBus.Module.CQRS.Executors.csproj", "{28C7DEBE-B0AF-467D-ACCD-94A1BE5E4745}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.Module.Workflow.Listener.SecureDocument", "VecompSoftware.ServiceBus.Module.Workflow.Listener.SecureDocument\VecompSoftware.ServiceBus.Module.Workflow.Listener.SecureDocument.csproj", "{7DCDD5FD-D878-40AF-B314-12D997E1DBB3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.StampaConforme", "VecompSoftware.ServiceBus.StampaConforme\VecompSoftware.ServiceBus.StampaConforme.csproj", "{B7D6928B-76B7-494A-8394-126906D3EACE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.Module.Workflow.Listener.SecurePaper", "VecompSoftware.ServiceBus.Module.Workflow.Listener.SecurePaper\VecompSoftware.ServiceBus.Module.Workflow.Listener.SecurePaper.csproj", "{DE336A4C-6B19-48A7-BDF7-B45429D60585}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Entities", "Entities", "{01107762-99CD-4B23-9639-D1E3E59CEDCE}"
 EndProject
@@ -72,6 +64,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol", "VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol\VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol.csproj", "{66E93655-A081-4D27-BA3D-FB67703F4F87}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{91ADD736-6511-4DF8-BC18-A2DAA13B9513}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateFascicle", "VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateFascicle\VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateFascicle.csproj", "{D5FCC602-F9C6-4350-B0A1-0EFEE785E423}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.Module.Entities.Listener.InsertDossier", "VecompSoftware.ServiceBus.Module.Entities.Listener.InsertDossier\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertDossier.csproj", "{1420191F-D14B-4B39-9470-F037817D76D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateDossier", "VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateDossier\VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateDossier.csproj", "{59706F61-34E1-4B54-AAB7-D91355AAED3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceBus.ServiceBus", "VecompSoftware.ServiceBus.ServiceBus\VecompSoftware.ServiceBus.ServiceBus.csproj", "{39762C91-CAD0-413C-820A-42F09A0B05BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -149,26 +149,14 @@ Global
 		{073AC3A1-C8A1-4C77-BA63-A36748EEE101}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{073AC3A1-C8A1-4C77-BA63-A36748EEE101}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{073AC3A1-C8A1-4C77-BA63-A36748EEE101}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5506772-A90D-403C-B31A-D34EAC7A1BF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5506772-A90D-403C-B31A-D34EAC7A1BF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5506772-A90D-403C-B31A-D34EAC7A1BF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5506772-A90D-403C-B31A-D34EAC7A1BF1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{28C7DEBE-B0AF-467D-ACCD-94A1BE5E4745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{28C7DEBE-B0AF-467D-ACCD-94A1BE5E4745}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28C7DEBE-B0AF-467D-ACCD-94A1BE5E4745}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28C7DEBE-B0AF-467D-ACCD-94A1BE5E4745}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7DCDD5FD-D878-40AF-B314-12D997E1DBB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DCDD5FD-D878-40AF-B314-12D997E1DBB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7DCDD5FD-D878-40AF-B314-12D997E1DBB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7DCDD5FD-D878-40AF-B314-12D997E1DBB3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B7D6928B-76B7-494A-8394-126906D3EACE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B7D6928B-76B7-494A-8394-126906D3EACE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7D6928B-76B7-494A-8394-126906D3EACE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7D6928B-76B7-494A-8394-126906D3EACE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DE336A4C-6B19-48A7-BDF7-B45429D60585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE336A4C-6B19-48A7-BDF7-B45429D60585}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE336A4C-6B19-48A7-BDF7-B45429D60585}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE336A4C-6B19-48A7-BDF7-B45429D60585}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA7CB41B-2424-48AB-BAE9-428C3F25697A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA7CB41B-2424-48AB-BAE9-428C3F25697A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA7CB41B-2424-48AB-BAE9-428C3F25697A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -193,6 +181,22 @@ Global
 		{66E93655-A081-4D27-BA3D-FB67703F4F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66E93655-A081-4D27-BA3D-FB67703F4F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66E93655-A081-4D27-BA3D-FB67703F4F87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5FCC602-F9C6-4350-B0A1-0EFEE785E423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5FCC602-F9C6-4350-B0A1-0EFEE785E423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5FCC602-F9C6-4350-B0A1-0EFEE785E423}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5FCC602-F9C6-4350-B0A1-0EFEE785E423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1420191F-D14B-4B39-9470-F037817D76D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1420191F-D14B-4B39-9470-F037817D76D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1420191F-D14B-4B39-9470-F037817D76D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1420191F-D14B-4B39-9470-F037817D76D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59706F61-34E1-4B54-AAB7-D91355AAED3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59706F61-34E1-4B54-AAB7-D91355AAED3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59706F61-34E1-4B54-AAB7-D91355AAED3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59706F61-34E1-4B54-AAB7-D91355AAED3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39762C91-CAD0-413C-820A-42F09A0B05BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39762C91-CAD0-413C-820A-42F09A0B05BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39762C91-CAD0-413C-820A-42F09A0B05BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39762C91-CAD0-413C-820A-42F09A0B05BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -216,12 +220,8 @@ Global
 		{3BC8030A-D47B-44F7-8FF5-2DF2800C1C75} = {FF056B6A-21FA-43C7-B979-F9CABD40D4EC}
 		{C56FCB53-59AB-4E1A-AC5D-735CAE936C9B} = {FF056B6A-21FA-43C7-B979-F9CABD40D4EC}
 		{073AC3A1-C8A1-4C77-BA63-A36748EEE101} = {502A1F64-79D1-4F57-B702-75F9143BF1EC}
-		{1B8A96B0-C498-40A4-B0F9-0D8AF926D6C8} = {11943639-60FA-49CD-9E38-3CE9A6B9BE50}
-		{F5506772-A90D-403C-B31A-D34EAC7A1BF1} = {1B8A96B0-C498-40A4-B0F9-0D8AF926D6C8}
 		{28C7DEBE-B0AF-467D-ACCD-94A1BE5E4745} = {FF056B6A-21FA-43C7-B979-F9CABD40D4EC}
-		{7DCDD5FD-D878-40AF-B314-12D997E1DBB3} = {1B8A96B0-C498-40A4-B0F9-0D8AF926D6C8}
 		{B7D6928B-76B7-494A-8394-126906D3EACE} = {91ADD736-6511-4DF8-BC18-A2DAA13B9513}
-		{DE336A4C-6B19-48A7-BDF7-B45429D60585} = {1B8A96B0-C498-40A4-B0F9-0D8AF926D6C8}
 		{01107762-99CD-4B23-9639-D1E3E59CEDCE} = {11943639-60FA-49CD-9E38-3CE9A6B9BE50}
 		{BA7CB41B-2424-48AB-BAE9-428C3F25697A} = {01107762-99CD-4B23-9639-D1E3E59CEDCE}
 		{6B7CD26B-8641-4A99-9420-3584B99BDFF9} = {01107762-99CD-4B23-9639-D1E3E59CEDCE}
@@ -229,13 +229,17 @@ Global
 		{B31370F2-44A7-460F-9DCC-39F81A162255} = {01107762-99CD-4B23-9639-D1E3E59CEDCE}
 		{C1302C2D-0243-4839-8B57-25B303D30F5B} = {01107762-99CD-4B23-9639-D1E3E59CEDCE}
 		{66E93655-A081-4D27-BA3D-FB67703F4F87} = {01107762-99CD-4B23-9639-D1E3E59CEDCE}
+		{D5FCC602-F9C6-4350-B0A1-0EFEE785E423} = {01107762-99CD-4B23-9639-D1E3E59CEDCE}
+		{1420191F-D14B-4B39-9470-F037817D76D1} = {01107762-99CD-4B23-9639-D1E3E59CEDCE}
+		{59706F61-34E1-4B54-AAB7-D91355AAED3D} = {01107762-99CD-4B23-9639-D1E3E59CEDCE}
+		{39762C91-CAD0-413C-820A-42F09A0B05BB} = {91ADD736-6511-4DF8-BC18-A2DAA13B9513}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1600518B-66A9-40B1-9237-50752B235B99}
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
+		SolutionGuid = {1600518B-66A9-40B1-9237-50752B235B99}
 	EndGlobalSection
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 29
+		SccNumberOfProjects = 30
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://dev.azure.com/docsuiteweb
 		SccLocalPath0 = .
@@ -306,49 +310,53 @@ Global
 		SccProjectTopLevelParentUniqueName17 = VecompSoftware.ServiceBus.Receiver.sln
 		SccProjectName17 = VecompSoftware.ServiceBus.Module.UDS.Listener.DataDelete
 		SccLocalPath17 = VecompSoftware.ServiceBus.Module.UDS.Listener.DataDelete
-		SccProjectUniqueName18 = VecompSoftware.ServiceBus.Module.Workflow.Listener.Dematerialisation\\VecompSoftware.ServiceBus.Module.Workflow.Listener.Dematerialisation.csproj
+		SccProjectUniqueName18 = VecompSoftware.ServiceBus.Module.CQRS.Executors\\VecompSoftware.ServiceBus.Module.CQRS.Executors.csproj
 		SccProjectTopLevelParentUniqueName18 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName18 = VecompSoftware.ServiceBus.Module.Workflow.Listener.Dematerialisation
-		SccLocalPath18 = VecompSoftware.ServiceBus.Module.Workflow.Listener.Dematerialisation
-		SccProjectUniqueName19 = VecompSoftware.ServiceBus.Module.CQRS.Executors\\VecompSoftware.ServiceBus.Module.CQRS.Executors.csproj
+		SccProjectName18 = VecompSoftware.ServiceBus.Module.CQRS.Executors
+		SccLocalPath18 = VecompSoftware.ServiceBus.Module.CQRS.Executors
+		SccProjectUniqueName19 = VecompSoftware.ServiceBus.StampaConforme\\VecompSoftware.ServiceBus.StampaConforme.csproj
 		SccProjectTopLevelParentUniqueName19 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName19 = VecompSoftware.ServiceBus.Module.CQRS.Executors
-		SccLocalPath19 = VecompSoftware.ServiceBus.Module.CQRS.Executors
-		SccProjectUniqueName20 = VecompSoftware.ServiceBus.Module.Workflow.Listener.SecureDocument\\VecompSoftware.ServiceBus.Module.Workflow.Listener.SecureDocument.csproj
+		SccProjectName19 = VecompSoftware.ServiceBus.StampaConforme
+		SccLocalPath19 = VecompSoftware.ServiceBus.StampaConforme
+		SccProjectUniqueName20 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol.csproj
 		SccProjectTopLevelParentUniqueName20 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName20 = VecompSoftware.ServiceBus.Module.Workflow.Listener.SecureDocument
-		SccLocalPath20 = VecompSoftware.ServiceBus.Module.Workflow.Listener.SecureDocument
-		SccProjectUniqueName21 = VecompSoftware.ServiceBus.StampaConforme\\VecompSoftware.ServiceBus.StampaConforme.csproj
+		SccProjectName20 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
+		SccLocalPath20 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
+		SccProjectUniqueName21 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail.csproj
 		SccProjectTopLevelParentUniqueName21 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName21 = VecompSoftware.ServiceBus.StampaConforme
-		SccLocalPath21 = VecompSoftware.ServiceBus.StampaConforme
-		SccProjectUniqueName22 = VecompSoftware.ServiceBus.Module.Workflow.Listener.SecurePaper\\VecompSoftware.ServiceBus.Module.Workflow.Listener.SecurePaper.csproj
+		SccProjectName21 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
+		SccLocalPath21 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
+		SccProjectUniqueName22 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage.csproj
 		SccProjectTopLevelParentUniqueName22 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName22 = VecompSoftware.ServiceBus.Module.Workflow.Listener.SecurePaper
-		SccLocalPath22 = VecompSoftware.ServiceBus.Module.Workflow.Listener.SecurePaper
-		SccProjectUniqueName23 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol.csproj
+		SccProjectName22 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage
+		SccLocalPath22 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage
+		SccProjectUniqueName23 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertCollaboration\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertCollaboration.csproj
 		SccProjectTopLevelParentUniqueName23 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName23 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
-		SccLocalPath23 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
-		SccProjectUniqueName24 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail.csproj
+		SccProjectName23 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertCollaboration
+		SccLocalPath23 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertCollaboration
+		SccProjectUniqueName24 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle.csproj
 		SccProjectTopLevelParentUniqueName24 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName24 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
-		SccLocalPath24 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
-		SccProjectUniqueName25 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage.csproj
+		SccProjectName24 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
+		SccLocalPath24 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
+		SccProjectUniqueName25 = VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol\\VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol.csproj
 		SccProjectTopLevelParentUniqueName25 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName25 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage
-		SccLocalPath25 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertMessage
-		SccProjectUniqueName26 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertCollaboration\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertCollaboration.csproj
+		SccProjectName25 = VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol
+		SccLocalPath25 = VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol
+		SccProjectUniqueName26 = VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateFascicle\\VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateFascicle.csproj
 		SccProjectTopLevelParentUniqueName26 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName26 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertCollaboration
-		SccLocalPath26 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertCollaboration
-		SccProjectUniqueName27 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle.csproj
+		SccProjectName26 = VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateFascicle
+		SccLocalPath26 = VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateFascicle
+		SccProjectUniqueName27 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertDossier\\VecompSoftware.ServiceBus.Module.Entities.Listener.InsertDossier.csproj
 		SccProjectTopLevelParentUniqueName27 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName27 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
-		SccLocalPath27 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertFascicle
-		SccProjectUniqueName28 = VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol\\VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol.csproj
+		SccProjectName27 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertDossier
+		SccLocalPath27 = VecompSoftware.ServiceBus.Module.Entities.Listener.InsertDossier
+		SccProjectUniqueName28 = VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateDossier\\VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateDossier.csproj
 		SccProjectTopLevelParentUniqueName28 = VecompSoftware.ServiceBus.Receiver.sln
-		SccProjectName28 = VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol
-		SccLocalPath28 = VecompSoftware.ServiceBus.Module.Entities.Listener.DeleteProtocol
+		SccProjectName28 = VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateDossier
+		SccLocalPath28 = VecompSoftware.ServiceBus.Module.Entities.Listener.UpdateDossier
+		SccProjectUniqueName29 = VecompSoftware.ServiceBus.ServiceBus\\VecompSoftware.ServiceBus.ServiceBus.csproj
+		SccProjectTopLevelParentUniqueName29 = VecompSoftware.ServiceBus.Receiver.sln
+		SccProjectName29 = VecompSoftware.ServiceBus.ServiceBus
+		SccLocalPath29 = VecompSoftware.ServiceBus.ServiceBus
 	EndGlobalSection
 EndGlobal

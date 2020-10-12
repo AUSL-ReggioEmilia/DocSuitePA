@@ -119,11 +119,11 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Domains.Protocols
         [EnableQuery(MaxExpansionDepth = 10, PageSize = 100, AllowedQueryOptions = AllowedQueryOptions.All)]
         [HttpGet]
         [DSWAuthorize(DSWAuthorizeType.OData, DSWAuthorizeClaimType.Protocol, new string[] { DSWAuthorizationServerProvider.CLAIM_ExternalViewer_OAuth2_Year, DSWAuthorizationServerProvider.CLAIM_ExternalViewer_OAuth2_Number })]
-        public IHttpActionResult GetProtocolOutgoingPECCount(short year, int number)
+        public IHttpActionResult GetProtocolOutgoingPECCount(Guid uniqueId)
         {
             return ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                int pecCount = _unitOfWork.Repository<PECMail>().CountOutgoing(year, number);
+                int pecCount = _unitOfWork.Repository<PECMail>().CountOutgoing(uniqueId);
                 return Ok(pecCount);
             }, _logger, LogCategories);
         }
@@ -131,11 +131,11 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Domains.Protocols
         [EnableQuery(MaxExpansionDepth = 10, PageSize = 100, AllowedQueryOptions = AllowedQueryOptions.All)]
         [HttpGet]
         [DSWAuthorize(DSWAuthorizeType.OData, DSWAuthorizeClaimType.Protocol, new string[] { DSWAuthorizationServerProvider.CLAIM_ExternalViewer_OAuth2_Year, DSWAuthorizationServerProvider.CLAIM_ExternalViewer_OAuth2_Number })]
-        public IHttpActionResult GetProtocolIngoingPECCount(short year, int number)
+        public IHttpActionResult GetProtocolIngoingPECCount(Guid uniqueId)
         {
             return ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                int pecCount = _unitOfWork.Repository<PECMail>().CountIncoming(year, number);
+                int pecCount = _unitOfWork.Repository<PECMail>().CountIncoming(uniqueId);
                 return Ok(pecCount);
             }, _logger, LogCategories);
         }

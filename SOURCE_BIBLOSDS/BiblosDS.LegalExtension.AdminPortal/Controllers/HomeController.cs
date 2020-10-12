@@ -1,33 +1,31 @@
-﻿using System;
+﻿using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Interfaces;
+using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Models.Documents;
+using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Services.AwardBatches.Interactors;
+using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Services.Documents.Interactors;
+using BiblosDS.LegalExtension.AdminPortal.Helpers;
+using BiblosDS.LegalExtension.AdminPortal.Infrastructure.Services.Common;
+using BiblosDS.LegalExtension.AdminPortal.Models;
+using BiblosDS.LegalExtension.AdminPortal.ServiceReferenceDocument;
+using BiblosDS.LegalExtension.AdminPortal.ViewModel;
+using BiblosDS.LegalExtension.AdminPortal.ViewModel.Home;
+using BiblosDS.Library.Common.Objects;
+using BiblosDS.Library.Common.Objects.Response;
+using BiblosDS.Library.Common.Preservation.Services;
+using BiblosDS.Library.Common.Services;
+using Kendo.Mvc.UI;
+using log4net;
+using Newtonsoft.Json;
+using SharpCompress.Archives;
+using SharpCompress.Common;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using BiblosDS.LegalExtension.AdminPortal.Helpers;
-using Kendo.Mvc.UI;
-using System.Data.SqlClient;
-using Microsoft.WindowsAzure.ServiceRuntime;
-using System.Configuration;
-using BiblosDS.LegalExtension.AdminPortal.Models;
-using log4net;
-using BiblosDS.Library.Common.Services;
-using System.ComponentModel;
-using BiblosDS.Library.Common.Objects.Response;
-using BiblosDS.Library.Common.Objects;
-using BiblosDS.LegalExtension.AdminPortal.ViewModel;
-using BiblosDS.Library.Common.Preservation.Services;
-using System.IO;
-using BiblosDS.LegalExtension.AdminPortal.ServiceReferenceDocument;
-using SharpCompress.Archives;
-using SharpCompress.Common;
-using Newtonsoft.Json;
-using BiblosDS.LegalExtension.AdminPortal.ViewModel.Home;
-using BiblosDS.LegalExtension.AdminPortal.Infrastructure.Services.Common;
-using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Interfaces;
-using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Services.Documents.Interactors;
-using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Models.Documents;
-using System.Threading.Tasks;
-using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Services.AwardBatches.Interactors;
 
 namespace BiblosDS.LegalExtension.AdminPortal.Controllers
 {
@@ -62,6 +60,10 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         [Authorize]
         public ActionResult Index()
         {
+            if (Session["idCompany"] == null)
+            {
+                SetCustomerCompaniesToSession(User.Identity.Name);
+            }
             return View();
         }
 
@@ -79,14 +81,7 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             try
             {
                 string connectionString;
-                try
-                {
-                    connectionString = RoleEnvironment.GetConfigurationSettingValue("SqlLogConnectionString");
-                }
-                catch (Exception)
-                {
-                    connectionString = ConfigurationManager.AppSettings["SqlLogConnectionString"];
-                }
+                connectionString = ConfigurationManager.AppSettings["SqlLogConnectionString"];
                 long total = 0;
                 int page = request.Page - 1;
                 using (SqlConnection cnn = new SqlConnection(connectionString))
@@ -181,7 +176,9 @@ Where sub.RowNum between {0} and {1}", page * request.PageSize, (page * request.
         {
             return ActionResultHelper.TryCatchWithLogger(() =>
             {
-                ICollection<PreservationArchiveInfoResponse> archives = ArchiveService.GetLegalArchives(string.Empty);
+                CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
+
+                ICollection<PreservationArchiveInfoResponse> archives = ArchiveService.GetLegalArchives(string.Empty, customerCompany.CompanyId);
                 if (!string.IsNullOrEmpty(text))
                 {
                     archives = archives.Where(x => x.Archive.Name.ToLower().Contains(text.ToLower())).ToList();
@@ -321,6 +318,65 @@ Where sub.RowNum between {0} and {1}", page * request.PageSize, (page * request.
                 archive.SaveTo(destination, CompressionType.Deflate);
             }
             return destination;
+        }
+
+        [HttpGet]
+        public ActionResult CacheCompanyId(CustomerCompanyViewModel customerCompany)
+        {
+            return ActionResultHelper.TryCatchWithLogger(() =>
+            {
+                CustomerCompanyViewModel customerCompanyViewModel = new CustomerCompanyViewModel
+                {
+                    SelectedIndex = customerCompany.SelectedIndex,
+                    CompanyId = customerCompany.CompanyId
+                };
+                Session["idCompany"] = customerCompanyViewModel;
+                return Json(customerCompanyViewModel, JsonRequestBehavior.AllowGet);
+            }, _loggerService);
+
+        }
+
+        [NoCache]
+        [Authorize]
+        public ActionResult GetUserCompanies()
+        {
+            return ActionResultHelper.TryCatchWithLogger(() =>
+            {
+                if (Session["idCompany"] != null)
+                {
+                    return Json(UserCompaniesConfiguration.GetCachedAvailableCompanies(), JsonRequestBehavior.AllowGet);
+                }
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }, _loggerService);
+        }
+
+        [NonAction]
+        private void SetCustomerCompaniesToSession(string userName)
+        {
+            string idCustomer = CustomerService.GetCustomerIdByUsername(userName);
+
+            UserCompaniesConfiguration displayCompanies = UserCompaniesConfiguration.GetUserAvailableCompanies();
+            BindingList<Company> getCompanies = displayCompanies.AvailableCompanies(idCustomer);
+
+            CustomerCompanyViewModel customerCompanyViewModel = new CustomerCompanyViewModel()
+            {
+                SelectedIndex = 0,
+                CompanyId = (getCompanies != null && getCompanies.Count > 0) ? getCompanies.First().IdCompany : Guid.Empty
+            };
+
+            Session["idCompany"] = customerCompanyViewModel;
+        }
+
+        [NoCache]
+        [Authorize]
+        [HttpPost]
+        public ActionResult DownloadJsonTempFile(string referenceKey)
+        {
+            return ActionResultHelper.TryCatchWithLogger(() =>
+            {
+                string tmpFileName = Path.Combine(ConfigurationHelper.GetAppDataPath(), $"{referenceKey}.json");
+                return File(System.IO.File.ReadAllBytes(tmpFileName), System.Net.Mime.MediaTypeNames.Application.Octet, $"{referenceKey}.json");
+            }, _loggerService);
         }
         #endregion
     }

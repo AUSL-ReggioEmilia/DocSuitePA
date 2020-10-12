@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.DocSuiteWeb.Mapper.Model</RootNamespace>
     <AssemblyName>VecompSoftware.DocSuiteWeb.Mapper.Model</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -232,9 +232,13 @@
     <Compile Include="Securities\Implementation\DomainUserModelMapper.cs" />
     <Compile Include="Securities\Implementation\DomainGroupModelMapper.cs" />
     <Compile Include="DocumentUnits\Implementation\DocumentUnitUDSCommandModelMapper.cs" />
+    <Compile Include="Tenants\Implementation\TenantAOOModelMapper.cs" />
+    <Compile Include="Tenants\Implementation\TenantAOOTableValuedModelMapper.cs" />
     <Compile Include="Tenants\Implementation\TenantConfigurationModelMapper.cs" />
     <Compile Include="Tenants\Implementation\TenantConfigurationTableValuedModelMapper.cs" />
     <Compile Include="Tenants\Implementation\TenantTableValuedModelMapper.cs" />
+    <Compile Include="Tenants\ITenantAOOModelMapper.cs" />
+    <Compile Include="Tenants\ITenantAOOTableValuedModelMapper.cs" />
     <Compile Include="Tenants\ITenantConfigurationModelMapper.cs" />
     <Compile Include="Tenants\ITenantConfigurationTableValuedModelMapper.cs" />
     <Compile Include="Tenants\ITenantTableValuedModelMapper.cs" />
@@ -285,9 +289,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="VecompSoftware.DocSuiteWeb.Mapper.Model.nuspec">
+    <Content Include="VecompSoftware.DocSuiteWeb.Mapper.Model.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

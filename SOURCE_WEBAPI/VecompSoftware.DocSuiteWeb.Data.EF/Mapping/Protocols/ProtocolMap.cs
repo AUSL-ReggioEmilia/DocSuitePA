@@ -157,6 +157,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Protocols
 
             Ignore(x => x.EntityId)
                 .Ignore(x => x.EntityShortId)
+                .Ignore(x => x.WorkflowAutoComplete)
                 .Ignore(x => x.WorkflowName)
                 .Ignore(x => x.IdWorkflowActivity)
                 .Ignore(x => x.WorkflowActions);
@@ -199,6 +200,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Protocols
                     .Map(m => m.ToTable("ProtocolDocumentSeriesItems")
                                .MapLeftKey("UniqueIdProtocol")
                                .MapRightKey("UniqueIdDocumentSeriesItem"));
+
+            HasRequired(t => t.TenantAOO)
+               .WithMany(t => t.Protocols)
+               .Map(m => m.MapKey("IdTenantAOO"));
 
             #endregion
         }

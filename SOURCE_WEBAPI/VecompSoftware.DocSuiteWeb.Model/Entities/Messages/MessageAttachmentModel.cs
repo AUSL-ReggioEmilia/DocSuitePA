@@ -7,7 +7,6 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Messages
     {
         #region [ Properties ]
         public int? IdMessageAttachment { get; set; }
-        public string Server { get; set; }
         public string Archive { get; set; }
         public int? ChainId { get; set; }
         public int? DocumentEnum { get; set; }

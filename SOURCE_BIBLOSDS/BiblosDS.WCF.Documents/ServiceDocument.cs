@@ -5,7 +5,6 @@ using System.ServiceModel;
 using System.Text;
 using System.IO;
 using System.ComponentModel;
-
 using BiblosDS.Library.Common;
 using BiblosDS.Library.Common.Exceptions;
 using BiblosDS.Library.Common.Objects;
@@ -14,22 +13,19 @@ using BiblosDS.Library.Common.Enums;
 using System.Security.Principal;
 using System.Configuration;
 using BiblosDS.Library.Common.Objects.UtilityService;
-
-using iTextSharp.text.pdf;
-using Org.BouncyCastle.Pkcs;
-using Org.BouncyCastle.X509;
-
 using BiblosDS.Library.Common.Utility;
-using BiblosDS.Library.Common.Objects.Response;
-using VecompSoftware.Common;
 using VecompSoftware.CompEd;
 using VecompSoftware.ServiceContract.BiblosDS.Documents;
 using VecompSoftware.DataContract.Documents;
+using iTextSharp.text.pdf;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.X509;
+using VecompSoftware.BiblosDS.WCF.Common;
+using BiblosDS.Library.Common.Objects.Response;
 
 #if WCF_Documents
 using BiblosDS.WCF.Documents.BoblosDSConvWs;
 using BiblosDS.WCF.Documents.ServiceReferenceDigitalSigned;
-using BiblosDS.Library.Common.Objects.Response;
 #else
 using BiblosDS.WCF.WCFServices.BoblosDSConvWs;
 using BiblosDS.WCF.WCFServices.ServiceReferenceDigitalSign;
@@ -41,7 +37,7 @@ using System.ServiceModel.Activation;
 namespace BiblosDS.WCF.Documents
 {
 #endif
-    // NOTE: If you change the class name "Service1" here, you must also update the reference to "Service1" in App.config.    
+// NOTE: If you change the class name "Service1" here, you must also update the reference to "Service1" in App.config.    
 #if WCF_Documents
     public class ServiceDocument : IDocuments
     {
@@ -71,7 +67,7 @@ public class Documents : IDocuments
                         {
 
                             BiblosDSConv conv = new BiblosDSConv();
-                            conv.Url = AzureService.GetSettingValue("BoblosDSConvWs.BiblosDSConv").ToString();
+                            conv.Url = WCFUtility.GetSettingValue("BoblosDSConvWs.BiblosDSConv").ToString();
 
                             var doc = conv.ToRasterFormatEx(new stDoc { FileExtension = result.Description, Blob = Convert.ToBase64String(result.Blob) }, "pdf", "");
                             result.Blob = Convert.FromBase64String(doc.Blob);
@@ -79,9 +75,9 @@ public class Documents : IDocuments
                             return result;
                         }
                         else
-                            throw new BiblosDS.Library.Common.Exceptions.Generic_Exception("Configurazione \"BoblosDSConvWs.BiblosDSConv\" non presente. Configurare per utilizzare il formato conforme.");
+                            throw new Generic_Exception("Configurazione \"BoblosDSConvWs.BiblosDSConv\" non presente. Configurare per utilizzare il formato conforme.");
                     default:
-                        throw new BiblosDS.Library.Common.Exceptions.Generic_Exception("Formato non supportato: " + outputFormat.ToString());
+                        throw new Generic_Exception("Formato non supportato: " + outputFormat.ToString());
                 }
             }
             catch (Exception ex)
@@ -105,52 +101,47 @@ public class Documents : IDocuments
                 DocumentContent content = null;
                 Document document = DocumentService.GetDocument(IdDocument);
                 if (document == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentContentById(IdDocument);
+                    }
+                }
 
                 document.AttributeValues = AttributeService.GetAttributeValues(document.IdDocument);
-                ServerRole serverRole = ServerRole.Undefined;
-                //BiblosDS Proxy
-                var server = ServerService.GetCurrentServer();
-                if (server != null)
-                {
-                    serverRole = server.ServerRole;
-                }
                 //
                 string serverName = string.Empty;
                 if (document.DocumentLink != null || document.Status.IdStatus != (int)DocumentStatus.ProfileOnly)
                 {
-                    if (serverRole == ServerRole.Proxy)
-                    {
-                        //Retrive document from master
-                        var masterServer = ServerService.GetMasterServer();
-                        logger.DebugFormat("Server is a proxy, Redirect to: {1} - IdDocument:{0}", IdDocument, masterServer.ServerName);
-                        if (masterServer != null)
-                        {
-                            serverName = masterServer.ServerName;
-                        }
-                        else
-                            throw new BiblosDS.Library.Common.Exceptions.ServerNotDefined_Exception("Nessun server master definito. Configurazione non valida per il server proxy: " + MachineService.GetServerName() + ".");
-                    }
                     using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName, serverName))
                     {
                         content = (clientChannel as IServiceDocumentStorage).GetDocument(document).Content;
                     }
 
                     if (content != null && string.IsNullOrEmpty(content.Description))
+                    {
                         content.Description = document.Name ?? string.Empty;
+                    }
                 }
                 else
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentWithoutContent_Exception(DocumentStatus.ProfileOnly);
+                {
+                    throw new DocumentWithoutContent_Exception(DocumentStatus.ProfileOnly);
+                }
+
                 //
                 if (document.Certificate != null)
                 {
                     document.Content = content;
-                    byte[] sO, sN;
                     DocumentCheckState result = DocumentService.CheckSignedDocument(
                         document,
                         document.DocumentParent.IdDocument,
-                        out sO,
-                        out sN,
+                        out byte[] sO,
+                        out byte[] sN,
                         false);
                     if ((int)result < 0)
                         throw new FaultException("Verifica fallita: " + result);
@@ -173,6 +164,16 @@ public class Documents : IDocuments
                 if (document == null)
                     throw new DocumentNotFound_Exception();
 
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentConformContent(idDocument, outputFormat, xmlLabel);
+                    }
+                }
+
                 byte[] resFromCache = null;
                 if ((resFromCache = CacheService.GetFromChache(document, document.Name, xmlLabel)) != null)
                     return new DocumentContent(resFromCache, document.Name);
@@ -187,7 +188,7 @@ public class Documents : IDocuments
                 {
 
                     BiblosDSConv conv = new BiblosDSConv();
-                    conv.Url = AzureService.GetSettingValue("BoblosDSConvWs.BiblosDSConv").ToString();
+                    conv.Url = WCFUtility.GetSettingValue("BoblosDSConvWs.BiblosDSConv").ToString();
                     if (string.IsNullOrEmpty(document.IdPdf) || !string.IsNullOrEmpty(xmlLabel))
                     {
                         var doc = conv.ToRasterFormatEx(new stDoc { FileExtension = string.IsNullOrEmpty(document.IdPdf) ? document.Name : document.IdPdf, Blob = Convert.ToBase64String(document.Content.Blob) }, "pdf", xmlLabel);
@@ -228,6 +229,17 @@ public class Documents : IDocuments
                     document = DocumentService.GetDocument(idDocument);
                 if (document == null)
                     throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentInfo(idDocument, version, lastVersion);
+                    }
+                }
+
                 document.AttributeValues = AttributeService.GetAttributeValues(document.IdDocument);
                 documents.Add(document);
                 logger.DebugFormat("GetDocumentInfo Returns {0} documents", documents.Count);
@@ -251,7 +263,18 @@ public class Documents : IDocuments
                 else
                     document = DocumentService.GetDocumentLatestVersion(IdDocument);
                 if (document == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentInfoById(IdDocument);
+                    }
+                }
+
                 document.AttributeValues = AttributeService.GetAttributeValues(document.IdDocument);
                 return document;
             }
@@ -262,7 +285,7 @@ public class Documents : IDocuments
             }
         }
 
-        public BiblosDS.Library.Common.Objects.Response.DocumentResponse GetDocumentsInfoByIdPaged(BindingList<Guid> idDocuments, int skip, int take)
+        public DocumentResponse GetDocumentsInfoByIdPaged(BindingList<Guid> idDocuments, int skip, int take)
         {
             try
             {
@@ -291,18 +314,30 @@ public class Documents : IDocuments
                 logger.Debug("InsertDocumentChain");
                 if (Document.Archive == null || Document.Archive.IdArchive == Guid.Empty)
                     throw new Exception("Nessun archivio selezionato. Impossibile continuare");
-                //
-                //if (Document.AttributeValues == null || Document.AttributeValues.Count == 0)
-                //    throw new Exception("Nessun attributo passa. Impossibile continuare");
-                //TODO Modificare se non vengono passati gli attibuti
-                //Try to find Storage on selected Attributes
-                //Document.Storage = DocumentService.GetStorage(Document.Archive, Document.AttributeValues);
-                //if (Document.Storage == null)
-                //    throw new Exception("Storage not found");
-                //Set the new ID
-                Document.IdDocument = Guid.NewGuid();
+
                 Document.IsVisible = true;
                 Document.Status = new Status(DocumentStatus.Undefined);
+
+                if (ArchiveService.IsArchiveRedirectable(Document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        Document insertedDocument = (clientChannel as IDocuments).InsertDocumentChain(Document);
+                        Document.IdBiblos = insertedDocument.IdBiblos;
+                        Document.IdDocument = insertedDocument.IdDocument;
+                        Document.DateCreated = insertedDocument.DateCreated;
+                        Document.AttributeValues = null;
+                        Document.IsConfirmed = true;
+                        ArchiveService.UpdateArchiveLastIdBiblos(Document.Archive.IdArchive, insertedDocument.IdBiblos.Value);
+                        DocumentService.AddDocument(Document, null);
+                        return insertedDocument;
+                    }
+                }
+
+                //Set the new ID
+                Document.IdDocument = Guid.NewGuid();
                 //Save
                 return DocumentService.AddDocument(Document, null);
             }
@@ -323,20 +358,24 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("ConfirmChain IdParent:{0}", IdParent);
-                //Document document = DocumentService.GetDocument(IdParent);
-                //document.IsConfirmed = true;
-                //DateTime? mainDate = null;
-                //var attributesValues = AttributeService.GetAttributeValues(IdParent);
-                //document.PrimaryKeyValue = AttributeService.ParseAttributeValues(document.Archive, attributesValues, out mainDate);
+                Document currentChain = DocumentService.GetDocument(IdParent);
+                if (currentChain == null)
+                {
+                    throw new DocumentNotFound_Exception();
+                }
 
-                //if (!string.IsNullOrEmpty(document.PrimaryKeyValue))
-                //{
-                //    if (!DocumentService.CheckPrimaryKey(document.IdDocument, document.Archive.IdArchive, document.PrimaryKeyValue))
-                //        throw new BiblosDS.Library.Common.Exceptions.DocumentPrimaryKey_Exception();
-                //}
-
-                //DocumentService.UpdateDocument(document);
-                DocumentService.ConfirmDocument(IdParent);
+                bool verifyPrimaryKey = true;
+                if (ArchiveService.IsArchiveRedirectable(currentChain.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    verifyPrimaryKey = false;                    
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).ConfirmChain(IdParent);
+                    }
+                }
+                DocumentService.ConfirmDocument(IdParent, verifyPrimaryKey);
                 return true;
             }
             catch (Exception ex)
@@ -375,6 +414,17 @@ public class Documents : IDocuments
                 var document = DocumentService.GetDocument(idDocument);
                 if (document == null)
                     throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).ConfirmDocument(idDocument);
+                    }
+                }
+
                 document.IsConfirmed = true;
                 DocumentService.UpdateDocument(document);
                 return true;
@@ -470,6 +520,49 @@ public class Documents : IDocuments
                       idParent);
                 if (document.Archive == null || document.Archive.IdArchive == Guid.Empty)
                     throw new Archive_Exception("Nessun archivio selezionato. Impossibile continuare");
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        Document insertedDocument = (clientChannel as IDocuments).AddDocumentToChain(document, idParent, inputFormat);
+                        Document parentDocument = null;
+                        if (!idParent.HasValue || idParent.Value != insertedDocument.DocumentParent.IdDocument)
+                        {
+                            parentDocument = new Document();
+                            parentDocument.IdBiblos = insertedDocument.DocumentParent.IdBiblos;
+                            parentDocument.IdDocument = insertedDocument.DocumentParent.IdDocument;
+                            parentDocument.IsVisible = true;
+                            parentDocument.IsConfirmed = true;
+                            parentDocument.Status = new Status(DocumentStatus.Undefined);
+                            parentDocument.Archive = document.Archive;
+                        }
+                        else
+                        {
+                            parentDocument = DocumentService.GetDocument(idParent.Value);
+                        }
+
+                        Document toInsertDocument = new Document();
+                        toInsertDocument.Archive = document.Archive;
+                        toInsertDocument.DocumentParent = parentDocument;
+                        toInsertDocument.IdBiblos = insertedDocument.IdBiblos;
+                        toInsertDocument.IdDocument = insertedDocument.IdDocument;
+                        toInsertDocument.IsVisible = true;
+                        toInsertDocument.IsConfirmed = true;
+                        toInsertDocument.IsLatestVersion = true;
+                        toInsertDocument.Version = 1;
+                        toInsertDocument.DateCreated = insertedDocument.DateCreated;
+                        toInsertDocument.Status = new Status(DocumentStatus.InStorage);
+                        toInsertDocument.Name = string.IsNullOrEmpty(document.Name) ? null : "anonymized";
+                        toInsertDocument.AttributeValues = null;
+                        ArchiveService.UpdateArchiveLastIdBiblos(document.Archive.IdArchive, insertedDocument.IdBiblos.Value);
+                        DocumentService.AddDocument(toInsertDocument, archiveServerConfig.Server);
+                        return insertedDocument;
+                    }
+                }
+
                 document.IsConfirmed = document.Archive.TransitoEnabled;
                 Document resultDocument = DocumentService.AddDocumentToChain(document, idParent);
                 if (document.Content != null && document.Content.Blob != null && document.Content.Blob.Length > 0)
@@ -520,7 +613,7 @@ public class Documents : IDocuments
                 //if (!string.IsNullOrEmpty(Document.PrimaryKey))
                 //{
                 //    if (!DocumentService.CheckPrimaryKey(Document.IdDocument, Document.Archive.IdArchive, Document.PrimaryKey))
-                //        throw new BiblosDS.Library.Common.Exceptions.DocumentPrimaryKey_Exception();
+                //        throw new DocumentPrimaryKey_Exception();
                 //}
                 ////If the parent exist select the parent chain...if not exist create the chain
                 //Document ParentDocument = null;
@@ -627,6 +720,16 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("CheckMetaData Document:{0}", Document == null ? "Documento Nullo" : Document.IdDocument.ToString());
+                if (ArchiveService.IsArchiveRedirectable(Document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).CheckMetaData(Document);
+                    }
+                }
+
                 BindingList<DocumentAttribute> attributes = AttributeService.GetAttributesFromArchive(Document.Archive.IdArchive);
                 if (AttributeService.CheckMetaData(Document, Document.Archive, Document.AttributeValues, attributes, false).Count <= 0)
                 {
@@ -655,6 +758,17 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("GetChainInfo IdDocument:{0}, Versione:{1}, lastVersion:{2}", idChain, version, lastVersion);
+                Document chainInfo = DocumentService.GetDocument(idChain);
+                if (ArchiveService.IsArchiveRedirectable(chainInfo.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetChainInfo(idChain, version, lastVersion);
+                    }
+                }
+
                 BindingList<Document> documents = DocumentService.GetChainDocuments(idChain);
                 foreach (Document item in documents)
                 {
@@ -681,6 +795,17 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("GetChainInfo IdDocument:{0}", IdDocument);
+                Document chainInfo = DocumentService.GetDocument(IdDocument);
+                if (ArchiveService.IsArchiveRedirectable(chainInfo.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetChainInfoById(IdDocument);
+                    }
+                }
+
                 BindingList<Document> documents = DocumentService.GetChainDocuments(IdDocument);
                 foreach (Document item in documents)
                 {
@@ -708,6 +833,17 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("GetChainInfoDetails IdDocument:{0}, IsVisible:{1}, Version:{2}", idDocument, isVisible, version);
+                Document chainInfo = DocumentService.GetDocument(idDocument);
+                if (ArchiveService.IsArchiveRedirectable(chainInfo.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetChainInfoDetails(idDocument, isVisible, version, lastVersion);
+                    }
+                }
+
                 bool visible = true;
                 if (isVisible != null)
                     visible = (bool)isVisible;
@@ -772,6 +908,17 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("CheckOutDocumentContent {0} {1}", idDocument, userId);
+                Document currentDocument = DocumentService.GetDocument(idDocument);
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).CheckOutDocumentContent(idDocument, userId, outputFormat);
+                    }
+                }
+
                 Document document = DocumentCheckOut(idDocument, true, userId);
                 using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName))
                 {
@@ -790,7 +937,17 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("CheckOutDocument {0} {1}", idDocument, userId);
-                logger.DebugFormat("CheckOutDocument log di test");
+                Document currentDocument = DocumentService.GetDocument(idDocument);
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).CheckOutDocument(idDocument, userId, outputFormat, returnContent);
+                    }
+                }
+
                 Document document = DocumentCheckOut(idDocument, true, userId);
                 logger.DebugFormat("CheckOutDocument: document extract : {0}", document.IdDocument);
                 if (returnContent.HasValue && returnContent.Value)
@@ -837,7 +994,7 @@ public class Documents : IDocuments
         {
             try
             {
-                logger.DebugFormat("CheckInDocument {0} {1} {2} {3}", document.IdDocument, userId, document.IsConservated, document.Name);                
+                logger.DebugFormat("CheckInDocument {0} {1} {2} {3}", document.IdDocument, userId, document.IsConservated, document.Name);
                 document.IdDocument = DocumentCheckIn(document, userId);
                 return document;
             }
@@ -860,12 +1017,23 @@ public class Documents : IDocuments
                 else
                     document = DocumentService.GetDocument(IdDocument);
                 if (document == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).DocumentCheckOut(IdDocument, latestVersion, UserId);
+                    }
+                }
+
                 if (document.IsCheckOut && !document.IdUserCheckOut.Equals(UserId))
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentCheckOut_Exception();
+                    throw new DocumentCheckOut_Exception();
                 //Se il docuemtno è conservato allora non è modificabile.
                 if (document.IsConservated != null && (bool)document.IsConservated)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentReadOnly_Exception();
+                    throw new DocumentReadOnly_Exception();
                 //Permission
                 if (document.Archive.EnableSecurity)
                 {
@@ -889,7 +1057,7 @@ public class Documents : IDocuments
                                             || p.Mode == DocumentPermissionMode.Modify)
                                         select p;
                         if (queryUser.Count() <= 0)
-                            throw new BiblosDS.Library.Common.Exceptions.Permission_Exception();
+                            throw new Permission_Exception();
                     }
                 }
                 //Anche se la fase di verifica non è in transazione il checkout deve avvenire in transazione (Lettura e Modifica)
@@ -932,9 +1100,21 @@ public class Documents : IDocuments
             {
                 document = DocumentService.GetDocument(IdDocument);
                 if (document == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).DocumentUndoCheckOut(IdDocument, UserId);
+                        return;
+                    }
+                }
+
                 if (document.IdUserCheckOut != null && !document.IdUserCheckOut.Equals(UserId, StringComparison.InvariantCultureIgnoreCase))
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentCheckOut_Exception("File in Check-Out dall'utente:" + document.IdUserCheckOut);
+                    throw new DocumentCheckOut_Exception("File in Check-Out dall'utente:" + document.IdUserCheckOut);
                 DocumentService.UndoCheckOut(IdDocument, UserId);
             }
             catch (Exception ex)
@@ -981,14 +1161,46 @@ public class Documents : IDocuments
                 Document localDocument = DocumentService.GetDocument(Document.IdDocument);
                 //
                 if (localDocument == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(localDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        Guid newIdDocument = (clientChannel as IDocuments).DocumentCheckIn(Document, UserId);
+                        Document toInsertDocument = new Document();
+                        toInsertDocument.Archive = localDocument.Archive;
+                        toInsertDocument.DocumentParent = localDocument.DocumentParent ?? localDocument;
+                        toInsertDocument.DocumentParentVersion = localDocument.DocumentParentVersion ?? localDocument;
+                        toInsertDocument.IdDocument = newIdDocument;
+                        toInsertDocument.IdBiblos = localDocument.DocumentParentVersion == null ? localDocument.IdBiblos : localDocument.DocumentParentVersion.IdBiblos;
+                        toInsertDocument.IsVisible = true;
+                        toInsertDocument.IsLatestVersion = true;
+                        toInsertDocument.IsConfirmed = true;
+                        toInsertDocument.Version = DocumentService.IncrementVersion(localDocument.Version);
+                        toInsertDocument.DateCreated = DateTime.Now;
+                        toInsertDocument.Status = new Status(DocumentStatus.InStorage);
+                        toInsertDocument.Name = string.IsNullOrEmpty(Document.Name) ? null : $"anonymized";
+                        if (Document.Content == null || Document.Content.Blob == null || Document.Content.Blob.Length <= 0)
+                        {
+                            toInsertDocument.DocumentLink = localDocument.DocumentLink ?? localDocument;
+                        }
+
+                        localDocument.IsLatestVersion = false;
+                        DocumentService.SaveAtomic(new List<BiblosDSObject>() { toInsertDocument }, new List<BiblosDSObject>() { localDocument });
+                        return newIdDocument;
+                    }
+                }
+
                 if (!localDocument.IsCheckOut)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentCheckOut_Exception(
+                    throw new DocumentCheckOut_Exception(
                         "Documento non estratto. Impossibile continuare!");
                 //
                 if (!string.IsNullOrEmpty(localDocument.IdUserCheckOut) &&
                     !localDocument.IdUserCheckOut.Equals(UserId, StringComparison.InvariantCultureIgnoreCase))
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentCheckOut_Exception(
+                    throw new DocumentCheckOut_Exception(
                         "File in Check-Out dall'utente:" + localDocument.IdUserCheckOut);
                 //
                 if (string.IsNullOrEmpty(Document.Name) && ConfigurationManager.AppSettings["VerifyDocumentName"].ToStringExt() == "true")
@@ -1064,7 +1276,7 @@ public class Documents : IDocuments
                     //Rimuovo eventuali informazioni della fulltext
                     RemoveFullTextDataForDocument(localDocument.IdDocument);
                 }
-                
+
                 //-----------------------------
                 if (Document.Archive.TransitoEnabled)
                 {
@@ -1255,9 +1467,19 @@ public class Documents : IDocuments
             try
             {
                 document = DocumentService.GetDocument(IdDocument);
+                if (document == null)
+                {
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    throw new Exception("Non è possibile spostare un documento presente in un altro server");
+                }
+
                 document.AttributeValues = AttributeService.GetAttributeValues(IdDocument);
                 if (document == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
                 using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName))
                 {
                     document.Content = (clientChannel as IServiceDocumentStorage).GetDocument(document).Content;
@@ -1322,7 +1544,13 @@ public class Documents : IDocuments
             {
                 document = DocumentService.GetDocument(IdDocument);
                 if (document == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    throw new Exception("Non è possibile spostare un documento presente in un altro server");
+                }
+
                 document.AttributeValues = AttributeService.GetAttributeValues(IdDocument);
                 document.Permissions = DocumentService.GetDocumentPermissions(IdDocument);
                 //
@@ -1402,6 +1630,23 @@ public class Documents : IDocuments
         {
             try
             {
+                Document currentDocument = DocumentService.GetDocument(IdDocument);
+                if (currentDocument == null)
+                {
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).RestoreAttribute(IdDocument);
+                        return;
+                    }
+                }
+
                 using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName))
                 {
                     (clientChannel as IServiceDocumentStorage).RestoreAttribute(IdDocument);
@@ -1482,6 +1727,17 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("GetDocumentSignInfo IdDocument:{0}", IdDocument);
+                Document currentDocument = DocumentService.GetDocument(IdDocument);
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentSignInfo(IdDocument);
+                    }
+                }
+
                 BindingList<DocumentSignInfo> response = new BindingList<DocumentSignInfo>();
                 BindingList<Document> documents = DocumentService.GetDocumentChildren(IdDocument);
                 if (documents.Count == 0)
@@ -1493,7 +1749,8 @@ public class Documents : IDocuments
                     CompEdContentInfo contentInfo = new CompEdContentInfo(content.Blob);
                     if (contentInfo.HasSignatures)
                     {
-                        contentInfo.Signatures.ToList().ForEach(f => response.Add(new DocumentSignInfo(f){
+                        contentInfo.Signatures.ToList().ForEach(f => response.Add(new DocumentSignInfo(f)
+                        {
                             IdDocument = document.IdDocument,
                             DocumentName = document.Name
                         }));
@@ -1521,6 +1778,18 @@ public class Documents : IDocuments
         {
             try
             {
+                Document currentDocument = DocumentService.GetDocumentLatestVersion(idDocument);
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).UpdateDocumentName(idDocument, documentName);
+                        return;
+                    }
+                }
+
                 DocumentService.UpdateDocumentName(new Document { IdDocument = idDocument, Name = documentName });
             }
             catch (Exception ex)
@@ -1541,12 +1810,38 @@ public class Documents : IDocuments
                 Document localDocument = DocumentService.GetDocument(Document.IdDocument);
                 //
                 if (localDocument == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(localDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        Guid newIdDocument = (clientChannel as IDocuments).DocumentAttributeCheckIn(Document, UserId);
+                        Document toInsertDocument = new Document();
+                        toInsertDocument.Archive = localDocument.Archive;
+                        toInsertDocument.DocumentParent = localDocument.DocumentParent ?? localDocument;
+                        toInsertDocument.DocumentParentVersion = localDocument.DocumentParentVersion ?? localDocument;
+                        toInsertDocument.IdDocument = newIdDocument;
+                        toInsertDocument.IsVisible = true;
+                        toInsertDocument.Version = DocumentService.IncrementVersion(localDocument.Version);
+                        toInsertDocument.DateCreated = DateTime.Now;
+                        toInsertDocument.Status = new Status(DocumentStatus.InStorage);
+                        toInsertDocument.Name = string.IsNullOrEmpty(Document.Name) ? null : $"anonymized";
+                        toInsertDocument.DocumentLink = localDocument.DocumentLink ?? localDocument;
+
+                        localDocument.IsLinked = true;
+                        DocumentService.SaveAtomic(new List<BiblosDSObject>() { toInsertDocument }, new List<BiblosDSObject>() { localDocument });
+                        return newIdDocument;
+                    }
+                }
+
                 if (!localDocument.IsCheckOut)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentCheckOut_Exception("Documento non estratto. Impossibile continuare!");
+                    throw new DocumentCheckOut_Exception("Documento non estratto. Impossibile continuare!");
                 //
                 if (string.IsNullOrEmpty(localDocument.IdUserCheckOut) || !localDocument.IdUserCheckOut.Equals(UserId, StringComparison.InvariantCultureIgnoreCase))
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentCheckOut_Exception("File in Check-Out dall'utente:" + localDocument.IdUserCheckOut);
+                    throw new DocumentCheckOut_Exception("File in Check-Out dall'utente:" + localDocument.IdUserCheckOut);
                 //
                 //Assegnazione dell'Nuovo id al documento modificato
                 Document.IdDocument = Guid.NewGuid();
@@ -1661,7 +1956,18 @@ public class Documents : IDocuments
             {
                 document = DocumentService.GetDocument(IdDocument);
                 if (document == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).DocumentMoveFromTransito(IdDocument);
+                        return;
+                    }
+                }
                 document.Permissions = DocumentService.GetDocumentPermissions(IdDocument);
                 using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName))
                 {
@@ -1732,24 +2038,6 @@ public class Documents : IDocuments
             }
         }
 
-
-        public Document GetDocumentId(Guid idArchive, int idBiblos)
-        {
-            try
-            {
-                logger.DebugFormat("GetDocumentId idArchive:{0} idBiblos:{1}", idArchive, idBiblos);
-                var document = DocumentService.GetDocument(idBiblos, idArchive);
-                if (document == null)
-                    throw new DocumentNotFound_Exception("Impossibile recuperare un documento con IdBiblos:" + idBiblos + " nell'archivio:" + idArchive);
-                return document;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                throw new FaultException<BiblosDsException>(new BiblosDsException(ex), new FaultReason(ex.Message));
-            }
-        }
-
         /// <summary>
         /// Ritorna se il documento è firmato digitalmente
         /// </summary>
@@ -1795,6 +2083,17 @@ public class Documents : IDocuments
             {
                 logger.DebugFormat("AddDocumentLink IdDocument:{0} IdDocumentLink:{1}", IdDocument, IdDocumentLink);
 
+                Document currentDocument = DocumentService.GetDocumentLatestVersion(IdDocument);
+                Document currentDocumentLink = DocumentService.GetDocumentLatestVersion(IdDocumentLink);
+
+                bool isDocumentArchiveRedirectable = ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig);
+                bool isLinkDocumentArchiveRedirectable = ArchiveService.IsArchiveRedirectable(currentDocumentLink.Archive.IdArchive, out ArchiveServerConfig linkArchiveServerConfig);
+
+                if (isDocumentArchiveRedirectable || isLinkDocumentArchiveRedirectable)
+                {
+                    throw new Exception("Operazione non possibile per archivi di tipo remoto");
+                }
+
                 bool res = DocumentService.AddDocumentLink(IdDocument, IdDocumentLink);
 
                 logger.DebugFormat("AddDocumentLink - ritorno al chiamante");
@@ -1813,8 +2112,18 @@ public class Documents : IDocuments
             {
                 logger.DebugFormat("DetachDocument archive:{0} Chain:{1} Enum:{2}", archive, chain, Enum);
                 List<Document> documentsToProcess = new List<Document>();
+                DocumentArchive currentArchive = ArchiveService.GetArchiveByName(archive);
+                if (ArchiveService.IsArchiveRedirectable(currentArchive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).DetachDocument(archive, chain, Enum);
+                    }
+                }
 
-                Document document = DocumentService.GetDocument(chain, ArchiveService.GetArchiveByName(archive).IdArchive);
+                Document document = DocumentService.GetDocument(chain, currentArchive.IdArchive);
 
                 if (Enum >= 0)
                 {
@@ -1836,7 +2145,7 @@ public class Documents : IDocuments
                 foreach (var item in documentsToProcess)
                 {
                     RemoveFullTextDataForChain(item.IdDocument);
-                    DocumentService.DetachDocument(item);                    
+                    DocumentService.DetachDocument(item);
                 }
             }
             catch (Exception ex)
@@ -1859,18 +2168,28 @@ public class Documents : IDocuments
                 logger.InfoFormat("DetachDocument -> IdDocument: {0}", document.IdDocument);
                 //TODO: implementare validation
                 Document dbDocument = DocumentService.GetDocument(document.IdDocument);
-                if(dbDocument == null)
+                if (dbDocument == null)
                 {
                     throw new DocumentNotFound_Exception(string.Format("Document with IdDocument {0} not found", document.IdDocument));
                 }
 
+                if (ArchiveService.IsArchiveRedirectable(dbDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).DocumentDetach(document);
+                    }
+                }
+
                 //Si tratta di una chain, eseguo il detach di tutti i figli
-                if(dbDocument.DocumentParent == null || (dbDocument.DocumentParentVersion != null && dbDocument.DocumentParentVersion.IdDocument == dbDocument.DocumentParent.IdDocument))
+                if (dbDocument.DocumentParent == null || (dbDocument.DocumentParentVersion != null && dbDocument.DocumentParentVersion.IdDocument == dbDocument.DocumentParent.IdDocument))
                 {
                     Guid idChain = dbDocument.DocumentParentVersion == null ? dbDocument.IdDocument : dbDocument.DocumentParentVersion.IdDocument;
                     BindingList<Document> chainChildren = DocumentService.GetDocumentChildren(idChain);
                     RemoveFullTextDataForChain(idChain);
-                    DocumentService.DetachDocuments(chainChildren);                    
+                    DocumentService.DetachDocuments(chainChildren);
                 }
                 else
                 {
@@ -1878,8 +2197,8 @@ public class Documents : IDocuments
                     {
                         RemoveFullTextDataForDocument(dbDocument.IdDocument);
                     }
-                    DocumentService.DetachDocument(dbDocument);                    
-                }                
+                    DocumentService.DetachDocument(dbDocument);
+                }
                 return dbDocument;
             }
             catch (Exception ex)
@@ -1894,11 +2213,19 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("GetDocumentLinks IdDocument:{0}", IdDocument);
+                Document currentDocument = DocumentService.GetDocumentLatestVersion(IdDocument);
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentLinks(IdDocument);
+                    }
+                }
 
                 var res = DocumentService.GetDocumentLink(IdDocument);
-
                 logger.DebugFormat("GetDocumentLinks - ritorno al chiamante -  return " + res.Count());
-
                 return res;
             }
             catch (Exception ex)
@@ -1913,6 +2240,17 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("DeleteDocumentLink IdDocument:{0} IdDocumentLink:{1}", IdDocument, IdDocumentLink);
+
+                Document currentDocument = DocumentService.GetDocumentLatestVersion(IdDocument);
+                Document currentDocumentLink = DocumentService.GetDocumentLatestVersion(IdDocumentLink);
+
+                bool isDocumentArchiveRedirectable = ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig);
+                bool isLinkDocumentArchiveRedirectable = ArchiveService.IsArchiveRedirectable(currentDocumentLink.Archive.IdArchive, out ArchiveServerConfig linkArchiveServerConfig);
+
+                if (isDocumentArchiveRedirectable || isLinkDocumentArchiveRedirectable)
+                {
+                    throw new Exception("Operazione non possibile per archivi di tipo remoto");
+                }
 
                 var ret = DocumentService.DeleteDocumentLink(IdDocument, IdDocumentLink);
 
@@ -1936,6 +2274,19 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("AddDocumentAttach IdDocument: {0} Nome Allegato: {1} Lunghezza File: {2} bytes", idDocument, (attach != null) ? attach.Name : "N/A", (attach != null && attach.Content != null && attach.Content.Blob != null) ? attach.Content.Blob.Length.ToString() : "0");
+                Document document = DocumentService.GetDocument(idDocument);
+                if (document == null)
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).AddDocumentAttach(idDocument, attach);
+                    }
+                }
 
                 if (attach.Document == null)
                     attach.Document = new Document(idDocument);
@@ -1966,11 +2317,23 @@ public class Documents : IDocuments
             }
         }
 
-
         public BindingList<DocumentAttach> GetDocumentAttachs(Guid IdDocument)
         {
             try
             {
+                Document document = DocumentService.GetDocument(IdDocument);
+                if (document == null)
+                    throw new DocumentNotFound_Exception();
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentAttachs(IdDocument);
+                    }
+                }
                 return DocumentService.GetDocumentAttachesFromDocument(IdDocument);
             }
             catch (Exception ex)
@@ -1987,12 +2350,20 @@ public class Documents : IDocuments
                 logger.DebugFormat("GetDocumentAttachContent IdDocumentAttach:{0}", IdDocumentAttach);
                 DocumentContent content = null;
                 DocumentAttach document = DocumentService.GetDocumentAttach(IdDocumentAttach);
-                //Set dell'id document per riutilizzare i metodi fi get document.
-                //Ale: EEEEEH???
-                //document.IdDocument = document.IdDocumentAttach;
-
                 if (document == null)
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentNotFound_Exception();
+                    throw new DocumentNotFound_Exception();
+
+                Document currentDocument = DocumentService.GetDocument(document.Document.IdDocument);
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentAttachContent(IdDocumentAttach);
+                    }
+                }
+
                 //                
                 using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName))
                 {
@@ -2014,6 +2385,21 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("SetVisibleDocumentAttach SetVisibleDocument:{0} isVisible:{1}", idDocumentAttach, visible);
+                DocumentAttach currentDocumentAttach = DocumentService.GetDocumentAttach(idDocumentAttach);
+                if (currentDocumentAttach == null)
+                    throw new DocumentNotFound_Exception();
+                Document currentDocument = DocumentService.GetDocument(currentDocumentAttach.Document.IdDocument);
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.ServerName}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(ServerService.WCF_Document_HostName,
+                        archiveServerConfig.Server.ServerName))
+                    {
+                        (clientChannel as IDocuments).SetVisibleDocumentAttach(idDocumentAttach, visible);
+                        return;
+                    }
+                }
+
                 DocumentService.DeleteDocumentAttach(idDocumentAttach, visible);
             }
             catch (Exception ex)
@@ -2032,6 +2418,17 @@ public class Documents : IDocuments
 
                 if (document == null)
                     throw new DocumentNotFound_Exception("ConfirmDocumentAttach : no attachments with ID " + IdDocumentAttach);
+
+                Document currentDocument = DocumentService.GetDocument(document.Document.IdDocument);
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).ConfirmDocumentAttach(IdDocumentAttach);
+                    }
+                }
 
                 document.IsConfirmed = true;
                 DocumentService.UpdateDocumentAttach(document);
@@ -2065,6 +2462,17 @@ public class Documents : IDocuments
         {
             try
             {
+                Document currentDocument = DocumentService.GetDocument(document.IdDocument);
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).CheckIntegrity(document, forceSign);
+                    }
+                }
+
                 bool result = false;
                 using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName))
                 {
@@ -2155,12 +2563,12 @@ public class Documents : IDocuments
             {
                 logger.DebugFormat("AddDocumentToChainPDFCrypted idDocument:{0}", document.IdDocument);
                 if (document.Name.Substring(document.Name.Length - 3) != "pdf")
-                    new BiblosDS.Library.Common.Exceptions.DocumentDateNotValid_Exception("Documento non in formato PDF.");
+                    new DocumentDateNotValid_Exception("Documento non in formato PDF.");
                 if (document.Archive == null)
-                    new BiblosDS.Library.Common.Exceptions.Archive_Exception("Archivio non definito.");
+                    new Archive_Exception("Archivio non definito.");
                 var archive = ArchiveService.GetArchive(document.Archive.IdArchive);
                 if (archive == null)
-                    new BiblosDS.Library.Common.Exceptions.Archive_Exception("Archivio non definito.");
+                    new Archive_Exception("Archivio non definito.");
                 var archiveCertificate = ArchiveService.GetArchiveCertificate(document.Archive.IdArchive);
                 //                
                 PdfReader reader = new PdfReader(document.Content.Blob);
@@ -2200,7 +2608,22 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("GetDocumentLatestVersion - idDocument: {0}", idDocument);
-                return DocumentService.GetDocumentLatestVersion(idDocument);
+                Document currentDocument = DocumentService.GetDocumentLatestVersion(idDocument);
+                if (currentDocument == null)
+                {
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentLatestVersion(idDocument);
+                    }
+                }
+                return currentDocument;
             }
             catch (Exception ex)
             {
@@ -2219,6 +2642,21 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("GetDocumentChildren - idParent: {0}", idParent);
+                Document currentDocument = DocumentService.GetDocument(idParent);
+                if (currentDocument == null)
+                {
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(currentDocument.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentChildren(idParent);
+                    }
+                }
                 return DocumentService.GetDocumentChildren(idParent);
             }
             catch (Exception ex)
@@ -2702,6 +3140,23 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("RemoveFullTextDataForChain idChain:{0}", idChain);
+                Document currentChain = DocumentService.GetDocument(idChain);
+                if (currentChain == null)
+                {
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(currentChain.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).RemoveFullTextDataForChain(idChain);
+                        return;
+                    }
+                }
+
                 BindingList<Document> chainDocuments = DocumentService.GetDocumentChildren(idChain);
                 if (chainDocuments.Count == 0)
                 {
@@ -2742,6 +3197,17 @@ public class Documents : IDocuments
                     throw new DocumentNotFound_Exception(string.Concat("RemoveFullTextDataForDocument document with id ", idDocument, " not found"));
                 }
 
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).RemoveFullTextDataForDocument(idDocument);
+                        return;
+                    }
+                }
+
                 using (IClientChannel clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName))
                 {
                     (clientChannel as IServiceDocumentStorage).DeleteFullTextDocumentData(document);
@@ -2763,6 +3229,23 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("AlignFullTextDataForChain idChain:{0}", idChain);
+                Document currentChain = DocumentService.GetDocument(idChain);
+                if (currentChain == null)
+                {
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(currentChain.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).AlignFullTextDataForChain(idChain);
+                        return;
+                    }
+                }
+
                 BindingList<Document> chainDocuments = DocumentService.GetDocumentChildren(idChain);
                 if (chainDocuments.Count == 0)
                 {
@@ -2801,6 +3284,17 @@ public class Documents : IDocuments
                     throw new DocumentNotFound_Exception(string.Concat("AlignFullTextDataForDocument document with id ", idDocument, " not found"));
                 }
 
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        (clientChannel as IDocuments).AlignFullTextDataForDocument(idDocument);
+                        return;
+                    }
+                }
+
                 using (IClientChannel clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName))
                 {
                     (clientChannel as IServiceDocumentStorage).DeleteFullTextDocumentData(document);
@@ -2824,6 +3318,16 @@ public class Documents : IDocuments
                 {
                     throw new DocumentNotFound_Exception(string.Concat("GetHistoricalDocumentInfo document with id ", idDocument, " not found"));
                 }
+
+                if (ArchiveService.IsArchiveRedirectable(document.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentInfoIgnoreState(idDocument);
+                    }
+                }
                 return document;
             }
             catch (Exception ex)
@@ -2838,6 +3342,21 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("GetDocumentChildrenIgnoreState - idParent: {0}", idParent);
+                Document currentChain = DocumentService.GetDocument(idParent);
+                if (currentChain == null)
+                {
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(currentChain.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).GetDocumentChildrenIgnoreState(idParent);
+                    }
+                }
                 return DocumentService.GetDocumentChildrenIgnoreState(idParent);
             }
             catch (Exception ex)
@@ -2852,6 +3371,21 @@ public class Documents : IDocuments
             try
             {
                 logger.DebugFormat("HasActiveDocuments - idParent: {0}", idParent);
+                Document currentChain = DocumentService.GetDocument(idParent);
+                if (currentChain == null)
+                {
+                    throw new DocumentNotFound_Exception();
+                }
+
+                if (ArchiveService.IsArchiveRedirectable(currentChain.Archive.IdArchive, out ArchiveServerConfig archiveServerConfig))
+                {
+                    logger.Info($"Redirect call to {archiveServerConfig.Server.DocumentServiceUrl}");
+                    using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(archiveServerConfig.Server.DocumentServiceUrl,
+                        archiveServerConfig.Server.DocumentServiceBinding, archiveServerConfig.Server.DocumentServiceBindingConfiguration))
+                    {
+                        return (clientChannel as IDocuments).HasActiveDocuments(idParent);
+                    }
+                }
                 return DocumentService.HasDocumentChildren(idParent);
             }
             catch (Exception ex)

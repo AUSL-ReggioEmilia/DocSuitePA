@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
@@ -50,21 +51,21 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Commons
         }
 
         [HttpGet]
-        public IHttpActionResult GetDossierInsertAuthorizedContainers()
+        public IHttpActionResult GetDossierInsertAuthorizedContainers(Guid tenantId)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
             {
-                IQueryable<Container> containerResults = _unitOfWork.Repository<Container>().GetDossierInsertContainers(Username, Domain);
+                IQueryable<Container> containerResults = _unitOfWork.Repository<Container>().GetDossierInsertContainers(Username, Domain, tenantId);
                 return Ok(containerResults);
             }, _logger, LogCategories);
         }
 
         [HttpGet]
-        public IHttpActionResult GetAnyDossierAuthorizedContainers()
+        public IHttpActionResult GetAnyDossierAuthorizedContainers(Guid tenantId)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
             {
-                IQueryable<Container> containerResults = _unitOfWork.Repository<Container>().GetAnyDossierContainers();
+                IQueryable<Container> containerResults = _unitOfWork.Repository<Container>().GetAnyDossierContainers(tenantId);
                 return Ok(containerResults);
             }, _logger, LogCategories);
         }

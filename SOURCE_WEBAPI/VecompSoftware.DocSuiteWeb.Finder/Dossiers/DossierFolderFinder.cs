@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
-using VecompSoftware.DocSuiteWeb.Entity.Processes;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Dossiers;
 using VecompSoftware.DocSuiteWeb.Repository.Parameters;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
@@ -11,6 +10,12 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
 {
     public static class DossierFolderFinder
     {
+        public static ICollection<DossierFolderTableValuedModel> GetParent(this IRepository<DossierFolder> repository, Guid idDossierFolder)
+        {
+            return repository.ExecuteModelFunction<DossierFolderTableValuedModel>(CommonDefinition.SQL_FX_DossierFolder_GetParent,
+                new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_IdDossierFolder, idDossierFolder));
+        }
+
         public static ICollection<DossierFolderTableValuedModel> GetRootDossierFolders(this IRepository<DossierFolder> repository, Guid idDossier, short? status)
         {
             return repository.ExecuteModelFunction<DossierFolderTableValuedModel>(CommonDefinition.SQL_FX_DossierFolder_RootChildren,
@@ -63,6 +68,12 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
             return repository.Queryable(optimization: optimization).Count(x => x.UniqueId == idParent && (x.Status == Entity.Dossiers.DossierFolderStatus.Fascicle || x.Status == Entity.Dossiers.DossierFolderStatus.FascicleClose));
         }
 
+        public static bool HasProcessAssociated(this IRepository<DossierFolder> repository, Guid idDossier, bool optimization = true)
+        {
+            return repository.Query(optimization: optimization).SelectAsQueryable()
+                .Any(x => x.Dossier.UniqueId == idDossier && x.Dossier.Processes.Count > 0);
+        }
+
 
         public static int CountChildren(this IRepository<DossierFolder> repository, Guid idDossierFolder)
         {
@@ -82,6 +93,26 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
             return repository.Query(f => f.Fascicle.UniqueId == idFascicle, optimization: optimization)
                 .Include(i => i.Fascicle)
                 .SelectAsQueryable();
+        }
+
+        public static DossierFolder GetIncludeDossier(this IRepository<DossierFolder> repository, Guid uniqueId, bool optimization = false)
+        {
+            return repository.Query(f => f.UniqueId == uniqueId, optimization: optimization)
+                .Include(i => i.Dossier)
+                .SelectAsQueryable()
+                .SingleOrDefault();
+        }
+
+        public static ICollection<DossierFolderTableValuedModel> GetAllParentsOfFascicle(this IRepository<DossierFolder> repository, Guid idDossier, Guid idFascicle)
+        {
+            return repository.ExecuteModelFunction<DossierFolderTableValuedModel>(CommonDefinition.SQL_FX_DossierFolder_GetAllParentsOfFascicle,
+                new QueryParameter(CommonDefinition.SQL_Param_Dossier_IdDossier, idDossier),
+                new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_IdFascicle, idFascicle));
+        }
+
+        public static bool HasAssociatedFascicles(this IRepository<DossierFolder> repository, Guid idDossier)
+        {
+            return repository.Queryable().Any(x => x.Dossier.UniqueId == idDossier && x.Fascicle != null);
         }
     }
 }

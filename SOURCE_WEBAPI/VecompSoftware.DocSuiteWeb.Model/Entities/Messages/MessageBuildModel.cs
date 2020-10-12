@@ -16,6 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Messages
         #endregion
 
         #region [ Properties ]
+        public bool WorkflowAutoComplete { get; set; }
         public string WorkflowName { get; set; }
         public Guid? IdWorkflowActivity { get; set; }
         public Guid UniqueId { get; set; }

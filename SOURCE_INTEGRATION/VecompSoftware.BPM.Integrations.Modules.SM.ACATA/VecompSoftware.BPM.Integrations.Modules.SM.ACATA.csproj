@@ -1,0 +1,478 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4675304C-0DD2-48BC-B4CB-D69B42FF87AD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.BPM.Integrations.Modules.SM.ACATA</RootNamespace>
+    <AssemblyName>VecompSoftware.BPM.Integrations.Modules.SM.ACATA</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.9.20254.2\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.9.20254.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.9.20254.5\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adaptors\ConvertAdaptor.cs" />
+    <Compile Include="Models\ContentInfo.cs" />
+    <Compile Include="Helpers\ACTAHelper.cs" />
+    <Compile Include="Helpers\DocumentService.cs" />
+    <Compile Include="Helpers\QueryService.cs" />
+    <Compile Include="Helpers\ServiceBusEvaluationException.cs" />
+    <Compile Include="Models\AcarisParameters.cs" />
+    <Compile Include="Models\DocumentClassification.cs" />
+    <Compile Include="Models\DocumentStatusModel.cs" />
+    <Compile Include="Models\Endpoints.cs" />
+    <Compile Include="Services\AcarisService.cs" />
+    <Compile Include="Configuration\ModuleConfigurationHelper.cs" />
+    <Compile Include="Execution.cs" />
+    <Compile Include="Models\ModuleConfigurationModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\BackOfficeService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\DocumentService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\ObjectService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\OfficialBookService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\RepositoryService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\SubjectRegistryService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <Content Include="favicon.ico" />
+    <None Include="module.configuration.json" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\BackOfficeService\ACARIS-BackOffice.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\BackOfficeService\ACARIS-BackOfficeMessaging.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\BackOfficeService\ACARIS-Common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\BackOfficeService\BackOfficeService.wsdl" />
+    <None Include="Web References\BackOfficeService\getDescendantsResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\BackOfficeService\getDettaglioAOOResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\BackOfficeService\getDettaglioStrutturaResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\BackOfficeService\getPropertiesResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\BackOfficeService\ObjectMetadataType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\BackOfficeService\ObjectResponseType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\BackOfficeService\PrincipalExtResponseType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\BackOfficeService\PrincipalResponseType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\BackOfficeService\QueryableObjectType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\BackOfficeService\queryResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\BackOfficeService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\BackOfficeService\RelazioniStrutturaPropertiesType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\DocumentService\ACARIS-Archive.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\DocumentService\ACARIS-Common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\DocumentService\ACARIS-Document.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\DocumentService\ACARIS-DocumentMessaging.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\DocumentService\creaDocumentoFisicoInDocumentRootResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\DocumentService\creaDocumentoResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\DocumentService\DocumentService.wsdl" />
+    <None Include="Web References\DocumentService\getRappresentazioneDocumentoResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\DocumentService\IdentificazioneTrasformazione.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\DocumentService\ObjectResponseType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\DocumentService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ObjectService\ACARIS-Archive.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\ObjectService\ACARIS-ArchiveMessaging.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\ObjectService\ACARIS-Common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\ObjectService\acarisContentStreamType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\addRenditionStreamResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\closeFolderResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\createAssociativeDocumentResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\createDocumentResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\createFolderResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\createRelationshipResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\getPropertiesResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\moveDocumentResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\ObjectResponseType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\ObjectService.wsdl" />
+    <None Include="Web References\ObjectService\queryResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\ObjectService\setContentStreamResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\ObjectService\updatePropertiesResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\OfficialBookService\ACARIS-Common-PRT.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\OfficialBookService\ACARIS-Common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\OfficialBookService\ACARIS-OfficialBook.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\OfficialBookService\ACARIS-OfficialBookMessaging.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\OfficialBookService\creaAnnotazioneOBResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\OfficialBookService\creaRegistrazioneResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\OfficialBookService\getPropertiesResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\OfficialBookService\getRegistriesResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\OfficialBookService\importaRegistrazioneResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\OfficialBookService\inviaSegnaturaResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\OfficialBookService\ObjectResponseType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\OfficialBookService\OfficialBookService.wsdl" />
+    <None Include="Web References\OfficialBookService\queryResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\OfficialBookService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\OfficialBookService\updatePropertiesResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\RepositoryService\ACARIS-Archive.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\RepositoryService\ACARIS-ArchiveMessaging.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\RepositoryService\ACARIS-Common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\RepositoryService\acarisRepositoryEntryType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\RepositoryService\getRepositoryInfoResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\RepositoryService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\RepositoryService\RepositoryService.wsdl" />
+    <None Include="Web References\SubjectRegistryService\ACARIS-Common-PRT.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\SubjectRegistryService\ACARIS-Common.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\SubjectRegistryService\ACARIS-SubjectRegistry.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\SubjectRegistryService\ACARIS-SubjectRegistryMessaging.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Web References\SubjectRegistryService\AnagraficaSoggetto.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\SubjectRegistryService\creaCategoriaAnagraficaResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\SubjectRegistryService\creaIndirizzoResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\SubjectRegistryService\creaSoggettoResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\SubjectRegistryService\getPropertiesResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\SubjectRegistryService\ObjectResponseType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\SubjectRegistryService\queryResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\SubjectRegistryService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\SubjectRegistryService\ricercaSoggettoResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\SubjectRegistryService\SubjectRegistryService.wsdl" />
+    <None Include="Web References\SubjectRegistryService\updatePropertiesResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Modules\VecompSoftware.BPM.Integrations.Modules.csproj">
+      <Project>{8430c3b8-2511-4a46-9a0a-c1044e1ddef6}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Modules</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.BiblosDS\VecompSoftware.BPM.Integrations.Services.BiblosDS.csproj">
+      <Project>{3279E762-E123-4D8B-ABC0-6CBCA4489776}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Services.BiblosDS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.ServiceBus\VecompSoftware.BPM.Integrations.Services.ServiceBus.csproj">
+      <Project>{fbfed947-be1b-4c76-a530-cb9692009853}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Services.ServiceBus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.StampaConforme\VecompSoftware.BPM.Integrations.Services.StampaConforme.csproj">
+      <Project>{92ED11A2-2501-4309-A8C1-FB349BA8E2FD}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Services.StampaConforme</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.WebAPI\VecompSoftware.BPM.Integrations.Services.WebAPI.csproj">
+      <Project>{D819E5E7-454A-4A1E-A2D7-F4EF9991998A}</Project>
+      <Name>VecompSoftware.BPM.Integrations.Services.WebAPI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="D:\WSDL\wsdl actasrv\ACARISWS-BackOfficeService.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\BackOfficeService\</RelPath>
+      <UpdateFromURL>D:\WSDL\wsdl actasrv\ACARISWS-BackOfficeService.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>VecompSoftware_BPM_Integrations_Modules_SM_ACATA_BackOfficeService_BackOfficeService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="D:\WSDL\wsdl actasrv\ACARISWS-DocumentService.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\DocumentService\</RelPath>
+      <UpdateFromURL>D:\WSDL\wsdl actasrv\ACARISWS-DocumentService.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>VecompSoftware_BPM_Integrations_Modules_SM_ACATA_DocumentService_DocumentService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="D:\WSDL\wsdl actasrv\ACARISWS-ObjectService.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\ObjectService\</RelPath>
+      <UpdateFromURL>D:\WSDL\wsdl actasrv\ACARISWS-ObjectService.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>VecompSoftware_BPM_Integrations_Modules_SM_ACATA_ObjectService_ObjectService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="D:\WSDL\wsdl actasrv\ACARISWS-OfficialBookService.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\OfficialBookService\</RelPath>
+      <UpdateFromURL>D:\WSDL\wsdl actasrv\ACARISWS-OfficialBookService.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>VecompSoftware_BPM_Integrations_Modules_SM_ACATA_OfficialBookService_OfficialBookService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="D:\WSDL\wsdl actasrv\ACARISWS-RepositoryService.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\RepositoryService\</RelPath>
+      <UpdateFromURL>D:\WSDL\wsdl actasrv\ACARISWS-RepositoryService.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>VecompSoftware_BPM_Integrations_Modules_SM_ACATA_RepositoryService_RepositoryService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="D:\WSDL\wsdl actasrv\ACARISWS-SubjectRegistryService.wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\SubjectRegistryService\</RelPath>
+      <UpdateFromURL>D:\WSDL\wsdl actasrv\ACARISWS-SubjectRegistryService.wsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>VecompSoftware_BPM_Integrations_Modules_SM_ACATA_SubjectRegistryService_SubjectRegistryService</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

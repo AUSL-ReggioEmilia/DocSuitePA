@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
+using TenantTypologyType = VecompSoftware.DocSuiteWeb.Entity.Tenants.TenantTypologyType;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Tenants
 {
@@ -19,7 +20,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Tenants
 
         public override Tenant Map(TenantTableValuedModel entity, Tenant modelTransformed)
         {
-            modelTransformed.UniqueId = entity.IdTenant;
+            modelTransformed.UniqueId = entity.IdTenantModel;
             modelTransformed.TenantName = entity.TenantName;
             modelTransformed.CompanyName = entity.CompanyName;
             modelTransformed.StartDate = entity.StartDate;
@@ -30,6 +31,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Tenants
             modelTransformed.LastChangedUser = entity.LastChangedUser;
             modelTransformed.LastChangedDate = entity.LastChangedDate;
             modelTransformed.Timestamp = entity.Timestamp;
+            modelTransformed.TenantTypology = (TenantTypologyType)entity.TenantTypology;
 
             return modelTransformed;
         }
@@ -42,7 +44,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Tenants
             }
             List<Tenant> modelsTransformed = new List<Tenant>();
             Tenant modelTransformed = null;
-            foreach (IGrouping<Guid, TenantTableValuedModel> tenantLookup in model.ToLookup(x => x.IdTenant))
+            foreach (IGrouping<Guid, TenantTableValuedModel> tenantLookup in model.ToLookup(x => x.IdTenantModel))
             {
                 modelTransformed = Map(tenantLookup.First(), new Tenant());
                 modelsTransformed.Add(modelTransformed);

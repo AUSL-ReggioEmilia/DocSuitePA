@@ -32,5 +32,9 @@
         /// </summary>
         /// <remarks>Casistica di errore</remarks>
         public const string NotFound = "NT";
+        /// <summary>
+        /// Collaborazione speciale
+        /// </summary>
+        public const string NoManage = "WM";
     }
 }

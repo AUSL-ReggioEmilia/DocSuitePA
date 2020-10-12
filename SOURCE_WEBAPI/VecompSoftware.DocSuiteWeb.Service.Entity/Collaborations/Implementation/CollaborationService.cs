@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using VecompSoftware.DocSuite.Service.Models.Parameters;
+using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Finder.Commons;
 using VecompSoftware.DocSuiteWeb.Mapper;
@@ -81,6 +83,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Collaborations
                 _unitOfWork.Repository<CollaborationVersioning>().InsertRange(entity.CollaborationVersionings);
             }
 
+            if (entity.CollaborationLogs != null && entity.CollaborationLogs.Count > 0)
+            {
+                _unitOfWork.Repository<CollaborationLog>().InsertRange(entity.CollaborationLogs);
+            }
+
             //TODO: da spostare nel BaseLogService
             CollaborationLog collaborationLog = new CollaborationLog()
             {
@@ -94,8 +101,21 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Collaborations
             return base.BeforeCreate(entity);
         }
 
+        protected override bool ExecuteMappingBeforeUpdate()
+        {
+            return CurrentUpdateActionType != UpdateActionType.CollaborationManaged;
+        }
+
         protected override Collaboration BeforeUpdate(Collaboration entity, Collaboration entityTransformed)
         {
+            if (CurrentUpdateActionType == UpdateActionType.CollaborationManaged)
+            {
+                entityTransformed.Year = entity.Year;
+                entityTransformed.Number = entity.Number;
+                entityTransformed.IdStatus = CollaborationStatusType.Registered;
+                entityTransformed.DocumentUnit = _unitOfWork.Repository<DocumentUnit>().Find(entity.DocumentUnit.UniqueId);
+            }
+
             //TODO: da spostare nel BaseLogService
             CollaborationLog collaborationLog = new CollaborationLog()
             {

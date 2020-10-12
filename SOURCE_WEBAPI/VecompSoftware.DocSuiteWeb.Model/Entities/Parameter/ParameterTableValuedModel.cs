@@ -1,8 +1,9 @@
 ﻿using System;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Parameter
 {
-    public class ParameterTableValuedModel
+    public class ParameterTableValuedModel : ITenantAOOTableValuedModel
     {
         #region [ Constructor ]
         public ParameterTableValuedModel()
@@ -35,6 +36,11 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Parameter
         public short LastUsedBillNumber { get; set; }
         public short LastUsedYearReg { get; set; }
         public int? LastUsedNumberReg { get; set; }
+
+        #region [ TenantAOO ]
+        public Guid? TenantAOO_IdTenantAOO { get; set; }
+        public string TenantAOO_Name { get; set; }
+        #endregion
 
         #endregion
 

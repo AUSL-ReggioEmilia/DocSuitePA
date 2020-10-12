@@ -8,26 +8,26 @@ namespace VecompSoftware.DocSuiteWeb.Finder.PECMails
 {
     public static class PECMailFinder
     {
-        public static IQueryable<PECMail> GetByProtocol(this IRepository<PECMail> repository, short year, int number, PECMailDirection direction)
+        public static IQueryable<PECMail> GetByProtocol(this IRepository<PECMail> repository, Guid uniqueId, PECMailDirection direction)
         {
-            return repository.Query(p => p.Year == year && p.Number == number && p.Direction == direction && p.DocumentUnitType == DSWEnvironmentType.Protocol)
+            return repository.Query(p => p.DocumentUnit.UniqueId == uniqueId && p.Direction == direction && p.DocumentUnit.Environment == (int)DSWEnvironmentType.Protocol)
                 .Include(i => i.PECMailReceipts)
                 .Include(i => i.PECMailChildrenReceipts)
                 .SelectAsQueryable();
         }
 
-        public static int CountOutgoing(this IRepository<PECMail> repository, short year, int number)
+        public static int CountOutgoing(this IRepository<PECMail> repository, Guid uniqueId)
         {
-            return repository.Queryable(true).Count(p => p.Year == year && p.Number == number &&
+            return repository.Queryable(true).Count(p => p.DocumentUnit.UniqueId == uniqueId &&
                                                          p.Direction == PECMailDirection.Outgoing &&
-                                                         p.DocumentUnitType == DSWEnvironmentType.Protocol);
+                                                         p.DocumentUnit.Environment == (int)DSWEnvironmentType.Protocol);
         }
 
-        public static int CountIncoming(this IRepository<PECMail> repository, short year, int number)
+        public static int CountIncoming(this IRepository<PECMail> repository, Guid uniqueId)
         {
-            return repository.Queryable(true).Count(p => p.Year == year && p.Number == number &&
+            return repository.Queryable(true).Count(p => p.DocumentUnit.UniqueId == uniqueId &&
                                                          p.Direction == PECMailDirection.Incoming &&
-                                                         p.DocumentUnitType == DSWEnvironmentType.Protocol);
+                                                         p.DocumentUnit.Environment == (int)DSWEnvironmentType.Protocol);
         }
 
         public static IQueryable<PECMail> GetByUniqueId(this IRepository<PECMail> repository, Guid uniqueId)

@@ -1,13 +1,11 @@
 ﻿using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Interfaces;
 using BiblosDS.LegalExtension.AdminPortal.Helpers;
 using BiblosDS.LegalExtension.AdminPortal.Infrastructure.Services.Common;
-using BiblosDS.LegalExtension.AdminPortal.Models;
+using BiblosDS.LegalExtension.AdminPortal.ViewModel;
 using BiblosDS.LegalExtension.AdminPortal.ViewModel.Ipda;
 using BiblosDS.Library.Common.Objects;
 using BiblosDS.Library.Common.Preservation.IpdaDoc;
 using BiblosDS.Library.Common.Preservation.Services;
-using BiblosDS.Library.Common.Utility;
-using BiblosDS.Library.Helper;
 using log4net;
 using Newtonsoft.Json;
 using SharpCompress.Archives;
@@ -15,13 +13,14 @@ using SharpCompress.Common;
 using SharpCompress.Readers;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
-using System.Web.Hosting;
 using System.Web.Mvc;
+using VecompSoftware.BiblosDS.Model.Parameters;
+using VecompSoftware.Sign.Interfaces;
+using VecompSoftware.Sign.Services;
 
 namespace BiblosDS.LegalExtension.AdminPortal.Controllers
 {
@@ -180,7 +179,8 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             return ActionResultHelper.TryCatchWithLogger(() =>
             {
                 IpdaPreservationToCloseViewModel model = new IpdaPreservationToCloseViewModel();
-                IList<Preservation> preservationsToClose = PreservationService.PreservationToClose();
+                CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
+                IList<Preservation> preservationsToClose = PreservationService.PreservationToClose(customerCompany.CompanyId);
                 model.PreservationsCount = preservationsToClose.Count;
                 IList<string> files = new List<string>();
                 foreach (Preservation preservation in preservationsToClose)
@@ -207,7 +207,8 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                 string zipFile = string.Empty;
                 try
                 {
-                    List<Preservation> preservations = PreservationService.PreservationToClose();
+                    CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
+                    List<Preservation> preservations = PreservationService.PreservationToClose(customerCompany.CompanyId);
                     zipFile = CreatePreservationZipToDownload(preservations);
                     return File(System.IO.File.ReadAllBytes(zipFile), System.Net.Mime.MediaTypeNames.Application.Zip);
                 }
@@ -219,6 +220,93 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                     }
                 }
             }, _loggerService);
+        }
+
+        [NoCache]
+        [Authorize]
+        [HttpGet]
+        public ActionResult SignPreservationFilesToClose()
+        {
+            return ActionResultHelper.TryCatchWithLogger(() =>
+            {
+                try
+                {
+                    CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
+                    List<Preservation> preservations = PreservationService.PreservationToClose(customerCompany.CompanyId);
+                    Models.ArubaSignModel arubaSignModel = ArubaSignConfigurationHelper.GetArubaSignConfiguration(customerCompany.CompanyId, User.Identity.Name);
+                    _logger.InfoFormat("Initializing signing with Aruba Automatic");
+                    ISignService _signService = new SignService((info) => _logger.Info(info),
+                                                           (err) => _logger.Error(err));
+
+                    if (arubaSignModel == null)
+                    {
+                        return Json(ArubaSignConfigurationHelper.NO_CREDENTIALS, JsonRequestBehavior.AllowGet);
+                    }
+                    foreach (Preservation preservation in preservations)
+                    {
+                        SignDocuments(preservation, _signService, arubaSignModel);
+                    }
+                    return Json(ArubaSignConfigurationHelper.SIGN_COMPLETE, JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception ex)
+                {
+                    _loggerService.Error($"Exception caught in process of signing: { ex.Message}", ex);
+                    return Json(ArubaSignConfigurationHelper.SIGN_ERROR, JsonRequestBehavior.AllowGet);
+                }
+            }, _loggerService);
+        }
+
+        [NonAction]
+        private void SignDocuments(Preservation preservation, ISignService _signService, Models.ArubaSignModel model)
+        {
+            string currentFilePath = Directory.GetFiles(preservation.Path, "IPDA*.xml").FirstOrDefault();
+            if (currentFilePath != null)
+            {
+                //get file content
+                byte[] content = System.IO.File.ReadAllBytes(currentFilePath);
+
+                //sign document with aruba automatic                      
+                VecompSoftware.Sign.ArubaSignService.ArubaSignModel arubaModel = new VecompSoftware.Sign.ArubaSignService.ArubaSignModel()
+                {
+                    DelegatedDomain = model.DelegatedDomain,
+                    DelegatedPassword = model.DelegatedPassword,
+                    DelegatedUser = model.DelegatedUser,
+                    OTPPassword = model.OTPPassword,
+                    OTPAuthType = model.OTPAuthType,
+                    User = model.User,
+                    CertificateId = model.CertificateId,
+                    TSAUser = model.TSAUser,
+                    TSAPassword = model.TSAPassword
+                };
+
+                content = _signService.SignDocument(arubaModel, content, Path.GetFileName(currentFilePath), true);
+
+                //save signed file back to disk
+                ByteArrayToFile(currentFilePath, content);
+
+                //update CloseDate field so that we can close the preservation
+                _preservationService.ClosePreservation(preservation.IdPreservation);
+            }
+
+        }
+
+        [NonAction]
+        private bool ByteArrayToFile(string fileName, byte[] byteArray)
+        {
+            try
+            {
+                using (FileStream fs = new FileStream($"{fileName}.p7m.tsd", FileMode.Create, FileAccess.Write))
+                {
+                    fs.Write(byteArray, 0, byteArray.Length);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggerService.Error($"Exception caught in process: {ex.Message}", ex);
+
+                return false;
+            }
         }
 
         [NonAction]
@@ -244,7 +332,6 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         {
             var service = new PreservationService();
             preservation = service.GetPreservation(preservation.IdPreservation, false);
-            service.ArchiveConfigFile = ConfigurationHelper.GetArchiveConfigurationFilePath(preservation.Archive.Name);
             if (!preservation.CloseDate.HasValue)
             {
                 if (service.VerifyExistingPreservation(preservation.IdPreservation))
@@ -264,7 +351,8 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         [HttpPost]
         public ActionResult CloseOpenPreservations()
         {
-            var preservations = PreservationService.PreservationToClose();
+            CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
+            var preservations = PreservationService.PreservationToClose(customerCompany.CompanyId);
 
             var service = new PreservationService();
             string res = "";
@@ -273,7 +361,6 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             {
                 if (!preservation.CloseDate.HasValue)
                 {
-                    service.ArchiveConfigFile = ConfigurationHelper.GetArchiveConfigurationFilePath(preservation.Archive.Name);
                     if (service.VerifyExistingPreservation(preservation.IdPreservation))
                     {
                         service.ClosePreservation(preservation.IdPreservation);
@@ -356,7 +443,6 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                                 if (Guid.TryParse(preservationIdStr, out Guid idPreservation))
                                 {
                                     Preservation preservation = _preservationService.GetPreservation(idPreservation, false);
-                                    _preservationService.ArchiveConfigFile = ConfigurationHelper.GetArchiveConfigurationFilePath(preservation.Archive.Name);
                                     if (preservation == null)
                                     {
                                         _logger.WarnFormat("Nessuna conservazione trovata con Id {0}", idPreservation);
@@ -389,8 +475,8 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                                         continue;
                                     }
 
-                                    bool needVerify = PreservationHelper.GetCloseWithoutVerify(_preservationService.ArchiveConfigFile);
-                                    if (needVerify)
+                                    ArchiveConfiguration archiveConfiguration = JsonConvert.DeserializeObject<ArchiveConfiguration>(preservation.Archive.PreservationConfiguration);
+                                    if (!archiveConfiguration.CloseWithoutVerify)
                                     {
                                         _logger.InfoFormat("UnzipPreservationFile -> Chiusura Conservazione {0} con verify", preservation.IdPreservation);
                                         if (_preservationService.VerifyExistingPreservation(preservation.IdPreservation))

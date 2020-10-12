@@ -1,9 +1,11 @@
 ﻿using System.Linq;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
@@ -55,6 +57,12 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.DocumentUnits
             {
                 entity.UDSRepository = _unitOfWork.Repository<UDSRepository>().Find(entity.UDSRepository.UniqueId);
             }
+
+            if (entity.TenantAOO != null)
+            {
+                entity.TenantAOO = _unitOfWork.Repository<TenantAOO>().Find(entity.TenantAOO.UniqueId);
+            }
+
             if (entity.DocumentUnitChains != null && entity.DocumentUnitChains.Count > 0)
             {
                 foreach (DocumentUnitChain item in entity.DocumentUnitChains)
@@ -63,6 +71,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.DocumentUnits
                 }
                 _unitOfWork.Repository<DocumentUnitChain>().InsertRange(entity.DocumentUnitChains);
             }
+            
             if (entity.DocumentUnitRoles != null && entity.DocumentUnitRoles.Count > 0)
             {
                 foreach (DocumentUnitRole item in entity.DocumentUnitRoles)
@@ -71,6 +80,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.DocumentUnits
                 }
                 _unitOfWork.Repository<DocumentUnitRole>().InsertRange(entity.DocumentUnitRoles);
             }
+            
             if (entity.DocumentUnitUsers != null && entity.DocumentUnitUsers.Count > 0)
             {
                 foreach (DocumentUnitUser item in entity.DocumentUnitUsers)

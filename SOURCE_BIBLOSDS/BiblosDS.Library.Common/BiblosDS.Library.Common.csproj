@@ -182,10 +182,6 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.ServiceRuntime.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Configuration.Install" />
@@ -258,7 +254,6 @@
     <Compile Include="Services\AttributeService.cs" />
     <Compile Include="Services\ArchiveStorageService.cs" />
     <Compile Include="Services\CacheService.cs" />
-    <Compile Include="Services\AzureService.cs" />
     <Compile Include="Services\CustomerService.cs" />
     <Compile Include="Services\DocumentService.master.cs" />
     <Compile Include="Services\DocumentService.cs" />
@@ -269,7 +264,6 @@
     <Compile Include="Services\StorageService.cs" />
     <Compile Include="Utility\MachineService.cs" />
     <Compile Include="Utility\UtilityService.cs" />
-    <Compile Include="Utility\WCFUtility.cs" />
     <Compile Include="Utility\XmlFile.cs" />
     <Compile Include="Utility\XslFile.cs" />
   </ItemGroup>
@@ -319,6 +313,10 @@
     <ProjectReference Include="..\BiblosDS.Library.Common.Objects\BiblosDS.Library.Common.Objects.csproj">
       <Project>{BE2B09F0-D141-41B7-820E-85FE7D9A7360}</Project>
       <Name>BiblosDS.Library.Common.Objects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BiblosDS.WCF.Common\VecompSoftware.BiblosDS.WCF.Common.csproj">
+      <Project>{b6988e8d-4b45-4d4b-8b8e-058bb6c18111}</Project>
+      <Name>VecompSoftware.BiblosDS.WCF.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.ServiceContract.BiblosDS\VecompSoftware.ServiceContract.BiblosDS.csproj">
       <Project>{7b33f200-7e95-4ae7-a993-995f3a4d2ff3}</Project>

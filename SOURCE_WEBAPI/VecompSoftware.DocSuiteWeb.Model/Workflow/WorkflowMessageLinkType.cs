@@ -5,6 +5,7 @@
         FascicleLink = 1,
         ExternalViewerLink = 2,
         DocSuiteGenericActivity = 3,
-        DocumentUnitLink = 4
+        DocumentUnitLink = 4,
+        CreatedFascicleLink = 5
     }
 }

@@ -1,0 +1,15 @@
+﻿{
+  "SFTPAddress": "192.168.0.108",
+  "SFTPPort": 22,
+  "SFTPUsername": "bee-ws-166\\devdgroove",
+  "SFTPPassword": "Passw0rd",
+  "SFTPPath": "/C:/Users/devdgroove/",
+  "FolderInvoiceWorking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\Fatture passive\\DROP",
+  "FolderInvoiceError": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\Fatture passive\\SCARTO DI ERRORE",
+  "FolderInvoiceBackup": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\Fatture passive\\BACKUP",
+  "TenantName": "ASL-TO-CITTA",
+  "TenantId": "E5ED27AA-7FEA-432F-91F4-42B9A9250908",
+  "TenantAOOId": "ff2efa82-4ea3-471e-af22-f784bbf09c25",
+  "TopicName": "workflow_integration",
+  "EventName":  "DocumentAdE"
+}

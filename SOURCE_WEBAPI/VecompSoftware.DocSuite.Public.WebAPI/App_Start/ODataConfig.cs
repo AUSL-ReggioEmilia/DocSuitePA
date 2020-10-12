@@ -2,7 +2,9 @@
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Query;
 using System;
+using System.Collections.Generic;
 using System.Web.Http;
+using VecompSoftware.DocSuite.Public.Core.Models.Customs.AUSL_RE.BandiDiGara;
 using VecompSoftware.DocSuite.Public.Core.Models.Domains;
 using VecompSoftware.DocSuite.Public.Core.Models.Domains.Archives.Commons;
 using VecompSoftware.DocSuite.Public.Core.Models.Domains.Commons;
@@ -23,6 +25,8 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
 {
     public static class ODataConfig
     {
+        public const string ODATA_FINDER_PARAMETER = "finder";
+
         public static void Register(HttpConfiguration config)
         {
             ODataModelBuilder builder = new ODataConventionModelBuilder();
@@ -42,6 +46,8 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
             MapDocumentUnitReferenceOData(builder);
 
             MapDossierOData(builder);
+
+            MapCustomModules(builder);
 
             config.AddODataQueryFilter();
             config.Filter(QueryOptionSetting.Allowed);
@@ -275,6 +281,10 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
                 .EntityType.HasKey(p => p.Id);
 
             builder
+              .EntitySet<Core.Models.Workflows.Parameters.MetadataModel>("MetadataModel")
+              .EntityType.HasKey(p => new { p.KeyName, p.Value });
+
+            builder
                 .EntitySet<CategoryModel>("Categories")
                 .EntityType.HasKey(p => p.Id);
 
@@ -342,7 +352,7 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
             getFascicleSummaryByYearAndNumber.Parameter<int>("number");
             getFascicleSummaryByYearAndNumber.Parameter<short>("code");
 
-            FunctionConfiguration getFascicleSummaryByTitle= builder
+            FunctionConfiguration getFascicleSummaryByTitle = builder
                   .EntityType<FascicleModel>().Collection
                   .Function("GetFascicleSummaryByTitle");
 
@@ -530,6 +540,55 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
             hasChildren.Parameter<Guid>("id");
             hasChildren.Returns<bool>();
 
+            #endregion
+
+            #region [ Navigation Properties ]
+
+            #endregion
+        }
+
+        private static void MapCustomModules(ODataModelBuilder builder)
+        {
+            builder
+               .EntitySet<MenuModel>("AUSLRE_BandiDiGaraMenu")
+               .EntityType.HasKey(p => p.UniqueId);
+
+            builder
+               .EntitySet<ArchiveModel>("AUSLRE_BandiDiGaraArchives")
+               .EntityType.HasKey(p => p.UniqueId);
+
+            #region [ Functions ]
+            FunctionConfiguration getMenu = builder
+                 .EntityType<MenuModel>().Collection
+                 .Function("GetMenu");
+
+            getMenu.Namespace = "MenuModelService";
+            getMenu.ReturnsCollectionFromEntitySet<MenuModel>("AUSLRE_BandiDiGaraMenu");
+
+            ActionConfiguration countArchiveByGrid = builder
+                .EntityType<ArchiveModel>().Collection
+                .Action("CountArchiveByGrid");
+
+            countArchiveByGrid.Namespace = "ArchiveModelService";
+            countArchiveByGrid.ReturnsCollectionFromEntitySet<ArchiveModel>("AUSLRE_BandiDiGaraArchives");
+            countArchiveByGrid.Parameter<ArchiveFinderModel>("finder");
+
+            ActionConfiguration searchArchiveByGrid = builder
+                .EntityType<ArchiveModel>().Collection
+                .Action("SearchArchiveByGrid");
+
+            searchArchiveByGrid.Namespace = "ArchiveModelService";
+            searchArchiveByGrid.ReturnsCollectionFromEntitySet<ArchiveModel>("AUSLRE_BandiDiGaraArchives");
+            searchArchiveByGrid.Parameter<ArchiveFinderModel>("finder");
+
+
+            FunctionConfiguration getArchiveInfo = builder
+                .EntityType<ArchiveModel>().Collection
+                .Function("GetArchiveInfo");
+
+            getArchiveInfo.Namespace = "ArchiveModelService";
+            getArchiveInfo.Parameter<Guid>("uniqueId");
+            getArchiveInfo.ReturnsCollectionFromEntitySet<ArchiveModel>("AUSLRE_BandiDiGaraArchives");
             #endregion
 
             #region [ Navigation Properties ]

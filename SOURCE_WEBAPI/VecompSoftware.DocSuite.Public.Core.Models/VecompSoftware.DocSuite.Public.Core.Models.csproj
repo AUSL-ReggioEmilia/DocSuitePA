@@ -1,153 +1,38 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{077AE562-309A-4F9D-A4F8-2808981D8BE8}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VecompSoftware.DocSuite.Public.Core.Models</RootNamespace>
-    <AssemblyName>VecompSoftware.DocSuite.Public.Core.Models</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
     <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\VecompSoftware.DocSuite.Public.Core.Models.XML</DocumentationFile>
-  </PropertyGroup>
+
   <PropertyGroup>
+    <TargetFrameworks>net48;netstandard2.1</TargetFrameworks>
+    <Version>9.09.0.0</Version>
+    <Authors />
+    <Company>Dgroove Srl</Company>
+    <Copyright>Copyright © Dgroove 2020</Copyright>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
+    <None Remove="favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="favicon.ico">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net48'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
+	<Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Commands\BaseCommand.cs" />
-    <Compile Include="ContentTypes\BaseContentType.cs" />
-    <Compile Include="ContentTypes\IContentType.cs" />
-    <Compile Include="ContentTypes\Workflows\BaseWorkflowContentType.cs" />
-    <Compile Include="ContentTypes\Workflows\StartWorkflowContentType.cs" />
-    <Compile Include="DocSuiteCustomPropertyNames.cs" />
-    <Compile Include="Domains\Commons\CategoryModel.cs" />
-    <Compile Include="Domains\Commons\ContactModel.cs" />
-    <Compile Include="Domains\Commons\ContactType.cs" />
-    <Compile Include="Domains\Commons\ContainerModel.cs" />
-    <Compile Include="Domains\Commons\DocumentModel.cs" />
-    <Compile Include="Domains\Commons\DocumentType.cs" />
-    <Compile Include="Domains\Commons\GenericDocumentUnitModel.cs" />
-    <Compile Include="Domains\Commons\IHistoricizedModel.cs" />
-    <Compile Include="Domains\Commons\IActiveModel.cs" />
-    <Compile Include="Domains\Commons\IContactModel.cs" />
-    <Compile Include="Domains\Commons\ISectorModel.cs" />
-    <Compile Include="Domains\Commons\SectorModel.cs" />
-    <Compile Include="Domains\DocumentUnitAttribute.cs" />
-    <Compile Include="Domains\DocumentUnitModel.cs" />
-    <Compile Include="Domains\DocumentUnitReferenceModel.cs" />
-    <Compile Include="Domains\DocumentUnitType.cs" />
-    <Compile Include="Domains\DomainModel.cs" />
-    <Compile Include="Domains\Fascicles\FascicleContactModel.cs" />
-    <Compile Include="Domains\Fascicles\FascicleFolderModel.cs" />
-    <Compile Include="Domains\Fascicles\FascicleFolderStatus.cs" />
-    <Compile Include="Domains\Fascicles\FascicleFolderTypology.cs" />
-    <Compile Include="Domains\Fascicles\FascicleModel.cs" />
-    <Compile Include="Domains\Fascicles\VisibilityType .cs" />
-    <Compile Include="Domains\Fascicles\FascicleType.cs" />
-    <Compile Include="Domains\PECMails\PECDirection.cs" />
-    <Compile Include="Domains\PECMails\PECMailModel.cs" />
-    <Compile Include="Domains\PECMails\PECMailReceiptModel.cs" />
-    <Compile Include="Domains\PECMails\PECActiveType.cs" />
-    <Compile Include="Domains\PECMails\PECType.cs" />
-    <Compile Include="Domains\Protocols\ProtocolUserModel.cs" />
-    <Compile Include="Domains\Protocols\ProtocolStatusType.cs" />
-    <Compile Include="Domains\Protocols\ProtocolUserType.cs" />
-    <Compile Include="Domains\Resolutions\ResolutionModel.cs" />
-    <Compile Include="Domains\Resolutions\ResolutionType.cs" />
-    <Compile Include="Domains\Resolutions\ResolutionStatusType.cs" />
-    <Compile Include="IHierarchicalModel.cs" />
-    <Compile Include="Domains\Protocols\ProtocolModel.cs" />
-    <Compile Include="Domains\Protocols\ProtocolType.cs" />
-    <Compile Include="Domains\Protocols\ComunicationType.cs" />
-    <Compile Include="Domains\Protocols\ProtocolContactModel.cs" />
-    <Compile Include="Domains\Protocols\ProtocolSectorModel.cs" />
-    <Compile Include="IModel.cs" />
-    <Compile Include="IMessage.cs" />
-    <Compile Include="BaseMessage.cs" />
-    <Compile Include="BaseModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Commands\Workflows\StartWorkflowCommand.cs" />
-    <Compile Include="Securities\AuthorizationModel.cs" />
-    <Compile Include="Securities\AuthorizationType.cs" />
-    <Compile Include="Securities\IdentityContext.cs" />
-    <Compile Include="Securities\IdentityModel.cs" />
-    <Compile Include="Securities\RoleModel.cs" />
-    <Compile Include="Workflows\IWorkflowModel.cs" />
-    <Compile Include="Workflows\Parameters\ContainerModel.cs" />
-    <Compile Include="Workflows\Parameters\CollaborationModel.cs" />
-    <Compile Include="Workflows\Parameters\CollaborationPriorityType.cs" />
-    <Compile Include="Workflows\Parameters\ContactDirectionType.cs" />
-    <Compile Include="Workflows\Parameters\ContactType.cs" />
-    <Compile Include="Workflows\Parameters\DocSuiteSectorModel.cs" />
-    <Compile Include="Workflows\Parameters\MetadataModel.cs" />
-    <Compile Include="Workflows\Parameters\ContactModel.cs" />
-    <Compile Include="Workflows\Parameters\CategoryModel.cs" />
-    <Compile Include="Workflows\Parameters\DocSuiteEntityType.cs" />
-    <Compile Include="Workflows\Parameters\DocumentType.cs" />
-    <Compile Include="Workflows\Parameters\DocumentUnitDirection.cs" />
-    <Compile Include="Workflows\Parameters\DocumentUnitType.cs" />
-    <Compile Include="Workflows\Parameters\ManageType.cs" />
-    <Compile Include="Workflows\Parameters\SignerType.cs" />
-    <Compile Include="Workflows\Parameters\WorkflowParameterNames.cs" />
-    <Compile Include="Workflows\Parameters\DocumentUnitModel.cs" />
-    <Compile Include="Workflows\Parameters\DocumentModel.cs" />
-    <Compile Include="Workflows\Parameters\ArchiveModel.cs" />
-    <Compile Include="Workflows\Parameters\DossierModel.cs" />
-    <Compile Include="Workflows\Parameters\FascicleModel.cs" />
-    <Compile Include="Workflows\Parameters\ReferenceModel.cs" />
-    <Compile Include="Workflows\Parameters\SignerModel.cs" />
-    <Compile Include="Workflows\WorkflowModel.cs" />
-    <Compile Include="Workflows\WorkflowParameterModel.cs" />
-    <Compile Include="Workflows\WorkflowStatus.cs" />
-    <Compile Include="Workflows\WorkflowStatusModel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="favicon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="VecompSoftware.DocSuite.Public.Core.Models.nuspec" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Domains\Archives\" />
-    <Folder Include="Mappers\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

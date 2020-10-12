@@ -27,8 +27,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Collaboratio
         #endregion
 
         #region [ Constructor ]
-        public CollaborationContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient)
-            : base(logger, webApiClient, biblosClient)
+        public CollaborationContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
             _logger = logger;
             _webApiClient = webApiClient;
@@ -46,7 +46,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Collaboratio
             try
             {
                 collaboration = ((ICommandCreateCollaboration)command).ContentType.ContentTypeValue;
-                evt = new EventCreateCollaboration(command.Id, command.CorrelationId, command.TenantName, command.TenantId, command.Identity, collaboration, command.ScheduledTime);
+                evt = new EventCreateCollaboration(command.Id, command.CorrelationId, command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, collaboration, command.ScheduledTime);
             }
             catch (Exception ex)
             {

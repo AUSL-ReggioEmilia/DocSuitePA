@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Protocols;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Protocols
 {
@@ -26,10 +27,14 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Protocols
             modelTransformed.IdStatus = model.IdStatus;
             modelTransformed.RegistrationDate = model.RegistrationDate;
             modelTransformed.Object = model.Object;
+            modelTransformed.DocumentProtocol = model.DocumentProtocol;
+            modelTransformed.DocumentDate = model.DocumentDate;
+            modelTransformed.Note = model.Note;
 
             modelTransformed.Category = _mapperUnitOfWork.Repository<IDomainMapper<ICategoryTableValuedModel, CategoryModel>>().Map(model, null);
             modelTransformed.Container = _mapperUnitOfWork.Repository<IDomainMapper<IContainerTableValuedModel, ContainerModel>>().Map(model, null);
             modelTransformed.ProtocolType = _mapperUnitOfWork.Repository<IDomainMapper<ProtocolTableValuedModel, ProtocolTypeModel>>().Map(model, null);
+            modelTransformed.TenantAOO = _mapperUnitOfWork.Repository<IDomainMapper<ITenantAOOTableValuedModel, TenantAOOModel>>().Map(model, null);
             return modelTransformed;
         }
 

@@ -45,6 +45,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
             {
                 ICollection<FascicleFolderTableValuedModel> fascicleFolders = _unitOfWork.Repository<FascicleFolder>().GetChildrenByParent(idFascicleFolder);
                 ICollection<FascicleFolderModel> fascicleFoldersModel = _mapperUnitOfwork.Repository<IDomainMapper<FascicleFolderTableValuedModel, FascicleFolderModel>>().MapCollection(fascicleFolders).ToList();
+
                 return Ok(fascicleFoldersModel);
             }, _logger, LogCategories);
         }

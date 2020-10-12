@@ -486,6 +486,11 @@ namespace System
                 retval.CorrelatedTasks = tsk.PreservationTask1.Convert(level, deeplevel);
             }
 
+            if (tsk.PreservationTaskStatus != null)
+            {
+                retval.TaskStatus = (PreservationTaskStatus)Enum.Parse(typeof(PreservationTaskStatus), tsk.PreservationTaskStatus.Status);
+            }
+
             return retval;
         }
 
@@ -822,6 +827,7 @@ namespace System
             {
                 CompanyName = (com.Company != null) ? com.Company.CompanyName : string.Empty,
                 IdArchive = com.IdArchive,
+                IdCompany = (com.Company != null) ? com.Company.IdCompany : Guid.Empty,
                 WorkingDir = com.WorkingDir,
                 XmlFileTemplatePath = com.XmlFileTemplatePath,
                 TemplateXSLTFile = com.TemplateXSLTFile,

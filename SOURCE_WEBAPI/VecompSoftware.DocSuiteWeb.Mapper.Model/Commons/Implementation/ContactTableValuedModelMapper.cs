@@ -12,6 +12,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Commons
                 modelTransformed = new ContactModel
                 {
                     Id = model.Contact_Incremental,
+                    EntityId = model.Contact_Incremental,
                     Description = model.Contact_Description
                 };
             }

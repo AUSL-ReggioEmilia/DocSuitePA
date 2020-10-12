@@ -50,5 +50,12 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Templates
                 .SelectAsQueryable()
                 .SingleOrDefault();
         }
+
+        public static TemplateCollaboration GetByName(this IRepository<TemplateCollaboration> repository, string name, bool optimization = false)
+        {
+            return repository.Query(x => x.Name == name, optimization: optimization)
+                .SelectAsQueryable()
+                .SingleOrDefault();
+        }
     }
 }

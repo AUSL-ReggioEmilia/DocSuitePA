@@ -20,16 +20,18 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Fascicles
         public FascicleValidator(ILogger logger, IFascicleValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
             : base(logger, mapper, unitOfWork, currentSecurity)
         {
-            ICollection<FascicleDocumentUnit> FascicleDocumentUnits = new Collection<FascicleDocumentUnit>();
-            ICollection<Contact> Contacts = new Collection<Contact>();
-            ICollection<FascicleLog> FascicleLogs = new Collection<FascicleLog>();
-            ICollection<FascicleLink> FascicleLinks = new Collection<FascicleLink>();
-            ICollection<DocumentUnit> DocumentUnits = new Collection<DocumentUnit>();
-            ICollection<FascicleDocument> FascicleDocuments = new Collection<FascicleDocument>();
-            ICollection<FascicleRole> FascicleRoles = new Collection<FascicleRole>();
-            ICollection<DossierFolder> DossierFolders = new Collection<DossierFolder>();
-            ICollection<WorkflowInstance> WorkflowInstances = new Collection<WorkflowInstance>();
-            ICollection<FascicleFolder> FascicleFolders = new Collection<FascicleFolder>();
+            FascicleDocumentUnits = new Collection<FascicleDocumentUnit>();
+            Contacts = new Collection<Contact>();
+            FascicleLogs = new Collection<FascicleLog>();
+            FascicleLinks = new Collection<FascicleLink>();
+            DocumentUnits = new Collection<DocumentUnit>();
+            FascicleDocuments = new Collection<FascicleDocument>();
+            FascicleRoles = new Collection<FascicleRole>();
+            DossierFolders = new Collection<DossierFolder>();
+            WorkflowInstances = new Collection<WorkflowInstance>();
+            FascicleFolders = new Collection<FascicleFolder>();
+            SourceMetadataValues = new Collection<MetadataValue>();
+            MetadataValueContacts = new Collection<MetadataValueContact>();
         }
 
         #endregion
@@ -123,11 +125,14 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Fascicles
 
         public int? DSWEnvironment { get; set; }
 
+        public string MetadataDesigner { get; set; }
+
         public string MetadataValues { get; set; }
         /// <summary>
         /// Get or set Timestamp
         /// </summary>
         /// 
+        public string CustomActions { get; set; }
         public byte[] Timestamp { get; set; }
 
 
@@ -153,7 +158,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Fascicles
         /// <summary>
         /// Get or set ProcessFascicleTemplate reference
         /// </summary>
-        public ProcessFascicleTemplate ProcessFascicleTemplate { get; set; }
+        public ProcessFascicleTemplate FascicleTemplate { get; set; }
 
 
 
@@ -178,6 +183,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Fascicles
         public ICollection<FascicleFolder> FascicleFolders { get; set; }
 
         public ICollection<DocumentUnitFascicleCategory> DocumentUnitFascicleCategories { get; set; }
+        public ICollection<MetadataValue> SourceMetadataValues { get; set; }
+        public ICollection<MetadataValueContact> MetadataValueContacts { get; set; }
         #endregion
     }
 }

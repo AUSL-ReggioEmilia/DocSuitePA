@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -39,6 +41,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
 
         protected override Tenant BeforeCreate(Tenant entity)
         {
+            if (entity.TenantAOO != null)
+            {
+                entity.TenantAOO = _unitOfWork.Repository<TenantAOO>().Find(entity.TenantAOO.UniqueId);
+            }
+
             if (entity.Configurations != null && entity.Configurations.Count > 0)
             {
                 foreach (TenantConfiguration item in entity.Configurations)
@@ -91,6 +98,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
                 }
                 entity.PECMailBoxes = pecMailBoxes;
             }
+
             if (entity.TenantWorkflowRepositories != null)
             {
                 HashSet<TenantWorkflowRepository> tenantWorkflowRepositories = new HashSet<TenantWorkflowRepository>();
@@ -105,14 +113,15 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
                 }
                 entity.TenantWorkflowRepositories = tenantWorkflowRepositories;
             }
-            if(entity.Contacts != null)
+
+            if (entity.Contacts != null)
             {
                 HashSet<Contact> tenantContacts = new HashSet<Contact>();
                 Contact tenantContact = null;
-                foreach(Contact item in entity.Contacts)
+                foreach (Contact item in entity.Contacts)
                 {
                     tenantContact = _unitOfWork.Repository<Contact>().Find(item.EntityId);
-                    if(tenantContact != null)
+                    if (tenantContact != null)
                     {
                         tenantContacts.Add(tenantContact);
                     }
@@ -120,8 +129,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
                 entity.Contacts = tenantContacts;
             }
 
-            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entity.UniqueId, null, TableLogEvent.INSERT, string.Concat("Inserimento azienda ", entity.TenantName), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entity.UniqueId, null, TableLogEvent.INSERT, string.Concat("Inserimento azienda ", entity.TenantName), typeof(Contact).Name, CurrentDomainUser.Account));
+            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entity.UniqueId, null, TableLogEvent.INSERT, string.Concat("Inserimento OU ", entity.TenantName), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
 
             return base.BeforeCreate(entity);
         }
@@ -139,102 +147,129 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
 
         protected override Tenant BeforeUpdate(Tenant entity, Tenant entityTransformed)
         {
-            if (entity.Configurations != null)
+            if (CurrentUpdateActionType.HasValue)
             {
-                foreach (TenantConfiguration item in entityTransformed.Configurations.Where(t => !entity.Configurations.Any(c => c.UniqueId == t.UniqueId)).ToList())
+                switch (CurrentUpdateActionType.Value)
                 {
-                    _unitOfWork.Repository<TenantConfiguration>().Delete(item);
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimossa la configurazione '", item.Tenant != null ? item.Tenant.TenantName : "", "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                }
-
-                foreach (TenantConfiguration item in entity.Configurations.Where(t => !entityTransformed.Configurations.Any(c => c.UniqueId == t.UniqueId)))
-                {
-                    item.Tenant = entityTransformed;
-                    _unitOfWork.Repository<TenantConfiguration>().Insert(item);
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunta la configurazione '", item.Tenant != null ? item.Tenant.TenantName : "", "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                    case UpdateActionType.TenantConfigurationAdd:
+                        {
+                            TenantConfiguration configuration = entity.Configurations.FirstOrDefault();
+                            configuration.Tenant = entityTransformed;
+                            _unitOfWork.Repository<TenantConfiguration>().Insert(configuration);
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunta la configurazione '", configuration.Tenant != null ? configuration.Tenant.TenantName : "", "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantConfigurationRemove:
+                        {
+                            TenantConfiguration configuration = entityTransformed.Configurations.FirstOrDefault(x=>x.UniqueId == entity.Configurations.FirstOrDefault().UniqueId);
+                            _unitOfWork.Repository<TenantConfiguration>().Delete(configuration);
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimossa la configurazione '", configuration.Tenant != null ? configuration.Tenant.TenantName : "", "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantContactAdd:
+                        {
+                            Contact contact = entity.Contacts.FirstOrDefault();
+                            entityTransformed.Contacts.Add(_unitOfWork.Repository<Contact>().Find(contact.EntityId));
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto il contatto '", contact.Description, "'"), typeof(Contact).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantContactRemove:
+                        {
+                            Contact contact = entityTransformed.Contacts.FirstOrDefault(x=>x.EntityId == entity.Contacts.FirstOrDefault().EntityId);
+                            entityTransformed.Contacts.Remove(contact);
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il contatto '", contact.Description, "'"), typeof(Contact).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantContainerAdd:
+                        {
+                            Container container = entity.Containers.FirstOrDefault();
+                            entityTransformed.Containers.Add(_unitOfWork.Repository<Container>().Find(container.EntityShortId));
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto il contenitore '", container.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantContainerRemove:
+                        {
+                            Container container = entityTransformed.Containers.FirstOrDefault(x=>x.EntityShortId == entity.Containers.FirstOrDefault().EntityShortId);
+                            entityTransformed.Containers.Remove(container);
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il contenitore '", container.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantRoleAdd:
+                        {
+                            foreach (Role role in entity.Roles)
+                            {
+                                entityTransformed.Roles.Add(_unitOfWork.Repository<Role>().Find(role.EntityShortId));
+                                _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto il settore '", role.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                            }
+                            break;
+                        }
+                    case UpdateActionType.TenantRoleRemove:
+                        {
+                            Role role = entityTransformed.Roles.FirstOrDefault(x => x.EntityShortId == entity.Roles.FirstOrDefault().EntityShortId);
+                            entityTransformed.Roles.Remove(role);
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il settore '", role.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantPECMailBoxAdd:
+                        {
+                            PECMailBox pecMailBox = entity.PECMailBoxes.FirstOrDefault();
+                            entityTransformed.PECMailBoxes.Add(_unitOfWork.Repository<PECMailBox>().Find(pecMailBox.EntityShortId));
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto la casella PEC '", pecMailBox.MailBoxRecipient, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantPECMailBoxRemove:
+                        {
+                            PECMailBox pecMailBox = entityTransformed.PECMailBoxes.FirstOrDefault(x=>x.EntityShortId == entity.PECMailBoxes.FirstOrDefault().EntityShortId);
+                            entityTransformed.PECMailBoxes.Remove(pecMailBox);
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso la casella PEC '", pecMailBox.MailBoxRecipient, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantWorkflowRepositoryAdd:
+                        {
+                            TenantWorkflowRepository tenantWorkflowRepository = entity.TenantWorkflowRepositories.FirstOrDefault();
+                            entityTransformed.TenantWorkflowRepositories.Add(_unitOfWork.Repository<TenantWorkflowRepository>().Find(tenantWorkflowRepository.UniqueId));
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto il flusso di lavoro '", tenantWorkflowRepository.WorkflowRepository.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantWorkflowRepositoryRemove:
+                        {
+                            TenantWorkflowRepository tenantWorkflowRepository = entityTransformed.TenantWorkflowRepositories.FirstOrDefault(x=>x.UniqueId == entity.TenantWorkflowRepositories.FirstOrDefault().UniqueId);
+                            entityTransformed.TenantWorkflowRepositories.Remove(tenantWorkflowRepository);
+                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il flusso di lavoro '", tenantWorkflowRepository.WorkflowRepository.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
+                            break;
+                        }
+                    case UpdateActionType.TenantContainerAddAll:
+                        {
+                            entityTransformed.Containers = _unitOfWork.Repository<Container>().Queryable(true).ToList();
+                            break;
+                        }
+                    case UpdateActionType.TenantContainerRemoveAll:
+                        {
+                            entityTransformed.Containers.Clear();
+                            break;
+                        }
+                    case UpdateActionType.TenantRoleAddAll:
+                        {
+                            entityTransformed.Roles = _unitOfWork.Repository<Role>().Queryable(true).ToList();
+                            break;
+                        }
+                    case UpdateActionType.TenantRoleRemoveAll:
+                        {
+                            entityTransformed.Roles.Clear();
+                            break;
+                        }
+                    case UpdateActionType.TenantContactAddAll:
+                        {
+                            entityTransformed.Contacts = _unitOfWork.Repository<Contact>().Queryable(true).ToList();
+                            break;
+                        }
+                    case UpdateActionType.TenantContactRemoveAll:
+                        {
+                            entityTransformed.Contacts.Clear();
+                            break;
+                        }
                 }
             }
-
-            #region Contacts
-            if (entity.Contacts != null)
-            {
-                foreach (Contact item in entityTransformed.Contacts.Where(f => !entity.Contacts.Any(c => c.EntityId == f.EntityId)).ToList())
-                {
-                    entityTransformed.Contacts.Remove(item);
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il contatto '", item.Description, "'"), typeof(Contact).Name, CurrentDomainUser.Account));
-                }
-                foreach (Contact item in entity.Contacts.Where(f => !entityTransformed.Contacts.Any(c => c.EntityId == f.EntityId)))
-                {
-                    entityTransformed.Contacts.Add(_unitOfWork.Repository<Contact>().Find(item.EntityId));
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto il contatto '", item.Description, "'"), typeof(Contact).Name, CurrentDomainUser.Account));
-                }
-            }
-            #endregion
-
-            #region Containers
-            if (entity.Containers != null)
-            {
-                foreach (Container item in entityTransformed.Containers.Where(f => !entity.Containers.Any(c => c.EntityShortId == f.EntityShortId)).ToList())
-                {
-                    entityTransformed.Containers.Remove(item);
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il contenitore '", item.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                }
-                foreach (Container item in entity.Containers.Where(f => !entityTransformed.Containers.Any(c => c.EntityShortId == f.EntityShortId)))
-                {
-                    entityTransformed.Containers.Add(_unitOfWork.Repository<Container>().Find(item.EntityShortId));
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto il contenitore '", item.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                }
-            }
-            #endregion
-
-            #region Roles
-            if (entity.Roles != null)
-            {
-                foreach (Role item in entityTransformed.Roles.Where(f => !entity.Roles.Any(c => c.EntityShortId == f.EntityShortId)).ToList())
-                {
-                    entityTransformed.Roles.Remove(item);
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il settore '", item.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                }
-                foreach (Role item in entity.Roles.Where(f => !entityTransformed.Roles.Any(c => c.EntityShortId == f.EntityShortId)))
-                {
-                    entityTransformed.Roles.Add(_unitOfWork.Repository<Role>().Find(item.EntityShortId));
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto il settore '", item.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                }
-            }
-            #endregion
-
-            #region PECMailBoxes
-            if (entity.PECMailBoxes != null)
-            {
-                foreach (PECMailBox item in entityTransformed.PECMailBoxes.Where(f => !entity.PECMailBoxes.Any(c => c.EntityShortId == f.EntityShortId)).ToList())
-                {
-                    entityTransformed.PECMailBoxes.Remove(item);
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso la casella PEC '", item.MailBoxRecipient, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                }
-                foreach (PECMailBox item in entity.PECMailBoxes.Where(f => !entityTransformed.PECMailBoxes.Any(c => c.EntityShortId == f.EntityShortId)))
-                {
-                    entityTransformed.PECMailBoxes.Add(_unitOfWork.Repository<PECMailBox>().Find(item.EntityShortId));
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto la casella PEC '", item.MailBoxRecipient, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                }
-            }
-            #endregion
-
-            #region WorkflowRepositories
-            if (entity.TenantWorkflowRepositories != null)
-            {
-                foreach (TenantWorkflowRepository item in entityTransformed.TenantWorkflowRepositories.Where(f => !entity.TenantWorkflowRepositories.Any(c => c.UniqueId == f.UniqueId)).ToList())
-                {
-                    entityTransformed.TenantWorkflowRepositories.Remove(item);
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il flusso di lavoro '", item.WorkflowRepository.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                }
-                foreach (TenantWorkflowRepository item in entity.TenantWorkflowRepositories.Where(f => !entityTransformed.TenantWorkflowRepositories.Any(c => c.UniqueId == f.UniqueId)))
-                {
-                    entityTransformed.TenantWorkflowRepositories.Add(_unitOfWork.Repository<TenantWorkflowRepository>().Find(item.UniqueId));
-                    _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto il flusso di lavoro '", item.WorkflowRepository.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                }
-            }
-            #endregion
-
 
             return base.BeforeUpdate(entity, entityTransformed);
         }

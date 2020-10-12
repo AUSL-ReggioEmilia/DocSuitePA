@@ -37,78 +37,86 @@ else
                     .Selected(true)
                     .Content(@<text>@SignTab()</text>);
 
-                        tabstrip.Add().Text("Scarica i file da firmare")
-                            .Content(@<text>@DownloadSignTab()</text>);
-                            })
+tabstrip.Add().Text("Scarica i file da firmare")
+.Content(@<text>@DownloadSignTab()</text>);
+})
 )
 
 @helper SignTab()
-    {
-        <div style="min-height:300px;">
+{
+    <div style="min-height:300px;">
+        <p>
+            <b>
+                Se disponi della smartcard, lo strumento di firma integrato ti consente di eseguire rapidamente la firma di tutti i documenti.<br />
+                Al termine della firma, le conservazioni verificate verranno chiuse automaticamente.
+            </b>
+        </p>
+        <div>
             <p>
-                <b>
-                    Se disponi della smartcard, lo strumento di firma integrato ti consente di eseguire rapidamente la firma di tutti i documenti.<br />
-                    Al termine della firma, le conservazioni verificate verranno chiuse automaticamente.
-                </b>
+                <div>
+                    <span style="margin-right: 5px;"><i>Digita il pin della smartcard</i></span>
+                    @Html.Kendo().TextBox().Name("Pin").HtmlAttributes(new { @id = "Pin", @type = "password" })
+                </div>
+                @Html.Kendo().Button().Name("signButton").Content("Firma").Events(events => events.Click("Sign"))
+                <span id="Spinner" style="margin-left:20px; display:none;">
+                    <img src="@Url.Content("~/content/images/wait.gif")" alt="" style="vertical-align:middle; text-align:center;" />
+                    &nbsp;
+                    <span id="SpinnerText"><b>Firma in corso...</b></span>
+                </span>
             </p>
-            <div>
-                <p>
-                    <div>
-                        <span style="margin-right: 5px;"><i>Digita il pin della smartcard</i></span>
-                        @Html.Kendo().TextBox().Name("Pin").HtmlAttributes(new { @id = "Pin", @type = "password" })
-                    </div>
-                    @Html.Kendo().Button().Name("signButton").Content("Firma").Events(events => events.Click("Sign"))
-                    <span id="Spinner" style="margin-left:20px; display:none;">
-                        <img src="@Url.Content("~/content/images/wait.gif")" alt="" style="vertical-align:middle; text-align:center;" />
-                        &nbsp;
-                        <span id="SpinnerText"><b>Firma in corso...</b></span>
-                    </span>
-                </p>
-                <div id="signResult"></div>
-            </div>
+            <div id="signResult"></div>
         </div>
+    </div>
 }
 
 @helper DownloadSignTab()
-    {
-        <div style="min-height:300px;">
-            <p>
-                <b>1. Scarica l'archivio zippato con i file da firmare e marcare temporalmente.</b><br />
-                @Html.ActionLink("Download", "DownloadPreservationFilesToClose", null, new { @class = "k-button", @style = "margin-top: 5px;" })
-            </p>
-            <p>
-                <b>
-                    2. Firma i file scaricati con marca temporale in formato .tsd e crea un archivio zippato con i file firmati.<br />
-                    Tramite il tasto sotto è possibile inviare l'archivio zippato. Le conservazioni verificate verranno chiuse automaticamente.<br />
-                </b>
-            </p>
+{
+    <div style="min-height:300px;">
+        <p>
+            <b>1. Scarica l'archivio zippato con i file da firmare e marcare temporalmente.</b><br />
+            @Html.ActionLink("Download", "DownloadPreservationFilesToClose", null, new { @class = "k-button", @style = "margin-top: 5px;" })
+           
+            <button disabled="@(Model.PreservationsCount <= 0 ? "disabled" : null)" id="btnArubaSign" onclick="signDocumentAruba()" class="k-button" style="margin-top:5px;">Firma</button>
+            <span id="arubaSpinner" style="margin-left:20px; display:none;">
+                <img id="arubaLoadingImageId" src="@Url.Content("~/content/images/wait.gif")" alt="" style="vertical-align:middle; text-align:center;" />
+                &nbsp;
+                <span id="arubaSpinnerText"><b>Firma in corso...</b></span>
+            </span>
 
-            <i class="lighter">E' possibile caricare solo file <b>ZIP</b></i>
-            @(Html.Kendo().Upload()
-                          .Name("files")
-                          .HtmlAttributes("files")
-                          .Multiple(false)
-                          .Validation(validation => validation.AllowedExtensions(new string[] { ".zip" }))
-                          .Messages(messages =>
-                          {
-                              messages.ClearSelectedFiles("Cancella");
-                              messages.UploadSelectedFiles("Avvia caricamento");
-                              messages.HeaderStatusUploaded("Attività completata");
-                              messages.HeaderStatusUploading("Caricamento...");
-                              messages.InvalidFileExtension("Il tipo di file selezionato non è corretto. Sono ammessi solo file zippati (.zip).");
-                              messages.Select("Seleziona file ZIP...");
-                          })
-                          .Async(async => async
-                                    .Save("PreservationUploadCloseFiles", "Ipda", new { messageId = ViewBag.messageId })
-                                    .Remove("PreservationRemoveCloseFiles", "Ipda", new { messageId = ViewBag.messageId })
-                                    .AutoUpload(false)
-                                    .ChunkSize(1000000)
-                                    .Concurrent(true))
-                          .Events(evt => evt.Select("onSelect").Error("onError").Success("onComplete")))
-            <br />
-            <div class="console"></div>
-            <div id="processResult"></div>
-        </div>
+        </p>
+        <p>
+            <b>
+                2. Firma i file scaricati con marca temporale in formato .tsd e crea un archivio zippato con i file firmati.<br />
+                Tramite il tasto sotto è possibile inviare l'archivio zippato. Le conservazioni verificate verranno chiuse automaticamente.<br />
+            </b>
+        </p>
+
+        <i class="lighter">E' possibile caricare solo file <b>ZIP</b></i>
+        @(Html.Kendo().Upload()
+                      .Name("files")
+                      .HtmlAttributes("files")
+                      .Multiple(false)
+                      .Validation(validation => validation.AllowedExtensions(new string[] { ".zip" }))
+                      .Messages(messages =>
+                      {
+                          messages.ClearSelectedFiles("Cancella");
+                          messages.UploadSelectedFiles("Avvia caricamento");
+                          messages.HeaderStatusUploaded("Attività completata");
+                          messages.HeaderStatusUploading("Caricamento...");
+                          messages.InvalidFileExtension("Il tipo di file selezionato non è corretto. Sono ammessi solo file zippati (.zip).");
+                          messages.Select("Seleziona file ZIP...");
+                      })
+                      .Async(async => async
+                                .Save("PreservationUploadCloseFiles", "Ipda", new { messageId = ViewBag.messageId })
+                                .Remove("PreservationRemoveCloseFiles", "Ipda", new { messageId = ViewBag.messageId })
+                                .AutoUpload(false)
+                                .ChunkSize(1000000)
+                                .Concurrent(true))
+                      .Events(evt => evt.Select("onSelect").Error("onError").Success("onComplete")))
+        <br />
+        <div class="console"></div>
+        <div id="processResult"></div>
+    </div>
 }
 
 <script type="text/html" id="msgTemplate">
@@ -134,7 +142,7 @@ else
         console.error(ex);
     }
 
-    if (activex != null) {      
+    if (activex != null) {
       $("#Pin").focus();
 
       $("#Pin").keyup(function (e) {
@@ -282,6 +290,33 @@ else
     UpdateSpinner();
     return true;
   }
+
+
+
+    function signDocumentAruba() {
+        $("#arubaSpinner").show();
+        $("#btnArubaSign").prop('disabled', true);
+
+        $.ajax({
+          url: "@Url.Action("SignPreservationFilesToClose")",
+          type: "GET",
+            success: function (data) {
+                if (data == "no-credentials") {
+                    $("#arubaSpinnerText").text("Nessuna credenziale da firmare trovata")
+                    $("#arubaLoadingImageId").hide();
+                    $("#arubaSpinnerText").css('color', 'red');
+                } else if (data == "successfully-signed") {
+                    $("#arubaSpinnerText").text("Firmato con successo")
+                    $("#arubaLoadingImageId").hide();
+                    $("#arubaSpinnerText").css('color', 'green');
+                } else if(data=="error-signing") {
+                    $("#arubaSpinnerText").text("Errore durante la firma delle conservazioni")
+                    $("#arubaLoadingImageId").hide();
+                    $("#arubaSpinnerText").css('color', 'red');
+                }
+            }
+        });
+    }
 
 
   function showError(message) {

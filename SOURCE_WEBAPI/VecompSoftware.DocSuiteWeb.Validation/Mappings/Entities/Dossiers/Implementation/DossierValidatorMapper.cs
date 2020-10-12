@@ -18,12 +18,14 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Dossiers
             entityTransformed.Subject = entity.Subject;
             entityTransformed.EndDate = entity.EndDate;
             entityTransformed.Note = entity.Note;
-            entityTransformed.JsonMetadata = entity.JsonMetadata;
+            entityTransformed.MetadataDesigner = entity.MetadataDesigner;
+            entityTransformed.MetadataValues = entity.MetadataValues;
             entityTransformed.RegistrationUser = entity.RegistrationUser;
             entityTransformed.RegistrationDate = entity.RegistrationDate;
             entityTransformed.LastChangedUser = entity.LastChangedUser;
             entityTransformed.LastChangedDate = entity.LastChangedDate;
             entityTransformed.Timestamp = entity.Timestamp;
+            entityTransformed.Status = entity.Status;
             #endregion
 
             #region [ Navigation Properties ]
@@ -39,6 +41,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Dossiers
             entityTransformed.DossierLinks = entity.DossierLinks;
             entityTransformed.MetadataRepository = entity.MetadataRepository;
             entityTransformed.Processes = entity.Processes;
+            entityTransformed.MetadataValueContacts = entity.MetadataValueContacts;
+            entityTransformed.SourceMetadataValues = entity.SourceMetadataValues;
             #endregion
 
             return entityTransformed;

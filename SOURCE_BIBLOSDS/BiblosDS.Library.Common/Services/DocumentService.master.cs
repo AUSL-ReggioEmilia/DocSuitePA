@@ -21,6 +21,7 @@ using System.Data.Common;
 using BiblosDS.Library.Common.Objects.UtilityService;
 using BiblosDS.Library.Common.Utility;
 using VecompSoftware.ServiceContract.BiblosDS.Documents;
+using VecompSoftware.BiblosDS.WCF.Common;
 
 namespace BiblosDS.Library.Common.Services
 {
@@ -60,7 +61,7 @@ namespace BiblosDS.Library.Common.Services
                 {
                     using (var clientChannel = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>(ServerService.WCF_DocumentStorage_HostName, server.ServerName))
                     {
-                        (clientChannel as IServiceDocumentStorage).AddDocument(document);                        
+                        (clientChannel as IServiceDocumentStorage).AddDocument(document);
                     }
                     status = DocumentStatus.InStorage;
                 }

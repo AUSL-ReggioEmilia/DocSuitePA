@@ -20,15 +20,16 @@ using VecompSoftware.DocSuiteWeb.Entity.PECMails;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
+using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
 using VecompSoftware.DocSuiteWeb.Model.Securities;
 using VecompSoftware.DocSuiteWeb.Model.Validations;
-using VecompSoftware.DocSuiteWeb.Model.WebAPI.Client;
 using VecompSoftware.DocSuiteWeb.Model.Workflow;
 using VecompSoftware.ServiceBus.WebAPI.Exceptions;
 using VecompSoftware.Services.Command.CQRS.Commands;
 using VecompSoftware.Services.Command.CQRS.Events;
+using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
 
 namespace VecompSoftware.ServiceBus.WebAPI
 {
@@ -43,41 +44,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         private readonly TimeSpan _threadWaiting = TimeSpan.FromSeconds(5);
         #endregion
 
-        #region [ Rest Controller Name ]
-        private const string REST_DOCUMENTUNIT_CONTROLLER_NAME = "DocumentUnit";
-        private const string REST_FASCICLE_CONTROLLER_NAME = "Fascicle";
-        private const string REST_FASCICLE_PROTOCOL_CONTROLLER_NAME = "FascicleProtocol";
-        private const string REST_FASCICLE_RESOLUTION_CONTROLLER_NAME = "FascicleResolution";
-        private const string REST_FASCICLE_DOCUMENT_SERIES_ITEM_CONTROLLER_NAME = "FascicleDocumentSeriesItem";
-        private const string REST_FASCICLE_UDS_CONTROLLER_NAME = "FascicleUDS";
-        private const string REST_UDS_REPOSITORY_CONTROLLER_NAME = "UDSRepository";
-        private const string REST_WORKFLOWSTART_CONTROLLER_NAME = "WorkflowStart";
-        #endregion
-
-        #region [ ODATA Controller Name ]
-        private const string ODATA_DOCUMENTUNIT_CONTROLLER_NAME = "DocumentUnits";
-        private const string ODATA_DDOCUMENTUNIT_FASCICLE_CATEGORY_CONTROLLER_NAME = "DocumentUnitFascicleCategories";
-        private const string ODATA_FASCICLE_CONTROLLER_NAME = "Fascicles";
-        private const string ODATA_FASCICLE_FOLDER_CONTROLLER_NAME = "FascicleFolderss";
-        private const string ODATA_FASCICLE_DOCUMENTUNIT_CONTROLLER_NAME = "FascicleDocumentUnits";
-        private const string ODATA_COLLABORATION_CONTROLLER_NAME = "Collaborations";
-        private const string ODATA_PROTOCOL_CONTROLLER_NAME = "Protocols";
-        private const string ODATA_PROTOCOL_LOG_CONTROLLER_NAME = "ProtocolLogs";
-        private const string ODATA_RESOLUTION_CONTROLLER_NAME = "Resolutions";
-        private const string ODATA_DOCUMENT_SERIES_ITEM_CONTROLLER_NAME = "DocumentSeriesItems";
-        private const string ODATA_UDS_REPOSITORY_CONTROLLER_NAME = "UDSRepositories";
-        private const string ODATA_PECMAIL_CONTROLLER_NAME = "PECMails";
-        private const string ODATA_UDS_SCHEMA_REPOSITORY_CONTROLLER_NAME = "UDSSchemaRepositories";
-        private const string ODATA_CATEGORY_CONTROLLER_NAME = "Categories";
-        private const string ODATA_CATEGORYFASCICLE_CONTROLLER_NAME = "CategoryFascicles";
-        private const string ODATA_LOCATION_CONTROLLER_NAME = "Locations";
-        private const string ODATA_CONTAINER_CONTROLLER_NAME = "Containers";
-        private const string ODATA_ROLE_CONTROLLER_NAME = "Roles";
-        private const string ODATA_PARAMETER_CONTROLLER_NAME = "Parameters";
-        private const string ODATA_UDSDOCUMENTUNITS_CONTROLLER_NAME = "udsdocumentunits";
-        #endregion
-
-        #region [Parameter Name]
+        #region [ Parameter Name ]
         private const string PARAMETER_ARCHIVE_SECURITYGROUPS_GENERATION_ENABLED = "ArchiveSecurityGroupsGenerationEnabled";
         private const string PARAMETER_SECURE_DOCUMENT_SIGNATURE_ENABLED = "SecureDocumentSignatureEnabled";
         private const string PARAMETER_SECURE_PAPER_SERVICE_ID = "SecurePaperServiceId";
@@ -90,6 +57,10 @@ namespace VecompSoftware.ServiceBus.WebAPI
         private const string PARAMETER_SIGNATURE_PROTOCOL_ANNEXED_FORMAT = "SignatureProtocolAnnexedFormat";
         private const string PARAMETER_CORPORATE_ACRONYM = "CorporateAcronym";
         private const string PARAMETER_CORPORATE_NAME = "CorporateName";
+        private const string PARAMETER_SIGNATURE_TEMPLATE = "SignatureTemplate";
+        private const string PARAMETER_MESSAGE_LOCATION = "MessageLocationId";
+        private const string PARAMETER_COLLABORATION_LOCATION = "CollaborationLocationId";
+        private const string PARAMETER_FASCICLE_MISCELLANEA_LOCATION = "FascicleMiscellaneaLocation";
         #endregion
 
         #region [ Properties ]
@@ -116,22 +87,6 @@ namespace VecompSoftware.ServiceBus.WebAPI
         #endregion
 
         #region [ Methods ]
-        private void SetEntityRest<TEntity>(string controllerName) where TEntity : class
-        {
-            string entityName = typeof(TEntity).Name;
-            IWebApiControllerEndpoint controller = _httpClient.Configuration.EndPoints.Single(f => f.EndpointName.Equals(entityName, StringComparison.InvariantCultureIgnoreCase));
-            controller.AddressName = WebApiHttpClient.API_ADDRESS_NAME;
-            controller.ControllerName = controllerName;
-        }
-
-        private void SetEntityODATA<TEntity>(string controllerName) where TEntity : class
-        {
-            string entityName = typeof(TEntity).Name;
-            IWebApiControllerEndpoint controller = _httpClient.Configuration.EndPoints.Single(f => f.EndpointName.Equals(entityName, StringComparison.InvariantCultureIgnoreCase));
-            controller.AddressName = WebApiHttpClient.ODATA_ADDRESS_NAME;
-            controller.ControllerName = controllerName;
-        }
-
         private async Task<T> RetryingPolicyAction<T>(Func<Task<T>> func, int step = 1, Exception lastException = null)
             where T : class
         {
@@ -189,7 +144,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityRest<TEntity>(typeof(TEntity).Name);
+                _httpClient.SetEntityRest<TEntity>();
                 return await _httpClient.PostAsync(entity, actionType)
                     .ResponseToModelAsync<TEntity>();
             }, "WebAPIClient.PostEntityAsync -> POST entities error");
@@ -200,7 +155,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityRest<TEntity>(typeof(TEntity).Name);
+                _httpClient.SetEntityRest<TEntity>();
                 return await _httpClient.PutAsync(entity, actionType)
                      .ResponseToModelAsync<TEntity>();
             }, "WebAPIClient.PutEntityAsync -> PUT entities error");
@@ -211,7 +166,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityRest<TEntity>(typeof(TEntity).Name);
+                _httpClient.SetEntityRest<TEntity>();
                 return await _httpClient.DeleteAsync(model, actionType)
                     .ResponseToModelAsync<TEntity>();
             }, "WebAPIClient.DeleteEntityAsync -> DELETE entities error");
@@ -221,7 +176,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityRest<DocumentUnit>(REST_DOCUMENTUNIT_CONTROLLER_NAME);
+                _httpClient.SetEntityRest<DocumentUnit>();
                 return await _httpClient.PostAsync(entity)
                     .ResponseToModelAsync<DocumentUnit>();
             }, "WebAPIClient.PostDocumentUnitAsync -> POST entities error");
@@ -231,7 +186,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityRest<DocumentUnit>(REST_DOCUMENTUNIT_CONTROLLER_NAME);
+                _httpClient.SetEntityRest<DocumentUnit>();
                 return await _httpClient.PutAsync(entity)
                     .ResponseToModelAsync<DocumentUnit>();
             }, "WebAPIClient.PutDocumentUnitAsync -> PUT entities error");
@@ -243,7 +198,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityRest<TFascicolable>(string.Concat(typeof(TFascicolable).Name));
+                _httpClient.SetEntityRest<TFascicolable>();
                 return await _httpClient.PostAsync(fascicolableEntity)
                     .ResponseToModelAsync<TFascicolable>();
             }, $"WebAPIClient.PostFascicolableEntityAsync Error: {typeof(TFascicolable).Name} not sended to WebAPI");
@@ -255,7 +210,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityRest<TFascicolable>(string.Concat(typeof(TFascicolable).Name));
+                _httpClient.SetEntityRest<TFascicolable>();
                 return await _httpClient.PutAsync(fascicolableEntity)
                     .ResponseToModelAsync<TFascicolable>();
             }, $"WebAPIClient.PutFascicolableEntityAsync Error: {typeof(TFascicolable).Name} not sended to WebAPI");
@@ -282,10 +237,20 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityRest<WorkflowStart>(REST_WORKFLOWSTART_CONTROLLER_NAME);
+                _httpClient.SetEntityRest<WorkflowStart>();
                 return await _httpClient.PostAsync(entity)
                     .ResponseToModelAsync<WorkflowResult>();
             }, $"WebAPIClient.StartWorkflowAsync -> POST entities error");
+        }
+
+        public async Task<WorkflowResult> PushWorkflowNotifyAsync(WorkflowNotify entity)
+        {
+            return await ExecuteHelper(async () =>
+            {
+                _httpClient.SetEntityRest<WorkflowNotify>();
+                return await _httpClient.PostAsync(entity)
+                    .ResponseToModelAsync<WorkflowResult>();
+            }, $"WebAPIClient.PushWorkflowNotifyAsync -> POST entities error");
         }
 
         public async Task<bool> PushEventAsync<TEvent>(TEvent evt)
@@ -325,7 +290,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<UDSRepository>(ODATA_UDS_REPOSITORY_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<UDSRepository>();
                 ODataModel<UDSRepository> currentRepository = (await _httpClient.GetAsync<UDSRepository>()
                     .WithOData(string.Concat("$filter=Name eq \'", udsRepositoryName, "\' and ExpiredDate eq null and Status eq VecompSoftware.DocSuiteWeb.Entity.UDS.UDSRepositoryStatus\'", DocSuiteWeb.Entity.UDS.UDSRepositoryStatus.Confirmed, "\'&$orderby=version desc"))
                     .ResponseToModelAsync<ODataModel<UDSRepository>>());
@@ -338,7 +303,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<UDSRepository>(ODATA_UDS_REPOSITORY_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<UDSRepository>();
                 ODataModel<UDSRepository> repository = (await _httpClient.GetAsync<UDSRepository>()
                 .WithOData(string.Concat("$filter=UniqueId eq ", uniqueId))
                        .ResponseToModelAsync<ODataModel<UDSRepository>>());
@@ -350,7 +315,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<PECMail>(ODATA_PECMAIL_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<PECMail>();
                 ODataModel<PECMail> pecMail = (await _httpClient.GetAsync<PECMail>()
                     .WithOData(string.Format("$filter=EntityId eq {0}", idPECMail))
                     .ResponseToModelAsync<ODataModel<PECMail>>());
@@ -362,7 +327,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<Collaboration>(ODATA_COLLABORATION_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<Collaboration>();
                 ODataModel<Collaboration> collaboration = (await _httpClient.GetAsync<Collaboration>()
                     .WithOData(string.Format("$filter=EntityId eq {0}", idCollaboration))
                     .ResponseToModelAsync<ODataModel<Collaboration>>());
@@ -374,7 +339,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<UDSSchemaRepository>(ODATA_UDS_SCHEMA_REPOSITORY_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<UDSSchemaRepository>();
                 ODataModel<UDSSchemaRepository> currentSchemaRepository = (await _httpClient.GetAsync<UDSSchemaRepository>()
                        .WithOData("$filter=ExpiredDate eq null")
                        .ResponseToModelAsync<ODataModel<UDSSchemaRepository>>());
@@ -386,7 +351,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<FascicleDocumentUnit>(ODATA_FASCICLE_DOCUMENTUNIT_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<FascicleDocumentUnit>();
                 ODataModel<FascicleDocumentUnit> fascicleDocumentUnit = await _httpClient.GetAsync<FascicleDocumentUnit>()
                 .WithOData($"$filter=DocumentUnit/UniqueId eq {documentUnitId} and ReferenceType eq VecompSoftware.DocSuiteWeb.Entity.Fascicles.ReferenceType'{ReferenceType.Fascicle}'&$expand=Fascicle")
                        .ResponseToModelAsync<ODataModel<FascicleDocumentUnit>>();
@@ -394,11 +359,39 @@ namespace VecompSoftware.ServiceBus.WebAPI
             }, $"WebAPIClient.GetFascicleAsync -> GET entities error");
         }
 
+        public async Task<Fascicle> GetFascicleByIdAsync(Guid uniqueId)
+        {
+            return await ExecuteHelper(async () =>
+            {
+                _httpClient.SetEntityODATA<Fascicle>();
+                ODataModel<Fascicle> fascicle = await _httpClient.GetAsync<Fascicle>()
+                .WithOData($"$filter=UniqueId eq {uniqueId}&$expand=Category,Contacts,FascicleDocuments,MetadataRepository")
+                       .ResponseToModelAsync<ODataModel<Fascicle>>();
+                return fascicle == null || fascicle.Value == null || !fascicle.Value.Any() ? null : fascicle.Value.Single();
+            }, $"WebAPIClient.GetFascicleByIdAsync -> GET entities error");
+        }
+
+        public async Task<Dossier> GetDossierByIdAsync(Guid uniqueId, string optionalFilter = null)
+        {
+            return await ExecuteHelper(async () =>
+            {
+                _httpClient.SetEntityODATA<Dossier>();
+
+                string baseOdataFilter = $"$filter=UniqueId eq {uniqueId}";
+                string odataQuery = string.IsNullOrEmpty(optionalFilter) ? baseOdataFilter : $"{baseOdataFilter}&{optionalFilter}";
+
+                ODataModel<Dossier> dossier = await _httpClient.GetAsync<Dossier>()
+                .WithOData(odataQuery)
+                       .ResponseToModelAsync<ODataModel<Dossier>>();
+                return dossier == null || dossier.Value == null || !dossier.Value.Any() ? null : dossier.Value.Single();
+            }, $"WebAPIClient.GetDossierByIdAsync -> GET entities error");
+        }
+
         public async Task<DocumentUnitFascicleCategory> GetDocumentUnitFascicleCategoryAsync(Guid idDocumentUnit, short idCategory, Guid idFascicle)
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<DocumentUnitFascicleCategory>(ODATA_DDOCUMENTUNIT_FASCICLE_CATEGORY_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<DocumentUnitFascicleCategory>();
                 ODataModel<DocumentUnitFascicleCategory> documentUnitFascicleCategory = await _httpClient.GetAsync<DocumentUnitFascicleCategory>()
                 .WithOData($"$filter=DocumentUnit/UniqueId eq {idDocumentUnit} and Category/EntityShortId eq {idCategory} and Fascicle/UniqueId eq {idFascicle}")
                     .ResponseToModelAsync<ODataModel<DocumentUnitFascicleCategory>>();
@@ -411,7 +404,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<Location>(ODATA_LOCATION_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<Location>();
                 ODataModel<Location> location = (await _httpClient.GetAsync<Location>()
                 .WithOData(string.Concat("$filter=EntityShortId eq ", idLocation))
                        .ResponseToModelAsync<ODataModel<Location>>());
@@ -423,7 +416,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<Category>(ODATA_CATEGORY_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<Category>();
                 ODataModel<Category> category = (await _httpClient.GetAsync<Category>()
                 .WithOData(string.Concat("$filter=EntityShortId eq ", idCategory))
                        .ResponseToModelAsync<ODataModel<Category>>());
@@ -435,7 +428,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<Container>(ODATA_CONTAINER_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<Container>();
                 ODataModel<Container> container = (await _httpClient.GetAsync<Container>()
                 .WithOData(string.Concat("$filter=EntityShortId eq ", idContainer))
                        .ResponseToModelAsync<ODataModel<Container>>());
@@ -447,7 +440,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<DocumentUnit>(ODATA_DOCUMENTUNIT_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<DocumentUnit>();
                 ODataModel<DocumentUnit> result = (await _httpClient.GetAsync<DocumentUnit>()
                     .WithOData(string.Concat("$filter=UniqueId eq ", documentUnit.UniqueId, "&$expand=DocumentUnitRoles,DocumentUnitChains,DocumentUnitUsers,Fascicle,Category,Container,UDSRepository"))
                      .ResponseToModelAsync<ODataModel<DocumentUnit>>());
@@ -459,7 +452,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<Fascicle>(ODATA_FASCICLE_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<Fascicle>();
                 ODataModel<Fascicle> result = (await _httpClient.GetAsync<Fascicle>()
                     .WithOData(string.Concat("$filter=FascicleType eq VecompSoftware.DocSuiteWeb.Entity.Fascicles.FascicleType\'", FascicleType.Period, "\' and Category/isActive eq 1&$expand=Category,FasciclePeriod"))
                      .ResponseToModelAsync<ODataModel<Fascicle>>());
@@ -471,7 +464,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<Fascicle>(ODATA_FASCICLE_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<Fascicle>();
                 ODataModel<Fascicle> result = (await _httpClient.GetAsync<Fascicle>()
                     .WithRowQuery(string.Format("/FascicleService.PeriodicFascicles(uniqueId = {0})", documentUnit.UniqueId))
                      .ResponseToModelAsync<ODataModel<Fascicle>>());
@@ -483,7 +476,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<Role>(ODATA_ROLE_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<Role>();
 
                 if (!roleModel.IdRole.HasValue && !roleModel.UniqueId.HasValue)
                 {
@@ -504,7 +497,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<Protocol>(ODATA_PROTOCOL_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<Protocol>();
                 ODataModel<Protocol> protocol = (await _httpClient.GetAsync<Protocol>()
                 .WithOData(string.Concat("$filter=UniqueId eq ", uniqueId))
                        .ResponseToModelAsync<ODataModel<Protocol>>());
@@ -516,7 +509,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<Resolution>(ODATA_RESOLUTION_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<Resolution>();
                 ODataModel<Resolution> resolution = (await _httpClient.GetAsync<Resolution>()
                 .WithOData(string.Concat("$filter=UniqueId eq ", uniqueId))
                        .ResponseToModelAsync<ODataModel<Resolution>>());
@@ -528,7 +521,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<DocumentSeriesItem>(ODATA_DOCUMENT_SERIES_ITEM_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<DocumentSeriesItem>();
                 ODataModel<DocumentSeriesItem> documentSeriesItem = (await _httpClient.GetAsync<DocumentSeriesItem>()
                 .WithOData(string.Concat("$filter=UniqueId eq ", uniqueId))
                        .ResponseToModelAsync<ODataModel<DocumentSeriesItem>>());
@@ -541,7 +534,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<DomainUserModel>("DomainUsers");
+                _httpClient.SetEntityODATA<DomainUserModel>();
                 DomainUserModel result = (await _httpClient.GetAsync<DomainUserModel>()
                     .WithRowQuery(string.Format("/DomainUserService.GetUser(username='{0}',domain='{1}')", username, domain))
                      .ResponseToModelAsync<DomainUserModel>());
@@ -553,7 +546,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<CategoryFascicle>(ODATA_CATEGORYFASCICLE_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<CategoryFascicle>();
                 ODataModel<CategoryFascicle> result = (await _httpClient.GetAsync<CategoryFascicle>()
                     .WithOData(string.Concat("$filter=Category/EntityShortId eq ", idCategory, " and DSWEnvironment eq ", DSWEnvironment, "&$expand=Category,FasciclePeriod"))
                      .ResponseToModelAsync<ODataModel<CategoryFascicle>>());
@@ -565,7 +558,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<CategoryFascicle>(ODATA_CATEGORYFASCICLE_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<CategoryFascicle>();
                 ODataModel<CategoryFascicle> result = (await _httpClient.GetAsync<CategoryFascicle>()
                     .WithOData(string.Concat("$filter=Category/EntityShortId eq ", idCategory, " and DSWEnvironment eq 0 &$expand=Category"))
                      .ResponseToModelAsync<ODataModel<CategoryFascicle>>());
@@ -577,7 +570,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<ProtocolLog>(ODATA_PROTOCOL_LOG_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<ProtocolLog>();
                 ODataModel<ProtocolLog> protocolLogs = (await _httpClient.GetAsync<ProtocolLog>()
                 .WithOData(odataFilter)
                        .ResponseToModelAsync<ODataModel<ProtocolLog>>());
@@ -589,7 +582,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<FascicleFolder>(ODATA_FASCICLE_FOLDER_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<FascicleFolder>();
                 ODataModel<FascicleFolder> fascicleFolder = await _httpClient.GetAsync<FascicleFolder>()
                 .WithOData($"$filter=Fascicle/UniqueId eq {idFascicle} and Name eq 'Fascicolo' and FascicleFolderLevel eq 2")
                        .ResponseToModelAsync<ODataModel<FascicleFolder>>();
@@ -600,12 +593,72 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<UDSDocumentUnit>(ODATA_UDSDOCUMENTUNITS_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<UDSDocumentUnit>();
                 ODataModel<UDSDocumentUnit> UDSDocumentUnit = await _httpClient.GetAsync<UDSDocumentUnit>()
                 .WithOData($"$expand=Relation($expand=UDSRepository($select=UniqueId))&$filter=Relation/Environment ge 100 and IdUDS eq {IdUDS}")
                        .ResponseToModelAsync<ODataModel<UDSDocumentUnit>>();
                 return UDSDocumentUnit == null || UDSDocumentUnit.Value == null || !UDSDocumentUnit.Value.Any() ? null : UDSDocumentUnit.Value;
             }, $"WebAPIClient.GetDefaultFascicleFolderAsync -> GET entities error");
+        }
+
+        public async Task<WorkflowProperty> GetWorkflowActivityProperty(Guid idWorkflowActivity, string propertyName)
+        {
+            return await ExecuteHelper(async () =>
+            {
+                _httpClient.SetEntityODATA<WorkflowProperty>();
+                ODataModel<WorkflowProperty> workflowProperty = await _httpClient.GetAsync<WorkflowProperty>()
+                .WithOData($"$filter=WorkflowActivity/UniqueId eq {idWorkflowActivity} and Name eq '{propertyName}'")
+                       .ResponseToModelAsync<ODataModel<WorkflowProperty>>();
+                return workflowProperty == null || workflowProperty.Value == null || !workflowProperty.Value.Any() ? null : workflowProperty.Value.Single();
+            }, $"WebAPIClient.GetWorkflowActivityProperty -> GET entities error");
+        }
+
+        public async Task<FascicleFolder> GetFascicleFolderAsync(Guid uniqueId)
+        {
+            return await ExecuteHelper(async () =>
+            {
+                _httpClient.SetEntityODATA<FascicleFolder>();
+                ODataModel<FascicleFolder> fascicleFolder = await _httpClient.GetAsync<FascicleFolder>()
+                .WithOData($"$filter=UniqueId eq {uniqueId}")
+                       .ResponseToModelAsync<ODataModel<FascicleFolder>>();
+                return fascicleFolder == null || fascicleFolder.Value == null || !fascicleFolder.Value.Any() ? null : fascicleFolder.Value.Single();
+            }, $"WebAPIClient.GetFascicleFolderAsync -> GET entities error");
+        }
+
+        public async Task<FascicleDocument> GetFascicleDocumentByFolderAsync(Guid fascicleFolderId)
+        {
+            return await ExecuteHelper(async () =>
+            {
+                _httpClient.SetEntityODATA<FascicleDocument>();
+                ODataModel<FascicleDocument> fascicleDocument = await _httpClient.GetAsync<FascicleDocument>()
+                .WithOData($"$filter=FascicleFolder/UniqueId eq {fascicleFolderId}")
+                       .ResponseToModelAsync<ODataModel<FascicleDocument>>();
+                return fascicleDocument == null || fascicleDocument.Value == null || !fascicleDocument.Value.Any() ? null : fascicleDocument.Value.Single();
+            }, $"WebAPIClient.GetFascicleDocumentByFolderAsync -> GET entities error");
+        }
+
+        public async Task<DossierFolder> GetDossierFolderParentAsync(Guid idDossierFolder)
+        {
+            return await ExecuteHelper(async () =>
+            {
+                _httpClient.SetEntityODATA<DossierFolder>();
+                ODataModel<DossierFolder> result = (await _httpClient.GetAsync<DossierFolder>()
+                    .WithRowQuery($"/DossierFolderService.GetParent(idDossierFolder={idDossierFolder})")
+                     .ResponseToModelAsync<ODataModel<DossierFolder>>());
+                return result.Value.SingleOrDefault();
+            }, $"WebAPIClient.GetDossierFolderParentAsync -> GET entities error");
+        }
+
+        public async Task<DossierFolder> GetDossierFolderAsync(Guid idDossierFolder)
+        {
+            return await ExecuteHelper(async () =>
+            {
+                _httpClient.SetEntityODATA<DossierFolder>();
+                ODataModel<DossierFolder> dossierFolder = (await _httpClient.GetAsync<DossierFolder>()
+                    .WithOData($"$filter=UniqueId eq {idDossierFolder}")
+                     .ResponseToModelAsync<ODataModel<DossierFolder>>());
+                return dossierFolder == null || dossierFolder.Value == null || !dossierFolder.Value.Any() ? null : dossierFolder.Value.Single(); ;
+            }, $"WebAPIClient.GetDossierFolderAsync -> GET entities error");
         }
         #endregion
 
@@ -614,12 +667,12 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             return await ExecuteHelper(async () =>
             {
-                SetEntityODATA<ODataParameterModel>(ODATA_PARAMETER_CONTROLLER_NAME);
+                _httpClient.SetEntityODATA<ODataParameterModel>();
                 ODataModel<ODataParameterModel> result = (await _httpClient.GetAsync<ODataParameterModel>()
                     .WithOData(string.Concat("$filter=Key eq '", name, "'"))
                         .ResponseToModelAsync<ODataModel<ODataParameterModel>>());
                 return result == null || result.Value == null || !result.Value.Any() ? null : result.Value.Single();
-            }, $"WebAPIClient.GetDefaultCategoryFascicleAsync -> GET Parameter error", lookingWarningMessage: "not found in parameter");
+            }, $"WebAPIClient.GetParameterByKeyName -> GET Parameter error", lookingWarningMessage: "not found in parameter");
         }
 
         public async Task<bool> GetAutomaticSecurityGroupsEnabledAsync()
@@ -627,8 +680,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
             try
             {
                 ODataParameterModel result = await GetParameterByKeyName(PARAMETER_ARCHIVE_SECURITYGROUPS_GENERATION_ENABLED);
-                bool parameterValue = false;
-                bool.TryParse(result?.Value, out parameterValue);
+                bool.TryParse(result?.Value, out bool parameterValue);
                 return parameterValue;
             }
             catch (Exception ex)
@@ -641,8 +693,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         public async Task<bool> GetSecureDocumentSignatureEnabledAsync()
         {
             ODataParameterModel result = await GetParameterByKeyName(PARAMETER_SECURE_DOCUMENT_SIGNATURE_ENABLED);
-            bool parameterValue = false;
-            bool.TryParse(result?.Value, out parameterValue);
+            bool.TryParse(result?.Value, out bool parameterValue);
             return parameterValue;
         }
 
@@ -669,8 +720,7 @@ namespace VecompSoftware.ServiceBus.WebAPI
         public async Task<short> GetParameterSignatureProtocolTypeAsync()
         {
             ODataParameterModel result = await GetParameterByKeyName(PARAMETER_SIGNATURE_PROTOCOL_TYPE);
-            short parameterValue = 0;
-            short.TryParse(result?.Value, out parameterValue);
+            short.TryParse(result?.Value, out short parameterValue);
             return parameterValue;
         }
 
@@ -708,6 +758,30 @@ namespace VecompSoftware.ServiceBus.WebAPI
         {
             ODataParameterModel result = await GetParameterByKeyName(PARAMETER_CORPORATE_NAME);
             return JsonConvert.DeserializeObject<string>(result?.Value);
+        }
+
+        public async Task<string> GetParameterSignatureTemplate()
+        {
+            ODataParameterModel result = await GetParameterByKeyName(PARAMETER_SIGNATURE_TEMPLATE);
+            return JsonConvert.DeserializeObject<string>(result?.Value);
+        }
+
+        public async Task<int?> GetParameterCollaborationLocation()
+        {
+            ODataParameterModel result = await GetParameterByKeyName(PARAMETER_COLLABORATION_LOCATION);
+            return JsonConvert.DeserializeObject<int?>(result?.Value);
+        }
+
+        public async Task<short?> GetParameterMessageLocation()
+        {
+            ODataParameterModel result = await GetParameterByKeyName(PARAMETER_MESSAGE_LOCATION);
+            return JsonConvert.DeserializeObject<short?>(result?.Value);
+        }
+
+        public async Task<short?> GetParameterFascicleMiscellaneaLocation()
+        {
+            ODataParameterModel result = await GetParameterByKeyName(PARAMETER_FASCICLE_MISCELLANEA_LOCATION);
+            return JsonConvert.DeserializeObject<short?>(result?.Value);
         }
 
         #endregion

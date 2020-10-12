@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:tns="subjectregistryservice.acaris.acta.doqui.it" xmlns:common="common.acaris.acta.doqui.it" targetNamespace="subjectregistryservice.acaris.acta.doqui.it" jaxb:version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:include schemaLocation="ACARIS-SubjectRegistry.xsd" />
+  <xs:import schemaLocation="ACARIS-Common.xsd" namespace="common.acaris.acta.doqui.it" />
+  <xs:simpleType name="enumTipologiaCreazioneSoggetto">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="SoggettoProvvisorio" />
+      <xs:enumeration value="SoggettoDefinitivo" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumTipoNumero">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Fax" />
+      <xs:enumeration value="Telefono" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumPA">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="AOO" />
+      <xs:enumeration value="Ente" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="SoggettoRequest" abstract="true">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:complexType name="SoggettoProvvisorio">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:SoggettoRequest">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="infoComuniCreazioneSoggetto" type="tns:InfoComuniCreazioneSoggetto" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SoggettoDefinitivo">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:SoggettoRequest">
+        <xs:sequence>
+          <xs:element name="dataFineValidita" type="common:date" />
+          <xs:element name="preferito" type="common:boolean" />
+          <xs:element name="codiceFiscale" type="common:string" />
+          <xs:element name="partitaIva" type="common:string" />
+          <xs:element name="email" type="common:string" />
+          <xs:element name="matricola" type="common:string" />
+          <xs:element name="dataNascita" type="common:date" />
+          <xs:element name="luogoNascita" type="common:string" />
+          <xs:element name="note" type="common:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="infoComuniCreazioneSoggetto" type="tns:InfoComuniCreazioneSoggetto" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="categorieAnagrafiche" type="tns:CategoriaAnagraficaPropertiesType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="numeri" type="tns:Numero" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="indirizzi" type="tns:InfoCreazioneIndirizzo" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="InfoComuniCreazioneSoggetto">
+    <xs:sequence>
+      <xs:element name="denominazione" type="common:string" />
+      <xs:element name="cognome" type="common:string" />
+      <xs:element name="nome" type="common:string" />
+      <xs:element name="soggettoInterno" type="common:boolean" />
+      <xs:element name="codice" type="common:string" />
+      <xs:element name="emailPEC" type="common:string" />
+      <xs:element name="uuidSoggettoPadre" type="common:ObjectIdType" />
+      <xs:element name="chiaveEsterna" type="common:string" />
+      <xs:element name="provenienzaInpa" type="common:boolean" />
+      <xs:element name="forzareSePresentiSoggettiSimili" type="common:boolean" />
+      <xs:element name="idAOOSeSoggettoInterno" type="common:ObjectIdType" />
+      <xs:element name="idTipoSoggettoAppartenenza" type="common:IDDBType" />
+      <xs:element name="idTipoSoggettoOrigine" type="common:IDDBType" />
+      <xs:element name="pubblicaAmministrazione" type="tns:enumPA" />
+      <xs:element name="codiceTipoSoggetto" type="tns:enumPFPGUL" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Numero">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="valore" type="common:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="tipo" type="tns:enumTipoNumero" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="InfoCreazioneIndirizzo">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="idTipoIndirizzo" type="common:integer" />
+      <xs:element minOccurs="1" maxOccurs="1" name="indirizzo" type="common:string" />
+      <xs:element name="cap" type="common:string" />
+      <xs:element name="frazione" type="common:string" />
+      <xs:element name="regione" type="common:string" />
+      <xs:element name="provincia" type="common:string" />
+      <xs:element name="comune" type="common:string" />
+      <xs:element name="siglaProvincia" type="common:string" />
+      <xs:element name="stato" type="common:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IdentificazioneSoggetto">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="soggettoId" type="common:ObjectIdType" />
+      <xs:element minOccurs="1" maxOccurs="1" name="tipoSoggetto" type="tns:enumTipologiaCreazioneSoggetto" />
+      <xs:element minOccurs="1" maxOccurs="1" name="dataUltimoAggiornamento" type="common:ChangeTokenType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AnagraficaGenerica">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="tipoAnagrafica" type="common:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="codiceFonte" type="common:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="descrizioneFonte" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="chiaveEsterna" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+      <xs:element minOccurs="0" maxOccurs="1" name="dbKey" type="common:IDDBType" />
+      <xs:element minOccurs="0" maxOccurs="1" name="codiceFiscale" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="nome" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="cognome" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="partitaIva" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="denominazione" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="idStatoSoggetto" type="common:IDDBType" />
+      <xs:element minOccurs="0" maxOccurs="1" name="descStatoSoggetto" type="common:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AnagraficaSoggetto">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="codiceFiscale" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="partitaIva" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="denominazione" type="common:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="tipoAnagrafica" type="tns:enumPFPG" />
+      <xs:element minOccurs="0" maxOccurs="1" name="cognome" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="nome" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="sesso" type="tns:enumSesso" />
+      <xs:element minOccurs="0" maxOccurs="1" name="statoAnagrafico" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="codiceFonte" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="descrizioneFonte" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="dataNascita" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="luogoNascita" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="provvisoria" type="common:boolean" />
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="indirizzi" type="tns:IndirizzoFonteEsterna" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="IndirizzoFonteEsterna">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="indirizzo" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="tipoIndirizzo" type="tns:enumTipoIndirizzoFonteEsterna" />
+      <xs:element minOccurs="0" maxOccurs="1" name="frazione" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="comune" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="provincia" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="siglaProvincia" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="regione" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="cap" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="stato" type="common:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CriteriRicercaSoggetto">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="tipoAnagrafica" type="tns:enumPFPG" />
+      <xs:element minOccurs="1" maxOccurs="1" name="codiceFonteEsterna" type="common:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="personaGiuridicaCR" type="tns:PersonaGiuridicaCR" />
+      <xs:element minOccurs="1" maxOccurs="1" name="personaFisicaCR" type="tns:PersonaFisicaCR" />
+      <xs:element minOccurs="1" maxOccurs="1" name="codiceFiscalePartitaIva" type="tns:CodiceFiscalePartitaIvaCR" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PersonaGiuridicaCR">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="denominazione" type="common:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PersonaFisicaCR">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="cognome" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="nome" type="common:string" />
+      <xs:element minOccurs="0" maxOccurs="1" name="sesso" type="tns:enumSesso" />
+      <xs:element minOccurs="0" maxOccurs="1" name="dataNascita" type="common:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CodiceFiscalePartitaIvaCR">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="valoreCFPI" type="common:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="enumSesso">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Maschio" />
+      <xs:enumeration value="Femmina" />
+      <xs:enumeration value="Irrilevante" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumPFPG">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="PF" />
+      <xs:enumeration value="PG" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumTipoIndirizzoFonteEsterna">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="DOMICILIO FISCALE" />
+      <xs:enumeration value="RESIDENZA" />
+      <xs:enumeration value="SEDE LEGALE" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="creaSoggetto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="tipologiaCreazione" type="tns:enumTipologiaCreazioneSoggetto" />
+        <xs:element minOccurs="1" maxOccurs="1" name="infoRichiestaCreazione" type="tns:SoggettoRequest" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="creaSoggettoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="identificazioneSoggetto" type="tns:IdentificazioneSoggetto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ricercaSoggetto">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="identitaDigitale" type="common:string" />
+        <xs:element minOccurs="0" maxOccurs="1" name="codiceFiscale" type="common:string" />
+        <xs:element minOccurs="0" maxOccurs="1" name="partitaIva" type="common:string" />
+        <xs:element minOccurs="1" maxOccurs="1" name="fonteEsterna" type="common:string" />
+        <xs:element minOccurs="1" maxOccurs="1" name="flagPersonaGiuridica" type="common:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ricercaSoggettoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="object" type="tns:AnagraficaGenerica" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ricercaSoggettoDaFonteEsterna">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="identitaIride" type="common:string" />
+        <xs:element minOccurs="1" maxOccurs="1" name="criteri" type="tns:CriteriRicercaSoggetto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ricercaSoggettoDaFonteEsternaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="object" type="tns:AnagraficaSoggetto" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getProperties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="filter" type="common:PropertyFilterType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getPropertiesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="object" type="common:ObjectResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="updateProperties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="changeToken" type="common:ChangeTokenType" />
+        <xs:element minOccurs="1" maxOccurs="unbounded" name="properties" type="common:PropertyType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="updatePropertiesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="response" type="common:SimpleResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="creaIndirizzo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="soggettoId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="properties" type="common:PropertiesType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="creaIndirizzoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="response" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="creaCategoriaAnagrafica">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="properties" type="common:PropertiesType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="creaCategoriaAnagraficaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="response" type="common:DecodificaType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

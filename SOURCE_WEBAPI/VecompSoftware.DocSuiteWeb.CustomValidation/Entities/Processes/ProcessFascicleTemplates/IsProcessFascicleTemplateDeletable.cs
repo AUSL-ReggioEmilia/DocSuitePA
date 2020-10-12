@@ -16,7 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Processes.Process
         #region [ Constructor ]
 
         public IsProcessFascicleTemplateDeletable(NameValueCollection attributes)
-            : base("Il processo non può essere eliminato.", nameof(IsProcessFascicleTemplateDeletable))
+            : base("Il template di fascicolo non può essere eliminato.", nameof(IsProcessFascicleTemplateDeletable))
         {
         }
 

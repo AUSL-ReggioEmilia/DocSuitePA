@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Interfaces;
 using BiblosDS.LegalExtension.AdminPortal.Helpers;
 using BiblosDS.LegalExtension.AdminPortal.Infrastructure.Services.Common;
 using BiblosDS.LegalExtension.AdminPortal.Models;
-using BiblosDS.Library.Common.Preservation.Services;
 using BiblosDS.Library.Common.Services;
-using BiblosDS.Library.Common.Utility;
 using log4net;
 
 namespace BiblosDS.LegalExtension.AdminPortal.Controllers
@@ -40,7 +35,6 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-
             return ActionResultHelper.TryCatchWithLogger(() =>
             {
                 ViewBag.ReturnUrl = returnUrl;
@@ -63,6 +57,7 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                 if (CustomerService.CustomerLoginExists(model.UserName, model.Password))
                 {
                     FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
+
                     if (Url.IsLocalUrl(returnUrl))
                     {
                         return Redirect(returnUrl);
@@ -86,6 +81,7 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             return ActionResultHelper.TryCatchWithLogger(() =>
             {
                 FormsAuthentication.SignOut();
+                Session["idCompany"] = null;
                 return RedirectToAction("Index", "Home");
             }, _loggerService);
         }

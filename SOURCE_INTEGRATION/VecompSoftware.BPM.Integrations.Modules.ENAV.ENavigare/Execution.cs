@@ -156,13 +156,13 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ENavigare
             _needInitializeModule = true;
         }
 
-        private async Task EventDocumentSeriesItemCreateCallbackAsync(IEventCreateDocumentSeriesItem evt)
+        private async Task EventDocumentSeriesItemCreateCallbackAsync(IEventCreateDocumentSeriesItem evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage(string.Concat("EventDocumentSeriesItemCreateCallbackAsync -> received callback with event id ", evt.Id)), LogCategories);
 
             try
             {
-                ICommandCreateDocumentSeriesItem correlatedCommmand = evt.CorrelatedCommands.FirstOrDefault() as ICommandCreateDocumentSeriesItem;
+                ICommandCreateDocumentSeriesItem correlatedCommmand = evt.CorrelatedMessages.FirstOrDefault() as ICommandCreateDocumentSeriesItem;
                 if (correlatedCommmand == null || correlatedCommmand.CustomProperties["Metadatas"] == null)
                 {
                     _logger.WriteError(new LogMessage("EventDocumentSeriesItemCreateCallbackAsync -> CorrelatedCommands is empty"), LogCategories);
@@ -198,7 +198,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ENavigare
             }
         }
 
-        private async Task EventDocumentSeriesItemUpdateCallbackAsync(IEventUpdateDocumentSeriesItem evt)
+        private async Task EventDocumentSeriesItemUpdateCallbackAsync(IEventUpdateDocumentSeriesItem evt, IDictionary<string, object> properties)
         {
             if (Cancel)
             {
@@ -208,7 +208,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ENavigare
 
             try
             {
-                ICommandUpdateDocumentSeriesItem correlatedCommmand = evt.CorrelatedCommands.FirstOrDefault() as ICommandUpdateDocumentSeriesItem;
+                ICommandUpdateDocumentSeriesItem correlatedCommmand = evt.CorrelatedMessages.FirstOrDefault() as ICommandUpdateDocumentSeriesItem;
                 if (correlatedCommmand == null || correlatedCommmand.CustomProperties["Metadatas"] == null)
                 {
                     _logger.WriteError(new LogMessage("EventDocumentSeriesItemUpdateCallbackAsync -> CorrelatedCommands is empty"), LogCategories);
@@ -235,7 +235,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ENavigare
             }
         }
 
-        private async Task EventDocumentSeriesItemRetiredCallbackAsync(IEventEntity<DocumentSeriesItem> evt)
+        private async Task EventDocumentSeriesItemRetiredCallbackAsync(IEventEntity<DocumentSeriesItem> evt, IDictionary<string, object> properties)
         {
             if (Cancel)
             {
@@ -331,10 +331,9 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ENavigare
                     _logger.WriteWarning(new LogMessage(string.Concat("MappingSkyDoc_DocumentSeries -> Missing attributes on series ", ex.Message)), LogCategories);
                     invalidateEvaluation = true;
                 }
-                bool localInvalidateEvaluation = false;
                 skyDOC_DocumentSeries.ProceduraPosizioni = metadatas["trasparenza_path"];
                 skyDOC_DocumentSeries = DecorateDocumentProperties(skyDOC_DocumentSeries, "main", idMainChain,
-                    (flattered, entity) => entity.ProceduraNomiFile = flattered, out localInvalidateEvaluation);
+                    (flattered, entity) => entity.ProceduraNomiFile = flattered, out bool localInvalidateEvaluation);
                 invalidateEvaluation |= localInvalidateEvaluation;
 
                 skyDOC_DocumentSeries = DecorateDocumentProperties(skyDOC_DocumentSeries, "annexed", idAnnexedChain,
@@ -357,7 +356,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ENavigare
 
             return skyDOC_DocumentSeries;
         }
-        
+
         private string FlatteringAttributes(ICollection<ArchiveDocument> documents, string attribute)
         {
             if (documents == null || !documents.Any() || string.IsNullOrEmpty(attribute))
@@ -434,8 +433,9 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ENavigare
             IdentityContext identity = new IdentityContext(_username);
             string tenantName = _moduleConfiguration.TenantName;
             Guid tenantId = _moduleConfiguration.TenantId;
+            Guid tenantAOOId = _moduleConfiguration.TenantAOOId;
 
-            EventRetireDocumentSeriesItem eventRetireDocumentSeriesItem = new EventRetireDocumentSeriesItem(Guid.NewGuid(), null, tenantName, tenantId, identity, documentSeriesItem, scheduledTime, null, null);
+            EventRetireDocumentSeriesItem eventRetireDocumentSeriesItem = new EventRetireDocumentSeriesItem(Guid.NewGuid(), null, tenantName, tenantId, tenantAOOId, identity, documentSeriesItem, scheduledTime, null, null);
             eventRetireDocumentSeriesItem.CustomProperties.Add(_message_attribute_module_name, ModuleConfigurationHelper.MODULE_NAME);
             await _webAPIClient.PostAsync(eventRetireDocumentSeriesItem);
         }

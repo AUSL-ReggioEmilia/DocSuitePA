@@ -4,8 +4,10 @@
   "WorkflowRepositoryNormalName": "WORKFLOW WITHOUT ERRORS",
   "WorkflowRepositoryErrorName": "WORKFLOW WITH ERRORS",
   "WorkflowEventsPath": "C:\\Program Files (x86)\\BPM\\Integration_Drops\\TECMARKET.Reporting",
-  "IdTemplateDocumentRepository": "e75d8a2c-45a0-4eae-995a-d3e1949615ed",
+  "BackupPath": "C:\\Program Files (x86)\\BPM\\Integration_Drops\\TECMARKET.Reporting.Backup",
+  "IdTemplateDocumentRepository": "10C67092-92F5-48A3-B75F-898216C673EC",
   "UDSName": "TECMARKET - Monitoraggio e Controlli",
-  "ReportFileName": "Report.pdf",
-  "ReportSubject": "Report"
+  "ReportPDFFileName": "Report.pdf",
+  "ReportExcelFileName": "Report.xlsx",
+  "ReportSubject": "Report del"
 }

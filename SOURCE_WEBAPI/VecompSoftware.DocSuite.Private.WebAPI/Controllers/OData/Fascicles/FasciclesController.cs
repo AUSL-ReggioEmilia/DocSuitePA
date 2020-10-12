@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
@@ -15,6 +16,7 @@ using VecompSoftware.DocSuiteWeb.Finder.Protocols;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Mapper.Model.Fascicles;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
+using VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders.Metadata;
 using VecompSoftware.DocSuiteWeb.Model.Validations;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles;
@@ -32,13 +34,17 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
         private readonly ILogger _logger;
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly IMapperUnitOfWork _mapperUnitOfwork;
+        private readonly IMetadataFilterFactory _metadataFilterFactory;
+        private readonly IParameterEnvService _parameterEnvService; 
 
         #endregion
 
         #region [ Constructor ]
 
         public FasciclesController(IFascicleService service, IDataUnitOfWork unitOfWork,
-            ILogger logger, IFascicleModelMapper mapper, IMapperUnitOfWork mapperUnitOfwork, IFascicleTableValuedModelMapper fascicleTableValuedModelMapper, ISecurity security)
+            ILogger logger, IFascicleModelMapper mapper, IMapperUnitOfWork mapperUnitOfwork, 
+            IFascicleTableValuedModelMapper fascicleTableValuedModelMapper, ISecurity security, 
+            IMetadataFilterFactory metadataFilterFactory, IParameterEnvService parameterEnvService)
             : base(service, unitOfWork, logger, security)
         {
             _mapper = mapper;
@@ -46,6 +52,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
             _logger = logger;
             _unitOfWork = unitOfWork;
             _mapperUnitOfwork = mapperUnitOfwork;
+            _metadataFilterFactory = metadataFilterFactory;
+            _parameterEnvService = parameterEnvService;
         }
 
         #endregion
@@ -131,12 +139,12 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
         }
 
         [HttpGet]
-        public IHttpActionResult GetFasciclesByCategory(ODataQueryOptions<FascicleModel> options, short idCategory, string name)
+        public IHttpActionResult GetFasciclesByCategory(ODataQueryOptions<FascicleModel> options, short idCategory, string name, bool? hasProcess)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
              {
 
-                 ICollection<FascicleTableValuedModel> fasciclesModel = _unitOfWork.Repository<Fascicle>().GetByRight(Username, Domain, idCategory, name);
+                 ICollection<FascicleTableValuedModel> fasciclesModel = _unitOfWork.Repository<Fascicle>().GetByRight(Username, Domain, idCategory, name, hasProcess);
                  ICollection<FascicleModel> fascicles = _mapperUnitOfwork.Repository<IDomainMapper<FascicleTableValuedModel, FascicleModel>>().MapCollection(fasciclesModel);
                  return Ok(fascicles.OrderByDescending(x => x.RegistrationDate));
              }, _logger, LogCategories);
@@ -192,27 +200,38 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        public IHttpActionResult AuthorizedFascicles(ODataQueryOptions<Fascicle> options, [FromODataUri]FascicleFinderModel finder)
+        [HttpPost]
+        public IHttpActionResult AuthorizedFascicles(ODataQueryOptions<Fascicle> options, ODataActionParameters parameter)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<FascicleTableValuedModel> fasciclesModel = _unitOfWork.Repository<Fascicle>().GetAuthorized(Username, Domain, finder.Skip, finder.Top, finder.Year, finder.StartDateFrom, finder.StartDateTo,
-                    finder.EndDateFrom, finder.EndDateTo, finder.FascicleStatus, finder.Manager, finder.Name, finder.Subject, finder.ViewConfidential, finder.ViewAccessible, finder.Note,
-                    finder.Rack, finder.IdMetadataRepository, finder.MetadataValue, finder.Classifications, finder.IncludeChildClassifications, finder.Roles, finder.Container, finder.ApplySecurity);
+                FascicleFinderModel finder = parameter[ODataConfig.ODATA_FINDER_PARAMETER] as FascicleFinderModel;
+
+                DateTimeOffset? thresholdDate = CreateThresholdDate(finder.ViewOnlyClosable);
+                IDictionary<string, string> metadataValues = finder.MetadataValues.ToDictionary(d => d.KeyName, d => _metadataFilterFactory.CreateMetadataFilter(d).ToFilter());
+                ICollection<FascicleTableValuedModel> fasciclesModel = _unitOfWork.Repository<Fascicle>().GetAuthorized(Username, Domain, finder.Skip, finder.Top, finder.Year, 
+                    finder.StartDateFrom, finder.StartDateTo, finder.EndDateFrom, finder.EndDateTo, finder.FascicleStatus, finder.Manager, finder.Name, finder.Subject, 
+                    finder.ViewConfidential, finder.ViewAccessible, finder.Note, finder.Rack, finder.IdMetadataRepository, finder.MetadataValue, metadataValues,
+                    finder.Classifications, finder.IncludeChildClassifications, finder.Roles, finder.Container, finder.ApplySecurity, _parameterEnvService.ForceDescendingOrderElements,
+                    finder.ViewOnlyClosable, thresholdDate, finder.Title, finder.IsManager, finder.IsSecretary);
                 ICollection<FascicleModel> fascicles = _mapperUnitOfwork.Repository<IDomainMapper<FascicleTableValuedModel, FascicleModel>>().MapCollection(fasciclesModel);
                 return Ok(fascicles);
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        public IHttpActionResult CountAuthorizedFascicles(ODataQueryOptions<Fascicle> options, [FromODataUri]FascicleFinderModel finder)
+        [HttpPost]
+        public IHttpActionResult CountAuthorizedFascicles(ODataQueryOptions<Fascicle> options, ODataActionParameters parameter)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
             {
+                FascicleFinderModel finder = parameter[ODataConfig.ODATA_FINDER_PARAMETER] as FascicleFinderModel;
+
+                DateTimeOffset? thresholdDate = CreateThresholdDate(finder.ViewOnlyClosable);
+                IDictionary<string, string> metadataValues = finder.MetadataValues.ToDictionary(d => d.KeyName, d => _metadataFilterFactory.CreateMetadataFilter(d).ToFilter());
                 int countFascicles = _unitOfWork.Repository<Fascicle>().CountAuthorized(Username, Domain, finder.Year, finder.StartDateFrom, finder.StartDateTo,
                     finder.EndDateFrom, finder.EndDateTo, finder.FascicleStatus, finder.Manager, finder.Name, finder.Subject, finder.ViewConfidential, finder.ViewAccessible, finder.Note,
-                    finder.Rack, finder.IdMetadataRepository, finder.MetadataValue, finder.Classifications, finder.IncludeChildClassifications, finder.Roles, finder.Container, finder.ApplySecurity);
+                    finder.Rack, finder.IdMetadataRepository, finder.MetadataValue, metadataValues, finder.Classifications, finder.IncludeChildClassifications, finder.Roles, finder.Container, 
+                    finder.ApplySecurity, finder.ViewOnlyClosable, thresholdDate, finder.Title, finder.IsManager, finder.IsSecretary);
                 return Ok(countFascicles);
             }, _logger, LogCategories);
         }
@@ -224,6 +243,40 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
             {
                 bool result = _unitOfWork.Repository<Fascicle>().IsManager(Username, Domain, idFascicle);
                 return Ok(result);
+            }, _logger, LogCategories);
+        }
+
+        private DateTimeOffset? CreateThresholdDate(bool? viewOnlyClosable)
+        {
+            DateTimeOffset? thresholdDate = null;
+
+            if (viewOnlyClosable.HasValue && viewOnlyClosable.Value)
+            {
+                int fascicleAutoCloseThreshlodDays = _parameterEnvService.FascicleAutoCloseThresholdDays;
+                thresholdDate = DateTimeOffset.UtcNow.AddDays(-fascicleAutoCloseThreshlodDays);
+            }
+
+            return thresholdDate;
+        }
+
+
+        [HttpGet]
+        public IHttpActionResult AuthorizedFasciclesFromDocumentUnit(ODataQueryOptions<Fascicle> options, Guid uniqueIdDocumentUnit)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
+            {
+                ICollection<FascicleTableValuedModel> fascicleTableValuedModels = _unitOfWork.Repository<Fascicle>().AuthorizedFasciclesFromDocumentUnit(Username, Domain, uniqueIdDocumentUnit);
+                return Ok(_fascicleTableValuedModelMapper.MapCollection(fascicleTableValuedModels));
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult CountAuthorizedFasciclesFromDocumentUnit(ODataQueryOptions<Fascicle> options, Guid uniqueIdDocumentUnit)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
+            {
+                int countFascicles = _unitOfWork.Repository<Fascicle>().CountAuthorizedFasciclesFromDocumentUnit(Username, Domain, uniqueIdDocumentUnit);
+                return Ok(countFascicles);
             }, _logger, LogCategories);
         }
         #endregion

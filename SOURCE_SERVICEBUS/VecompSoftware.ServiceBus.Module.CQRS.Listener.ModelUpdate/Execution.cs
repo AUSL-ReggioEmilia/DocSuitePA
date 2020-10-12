@@ -17,8 +17,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Listener.ModelUpdate
         #endregion
 
         #region [ Constructor ]
-        public Execution(ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
-            : base(logger, webApiClient, biblosClient)
+        public Execution(ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
         }
         #endregion

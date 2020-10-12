@@ -23,10 +23,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .HasColumnName("Name")
                 .IsRequired();
 
-            Property(x => x.DocumentServer)
-                .HasColumnName("DocumentServer")
-                .IsRequired();
-
             Property(x => x.ProtocolArchive)
                 .HasColumnName("ProtBiblosDSDB")
                 .IsOptional();
@@ -43,10 +39,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .HasColumnName("ConsBiblosDSDB")
                 .IsOptional();
 
-            Property(x => x.ConservationServer)
-                .HasColumnName("ConservationServer")
-                .IsOptional();
-
             Property(x => x.UniqueId)
                 .HasColumnName("UniqueId")
                 .IsRequired();
@@ -58,6 +50,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .Ignore(x => x.LastChangedUser)
                 .Ignore(x => x.EntityId);
             #endregion
+
+            MapToStoredProcedures();
 
             #region [ Configure Navigation Properties ]
             #endregion

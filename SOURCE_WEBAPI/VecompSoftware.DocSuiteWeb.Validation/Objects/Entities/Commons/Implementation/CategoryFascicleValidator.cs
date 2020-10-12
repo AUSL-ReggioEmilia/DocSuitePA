@@ -22,6 +22,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
         public Guid UniqueId { get; set; }
         public int DSWEnvironment { get; set; }
         public FascicleType FascicleType { get; set; }
+        public string CustomActions { get; set; }
         public string RegistrationUser { get; set; }
         public DateTimeOffset RegistrationDate { get; set; }
         public string LastChangedUser { get; set; }

@@ -1,34 +1,33 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID.Clients;
 using VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID.Configuration;
 using VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID.Models;
+using VecompSoftware.BPM.Integrations.Services.BiblosDS;
 using VecompSoftware.BPM.Integrations.Services.ServiceBus;
 using VecompSoftware.BPM.Integrations.Services.WebAPI;
-using VecompSoftware.Core.Command.CQRS.Commands.Models.Fascicles;
+using VecompSoftware.Core.Command;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
+using VecompSoftware.DocSuiteWeb.Model.DocumentGenerator;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
+using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Protocols;
+using VecompSoftware.DocSuiteWeb.Model.Metadata;
 using VecompSoftware.DocSuiteWeb.Model.Workflow;
 using VecompSoftware.DocSuiteWeb.Model.Workflow.Actions;
+using VecompSoftware.Helpers.Workflow;
 using VecompSoftware.Services.Command.CQRS.Events.Entities.Fascicles;
 using VecompSoftware.Services.Command.CQRS.Events.Models.Workflows;
-using VecompSoftware.Helpers.Workflow;
-using Newtonsoft.Json;
-using VecompSoftware.DocSuiteWeb.Model.Metadata;
-using VecompSoftware.DocSuiteWeb.Model.DocumentGenerator;
-using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
-using System.Security.Principal;
-using VecompSoftware.Core.Command;
-using VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID.Clients;
-using VecompSoftware.Services.Command.CQRS.Events.Models.Fascicles;
 
 namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
 {
@@ -44,18 +43,22 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
         private readonly ModuleConfigurationModel _moduleConfiguration;
         private readonly IList<Guid> _subscriptions = new List<Guid>();
         private bool _needInitializeModule = false;
+        private Location _workflowLocation;
         private readonly PDFGeneratorClient _pdfGeneratorClient;
         private readonly IdentityContext _identityContext = null;
+        private readonly IDocumentClient _documentClient;
         #endregion
 
         #region [ Const ]
         private const string SPID_ID_METADATA_LABEL = "SPID_ID";
         private const string DESCRIPTION_METADATA_LABEL = "Denominazione/Nome cognome";
         private const string MOTIVAZIONI_METADATA_LABEL = "Motivazioni";
-        private const string FASCICLE_STATE_METADATA_LABEL = "Stato del fascicolo";
+        private const string FASCICLE_STATE_METADATA_KEYNAME = "Stato del fascicolo";
         private const string PUBLIC_FASCICLE_FOLDER_NAME = "Cartella pubblica SPID";
         private const string FASCICLE_CLOSED_STATE_METADATA_VALUE = "Richiesta conclusa";
         private const string FASCICLE_PROGRESS_STATE_METADATA_VALUE = "Richiesta in lavorazione";
+        private const string FASCICLE_STATE_METADATA_VALUE = "Richiesta avviata";
+        private const string CONTACTMODEL_METADATA_KEYNAME = "utente";
         #endregion
 
         #region [ Properties ]
@@ -74,7 +77,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
 
         #region [ Constructor ]
         [ImportingConstructor]
-        public Execution(ILogger logger, IServiceBusClient serviceBusClient, IWebAPIClient webAPIClient)
+        public Execution(ILogger logger, IServiceBusClient serviceBusClient, IWebAPIClient webAPIClient, IDocumentClient documentClient)
             : base(logger, ModuleConfigurationHelper.MODULE_NAME)
         {
             try
@@ -83,6 +86,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
                 _webAPIClient = webAPIClient;
                 _moduleConfiguration = ModuleConfigurationHelper.GetModuleConfiguration();
                 _serviceBusClient = serviceBusClient;
+                _documentClient = documentClient;
                 _pdfGeneratorClient = new PDFGeneratorClient(_moduleConfiguration.PDFGeneratorServiceUrl);
                 string username = "anonymous";
                 if (WindowsIdentity.GetCurrent() != null)
@@ -130,36 +134,55 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
             if (_needInitializeModule)
             {
                 _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowStartRequest>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration, _moduleConfiguration.WorkflowStartSPIDSubscription, EventWorkflowStartedRequestCallbackAsync));
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventUpdateFascicle>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration, _moduleConfiguration.WorkflowSPIDUpdateSubscription, EventUpdateFascicleCallbackAsync));
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventCompleteFascicleBuild>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicBuilderEvent, _moduleConfiguration.WorkflowFascicleBuildCompleteSubscription, EventWorkflowFascicleBuildCompleteCallback));
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventWorkflowStartRequest>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
+                    _moduleConfiguration.WorkflowStartSPIDSubscription, EventWorkflowStartedRequestCallbackAsync));
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventUpdateFascicle>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.TopicWorkflowIntegration,
+                    _moduleConfiguration.WorkflowSPIDUpdateSubscription, EventUpdateFascicleCallbackAsync));
+
+                int? workflowLocationId = _webAPIClient.GetParameterWorkflowLocationIdAsync().Result;
+                if (!workflowLocationId.HasValue)
+                {
+                    throw new ArgumentNullException("Parameter WorkflowLocationId is not defined");
+                }
+                _workflowLocation = _webAPIClient.GetLocationAsync(workflowLocationId.Value).Result.Single();
+
                 _needInitializeModule = false;
             }
         }
 
-        private async Task EventUpdateFascicleCallbackAsync(IEventUpdateFascicle evt)
+        private async Task EventUpdateFascicleCallbackAsync(IEventUpdateFascicle evt, IDictionary<string, object> properties)
         {
             try
             {
                 _logger.WriteDebug(new LogMessage(string.Concat("EventUpdateFascicleCallbackAsync -> evaluate event id ", evt.Id)), LogCategories);
-                Fascicle fascicle = await _webAPIClient.GetFascicleAsync($"$filter=UniqueId eq {evt.ContentType.ContentTypeValue.UniqueId}&$expand=MetadataRepository,WorkflowInstances");
+                Fascicle fascicle = await _webAPIClient.GetFascicleAsync($"$filter=UniqueId eq {evt.ContentType.ContentTypeValue.UniqueId}&$expand=MetadataRepository,WorkflowInstances,Contacts");
                 if (fascicle.MetadataRepository == null || string.IsNullOrEmpty(fascicle.MetadataValues))
                 {
                     throw new ArgumentNullException($"Fascicle {fascicle.UniqueId} does not have metadatas specified");
                 }
-                MetadataModel metadataModel = JsonConvert.DeserializeObject<MetadataModel>(fascicle.MetadataValues);
+                ICollection<MetadataValueModel> metadataValueModels = JsonConvert.DeserializeObject<List<MetadataValueModel>>(fascicle.MetadataValues);
                 if (fascicle.MetadataRepository.UniqueId != _moduleConfiguration.IdMetadataRepository)
                 {
                     throw new ArgumentNullException("Metadatas is incorrect for definition");
                 }
 
                 _logger.WriteDebug(new LogMessage("Evaluate metadata property for fascicle state"), _logCategories);
-                TextFieldModel statoFascicoloMetadata = metadataModel.TextFields.SingleOrDefault(x => x.Label.Equals("Stato del fascicolo", StringComparison.InvariantCultureIgnoreCase));
-                statoFascicoloMetadata.Value = EvaluateFascicleUpdateState(fascicle, statoFascicoloMetadata);
+                MetadataDesignerModel fascicleDesignerModel = JsonConvert.DeserializeObject<MetadataDesignerModel>(fascicle.MetadataDesigner);
+                TextFieldModel statoFascicoloMetadata = fascicleDesignerModel.TextFields.SingleOrDefault(x => x.KeyName.Equals(FASCICLE_STATE_METADATA_KEYNAME, StringComparison.InvariantCultureIgnoreCase));
+                MetadataValueModel statoFascicoloMetadataValue = metadataValueModels.SingleOrDefault(x => x.KeyName.Equals(FASCICLE_STATE_METADATA_KEYNAME, StringComparison.InvariantCultureIgnoreCase));
 
-                fascicle.MetadataValues = JsonConvert.SerializeObject(metadataModel);
-                await _webAPIClient.PutAsync(fascicle);
-                _logger.WriteInfo(new LogMessage($"Fascicle {fascicle.UniqueId} updated correctly"), LogCategories);
+                string tempMetadataValue = EvaluateFascicleUpdateState(fascicle, statoFascicoloMetadataValue);
+                if (statoFascicoloMetadataValue == null)
+                {
+                    throw new ArgumentNullException($"Fascicle metadata values with keyname {FASCICLE_STATE_METADATA_KEYNAME} not found");
+                }
+                if (statoFascicoloMetadataValue.Value != tempMetadataValue)
+                {
+                    statoFascicoloMetadataValue.Value = tempMetadataValue;
+                    fascicle.MetadataValues = JsonConvert.SerializeObject(metadataValueModels);
+                    await _webAPIClient.PutAsync(fascicle);
+                    _logger.WriteInfo(new LogMessage($"Fascicle {fascicle.UniqueId} updated correctly"), LogCategories);
+                }
             }
             catch (Exception ex)
             {
@@ -168,53 +191,23 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
             }
         }
 
-        private string EvaluateFascicleUpdateState(Fascicle fascicle, TextFieldModel statoFascicoloMetadata)
+        private string EvaluateFascicleUpdateState(Fascicle fascicle, MetadataValueModel statoFascicoloMetadata)
         {
             if (fascicle.EndDate.HasValue)
             {
                 return FASCICLE_CLOSED_STATE_METADATA_VALUE;
             }
 
-            if (fascicle.WorkflowInstances.Any(x => x.Status == DocSuiteWeb.Entity.Workflows.WorkflowStatus.Progress || 
+            if (fascicle.WorkflowInstances.Any(x => x.Status == DocSuiteWeb.Entity.Workflows.WorkflowStatus.Progress ||
             x.Status == DocSuiteWeb.Entity.Workflows.WorkflowStatus.Todo))
             {
                 return FASCICLE_PROGRESS_STATE_METADATA_VALUE;
             }
+
             return statoFascicoloMetadata.Value;
         }
 
-        private async Task EventWorkflowFascicleBuildCompleteCallback(IEventCompleteFascicleBuild evt)
-        {
-            try
-            {
-                _logger.WriteDebug(new LogMessage($"EventWorkflowFascicleBuildCompleteCallback -> evaluate event id {evt.Id}"), LogCategories);
-                _logger.WriteInfo(new LogMessage($"Notifying FascicleBuildComplete for WorkflowInstanceId {evt.CorrelationId}"), LogCategories);
-                WorkflowNotify workflowNotify = null;
-                WorkflowResult workflowResult = null;
-
-                FascicleBuildModel fascicleBuildModel = evt.ContentType.ContentTypeValue;
-                _logger.WriteInfo(new LogMessage($"Notifying FascicleBuildComplete for IdWorkflowActivity {fascicleBuildModel.IdWorkflowActivity}"), LogCategories);
-                workflowNotify = new WorkflowNotify(fascicleBuildModel.IdWorkflowActivity.Value)
-                {
-                    WorkflowName = fascicleBuildModel.WorkflowName,
-                    ModuleName = ModuleConfigurationHelper.MODULE_NAME
-                };
-                workflowResult = await _webAPIClient.WorkflowNotify(workflowNotify);
-                _logger.WriteInfo(new LogMessage($"Workflow notify correctly [IsValid: {workflowResult.IsValid}] with instanceId {workflowResult.InstanceId}"), LogCategories);
-                if (!workflowResult.IsValid)
-                {
-                    _logger.WriteError(new LogMessage("An error occured in notify workflow activity"), LogCategories);
-                    throw new Exception("VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.WriteError(new LogMessage("EventWorkflowFascicleBuildCompleteCallback -> Critical Error"), ex, LogCategories);
-                throw;
-            }
-        }
-
-        private async Task EventWorkflowStartedRequestCallbackAsync(IEventWorkflowStartRequest evt)
+        private async Task EventWorkflowStartedRequestCallbackAsync(IEventWorkflowStartRequest evt, IDictionary<string, object> properties)
         {
             _logger.WriteDebug(new LogMessage($"EventWorkflowStartedRequestCallbackAsync -> evaluate event id {evt.Id}"), LogCategories);
             if (!evt.ContentType.ContentTypeValue.Arguments.ContainsKey(WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL))
@@ -227,14 +220,18 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
             {
                 WorkflowArgument referenceModelWorkflowArgument = evt.ContentType.ContentTypeValue.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL];
                 WorkflowReferenceModel workflowReferenceModel = JsonConvert.DeserializeObject<WorkflowReferenceModel>(referenceModelWorkflowArgument.ValueString, ModuleConfigurationHelper.JsonSerializerSettings);
-                MetadataModel metadataModel = JsonConvert.DeserializeObject<MetadataModel>(workflowReferenceModel.ReferenceModel, ModuleConfigurationHelper.JsonSerializerSettings);
+                ICollection<MetadataValueModel> metadataModels = JsonConvert.DeserializeObject<List<MetadataValueModel>>(workflowReferenceModel.ReferenceModel, ModuleConfigurationHelper.JsonSerializerSettings);
 
-                SPIDMetadataModelWrapper spidRequestMetadataModel = new SPIDMetadataModelWrapper(metadataModel);
-                ContactModel contactModel = metadataModel.ContactFileds.FirstOrDefault();
-                if (contactModel == null)
+                SPIDMetadataModelWrapper spidRequestMetadataModel = new SPIDMetadataModelWrapper(metadataModels);
+                
+                string metadataContact = metadataModels.FirstOrDefault(x => x.KeyName == CONTACTMODEL_METADATA_KEYNAME)?.Value;
+
+                if (string.IsNullOrEmpty(metadataContact))
                 {
                     throw new ArgumentNullException("SPID request owner is not defined");
                 }
+                // TODO: Complete contact model initialization
+                ContactModel contactModel = JsonConvert.DeserializeObject<ContactModel>(metadataContact);
 
                 if (string.IsNullOrEmpty(contactModel.Code))
                 {
@@ -255,7 +252,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
                 {
                     correlationId = evt.CorrelationId.Value;
                 }
-                Guid protocolUniqueId = Guid.NewGuid();                
+                Guid protocolUniqueId = Guid.NewGuid();
                 Guid fascicleUniqueId = Guid.NewGuid();
                 Guid fascicleFolderUniqueId = Guid.NewGuid();
 
@@ -263,10 +260,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
                 WorkflowReferenceModel fascicleWorkflowReferenceModel = CreateFascicleBuildModel(spidRequestMetadataModel, fascicleUniqueId, correlationId, contact, fascicleFolderUniqueId);
                 WorkflowReferenceModel protocolWorkflowReferenceModel = await CreateProtocolBuildModelAsync(documentContent, contact, protocolUniqueId, correlationId, fascicleUniqueId, fascicleFolderUniqueId);
                 WorkflowResult workflowResult = await StartWorkflowAsync(protocolWorkflowReferenceModel, fascicleWorkflowReferenceModel, contact.SearchCode, _moduleConfiguration.WorkflowRepositoryName);
-                if (!workflowResult.IsValid)
+                if (!workflowResult.IsValid || !workflowResult.InstanceId.HasValue)
                 {
                     _logger.WriteError(new LogMessage("An error occured in start SPID accesso agli atti workflow"), LogCategories);
-                    throw new Exception("VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID");
+                    throw new Exception(string.Join(", ", workflowResult.Errors));
                 }
             }
             catch (Exception ex)
@@ -331,27 +328,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
                 ReferenceId = correlationId
             };
 
-            MetadataModel fascicleMetadataModel = new MetadataModel();
-            fascicleMetadataModel.TextFields.Add(new TextFieldModel()
+
+            ICollection<MetadataValueModel> metadataValues = new List<MetadataValueModel>
             {
-                Label = SPID_ID_METADATA_LABEL,
-                Value = contact.SearchCode
-            });
-            fascicleMetadataModel.TextFields.Add(new TextFieldModel()
-            {
-                Label = DESCRIPTION_METADATA_LABEL,
-                Value = contact.Description.Replace('|', ' ')
-            });
-            fascicleMetadataModel.TextFields.Add(new TextFieldModel()
-            {
-                Label = MOTIVAZIONI_METADATA_LABEL,
-                Value = spidRequestModel.Motivazioni
-            });
-            fascicleMetadataModel.TextFields.Add(new TextFieldModel()
-            {
-                Label = FASCICLE_STATE_METADATA_LABEL,
-                Value = "Richiesta avviata"
-            });
+                new MetadataValueModel { KeyName = SPID_ID_METADATA_LABEL, Value = contact.SearchCode},
+                new MetadataValueModel { KeyName = DESCRIPTION_METADATA_LABEL, Value = contact.Description.Replace('|', ' ')},
+                new MetadataValueModel { KeyName = MOTIVAZIONI_METADATA_LABEL, Value = spidRequestModel.Motivazioni},
+                new MetadataValueModel { KeyName = FASCICLE_STATE_METADATA_KEYNAME, Value = FASCICLE_STATE_METADATA_VALUE},
+            };
 
             ICollection<ContactModel> contactModels = new List<ContactModel> {
                 new ContactModel() { Id = _moduleConfiguration.FascicleResponsibleContact }
@@ -361,13 +345,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
             FascicleBuildModel fascicleBuildModel = new FascicleBuildModel
             {
                 WorkflowName = _moduleConfiguration.WorkflowRepositoryName,
+                WorkflowAutoComplete = true,
                 Fascicle = new FascicleModel
                 {
                     UniqueId = fascicleUniqueId,
                     Category = categoryModel,
                     Conservation = _moduleConfiguration.ConservationPeriod,
                     FascicleObject = string.Concat("Accesso agli atti - ", contact.Description.Replace('|', ' ')),
-                    MetadataValues = JsonConvert.SerializeObject(fascicleMetadataModel).Replace("'", "\'"),
+                    MetadataValues = JsonConvert.SerializeObject(metadataValues).Replace("'", "\'"),
                     MetadataRepository = new MetadataRepositoryModel() { Id = _moduleConfiguration.IdMetadataRepository },
                     FascicleType = DocSuiteWeb.Model.Entities.Fascicles.FascicleType.Procedure,
                     Note = spidRequestModel.Motivazioni,
@@ -406,11 +391,6 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
                 Protocol = new ProtocolModel
                 {
                     UniqueId = protocolUniqueId,
-                    MainDocument = new DocumentModel()
-                    {
-                        FileName = "richiesta_accesso_agli_atti.pdf",
-                        ContentStream = documentContent
-                    },
                     Category = new CategoryModel() { IdCategory = _moduleConfiguration.CategoryId },
                     Container = new ContainerModel()
                     {
@@ -422,7 +402,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
                             ProtocolArchive = container.ProtLocation.ProtocolArchive
                         }
                     },
-                    Object = string.Concat("Accesso agli atti - ", contact.Description.Replace('|', ' ')),
+                    Object = $"Accesso agli atti - {contact.Description.Replace('|', ' ')}",
                     ProtocolType = new ProtocolTypeModel(ProtocolTypology.Inbound)
                 }
             };
@@ -432,6 +412,18 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
                 IdContact = contact.EntityId,
                 Description = contact.Description
             });
+
+            ArchiveDocument archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+            {
+                Archive = _workflowLocation.ProtocolArchive,
+                ContentStream = documentContent,
+                Name = "richiesta_accesso_agli_atti.pdf",
+            });
+            protocolBuildModel.Protocol.MainDocument = new DocumentModel()
+            {
+                FileName = archiveDocument.Name,
+                DocumentToStoreId = archiveDocument.IdDocument
+            };
 
             protocolBuildModel.WorkflowActions.Add(new WorkflowActionFascicleModel(
                 new FascicleModel() { UniqueId = fascicleUniqueId },
@@ -467,6 +459,12 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
                 PropertyType = ArgumentType.RelationGuid,
                 Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID,
                 ValueGuid = _moduleConfiguration.TenantId
+            });
+            workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, new WorkflowArgument()
+            {
+                PropertyType = ArgumentType.RelationGuid,
+                Name = WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID,
+                ValueGuid = _moduleConfiguration.TenantAOOId
             });
             workflowStart.Arguments.Add(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, new WorkflowArgument()
             {

@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Model.Securities;
 using VecompSoftware.DocSuiteWeb.Repository.Parameters;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
+using RoleUserModel = VecompSoftware.DocSuiteWeb.Model.Entities.Commons.RoleUserModel;
 
 namespace VecompSoftware.DocSuiteWeb.Finder.Commons
 {
@@ -58,5 +61,105 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                 new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IdCategory, idCategory));
         }
 
+        public static ICollection<SecurityRight> GetUserRights(this IRepository<RoleUser> repository, string username, string domain, bool roleGroupPECRightEnabled)
+        {
+            ICollection<SecurityRight> results = repository.ExecuteModelFunction<SecurityRight>(CommonDefinition.SQL_FX_UserDomain_UserRights,
+                new QueryParameter(CommonDefinition.SQL_Param_UserDomain_UserName, username), 
+                new QueryParameter(CommonDefinition.SQL_Param_UserDomain_Domain, domain),
+                new QueryParameter(CommonDefinition.SQL_Param_UserDomain_RoleGroupPECRightEnabled, roleGroupPECRightEnabled));
+            if (!results.Any(f=> f.Environment == Model.Entities.Commons.DSWEnvironmentType.Collaboration))
+            {
+                results.Add(new SecurityRight()
+                {
+                    Environment = Model.Entities.Commons.DSWEnvironmentType.Collaboration,
+                    HasInsertable = true,
+                    HasSecretaryRole = false,
+                    HasSignerRole = false,
+                });
+            }
+            if (!results.Any(f => f.Environment == Model.Entities.Commons.DSWEnvironmentType.Desk))
+            {
+                results.Add(new SecurityRight()
+                {
+                    Environment = Model.Entities.Commons.DSWEnvironmentType.Desk,
+                    HasInsertable = false
+                });
+            }
+            if (!results.Any(f => f.Environment == Model.Entities.Commons.DSWEnvironmentType.DocumentSeries))
+            {
+                results.Add(new SecurityRight()
+                {
+                    Environment = Model.Entities.Commons.DSWEnvironmentType.DocumentSeries,
+                    HasInsertable = false,
+                    HasViewable = false,
+                });
+            }
+            if (!results.Any(f => f.Environment == Model.Entities.Commons.DSWEnvironmentType.Dossier))
+            {
+                results.Add(new SecurityRight()
+                {
+                    Environment = Model.Entities.Commons.DSWEnvironmentType.Dossier,
+                    HasInsertable = false,
+                    HasViewable = false,
+                });
+            }
+            if (!results.Any(f => f.Environment == Model.Entities.Commons.DSWEnvironmentType.Fascicle))
+            {
+                results.Add(new SecurityRight()
+                {
+                    Environment = Model.Entities.Commons.DSWEnvironmentType.Fascicle,
+                    HasInsertable = false,
+                    HasViewable = false,
+                    HasFascicleResponsibleRole = false,
+                    HasFascicleSecretaryRole = false
+                });
+            }
+            if (!results.Any(f => f.Environment == Model.Entities.Commons.DSWEnvironmentType.PECMail))
+            {
+                results.Add(new SecurityRight()
+                {
+                    Environment = Model.Entities.Commons.DSWEnvironmentType.PECMail,
+                    HasInsertable = false,
+                    HasViewable = false,
+                });
+            }
+            if (!results.Any(f => f.Environment == Model.Entities.Commons.DSWEnvironmentType.Protocol))
+            {
+                results.Add(new SecurityRight()
+                {
+                    Environment = Model.Entities.Commons.DSWEnvironmentType.Protocol,
+                    HasInsertable = false,
+                    HasViewable = false,
+                });
+            }
+            if (!results.Any(f => f.Environment == Model.Entities.Commons.DSWEnvironmentType.Resolution))
+            {
+                results.Add(new SecurityRight()
+                {
+                    Environment = Model.Entities.Commons.DSWEnvironmentType.Resolution,
+                    HasInsertable = false,
+                    HasViewable = false,
+                });
+            }
+            if (!results.Any(f => f.Environment == Model.Entities.Commons.DSWEnvironmentType.UDS))
+            {
+                results.Add(new SecurityRight()
+                {
+                    Environment = Model.Entities.Commons.DSWEnvironmentType.UDS,
+                    HasInsertable = false,
+                    HasViewable = false,
+                });
+            }
+            return results;
+        }
+  
+        public static ICollection<RoleUserModel> GetRoleUsersFromDossier(this IRepository<RoleUser> repository, Guid? idDossier)
+        {
+            QueryParameter idDossierParameter = new QueryParameter(CommonDefinition.SQL_Param_UserRole_IdDossier, idDossier);
+
+            return repository.ExecuteModelFunction<RoleUserModel>(
+                CommonDefinition.SQL_FX_RoleUser_AllSecretariesFromDossier,
+                idDossierParameter);
+        }
     }
 }

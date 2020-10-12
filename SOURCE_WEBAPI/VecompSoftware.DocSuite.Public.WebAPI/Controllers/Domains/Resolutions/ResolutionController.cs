@@ -16,8 +16,8 @@ using PrivateResolutionModels = VecompSoftware.DocSuiteWeb.Model.Entities.Resolu
 
 namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Domains.Resolutions
 {
-    //TODO: Il controller è senza s perchè se si usa la dicitura 'Resolutions', la chiamata va in errore. 
-    //      Analizzato dai membri del team e dal responsabile, rimane un mistero.
+    // Il controller è senza s perchè se si usa la dicitura 'Resolutions', la chiamata va in errore. 
+    // Analizzato dai membri del team e dal responsabile, rimane un mistero.
 
     [EnableQuery]
     public class ResolutionController : BaseODataController<ResolutionModel, Resolution>

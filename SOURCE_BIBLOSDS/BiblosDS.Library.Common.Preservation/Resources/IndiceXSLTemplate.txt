@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="iso-8859-1"?>
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <xsl:template match="/">
+    <html>
+      <head>
+        <title>Lista</title>
+      </head>
+      <body>
+        <table style="width:100%;font-family:Verdana;font-size:small;" cellpadding="4">
+          <tr style="font-weight:bold;background-color:#aaaaaa">
+            <td>Nr</td>
+            <td>NomeFileInArchivio</td>
+            <%ATTRIBUTES_HEADER%>
+            <td>ImprontaFileSHA256</td>
+          </tr>
+          <xsl:for-each select="Indice/File">
+            <tr>
+              <xsl:if test="(position() mod 2 = 1)">
+                <xsl:attribute name="style">background-color:#eeeeee</xsl:attribute>
+              </xsl:if>
+              <td>
+                <xsl:value-of select="@Progressivo" />
+              </td>
+              <td>
+                <a>
+                  <xsl:attribute name="target">_blank</xsl:attribute>
+                  <xsl:attribute name="href">
+                    <xsl:value-of select="Attributo[@Nome='NomeFileInArchivio']" />
+                  </xsl:attribute>
+                  <xsl:value-of select="Attributo[@Nome='NomeFileInArchivio']" />
+                </a>
+              </td>
+              <%ATTRIBUTES_BODY%>
+              <td>
+                <xsl:choose>
+                  <xsl:when test="count(Attributo[@Nome='ImprontaFileSHA256']/child::node()) = 1">
+                    <xsl:value-of select="Attributo[@Nome='ImprontaFileSHA256']" />
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </td>
+            </tr>
+          </xsl:for-each>
+        </table>
+      </body>
+    </html>
+  </xsl:template>
+</xsl:stylesheet>

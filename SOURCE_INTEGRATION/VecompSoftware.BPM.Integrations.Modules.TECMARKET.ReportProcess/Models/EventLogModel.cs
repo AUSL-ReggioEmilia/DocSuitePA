@@ -11,7 +11,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess.Models
         #endregion
 
         #region [ Properties ]
-        public DateTime LogDateTime 
+        public DateTime LogDateTime
         {
             get
             {
@@ -22,7 +22,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess.Models
                 return _logDate;
             }
         }
-
+        public string SourceDeviceName { get; set; }
         public string LogDate { get; set; }
         public string LogType { get; set; }
         public string LogSource { get; set; }

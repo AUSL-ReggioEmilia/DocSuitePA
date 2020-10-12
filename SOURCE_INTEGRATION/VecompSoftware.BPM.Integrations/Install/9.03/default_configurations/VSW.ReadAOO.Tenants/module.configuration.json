@@ -1,0 +1,9 @@
+{
+  "Endpoints": [
+    {
+      "Name": "WebAPI_1",
+      "WebAPIUrl": "http://localhost/dsw.webapi"
+    }
+  ],
+  "ManagementAOOUrl": "http://localhost/ManagementAOO.WebAPI/"
+}

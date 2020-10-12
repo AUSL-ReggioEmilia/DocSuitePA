@@ -19,6 +19,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 
         #region [ Properties ]
         public Guid UniqueId { get; set; }
+        public bool WorkflowAutoComplete { get; set; }
         public string WorkflowName { get; set; }
         public Guid? IdWorkflowActivity { get; set; }
         public string RegistrationUser { get; set; }

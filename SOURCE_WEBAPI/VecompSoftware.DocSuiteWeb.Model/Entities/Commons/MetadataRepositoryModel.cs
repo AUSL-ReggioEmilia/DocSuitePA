@@ -10,6 +10,6 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 
         public string Name { get; set; }
 
-        public ICollection<MetadataModel> Metadata { get; set; }
+        public ICollection<MetadataDesignerModel> Metadata { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using VecompSoftware.DocSuiteWeb.Common.Loggers;
+﻿using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
@@ -8,7 +7,6 @@ using VecompSoftware.DocSuiteWeb.Repository.Repositories;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation;
 using VecompSoftware.DocSuiteWeb.Validation.RulesetDefinitions.Entities.Fascicles;
-using VecompSoftware.Helpers.Signer.Security;
 
 namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 {
@@ -41,6 +39,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
                 entity.Category = _unitOfWork.Repository<Category>().Find(entity.Category.EntityShortId);
             }
 
+            _unitOfWork.Repository<FascicleLog>().Insert(FascicleService.CreateLog(entity.Fascicle, FascicleLogType.FolderInsert, $"Creata nuovo cartella {entity.Name}({entity.UniqueId})", CurrentDomainUser.Account));
             return base.BeforeCreate(entity);
         }
 
@@ -51,7 +50,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 
         protected override FascicleFolder BeforeUpdate(FascicleFolder entity, FascicleFolder entityTransformed)
         {
-
             if (entity.Fascicle != null)
             {
                 entityTransformed.Fascicle = _unitOfWork.Repository<Fascicle>().Find(entity.Fascicle.UniqueId);
@@ -64,15 +62,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 
             if (CurrentUpdateActionType == Common.Infrastructures.UpdateActionType.FascicleMoveToFolder)
             {
-                FascicleLog fascicleLog = new FascicleLog()
-                {
-                    LogType = FascicleLogType.Modify,
-                    LogDescription = $"Spostata cartella {entityTransformed.Name}",
-                    SystemComputer = Environment.MachineName,
-                    Entity = entityTransformed.Fascicle
-                };
-                fascicleLog.Hash = HashGenerator.GenerateHash(string.Concat(fascicleLog.RegistrationUser, "|", fascicleLog.LogType, "|", fascicleLog.LogDescription, "|", fascicleLog.UniqueId, "|", fascicleLog.Entity.UniqueId, "|", fascicleLog.RegistrationDate.ToString("o")));
-                _unitOfWork.Repository<FascicleLog>().Insert(fascicleLog);
+                _unitOfWork.Repository<FascicleLog>().Insert(FascicleService.CreateLog(entityTransformed.Fascicle, FascicleLogType.Modify, $"Spostata cartella {entityTransformed.Name}({entityTransformed.UniqueId})", CurrentDomainUser.Account));
+            }
+            else
+            {
+                _unitOfWork.Repository<FascicleLog>().Insert(FascicleService.CreateLog(entityTransformed.Fascicle, FascicleLogType.Modify, $"Modificata la cartella {entityTransformed.Name}({entityTransformed.UniqueId}", CurrentDomainUser.Account));
             }
 
             return base.BeforeUpdate(entity, entityTransformed);
@@ -80,7 +74,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 
         protected override FascicleFolder BeforeDelete(FascicleFolder entity, FascicleFolder entityTransformed)
         {
-
             return base.BeforeDelete(entity, entityTransformed);
         }
         #endregion

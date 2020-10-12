@@ -69,8 +69,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -79,18 +79,6 @@
     <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\..\..\Windows\SysWOW64\inetsrv\Microsoft.Web.Administration.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=2.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.Diagnostics.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.ServiceRuntime.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -151,6 +139,21 @@
     <Content Include="Install\sql updates\8.82\_readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Install\sql updates\8.87\db_migrations.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\8.87\_readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\9.03\02. db_postmigrations.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\9.03\01. db_migrations.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\9.03\_readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="packages.config" />
     <Content Include="log4net.config">
       <SubType>Designer</SubType>
@@ -184,6 +187,23 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Install\sql updates\9.03\default_configurations\Web.config">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\sql updates\9.03\default_configurations\biblosds.connectionstrings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\sql updates\9.03\default_configurations\biblosds.system.servicemodel.behaviors.config" />
+    <Content Include="Install\sql updates\9.03\default_configurations\biblosds.system.servicemodel.bindings.config" />
+    <Content Include="Install\sql updates\9.03\default_configurations\wcfservices.appsettings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\sql updates\9.03\default_configurations\wcfservices.system.servicemodel.client.config" />
+    <Content Include="Install\sql updates\9.03\default_configurations\wcfservices.system.servicemodel.services.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\sql updates\9.03\Documento di configurazione archivi remoti tra server di Biblos diversi.docx" />
     <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.ArchiveStatistics.datasource" />
     <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentServer.datasource" />
     <None Include="Properties\DataSources\BiblosDS.Library.Common.Objects.DocumentStorage.datasource" />
@@ -700,7 +720,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
-    <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -729,6 +748,10 @@
     <ProjectReference Include="..\BiblosDS.Library.Common\BiblosDS.Library.Common.csproj">
       <Project>{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}</Project>
       <Name>BiblosDS.Library.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BiblosDS.WCF.Common\VecompSoftware.BiblosDS.WCF.Common.csproj">
+      <Project>{b6988e8d-4b45-4d4b-8b8e-058bb6c18111}</Project>
+      <Name>VecompSoftware.BiblosDS.WCF.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.Commons\VecompSoftware.Common.csproj">
       <Project>{54ad4b78-46b4-4a62-8ec2-228f29c0ae56}</Project>

@@ -15,10 +15,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Messages
         #region [ Properties ]
 
         /// <summary>
-        /// Server in cui è archiviato l'attachment
-        /// </summary>
-        public string Server { get; set; }
-        /// <summary>
         /// Archive in cui è archiviato l'attacment
         /// </summary>
         public string Archive { get; set; }

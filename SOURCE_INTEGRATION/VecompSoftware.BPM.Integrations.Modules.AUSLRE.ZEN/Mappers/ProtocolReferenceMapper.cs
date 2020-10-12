@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using VecompSoftware.DocSuiteWeb.Model.ExternalModels;
 using VecompSoftware.Core.Command.CQRS;
+using VecompSoftware.DocSuiteWeb.Model.ExternalModels;
 
 namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN.Mappers
 {
@@ -26,16 +26,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.ZEN.Mappers
         public DocSuiteModel Map(IDictionary<string, object> eventProperties)
         {
 
-            short protocolYear = 0;
-            int protocolNumber = 0;
             Guid protocolUniqueId = Guid.Empty;
             if (!eventProperties.ContainsKey(CustomPropertyName.PROTOCOL_YEAR) ||
-                !short.TryParse(eventProperties[CustomPropertyName.PROTOCOL_YEAR].ToString(), out protocolYear))
+                !short.TryParse(eventProperties[CustomPropertyName.PROTOCOL_YEAR].ToString(), out short protocolYear))
             {
                 throw new ArgumentNullException($"Undefined {CustomPropertyName.PROTOCOL_YEAR} property in protocol reference mapper");
             }
             if (!eventProperties.ContainsKey(CustomPropertyName.PROTOCOL_NUMBER) ||
-                !int.TryParse(eventProperties[CustomPropertyName.PROTOCOL_NUMBER].ToString(), out protocolNumber))
+                !int.TryParse(eventProperties[CustomPropertyName.PROTOCOL_NUMBER].ToString(), out int protocolNumber))
             {
                 throw new ArgumentNullException($"Undefined {CustomPropertyName.PROTOCOL_NUMBER} property in protocol reference mapper");
             }

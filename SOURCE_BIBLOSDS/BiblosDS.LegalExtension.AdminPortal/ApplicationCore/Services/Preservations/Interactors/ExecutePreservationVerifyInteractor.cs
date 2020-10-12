@@ -47,7 +47,6 @@ namespace BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Services.Preservat
                     return responseModel;
                 }
 
-                _preservationService.ArchiveConfigFile = ConfigurationHelper.GetArchiveConfigurationFilePath(preservation.Archive.Name);
                 bool isVerified = _preservationService.VerifyExistingPreservation(request.IdPreservation);
 
                 string[] tokens = Path.GetFileName(_preservationService.VerifyFile).Split(' ');

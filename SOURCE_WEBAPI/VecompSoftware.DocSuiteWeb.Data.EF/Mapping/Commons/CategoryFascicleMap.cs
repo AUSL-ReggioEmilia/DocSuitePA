@@ -27,6 +27,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .HasColumnName("DSWEnvironment")
                 .IsRequired();
 
+            Property(x => x.CustomActions)
+                .HasColumnName("CustomActions")
+                .IsOptional();
+
             Property(x => x.RegistrationUser)
                 .HasColumnName("RegistrationUser")
                 .IsRequired();

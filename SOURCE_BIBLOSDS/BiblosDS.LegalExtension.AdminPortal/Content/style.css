@@ -179,6 +179,10 @@ ul {
     color: #0088cc !important;
 }
 
+.k-calendar .k-state-selected .k-link {
+    color: #fff !important;
+}
+
 .k-grid th {
     text-align: left;
     padding-left: 10px;
@@ -191,6 +195,10 @@ ul {
 
 .k-grid-norecords-template {
     width: 100%;
+}
+
+.k-pager-wrap .k-state-selected {
+    color: #fff !important;
 }
 
 .k-custom-table td {
@@ -216,6 +224,11 @@ ul {
     width: auto;
     font-size: 16px;
     line-height: 16px;
+}
+
+.k-listbox {
+    width: 275px;
+    height: 310px;
 }
 
 .dropotron {
@@ -920,6 +933,10 @@ DIV.consigliato {
     padding: 5px;
 }
 
+.form-vertical-table td {
+    padding: 0 5px 5px 5px;
+}
+
 /* site title
 ----------------------------------------------------------*/
 .site-title {
@@ -1032,4 +1049,30 @@ footer {
     margin: auto;
     height: 100px;
     width: 100%;
+}
+
+.loading-spinner {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('./images/loadingSpinner.gif') center no-repeat;
+}
+
+#archiveConfigurationCompleteness {
+    margin-bottom: 10px;
+    width: 100%;
+    height: 10px;
+}
+
+#wizardTabstrip .k-tabstrip-items {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#wizardTabstrip .k-tabstrip-items > .k-item {
+    width: 20%;
 }

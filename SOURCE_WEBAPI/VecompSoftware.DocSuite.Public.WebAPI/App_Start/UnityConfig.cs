@@ -38,9 +38,9 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
         /// change the defaults), as Unity allows resolving a concrete type even if it was not previously registered.</remarks>
         public static IDependencyResolver RegisterTypes(IUnityContainer container)
         {
-            IDependencyResolver resolver = container.Initialize<UnityConfig, WebAPICurrentIdentity>(string.Empty, string.Empty,WebApiConfiguration.WorkflowEngineType,
-                WebApiConfiguration.ServiceBusConnectionString, HostingEnvironment.MapPath(WebApiConfiguration.MESSAGE_CONFIGURATION_FILE_PATH),
-                (logger) => WorkflowConfiguration.GetWorkflowConfiguration(logger), WebApiConfiguration.CustomInstanceName,
+            IDependencyResolver resolver = container.Initialize<UnityConfig, WebAPICurrentIdentity>(string.Empty, string.Empty,
+                WebApiConfiguration.ServiceBusConnectionString, HostingEnvironment.MapPath(WebApiConfiguration.MESSAGE_CONFIGURATION_FILE_PATH), 
+                WebApiConfiguration.CustomInstanceName,
                 WebApiConfiguration.AutoDeleteOnIdle, WebApiConfiguration.DefaultMessageTimeToLive, WebApiConfiguration.LockDuration,
                 WebApiConfiguration.MaxDeliveryCount);
 

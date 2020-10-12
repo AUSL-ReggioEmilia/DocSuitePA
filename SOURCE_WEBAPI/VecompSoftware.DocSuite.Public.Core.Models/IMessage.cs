@@ -27,14 +27,17 @@ namespace VecompSoftware.DocSuite.Public.Core.Models
         /// Nome interno del messaggio
         /// </summary>
         string MessageName { get; }
-
         /// <summary>
-        /// Guid del Tenant del Cliente. Contattare Vecomp Software per il valore
+        /// Guid del TenantAOO del Cliente. Contattare Dgroove per il valore
+        /// </summary>
+        Guid TenantAOOId { get; }
+        /// <summary>
+        /// Guid del Tenant del Cliente. Contattare Dgroove per il valore
         /// </summary>
         Guid TenantId { get; }
 
         /// <summary>
-        /// Nome del Tenant del Cliente. Contattare Vecomp Software per il valore
+        /// Nome del Tenant del Cliente. Contattare Dgroove per il valore
         /// </summary>
         string TenantName { get; }
     }

@@ -25,9 +25,11 @@ using VecompSoftware.DocSuiteWeb.Entity.Monitors;
 using VecompSoftware.DocSuiteWeb.Entity.OCharts;
 using VecompSoftware.DocSuiteWeb.Entity.Parameters;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
+using VecompSoftware.DocSuiteWeb.Entity.PosteWeb;
 using VecompSoftware.DocSuiteWeb.Entity.Processes;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
+using VecompSoftware.DocSuiteWeb.Entity.Tasks;
 using VecompSoftware.DocSuiteWeb.Entity.Templates;
 using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
@@ -55,6 +57,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
     public static class ODataConfig
     {
         private static readonly Type _type_IODATAModelBuilder = typeof(IODATAModelBuilder);
+        public const string ODATA_FINDER_PARAMETER = "finder";
 
 
         public static void Register(HttpConfiguration config)
@@ -116,10 +119,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             MapJeepServiceHostsOData(builder);
 
             MapTenantsOData(builder);
-
+            
             MapReportsOData(builder);
 
             MapProcessesOData(builder);
+
+            MapPosteWebOData(builder);
+
+            MapTasksOData(builder);
 
             config.AddODataQueryFilter();
             config.Filter(QueryOptionSetting.Allowed);
@@ -209,6 +216,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
             getAuthorizedContainers.Namespace = "ContainerService";
             getAuthorizedContainers.Returns<Container>();
+            getAuthorizedContainers.Parameter<Guid>("tenantId");
 
             FunctionConfiguration getAnyDossierAuthorizedContainers = builder
                .EntityType<Container>().Collection
@@ -216,6 +224,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
             getAnyDossierAuthorizedContainers.Namespace = "ContainerService";
             getAnyDossierAuthorizedContainers.Returns<Container>();
+            getAnyDossierAuthorizedContainers.Parameter<Guid>("tenantId");
 
             FunctionConfiguration geAvailablePeriodicCategoryFascicles = builder
                 .EntityType<CategoryFascicle>().Collection
@@ -296,6 +305,40 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
             getRoleContacts.Namespace = "ContactService";
             getRoleContacts.Returns<ContactModel>();
+
+            FunctionConfiguration getContactsByParentId = builder
+                .EntityType<Contact>().Collection
+                .Function("GetContactsByParentId");
+
+            getContactsByParentId.Namespace = "ContactService";
+            getContactsByParentId.Returns<ContactModel>();
+            getContactsByParentId.Parameter<int>("idContact");
+
+
+            FunctionConfiguration findFascicolableCategory = builder
+                .EntityType<Category>().Collection
+                .Function("FindFascicolableCategory");
+
+            findFascicolableCategory.Namespace = "CategoryService";
+            findFascicolableCategory.Returns<CategoryModel>();
+            findFascicolableCategory.Parameter<short>("idCategory");
+
+            FunctionConfiguration hasCategoryFascicleRole = builder
+                .EntityType<Role>().Collection
+                .Function("HasCategoryFascicleRole");
+
+            hasCategoryFascicleRole.Namespace = "RoleService";
+            hasCategoryFascicleRole.Returns<bool>();
+            hasCategoryFascicleRole.Parameter<short>("idCategory");
+
+            FunctionConfiguration getRoleUsersFromDossier = builder
+                .EntityType<RoleUser>().Collection
+                .Function("GetRoleUsersFromDossier");
+
+            getRoleUsersFromDossier.Namespace = "RoleUserService";
+            getRoleUsersFromDossier.Returns<RoleUserModel>();
+            getRoleUsersFromDossier.Parameter<RoleUserFinderModel>("finder");
+
             #endregion
 
             builder
@@ -361,6 +404,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             builder
                 .EntitySet<UserLog>("UserLogs")
                 .EntityType.HasKey(p => p.UniqueId);
+
+            builder
+                .EntitySet<MetadataValue>("MetadataValues")
+                .EntityType.HasKey(p => p.UniqueId);
+
+            builder
+                .EntitySet<MetadataValueContact>("MetadataValueContacts")
+                .EntityType.HasKey(p => p.UniqueId);
         }
 
         private static void MapSecurityOData(ODataModelBuilder builder)
@@ -377,7 +428,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             FunctionConfiguration getMembersFunc = builder
                    .EntityType<DomainUserModel>().Collection
                    .Function("GetMembers");
-
             getMembersFunc.Namespace = "DomainUserService";
             getMembersFunc.ReturnsCollectionFromEntitySet<DomainUserModel>("DomainUsers");
             getMembersFunc.Parameter<string>("groupName");
@@ -385,7 +435,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             FunctionConfiguration usersFinderFunc = builder
                    .EntityType<DomainUserModel>().Collection
                    .Function("UsersFinder");
-
             usersFinderFunc.Namespace = "DomainUserService";
             usersFinderFunc.ReturnsCollectionFromEntitySet<DomainUserModel>("DomainUsers");
             usersFinderFunc.Parameter<string>("text");
@@ -393,7 +442,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             FunctionConfiguration getUserFunc = builder
                     .EntityType<DomainUserModel>().Collection
                     .Function("GetUser");
-
             getUserFunc.Namespace = "DomainUserService";
             getUserFunc.ReturnsFromEntitySet<DomainUserModel>("DomainUsers");
             getUserFunc.Parameter<string>("username");
@@ -402,7 +450,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             FunctionConfiguration groupsFinderFunc = builder
                 .EntityType<DomainGroupModel>().Collection
                 .Function("GroupsFinder");
-
             groupsFinderFunc.Namespace = "DomainGroupService";
             groupsFinderFunc.ReturnsCollectionFromEntitySet<DomainGroupModel>("DomainGroups");
             groupsFinderFunc.Parameter<string>("text");
@@ -410,7 +457,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             FunctionConfiguration groupsFromUserFunc = builder
                 .EntityType<DomainGroupModel>().Collection
                 .Function("GroupsFromUser");
-
             groupsFromUserFunc.Namespace = "DomainGroupService";
             groupsFromUserFunc.ReturnsCollectionFromEntitySet<DomainGroupModel>("DomainGroups");
             groupsFromUserFunc.Parameter<string>("username");
@@ -418,9 +464,15 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             FunctionConfiguration getInvalidatingRoleUser = builder
                 .EntityType<RoleUser>().Collection
                 .Function("GetInvalidatingRoleUser");
-
             getInvalidatingRoleUser.Namespace = "RoleUserService";
             getInvalidatingRoleUser.ReturnsCollection<RoleUser>();
+
+            FunctionConfiguration getRights = builder
+                .EntityType<DomainUserModel>().Collection
+                .Function("GetCurrentRights");
+            getRights.Namespace = "DomainUserService";
+            getRights.ReturnsFromEntitySet<DomainUserModel>("DomainUsers");
+            
             #endregion
 
         }
@@ -482,12 +534,11 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
             fascicolableDocumentUnitsFunc.Namespace = "DocumentUnitService";
             fascicolableDocumentUnitsFunc.ReturnsCollection<DocumentUnitModel>();
-            fascicolableDocumentUnitsFunc.Parameter<string>("username");
-            fascicolableDocumentUnitsFunc.Parameter<string>("domain");
             fascicolableDocumentUnitsFunc.Parameter<string>("dateFrom");
             fascicolableDocumentUnitsFunc.Parameter<string>("dateTo");
             fascicolableDocumentUnitsFunc.Parameter<bool>("includeThreshold");
             fascicolableDocumentUnitsFunc.Parameter<string>("threshold");
+            fascicolableDocumentUnitsFunc.Parameter<Guid>("idTenantAOO");
             fascicolableDocumentUnitsFunc.Parameter<bool>("excludeLinked");
 
             FunctionConfiguration documentUnitsFunc = builder
@@ -497,6 +548,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             documentUnitsFunc.ReturnsCollection<DocumentUnitModel>();
             documentUnitsFunc.Parameter<Guid>("idFascicle");
             documentUnitsFunc.Parameter<Guid?>("idFascicleFolder");
+            documentUnitsFunc.Parameter<Guid>("idTenantAOO");
 
             FunctionConfiguration authorizedDocumentUnitsSecurityFunc = builder
                    .EntityType<DocumentUnit>().Collection
@@ -507,16 +559,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             ///di utilizzo.
             authorizedDocumentUnitsSecurityFunc.Namespace = "DocumentUnitService";
             authorizedDocumentUnitsSecurityFunc.ReturnsCollection<DocumentUnitModel>();
-            authorizedDocumentUnitsSecurityFunc.Parameter<Guid>("idFascicle");
-            authorizedDocumentUnitsSecurityFunc.Parameter<int?>("year");
-            authorizedDocumentUnitsSecurityFunc.Parameter<string>("number");
-            authorizedDocumentUnitsSecurityFunc.Parameter<string>("documentUnitName");
-            authorizedDocumentUnitsSecurityFunc.Parameter<int?>("categoryId");
-            authorizedDocumentUnitsSecurityFunc.Parameter<int?>("containerId");
-            authorizedDocumentUnitsSecurityFunc.Parameter<string>("subject");
-            authorizedDocumentUnitsSecurityFunc.Parameter<bool>("includeChildClassification");
-            authorizedDocumentUnitsSecurityFunc.Parameter<int>("skip");
-            authorizedDocumentUnitsSecurityFunc.Parameter<int>("top");
+            authorizedDocumentUnitsSecurityFunc.Parameter<DocumentUnitFinderModel>("finder");
 
             FunctionConfiguration countauthorizedDocumentUnitsFunc = builder
                   .EntityType<DocumentUnit>().Collection
@@ -524,14 +567,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
             countauthorizedDocumentUnitsFunc.Namespace = "DocumentUnitService";
             countauthorizedDocumentUnitsFunc.Returns<int>();
-            countauthorizedDocumentUnitsFunc.Parameter<Guid>("idFascicle");
-            countauthorizedDocumentUnitsFunc.Parameter<int?>("year");
-            countauthorizedDocumentUnitsFunc.Parameter<string>("number");
-            countauthorizedDocumentUnitsFunc.Parameter<string>("documentUnitName");
-            countauthorizedDocumentUnitsFunc.Parameter<int?>("categoryId");
-            countauthorizedDocumentUnitsFunc.Parameter<int?>("containerId");
-            countauthorizedDocumentUnitsFunc.Parameter<string>("subject");
-            countauthorizedDocumentUnitsFunc.Parameter<bool>("includeChildClassification");
+            countauthorizedDocumentUnitsFunc.Parameter<DocumentUnitFinderModel>("finder");
 
             FunctionConfiguration authorizedDocumentsFunc = builder
                    .EntityType<DocumentUnit>().Collection
@@ -539,12 +575,9 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
             authorizedDocumentsFunc.Namespace = "DocumentUnitService";
             authorizedDocumentsFunc.ReturnsCollection<DocumentUnitModel>();
-            authorizedDocumentsFunc.Parameter<string>("username");
-            authorizedDocumentsFunc.Parameter<string>("domain");
             authorizedDocumentsFunc.Parameter<string>("dateFrom");
             authorizedDocumentsFunc.Parameter<string>("dateTo");
-            authorizedDocumentsFunc.Parameter<bool>("isSecurityEnabled");
-            #endregion
+            authorizedDocumentsFunc.Parameter<Guid>("idTenantAOO");            
 
             FunctionConfiguration hasViewableDocumentFunc = builder
                     .EntityType<DocumentUnit>().Collection
@@ -555,6 +588,17 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             hasViewableDocumentFunc.Parameter<Guid>("idDocumentUnit");
             hasViewableDocumentFunc.Parameter<string>("username");
             hasViewableDocumentFunc.Parameter<string>("domain");
+
+            FunctionConfiguration fullTextSearchDocumentUnitsFunc = builder
+                    .EntityType<DocumentUnit>().Collection
+                    .Function("FullTextSearchDocumentUnits");
+
+            fullTextSearchDocumentUnitsFunc.Namespace = "DocumentUnitService";
+            fullTextSearchDocumentUnitsFunc.ReturnsCollection<DocumentUnitModel>();            
+            fullTextSearchDocumentUnitsFunc.Parameter<string>("filter");
+            fullTextSearchDocumentUnitsFunc.Parameter<Guid>("idTenant");
+
+            #endregion
 
             #region [ Navigation Properties ]
 
@@ -837,6 +881,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             getAuthorizedActiveWorkflowRepositories.Parameter<bool>("anyEnv");
             getAuthorizedActiveWorkflowRepositories.Parameter<bool>("documentRequired");
             getAuthorizedActiveWorkflowRepositories.Parameter<bool>("showOnlyNoInstanceWorkflows");
+            getAuthorizedActiveWorkflowRepositories.Parameter<bool>("showOnlyHasIsFascicleClosedRequired");
 
             FunctionConfiguration hasAuthorizedWorkflowRepositories = builder
                 .EntityType<WorkflowRepository>().Collection
@@ -1174,6 +1219,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             getFascicleByCategoty.Returns<FascicleModel>();
             getFascicleByCategoty.Parameter<int>("idCategory");
             getFascicleByCategoty.Parameter<string>("name");
+            getFascicleByCategoty.Parameter<bool?>("hasProcess");
 
             FunctionConfiguration hasFascicolatedDocumentUnits = builder
                 .EntityType<Fascicle>().Collection
@@ -1207,17 +1253,17 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             hasManageableRight.Returns<bool>();
             hasManageableRight.Parameter<Guid>("idFascicle");
 
-            FunctionConfiguration authorizedFascicles = builder
+            ActionConfiguration authorizedFascicles = builder
                 .EntityType<Fascicle>().Collection
-                .Function("AuthorizedFascicles");
+                .Action("AuthorizedFascicles");
 
             authorizedFascicles.Namespace = "FascicleService";
             authorizedFascicles.Returns<FascicleModel>();
             authorizedFascicles.Parameter<FascicleFinderModel>("finder");
 
-            FunctionConfiguration countAuthorizedFascicles = builder
+            ActionConfiguration countAuthorizedFascicles = builder
                 .EntityType<Fascicle>().Collection
-                .Function("CountAuthorizedFascicles");
+                .Action("CountAuthorizedFascicles");
 
             countAuthorizedFascicles.Namespace = "FascicleService";
             countAuthorizedFascicles.Returns<int>();
@@ -1238,6 +1284,19 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             hasProcedureDistributionInsertRight.Namespace = "FascicleService";
             hasProcedureDistributionInsertRight.Returns<bool>();
             hasProcedureDistributionInsertRight.Parameter<short>("idCategory");
+
+            FunctionConfiguration authorizedFasciclesFromDocumentUnitFunc = builder
+                .EntityType<Fascicle>().Collection
+                .Function("AuthorizedFasciclesFromDocumentUnit");
+           
+            authorizedFasciclesFromDocumentUnitFunc.Namespace = "FascicleService";
+            authorizedFasciclesFromDocumentUnitFunc.Returns<FascicleModel>().Parameter<Guid>("uniqueIdDocumentUnit");
+
+            FunctionConfiguration countAuthorizedFasciclesFromDocumentUnitFunc = builder
+                .EntityType<Fascicle>().Collection
+                .Function("CountAuthorizedFasciclesFromDocumentUnit");
+            countAuthorizedFasciclesFromDocumentUnitFunc.Namespace = "FascicleService";
+            countAuthorizedFasciclesFromDocumentUnitFunc.Returns<int>().Parameter<Guid>("uniqueIdDocumentUnit");
             #endregion
 
             #region [ Navigation Properties ]
@@ -1363,10 +1422,16 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
             toActiveVisionFunc.Namespace = "CollaborationService";
             toActiveVisionFunc.Returns<CollaborationModel>()
-                .Parameter<string>("username");
-            toActiveVisionFunc.Parameter<string>("domain");
-            toActiveVisionFunc.Parameter<bool?>("isRequired");
+                .Parameter<bool?>("isRequired");
 
+            //GetToVisionSignCollaborations
+            FunctionConfiguration toActiveDelegateVisionFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Function("GetToVisionDelegateSignCollaborations");
+
+            toActiveDelegateVisionFunc.Namespace = "CollaborationService";
+            toActiveDelegateVisionFunc.Returns<CollaborationModel>()
+                .Parameter<bool?>("isRequired");
 
             //GetAtVisionSignCollaborations
             FunctionConfiguration atVisionFunc = builder
@@ -1374,8 +1439,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .Function("GetAtVisionSignCollaborations");
 
             atVisionFunc.Namespace = "CollaborationService";
-            atVisionFunc.Parameter<string>("username");
-            atVisionFunc.Parameter<string>("domain");
             atVisionFunc.Returns<CollaborationModel>();
 
             //GetAtProtocolAdmissionCollaborations
@@ -1384,8 +1447,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .Function("GetAtProtocolAdmissionCollaborations");
 
             atProtocolAdmissionFunc.Namespace = "CollaborationService";
-            atProtocolAdmissionFunc.Parameter<string>("domain");
-            atProtocolAdmissionFunc.Returns<CollaborationModel>().Parameter<string>("username");
+            atProtocolAdmissionFunc.Returns<CollaborationModel>();
 
             //GetCurrentActivitiesAllCollaborations
             FunctionConfiguration currentActivitiesFunc = builder
@@ -1393,8 +1455,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .Function("GetCurrentActivitiesAllCollaborations");
 
             currentActivitiesFunc.Namespace = "CollaborationService";
-            currentActivitiesFunc.Returns<CollaborationModel>().Parameter<string>("username");
-            currentActivitiesFunc.Parameter<string>("domain");
+            currentActivitiesFunc.Returns<CollaborationModel>();
 
             //GetCurrentActivitiesActiveCollaborations
             FunctionConfiguration currentActivitiesActiveFunc = builder
@@ -1402,8 +1463,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .Function("GetCurrentActivitiesActiveCollaborations");
 
             currentActivitiesActiveFunc.Namespace = "CollaborationService";
-            currentActivitiesActiveFunc.Returns<CollaborationModel>().Parameter<string>("username");
-            currentActivitiesActiveFunc.Parameter<string>("domain");
+            currentActivitiesActiveFunc.Returns<CollaborationModel>();
 
             //GetCurrentActivitiesPastCollaborations
             FunctionConfiguration currentActivitiesPastFunc = builder
@@ -1411,8 +1471,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .Function("GetCurrentActivitiesPastCollaborations");
 
             currentActivitiesPastFunc.Namespace = "CollaborationService";
-            currentActivitiesPastFunc.Returns<CollaborationModel>().Parameter<string>("username");
-            currentActivitiesPastFunc.Parameter<string>("domain");
+            currentActivitiesPastFunc.Returns<CollaborationModel>();
 
             //GetCurrentActivitiesPastCollaborations
             FunctionConfiguration toManageFunc = builder
@@ -1420,8 +1479,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .Function("GetToManageCollaborations");
 
             toManageFunc.Namespace = "CollaborationService";
-            toManageFunc.Returns<CollaborationModel>().Parameter<string>("username");
-            toManageFunc.Parameter<string>("domain");
+            toManageFunc.Returns<CollaborationModel>();
 
             //GetRegisteredCollaborations
             FunctionConfiguration registeredFunc = builder
@@ -1429,8 +1487,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .Function("GetRegisteredCollaborations");
 
             registeredFunc.Namespace = "CollaborationService";
-            registeredFunc.Returns<CollaborationModel>().Parameter<string>("username");
-            registeredFunc.Parameter<string>("domain");
+            registeredFunc.Returns<CollaborationModel>();
             registeredFunc.Parameter<string>("dateFrom");
             registeredFunc.Parameter<string>("dateTo");
 
@@ -1440,8 +1497,15 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .Function("GetMyCheckedOutCollaborations");
 
             myCheckOutyFunc.Namespace = "CollaborationService";
-            myCheckOutyFunc.Parameter<string>("domain");
-            myCheckOutyFunc.Returns<CollaborationModel>().Parameter<string>("username");
+            myCheckOutyFunc.Returns<CollaborationModel>();
+
+            FunctionConfiguration hasViewableRightFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Function("HasViewableRight");
+
+            hasViewableRightFunc.Namespace = "CollaborationService";
+            hasViewableRightFunc.Parameter<int>("idCollaboration");
+            hasViewableRightFunc.Returns<bool>();
 
             #endregion
 
@@ -1634,38 +1698,21 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
             #region [ Functions ]
 
-            FunctionConfiguration authorizedDossiers = builder
+            ActionConfiguration authorizedDossiers = builder
                .EntityType<Dossier>().Collection
-               .Function("GetAuthorizedDossiers");
+               .Action("GetAuthorizedDossiers");
 
             authorizedDossiers.Namespace = "DossierService";
             authorizedDossiers.Returns<DossierModel>();
-            authorizedDossiers.Parameter<int>("skip");
-            authorizedDossiers.Parameter<int>("top");
-            authorizedDossiers.Parameter<short?>("year");
-            authorizedDossiers.Parameter<int?>("number");
-            authorizedDossiers.Parameter<string>("subject");
-            authorizedDossiers.Parameter<string>("note");
-            authorizedDossiers.Parameter<short?>("idContainer");
-            authorizedDossiers.Parameter<string>("startDateFrom");
-            authorizedDossiers.Parameter<string>("startDateTo");
-            authorizedDossiers.Parameter<string>("endDateFrom");
-            authorizedDossiers.Parameter<string>("endDateTo");
-            authorizedDossiers.Parameter<Guid?>("idMetadataRepository");
-            authorizedDossiers.Parameter<string>("metadataValue");
+            authorizedDossiers.Parameter<DossierFinderModel>("finder");
 
-            FunctionConfiguration countDossiers = builder
+            ActionConfiguration countDossiers = builder
               .EntityType<Dossier>().Collection
-              .Function("CountAuthorizedDossiers");
+              .Action("CountAuthorizedDossiers");
 
             countDossiers.Namespace = "DossierService";
             countDossiers.Returns<int>();
-            countDossiers.Parameter<short?>("year");
-            countDossiers.Parameter<int?>("number");
-            countDossiers.Parameter<string>("subject");
-            countDossiers.Parameter<short?>("idContainer");
-            countDossiers.Parameter<Guid?>("idMetadataRepository");
-            countDossiers.Parameter<string>("metadataValue");
+            countDossiers.Parameter<DossierFinderModel>("finder");
 
             FunctionConfiguration getDossier = builder
                 .EntityType<Dossier>().Collection
@@ -1739,6 +1786,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             hasRootNode.Namespace = "DossierService";
             hasRootNode.Parameter<Guid>("idDossier");
             hasRootNode.Returns<bool>();
+
+            FunctionConfiguration allFasciclesAreClosed = builder
+              .EntityType<Dossier>().Collection
+              .Function("AllFasciclesAreClosed");
+
+            allFasciclesAreClosed.Namespace = "DossierService";
+            allFasciclesAreClosed.Parameter<Guid>("idDossier");
+            allFasciclesAreClosed.Returns<bool>();
             #endregion
 
             #region [ Navigation Properties ]
@@ -1810,6 +1865,30 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             getProcessFolders.Parameter<bool>("loadOnlyActive");
             getProcessFolders.Parameter<bool>("loadOnlyMy");
 
+            FunctionConfiguration getAllParentsOfFascicle = builder
+               .EntityType<DossierFolder>().Collection
+               .Function("GetAllParentsOfFascicle");
+
+            getAllParentsOfFascicle.Namespace = "DossierFolderService";
+            getAllParentsOfFascicle.Returns<DossierFolderModel>();
+            getAllParentsOfFascicle.Parameter<Guid>("idDossier");
+            getAllParentsOfFascicle.Parameter<Guid?>("idFascicle");
+
+            FunctionConfiguration hasAssociatedFascicles = builder
+                .EntityType<DossierFolder>().Collection
+                .Function("HasAssociatedFascicles");
+
+            hasAssociatedFascicles.Namespace = "DossierFolderService";
+            hasAssociatedFascicles.Returns<bool>();
+            hasAssociatedFascicles.Parameter<Guid>("idDossier");
+
+            FunctionConfiguration getParent = builder
+                .EntityType<DossierFolder>().Collection
+                .Function("GetParent");
+
+            getParent.Namespace = "DossierFolderService";
+            getParent.Returns<DossierFolderModel>();
+            getParent.Parameter<Guid>("idDossierFolder");
             #endregion
 
             #region [ Navigation Properties ]
@@ -2038,11 +2117,38 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .EntityType.HasKey(p => p.UniqueId);
         }
 
+        private static void MapPosteWebOData(ODataModelBuilder builder)
+        {
+            builder
+                .EntitySet<PosteOnLineRequest>("POLRequests")
+                .EntityType.HasKey(p => p.UniqueId);
+
+            FunctionConfiguration polRequest = builder
+                .EntityType<PosteOnLineRequest>().Collection
+                .Function("GetPOLRequest");
+
+            polRequest.Namespace = "POLRequestService";
+            polRequest.Parameter<Guid>("uniqueId");
+            polRequest.Returns<PosteOnLineRequest>();
+
+            FunctionConfiguration polRequestsByDocumentUnitId = builder
+               .EntityType<PosteOnLineRequest>().Collection
+               .Function("GetPOLRequestsByDocumentUnitId");
+
+            polRequestsByDocumentUnitId.Namespace = "POLRequestService";
+            polRequestsByDocumentUnitId.Parameter<Guid>("documentUnitId");
+            polRequestsByDocumentUnitId.Returns<PosteOnLineRequest>();
+        }
+
         private static void MapTenantsOData(ODataModelBuilder builder)
         {
             builder
                 .EntitySet<Tenant>("Tenants")
                 .EntityType.HasKey(p => p.UniqueId);
+
+            builder
+                  .EntitySet<TenantAOO>("TenantsAOO")
+                  .EntityType.HasKey(p => p.UniqueId);
 
             FunctionConfiguration userTenants = builder
                 .EntityType<Tenant>().Collection
@@ -2060,7 +2166,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .EntityType.HasKey(p => p.UniqueId);
 
             #endregion
-        }
+        }      
 
         private static void MapReportsOData(ODataModelBuilder builder)
         {
@@ -2141,6 +2247,23 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             builder
                  .EntitySet<Category>("Categories")
                  .EntityType.HasKey(p => p.EntityShortId);
+            #endregion
+        }
+
+        private static void MapTasksOData(ODataModelBuilder builder)
+        {
+            builder
+               .EntitySet<TaskHeader>("TaskHeaders")
+               .EntityType.HasKey(p => p.EntityId);
+
+            #region [ Functions ]
+
+            #endregion
+
+            #region [ Navigation Properties ]
+            builder
+                 .EntitySet<TaskHeaderProtocol>("TaskHeaderProtocols")
+                 .EntityType.HasKey(p => p.EntityId);
             #endregion
         }
 

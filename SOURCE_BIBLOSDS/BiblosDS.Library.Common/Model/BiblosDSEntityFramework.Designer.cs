@@ -120,6 +120,8 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("BiblosDS2010Model", "FK_PreservationDocuments_Document", "Document", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BiblosDS.Library.Common.Model.Document), "PreservationDocuments", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BiblosDS.Library.Common.Model.PreservationDocuments), true)]
 [assembly: EdmRelationshipAttribute("BiblosDS2010Model", "FK_PreservationDocuments_Preservation", "Preservation", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BiblosDS.Library.Common.Model.Preservation), "PreservationDocuments", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BiblosDS.Library.Common.Model.PreservationDocuments), true)]
 [assembly: EdmRelationshipAttribute("BiblosDS2010Model", "FK_PreservationDocuments_PreservationException", "PreservationException", System.Data.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(BiblosDS.Library.Common.Model.PreservationException), "PreservationDocuments", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BiblosDS.Library.Common.Model.PreservationDocuments), true)]
+[assembly: EdmRelationshipAttribute("BiblosDS2010Model", "FK__CustomerC__IdCom__641990EE", "Company", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BiblosDS.Library.Common.Model.Company), "CustomerCompany", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BiblosDS.Library.Common.Model.CustomerCompany), true)]
+[assembly: EdmRelationshipAttribute("BiblosDS2010Model", "FK__CustomerC__IdCus__63256CB5", "Customer", System.Data.Metadata.Edm.RelationshipMultiplicity.One, typeof(BiblosDS.Library.Common.Model.Customer), "CustomerCompany", System.Data.Metadata.Edm.RelationshipMultiplicity.Many, typeof(BiblosDS.Library.Common.Model.CustomerCompany), true)]
 
 #endregion
 
@@ -1338,6 +1340,38 @@ namespace BiblosDS.Library.Common.Model
             }
         }
         private ObjectSet<PreservationDocuments> _PreservationDocuments;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<Customer> Customer
+        {
+            get
+            {
+                if ((_Customer == null))
+                {
+                    _Customer = base.CreateObjectSet<Customer>("Customer");
+                }
+                return _Customer;
+            }
+        }
+        private ObjectSet<Customer> _Customer;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<CustomerCompany> CustomerCompany
+        {
+            get
+            {
+                if ((_CustomerCompany == null))
+                {
+                    _CustomerCompany = base.CreateObjectSet<CustomerCompany>("CustomerCompany");
+                }
+                return _CustomerCompany;
+            }
+        }
+        private ObjectSet<CustomerCompany> _CustomerCompany;
 
         #endregion
 
@@ -1926,6 +1960,22 @@ namespace BiblosDS.Library.Common.Model
         {
             base.AddObject("PreservationDocuments", preservationDocuments);
         }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the Customer EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToCustomer(Customer customer)
+        {
+            base.AddObject("Customer", customer);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the CustomerCompany EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToCustomerCompany(CustomerCompany customerCompany)
+        {
+            base.AddObject("CustomerCompany", customerCompany);
+        }
 
         #endregion
 
@@ -2288,13 +2338,14 @@ namespace BiblosDS.Library.Common.Model
         /// <param name="idArchive">No Metadata Documentation available.</param>
         /// <param name="idPreservation">No Metadata Documentation available.</param>
         /// <param name="idPreservationActivity">No Metadata Documentation available.</param>
+        /// <param name="idCompany">No Metadata Documentation available.</param>
         /// <param name="startDate">No Metadata Documentation available.</param>
         /// <param name="endDate">No Metadata Documentation available.</param>
         /// <param name="skip">No Metadata Documentation available.</param>
         /// <param name="top">No Metadata Documentation available.</param>
         /// <param name="sorting">No Metadata Documentation available.</param>
         [EdmFunction("BiblosDS2010Entities", "PreservationJournalings_FX_SearchAudits")]
-        public IQueryable<PreservationJournalingTableValuedResult> PreservationJournalings_FX_SearchAudits(Nullable<global::System.Guid> idArchive, Nullable<global::System.Guid> idPreservation, Nullable<global::System.Guid> idPreservationActivity, Nullable<global::System.DateTime> startDate, Nullable<global::System.DateTime> endDate, Nullable<global::System.Int32> skip, Nullable<global::System.Int32> top, global::System.String sorting)
+        public IQueryable<PreservationJournalingTableValuedResult> PreservationJournalings_FX_SearchAudits(Nullable<global::System.Guid> idArchive, Nullable<global::System.Guid> idPreservation, Nullable<global::System.Guid> idPreservationActivity, Nullable<global::System.Guid> idCompany, Nullable<global::System.DateTime> startDate, Nullable<global::System.DateTime> endDate, Nullable<global::System.Int32> skip, Nullable<global::System.Int32> top, global::System.String sorting)
         {
             ObjectParameter idArchiveParameter;
             if (idArchive.HasValue)
@@ -2324,6 +2375,16 @@ namespace BiblosDS.Library.Common.Model
             else
             {
                 idPreservationActivityParameter = new ObjectParameter("IdPreservationActivity", typeof(global::System.Guid));
+            }
+    
+            ObjectParameter idCompanyParameter;
+            if (idCompany.HasValue)
+            {
+                idCompanyParameter = new ObjectParameter("IdCompany", idCompany);
+            }
+            else
+            {
+                idCompanyParameter = new ObjectParameter("IdCompany", typeof(global::System.Guid));
             }
     
             ObjectParameter startDateParameter;
@@ -2376,7 +2437,7 @@ namespace BiblosDS.Library.Common.Model
                 sortingParameter = new ObjectParameter("Sorting", typeof(global::System.String));
             }
     
-            return base.CreateQuery<PreservationJournalingTableValuedResult>("[BiblosDS2010Entities].[PreservationJournalings_FX_SearchAudits](@IdArchive, @IdPreservation, @IdPreservationActivity, @StartDate, @EndDate, @Skip, @Top, @Sorting)", idArchiveParameter, idPreservationParameter, idPreservationActivityParameter, startDateParameter, endDateParameter, skipParameter, topParameter, sortingParameter);
+            return base.CreateQuery<PreservationJournalingTableValuedResult>("[BiblosDS2010Entities].[PreservationJournalings_FX_SearchAudits](@IdArchive, @IdPreservation, @IdPreservationActivity, @IdCompany, @StartDate, @EndDate, @Skip, @Top, @Sorting)", idArchiveParameter, idPreservationParameter, idPreservationActivityParameter, idCompanyParameter, startDateParameter, endDateParameter, skipParameter, topParameter, sortingParameter);
         }
     
         /// <summary>
@@ -2919,54 +2980,6 @@ namespace BiblosDS.Library.Common.Model
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> VerifyPreservationDateEnabled
-        {
-            get
-            {
-                return _VerifyPreservationDateEnabled;
-            }
-            set
-            {
-                OnVerifyPreservationDateEnabledChanging(value);
-                ReportPropertyChanging("VerifyPreservationDateEnabled");
-                _VerifyPreservationDateEnabled = StructuralObject.SetValidValue(value, "VerifyPreservationDateEnabled");
-                ReportPropertyChanged("VerifyPreservationDateEnabled");
-                OnVerifyPreservationDateEnabledChanged();
-            }
-        }
-        private Nullable<global::System.Boolean> _VerifyPreservationDateEnabled;
-        partial void OnVerifyPreservationDateEnabledChanging(Nullable<global::System.Boolean> value);
-        partial void OnVerifyPreservationDateEnabledChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> VerifyPreservationIncrementalEnabled
-        {
-            get
-            {
-                return _VerifyPreservationIncrementalEnabled;
-            }
-            set
-            {
-                OnVerifyPreservationIncrementalEnabledChanging(value);
-                ReportPropertyChanging("VerifyPreservationIncrementalEnabled");
-                _VerifyPreservationIncrementalEnabled = StructuralObject.SetValidValue(value, "VerifyPreservationIncrementalEnabled");
-                ReportPropertyChanged("VerifyPreservationIncrementalEnabled");
-                OnVerifyPreservationIncrementalEnabledChanged();
-            }
-        }
-        private Nullable<global::System.Boolean> _VerifyPreservationIncrementalEnabled;
-        partial void OnVerifyPreservationIncrementalEnabledChanging(Nullable<global::System.Boolean> value);
-        partial void OnVerifyPreservationIncrementalEnabledChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
         public Nullable<global::System.Boolean> TransitoEnabled
         {
             get
@@ -3033,6 +3046,30 @@ namespace BiblosDS.Library.Common.Model
         private global::System.String _ODBCConnection;
         partial void OnODBCConnectionChanging(global::System.String value);
         partial void OnODBCConnectionChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String PreservationConfiguration
+        {
+            get
+            {
+                return _PreservationConfiguration;
+            }
+            set
+            {
+                OnPreservationConfigurationChanging(value);
+                ReportPropertyChanging("PreservationConfiguration");
+                _PreservationConfiguration = StructuralObject.SetValidValue(value, true, "PreservationConfiguration");
+                ReportPropertyChanged("PreservationConfiguration");
+                OnPreservationConfigurationChanged();
+            }
+        }
+        private global::System.String _PreservationConfiguration;
+        partial void OnPreservationConfigurationChanging(global::System.String value);
+        partial void OnPreservationConfigurationChanged();
 
         #endregion
 
@@ -6724,6 +6761,30 @@ namespace BiblosDS.Library.Common.Model
         private global::System.String _PECEmail;
         partial void OnPECEmailChanging(global::System.String value);
         partial void OnPECEmailChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String SignInfo
+        {
+            get
+            {
+                return _SignInfo;
+            }
+            set
+            {
+                OnSignInfoChanging(value);
+                ReportPropertyChanging("SignInfo");
+                _SignInfo = StructuralObject.SetValidValue(value, true, "SignInfo");
+                ReportPropertyChanged("SignInfo");
+                OnSignInfoChanged();
+            }
+        }
+        private global::System.String _SignInfo;
+        partial void OnSignInfoChanging(global::System.String value);
+        partial void OnSignInfoChanged();
 
         #endregion
 
@@ -6769,6 +6830,28 @@ namespace BiblosDS.Library.Common.Model
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<PreservationStorageDevice>("BiblosDS2010Model.FK_PreservationStorageDevice_Company", "PreservationStorageDevice", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BiblosDS2010Model", "FK__CustomerC__IdCom__641990EE", "CustomerCompany")]
+        public EntityCollection<CustomerCompany> CustomerCompany
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<CustomerCompany>("BiblosDS2010Model.FK__CustomerC__IdCom__641990EE", "CustomerCompany");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<CustomerCompany>("BiblosDS2010Model.FK__CustomerC__IdCom__641990EE", "CustomerCompany", value);
                 }
             }
         }
@@ -6926,6 +7009,350 @@ namespace BiblosDS.Library.Common.Model
         private global::System.Int16 _Enable;
         partial void OnEnableChanging(global::System.Int16 value);
         partial void OnEnableChanged();
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="BiblosDS2010Model", Name="Customer")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Customer : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new Customer object.
+        /// </summary>
+        /// <param name="idCustomer">Initial value of the IdCustomer property.</param>
+        /// <param name="name">Initial value of the Name property.</param>
+        public static Customer CreateCustomer(global::System.String idCustomer, global::System.String name)
+        {
+            Customer customer = new Customer();
+            customer.IdCustomer = idCustomer;
+            customer.Name = name;
+            return customer;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String IdCustomer
+        {
+            get
+            {
+                return _IdCustomer;
+            }
+            set
+            {
+                if (_IdCustomer != value)
+                {
+                    OnIdCustomerChanging(value);
+                    ReportPropertyChanging("IdCustomer");
+                    _IdCustomer = StructuralObject.SetValidValue(value, false, "IdCustomer");
+                    ReportPropertyChanged("IdCustomer");
+                    OnIdCustomerChanged();
+                }
+            }
+        }
+        private global::System.String _IdCustomer;
+        partial void OnIdCustomerChanging(global::System.String value);
+        partial void OnIdCustomerChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Name
+        {
+            get
+            {
+                return _Name;
+            }
+            set
+            {
+                OnNameChanging(value);
+                ReportPropertyChanging("Name");
+                _Name = StructuralObject.SetValidValue(value, false, "Name");
+                ReportPropertyChanged("Name");
+                OnNameChanged();
+            }
+        }
+        private global::System.String _Name;
+        partial void OnNameChanging(global::System.String value);
+        partial void OnNameChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> DateCreated
+        {
+            get
+            {
+                return _DateCreated;
+            }
+            set
+            {
+                OnDateCreatedChanging(value);
+                ReportPropertyChanging("DateCreated");
+                _DateCreated = StructuralObject.SetValidValue(value, "DateCreated");
+                ReportPropertyChanged("DateCreated");
+                OnDateCreatedChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _DateCreated;
+        partial void OnDateCreatedChanging(Nullable<global::System.DateTime> value);
+        partial void OnDateCreatedChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String SignInfo
+        {
+            get
+            {
+                return _SignInfo;
+            }
+            set
+            {
+                OnSignInfoChanging(value);
+                ReportPropertyChanging("SignInfo");
+                _SignInfo = StructuralObject.SetValidValue(value, true, "SignInfo");
+                ReportPropertyChanged("SignInfo");
+                OnSignInfoChanged();
+            }
+        }
+        private global::System.String _SignInfo;
+        partial void OnSignInfoChanging(global::System.String value);
+        partial void OnSignInfoChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BiblosDS2010Model", "FK__CustomerC__IdCus__63256CB5", "CustomerCompany")]
+        public EntityCollection<CustomerCompany> CustomerCompany
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<CustomerCompany>("BiblosDS2010Model.FK__CustomerC__IdCus__63256CB5", "CustomerCompany");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<CustomerCompany>("BiblosDS2010Model.FK__CustomerC__IdCus__63256CB5", "CustomerCompany", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="BiblosDS2010Model", Name="CustomerCompany")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class CustomerCompany : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new CustomerCompany object.
+        /// </summary>
+        /// <param name="id">Initial value of the Id property.</param>
+        /// <param name="idCustomer">Initial value of the IdCustomer property.</param>
+        /// <param name="idCompany">Initial value of the IdCompany property.</param>
+        public static CustomerCompany CreateCustomerCompany(global::System.Int32 id, global::System.String idCustomer, global::System.Guid idCompany)
+        {
+            CustomerCompany customerCompany = new CustomerCompany();
+            customerCompany.Id = id;
+            customerCompany.IdCustomer = idCustomer;
+            customerCompany.IdCompany = idCompany;
+            return customerCompany;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    ReportPropertyChanging("Id");
+                    _Id = StructuralObject.SetValidValue(value, "Id");
+                    ReportPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _Id;
+        partial void OnIdChanging(global::System.Int32 value);
+        partial void OnIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String IdCustomer
+        {
+            get
+            {
+                return _IdCustomer;
+            }
+            set
+            {
+                OnIdCustomerChanging(value);
+                ReportPropertyChanging("IdCustomer");
+                _IdCustomer = StructuralObject.SetValidValue(value, false, "IdCustomer");
+                ReportPropertyChanged("IdCustomer");
+                OnIdCustomerChanged();
+            }
+        }
+        private global::System.String _IdCustomer;
+        partial void OnIdCustomerChanging(global::System.String value);
+        partial void OnIdCustomerChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Guid IdCompany
+        {
+            get
+            {
+                return _IdCompany;
+            }
+            set
+            {
+                OnIdCompanyChanging(value);
+                ReportPropertyChanging("IdCompany");
+                _IdCompany = StructuralObject.SetValidValue(value, "IdCompany");
+                ReportPropertyChanged("IdCompany");
+                OnIdCompanyChanged();
+            }
+        }
+        private global::System.Guid _IdCompany;
+        partial void OnIdCompanyChanging(global::System.Guid value);
+        partial void OnIdCompanyChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BiblosDS2010Model", "FK__CustomerC__IdCom__641990EE", "Company")]
+        public Company Company
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Company>("BiblosDS2010Model.FK__CustomerC__IdCom__641990EE", "Company").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Company>("BiblosDS2010Model.FK__CustomerC__IdCom__641990EE", "Company").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Company> CompanyReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Company>("BiblosDS2010Model.FK__CustomerC__IdCom__641990EE", "Company");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Company>("BiblosDS2010Model.FK__CustomerC__IdCom__641990EE", "Company", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("BiblosDS2010Model", "FK__CustomerC__IdCus__63256CB5", "Customer")]
+        public Customer Customer
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Customer>("BiblosDS2010Model.FK__CustomerC__IdCus__63256CB5", "Customer").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Customer>("BiblosDS2010Model.FK__CustomerC__IdCus__63256CB5", "Customer").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Customer> CustomerReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Customer>("BiblosDS2010Model.FK__CustomerC__IdCus__63256CB5", "Customer");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Customer>("BiblosDS2010Model.FK__CustomerC__IdCus__63256CB5", "Customer", value);
+                }
+            }
+        }
 
         #endregion
 
@@ -21179,6 +21606,150 @@ namespace BiblosDS.Library.Common.Model
         private global::System.String _ServerRole;
         partial void OnServerRoleChanging(global::System.String value);
         partial void OnServerRoleChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String DocumentServiceUrl
+        {
+            get
+            {
+                return _DocumentServiceUrl;
+            }
+            set
+            {
+                OnDocumentServiceUrlChanging(value);
+                ReportPropertyChanging("DocumentServiceUrl");
+                _DocumentServiceUrl = StructuralObject.SetValidValue(value, true, "DocumentServiceUrl");
+                ReportPropertyChanged("DocumentServiceUrl");
+                OnDocumentServiceUrlChanged();
+            }
+        }
+        private global::System.String _DocumentServiceUrl;
+        partial void OnDocumentServiceUrlChanging(global::System.String value);
+        partial void OnDocumentServiceUrlChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String DocumentServiceBinding
+        {
+            get
+            {
+                return _DocumentServiceBinding;
+            }
+            set
+            {
+                OnDocumentServiceBindingChanging(value);
+                ReportPropertyChanging("DocumentServiceBinding");
+                _DocumentServiceBinding = StructuralObject.SetValidValue(value, true, "DocumentServiceBinding");
+                ReportPropertyChanged("DocumentServiceBinding");
+                OnDocumentServiceBindingChanged();
+            }
+        }
+        private global::System.String _DocumentServiceBinding;
+        partial void OnDocumentServiceBindingChanging(global::System.String value);
+        partial void OnDocumentServiceBindingChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String DocumentServiceBindingConfiguration
+        {
+            get
+            {
+                return _DocumentServiceBindingConfiguration;
+            }
+            set
+            {
+                OnDocumentServiceBindingConfigurationChanging(value);
+                ReportPropertyChanging("DocumentServiceBindingConfiguration");
+                _DocumentServiceBindingConfiguration = StructuralObject.SetValidValue(value, true, "DocumentServiceBindingConfiguration");
+                ReportPropertyChanged("DocumentServiceBindingConfiguration");
+                OnDocumentServiceBindingConfigurationChanged();
+            }
+        }
+        private global::System.String _DocumentServiceBindingConfiguration;
+        partial void OnDocumentServiceBindingConfigurationChanging(global::System.String value);
+        partial void OnDocumentServiceBindingConfigurationChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String StorageServiceUrl
+        {
+            get
+            {
+                return _StorageServiceUrl;
+            }
+            set
+            {
+                OnStorageServiceUrlChanging(value);
+                ReportPropertyChanging("StorageServiceUrl");
+                _StorageServiceUrl = StructuralObject.SetValidValue(value, true, "StorageServiceUrl");
+                ReportPropertyChanged("StorageServiceUrl");
+                OnStorageServiceUrlChanged();
+            }
+        }
+        private global::System.String _StorageServiceUrl;
+        partial void OnStorageServiceUrlChanging(global::System.String value);
+        partial void OnStorageServiceUrlChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String StorageServiceBinding
+        {
+            get
+            {
+                return _StorageServiceBinding;
+            }
+            set
+            {
+                OnStorageServiceBindingChanging(value);
+                ReportPropertyChanging("StorageServiceBinding");
+                _StorageServiceBinding = StructuralObject.SetValidValue(value, true, "StorageServiceBinding");
+                ReportPropertyChanged("StorageServiceBinding");
+                OnStorageServiceBindingChanged();
+            }
+        }
+        private global::System.String _StorageServiceBinding;
+        partial void OnStorageServiceBindingChanging(global::System.String value);
+        partial void OnStorageServiceBindingChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String StorageServiceBindingConfiguration
+        {
+            get
+            {
+                return _StorageServiceBindingConfiguration;
+            }
+            set
+            {
+                OnStorageServiceBindingConfigurationChanging(value);
+                ReportPropertyChanging("StorageServiceBindingConfiguration");
+                _StorageServiceBindingConfiguration = StructuralObject.SetValidValue(value, true, "StorageServiceBindingConfiguration");
+                ReportPropertyChanged("StorageServiceBindingConfiguration");
+                OnStorageServiceBindingConfigurationChanged();
+            }
+        }
+        private global::System.String _StorageServiceBindingConfiguration;
+        partial void OnStorageServiceBindingConfigurationChanging(global::System.String value);
+        partial void OnStorageServiceBindingConfigurationChanged();
 
         #endregion
 
@@ -26774,54 +27345,6 @@ namespace BiblosDS.Library.Common.Model
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> Archive_VerifyPreservationDateEnabled
-        {
-            get
-            {
-                return _Archive_VerifyPreservationDateEnabled;
-            }
-            set
-            {
-                OnArchive_VerifyPreservationDateEnabledChanging(value);
-                ReportPropertyChanging("Archive_VerifyPreservationDateEnabled");
-                _Archive_VerifyPreservationDateEnabled = StructuralObject.SetValidValue(value, "Archive_VerifyPreservationDateEnabled");
-                ReportPropertyChanged("Archive_VerifyPreservationDateEnabled");
-                OnArchive_VerifyPreservationDateEnabledChanged();
-            }
-        }
-        private Nullable<global::System.Boolean> _Archive_VerifyPreservationDateEnabled;
-        partial void OnArchive_VerifyPreservationDateEnabledChanging(Nullable<global::System.Boolean> value);
-        partial void OnArchive_VerifyPreservationDateEnabledChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
-        public Nullable<global::System.Boolean> Archive_VerifyPreservationIncrementalEnabled
-        {
-            get
-            {
-                return _Archive_VerifyPreservationIncrementalEnabled;
-            }
-            set
-            {
-                OnArchive_VerifyPreservationIncrementalEnabledChanging(value);
-                ReportPropertyChanging("Archive_VerifyPreservationIncrementalEnabled");
-                _Archive_VerifyPreservationIncrementalEnabled = StructuralObject.SetValidValue(value, "Archive_VerifyPreservationIncrementalEnabled");
-                ReportPropertyChanged("Archive_VerifyPreservationIncrementalEnabled");
-                OnArchive_VerifyPreservationIncrementalEnabledChanged();
-            }
-        }
-        private Nullable<global::System.Boolean> _Archive_VerifyPreservationIncrementalEnabled;
-        partial void OnArchive_VerifyPreservationIncrementalEnabledChanging(Nullable<global::System.Boolean> value);
-        partial void OnArchive_VerifyPreservationIncrementalEnabledChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
         public Nullable<global::System.Boolean> Archive_TransitoEnabled
         {
             get
@@ -27872,6 +28395,30 @@ namespace BiblosDS.Library.Common.Model
         private Nullable<global::System.DateTime> _PreservationTaskGroup_Closed;
         partial void OnPreservationTaskGroup_ClosedChanging(Nullable<global::System.DateTime> value);
         partial void OnPreservationTaskGroup_ClosedChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Archive_PreservationConfiguration
+        {
+            get
+            {
+                return _Archive_PreservationConfiguration;
+            }
+            set
+            {
+                OnArchive_PreservationConfigurationChanging(value);
+                ReportPropertyChanging("Archive_PreservationConfiguration");
+                _Archive_PreservationConfiguration = StructuralObject.SetValidValue(value, true, "Archive_PreservationConfiguration");
+                ReportPropertyChanged("Archive_PreservationConfiguration");
+                OnArchive_PreservationConfigurationChanged();
+            }
+        }
+        private global::System.String _Archive_PreservationConfiguration;
+        partial void OnArchive_PreservationConfigurationChanging(global::System.String value);
+        partial void OnArchive_PreservationConfigurationChanged();
 
         #endregion
 

@@ -5,8 +5,8 @@ namespace VecompSoftware.BPM.Integrations.Services.StampaConforme
 {
     public interface IStampaConformeClient
     {
-        Task<byte[]> ConvertToPDFAAsync(byte[] source, string signature);
+        Task<byte[]> ConvertToPDFAAsync(byte[] source, string fileExtension, string signature);
         Task UploadSecureDocumentAsync(byte[] source, string referenceId);
-        Task<byte[]> BuildPDFAsync(byte[] template, BuildValueModel[] buildValueModel, string label);
+        Task<byte[]> BuildPDFAsync(byte[] template, BuildValueModel[] buildValueModel, string signature);
     }
 }

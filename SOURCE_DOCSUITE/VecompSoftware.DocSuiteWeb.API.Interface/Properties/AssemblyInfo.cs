@@ -1,10 +1,9 @@
-using System.Runtime.CompilerServices;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("VecompSoftware.DocSuiteWeb.API.Interface")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("release")]
+[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("VecompSoftware.DocSuiteWeb.API.Interface")]
 [assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
@@ -18,5 +17,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("86da9ad1-f359-46da-8af4-45ecd91fb417")]
 
-[assembly: AssemblyVersion("9.09.20286.02")]
-[assembly: AssemblyFileVersion("9.09.20286.02")]
+[assembly: AssemblyVersion("9.09.0.0")]
+[assembly: AssemblyFileVersion("9.09.0.0")]

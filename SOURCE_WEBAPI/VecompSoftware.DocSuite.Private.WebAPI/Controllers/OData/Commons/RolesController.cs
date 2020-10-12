@@ -43,7 +43,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Commons
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<RoleFullTableValuedModel> roles = _unitOfWork.Repository<Role>().FindRoles(Username, Domain, finder.Name, finder.ParentId, finder.ServiceCode,
+                ICollection<RoleFullTableValuedModel> roles = _unitOfWork.Repository<Role>().FindRoles(Username, Domain, finder.Name, finder.UniqueId, finder.ParentId, finder.ServiceCode,
                     finder.TenantId, finder.Environment, finder.LoadOnlyRoot, finder.LoadOnlyMy, finder.LoadAlsoParent);
                 ICollection<RoleModel> results = _mapperUnitOfWork.Repository<IDomainMapper<RoleFullTableValuedModel, RoleModel>>().MapCollection(roles);
 
@@ -63,6 +63,16 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Commons
             allRoleModels.ForEach(roleModelNode =>
                     roleModelNode.Children = allRoleModels.Where(roleModel => roleModel.IdRoleFather.HasValue && roleModel.IdRoleFather.Value == roleModelNode.IdRole).ToList());
             return allRoleModels.Where(roleModel => !roleModel.IdRoleFather.HasValue).ToList();
+        }
+
+        [HttpGet]
+        public IHttpActionResult HasCategoryFascicleRole(ODataQueryOptions<Role> options, short idCategory)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                bool result = _unitOfWork.Repository<Role>().HasCategoryFascicleRole($"{Domain}\\{Username}", idCategory);
+                return Ok(result);
+            }, _logger, LogCategories);
         }
 
         #endregion

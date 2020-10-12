@@ -15,6 +15,13 @@ namespace BiblosDs.Document.AdminCentral.UAdminControls
     {
         private Server server;
         private bool insertMode;
+        private readonly ICollection<string> _bindings = new List<string>()
+        {
+            "basicHttpBinding",
+            "netNamedPipeBinding",
+            "netTcpBinding",
+            "wsHttpBinding"
+        };
 
         public UcServerDetail()
             : this(null)
@@ -32,6 +39,8 @@ namespace BiblosDs.Document.AdminCentral.UAdminControls
             VerifyInputParameters(new List<string> { "Action", "Server" });
 
             cbRole.DataSource = Enum.GetNames(typeof(ServerRole));
+            cbDocumentServiceBinding.DataSource = _bindings.ToList();
+            cbStorageServiceBinding.DataSource = _bindings.ToList();
             server = InputParameters["Server"] as Server;
             insertMode = false;
 
@@ -61,6 +70,12 @@ namespace BiblosDs.Document.AdminCentral.UAdminControls
                 case "modify":
                     txtName.Text = server.ServerName;
                     cbRole.SelectedItem = server.ServerRole.ToString();
+                    cbDocumentServiceBinding.SelectedItem = server.DocumentServiceBinding;
+                    cbStorageServiceBinding.SelectedItem = server.StorageServiceBinding;
+                    txtDocumentServiceUrl.Text = server.DocumentServiceUrl;
+                    txtDocumentServiceBindingConfiguration.Text = server.DocumentServiceBindingConfiguration;
+                    txtStorageServiceUrl.Text = server.StorageServiceUrl;
+                    txtStorageServiceBindingConfiguration.Text = server.StorageServiceBindingConfiguration;
                     break;
             }
         }
@@ -81,6 +96,15 @@ namespace BiblosDs.Document.AdminCentral.UAdminControls
             {
                 server.ServerName = txtName.Text;
                 server.ServerRole = (ServerRole)Enum.Parse(typeof(ServerRole), cbRole.SelectedItem.ToString());
+                if (server.ServerRole == ServerRole.Remote)
+                {
+                    server.DocumentServiceUrl = txtDocumentServiceUrl.Text;
+                    server.DocumentServiceBinding = cbDocumentServiceBinding.SelectedValue.ToString();
+                    server.DocumentServiceBindingConfiguration = txtDocumentServiceBindingConfiguration.Text;
+                    server.StorageServiceUrl = txtStorageServiceUrl.Text;
+                    server.StorageServiceBinding = cbStorageServiceBinding.SelectedValue.ToString();
+                    server.StorageServiceBindingConfiguration = txtStorageServiceBindingConfiguration.Text;
+                }
                 server = (insertMode) ? Client.AddServer(server) : Client.UpdateServer(server);
                 BackToSenderControl(sender, e);
             }
@@ -100,8 +124,30 @@ namespace BiblosDs.Document.AdminCentral.UAdminControls
             }
             catch { role = ServerRole.Undefined; }
 
-            return !string.IsNullOrWhiteSpace(txtName.Text)
+            bool isValidated = true;
+            if (role == ServerRole.Remote)
+            {
+                isValidated = !string.IsNullOrEmpty(txtDocumentServiceUrl.Text)
+                    && !string.IsNullOrEmpty(txtDocumentServiceBindingConfiguration.Text)
+                    && cbDocumentServiceBinding.SelectedItem != null
+                    && !string.IsNullOrEmpty(txtStorageServiceUrl.Text)
+                    && !string.IsNullOrEmpty(txtStorageServiceBindingConfiguration.Text)
+                    && cbStorageServiceBinding.SelectedItem != null;
+            }
+
+            return isValidated && !string.IsNullOrWhiteSpace(txtName.Text)
                 && role != ServerRole.Undefined;
+        }
+
+        private void cbRole_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbRole.SelectedItem == null)
+            {
+                return;
+            }
+
+            ServerRole selectedRole = (ServerRole)Enum.Parse(typeof(ServerRole), cbRole.SelectedItem.ToString());
+            pnlRedirectinformations.Visible = selectedRole == ServerRole.Remote;
         }
     }
 }

@@ -10,19 +10,17 @@ namespace VecompSoftware.BPM.Integrations.Modules.AGENAS.RDA.Configuration
         #region [ Fields ]
         public const string MODULE_NAME = "VecompSoftware.BPM.Integrations.Modules.AGENAS.RDA";
         private const string MODULE_CONFIGURATION_NAME = "module.configuration.json";
-        private static readonly string _modulePath = Path.GetDirectoryName(Assembly.GetAssembly(typeof(Execution)).Location);
-        private static readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
+        #endregion
+
+        #region [ Properties ]
+        public static string CurrentModulePath { get; } = Path.GetDirectoryName(Assembly.GetAssembly(typeof(Execution)).Location);
+        public static JsonSerializerSettings JsonSerializerSettings { get; } = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
             TypeNameHandling = TypeNameHandling.Objects,
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             PreserveReferencesHandling = PreserveReferencesHandling.All
         };
-        #endregion
-
-        #region [ Properties ]
-        public static string CurrentModulePath => _modulePath;
-        public static JsonSerializerSettings JsonSerializerSettings => _serializerSettings;
 
         #endregion
 

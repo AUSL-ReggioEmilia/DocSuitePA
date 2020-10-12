@@ -14,5 +14,13 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
                 .Include(f => f.WorkflowRepository)
                 .SelectAsQueryable();
         }
+
+        public static int CountActiveInstances(this IRepository<WorkflowInstance> repository, Guid workflowRepositoryId, string subject)
+        {
+            return repository
+                .Queryable(optimization: true)
+                .Where(x => x.WorkflowRepository.UniqueId == workflowRepositoryId && x.Subject == subject && x.Status <= WorkflowStatus.Progress)
+                .Count();
+        }
     }
 }

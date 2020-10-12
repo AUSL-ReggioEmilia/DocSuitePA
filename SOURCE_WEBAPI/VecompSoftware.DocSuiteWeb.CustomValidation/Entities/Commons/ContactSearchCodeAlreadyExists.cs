@@ -25,7 +25,7 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Commons
         {
             if (!string.IsNullOrEmpty(objectToValidate?.SearchCode))
             {
-                int count = CurrentUnitOfWork.Repository<Contact>().CountContactBySearchCode(objectToValidate.SearchCode);
+                int count = CurrentUnitOfWork.Repository<Contact>().CountContactBySearchCode(objectToValidate.SearchCode, objectToValidate.IncrementalFather);
                 if (count > 0)
                 {
                     GenerateInvalidateResult();

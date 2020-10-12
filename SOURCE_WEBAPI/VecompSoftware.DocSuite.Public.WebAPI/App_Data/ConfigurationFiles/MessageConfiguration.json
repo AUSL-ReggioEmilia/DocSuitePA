@@ -186,6 +186,11 @@
     "TopicName": "entity_event",
     "MessageType": "Topic"
   },
+  "EventDeleteCollaboration": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
   "EventCreateMessage": {
     "QueueName": "",
     "TopicName": "entity_event",
@@ -197,6 +202,16 @@
     "MessageType": "Topic"
   },
   "EventUpdateFascicle": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateDossier": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventUpdateDossier": {
     "QueueName": "",
     "TopicName": "entity_event",
     "MessageType": "Topic"
@@ -266,6 +281,11 @@
     "TopicName": "",
     "MessageType": "Queue"
   },
+  "CommandDeleteCollaboration": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
   "CommandCreateMessage": {
     "QueueName": "cqrs_insert",
     "TopicName": "",
@@ -278,6 +298,26 @@
   },
   "CommandUpdateFascicle": {
     "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandUpdateFascicleData": {
+    "QueueName": "data_fascicle_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreateDossier": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandUpdateDossier": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandUpdateDossierData": {
+    "QueueName": "data_dossier_update",
     "TopicName": "",
     "MessageType": "Queue"
   },
@@ -332,25 +372,10 @@
     "MessageType": "Topic",
     "DefaultFilterEvent": "Name='EventError'"
   },
-  "CommandDematerialisationRequest": {
-    "QueueName": "dematerialisation_request",
-    "TopicName": "",
-    "MessageType": "Queue"
-  },
   "EventRetireDocumentSeriesItem": {
     "QueueName": "",
     "TopicName": "workflow_integration",
     "MessageType": "Topic"
-  },
-  "EventDematerialisationResponse": {
-    "QueueName": "",
-    "TopicName": "workflow_integration",
-    "MessageType": "Topic"
-  },
-  "CommandSecureDocumentRequest": {
-    "QueueName": "secure_document_request",
-    "TopicName": "",
-    "MessageType": "Queue"
   },
   "CommandCreateCategoryFascicle": {
     "QueueName": "cqrs_insert",
@@ -372,30 +397,11 @@
     "TopicName": "",
     "MessageType": "Queue"
   },
-  "EventSecureDocumentResponse": {
-    "QueueName": "",
-    "TopicName": "workflow_integration",
-    "MessageType": "Topic"
-  },
-  "CommandSecurePaperRequest": {
-    "QueueName": "secure_paper_request",
-    "TopicName": "",
-    "MessageType": "Queue"
-  },
   "EventTokenSecurity": {
     "QueueName": "",
     "TopicName": "security/token_event",
-    "MessageType": "Topic"
-  },
-  "EventErrorStreamPECMail": {
-    "QueueName": "",
-    "TopicName": "entity_event",
-    "MessageType": "Topic"
-  },
-  "EventErrorSummaryPECMail": {
-    "QueueName": "",
-    "TopicName": "entity_event",
-    "MessageType": "Topic"
+    "MessageType": "Topic",
+    "DefaultFilterEvent": "Name='EventTokenSecurity'"
   },
   "EventCompleteProtocolBuild": {
     "QueueName": "",
@@ -452,6 +458,16 @@
     "TopicName": "",
     "MessageType": "Queue"
   },
+  "EventCompleteDossierBuild": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "CommandBuildDossier": {
+    "QueueName": "data_dossier_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
   "EventCompleteMessageBuild": {
     "QueueName": "",
     "TopicName": "builder_event",
@@ -498,6 +514,21 @@
     "MessageType": "Topic"
   },
   "EventShareDocumentUnit": {
+    "QueueName": "",
+    "TopicName": "workflow_integration",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowActionFascicleClose": {
+    "QueueName": "",
+    "TopicName": "workflow_integration",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowActionAggregation": {
+    "QueueName": "",
+    "TopicName": "workflow_aggregation",
+    "MessageType": "Topic"
+  },
+  "EventIntegrationRequest": {
     "QueueName": "",
     "TopicName": "workflow_integration",
     "MessageType": "Topic"

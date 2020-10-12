@@ -6,6 +6,7 @@ using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Mapper;
+using VecompSoftware.DocSuiteWeb.Repository.Repositories;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Service.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Validation;
@@ -100,6 +101,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.UDS
                 }
             }
             return base.BeforeUpdate(entity, entityTransformed);
+        }
+
+        protected override IQueryFluent<UDSDocumentUnit> SetEntityIncludeOnDelete(IQueryFluent<UDSDocumentUnit> query)
+        {
+            return query.Include(i => i.Repository).Include(i=>i.Repository.Container); 
         }
         #endregion
 

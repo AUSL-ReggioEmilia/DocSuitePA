@@ -29,6 +29,11 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 
         public Guid? DocumentId { get; set; }
 
+        /// <summary>
+        /// Al posto di usare ContentStream, memorizzare il nella WorkflowLocation evitando di serializzare stream
+        /// </summary>
+        public Guid? DocumentToStoreId { get; set; }
+
         public int? LegacyDocumentId { get; set; }
 
         public byte[] ContentStream { get; set; }

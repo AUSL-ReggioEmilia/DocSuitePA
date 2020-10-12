@@ -9,7 +9,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertPECMail
     public class Listener : ListenerMessageBase<ICommandBuildPECMail>, IListenerMessageGeneric<ICommandBuildPECMail>
     {
         public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandBuildPECMail")
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandBuildPECMail", webApiClient)
         {
 
         }

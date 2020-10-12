@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
 using VecompSoftware.Services.Command.CQRS.Commands;
@@ -12,6 +13,7 @@ namespace VecompSoftware.ServiceBus.Receiver.Base
         IDictionary<string, object> Properties { get; set; }
 
         EvaluationModel RetryPolicyEvaluation { get; set; }
+        Guid? IdWorkflowActivity { get; set; }
         #endregion
 
         #region [ Methods ]

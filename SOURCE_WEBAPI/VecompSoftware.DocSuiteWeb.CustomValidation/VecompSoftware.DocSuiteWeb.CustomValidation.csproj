@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.DocSuiteWeb.CustomValidation</RootNamespace>
     <AssemblyName>VecompSoftware.DocSuiteWeb.CustomValidation</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -47,7 +47,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseValidator.cs" />
+    <Compile Include="Entities\Commons\IsLocationNameUnique.cs" />
     <Compile Include="Entities\Commons\CategoryFascicleContainsPeriodic.cs" />
     <Compile Include="Commons\HasContainerPrefixGroupName.cs" />
     <Compile Include="Entities\Commons\ContactAlreadyExists.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Entities\DocumentUnits\HasValidEnvironment.cs" />
     <Compile Include="Entities\Dossiers\DossierFolders\HasChildren.cs" />
     <Compile Include="Entities\Dossiers\DossierFolders\HasParentValidStatus.cs" />
+    <Compile Include="Entities\Dossiers\DossierFolders\IsAssociatedWithProcess.cs" />
     <Compile Include="Entities\Dossiers\DossierFolders\IsEditable.cs" />
     <Compile Include="Entities\Dossiers\DossierFolders\IsAssociatedWithFascicle.cs" />
     <Compile Include="Entities\Dossiers\DossierFolders\IsDeletable.cs" />
@@ -90,10 +92,13 @@
     <Compile Include="Entities\Dossiers\DossierFolders\HasValidStatus.cs" />
     <Compile Include="Entities\Dossiers\DossierFolders\IsDoneByManager.cs" />
     <Compile Include="Entities\Dossiers\DossierAlreadyExists.cs" />
+    <Compile Include="Entities\Dossiers\DossierRoles\HasModifyRights.cs" />
     <Compile Include="Entities\Dossiers\HasModifyRights.cs" />
     <Compile Include="Entities\Dossiers\DossierFolders\HasAccountedRole.cs" />
     <Compile Include="Entities\Dossiers\HasResponsibleRole.cs" />
     <Compile Include="Entities\Dossiers\HasContainerRights.cs" />
+    <Compile Include="Entities\Dossiers\IsMasterRoleUnique.cs" />
+    <Compile Include="Entities\Dossiers\IsClosable.cs" />
     <Compile Include="Entities\Dossiers\IsResponsibleRoleUnique.cs" />
     <Compile Include="Entities\Fascicles\ActivityFascicleAlreadyExists.cs" />
     <Compile Include="Entities\Fascicles\CollectionCountValidator.cs" />
@@ -141,6 +146,7 @@
     <Compile Include="Entities\Fascicles\IsFascicleManagerUnique.cs" />
     <Compile Include="Entities\Fascicles\HasRequiredMetadata.cs" />
     <Compile Include="Entities\Fascicles\IsMasterRoleUnique.cs" />
+    <Compile Include="Entities\Fascicles\IsProcedureFascicle.cs" />
     <Compile Include="Entities\MassimariScarto\HasValidParentEndDate.cs" />
     <Compile Include="Entities\MassimariScarto\HasValidCode.cs" />
     <Compile Include="Entities\MassimariScarto\HasValidChildrenEndDate.cs" />
@@ -171,10 +177,13 @@
     <Compile Include="Entities\Templates\HasTemplateValidRole.cs" />
     <Compile Include="Entities\Templates\HasTemplateValidSigner.cs" />
     <Compile Include="Entities\Templates\TemplateAlreadyExist.cs" />
+    <Compile Include="Entities\Tenants\IsTenantAOONameUnique.cs" />
     <Compile Include="Entities\Tenants\IsTenantNameUnique.cs" />
     <Compile Include="Entities\Tenants\IsOnlyOneTenantActivated.cs" />
+    <Compile Include="Entities\UDS\HasModifyRights.cs" />
     <Compile Include="Entities\UDS\IsActive.cs" />
     <Compile Include="Entities\UDS\NameAlreadyExists.cs" />
+    <Compile Include="Entities\UDS\DocumentUnitAlreadyExists.cs" />
     <Compile Include="Entities\Workflows\IsWorkflowActivityCompleted.cs" />
     <Compile Include="Entities\Workflows\IsWorkflowAuthorized.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -189,9 +198,9 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="VecompSoftware.DocSuiteWeb.CustomValidation.nuspec">
+    <Content Include="VecompSoftware.DocSuiteWeb.CustomValidation.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

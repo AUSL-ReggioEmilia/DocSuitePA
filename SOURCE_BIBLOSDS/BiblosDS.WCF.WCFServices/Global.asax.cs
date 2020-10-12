@@ -1,10 +1,8 @@
-﻿using System;
-using log4net;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.ServiceRuntime;
-using System.IO;
+﻿using log4net;
 using log4net.Config;
-using System.Configuration; 
+using System;
+using System.Configuration;
+using System.IO;
 
 namespace BiblosDS.WCF.WCFServices
 {
@@ -37,49 +35,6 @@ namespace BiblosDS.WCF.WCFServices
             var configuration = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log4net.config");
             XmlConfigurator.Configure(new Uri(configuration));
 
-            try
-            {
-                if (RoleEnvironment.IsAvailable)
-                {
-                    //(CDLTLL) Configuration for Windows Azure settings 
-                    //CloudStorageAccount.SetConfigurationSettingPublisher(
-                    //    (configName, configSettingPublisher) =>
-                    //    {
-                    //        var connectionString =
-                    //            RoleEnvironment.GetConfigurationSettingValue(configName);
-                    //        configSettingPublisher(connectionString);
-                    //    }
-                    //);
-
-                    // piccoli 20130422 se il role enviroment non è disponibile o l'accesso è in eccezione, legge dal config 
-                    CloudStorageAccount.SetConfigurationSettingPublisher((configName, configSetter) =>
-                    {
-                        bool isRoleEnviromentAvailable = false;
-                        try
-                        {
-                            isRoleEnviromentAvailable = RoleEnvironment.IsAvailable;
-                        }
-                        catch
-                        {
-                            isRoleEnviromentAvailable = false;
-                        }
-
-                        string value = "";
-                        if (isRoleEnviromentAvailable)
-                            value = RoleEnvironment.GetConfigurationSettingValue(configName);
-                        else
-                            value = ConfigurationManager.AppSettings[configName];
-                        configSetter(value);
-                    });
-
-                    logger.InfoFormat("DeploymentId {0}", RoleEnvironment.DeploymentId);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);                
-            }            
-              
             logger.Info("Application_Start");
         }      
 

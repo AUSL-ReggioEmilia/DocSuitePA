@@ -20,5 +20,10 @@ namespace VecompSoftware.DocSuite.Document
         Task<byte[]> GetDocumentContentAsync(Guid idDocument);
 
         Task<bool> HasActiveDocumentsAsync(Guid idChain);
+
+        bool HasActiveDocuments(Guid idChain);
+        Task<bool> IsDocumentsSignedAsync(List<Guid> idDocuments);
+
+        Task<ICollection<Guid>> FullTextFindDocumentsAsync(IList<string> archiveNames, string filter);
     }
 }

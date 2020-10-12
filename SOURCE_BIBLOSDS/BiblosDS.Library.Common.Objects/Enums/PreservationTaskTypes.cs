@@ -28,6 +28,16 @@ namespace BiblosDS.Library.Common.Objects.Enums
         /// Task di verifica del supporto di una conservazione 
         /// </summary>
         [EnumMember]
-        VerifyPreservation = 4, 
+        VerifyPreservation = 4,
+        /// <summary>
+        /// Task di conservazione ciclo passivo
+        /// </summary>
+        [EnumMember]
+        PassiveCycleConservation = 5,
+        /// <summary>
+        /// Task conservazione di chiusura anno
+        /// </summary>
+        [EnumMember]
+        CloseAnnualPreservation = 6
     }
 }

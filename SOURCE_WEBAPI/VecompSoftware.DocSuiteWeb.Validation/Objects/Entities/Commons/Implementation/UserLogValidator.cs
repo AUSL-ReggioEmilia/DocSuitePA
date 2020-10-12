@@ -30,7 +30,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
         public string AdaptiveSearchStatistics { get; set; }
         public string AdaptiveSearchEvaluated { get; set; }
         public int PrivacyLevel { get; set; }
-        public Guid? CurrentTenantId { get; set; }
+        public Guid CurrentTenantId { get; set; }
         public string UserProfile { get; set; }
         public string RegistrationUser { get; set; }
         public DateTimeOffset RegistrationDate { get; set; }

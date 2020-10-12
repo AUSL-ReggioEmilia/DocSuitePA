@@ -18,10 +18,12 @@ namespace VecompSoftware.DocSuite.Public.Core.Models.Workflows.Parameters
         /// </summary>
         /// <param name="uniqueId">Chiave univoca dell'entità della DocSuite</param>
         /// <param name="docSuiteEntityType">Tipologie di entità della DocSuite <see cref="DocSuiteEntityType"/></param>
-        public ReferenceModel(Guid uniqueId, DocSuiteEntityType docSuiteEntityType)
+        /// <param name="serializedModel">Specificare im modello serializzato in formato json quando <see cref="DocSuiteEntityType"/> è stato settato su IntegrationEvent</param>
+        public ReferenceModel(Guid uniqueId, DocSuiteEntityType docSuiteEntityType, string serializedModel)
         {
             UniqueId = uniqueId;
             DocSuiteEntityType = docSuiteEntityType;
+            SerializedModel = serializedModel;
         }
         #endregion
 
@@ -37,6 +39,10 @@ namespace VecompSoftware.DocSuite.Public.Core.Models.Workflows.Parameters
         /// </summary>
         public DocSuiteEntityType DocSuiteEntityType { get; private set; }
 
+        /// <summary>
+        /// Modello serializzato in formato json
+        /// </summary>
+        public string SerializedModel { get; private set; }
         #endregion
     }
 }

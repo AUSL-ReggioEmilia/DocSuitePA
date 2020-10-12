@@ -28,8 +28,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Fascicles
 
         #region [ Constructor ]
 
-        public FascicleContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient)
-            : base(logger, webApiClient, biblosClient)
+        public FascicleContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
             _logger = logger;
             _webApiClient = webApiClient;
@@ -47,7 +47,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Fascicles
             try
             {
                 fascicle = ((ICommandCreateFascicle)command).ContentType.ContentTypeValue;
-                evt = new EventCreateFascicle(command.TenantName, command.TenantId, command.Identity, fascicle);
+                evt = new EventCreateFascicle(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, fascicle);
             }
             catch (Exception ex)
             {
@@ -64,7 +64,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Fascicles
             try
             {
                 fascicle = ((ICommandUpdateFascicle)command).ContentType.ContentTypeValue;
-                evt = new EventUpdateFascicle(command.TenantName, command.TenantId, command.Identity, fascicle);
+                evt = new EventUpdateFascicle(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, fascicle);
             }
             catch (Exception ex)
             {

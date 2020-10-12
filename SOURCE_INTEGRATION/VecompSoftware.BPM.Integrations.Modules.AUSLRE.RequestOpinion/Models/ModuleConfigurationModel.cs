@@ -15,6 +15,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.RequestOpinon.Models
     {
         public string TenantName { get; set; }
         public Guid TenantId { get; set; }
+        public Guid TenantAOOId { get; set; }
         public string TopicWorkflowIntegration { get; set; }
         public string WorkflowStartProtocolUserAuthorizationSubscription { get; set; }
         public string WorkflowStartProtocolRemoveUserAuthorizationSubscription { get; set; }

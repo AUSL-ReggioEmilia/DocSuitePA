@@ -4,6 +4,7 @@
     {
         public string WorkflowIntegrationTopic { get; set; }
         public string WorkflowStartAvelcoShareDocumentUnitSubscription { get; set; }
+        public string WorkflowStartAvelcoProtocolCreatedSubscription { get; set; }
         public string AVELCOWebApiUrl { get; set; }
     }
 }

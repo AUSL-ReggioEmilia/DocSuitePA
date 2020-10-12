@@ -97,7 +97,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.IP4D
             if (_needInitializeModule)
             {
                 _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
-                _subscriptions.Add(_serviceBusClient.StartListening<IEventProtocolExternalViewer>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.Topic_IP4DToExternalViewer, 
+                _subscriptions.Add(_serviceBusClient.StartListening<IEventProtocolExternalViewer>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.Topic_IP4DToExternalViewer,
                     _moduleConfiguration.Subscription_IP4DToExternalViewer, EventProtocolExternalViewerCallbackAsync));
                 _subscriptions.Add(_serviceBusClient.StartListening<ICommandProtocolExternalViewer>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.Queue_IP4DProtocolExternalViewer,
                     CommandProtocolExternalViewerCallbackAsync));
@@ -148,7 +148,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.IP4D
 
         }
 
-        private async Task CommandProtocolExternalViewerCallbackAsync(ICommandProtocolExternalViewer cmd)
+        private async Task CommandProtocolExternalViewerCallbackAsync(ICommandProtocolExternalViewer cmd, IDictionary<string, object> properties)
         {
             if (Cancel)
             {
@@ -177,7 +177,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.IP4D
 
         }
 
-        private async Task EventProtocolExternalViewerCallbackAsync(IEventProtocolExternalViewer evt)
+        private async Task EventProtocolExternalViewerCallbackAsync(IEventProtocolExternalViewer evt, IDictionary<string, object> properties)
         {
             if (Cancel)
             {

@@ -240,7 +240,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                     attrList.Add(awbAttr);
                 }
 
-                string fileName = string.Format("{0}{1}", PurgeFileName(doc.AttributeValues, string.IsNullOrEmpty(doc.PrimaryKeyValue) ? doc.PreservationIndex.GetValueOrDefault().ToString() : doc.PrimaryKeyValue), Path.GetExtension(doc.Name));
+                string fileName = string.Format("{0}{1}", PurgeFileName(docAttributes, string.IsNullOrEmpty(doc.PrimaryKeyValue) ? doc.PreservationIndex.GetValueOrDefault().ToString() : doc.PrimaryKeyValue), Path.GetExtension(doc.Name));
 
                 attrList.Insert(0, new AwbBatchFileAttribute
                 {
@@ -306,11 +306,12 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 BindingList<Document> documents = DbProvider.GetAwardBatchDocuments(awardBatch.IdAwardBatch);
                 List<DocumentAttribute> attributes = DbProvider.GetAttributesFromArchive(awardBatch.IdArchive).Where(x => !x.ConservationPosition.HasValue || x.ConservationPosition.Value > 0).OrderBy(x => x.ConservationPosition).ToList();
                 byte[] documentContent;
+                string documentHash;
                 BiblosStorageService.StorageService storageService = new BiblosStorageService.StorageService();
                 foreach (Document document in documents)
                 {
                     documentContent = null;
-                    string documentHash = null;
+                    documentHash = null;
                     if (preservation != null && preservation.Documents != null)
                     {
                         Document currentDocument = preservation.Documents.SingleOrDefault(x => x.IdDocument == document.IdDocument);

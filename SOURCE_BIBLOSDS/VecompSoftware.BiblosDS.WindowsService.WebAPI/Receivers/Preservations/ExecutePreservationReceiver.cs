@@ -57,7 +57,6 @@ namespace VecompSoftware.BiblosDS.WindowsService.WebAPI.Receivers.Preservations
                 }
                 
                 CommandExecutePreservation @command = commandModel as CommandExecutePreservation;
-                _preservationService.ArchiveConfigFile = command.ArchiveConfigurationPath;
                 if (command.IdTask == Guid.Empty)
                 {
                     _logger.Error($"Command with idTask not defined");

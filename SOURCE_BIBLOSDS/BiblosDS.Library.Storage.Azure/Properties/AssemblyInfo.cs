@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("BiblosDS.Library.Storage.Azure")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2019")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -14,5 +14,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("43139ef5-bc23-439b-beb5-6624efc67db6")]
 
-[assembly: AssemblyVersion("8.81.0.0")]
-[assembly: AssemblyFileVersion("8.81.0.0")]
+[assembly: AssemblyVersion("9.03.0.0")]
+[assembly: AssemblyFileVersion("9.03.0.0")]

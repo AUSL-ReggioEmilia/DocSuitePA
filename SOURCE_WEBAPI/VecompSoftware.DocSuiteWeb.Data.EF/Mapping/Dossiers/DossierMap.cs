@@ -42,9 +42,21 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Dossiers
                 .HasColumnName("EndDate")
                 .IsOptional();
 
-            Property(x => x.JsonMetadata)
-                .HasColumnName("JsonMetadata")
+            Property(x => x.MetadataDesigner)
+                .HasColumnName("MetadataDesigner")
                 .IsOptional();
+
+            Property(x => x.MetadataValues)
+                .HasColumnName("MetadataValues")
+                .IsOptional();
+
+            Property(x => x.DossierType)
+                .HasColumnName("DossierType")
+                .IsRequired();
+
+            Property(x => x.Status)
+                .HasColumnName("Status")
+                .IsRequired();
 
             Property(x => x.RegistrationDate)
                 .HasColumnName("RegistrationDate")
@@ -67,7 +79,11 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Dossiers
                 .IsRequired();
 
             Ignore(x => x.EntityId)
-                .Ignore(x => x.EntityShortId);
+                .Ignore(x => x.EntityShortId)
+                .Ignore(x => x.WorkflowAutoComplete)
+                .Ignore(x => x.WorkflowName)
+                .Ignore(x => x.IdWorkflowActivity)
+                .Ignore(x => x.WorkflowActions);
 
             #endregion
 
@@ -98,6 +114,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Dossiers
             HasOptional(t => t.MetadataRepository)
                 .WithMany(t => t.Dossiers)
                 .Map(m => m.MapKey("IdMetadataRepository"));
+
+            HasRequired(t => t.Category)
+                .WithMany(t => t.Dossiers)
+                .Map(m => m.MapKey("IdCategory"));
             #endregion
 
 

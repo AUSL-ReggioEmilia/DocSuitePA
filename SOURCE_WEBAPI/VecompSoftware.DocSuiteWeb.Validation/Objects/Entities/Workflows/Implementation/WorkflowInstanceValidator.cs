@@ -30,6 +30,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Workflows
         public WorkflowStatus Status { get; set; }
 
         public byte[] Timestamp { get; set; }
+        public string Subject { get; set; }
 
         #endregion
 

@@ -10,6 +10,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 
         #region [ Properties ]
         public string Name { get; set; }
+        public Guid? UniqueId { get; set; }
         public short? ParentId { get; set; }
         public string ServiceCode { get; set; }
         public Guid? TenantId { get; set; }

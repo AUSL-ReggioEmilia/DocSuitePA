@@ -32,6 +32,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Fascicles
             WorkflowActions = new List<IWorkflowAction>();
             FascicleDocumentUnits = new HashSet<FascicleDocumentUnit>();
             DocumentUnitFascicleCategories = new HashSet<DocumentUnitFascicleCategory>();
+            MetadataValueContacts = new HashSet<MetadataValueContact>();
+            SourceMetadataValues = new HashSet<MetadataValue>();
         }
         #endregion
 
@@ -63,9 +65,13 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Fascicles
 
         public VisibilityType VisibilityType { get; set; }
 
+        public string MetadataDesigner { get; set; }
+
         public string MetadataValues { get; set; }
 
         public int? DSWEnvironment { get; set; }
+
+        public string CustomActions { get; set; }
 
         #endregion
 
@@ -73,37 +79,29 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Fascicles
         public virtual Category Category { get; set; }
         public virtual Container Container { get; set; }
         public virtual MetadataRepository MetadataRepository { get; set; }
-        public virtual ProcessFascicleTemplate ProcessFascicleTemplate { get; set; }
-
+        public virtual ProcessFascicleTemplate FascicleTemplate { get; set; }
         public virtual ICollection<FascicleDocumentUnit> FascicleDocumentUnits { get; set; }
-
-
         public virtual ICollection<Contact> Contacts { get; set; }
-
         public virtual ICollection<FascicleLog> FascicleLogs { get; set; }
-
         public virtual ICollection<FascicleLink> LinkedFascicles { get; set; }
-
         public virtual ICollection<FascicleLink> FascicleLinks { get; set; }
-
         public virtual ICollection<DocumentUnit> DocumentUnits { get; set; }
-
         public virtual ICollection<FascicleDocument> FascicleDocuments { get; set; }
-
         public virtual ICollection<FascicleRole> FascicleRoles { get; set; }
-
         public virtual ICollection<DossierFolder> DossierFolders { get; set; }
-
         public virtual ICollection<WorkflowInstance> WorkflowInstances { get; set; }
-
         public virtual ICollection<FascicleFolder> FascicleFolders { get; set; }
         public virtual ICollection<DocumentUnitFascicleCategory> DocumentUnitFascicleCategories { get; set; }
+        public virtual ICollection<MetadataValue> SourceMetadataValues { get; set; }
+        public virtual ICollection<MetadataValueContact> MetadataValueContacts { get; set; }
+        #endregion
 
-        public string WorkflowName { get; set; }
-
+        #region [ Not Mapping Properties ]
+        public bool WorkflowAutoComplete { get; set; }
         public Guid? IdWorkflowActivity { get; set; }
-
+        public string WorkflowName { get; set; }
         public ICollection<IWorkflowAction> WorkflowActions { get; set; }
         #endregion
+
     }
 }

@@ -1,28 +1,20 @@
-﻿
-using BiblosDS.Cloud;
-using BiblosDS.LegalExtension.AdminPortal.ApplicationCore.Models.AwardBatches;
-using BiblosDS.LegalExtension.AdminPortal.Helpers;
+﻿using BiblosDS.LegalExtension.AdminPortal.Helpers;
 using BiblosDS.LegalExtension.AdminPortal.ViewModel;
 using BiblosDS.Library.Common.Objects;
-using BiblosDS.Library.Common.Objects.Enums;
 using BiblosDS.Library.Common.Objects.Response;
 using BiblosDS.Library.Common.Preservation.Services;
 using BiblosDS.Library.Common.Services;
-using BiblosDS.Library.Common.Utility;
-using BiblosDS.Library.Helper;
 using Kendo.Mvc.UI;
 using log4net;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.StorageClient;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using VecompSoftware.BiblosDS.Model.Parameters;
 
 namespace BiblosDS.LegalExtension.AdminPortal.Controllers
 {
@@ -123,7 +115,6 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         {
             var service = new PreservationService();
             Preservation pres = service.GetPreservation(id);
-            service.ArchiveConfigFile = ConfigurationHelper.GetArchiveConfigurationFilePath(pres.Archive.Name);
             service.VerifyExistingPreservation(id);
             TempData["ErrorMessages"] = service.ErrorMessages;
 
@@ -142,171 +133,18 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         [Authorize()]
         public ActionResult DownloadFile(Guid idDocument)
         {
-            ServiceReferenceDocument.DocumentsClient client = new ServiceReferenceDocument.DocumentsClient();
-            var result = client.GetDocumentContent(idDocument, null, Library.Common.Enums.DocumentContentFormat.Binary, null);
-            return File(result.Blob, "text/xml");
-        }
-
-        [NoCache]
-        [Authorize()]
-        public ActionResult MountPreservationDevice(Guid idPreservation)
-        {
-            try
+            using (ServiceReferenceDocument.DocumentsClient client = new ServiceReferenceDocument.DocumentsClient())
             {
-                var preservation = new PreservationService().GetPreservation(idPreservation, false);
-                var company = ArchiveService.GetCompanyFromArchive(preservation.Archive.IdArchive);
-                CloudStorageAccount account = CloudStorageAccount.FromConfigurationSetting(CloudDriveManager.STORAGE_ACCOUNT_SETTING);
-                CloudBlobClient blobClient = account.CreateCloudBlobClient();
-                CloudBlobContainer container = blobClient.GetContainerReference(company.IdCompany.ToString());
-                var blob = container.GetPageBlobReference("Gianni_Mancini.vhd");
-
-                var permissions = container.GetPermissions();
-                permissions.SharedAccessPolicies.Remove("readonly");
-                permissions.SharedAccessPolicies.Add("readonly", new SharedAccessPolicy()
-                {
-                    Permissions = SharedAccessPermissions.Read
-                });
-                container.SetPermissions(permissions, new BlobRequestOptions()
-                {
-                    // fail if someone else has already changed the container before we do
-                    AccessCondition = AccessCondition.IfMatch(container.Properties.ETag)
-                });
-
-                var sasWithIdentifier = blob.GetSharedAccessSignature(new SharedAccessPolicy()
-                {
-                    SharedAccessExpiryTime = DateTime.UtcNow + TimeSpan.FromDays(1)
-                }, "readonly");
-
-
-                var drive = blob.Uri.AbsoluteUri + sasWithIdentifier;
-
-
-                //CloudDriveManager manager = new CloudDriveManager();
-                //manager.CreateDriveFromUrl(preservation.Path);      
-
-
-                //var drive = manager.Mount();
-
-                return Json(new { drive = drive });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = ex.ToString() });
-            }
-        }
-
-        public static string ParseAzureStorageName(string name)
-        {
-            var res = Regex.Replace(name, @"[^A-Za-z0-9]+", "_");
-            return res.Substring(0, Math.Min(res.Length, 60));
-        }
-
-        [NoCache]
-        [Authorize()]
-        public ActionResult DownloadPreservationDevice(Guid id)
-        {
-            try
-            {
-                var pres = new PreservationService().GetPreservation(id, false);
-                var company = ArchiveService.GetCompanyFromArchive(pres.Archive.IdArchive);
-
-                CloudStorageAccount account = CloudStorageAccount.FromConfigurationSetting(CloudDriveManager.STORAGE_ACCOUNT_SETTING);
-                CloudBlobClient blobStorage = account.CreateCloudBlobClient();
-                blobStorage.ReadAheadInBytes = 0;
-
-                CloudBlobContainer container = blobStorage.GetContainerReference(company.IdCompany.ToString());
-                CloudPageBlob pageBlob = container.GetPageBlobReference(string.Format("{0}.vhd", ParseAzureStorageName(pres.Archive.PathPreservation.ToStringExt() + company.CompanyName)));
-
-                // Get the length of the blob
-                pageBlob.FetchAttributes();
-                long vhdLength = pageBlob.Properties.Length;
-                long totalDownloaded = 0;
-                Console.WriteLine("Vhd size:  " + Megabytes(vhdLength));
-
-                // Create a new local file to write into
-                MemoryStream fileStream = new MemoryStream();
-                fileStream.SetLength(vhdLength);
-
-                // Download the valid ranges of the blob, and write them to the file
-                IEnumerable<PageRange> pageRanges = pageBlob.GetPageRanges();
-                BlobStream blobStream = pageBlob.OpenRead();
-
-                foreach (PageRange range in pageRanges)
-                {
-                    // EndOffset is inclusive... so need to add 1
-                    int rangeSize = (int)(range.EndOffset + 1 - range.StartOffset);
-
-                    // Chop range into 4MB chucks, if needed
-                    for (int subOffset = 0; subOffset < rangeSize; subOffset += FourMegabyteAsBytes)
-                    {
-                        int subRangeSize = Math.Min(rangeSize - subOffset, FourMegabyteAsBytes);
-                        blobStream.Seek(range.StartOffset + subOffset, SeekOrigin.Begin);
-                        fileStream.Seek(range.StartOffset + subOffset, SeekOrigin.Begin);
-
-                        Console.WriteLine("Range: ~" + Megabytes(range.StartOffset + subOffset)
-                                          + " + " + PrintSize(subRangeSize));
-                        byte[] buffer = new byte[subRangeSize];
-
-                        blobStream.Read(buffer, 0, subRangeSize);
-                        fileStream.Write(buffer, 0, subRangeSize);
-                        totalDownloaded += subRangeSize;
-                    }
-                }
-
-                return new FileStreamResult(fileStream, "*.vhd") { FileDownloadName = "Conservazione.vhd" };
-
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = ex.ToString() });
-            }
-        }
-
-        private static int PageBlobPageSize = 512;
-        private static int OneMegabyteAsBytes = 1024 * 1024;
-        private static int FourMegabytesAsBytes = 4 * OneMegabyteAsBytes;
-        private static int FourMegabyteAsBytes = 4 * OneMegabyteAsBytes;
-
-        private static string PrintSize(long bytes)
-        {
-            if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).ToString() + " MB";
-            if (bytes >= 1024) return (bytes / 1024).ToString() + " kb";
-            return (bytes).ToString() + " bytes";
-        }
-
-        private static string Megabytes(long bytes)
-        {
-            return (bytes / OneMegabyteAsBytes).ToString() + " MB";
-        }
-        private static long RoundUpToPageBlobSize(long size)
-        {
-            return (size + PageBlobPageSize - 1) & ~(PageBlobPageSize - 1);
-        }
-
-        [NoCache]
-        [HttpPost]
-        [Authorize()]
-        public ActionResult UnMountPreservationDevice(Guid idPreservation)
-        {
-            try
-            {
-                var preservation = new PreservationService().GetPreservation(idPreservation, false);
-                CloudDriveManager manager = new CloudDriveManager();
-                manager.CreateDriveFromUrl(preservation.Path);
-                var drive = manager.Unmount();
-                return Json(new { drive = drive, url = manager.VHD_Url });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { error = ex.ToString() });
-            }
+                DocumentContent result = client.GetDocumentContent(idDocument, null, Library.Common.Enums.DocumentContentFormat.Binary, null);
+                return File(result.Blob, "text/xml");
+            }            
         }
 
         [NoCache]
         [Authorize()]
         public ActionResult PreservationTaskEnable(Guid id)
         {
-            var query = new PreservationService().GetAllChildPreservationTasks(id, 0, 10);
+            PreservationTaskResponse query = new PreservationService().GetAllChildPreservationTasks(id, 0, 10);
             foreach (var item in query.Tasks)
             {
                 new PreservationService().EnablePreservationTask(item.IdPreservationTask);
@@ -318,14 +156,16 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         [Authorize()]
         public ActionResult PreservationTaskDetails(Guid id)
         {
-            var query = new PreservationService().GetAllChildPreservationTasks(id, 0, 10);
+            PreservationTaskResponse query = new PreservationService().GetAllChildPreservationTasks(id, 0, 10);
             PreservationTaskViewModel model = new PreservationTaskViewModel();
             model.Tasks = query.Tasks.OrderByDescending(x => x.EstimatedDate).ToList();
-            var archive = query.Tasks.First().Archive;
-            model.Archive = archive;
+            model.VerifyTask = query.Tasks.FirstOrDefault(x => x.TaskType.Type == Library.Common.Objects.Enums.PreservationTaskTypes.Verify);
+            model.HasVerifyTaskDefined = (model.VerifyTask != null);
+            model.Archive = query.Tasks.First().Archive;
             model.ArchiveName = query.Tasks.First().Archive.Name;
             model.IdArchive = query.Tasks.First().Archive.IdArchive;
             model.Company = ArchiveService.GetCompanyFromArchive(model.IdArchive);
+            model.HasCompanyDefined = (model.Company != null);
 
             foreach (PreservationTask task in model.Tasks)
             {
@@ -353,9 +193,7 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             model.HasArchiveConfigurationFile = false;
             if (!string.IsNullOrEmpty(model.ArchiveName))
             {
-                string pathConfiguration = ConfigurationHelper.GetArchiveConfigurationFilePath(model.ArchiveName);
-
-                if (!System.IO.File.Exists(pathConfiguration))
+                if (string.IsNullOrEmpty(model.Archive.PreservationConfiguration))
                 {
                     logger.InfoFormat("L'archivio {0} non è stato configurato", model.Tasks.FirstOrDefault().Archive.Name);
                     model.HasArchiveConfigurationFile = false;
@@ -381,7 +219,7 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         [Authorize()]
         public ActionResult PreservationDetails(Guid id)
         {
-            var preservation = new PreservationService().GetPreservation(id, false);
+            Preservation preservation = new PreservationService().GetPreservation(id, false);
             return View(preservation);
         }
 
@@ -389,18 +227,16 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         [Authorize()]
         public ActionResult ArchivePreservation(Guid id)
         {
-            DocumentArchive model = null;
             try
             {
-                model = ArchiveService.GetArchive(id);
+                DocumentArchive model = ArchiveService.GetArchive(id);
+                return View(model);
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
                 throw;
             }
-
-            return View(model);
         }
 
         [NoCache]
@@ -583,8 +419,8 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         {
             PreservationService service = new PreservationService();
             PreservationTask presTask = service.GetPreservationTask(idTask);
-            service.ArchiveConfigFile = ConfigurationHelper.GetArchiveConfigurationFilePath(presTask.Archive.Name);            
-            service.ResetErrorFlagForPreservationTask(idTask, true);
+            ArchiveConfiguration archiveConfiguration = JsonConvert.DeserializeObject<ArchiveConfiguration>(presTask.Archive.PreservationConfiguration);
+            service.ResetErrorFlagForPreservationTask(idTask, true, archiveConfiguration.ForceAutoInc);
             return RedirectToAction("PreservationTaskDetails", new { id = idTask });
         }
 
@@ -594,8 +430,8 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         {
             PreservationService service = new PreservationService();
             PreservationTask task = service.GetPreservationTask(idTask);
-            service.ArchiveConfigFile = ConfigurationHelper.GetArchiveConfigurationFilePath(task.Archive.Name);
-            service.ResetPreservationTask(idTask, true);
+            ArchiveConfiguration archiveConfiguration = JsonConvert.DeserializeObject<ArchiveConfiguration>(task.Archive.PreservationConfiguration);
+            service.ResetPreservationTask(idTask, true, archiveConfiguration.ForceAutoInc);
             return RedirectToAction("PreservationTaskDetails", new { id = idTask });
         }        
 
@@ -684,141 +520,6 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             return retval;
         }
 
-        /*
-        private IEnumerable<PreservationTask> getTasksFromSchedulerPeriod(string encodedPeriod, int baseMonth, int baseYear)
-        {
-          var retval = new List<PreservationTask>();
-
-          if (!string.IsNullOrWhiteSpace(encodedPeriod))
-          {
-            DateTime startDate = new DateTime(baseYear, baseMonth, 1), endDate;
-            PreservationTask toAdd = new PreservationTask();
-            var splittedPeriods = encodedPeriod.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
-            string[] splittedMonthAndDay;
-            int month = 0, day = 0, lastMonthDay;
-
-            foreach (var period in splittedPeriods)
-            {
-              splittedMonthAndDay = period.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
-
-              if (splittedMonthAndDay.Count() > 1)
-              {
-                try
-                {
-                  try
-                  {
-                    month = int.Parse(splittedMonthAndDay.First());
-                    day = int.Parse(splittedMonthAndDay.Last());
-                  }
-                  catch { throw new Exception("Configurazione non corretta per il periodo dello scadenziario."); }
-
-                  endDate = new DateTime(baseYear, month, day);
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                  //Se si verifica un'eccezione di tipo "ArgumentOutOfRangeException" è perchè
-                  //l'ultimo giorno del mese configurato in "encodedPeriod" è superiore all'ultimo
-                  //giorno del mese reale.
-                  lastMonthDay = new DateTime(baseYear, baseMonth, 1).AddMonths(1).AddHours(-1).Day;
-                  endDate = new DateTime(baseYear, baseMonth, lastMonthDay);
-                }
-              }
-              else
-              {
-                try
-                {
-                  try
-                  {
-                    day = int.Parse(period);
-                  }
-                  catch { throw new Exception("Configurazione non corretta per il periodo dello scadenziario."); }
-
-                  endDate = new DateTime(baseYear, baseMonth, day);
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                   //Se si verifica un'eccezione di tipo "ArgumentOutOfRangeException" è perchè
-                   //l'ultimo giorno del mese configurato in "encodedPeriod" è superiore all'ultimo
-                   //giorno del mese reale.
-                  lastMonthDay = new DateTime(baseYear, baseMonth, 1).AddMonths(1).AddHours(-1).Day;
-                  endDate = new DateTime(baseYear, baseMonth, lastMonthDay);
-                }
-              }
-
-              //considera periodo successivo
-              if (endDate <= startDate)
-                continue;
-
-              toAdd = new PreservationTask { StartDocumentDate = startDate, EndDocumentDate = endDate, EstimatedDate = findNextValidWeekDay(endDate) };
-              startDate = endDate.AddDays(1);
-
-              retval.Add(toAdd);
-            }
-          }
-
-          return retval;
-        }
-        */
-
-        private bool checkPreservationFilesIntegrity(Guid idPreservation, string closingFilePath, string indexFilePath, bool checkAgainstIndexFile)
-        {
-            var areValids = false;
-
-            try
-            {
-                if (idPreservation == Guid.Empty || (string.IsNullOrWhiteSpace(closingFilePath) && string.IsNullOrWhiteSpace(indexFilePath)))
-                    throw new Exception("Parametri di input insufficienti.");
-
-                if (!string.IsNullOrWhiteSpace(closingFilePath) && System.IO.File.Exists(closingFilePath))
-                {
-                    var lines = System.IO.File.ReadAllLines(closingFilePath);
-                    var element = lines
-                        .FirstOrDefault<string>(x => x.Trim().ToUpper().StartsWith("IDENTIFICATIVO CONSERVAZIONE SOSTITUTIVA"));
-
-                    if (element == null)
-                        throw new Exception("Il formato del file di chiusura non è valido.");
-
-                    var txtGuid = element
-                        .Trim()
-                        .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
-                        .LastOrDefault<string>();
-                    Guid id;
-
-                    if (string.IsNullOrWhiteSpace(txtGuid) || !Guid.TryParse(txtGuid, out id))
-                        throw new Exception("Impossibile recuperare l'identificativo della conservazione a partire dal file di chiusura.");
-
-                    areValids = (id == idPreservation);
-
-                    if (checkAgainstIndexFile)
-                    {
-                        if (!string.IsNullOrWhiteSpace(indexFilePath) && System.IO.File.Exists(indexFilePath))
-                        {
-                            //TODO: Implementare verifica integrità & coerenza tra file INDICE e file CHIUSURA.
-                        }
-                        else
-                        {
-                            throw new Exception("Impossibile confrontare il file di chiusura con il file indice.");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                throw;
-            }
-
-            return areValids;
-        }
-
-
-        private JsonResult ThrowJSONError(Exception e)
-        {
-            Response.StatusCode = (int)System.Net.HttpStatusCode.BadRequest;
-            //Log your exception
-            return Json(new { Message = e.Message });
-        }
-
         [NoCache]
         [Authorize()]
         public ActionResult ArchivePreservationConfiguration(Guid id)
@@ -829,12 +530,11 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
 
         private ArchivePreservationConfigurationViewModel ArchivePreservationConfigurationModel(Guid id)
         {
-            var archive = ArchiveService.GetArchive(id);
-            string path = ConfigurationHelper.GetArchiveConfigurationFilePath(archive.Name);
+            DocumentArchive archive = ArchiveService.GetArchive(id);
             ArchivePreservationConfigurationViewModel viewModel = new ArchivePreservationConfigurationViewModel() { Archive = archive, ArchiveConfiguration = new ArchiveConfiguration()};
-            if (System.IO.File.Exists(path))
+            if (!string.IsNullOrEmpty(archive.PreservationConfiguration))
             {
-                viewModel.ArchiveConfiguration = PreservationHelper.GetArchiveConfiguration(path);
+                viewModel.ArchiveConfiguration = JsonConvert.DeserializeObject<ArchiveConfiguration>(archive.PreservationConfiguration);
             }
 
             if (viewModel.Archive.FiscalDocumentType == null)
@@ -850,19 +550,13 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
 
         [NoCache]
         [Authorize]
-        public ActionResult SetArchivePreservationConfiguration(Guid idArchive, int firstConservationDay, int firstConservationMonth, int firstConservationYear, bool forceAutoInc, bool autoClose, bool generateTask, bool closeWithoutVerify, bool checkTsd)
+        [HttpPost]
+        public ActionResult SetArchivePreservationConfiguration(ArchivePreservationConfigurationViewModel model)
         {
-            DocumentArchive archive = ArchiveService.GetArchive(idArchive);
-
-            DateTime lowerLimit = new DateTime(firstConservationYear, firstConservationMonth, firstConservationDay).Date.ToLocalTime();
-
-            ArchiveConfiguration archiveConfiguration = new ArchiveConfiguration() {IdArchive=idArchive, PreservationLimitTaskToDocumentDate=lowerLimit, ForceAutoInc = forceAutoInc, PreservationAutoClose = autoClose, AutoGeneratedNextTask = generateTask, CloseWithoutVerify = closeWithoutVerify, CheckTsd = checkTsd };
-
-            string path = ConfigurationHelper.GetArchiveConfigurationFilePath(archive.Name);
-
-            PreservationHelper.UpdateArchiveConfiguration(archiveConfiguration, path);                 
-
-            return RedirectToAction("ArchivePreservationConfiguration", new { id = idArchive }); ;
+            DocumentArchive archive = ArchiveService.GetArchive(model.Archive.IdArchive);
+            archive.PreservationConfiguration = JsonConvert.SerializeObject(model.ArchiveConfiguration);
+            ArchiveService.UpdateArchive(archive);
+            return RedirectToAction("ArchivePreservationConfiguration", new { id = model.Archive.IdArchive });
         }
 
         [NoCache]
@@ -871,6 +565,61 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
         {
             ViewData["idPreservation"] = id;
             return View();
+        }
+
+        [NoCache]
+        [Authorize()]
+        public ActionResult ClosePreservationWithoutDocuments(Guid idPreservationTask)
+        {
+            var service = new PreservationService();
+            PreservationTask preservationTask = service.GetPreservationTask(idPreservationTask);
+            service.SavePreservationTaskStatus(preservationTask, Library.Common.Objects.Enums.PreservationTaskStatus.Done, false, null);
+            if (preservationTask.CorrelatedTasks != null)
+            {
+                foreach (PreservationTask correlatedtask in preservationTask.CorrelatedTasks)
+                {
+                    service.SavePreservationTaskStatus(correlatedtask, Library.Common.Objects.Enums.PreservationTaskStatus.Done, false, null);
+                }
+            }
+            
+            if (preservationTask.IdPreservation.HasValue)
+            {
+                service.ClosePreservation(preservationTask.IdPreservation.Value);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        [NoCache]
+        [Authorize]
+        public ActionResult ClosePreviousArchiveTasks(Guid idPreservationTask)
+        {
+            return ActionResultHelper.TryCatchWithLogger(() =>
+            {
+                PreservationService service = new PreservationService();
+                PreservationTask preservationTask = service.GetPreservationTask(idPreservationTask);
+                int taskYear = preservationTask.StartDocumentDate.Value.Year;
+                IList<int> years = new List<int>() { (taskYear - 1) };
+                if (preservationTask.StartDocumentDate.Value != new DateTime(taskYear, 1, 1))
+                {
+                    years.Add(taskYear);
+                }
+                ViewData["Years"] = years;
+                TempData["IdPreservationTask"] = idPreservationTask;
+                return PartialView("_ClosePreviousArchiveTasks");
+            }, _loggerService);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult ClosePreviousArchiveTasks(Guid idPreservationTask, int selectedTaskYear)
+        {
+            return ActionResultHelper.TryCatchWithLogger(() =>
+            {
+                PreservationService service = new PreservationService();
+                PreservationTask preservationTask = service.GetPreservationTask(idPreservationTask);
+                service.CreateClosePreviousPreservationTask(preservationTask, selectedTaskYear);
+                return RedirectToAction("ArchivePreservationTask", new { id = preservationTask.Archive.IdArchive });
+            }, _loggerService);
         }
     }
 

@@ -28,6 +28,12 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                 .SelectAsQueryable();
         }
 
+        public static IQueryable<Category> GetByUniqueId(this IRepository<Category> repository, Guid uniqueId)
+        {
+            return repository.Query(x => x.UniqueId == uniqueId)
+                .SelectAsQueryable();
+        }
+
         public static ICollection<CategoryFullTableValuedModel> FindByIdCategory(this IRepository<Category> repository, string username, string domain, short idCategory, FascicleType? fascicleType)
         {
             QueryParameter fascicleTypeParameter = new QueryParameter(CommonDefinition.SQL_Param_Category_FascicleType, DBNull.Value);
@@ -44,7 +50,8 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
         }
 
         public static ICollection<CategoryFullTableValuedModel> FindCategories(this IRepository<Category> repository, string username, string domain, string name, FascicleType? fascicleType,
-            bool? hasFascicleInsertRights, string manager, string secretary, short? role, bool? loadRoot, short? parentId, bool? parentAllDescendants, string fullCode, short? idContainer, bool? fascicleFilterEnabled)
+            bool? hasFascicleInsertRights, string manager, string secretary, short? role, bool? loadRoot, short? parentId, bool? parentAllDescendants, string fullCode, short? idContainer, bool? fascicleFilterEnabled,
+            Guid idtenantAOO)
         {
             QueryParameter nameParameter = new QueryParameter(CommonDefinition.SQL_Param_Category_Name, DBNull.Value);
             QueryParameter fascicleTypeParameter = new QueryParameter(CommonDefinition.SQL_Param_Category_FascicleType, DBNull.Value);
@@ -112,7 +119,27 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                    new QueryParameter(CommonDefinition.SQL_Param_Category_UserName, username),
                    new QueryParameter(CommonDefinition.SQL_Param_Category_Domain, domain),
                    nameParameter, rootParameter, parentParameter, parentDescendantsParameter, fullCodeParameter, fascicleFilterEnabledParameter, fascicleTypeParameter, hasFascicleInsertRightsParameter,
-                   managerParameter, secretaryParameter, roleParameter, containerParameter);
+                   managerParameter, secretaryParameter, roleParameter, containerParameter,
+                   new QueryParameter(CommonDefinition.SQL_Param_Category_IdTenantAOO, idtenantAOO));
+        }
+
+        public static ICollection<CategoryFullTableValuedModel> FindFascicolableCategoryById(this IRepository<Category> repository, string username, string domain, short idCategory)
+        {
+            return repository.ExecuteModelFunction<CategoryFullTableValuedModel>(CommonDefinition.SQL_FX_Category_FindFascicolableCategory,
+                   new QueryParameter(CommonDefinition.SQL_Param_Category_UserName, username),
+                   new QueryParameter(CommonDefinition.SQL_Param_Category_Domain, domain),
+                   new QueryParameter(CommonDefinition.SQL_Param_Category_IdCategory, idCategory));
+        }
+
+        public static IQueryable<Category> GetByUniqueId(this IRepository<Category> repository, Guid categoryUniqueId, bool optimization = false)
+        {
+            return repository.Query(x => x.UniqueId == categoryUniqueId, optimization: optimization)
+                .SelectAsQueryable();
+        }
+
+        public static Category GetDefaultCategoryByTenantAOOId(this IRepository<Category> repository, Guid tenantAOOId, bool optimization = false)
+        {
+            return repository.Query(x => x.TenantAOO.UniqueId == tenantAOOId && x.Parent == null, optimization: optimization).SelectAsQueryable().FirstOrDefault();
         }
     }
 }

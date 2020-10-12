@@ -178,5 +178,25 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Resolutions
         {
             return repository.Queryable(optimization).Count(x => x.ResolutionKind.UniqueId == idResolutionKind);
         }
+
+        public static int LastIdResolution(this IRepository<Resolution> repository, bool optimization = true)
+        {
+            return repository.Query(optimization).OrderBy(o => o.OrderByDescending(od => od.EntityId)).Top(1).Select(s => s.EntityId).FirstOrDefault();
+        }
+
+        public static short LastResolutionYear(this IRepository<Resolution> repository, bool optimization = true)
+        {
+            return repository.Query(x => x.Year != null, optimization).OrderBy(o => o.OrderByDescending(od => od.Year)).Top(1).Select(s => s.Year.Value).FirstOrDefault();
+        }
+
+        public static int LastResolutionNumber(this IRepository<Resolution> repository, short year, bool optimization = true)
+        {
+            return repository.Query(x => x.Year == year && x.IdType == 1, optimization).OrderBy(o => o.OrderByDescending(od => od.Number)).Top(1).Select(s => s.Number.Value).FirstOrDefault();
+        }
+
+        public static int LastResolutionBillNumber(this IRepository<Resolution> repository, short year, bool optimization = true)
+        {
+            return repository.Query(x => x.Year == year && x.IdType == 0, optimization).OrderBy(o => o.OrderByDescending(od => od.Number)).Top(1).Select(s => s.Number.Value).FirstOrDefault();
+        }
     }
 }

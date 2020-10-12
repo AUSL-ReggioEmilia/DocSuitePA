@@ -19,11 +19,13 @@ namespace VecompSoftware.DocSuite.Public.Core.Models.Workflows.Parameters
         /// Modello dell'Archivio / Unità Documentaria Specifica
         /// </summary>
         /// <param name="archiveName">Nome dell'archivio documentale</param>
+        /// <param name="subject">Oggetto dell'archivio documentale</param>
         /// <param name="archiveId">Identificativo dell'archivio documentale</param>
-        public ArchiveModel(string archiveName, Guid? archiveId = null)
+        public ArchiveModel(string archiveName, string subject, Guid? archiveId = null)
         {
             ArchiveName = archiveName;
             ArchiveId = archiveId;
+            Subject = subject;
             Metadatas = new HashSet<MetadataModel>();
         }
 
@@ -35,6 +37,11 @@ namespace VecompSoftware.DocSuite.Public.Core.Models.Workflows.Parameters
         /// </summary>
         [Required]
         public string ArchiveName { get; private set; }
+
+        /// <summary>
+        /// Oggetto dell'archivio documentale
+        /// </summary>
+        public string Subject { get; set; }
 
         /// <summary>
         /// Identificativo dell'archivio documentale

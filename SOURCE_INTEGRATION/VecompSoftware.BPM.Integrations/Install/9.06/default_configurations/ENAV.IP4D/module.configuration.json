@@ -1,0 +1,11 @@
+﻿{
+  "Topic_IP4DToExternalViewer": "workflow_activity_completed",
+  "Subscription_IP4DToExternalViewer": "IP4DToExternalViewer",
+  "Queue_IP4DProtocolExternalViewer": "ip4d_send",
+  "EmailDomain": "@enav.it",
+  "IP4D_username": "svlIP4DSPR",
+  "IP4D_password": "felice2016!",
+  "IP4D_domain": "***REMOVED***",
+  "IP4D_SetProtocolUrl": "https://svilip4d.enav.it/_vti_bin/IP4D.ProtocolService/IP4DProtocolService.svc/SetProtocol",
+  "IP4D_SendNewProtocolUrl": "https://svilip4d.enav.it/_vti_bin/IP4D.ProtocolService/IP4DProtocolService.svc/SendNewProtocol"
+}

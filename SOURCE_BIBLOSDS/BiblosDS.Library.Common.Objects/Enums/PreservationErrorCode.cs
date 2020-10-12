@@ -41,5 +41,6 @@ namespace BiblosDS.Library.Common.Enums
         /// </summary>
         E_PRESERVATION_VERIFY_EX = 7,
         E_NO_DOCUMENT_EX = 8,
+        E_EXIST_NO_CONSERVATED_DOCUMENT = 9
     }
 }

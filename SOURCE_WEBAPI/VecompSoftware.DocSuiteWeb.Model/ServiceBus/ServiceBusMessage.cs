@@ -67,7 +67,6 @@ namespace VecompSoftware.DocSuiteWeb.Model.ServiceBus
         public ServiceBusMessage()
         {
             MessageId = Guid.NewGuid();
-            SessionId = "0";
             ContentType = ServiceBusMessageType.Message;
             Properties = new Dictionary<string, object>();
         }

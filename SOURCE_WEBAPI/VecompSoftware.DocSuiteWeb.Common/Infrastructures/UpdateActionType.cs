@@ -2,7 +2,7 @@
 
 namespace VecompSoftware.DocSuiteWeb.Common.Infrastructures
 {
-    public enum UpdateActionType : int
+    public enum UpdateActionType : long
     {
         [Description("None")]
         None = -1,
@@ -68,7 +68,72 @@ namespace VecompSoftware.DocSuiteWeb.Common.Infrastructures
         PECMailInvoiceTenantCorrection = PECMailManaged * 2,
 
         [Description("FascicleMoveToFolder")]
-        FascicleMoveToFolder = PECMailInvoiceTenantCorrection * 2
+        FascicleMoveToFolder = PECMailInvoiceTenantCorrection * 2,
 
+        [Description("TenantContainerAdd")]
+        TenantContainerAdd = FascicleMoveToFolder * 2,
+
+        [Description("TenantRoleAdd")]
+        TenantRoleAdd = TenantContainerAdd * 2,
+
+        [Description("TenantContactAdd")]
+        TenantContactAdd = TenantRoleAdd * 2,
+
+        [Description("TenantConfigurationAdd")]
+        TenantConfigurationAdd = TenantContactAdd * 2,
+
+        [Description("TenantPECMailBoxAdd")]
+        TenantPECMailBoxAdd = TenantConfigurationAdd * 2,
+
+        [Description("TenantWorkflowRepositoryAdd")]
+        TenantWorkflowRepositoryAdd = TenantPECMailBoxAdd * 2,
+
+        [Description("TenantContainerRemove")]
+        TenantContainerRemove = TenantWorkflowRepositoryAdd * 2,
+
+        [Description("TenantRoleRemove")]
+        TenantRoleRemove = TenantContainerRemove * 2,
+
+        [Description("TenantConfigurationRemove")]
+        TenantConfigurationRemove = TenantRoleRemove * 2,
+
+        [Description("TenantPECMailBoxRemove")]
+        TenantPECMailBoxRemove = TenantConfigurationRemove * 2,
+
+        [Description("TenantWorkflowRepositoryRemove")]
+        TenantWorkflowRepositoryRemove = TenantPECMailBoxRemove * 2,
+
+        [Description("TenantContactRemove")]
+        TenantContactRemove = TenantWorkflowRepositoryRemove * 2,
+
+        [Description("CollaborationManaged")]
+        CollaborationManaged = TenantContactRemove * 2,
+
+        [Description("TenantContainerAddAll")]
+        TenantContainerAddAll = CollaborationManaged * 2,
+
+        [Description("TenantContainerRemoveAll")]
+        TenantContainerRemoveAll = TenantContainerAddAll * 2,
+
+        [Description("TenantRoleAddAll")]
+        TenantRoleAddAll = TenantContainerRemoveAll * 2,
+
+        [Description("TenantRoleRemoveAll")]
+        TenantRoleRemoveAll = TenantRoleAddAll * 2,
+
+        [Description("TenantContactAddAll")]
+        TenantContactAddAll = TenantRoleRemoveAll * 2,
+
+        [Description("TenantContactRemoveAll")]
+        TenantContactRemoveAll = TenantContactAddAll * 2,
+
+        [Description("CloneProcessDetails")]
+        CloneProcessDetails = TenantContactRemoveAll * 2,
+
+        [Description("AssociatedProcessDossierFolderToFascicle")]
+        AssociatedProcessDossierFolderToFascicle = CloneProcessDetails * 2,
+
+        [Description("ChangeFascicleType")]
+        ChangeFascicleType = AssociatedProcessDossierFolderToFascicle * 2
     }
 }

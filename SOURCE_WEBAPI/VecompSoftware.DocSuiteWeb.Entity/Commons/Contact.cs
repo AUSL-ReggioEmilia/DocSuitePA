@@ -25,6 +25,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
             ResolutionContacts = new HashSet<ResolutionContact>();
             UDSContacts = new HashSet<UDSContact>();
             Tenants = new HashSet<Tenant>();
+            MetadataValueContacts = new HashSet<MetadataValueContact>();
         }
 
         #endregion
@@ -75,7 +76,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         public virtual ICollection<Dossier> Dossiers { get; set; }
         public virtual ICollection<UDSContact> UDSContacts { get; set; }
         public virtual ICollection<Tenant> Tenants { get; set; }
-
+        public virtual ICollection<MetadataValueContact> MetadataValueContacts { get; set; }
         #endregion
     }
 }

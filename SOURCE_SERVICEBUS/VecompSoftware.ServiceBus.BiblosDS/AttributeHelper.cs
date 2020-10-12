@@ -9,6 +9,6 @@
         public const string AttributeName_Signature = "Signature";
         public const string AttributeName_Date = "Date";
         public const string AttributeName_PrivacyLevel = "PrivacyLevel";
-        public const string AttributeName_SecureDocumentId = "SecureDocumentId";
+        public const string AttributeName_SignModels = "SignModels";
     }
 }

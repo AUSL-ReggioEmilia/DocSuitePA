@@ -43,7 +43,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Parameters
             #endregion
 
             #region [ Navigation Properties ]
-
+            entityTransformed.TenantAOO = entity.TenantAOO;
             #endregion
 
             return entityTransformed;

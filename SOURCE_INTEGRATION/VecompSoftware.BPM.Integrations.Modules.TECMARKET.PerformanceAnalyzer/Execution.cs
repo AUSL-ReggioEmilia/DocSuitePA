@@ -25,6 +25,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer
         private bool _needInitializeModule = false;
         private readonly IdentityContext _identityContext = null;
 
+        private const string PHYSICAL_DISK = "PhysicalDisk";
+        private const string PROCESSOR = "Processor";
+        private const string MEMORY = "Memory";
+
         #endregion
 
         #region [ Properties ]
@@ -39,6 +43,8 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer
                 return _logCategories;
             }
         }
+
+        private readonly Dictionary<string, EventAttributeName> _eventDataType;
 
         #endregion
 
@@ -59,6 +65,13 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer
                     username = WindowsIdentity.GetCurrent().Name;
                 }
                 _identityContext = new IdentityContext(username);
+
+                _eventDataType = new Dictionary<string, EventAttributeName>
+                {
+                    {PROCESSOR, EventAttributeName.Processor},
+                    {MEMORY, EventAttributeName.Memory},
+                    {PHYSICAL_DISK, EventAttributeName.PhysicalDisk}
+                };
             }
             catch (Exception ex)
             {
@@ -79,9 +92,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer
             }
             try
             {
+                InitializeModule();
                 foreach (PerformanceCounterModel performanceCounterModel in _moduleConfiguration.PerformanceCounters)
                 {
-                    if (performanceCounterModel.Counter.CategoryName == "PhysicalDisk")
+                    if (performanceCounterModel.Counter.CategoryName.Equals(PHYSICAL_DISK))
                     {
                         EvaluateDiskPerformance(performanceCounterModel.Threshold);
                     }
@@ -99,6 +113,15 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer
 
         }
 
+        private void InitializeModule()
+        {
+            if (_needInitializeModule)
+            {
+                _logger.WriteDebug(new LogMessage("Initialize module"), LogCategories);
+                _needInitializeModule = false;
+            }
+        }
+
         private void EvaluatePerformance(PerformanceCounter currentUsage, int threshold)
         {
             _logger.WriteDebug(new LogMessage($"Evaluate performance: {currentUsage.CategoryName}"), LogCategories);
@@ -108,8 +131,11 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer
                 //Write EventLog in EventViewer
                 _logger.WriteDebug(new LogMessage("TECMARKET.PerformanceAnalyzer -> Create new event log"), LogCategories);
 
-                string errorMessage = $"{currentUsage.CategoryName} usage ( {String.Format("{0:0.00}", currentPerformance)} %) is bigger than expected: {String.Format("{0:0.00}", threshold)} %";
-                EventLog.WriteEntry(_moduleConfiguration.DestinationEventSource, errorMessage, EventLogEntryType.Error);
+                string errorMessage = $"{currentUsage.CategoryName} usage ( {string.Format("{0:0.00}", currentPerformance)} %) is bigger than expected: {string.Format("{0:0.00}", threshold)} %";
+
+                EventInstance eventInstance = new EventInstance(0, 0, EventLogEntryType.Error);
+                EventLog.WriteEvent(_moduleConfiguration.DestinationEventSource, eventInstance, new object[] { errorMessage, _eventDataType[currentUsage.CategoryName] });
+
                 _logger.WriteInfo(new LogMessage("Event Log successfully written in Event Viewer"), LogCategories);
             }
         }
@@ -118,7 +144,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer
         {
             _logger.WriteDebug(new LogMessage($"Evaluate performance: Disk "), LogCategories);
 
-            foreach(DriveInfo drive in DriveInfo.GetDrives())
+            foreach (DriveInfo drive in DriveInfo.GetDrives())
             {
                 if (drive.IsReady && drive.DriveType == DriveType.Fixed)
                 {
@@ -128,11 +154,12 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.PerformanceAnalyzer
                     double percentageUsedSpace = Math.Round((usedSpace * 100d) / totalSize, 2);
                     if (percentageUsedSpace > threshold)
                     {
-                        //Write EventLog in EventViewer
+                        //Write EventLog in EventViewer 
                         _logger.WriteDebug(new LogMessage("TECMARKET.PerformanceAnalyzer -> Create new event log"), LogCategories);
 
-                        string errorMessage = $"Disk usage ({String.Format("{0:0.00}", percentageUsedSpace)} %) of {drive.Name} is bigger than expected: {String.Format("{0:0.00}", threshold)} %";
-                        EventLog.WriteEntry(_moduleConfiguration.DestinationEventSource, errorMessage, EventLogEntryType.Error);
+                        string errorMessage = $"Disk usage ({string.Format("{0:0.00}", percentageUsedSpace)} %) of {drive.Name} is bigger than expected: {string.Format("{0:0.00}", threshold)} %";
+                        EventInstance eventInstance = new EventInstance(0, 0, EventLogEntryType.Error);
+                        EventLog.WriteEvent(_moduleConfiguration.DestinationEventSource, eventInstance, new object[] { errorMessage, _eventDataType[PHYSICAL_DISK] });
                         _logger.WriteInfo(new LogMessage("Event Log successfully written in Event Viewer"), LogCategories);
                         return;
                     }

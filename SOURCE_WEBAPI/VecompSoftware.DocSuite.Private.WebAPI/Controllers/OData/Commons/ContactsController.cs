@@ -81,6 +81,17 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Commons
                 return Ok(results);
             }, _logger, LogCategories);
         }
+
+        [HttpGet]
+        public IHttpActionResult GetContactsByParentId(ODataQueryOptions<Contact> options, int idContact)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<Contact> contacts = _unitOfWork.Repository<Contact>().GetContactByParentId(idContact).ToList();
+                ICollection<ContactModel> results = _mapperUnitOfWork.Repository<IDomainMapper<Contact, ContactModel>>().MapCollection(contacts);
+                return Ok(results);
+            }, _logger, LogCategories);
+        }
         #endregion
     }
 }

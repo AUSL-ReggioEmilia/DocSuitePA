@@ -20,17 +20,19 @@ namespace VecompSoftware.DocSuite.Public.Core.Models
         /// <param name="messageDate">Data del messaggio</param>
         /// <param name="id">Identificativo univoco del messaggio</param>
         /// <param name="messageName">Nome interno del messaggio</param>
-        /// <param name="tenantName">Nome del Tenant del Cliente. Contattare Vecomp Software per il valore</param>
-        /// <param name="tenantId">Guid del Tenant del Cliente. Contattare Vecomp Software per il valore</param>
+        /// <param name="tenantName">Nome del Tenant del Cliente. Contattare Dgroove per il valore</param>
+        /// <param name="tenantId">Guid del Tenant del Cliente. Contattare Dgroove per il valore</param>
+        /// <param name="tenantAOOId">Guid del TenantAOO del Cliente. Contattare Dgroove per il valore</param>
         /// <param name="identityContext">Classe che specifica l'Identità dell'utente che sta eseguento l'avvio del Workflow<see cref="IdentityContext"/></param>
         private BaseMessage(DateTimeOffset messageDate, Guid id, string messageName, string tenantName,
-            Guid tenantId, IdentityContext identityContext)
+            Guid tenantId, Guid tenantAOOId, IdentityContext identityContext)
             : base(id)
         {
             MessageDate = messageDate;
             MessageName = messageName;
             TenantName = tenantName;
             TenantId = tenantId;
+            TenantAOOId = tenantAOOId;
             IdentityContext = identityContext;
             CustomProperties = new Dictionary<string, object>
             {
@@ -53,12 +55,12 @@ namespace VecompSoftware.DocSuite.Public.Core.Models
         /// </summary>
         /// <param name="id">Identificativo univoco del messaggio</param>
         /// <param name="messageName">Nome interno del messaggio</param>
-        /// <param name="tenantName">Nome del Tenant del Cliente. Contattare Vecomp Software per il valore</param>
-        /// <param name="tenantId">Guid del Tenant del Cliente. Contattare Vecomp Software per il valore</param>
+        /// <param name="tenantName">Nome del Tenant del Cliente. Contattare Dgroove per il valore</param>
+        /// <param name="tenantId">Guid del Tenant del Cliente. Contattare Dgroove per il valore</param>
+        /// <param name="tenantAOOId">Guid del TenantAOO del Cliente. Contattare Dgroove per il valore</param>
         /// <param name="identityContext">Classe che specifica l'Identità dell'utente che sta eseguento l'avvio del Workflow<see cref="IdentityContext"/></param>
-        public BaseMessage(Guid id, string messageName, string tenantName,
-            Guid tenantId, IdentityContext identityContext)
-             : this(DateTimeOffset.UtcNow, id, messageName, tenantName, tenantId, identityContext)
+        public BaseMessage(Guid id, string messageName, string tenantName, Guid tenantId, Guid tenantAOOId, IdentityContext identityContext)
+             : this(DateTimeOffset.UtcNow, id, messageName, tenantName, tenantId, tenantAOOId, identityContext)
         {
 
         }
@@ -82,12 +84,17 @@ namespace VecompSoftware.DocSuite.Public.Core.Models
         public IdentityContext IdentityContext { get; private set; }
 
         /// <summary>
-        /// Guid del Tenant del Cliente. Contattare Vecomp Software per il valore
+        /// Guid del Tenant del Cliente. Contattare Dgroove per il valore
+        /// </summary>
+        public Guid TenantAOOId { get; private set; }
+
+        /// <summary>
+        /// Guid del Tenant del Cliente. Contattare Dgroove per il valore
         /// </summary>
         public Guid TenantId { get; private set; }
 
         /// <summary>
-        /// Nome del Tenant del Cliente. Contattare Vecomp Software per il valore
+        /// Nome del Tenant del Cliente. Contattare Dgroove per il valore
         /// </summary>
         public string TenantName { get; private set; }
 

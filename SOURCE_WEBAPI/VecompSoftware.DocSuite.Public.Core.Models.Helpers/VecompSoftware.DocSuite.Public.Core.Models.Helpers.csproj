@@ -1,78 +1,37 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A6A979BA-38C8-4286-8964-F385FF89E07E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VecompSoftware.DocSuite.Public.Core.Models.Helpers</RootNamespace>
-    <AssemblyName>VecompSoftware.DocSuite.Public.Core.Models.Helpers</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
     <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFrameworks>net48;netstandard2.1</TargetFrameworks>
+    <Version>9.09.0.0</Version>
+    <Authors />
+    <Company>Dgroove Srl</Company>
+    <Copyright>Copyright © Dgroove 2020</Copyright>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
+    <None Remove="favicon.ico" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="ExtensionMethods\BuildHierarchicalModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="favicon.ico">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net48'">
+	<Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+
   <ItemGroup>
-    <Content Include="favicon.ico" />
+    <ProjectReference Include="..\VecompSoftware.DocSuite.Public.Core.Models\VecompSoftware.DocSuite.Public.Core.Models.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="VecompSoftware.DocSuite.Public.Core.Models.Helpers.nuspec">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\VecompSoftware.DocSuite.Public.Core.Models\VecompSoftware.DocSuite.Public.Core.Models.csproj">
-      <Project>{077ae562-309a-4f9d-a4f8-2808981d8be8}</Project>
-      <Name>VecompSoftware.DocSuite.Public.Core.Models</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

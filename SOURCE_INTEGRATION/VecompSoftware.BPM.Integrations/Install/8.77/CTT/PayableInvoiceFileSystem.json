@@ -1,0 +1,217 @@
+﻿{
+  "TenantName": "CTT",
+  "TenantId": "29C28C7D-98BF-48D9-996A-5603A2648ED5",
+  "TopicBuilderEvent": "builder_event",
+  "WorkflowPayableInvoiceUDSBuildCompleteSubscription": "WorkflowPayableInvoiceUDSBuildComplete",
+  "WorkflowPayableInvoiceProtocolBuildCompleteSubscription": "WorkflowPayableInvoiceProtocolBuildComplete",
+  "WorkflowPayableInvoicePECMailBuildCompleteSubscription": "WorkflowPayableInvoicePECMailBuildComplete",
+  "TopicWorkflowIntegration": "workflow_integration",
+  "WorkflowStartUpdateReceiptMetadataInvoiceSubscription": "WorkflowStartUpdateReceiptMetadataInvoice",
+  "WorkflowStartUpdateMetadataInvoiceSubscription": "WorkflowStartUpdateMetadataInvoice",
+  "WorkflowConfigurations": {
+    "CTTNORD": {
+      "FolderLookingInvoice": "E:\\Integration\\CTT_NORD\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\CTT_NORD\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\CTT_NORD\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\CTT_NORD\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\CTT_NORD\\FattureAttive\\Backup",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "CTTNORD - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "CTTNORD - Fatture Attive",
+          "MailRecipients": "sdi19@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "S3UFN8KfP3hb",
+            "DelegatedUser": "cttnord1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pvannozzi",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32660,
+          "ProtocolCategoryId": -32344,
+          "PECMailBoxId": 133,
+          "ContactB2BParent": 4343,
+          "ContactPAParent": 4344,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "CTTNORD - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "CTTNORD - Fatture Attive PA",
+          "MailRecipients": "sdi19@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "S3UFN8KfP3hb",
+            "DelegatedUser": "cttnord1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pvannozzi",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32660,
+          "ProtocolCategoryId": -32344,
+          "PECMailBoxId": 133,
+          "ContactB2BParent": 4343,
+          "ContactPAParent": 4344,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "ATN": {
+      "FolderLookingInvoice": "E:\\Integration\\ACGATN\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\ACGATN\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\ACGATN\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\ACGATN\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\ACGATN\\FattureAttive\\Backup",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "ATN - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "ATN - Fatture Attive",
+          "MailRecipients": "sdi19@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "S3UFN8KfP3hb",
+            "DelegatedUser": "cttnord1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pvannozzi",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32662,
+          "ProtocolCategoryId": -32344,
+          "PECMailBoxId": 134,
+          "ContactB2BParent": 4352,
+          "ContactPAParent": 4353,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "ATN - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "ATN - Fatture Attive PA",
+          "MailRecipients": "sdi19@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "S3UFN8KfP3hb",
+            "DelegatedUser": "cttnord1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pvannozzi",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32662,
+          "ProtocolCategoryId": -32344,
+          "PECMailBoxId": 134,
+          "ContactB2BParent": 4352,
+          "ContactPAParent": 4353,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "CPT": {
+      "FolderLookingInvoice": "E:\\Integration\\ACGCP\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\ACGCP\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\ACGCP\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\ACGCP\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\ACGCP\\FattureAttive\\Backup",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "CPT - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "CPT - Fatture Attive",
+          "MailRecipients": "sdi19@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "S3UFN8KfP3hb",
+            "DelegatedUser": "cttnord1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pvannozzi",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32658,
+          "ProtocolCategoryId": -32344,
+          "PECMailBoxId": 135,
+          "ContactB2BParent": 4349,
+          "ContactPAParent": 4350,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "CPT - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "CPT - Fatture Attive PA",
+          "MailRecipients": "sdi19@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "S3UFN8KfP3hb",
+            "DelegatedUser": "cttnord1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pvannozzi",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32658,
+          "ProtocolCategoryId": -32344,
+          "PECMailBoxId": 135,
+          "ContactB2BParent": 4349,
+          "ContactPAParent": 4350,
+          "AuthorizationRoles": []
+        }
+      }
+    },
+    "VAIBUS": {
+      "FolderLookingInvoice": "E:\\Integration\\ACGVAIBUS\\FattureAttive\\Looking",
+      "FolderRejectedInvoice": "E:\\Integration\\ACGVAIBUS\\FattureAttive\\Rejected",
+      "FolderMetadataSDIInvoice": "E:\\Integration\\ACGVAIBUS\\FattureAttive\\Metadata",
+      "FolderWorkingInvoice": "E:\\Integration\\ACGVAIBUS\\FattureAttive\\Working",
+      "FolderBackupInvoice": "E:\\Integration\\ACGVAIBUS\\FattureAttive\\Backup",
+      "InvoiceTypes": {
+        "InvoicePR_V12": {
+          "WorkflowRepositoryName": "VAIBUS - Fatturazione elettronica - Fattura tra privati attiva",
+          "UDSRepositoryName": "VAIBUS - Fatture Attive",
+          "MailRecipients": "sdi19@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "S3UFN8KfP3hb",
+            "DelegatedUser": "cttnord1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pvannozzi",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32656,
+          "ProtocolCategoryId": -32344,
+          "PECMailBoxId": 136,
+          "ContactB2BParent": 4346,
+          "ContactPAParent": 4347,
+          "AuthorizationRoles": []
+        },
+        "InvoicePA_V12": {
+          "WorkflowRepositoryName": "VAIBUS - Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+          "UDSRepositoryName": "VAIBUS - Fatture Attive PA",
+          "MailRecipients": "sdi19@pec.fatturapa.it",
+          "SignInvoiceType": "AutomaticAruba",
+          "SignerParameter": {
+            "DelegatedDomain": "fmLand",
+            "DelegatedPassword": "S3UFN8KfP3hb",
+            "DelegatedUser": "cttnord1",
+            "OTPPassword": "dsign",
+            "OTPAuthType": "fmLand",
+            "User": "pvannozzi",
+            "CertificateId": "AS0"
+          },
+          "ProtocolContainerId": -32656,
+          "ProtocolCategoryId": -32344,
+          "PECMailBoxId": 136,
+          "ContactB2BParent": 4346,
+          "ContactPAParent": 4347,
+          "AuthorizationRoles": []
+        }
+      }
+    }
+  }
+}

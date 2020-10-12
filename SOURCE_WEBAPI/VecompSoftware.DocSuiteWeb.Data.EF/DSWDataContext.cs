@@ -27,9 +27,11 @@ using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Monitors;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.OCharts;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Parameters;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.PECMails;
+using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.PosteWeb;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Processes;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Protocols;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Resolutions;
+using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Tasks;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Templates;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Tenants;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.UDS;
@@ -142,7 +144,9 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
                     .Add(new MetadataRepositoryMap())
                     .Add(new ParameterEnvMap())
                     .Add(new PrivacyLevelMap())
-                    .Add(new UserLogMap());
+                    .Add(new UserLogMap())
+                    .Add(new MetadataValueMap())
+                    .Add(new MetadataValueContactMap());
                 #endregion
 
                 #region [ Dossiers ]
@@ -247,10 +251,9 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
 
                 #endregion
 
-                #region "TemplateDocumentRepositories"
+                #region [ TemplateDocumentRepositories ]
                 modelBuilder.Configurations
                     .Add(new TemplateDocumentRepositoryMap());
-
                 #endregion
 
                 #region [ Resolutions ]
@@ -315,6 +318,16 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
                     .Add(new ParameterMap());
                 #endregion
 
+                #region [ PosteOnLine ]
+                modelBuilder.Configurations
+                    .Add(new PosteOnLineRequestMap())
+                    .Add(new LOLRequestMap())
+                    .Add(new TOLRequestMap())
+                    .Add(new ROLRequestMap())
+                    .Add(new SOLRequestMap());
+                
+                #endregion
+
                 #region [ JeepServiceHosts ]
                 modelBuilder.Configurations
                     .Add(new JeepServiceHostMap());
@@ -324,7 +337,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
                 modelBuilder.Configurations
                     .Add(new TenantMap())
                     .Add(new TenantConfigurationMap())
-                    .Add(new TenantWorkflowRepositoryMap());
+                    .Add(new TenantWorkflowRepositoryMap())
+                    .Add(new TenantAOOMap());
                 #endregion
 
                 #region [ Processes ]
@@ -334,6 +348,12 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
                     .Add(new ProcessFascicleTemplateMap())
                     .Add(new ProcessFascicleWorkflowRepositoryMap());
 
+                #endregion
+
+                #region [ Tasks ]
+                modelBuilder.Configurations
+                    .Add(new TaskHeaderMap())
+                    .Add(new TaskHeaderProtocolMap());
                 #endregion
             }
             catch (Exception ex)

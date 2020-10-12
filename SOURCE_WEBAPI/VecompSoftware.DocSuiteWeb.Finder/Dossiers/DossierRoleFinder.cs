@@ -9,7 +9,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
     {
         public static IQueryable<DossierRole> GetAuthorizedDossierRoles(this IRepository<DossierRole> repository, Guid idDossier, bool optimization = true)
         {
-            return repository.Query(d => d.Dossier.UniqueId == idDossier && d.AuthorizationRoleType == Entity.Commons.AuthorizationRoleType.Responsible && d.Status == DossierRoleStatus.Active,
+            return repository.Query(d => d.Dossier.UniqueId == idDossier && d.Status == DossierRoleStatus.Active,
                 optimization: optimization)
                 .Include(d => d.Role)
                 .SelectAsQueryable();

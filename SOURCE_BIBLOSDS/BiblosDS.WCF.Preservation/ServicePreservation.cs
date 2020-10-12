@@ -11,6 +11,7 @@ using BiblosDS.Library.Common.Preservation.Services;
 using BiblosDS.Library.Common.Objects.Response;
 using BiblosDS.Library.Common.Objects.Enums;
 using VecompSoftware.ServiceContract.BiblosDS.Preservations;
+using VecompSoftware.BiblosDS.Model.Parameters;
 
 namespace BiblosDS.WCF.Preservation
 {
@@ -367,7 +368,7 @@ namespace BiblosDS.WCF.Preservation
                 idArchive = this.PreservationContext.GetIdPreservationArchiveFromName(archiveName);
             }
 
-            return this.PreservationContext.GetPreservationJournalings(idArchive, idPreservation, startDate, endDate, skip, take, out journalingsInArchive);
+            return this.PreservationContext.GetPreservationJournalings(idArchive, idPreservation, startDate, endDate, null, skip, take, out journalingsInArchive);
         }
 
         public BindingList<BiblosDS.Library.Common.Objects.Preservation> GetPreservationsFromJournaling(Guid idJournaling, int skip, int take, out int preservationsCount)

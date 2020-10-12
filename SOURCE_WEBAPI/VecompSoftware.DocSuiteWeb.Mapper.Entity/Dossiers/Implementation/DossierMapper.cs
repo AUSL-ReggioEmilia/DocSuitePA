@@ -13,7 +13,10 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Dossiers
             entityTransformed.Number = entity.Number;
             entityTransformed.StartDate = entity.StartDate;
             entityTransformed.EndDate = entity.EndDate;
-            entityTransformed.JsonMetadata = entity.JsonMetadata;
+            entityTransformed.MetadataDesigner = entity.MetadataDesigner;
+            entityTransformed.MetadataValues = entity.MetadataValues;
+            entityTransformed.DossierType = entity.DossierType;
+            entityTransformed.Status = entity.Status;
             #endregion
 
             return entityTransformed;

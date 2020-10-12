@@ -97,6 +97,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .WithMany(x => x.Categories)
                 .Map(x => x.MapKey("IdMetadataRepository"));
 
+            HasRequired(t => t.TenantAOO)
+                .WithMany(t => t.Categories)
+                .Map(m => m.MapKey("IdTenantAOO"));
+
             #endregion
         }
     }

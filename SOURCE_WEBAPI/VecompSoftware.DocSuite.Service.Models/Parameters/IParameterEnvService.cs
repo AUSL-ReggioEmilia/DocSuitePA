@@ -35,5 +35,14 @@ namespace VecompSoftware.DocSuite.Service.Models.Parameters
         bool RoleContactEnabled { get; }
         string GroupTblContact { get; }
         bool ProcessEnabled { get; }
+        bool ShibbolethEnabled { get; }
+        short ContactAOOParentId { get; }
+        string SignatureTemplate { get; }
+        bool RoleGroupPECRightEnabled { get; }
+        bool ForceDescendingOrderElements { get; }
+        int FascicleAutoCloseThresholdDays { get; }
+        int FascicleContactId { get; }
+        int FascicleMiscellaneaLocation { get; }
+        bool MultiAOOFascicleEnabled { get; }
     }
-}
+}                                                                                                                                                                         

@@ -68,6 +68,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Protocols
             entityTransformed.ProtocolRoleUsers = entity.ProtocolRoleUsers;
             entityTransformed.ProtocolContactManuals = entity.ProtocolContactManuals;
             entityTransformed.ProtocolUsers = entity.ProtocolUsers;
+            entityTransformed.TenantAOO = entity.TenantAOO;
 
 
             #endregion

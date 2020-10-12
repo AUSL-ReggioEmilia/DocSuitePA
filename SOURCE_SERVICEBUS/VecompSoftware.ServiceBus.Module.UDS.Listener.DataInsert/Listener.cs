@@ -11,7 +11,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.DataInsert
     public class Listener : ListenerMessageBase<ICommandInsertUDSData>, IListenerMessageGeneric<ICommandInsertUDSData>
     {
         public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandInsertUDSData")
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandInsertUDSData", webApiClient)
         {
 
         }

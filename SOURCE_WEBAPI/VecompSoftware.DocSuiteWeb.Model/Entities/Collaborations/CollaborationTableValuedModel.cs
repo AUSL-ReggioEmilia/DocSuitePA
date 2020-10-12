@@ -56,9 +56,9 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 
         public Guid? CollaborationSign_IdCollaborationSign { get; set; }
 
-        public short CollaborationSign_Incremental { get; set; }
+        public short? CollaborationSign_Incremental { get; set; }
 
-        public bool CollaborationSign_IsActive { get; set; }
+        public bool? CollaborationSign_IsActive { get; set; }
 
         public bool? CollaborationSign_IsRequired { get; set; }
 

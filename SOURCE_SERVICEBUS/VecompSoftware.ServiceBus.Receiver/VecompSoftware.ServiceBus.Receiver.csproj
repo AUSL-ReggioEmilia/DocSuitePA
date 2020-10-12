@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.ServiceBus.Receiver</RootNamespace>
     <AssemblyName>VecompSoftware.ServiceBus.Receiver</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <SccProjectName>SAK</SccProjectName>
@@ -61,10 +61,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Activities" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Configuration.Install" />
@@ -86,32 +85,32 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
-    <Reference Include="VecompSoftware.Clients.WebAPI, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Clients.WebAPI.8.87.19296.2\lib\net461\VecompSoftware.Clients.WebAPI.dll</HintPath>
+    <Reference Include="VecompSoftware.Clients.WebAPI, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Clients.WebAPI.9.9.20267.1\lib\net48\VecompSoftware.Clients.WebAPI.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Commons.Interfaces, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.8.87.19295.1\lib\net461\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.9.20254.2\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Core.Command, Version=8.87.19296.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Core.Command.8.87.19296.3\lib\net461\VecompSoftware.Core.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Core.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Core.Command.9.9.20267.1\lib\net48\VecompSoftware.Core.Command.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.EnterpriseLogging, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.EnterpriseLogging.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.EnterpriseLogging.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.EnterpriseLogging, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.EnterpriseLogging.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.EnterpriseLogging.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=8.87.19295.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.8.87.19295.3\lib\net461\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.9.20254.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.9.20254.5\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Command, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Command.8.87.19296.2\lib\net461\VecompSoftware.Services.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +175,39 @@
     <Content Include="Install\8.73\readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Install\9.09\readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.07\readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.06\readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\default_configurations\SignatureTemplate.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\default_configurations\SignatureTemplate.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\default_configurations\SignatureTemplate.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.00\default_configurations\SignatureTemplate.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.00\readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Install\8.87\default_configurations\SignatureTemplate.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -212,7 +244,6 @@
     <Content Include="Install\8.80\readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="SignatureTemplate.xml" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -862,6 +893,184 @@
     <Content Include="Install\8.87\default_configurations\Workflow.Listener.SecureDocument\Module.WF.SecureDocument.Config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Install\9.00\default_configurations\EnterpriseLibrary.Logging.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.00\default_configurations\Module.UDS\Module.UDS.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.00\default_configurations\Receiver.appSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.00\default_configurations\Receiver.connectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.00\default_configurations\Receiver.system.servicemodel.behaviors.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.00\default_configurations\Receiver.system.servicemodel.bindings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.00\default_configurations\Receiver.system.servicemodel.client.config" />
+    <Content Include="Install\9.00\default_configurations\WebApi.Client.Config.Addresses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.00\default_configurations\Workflow.Listener.Dematerialisation\Module.WF.Dematerialisation.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.00\default_configurations\Workflow.Listener.SecureDocument\Module.WF.SecureDocument.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\default_configurations\EnterpriseLibrary.Logging.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\default_configurations\Module.UDS\Module.UDS.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\default_configurations\Receiver.appSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\default_configurations\Receiver.connectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\default_configurations\Receiver.system.servicemodel.behaviors.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\default_configurations\Receiver.system.servicemodel.bindings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\default_configurations\Receiver.system.servicemodel.client.config" />
+    <Content Include="Install\9.01\default_configurations\WebApi.Client.Config.Addresses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\default_configurations\Workflow.Listener.Dematerialisation\Module.WF.Dematerialisation.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.01\default_configurations\Workflow.Listener.SecureDocument\Module.WF.SecureDocument.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\default_configurations\EnterpriseLibrary.Logging.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\default_configurations\Module.UDS\Module.UDS.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\default_configurations\Receiver.appSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\default_configurations\Receiver.connectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\default_configurations\Receiver.system.servicemodel.behaviors.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\default_configurations\Receiver.system.servicemodel.bindings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\default_configurations\Receiver.system.servicemodel.client.config" />
+    <Content Include="Install\9.02\default_configurations\WebApi.Client.Config.Addresses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\default_configurations\Workflow.Listener.Dematerialisation\Module.WF.Dematerialisation.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.02\default_configurations\Workflow.Listener.SecureDocument\Module.WF.SecureDocument.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\default_configurations\EnterpriseLibrary.Logging.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\default_configurations\Module.UDS\Module.UDS.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\default_configurations\Receiver.appSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\default_configurations\Receiver.connectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\default_configurations\Receiver.system.servicemodel.behaviors.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\default_configurations\Receiver.system.servicemodel.bindings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\default_configurations\Receiver.system.servicemodel.client.config" />
+    <Content Include="Install\9.03\default_configurations\WebApi.Client.Config.Addresses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\default_configurations\Workflow.Listener.Dematerialisation\Module.WF.Dematerialisation.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.03\default_configurations\Workflow.Listener.SecureDocument\Module.WF.SecureDocument.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.06\default_configurations\EnterpriseLibrary.Logging.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.06\default_configurations\Module.UDS\Module.UDS.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.06\default_configurations\Receiver.appSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.06\default_configurations\Receiver.connectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.06\default_configurations\Receiver.system.servicemodel.behaviors.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.06\default_configurations\Receiver.system.servicemodel.bindings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.06\default_configurations\Receiver.system.servicemodel.client.config" />
+    <Content Include="Install\9.06\default_configurations\WebApi.Client.Config.Addresses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.07\default_configurations\EnterpriseLibrary.Logging.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.07\default_configurations\Module.UDS\Module.UDS.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.07\default_configurations\Receiver.appSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.07\default_configurations\Receiver.connectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.07\default_configurations\Receiver.system.servicemodel.behaviors.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.07\default_configurations\Receiver.system.servicemodel.bindings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.07\default_configurations\Receiver.system.servicemodel.client.config" />
+    <Content Include="Install\9.07\default_configurations\WebApi.Client.Config.Addresses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.09\default_configurations\EnterpriseLibrary.Logging.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.09\default_configurations\Module.UDS\Module.UDS.Config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.09\default_configurations\Receiver.appSettings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.09\default_configurations\Receiver.connectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.09\default_configurations\Receiver.system.servicemodel.behaviors.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.09\default_configurations\Receiver.system.servicemodel.bindings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Install\9.09\default_configurations\Receiver.system.servicemodel.client.config" />
+    <Content Include="Install\9.09\default_configurations\WebApi.Client.Config.Addresses.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -922,6 +1131,10 @@
     <ProjectReference Include="..\VecompSoftware.ServiceBus.Receiver.Base\VecompSoftware.ServiceBus.Receiver.Base.csproj">
       <Project>{0503f4ce-f6e0-4345-992d-40d12c81a242}</Project>
       <Name>VecompSoftware.ServiceBus.Receiver.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.ServiceBus.ServiceBus\VecompSoftware.ServiceBus.ServiceBus.csproj">
+      <Project>{39762c91-cad0-413c-820a-42f09a0b05bb}</Project>
+      <Name>VecompSoftware.ServiceBus.ServiceBus</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.ServiceBus.StampaConforme\VecompSoftware.ServiceBus.StampaConforme.csproj">
       <Project>{b7d6928b-76b7-494a-8394-126906d3eace}</Project>

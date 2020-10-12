@@ -9,12 +9,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.DocSuite.Document.BiblosDS</RootNamespace>
     <AssemblyName>VecompSoftware.DocSuite.Document.BiblosDS</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -60,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Service References\DocumentService\Documents2.wsdl" />
     <None Include="Service References\DocumentService\Documents21.wsdl" />
     <None Include="Service References\DocumentService\Documents48.xsd">
@@ -257,14 +262,18 @@
     <None Include="Service References\DocumentService\VecompSoftware.DocSuite.Document.BiblosDS.DocumentService.StorageArea.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="VecompSoftware.DocSuite.Document.BiblosDS.nuspec">
+    <Content Include="VecompSoftware.DocSuite.Document.BiblosDS.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VecompSoftware.DocSuite.Document\VecompSoftware.DocSuite.Document.csproj">
       <Project>{ea3f23a5-9eb3-4512-a847-083de0efe278}</Project>
       <Name>VecompSoftware.DocSuite.Document</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.Service.Models\VecompSoftware.DocSuite.Service.Models.csproj">
+      <Project>{666BDBDA-D461-4692-9CF7-FF03784A6E96}</Project>
+      <Name>VecompSoftware.DocSuite.Service.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Common\VecompSoftware.DocSuiteWeb.Common.csproj">
       <Project>{58938aa6-b3d6-4256-8c5c-4bcab88517bb}</Project>

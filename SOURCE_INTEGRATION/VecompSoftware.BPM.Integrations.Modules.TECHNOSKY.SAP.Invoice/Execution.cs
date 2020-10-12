@@ -159,7 +159,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice
         }
 
         #region [ WorkflowReceivableInvoiceUDSBuildCompleteCallback ]
-        private async Task WorkflowReceivableInvoiceUDSBuildCompleteCallback(IEventCompleteUDSBuild evt)
+        private async Task WorkflowReceivableInvoiceUDSBuildCompleteCallback(IEventCompleteUDSBuild evt, IDictionary<string, object> properties)
         {
             try
             {
@@ -197,14 +197,14 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice
                 invoiceConfiguration = _receivableWorkflowConfigurations.SingleOrDefault(f => f.Value.UDSRepositoryName == protocolDocumentUnit.Repository.Name);
                 _logger.WriteDebug(new LogMessage($"Found protocol {protocolDocumentUnit.Relation.UniqueId} associated to UDS {protocolDocumentUnit.IdUDS}"), LogCategories);
 
-                protocol = (await _webAPIClient.GetProtocolAsync($"$filter=Year eq {protocolDocumentUnit.Relation.Year} and Number eq {protocolDocumentUnit.Relation.Number}&$expand=AdvancedProtocol")).SingleOrDefault();
+                protocol = (await _webAPIClient.GetProtocolAsync($"$filter=UniqueId eq {protocolDocumentUnit.Relation.UniqueId}&$expand=AdvancedProtocol")).SingleOrDefault();
                 if (protocol == null)
                 {
                     throw new ArgumentNullException($"protocol not found for identification {protocolDocumentUnit.Relation.Year}/{protocolDocumentUnit.Relation.Number}");
                 }
                 _logger.WriteDebug(new LogMessage($"Found protocol {protocol.UniqueId}/{protocol.Year}/{protocol.Number.ToString("000000")} associated to UDS {protocolDocumentUnit.Relation.UniqueId}"), LogCategories);
                 mailBoxRecipient = string.Empty;
-                pecMail = (await _webAPIClient.GetPECMailFromProtocol(protocolDocumentUnit.Relation.Year, protocolDocumentUnit.Relation.Number)).FirstOrDefault();
+                pecMail = (await _webAPIClient.GetPECMailFromProtocol(protocol.UniqueId)).FirstOrDefault();
                 if (pecMail != null)
                 {
                     _logger.WriteDebug(new LogMessage($"Found PECMail {pecMail.UniqueId} associated to protocol {protocolDocumentUnit.Relation.UniqueId}"), LogCategories);
@@ -319,7 +319,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice
 
         #region [ WorkflowPECMailReceiptCallback ]
 
-        private async Task WorkflowPECMailReceiptCallback(IEventReceivedReceiptPECMail evt)
+        private async Task WorkflowPECMailReceiptCallback(IEventReceivedReceiptPECMail evt, IDictionary<string, object> properties)
         {
             try
             {
@@ -374,7 +374,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice
 
                 UDSBuildModel udsBuildModel = UDSEInvoiceHelper.PrepareUpdateUDSBuildModel(udsDocumentUnit.Repository, udsDocumentUnit.IdUDS, uds_metadatas, documents,
                     udsRoles, udsContacts, udsMessages, udsPECMails, udsDocumentUnits, null, evt.Identity.User);
-                CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(evt.Name, evt.TenantId, evt.Identity, udsBuildModel);
+                CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(evt.Name, evt.TenantId, evt.TenantAOOId, evt.Identity, udsBuildModel);
                 await _webAPIClient.SendCommandAsync(commandUpdateUDSData);
                 _logger.WriteInfo(new LogMessage($"Updating metadata invoice {commandUpdateUDSData.Id} has been sended"), LogCategories);
             }
@@ -389,7 +389,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice
 
         #region [ WorkflowCreatePECMailCallback ]
 
-        private async Task WorkflowCreatePECMailCallback(IEventCreatePECMail evt)
+        private async Task WorkflowCreatePECMailCallback(IEventCreatePECMail evt, IDictionary<string, object> properties)
         {
             try
             {
@@ -397,9 +397,9 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice
                 _logger.WriteInfo(new LogMessage($"Notifying CreatePECMail"), LogCategories);
 
                 PECMail pecMail = evt.ContentType.ContentTypeValue;
-                if (!pecMail.Year.HasValue || !pecMail.Number.HasValue)
+                if (pecMail.DocumentUnit == null)
                 {
-                    throw new ArgumentNullException($"Undefined protocol year {pecMail.Year} or number {pecMail.Number} in PECMail {pecMail.EntityId}");
+                    throw new ArgumentNullException($"Undefined protocol in PECMail {pecMail.EntityId}");
                 }
                 IEnumerable<PECMailAttachment> attachments = pecMail.Attachments
                     .Where(f => f.IDDocument.HasValue && f.IDDocument.Value != Guid.Empty && new FileInfo(f.AttachmentName).Extension.Equals(".xml", StringComparison.InvariantCultureIgnoreCase));
@@ -408,7 +408,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice
                     throw new ArgumentNullException($"Undefined valid SDI attachment to evaluate in PECMail {pecMail.EntityId}");
                 }
 
-                Protocol protocol = (await _webAPIClient.GetProtocolAsync($"$filter=Year eq {pecMail.Year.Value} and Number eq {pecMail.Number.Value}&$expand=AdvancedProtocol")).SingleOrDefault();
+                Protocol protocol = (await _webAPIClient.GetProtocolAsync($"$filter=UniqueId eq {pecMail.DocumentUnit.UniqueId}&$expand=AdvancedProtocol")).SingleOrDefault();
                 if (protocol == null)
                 {
                     throw new ArgumentNullException($"Protocol not found for identification {pecMail.Year}/{pecMail.Number}");
@@ -508,7 +508,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TECHNOSKY.SAP.Invoice
 
                 UDSBuildModel udsBuildModel = UDSEInvoiceHelper.PrepareUpdateUDSBuildModel(udsDocumentUnit.Repository, udsDocumentUnit.IdUDS, uds_metadatas, documents,
                     udsRoles, udsContacts, udsMessages, udsPECMails, udsDocumentUnits, null, evt.Identity.User);
-                CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(evt.Name, evt.TenantId, evt.Identity, udsBuildModel);
+                CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(evt.Name, evt.TenantId, evt.TenantAOOId, evt.Identity, udsBuildModel);
                 await _webAPIClient.SendCommandAsync(commandUpdateUDSData);
                 _logger.WriteInfo(new LogMessage($"Updating metadata invoice {commandUpdateUDSData.Id} has been sended"), LogCategories);
             }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Parameter;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Parameters
 {
@@ -36,6 +37,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Parameters
             modelTransformed.LastUsedNumberReg = model.LastUsedNumberReg;
             modelTransformed.RegistrationUser = model.RegistrationUser;
             modelTransformed.RegistrationDate = model.RegistrationDate;
+
+            modelTransformed.TenantAOO = _mapperUnitOfWork.Repository<IDomainMapper<ITenantAOOTableValuedModel, TenantAOOModel>>().Map(model, null);
 
             return modelTransformed;
         }

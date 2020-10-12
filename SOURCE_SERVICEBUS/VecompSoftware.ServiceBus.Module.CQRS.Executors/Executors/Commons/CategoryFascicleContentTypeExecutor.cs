@@ -28,8 +28,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Commons
         #region [ Constructor ]
 
 
-        public CategoryFascicleContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient)
-            : base(logger, webApiClient, biblosClient)
+        public CategoryFascicleContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
             _logger = logger;
             _webApiClient = webApiClient;
@@ -47,7 +47,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Commons
             try
             {
                 categoryFascicle = ((ICommandCreateCategoryFascicle)command).ContentType.ContentTypeValue;
-                evt = new EventCreateCategoryFascicle(command.TenantName, command.TenantId, command.Identity, categoryFascicle);
+                evt = new EventCreateCategoryFascicle(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, categoryFascicle);
             }
             catch (Exception ex)
             {
@@ -65,7 +65,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Commons
             try
             {
                 categoryFascicle = ((ICommandDeleteCategoryFascicle)command).ContentType.ContentTypeValue;
-                evt = new EventDeleteCategoryFascicle(command.TenantName, command.TenantId, command.Identity, categoryFascicle);
+                evt = new EventDeleteCategoryFascicle(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, categoryFascicle);
             }
             catch (Exception ex)
             {

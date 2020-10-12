@@ -64,19 +64,11 @@
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.ServiceRuntime.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternalLibs\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\ExternalLibs\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SharpCompress, Version=0.23.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpCompress.0.23.0\lib\net45\SharpCompress.dll</HintPath>
+    <Reference Include="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpCompress.0.24.0\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -173,15 +165,12 @@
     <Compile Include="Services\PreservationService.Ipda.cs" />
     <Compile Include="Services\PreservationService.v1.cs" />
     <Compile Include="Services\PreservationServiceEx.cs" />
+    <Compile Include="Services\UserCompaniesConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BiblosDS.Cloud\BiblosDS.Cloud.csproj">
-      <Project>{d5ddf3d0-9198-41b6-abea-4a4af2d61128}</Project>
-      <Name>BiblosDS.Cloud</Name>
-    </ProjectReference>
     <ProjectReference Include="..\BiblosDS.Library.Common.CompEd\BiblosDS.Library.Common.CompEd.csproj">
       <Project>{296b2d42-be61-423f-8525-5cd8c8bf1677}</Project>
       <Name>BiblosDS.Library.Common.CompEd</Name>
@@ -198,13 +187,17 @@
       <Project>{2938cc2a-7650-47d6-8020-6066792a0788}</Project>
       <Name>BiblosDS.WCF.DigitalSign</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BiblosDS.Library.Helper\BiblosDS.Library.Helper.csproj">
-      <Project>{141c7da3-2000-4674-9895-e3766e8b2dfd}</Project>
-      <Name>BiblosDS.Library.Helper</Name>
+    <ProjectReference Include="..\VecompSoftware.BiblosDS.Model\VecompSoftware.BiblosDS.Model.csproj">
+      <Project>{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}</Project>
+      <Name>VecompSoftware.BiblosDS.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.BiblosDS.Service.Storage\VecompSoftware.BiblosDS.Service.Storage.csproj">
       <Project>{8e30becc-af85-467d-ba7c-a1b61f584c00}</Project>
       <Name>VecompSoftware.BiblosDS.Service.Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.BiblosDS.WCF.Common\VecompSoftware.BiblosDS.WCF.Common.csproj">
+      <Project>{b6988e8d-4b45-4d4b-8b8e-058bb6c18111}</Project>
+      <Name>VecompSoftware.BiblosDS.WCF.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.ServiceContract.BiblosDS\VecompSoftware.ServiceContract.BiblosDS.csproj">
       <Project>{7b33f200-7e95-4ae7-a993-995f3a4d2ff3}</Project>
@@ -351,6 +344,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
+    <Content Include="Resources\AwardBatch.xsl" />
+    <Content Include="Resources\IndiceXSLTemplate.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

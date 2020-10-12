@@ -42,6 +42,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Protocols
                 .Include(i => i.ProtocolRoleUsers)
                 .Include(i => i.ProtocolType)
                 .Include(i => i.Container.ProtLocation)
+                .Include(i => i.TenantAOO)
                 .SelectAsQueryable();
         }
 
@@ -51,6 +52,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Protocols
                 .Include(t => t.Category.CategoryFascicles.Select(f => f.FasciclePeriod))
                 .Include(i => i.ProtocolRoles.Select(p => p.Role))
                 .Include(i => i.Container.ProtLocation)
+                .Include(i => i.TenantAOO)
                 .SelectAsQueryable();
         }
 

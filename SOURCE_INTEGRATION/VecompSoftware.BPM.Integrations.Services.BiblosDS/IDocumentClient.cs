@@ -7,7 +7,7 @@ namespace VecompSoftware.BPM.Integrations.Services.BiblosDS
 {
     public interface IDocumentClient
     {
-        string SIGNATURE_ATTRIBUTE_NAME { get; }
+        string ATTRIBUTE_SIGNATURE { get; }
 
         Task<ICollection<ArchiveDocument>> InsertDocumentsAsync(ICollection<ArchiveDocument> documentModels);
 

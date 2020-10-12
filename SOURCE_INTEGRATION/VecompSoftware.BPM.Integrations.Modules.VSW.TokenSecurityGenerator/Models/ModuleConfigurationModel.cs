@@ -9,6 +9,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.VSW.TokenSecurityGenerator.Mod
         public double MillisecondExpiryToken { get; set; }
         public string TenantName { get; set; }
         public Guid TenantId { get; set; }
+        public Guid TenantAOOId { get; set; }
         public Guid? AuthenticationId { get; set; }
         public string WorkflowName { get; set; }
     }

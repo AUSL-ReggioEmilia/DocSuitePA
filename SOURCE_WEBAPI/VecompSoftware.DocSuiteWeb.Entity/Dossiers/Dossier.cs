@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.Commons.Interfaces.CQRS.Commands;
+using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Messages;
 using VecompSoftware.DocSuiteWeb.Entity.Processes;
@@ -7,7 +9,7 @@ using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Dossiers
 {
-    public class Dossier : DSWBaseEntity
+    public class Dossier : DSWBaseEntity, IWorkflowContentBase
     {
         #region [ Constructor ]
         public Dossier() : this(Guid.NewGuid()) { }
@@ -26,6 +28,9 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Dossiers
             WorkflowInstances = new HashSet<WorkflowInstance>();
             LinkedDossiers = new HashSet<DossierLink>();
             Processes = new HashSet<Process>();
+            MetadataValueContacts = new HashSet<MetadataValueContact>();
+            SourceMetadataValues = new HashSet<MetadataValue>();
+            WorkflowActions = new List<IWorkflowAction>();
         }
         #endregion
 
@@ -37,7 +42,10 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Dossiers
         public string Note { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
-        public string JsonMetadata { get; set; }
+        public string MetadataDesigner { get; set; }
+        public string MetadataValues { get; set; }
+        public DossierType DossierType { get; set; }
+        public DossierStatus Status { get; set; }
 
         #endregion
 
@@ -55,6 +63,16 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Dossiers
         public virtual ICollection<WorkflowInstance> WorkflowInstances { get; set; }
         public virtual ICollection<DossierLink> LinkedDossiers { get; set; }
         public virtual ICollection<DossierLink> DossierLinks { get; set; }
+        public virtual ICollection<MetadataValue> SourceMetadataValues { get; set; }
+        public virtual ICollection<MetadataValueContact> MetadataValueContacts { get; set; }
+        public virtual Category Category { get; set; }
+        #endregion
+
+        #region [ Not Mapping Properties ]
+        public bool WorkflowAutoComplete { get; set; }
+        public Guid? IdWorkflowActivity { get; set; }
+        public string WorkflowName { get; set; }
+        public ICollection<IWorkflowAction> WorkflowActions { get; set; }
         #endregion
     }
 }

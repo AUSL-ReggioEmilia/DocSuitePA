@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:tns="document.acaris.acta.doqui.it" xmlns:common="common.acaris.acta.doqui.it" xmlns:service="documentservice.acaris.acta.doqui.it" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:archive="archive.acaris.acta.doqui.it" targetNamespace="document.acaris.acta.doqui.it" jaxb:version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="ACARIS-Document.xsd" namespace="documentservice.acaris.acta.doqui.it" />
+  <xs:import schemaLocation="ACARIS-Archive.xsd" namespace="archive.acaris.acta.doqui.it" />
+  <xs:import schemaLocation="ACARIS-Common.xsd" namespace="common.acaris.acta.doqui.it" />
+  <xs:element name="creaDocumento">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="tipoOperazione" type="service:enumTipoOperazione" />
+        <xs:element minOccurs="1" maxOccurs="1" name="datiCreazione" type="service:InfoRichiestaCreazione" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="creaDocumentoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="info" type="service:IdentificatoreDocumento" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getRappresentazioneDocumento">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="puntoDiPartenza" type="service:IdentificatoreDocumento" />
+        <xs:element minOccurs="1" maxOccurs="1" name="recuperaAscendenza" type="common:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getRappresentazioneDocumentoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="info" type="service:MappaIdentificazioneDocumento" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="trasformaDocumentoPlaceHolderInDocumentoElettronicoOld">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="placeHolderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="placeHolderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="tipoDocFisicoId" type="common:integer" />
+        <xs:element minOccurs="1" maxOccurs="1" name="composizioneId" type="common:integer" />
+        <xs:element minOccurs="1" maxOccurs="1" name="multiplo" type="common:boolean" />
+        <xs:element minOccurs="1" maxOccurs="1" name="rimandareOperazioneSbustamento" type="common:boolean" />
+        <xs:element minOccurs="1" maxOccurs="unbounded" name="documentoFisico" type="common:PropertiesType" />
+        <xs:element minOccurs="1" maxOccurs="unbounded" name="contenutoFisico" type="common:PropertiesType" />
+        <xs:element minOccurs="1" maxOccurs="unbounded" name="contentStream" type="common:acarisContentStreamType" />
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="annotazione" type="common:PropertiesType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="trasformaDocumentoPlaceholderInDocumentoElettronico">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="classificazioneId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="registrazioneId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="infoRichiesta" type="service:InfoRichiestaTrasformazione" />
+        <xs:element minOccurs="1" maxOccurs="unbounded" name="documentoFisico" type="service:DocumentoFisicoIRC" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="trasformaDocumentoPlaceholderInDocumentoElettronicoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="trasformazione" type="service:IdentificazioneTrasformazione" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="creaDocumentoFisicoInDocumentRoot">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="typeId" type="archive:enumDocumentObjectType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="associativeObjectTypeId" type="archive:enumFolderObjectType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="properties" type="common:PropertiesType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="associativeObjectProperties" type="common:PropertiesType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="contentStream" type="common:acarisContentStreamType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="creaDocumentoFisicoInDocumentRootResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

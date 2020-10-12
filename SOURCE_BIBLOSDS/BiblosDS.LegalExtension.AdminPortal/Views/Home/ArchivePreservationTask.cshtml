@@ -129,6 +129,14 @@
   </div>
 }
 
+@(Html.Kendo().Window()
+    .Name("closePreviousTasks")
+    .Title("Crea task di chiusura")
+    .Width(400)
+    .Height(250)
+    .Modal(true)
+    .Visible(false))
+
 <script type="text/javascript">
   $(document).ready(function () {
     /*
@@ -153,7 +161,7 @@
                   columns.Bound(o => o.StartDocumentDate).Format("{0:dd/MM/yyyy}").Title("Data inzio doc.");
                   columns.Bound(o => o.EndDocumentDate).Format("{0:dd/MM/yyyy}").Title("Data fine doc.");
                   columns.Bound(o => o.Enabled).Title("Abilitato");                  
-                  columns.Template(e => { }).ClientTemplate("#=deleteTaskTemplate(data)#");
+                  columns.Template(e => { }).ClientTemplate("#=actionsTemplate(data)#");
               })
       .ClientDetailTemplateId("taskTemplate")
       .Pageable(pager => { pager.Enabled(true); pager.Refresh(true); pager.Info(true); })
@@ -191,12 +199,29 @@
   )
 </script>
 <script>
-    function deleteTaskTemplate(data) {
-        if (data.ExecutedDate != null) {
-            var visible = "style = 'visibility : hidden'"
+    function openClosePreviousArchiveTasksWindow(idPreservationTask) {
+        var window = $("#closePreviousTasks").data("kendoWindow");
+        window.refresh({
+            url: "@Url.Action("ClosePreviousArchiveTasks", "Home")?idPreservationTask=" + idPreservationTask
+        });
+        window.open().center();
+    }
+
+    function actionsTemplate(data) {
+        var htmlTemplate = "";
+        if (data.ExecutedDate == null) {
+            htmlTemplate = "<a href='../DeletePreservationTask/"+data.id+"' class='k-button'>Elimina Task</a>";
         }
 
-    return "<a href='../DeletePreservationTask/"+data.id+"' class='k-button' "+visible+ ">Elimina Task</a>";
+        if (data.TaskStatus) {
+            switch (data.TaskStatus) {
+                case 4: {
+                    htmlTemplate = htmlTemplate + "<a href=\"#\" class=\"k-button\" onclick=\"openClosePreviousArchiveTasksWindow('"+data.id+"')\">Crea Task chiusura</a>";
+                }
+                    break;
+            }
+        }
+        return htmlTemplate;
     }
 </script>
 <script>
@@ -219,46 +244,8 @@
 <div id="window">
 </div>
 <script>
-  function UnMountPreservationDevice(id) {
-    $.ajax({
-      cache: false,
-      type: "POST",
-      async: false,
-      url: '@Url.Action("UnMountPreservationDevice", "Home")',
-      data: { idPreservation: id },
-      success: function (res) {
-        if (res.error == null) {
-          alert(res.device);
-        } else {
-          alert(res.error);
-        }
-      },
-      error: function (xhr) {
-        debugger;
-        alert(xhr.responseText);
-      }
-    });
-  }
-  function MountPreservationDevice(id) {
-    $.ajax({
-      cache: false,
-      type: "POST",
-      async: false,
-      url: '@Url.Action("MountPreservationDevice", "Home")',
-      data: { idPreservation: id },
-      success: function (res) {
-        if (res.error == null) {
-          alert(res.device);
-        } else {
-          alert(res.error);
-        }
-      },
-      error: function (xhr) {
-        debugger;
-        alert(xhr.responseText);
-      }
-    });
-  }
+  
+ 
   function OpenPreservationDetails(id) {
 
     var window = $("#window").kendoWindow(

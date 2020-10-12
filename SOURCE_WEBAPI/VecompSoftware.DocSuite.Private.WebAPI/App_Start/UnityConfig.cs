@@ -38,9 +38,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
         public static IDependencyResolver RegisterTypes(IUnityContainer container)
         {
             return container.Initialize<UnityConfig, WebAPICurrentIdentity>(WebApiApplication.UDSAssemblyFullName,
-                WebApiApplication.UDSAssemblyFileName, WebApiConfiguration.WorkflowEngineType, WebApiConfiguration.ServiceBusConnectionString,
-                HostingEnvironment.MapPath(WebApiConfiguration.MESSAGE_CONFIGURATION_FILE_PATH),
-                (logger) => WorkflowConfiguration.GetWorkflowConfiguration(logger), WebApiConfiguration.CustomInstanceName,
+                WebApiApplication.UDSAssemblyFileName, WebApiConfiguration.ServiceBusConnectionString,
+                HostingEnvironment.MapPath(WebApiConfiguration.MESSAGE_CONFIGURATION_FILE_PATH), WebApiConfiguration.CustomInstanceName,
                 WebApiConfiguration.AutoDeleteOnIdle, WebApiConfiguration.DefaultMessageTimeToLive, WebApiConfiguration.LockDuration,
                 WebApiConfiguration.MaxDeliveryCount);
         }

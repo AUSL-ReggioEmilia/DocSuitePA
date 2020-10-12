@@ -5,6 +5,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Configuration;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using VecompSoftware.Core.Command.CQRS;
@@ -56,7 +58,8 @@ namespace VecompSoftware.BPM.Integrations.Services.ServiceBus
         #endregion
 
         #region [ Methods ]
-        private async Task OnMessage<T>(string moduleName, BrokeredMessage message, Func<T, Task> callbackAsync)
+        private async Task OnMessage<T>(string moduleName, string serviceBusEntityName, string subscriptionName, BrokeredMessage message,
+            Func<T, IDictionary<string, object>, Task> callbackAsync)
         {
             IDictionary<string, object> properties = new Dictionary<string, object>();
             try
@@ -67,14 +70,35 @@ namespace VecompSoftware.BPM.Integrations.Services.ServiceBus
                     properties.Add(CustomPropertyName.EVALUATED_HOST_MACHINE, string.Empty);
                 }
                 properties[CustomPropertyName.EVALUATED_HOST_MACHINE] = Environment.MachineName;
-                if (!properties.ContainsKey("ModuleName"))
+                if (!properties.ContainsKey(CustomPropertyName.EVALUATED_MODULE_NAME))
                 {
-                    properties.Add("ModuleName", string.Empty);
+                    properties.Add(CustomPropertyName.EVALUATED_MODULE_NAME, string.Empty);
                 }
-                properties["ModuleName"] = moduleName;
+                properties[CustomPropertyName.EVALUATED_MODULE_NAME] = moduleName;
+
+                if (!properties.ContainsKey(CustomPropertyName.EVALUATED_SERVICEBUS_ENTITY_NAME))
+                {
+                    properties.Add(CustomPropertyName.EVALUATED_SERVICEBUS_ENTITY_NAME, string.Empty);
+                }
+                properties[CustomPropertyName.EVALUATED_SERVICEBUS_ENTITY_NAME] = serviceBusEntityName;
+
+                if (!properties.ContainsKey(CustomPropertyName.EVALUATED_SUBSCRIPTION_NAME))
+                {
+                    properties.Add(CustomPropertyName.EVALUATED_SUBSCRIPTION_NAME, string.Empty);
+                }
+                properties[CustomPropertyName.EVALUATED_SUBSCRIPTION_NAME] = subscriptionName;
+                if (!string.IsNullOrEmpty(message.ReplyTo))
+                {
+                    properties.Add(CustomPropertyName.REPLY_TO, message.ReplyTo);
+                }
+                if (!string.IsNullOrEmpty(message.ReplyToSessionId))
+                {
+                    properties.Add(CustomPropertyName.REPLY_TO_SESSION_ID, message.ReplyToSessionId);
+                }
+
                 T content = ReadMessageBody<T>(message);
-                await callbackAsync(content);
-                await message.CompleteAsync();
+                await callbackAsync(content, properties);
+                await message.CompleteAsync();                
             }
             catch (Exception ex)
             {
@@ -94,16 +118,16 @@ namespace VecompSoftware.BPM.Integrations.Services.ServiceBus
 
         private IDictionary<string, object> CompleteDeadletterProperties(Exception ex, IDictionary<string, object> properties, string deadLetterReason)
         {
-            if (!properties.ContainsKey("DeadLetterReason"))
+            if (!properties.ContainsKey(CustomPropertyName.DEADLETTER_REASON))
             {
-                properties.Add("DeadLetterReason", string.Empty);
+                properties.Add(CustomPropertyName.DEADLETTER_REASON, string.Empty);
             }
-            if (!properties.ContainsKey("DeadLetterErrorDescription"))
+            if (!properties.ContainsKey(CustomPropertyName.DEADLETTER_ERROR_DESCRIPTION))
             {
-                properties.Add("DeadLetterErrorDescription", string.Empty);
+                properties.Add(CustomPropertyName.DEADLETTER_ERROR_DESCRIPTION, string.Empty);
             }
-            properties["DeadLetterReason"] = deadLetterReason;
-            properties["DeadLetterErrorDescription"] = GetMessageErrors(ex);
+            properties[CustomPropertyName.DEADLETTER_REASON] = deadLetterReason;
+            properties[CustomPropertyName.DEADLETTER_ERROR_DESCRIPTION] = GetMessageErrors(ex);
             return properties;
         }
 
@@ -126,9 +150,9 @@ namespace VecompSoftware.BPM.Integrations.Services.ServiceBus
             {
                 return ex.Message.Length >= short.MaxValue ? "Message could not be consumed after specified delivery attempts." : ex.Message;
             }
-        }
+        }        
 
-        public Guid StartListening<TEvent>(string moduleName, string topicName, string subscriptionName, Func<TEvent, Task> callbackAsync)
+        public Guid StartListening<TEvent>(string moduleName, string topicName, string subscriptionName, Func<TEvent, IDictionary<string, object>, Task> callbackAsync)
             where TEvent : IEvent
         {
             Guid id = Guid.NewGuid();
@@ -137,7 +161,7 @@ namespace VecompSoftware.BPM.Integrations.Services.ServiceBus
                 _logger.WriteInfo(new LogMessage($"Connect topic {topicName} with subscription name {subscriptionName} from module {moduleName}"), LogCategories);
                 SubscriptionClient client = SubscriptionClient.Create(topicName, subscriptionName, ReceiveMode.PeekLock);
 
-                client.OnMessageAsync(async (message) => await OnMessage(moduleName, message, callbackAsync), messageOptions);
+                client.OnMessageAsync(async (message) => await OnMessage(moduleName, topicName, subscriptionName, message, callbackAsync), messageOptions);
                 _clients.TryAdd(id, client);
             }
             catch (Exception ex)
@@ -148,7 +172,7 @@ namespace VecompSoftware.BPM.Integrations.Services.ServiceBus
             return id;
         }
 
-        public Guid StartListening<TCommand>(string moduleName, string queueName, Func<TCommand, Task> callbackAsync)
+        public Guid StartListening<TCommand>(string moduleName, string queueName, Func<TCommand, IDictionary<string, object>, Task> callbackAsync)
             where TCommand : ICommand
         {
             Guid id = Guid.NewGuid();
@@ -157,7 +181,7 @@ namespace VecompSoftware.BPM.Integrations.Services.ServiceBus
                 _logger.WriteInfo(new LogMessage($"Connect queue {queueName}from module {moduleName}"), LogCategories);
                 QueueClient client = QueueClient.Create(queueName, ReceiveMode.PeekLock);
 
-                client.OnMessageAsync(async (message) => await OnMessage(moduleName, message, callbackAsync), messageOptions);
+                client.OnMessageAsync(async (message) => await OnMessage(moduleName, queueName, string.Empty, message, callbackAsync), messageOptions);
                 _clients.TryAdd(id, client);
             }
             catch (Exception ex)
@@ -266,7 +290,7 @@ namespace VecompSoftware.BPM.Integrations.Services.ServiceBus
             }
         }
 
-        public async Task SendEventAsync<TEvent>(TEvent @event, string topicName, DateTime? scheduleEnqueueTimeUtc)
+        public async Task SendEventAsync<TEvent>(TEvent @event, string topicName, DateTime? scheduleEnqueueTimeUtc, string eventName = "")
             where TEvent : IEvent
         {
             try
@@ -281,9 +305,14 @@ namespace VecompSoftware.BPM.Integrations.Services.ServiceBus
                 {
                     message.Properties.Add(property.Key, property.Value);
                 }
+                if (!string.IsNullOrEmpty(eventName))
+                {
+                    message.Properties[CustomPropertyName.EVENT_NAME] = eventName;
+                }
                 if (@event.CorrelationId.HasValue)
                 {
                     message.CorrelationId = @event.CorrelationId.Value.ToString();
+                    message.SessionId = @event.CorrelationId.Value.ToString();
                 }
 
                 TopicClient client = TopicClient.Create(topicName);
@@ -302,6 +331,81 @@ namespace VecompSoftware.BPM.Integrations.Services.ServiceBus
             _logger.WriteInfo(new LogMessage($"Message {message.MessageId} arrived"), LogCategories);
             _logger.WriteDebug(new LogMessage($"Message content {string.Join(string.Empty, messageContent.Take(256))}"), LogCategories);
             return JsonConvert.DeserializeObject<T>(messageContent, _serializerSettings);
+        }
+
+        public async Task<ICollection<string>> GetSubscriptionsAsync(string topicName)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(topicName))
+                {
+                    throw new ArgumentNullException(nameof(topicName), $"Parameter {nameof(topicName)} is null or empty");
+                }
+                NamespaceManager manager = NamespaceManager.Create();
+                IEnumerable<SubscriptionDescription> subscriptions = await manager.GetSubscriptionsAsync(topicName);
+                return subscriptions.Select(s => s.Name).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteError(ex, LogCategories);
+                throw ex;
+            }
+        }
+
+        public async Task<long> CountSubscriptionActiveMessageAsync(string topicName, string subscriptionName)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(topicName))
+                {
+                    throw new ArgumentNullException(nameof(topicName), $"Parameter {nameof(topicName)} is null or empty");
+                }
+                if (string.IsNullOrEmpty(subscriptionName))
+                {
+                    throw new ArgumentNullException(nameof(subscriptionName), $"Parameter {nameof(subscriptionName)} is null or empty");
+                }
+                NamespaceManager manager = NamespaceManager.Create();
+                SubscriptionDescription subscription = await manager.GetSubscriptionAsync(topicName, subscriptionName);
+                if (subscription == null)
+                {
+                    _logger.WriteError(new LogMessage($"Subscription {subscriptionName} not found in topic {topicName}"), LogCategories);
+                    throw new Exception($"Subscription {subscriptionName} not found in topic {topicName}");
+                }
+                return subscription.MessageCountDetails.ActiveMessageCount;
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteError(ex, LogCategories);
+                throw ex;
+            }
+        }
+
+        public async Task<T> GetDeadLetterEventAsync<T>(string topicName, string subscriptionName) where T: IEvent
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(topicName))
+                {
+                    throw new ArgumentNullException(nameof(topicName), $"Parameter {nameof(topicName)} is null or empty");
+                }
+                if (string.IsNullOrEmpty(subscriptionName))
+                {
+                    throw new ArgumentNullException(nameof(subscriptionName), $"Parameter {nameof(subscriptionName)} is null or empty");
+                }
+                MessagingFactory messagingFactory = MessagingFactory.Create();
+                MessageReceiver messageReceiver = messagingFactory.CreateMessageReceiver(SubscriptionClient.FormatDeadLetterPath(topicName, subscriptionName), ReceiveMode.PeekLock);
+                BrokeredMessage brokeredMessage = await messageReceiver.PeekAsync();
+                if (brokeredMessage == null)
+                {
+                    return default(T);
+                }
+                return ReadMessageBody<T>(brokeredMessage);
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteError(ex, LogCategories);
+                throw ex;
+            }
         }
         #endregion
     }

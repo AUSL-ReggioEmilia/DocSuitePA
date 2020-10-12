@@ -10,7 +10,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice.Configu
         #region [ Fields ]
         public const string MODULE_NAME = "VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice";
         private const string MODULE_CONFIGURATION_NAME = "module.configuration.json";
-        
+
         #endregion
 
         #region [ Properties ]

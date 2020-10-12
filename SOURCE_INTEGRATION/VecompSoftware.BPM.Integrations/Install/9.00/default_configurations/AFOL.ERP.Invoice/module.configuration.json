@@ -1,0 +1,112 @@
+﻿{
+  "ConnectionString": "Data Source=srvgeddev9999.cloudapp.net;Initial Catalog=***REMOVED***_eNavigare;User ID=sa;Pwd=Passw0rd;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=True;Max Pool Size=1024",
+  "TenantName": "***REMOVED***",
+  "TenantId": "F916C0BA-69CF-4589-9B13-DBA7E97CFB8F",
+  "TenantAOOId": "ff2efa82-4ea3-471e-af22-f784bbf09c25",
+  "MetadataRepositoryId": "12EF3085-F816-488D-81F3-4AAE33B65997",
+  "TopicBuilderEvent": "builder_event",
+  "TopicWorkflowCompleted": "workflow_completed",
+  "TopicWorkflowIntegration": "workflow_integration",
+  "WorkflowStartReceivableInvoiceSubscription": "WorkflowStartReceivableInvoice",
+  "WorkflowStartUpdateReceiptMetadataInvoiceSubscription": "WorkflowStartUpdateReceiptMetadataInvoice",
+  "WorkflowStartUpdateMetadataInvoiceSubscription": "WorkflowStartUpdateMetadataInvoice",
+  "WorkflowReceivableInvoiceProtocolBuildCompleteSubscription": "WorkflowReceivableInvoiceProtocolBuildComplete",
+  "WorkflowReceivableInvoiceUDSBuildCompleteSubscription": "WorkflowReceivableInvoiceUDSBuildComplete",
+  "WorkflowPayableInvoiceUDSBuildCompleteSubscription": "WorkflowPayableInvoiceUDSBuildComplete",
+  "WorkflowPayableInvoiceProtocolBuildCompleteSubscription": "WorkflowPayableInvoiceProtocolBuildComplete",
+  "WorkflowPayableInvoicePECMailBuildCompleteSubscription": "WorkflowPayableInvoicePECMailBuildComplete",
+  "ReceivableWorkflowConfigurations": {
+    "": {
+      "InvoicePR_V12": {
+        "WorkflowRepositoryName": "Fatturazione elettronica - Fattura tra privati passiva",
+        "UDSRepositoryName": "Fatture Passive",
+        "ProtocolContainerId": -32527,
+        "ProtocolCategoryId": -32765,
+        "ContactB2BParent": 321,
+        "ContactPAParent": 321,
+        "AuthorizationRoles": [ -32765 ],
+        "InvoicePersistanceConfigurations": {
+          "": {
+            "UDSRepositoryName": "Fatture Passive",
+            "FolderReceivedInvoice": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\Invoices",
+            "FolderMetadataInvoiceLooking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\MetadataLooking",
+            "FolderMetadataInvoiceWorking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\MetadataWorking",
+            "FolderMetadataInvoiceError": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\MetadataError",
+            "FolderMetadataInvoiceBackup": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\MetadataBackup"
+          },
+          "AMMINISTRAZIONE.FATTURE@PEC.IT": {
+            "UDSRepositoryName": "Fatture Passive",
+            "FolderReceivedInvoice": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\FattureAmministrazione"
+          }
+        }
+      }
+    },
+    "AZIENDA.FATTURE@PEC.IT": {
+      "InvoicePR_V12": {
+        "WorkflowRepositoryName": "AZIENDA - Fatturazione elettronica - Fattura tra privati passiva",
+        "UDSRepositoryName": "AZIENDA - Fatture Passive",
+        "ProtocolContainerId": -32527,
+        "ProtocolCategoryId": -32765,
+        "ContactB2BParent": 321,
+        "ContactPAParent": 321,
+        "AuthorizationRoles": [ -32765 ],
+        "InvoicePersistanceConfigurations": {
+          "": {
+            "UDSRepositoryName": "AZIENDA - Fatture passive",
+            "FolderReceivedInvoice": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\Invoices",
+            "FolderMetadataInvoiceLooking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataLooking",
+            "FolderMetadataInvoiceWorking": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataWorking",
+            "FolderMetadataInvoiceError": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataError",
+            "FolderMetadataInvoiceBackup": "C:\\Program Files (x86)\\BPM\\Integrations_Drops\\AZIENDA\\MetadataBackup"
+          }
+        }
+      }
+    }
+  },
+  "PayableWorkflowConfigurations": {
+    "": {
+      "InvoicePR_V12": {
+        "WorkflowRepositoryName": "Fatturazione elettronica - Fattura tra privati attiva",
+        "UDSRepositoryName": "Fatture Attive",
+        "MailRecipients": "sdi01@pec.fatturapa.it",
+        "SignInvoiceType": "AutomaticAruba",
+        "SignerParameter": {
+          "DelegatedDomain": "demoprod",
+          "DelegatedPassword": "password11",
+          "DelegatedUser": "delegato",
+          "OTPPassword": "dsign",
+          "OTPAuthType": "demoprod",
+          "User": "titolare",
+          "CertificateId": "AS0"
+        },
+        "ProtocolContainerId": -32527,
+        "ProtocolCategoryId": -32765,
+        "PECMailBoxId": 1,
+        "ContactB2BParent": 321,
+        "ContactPAParent": 321,
+        "AuthorizationRoles": [ -32765 ]
+      },
+      "InvoicePA_V12": {
+        "WorkflowRepositoryName": "Fatturazione elettronica - Fattura pubblica amministrazione attiva",
+        "UDSRepositoryName": "Fatture Attive PA",
+        "MailRecipients": "sdi01@pec.fatturapa.it",
+        "SignInvoiceType": "AutomaticAruba",
+        "SignerParameter": {
+          "DelegatedDomain": "demoprod",
+          "DelegatedPassword": "password11",
+          "DelegatedUser": "delegato",
+          "OTPPassword": "dsign",
+          "OTPAuthType": "demoprod",
+          "User": "titolare",
+          "CertificateId": "AS0"
+        },
+        "ProtocolContainerId": -32527,
+        "ProtocolCategoryId": -32765,
+        "PECMailBoxId": 1,
+        "ContactB2BParent": 321,
+        "ContactPAParent": 321,
+        "AuthorizationRoles": [ -32765 ]
+      }
+    }
+  }
+}

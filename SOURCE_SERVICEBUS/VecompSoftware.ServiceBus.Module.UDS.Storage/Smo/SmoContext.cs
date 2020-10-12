@@ -18,11 +18,11 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage.Smo
 
         public SmoContext(string connStr, string dbSchema = "")
         {
-            var _connStr = ConfigurationManager.ConnectionStrings[connStr].ConnectionString;
+            string _connStr = ConfigurationManager.ConnectionStrings[connStr].ConnectionString;
             conn = new ServerConnection(new SqlConnection(_connStr));
             srv = new Server(conn);
 
-            var strBuilder = new SqlConnectionStringBuilder(_connStr);
+            SqlConnectionStringBuilder strBuilder = new SqlConnectionStringBuilder(_connStr);
             DbInstace = srv.Databases[strBuilder.InitialCatalog];
 
             this.dbSchema = dbSchema;
@@ -69,7 +69,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage.Smo
 
         public void DropTable(string tableName)
         {
-            var tb = GetTable(tableName);
+            Table tb = GetTable(tableName);
             if (tb != null)
             {
                 tb.Drop();

@@ -16,7 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Processes
         #region [ Constructor ]
 
         public IsProcessDeletable(NameValueCollection attributes)
-            : base("Il processo non può essere eliminato.", nameof(IsProcessDeletable))
+            : base("La serie non può essere eliminata.", nameof(IsProcessDeletable))
         {
         }
 
@@ -26,7 +26,7 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Processes
 
         protected override void ValidateObject(ProcessValidator objectToValidate)
         {
-            if (objectToValidate.EndDate <= DateTime.UtcNow)
+            if (objectToValidate.EndDate > DateTime.UtcNow)
             {
                 GenerateInvalidateResult();
             }

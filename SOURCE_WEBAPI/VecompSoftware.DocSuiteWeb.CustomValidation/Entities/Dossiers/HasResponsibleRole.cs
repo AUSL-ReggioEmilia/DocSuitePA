@@ -25,7 +25,8 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Dossiers
         #region [ Methods ]
         protected override void ValidateObject(DossierValidator objectToValidate)
         {
-            if (objectToValidate.DossierRoles == null || !objectToValidate.DossierRoles.Any() || objectToValidate.DossierRoles.Any(x => x.AuthorizationRoleType != AuthorizationRoleType.Responsible))
+            if (objectToValidate.DossierRoles == null 
+                || objectToValidate.DossierRoles.Count(x => x.AuthorizationRoleType == AuthorizationRoleType.Responsible) == 0)
             {
                 GenerateInvalidateResult();
             }

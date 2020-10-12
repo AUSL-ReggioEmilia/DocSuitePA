@@ -1,4 +1,5 @@
-﻿using VecompSoftware.DocSuiteWeb.Entity.Commons;
+﻿using System;
+using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons;
 
@@ -13,29 +14,32 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Commons
             #region [ Base ]
             entityTransformed.EntityShortId = entity.EntityShortId;
             entityTransformed.Name = entity.Name;
-            entityTransformed.DocumentServer = entity.DocumentServer;
-            entityTransformed.ConservationServer = entity.ConservationServer;
-            entityTransformed.ConsBiblosDsDb = entity.ConservationArchive;
-            entityTransformed.DocmBiblosDsDb = entity.DossierArchive;
-            entityTransformed.ProtBiblosDsDb = entity.ProtocolArchive;
-            entityTransformed.ReslBiblosDsDb = entity.ResolutionArchive;
+            entityTransformed.ConservationArchive = entity.ConservationArchive;
+            entityTransformed.DossierArchive = entity.DossierArchive;
+            entityTransformed.ProtocolArchive = entity.ProtocolArchive;
+            entityTransformed.ResolutionArchive = entity.ResolutionArchive;
             entityTransformed.UniqueId = entity.UniqueId;
             #endregion
 
             #region [ Navigation Properties ]
-            entityTransformed.Messages = entity.Messages;
-            entityTransformed.DocmContainers = entity.DocmContainers;
-            entityTransformed.ProtContainers = entity.ProtContainers;
-            entityTransformed.ReslContainers = entity.ReslContainers;
-            entityTransformed.DeskContainers = entity.DeskContainers;
-            entityTransformed.UDSContainers = entity.UDSContainers;
-            entityTransformed.Protocols = entity.Protocols;
-            entityTransformed.PECMails = entity.PECMails;
-            entityTransformed.PECMailBoxes = entity.PECMailBoxes;
+            entityTransformed.AttachProtocols = entity.AttachProtocols;
             entityTransformed.Collaborations = entity.Collaborations;
-            entityTransformed.DocumentSeriesItems = entity.DocumentSeriesItems;
+            entityTransformed.DeskContainers = entity.DeskContainers;
+            entityTransformed.DocmContainers = entity.DocmContainers;
+            entityTransformed.DocumentSeriesAnnexedContainers = entity.DocumentSeriesAnnexedContainers;
+            entityTransformed.DocumentSeriesContainers = entity.DocumentSeriesContainers;
             entityTransformed.DocumentSeriesItemAnnexes = entity.DocumentSeriesItemAnnexes;
+            entityTransformed.DocumentSeriesItems = entity.DocumentSeriesItems;
             entityTransformed.DocumentSeriesItemUnpublishedAnnexes = entity.DocumentSeriesItemUnpublishedAnnexes;
+            entityTransformed.DocumentSeriesUnpublishedAnnexedContainers = entity.DocumentSeriesUnpublishedAnnexedContainers;
+            entityTransformed.Messages = entity.Messages;
+            entityTransformed.PECMailBoxes = entity.PECMailBoxes;
+            entityTransformed.PECMails = entity.PECMails;
+            entityTransformed.ProtAttachContainers = entity.ProtAttachContainers;
+            entityTransformed.ProtContainers = entity.ProtContainers;
+            entityTransformed.Protocols = entity.Protocols;
+            entityTransformed.ReslContainers = entity.ReslContainers;
+            entityTransformed.UDSContainers = entity.UDSContainers;
             #endregion
 
             return entityTransformed;

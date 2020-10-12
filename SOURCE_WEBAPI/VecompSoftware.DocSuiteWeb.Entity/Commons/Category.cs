@@ -8,6 +8,7 @@ using VecompSoftware.DocSuiteWeb.Entity.MassimariScarto;
 using VecompSoftware.DocSuiteWeb.Entity.Processes;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Commons
 {
@@ -31,6 +32,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
             DossierFolders = new HashSet<DossierFolder>();
             FascicleFolders = new HashSet<FascicleFolder>();
             Processes = new HashSet<Process>();
+            Categories = new HashSet<Category>();
         }
         #endregion
 
@@ -53,6 +55,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         public virtual CategorySchema CategorySchema { get; set; }
         public virtual MassimarioScarto MassimarioScarto { get; set; }
         public virtual MetadataRepository MetadataRepository { get; set; }
+        public virtual TenantAOO TenantAOO { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<Protocol> Protocols { get; set; }
         public virtual ICollection<Resolution> Resolutions { get; set; }
@@ -65,6 +68,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         public virtual ICollection<DossierFolder> DossierFolders { get; set; }
         public virtual ICollection<FascicleFolder> FascicleFolders { get; set; }
         public virtual ICollection<Process> Processes { get; set; }
+        public virtual ICollection<Dossier> Dossiers { get; set; }
 
         #endregion
     }

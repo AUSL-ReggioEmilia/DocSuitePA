@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:tns="archive.acaris.acta.doqui.it" xmlns:common="common.acaris.acta.doqui.it" elementFormDefault="qualified" targetNamespace="archive.acaris.acta.doqui.it" jaxb:version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:include schemaLocation="ACARIS-Archive.xsd" />
+  <xs:import schemaLocation="ACARIS-Common.xsd" namespace="common.acaris.acta.doqui.it" />
+  <xs:simpleType name="enumIncludeRelationshipsType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="none" />
+      <xs:enumeration value="source" />
+      <xs:enumeration value="target" />
+      <xs:enumeration value="both" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumRelationshipDirectionType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="source" />
+      <xs:enumeration value="target" />
+      <xs:enumeration value="either" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="acarisRepositoryEntryType">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+      <xs:element minOccurs="1" maxOccurs="1" name="repositoryName" type="common:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="repositoryURI" type="common:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="acarisRepositoryInfoType">
+    <xs:sequence minOccurs="1">
+      <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+      <xs:element minOccurs="1" maxOccurs="1" name="repositoryName" type="common:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="repositoryURI" type="common:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="repositoryDescription" type="common:string" />
+      <xs:element name="rootFolderId" type="common:ObjectIdType" />
+      <xs:element minOccurs="1" maxOccurs="1" name="documentRootFolderId" type="common:ObjectIdType" />
+      <xs:element minOccurs="1" maxOccurs="1" name="numeroMassimoRisultati" type="common:integer" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="acarisRenditionType">
+    <xs:sequence>
+      <xs:element name="streamId" type="common:enumStreamId" />
+      <xs:element minOccurs="0" name="mimeType" type="common:enumMimeTypeType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MoveDocumentPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="common:PropertiesType">
+        <xs:sequence>
+          <xs:element name="offlineMoveRequest" type="common:boolean" />
+          <xs:element minOccurs="0" name="idSmistamentoType" type="common:IdSmistamentoType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="createDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="typeId" type="tns:enumDocumentObjectType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="properties" type="common:PropertiesType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="contentStream" type="common:acarisContentStreamType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="createDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="createAssociativeDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="typeId" type="tns:enumDocumentObjectType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="associativeObjectTypeId" type="tns:enumFolderObjectType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="properties" type="common:PropertiesType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="associativeObjectProperties" type="common:PropertiesType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="contentStream" type="common:acarisContentStreamType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="createAssociativeDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="createFolder">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="typeId" type="tns:enumFolderObjectType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="properties" type="common:PropertiesType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="createFolderResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="createRelationship">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="typeId" type="tns:enumRelationshipObjectType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="properties" type="common:PropertiesType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="sourceObjectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="targetObjectId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="createRelationshipResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getProperties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="filter" type="common:PropertyFilterType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getPropertiesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="object" type="common:ObjectResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getContentStream">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="documentId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="streamId" type="common:enumStreamId" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getContentStreamResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" name="contentStream" type="common:acarisContentStreamType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getRenditions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="renditionFilter" type="common:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getRenditionsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="renditions" type="tns:acarisRenditionType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="addRenditionStream">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="documentId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="changeToken" type="common:ChangeTokenType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="streamId" type="common:enumStreamId" />
+        <xs:element minOccurs="1" maxOccurs="2" name="contentStream" type="common:acarisContentStreamType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="addRenditionStreamResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="response" type="common:SimpleResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="updateProperties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="changeToken" type="common:ChangeTokenType" />
+        <xs:element minOccurs="1" maxOccurs="unbounded" name="properties" type="common:PropertyType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="updatePropertiesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="response" type="common:SimpleResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="closeFolder">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="closeFolderResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="response" type="common:SimpleResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="moveDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="associativeObjectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="sourceFolderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="targetFolderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="associativeProperties" type="common:PropertiesType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="moveDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="associativeObjectId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="deleteObject">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="deleteObjectResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="setContentStream">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="documentId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="changeToken" type="common:ChangeTokenType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="contentStream" type="common:acarisContentStreamType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="setContentStreamResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="response" type="common:SimpleResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="deleteContentStream">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="documentId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="changeToken" type="common:ChangeTokenType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="deleteContentStreamResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="response" type="common:SimpleResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="addObjectToFolder">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="addObjectToFolderResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="addAssociativeObjectToFolder">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="associativeObjectTypeId" type="tns:enumFolderObjectType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="associativeObjectProperties" type="common:PropertiesType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="addAssociativeObjectToFolderResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="removeObjectFromFolder">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="removeObjectFromFolderResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="aggiungiClassificazione">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="classificazioneDiPartenzaId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="params" type="common:VarargsType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="aggiungiClassificazioneResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="response" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getObjectRelationships">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="typeId" type="tns:enumRelationshipObjectType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="direction" type="tns:enumRelationshipDirectionType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="filter" type="common:PropertyFilterType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getObjectRelationshipsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="response" type="tns:RelationshipPropertiesType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getDescendants">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="depth" type="common:integer" />
+        <xs:element minOccurs="1" maxOccurs="1" name="filter" type="common:PropertyFilterType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="maxItems" type="common:integer" />
+        <xs:element minOccurs="0" maxOccurs="1" name="skipCount" type="common:integer" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getDescendantsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="objects" type="common:PagingResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getChildren">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="filter" type="common:PropertyFilterType" />
+        <xs:element minOccurs="0" maxOccurs="1" name="maxItems" type="common:integer" />
+        <xs:element minOccurs="0" maxOccurs="1" name="skipCount" type="common:integer" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getChildrenResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="response" type="common:PagingResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getFolderParent">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="folderId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="filter" type="common:PropertyFilterType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getFolderParentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="object" type="common:ObjectResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getObjectParents">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="objectId" type="common:ObjectIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="principalId" type="common:PrincipalIdType" />
+        <xs:element minOccurs="1" maxOccurs="1" name="filter" type="common:PropertyFilterType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getObjectParentsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="objects" type="common:ObjectResponseType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getRepositories">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getRepositoriesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" name="repository" type="tns:acarisRepositoryEntryType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getRepositoryInfo">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="1" name="repositoryId" type="common:ObjectIdType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="getRepositoryInfoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="repositoryInfo" type="tns:acarisRepositoryInfoType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

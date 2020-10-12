@@ -12,6 +12,7 @@ using System.IO;
 using BiblosDS.Library.Common.Exceptions;
 using VecompSoftware.ServiceContract.BiblosDS.Documents;
 using BiblosDS.Library.Common.Utility;
+using VecompSoftware.BiblosDS.WCF.Common;
 
 // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Administration" in code, svc and config file together.
 [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]

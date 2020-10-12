@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Securities
 {
@@ -40,6 +41,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Securities
         /// </summary>
         public DateTimeOffset? ExpiryDate { get; set; }
 
+        public DocumentUnitModel DocumentUnitAuhtorized { get; set; }
         #endregion
     }
 }

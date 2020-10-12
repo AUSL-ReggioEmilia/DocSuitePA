@@ -30,6 +30,9 @@
         internal const string SQL_FX_FascicleFolder_NameAlreadyExists = "[webapiprivate].FascicleFolder_FX_NameAlreadyExists";
         internal const string SQL_FX_FascicleFolder_HasParent = "[webapiprivate].FascicleFolder_FX_HasParent";
         internal const string SQL_FX_FascicleFolder_CountChildren = "[webapiprivate].FascicleFolder_FX_CountChildren";
+        internal const string SQL_FX_Fascicle_CountAuthorizedFasciclesFromDocumentUnit = "[webapiprivate].Fascicles_FX_CountAuthorizedFasciclesFromDocumentUnit";
+        internal const string SQL_FX_Fascicle_AuthorizedFasciclesFromDocumentUnit = "[webapiprivate].Fascicles_FX_AuthorizedFasciclesFromDocumentUnit";
+        internal const string SQL_FX_FascicleFolder_FX_FascicleFoldersWithSameName = "[webapiprivate].FascicleFolder_FX_FascicleFoldersWithSameName";
         #endregion
         #region [ Params ]
         internal const string SQL_Param_Fascicle_UserName = "@UserName";
@@ -41,7 +44,7 @@
         internal const string SQL_Param_Fascicle_Environment = "@Environment";
         internal const string SQL_Param_Fascicle_UniqueIdDocumentUnit = "@UniqueId";
         internal const string SQL_Param_Fascicle_Description = "@Description";
-        internal const string SQL_Param_Fascicle_Title = "@Name";
+        internal const string SQL_Param_Fascicle_HasProcess = "@HasProcess";
         internal const string SQL_Param_Fascicle_IdCategory = "@CategoryId";
         internal const string SQL_Param_Fascicle_FascicleType = "@FascicleType";
         internal const string SQL_Param_Fascicle_StartDateFrom = "@StartDateFrom";
@@ -63,7 +66,16 @@
         internal const string SQL_Param_Fascicle_Roles = "@Roles";
         internal const string SQL_Param_Fascicle_ApplySecurity = "@ApplySecurity";
         internal const string SQL_Param_Fascicle_Container = "@Container";
+        internal const string SQL_Param_Fascicle_MetadataValues = "@MetadataValues";
         internal const string SQL_Param_FascicleFolder_IdFascicleFolder = "@IdFascicleFolder";
+        internal const string SQL_Param_Fascicle_ViewOnlyClosable = "@ViewOnlyClosable";
+        internal const string SQL_Param_Fascicle_ThresholdDate = "@ThresholdDate";
+        internal const string SQL_Param_Fascicle_Title = "@Title";
+        internal const string SQL_Param_Fascicle_IsManager = "@IsManager";
+        internal const string SQL_Param_Fascicle_IsSecretary = "@IsSecretary";
+        internal const string SQL_Param_FascicleFolder_ReferenceFascicleId = "@ReferenceFascicleId";
+        internal const string SQL_Param_FascicleFolder_DestinationFascicleId = "@DestinationFascicleId";
+        internal const string SQL_Param_FascicleFolder_FascicleFolderLevel = "@FascicleFolderLevel";
         #endregion
         #endregion
 
@@ -78,6 +90,7 @@
         internal const string SQL_FX_DocumentUnits_AuthorizedDocumentUnitsByFascicle = "[webapiprivate].DocumentUnit_FX_AuthorizedDocumentUnitsByFascicle";
         internal const string SQL_FX_DocumentUnits_CountAuthorizedDocumentUnitsByFascicle = "[webapiprivate].DocumentUnit_FX_CountAuthorizedDocumentUnitsByFascicle";
         internal const string SQL_FX_DocumentUnits_CanBeFascicolable = "[webapiprivate].DocumentUnit_FX_CanBeFascicolable";
+        internal const string SQL_FX_DocumentUnit_DocumentUnitsByChain = "[webapiprivate].DocumentUnit_FX_DocumentUnitsByChain";
         #endregion
         #region [ Params ]
         internal const string SQL_Param_DocumentUnit_UserName = "@UserName";
@@ -104,6 +117,8 @@
         internal const string SQL_Param_DocumentUnit_FascicleEnvironment = "@FascicleEnvironment";
         internal const string SQL_Param_DocumentUnit_FascicleType = "@FascicleType";
         internal const string SQL_Param_DocumentUnit_Environment = "@Environment";
+        internal const string SQL_Param_DocumentUnit_IdTenantAOO = "@IdTenantAOO";
+        internal const string SQL_Param_DocumentUnit_Chains = "@Chains";
         #endregion
         #endregion
 
@@ -123,7 +138,7 @@
 
         #endregion
 
-        #region[Commons]
+        #region[ Commons ]
         #region[Function Names]
         internal const string SQL_FX_Category_HierarcyCode = "[webapipublic].Category_FX_HierarcyCode";
         internal const string SQL_FX_Category_HierarcyDescription = "[webapipublic].Category_FX_HierarcyDescription";
@@ -136,6 +151,9 @@
         internal const string SQL_FX_Contact_GetContactParents = "[webapiprivate].Contact_FX_GetContactParents";
         internal const string SQL_FX_Contact_GetAuthorizedRoleContacts = "[webapiprivate].Contact_FX_GetAuthorizedRoleContacts";
         internal const string SQL_FX_Role_FindRoles = "[webapiprivate].Role_FX_FindRoles";
+        internal const string SQL_FX_Category_FindFascicolableCategory = "[webapiprivate].Category_FX_FindFascicolableCategory";
+        internal const string SQL_FX_UserDomain_UserRights = "[webapiprivate].UserDomain_FX_UserRights";
+        internal const string SQL_FX_RoleUser_AllSecretariesFromDossier = "[webapiprivate].[RoleUser_FX_AllSecretariesFromDossier]";
         #endregion
 
         #region[Params]
@@ -154,6 +172,7 @@
         internal const string SQL_Param_Category_FascicleFilterEnabled = "@FascicleFilterEnabled";
         internal const string SQL_Param_Category_ParentAllDescendants = "@ParentAllDescendants";
         internal const string SQL_Param_Category_Container = "@Container";
+        internal const string SQL_Param_Category_IdTenantAOO = "@IdTenantAOO";
         internal const string SQL_Param_Container_IdCategory = "@IdCategory";
         internal const string SQL_Param_Container_UserName = "@UserName";
         internal const string SQL_Param_Container_Domain = "@Domain";
@@ -172,6 +191,7 @@
         internal const string SQL_Param_Role_UserName = "@UserName";
         internal const string SQL_Param_Role_Domain = "@Domain";
         internal const string SQL_Param_Role_Name = "@Name";
+        internal const string SQL_Param_Role_UniqueId = "@UniqueId";
         internal const string SQL_Param_Role_ParentId = "@ParentId";
         internal const string SQL_Param_Role_ServiceCode = "@ServiceCode";
         internal const string SQL_Param_Role_TenantId = "@TenantId";
@@ -179,6 +199,10 @@
         internal const string SQL_Param_Role_LoadOnlyRoot = "@LoadOnlyRoot";
         internal const string SQL_Param_Role_LoadOnlyMy = "@LoadOnlyMy";
         internal const string SQL_Param_Role_LoadAlsoParent = "@LoadAlsoParent";
+        internal const string SQL_Param_UserDomain_UserName = "@UserName";
+        internal const string SQL_Param_UserDomain_Domain = "@Domain";
+        internal const string SQL_Param_UserDomain_RoleGroupPECRightEnabled = "@RoleGroupPECRightEnabled";
+        internal const string SQL_Param_UserRole_IdDossier = "@IdDossier";
         #endregion
 
 
@@ -230,6 +254,7 @@
         #region[Collaborations]
         #region[Function Name]
         internal const string SQL_FX_Collaboration_CollaborationsSigning = "[webapiprivate].Collaboration_FX_CollaborationsSigning";
+        internal const string SQL_FX_Collaboration_CollaborationsDelegationSigning = "[webapiprivate].Collaboration_FX_CollaborationsDeletationSigning";
         internal const string SQL_FX_Collaboration_ProposedCollaborations = "[webapiprivate].Collaboration_FX_ProposedCollaborations";
         internal const string SQL_FX_Collaboration_AllUserCollaborations = "[webapiprivate].Collaboration_FX_AllUserCollaborations";
         internal const string SQL_FX_Collaboration_ActiveUserCollaborations = "[webapiprivate].Collaboration_FX_ActiveUserCollaborations";
@@ -265,6 +290,8 @@
         internal const string SQL_FX_DossierFolder_NameAlreadyExists = "[webapiprivate].DossierFolder_FX_NameAlreadyExists";
         internal const string SQL_FX_DossierFolder_FascicleAlreadyExists = "[webapiprivate].DossierFolder_FX_FascicleAlreadyExists";
         internal const string SQL_FX_DossierFolder_FindProcessFolders = "[webapiprivate].[DossierFolders_FX_FindProcessFolders]";
+        internal const string SQL_FX_DossierFolder_GetAllParentsOfFascicle = "[webapiprivate].[DossierFolder_FX_GetAllParentsOfFascicle]";
+        internal const string SQL_FX_DossierFolder_GetParent = "[webapiprivate].[DossierFolder_FX_GetParent]";
         #endregion
 
         #region [ Params ]
@@ -284,6 +311,7 @@
         internal const string SQL_Param_Dossier_Note = "@Note";
         internal const string SQL_Param_Dossier_IdMetadataRepository = "@IdMetadataRepository";
         internal const string SQL_Param_Dossier_MetadataValue = "@MetadataValue";
+        internal const string SQL_Param_Dossier_MetadataValues = "@MetadataValues";
         internal const string SQL_Param_DossierFolder_IdDossierFolder = "@IdDossierFolder";
         internal const string SQL_Param_DossierFolder_IdDossierParentFolder = "@IdParent";
         internal const string SQL_Param_DossierFolder_Status = "@Status";
@@ -296,6 +324,7 @@
         internal const string SQL_Param_DossierFolder_ProcessId = "@ProcessId";
         internal const string SQL_Param_DossierFolder_LoadOnlyActive = "@LoadOnlyActive";
         internal const string SQL_Param_DossierFolder_LoadOnlyMy = "@LoadOnlyMy";
+        internal const string SQL_Param_Dossier_DossierType = "@DossierType";
 
         #endregion
         #endregion
@@ -312,7 +341,8 @@
         internal const string SQL_Param_WorkflowRepository_AnyEnvironment = "@AnyEnvironment";
         internal const string SQL_Param_WorkflowRepository_DocumentRequired = "@DocumentRequired";
         internal const string SQL_Param_WorkflowRepository_ShowOnlyNoInstanceWorkflows = "@ShowOnlyNoInstanceWorkflows";
-        
+        internal const string SQL_Param_WorkflowRepository_ShowOnlyHasIsFascicleClosedRequired = "@ShowOnlyHasIsFascicleClosedRequired";
+
         #endregion
         #endregion
 

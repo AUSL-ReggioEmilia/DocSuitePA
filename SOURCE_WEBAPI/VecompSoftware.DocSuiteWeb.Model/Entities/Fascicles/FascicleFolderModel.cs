@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
@@ -23,5 +24,6 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
 
         public short FascicleFolderLevel { get; set; }
         public DocumentModel Document { get; set; }
+        public ICollection<FascicleDocumentModel> FascicleDocuments { get; set; }
     }
 }

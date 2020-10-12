@@ -79,6 +79,54 @@ namespace BiblosDS.Library.Common.DB
             }
         }
 
+        public string GetCustomerIdByName(string username)
+        {
+            try
+            {
+                CustomerLogin customer = db.CustomerLogin.Where(x => x.UserName.Equals(username)).FirstOrDefault();
+                if (customer == null)
+                {
+                    throw new Exception($"Customer not found!");
+                }
+
+                return customer.IdCustomer;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
+        public string GetCustomerOrCompanySignInfo(Guid idCompany, string username)
+        {
+            try
+            {
+                string signInfoByCompany = db.Company
+                    .Where(x => x.IdCompany == idCompany)
+                    .Select(x => x.SignInfo).FirstOrDefault();
+
+                if (!string.IsNullOrEmpty(signInfoByCompany))
+                {
+                    return signInfoByCompany;
+                }
+                CustomerLogin customerByUsername = db.CustomerLogin
+                        .Where(x => x.UserName.Equals(username, StringComparison.InvariantCultureIgnoreCase))
+                        .FirstOrDefault();
+
+                return db.Customer.Where(x => x.IdCustomer == customerByUsername.IdCustomer).Select(x => x.SignInfo).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
+
+        }
         public bool CustomerLoginExists(string userName, string encryptedPassword)
         {
             var ret = false;

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
-  <contractRef ref="http://localhost/BiblosDS.WS/BiblosDS.asmx?wsdl" docRef="http://localhost/BiblosDS.WS/BiblosDS.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
-  <soap address="http://localhost/BiblosDS.WS/BiblosDS.asmx" xmlns:q1="http://www.vecompsoftware.it/BiblosDSWS/" binding="q1:BiblosWS2010Soap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
-  <soap address="http://localhost/BiblosDS.WS/BiblosDS.asmx" xmlns:q2="http://www.vecompsoftware.it/BiblosDSWS/" binding="q2:BiblosWS2010Soap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
-</discovery>

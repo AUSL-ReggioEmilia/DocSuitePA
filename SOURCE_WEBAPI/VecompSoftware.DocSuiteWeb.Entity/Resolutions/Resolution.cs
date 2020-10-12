@@ -8,9 +8,6 @@ using VecompSoftware.DocSuiteWeb.Entity.Messages;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Resolutions
 {
-    /// <summary>
-    /// TODO: La Resolution è da estendere con tutte le proprietà e navigation properties mancanti
-    /// </summary>
     public class Resolution : DSWBaseEntity, IWorkflowContentBase
     {
         #region [ Constructor ]
@@ -114,13 +111,14 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Resolutions
         public virtual ResolutionKind ResolutionKind { get; set; }
 
         public virtual ICollection<Message> Messages { get; set; }
-        
+
         //public virtual ICollection<ResolutionRole> ResolutionRoles { get; set; }
 
 
         #endregion
 
         #region [ Not Mapping Properties ]
+        public bool WorkflowAutoComplete { get; set; }
         public Guid? IdWorkflowActivity { get; set; }
         public string WorkflowName { get; set; }
         public ICollection<IWorkflowAction> WorkflowActions { get; set; }

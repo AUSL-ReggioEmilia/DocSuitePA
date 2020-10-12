@@ -11,7 +11,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.Update
     public class Listener : ListenerMessageBase<ICommandUpdateUDS>, IListenerMessageGeneric<ICommandUpdateUDS>
     {
         public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandUpdateUDS")
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandUpdateUDS", webApiClient)
         {
 
         }

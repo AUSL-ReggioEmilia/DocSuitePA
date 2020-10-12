@@ -52,6 +52,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Messages
 
             Ignore(x => x.Timestamp)
                 .Ignore(x => x.EntityShortId)
+                .Ignore(x => x.WorkflowAutoComplete)
                 .Ignore(x => x.WorkflowName)
                 .Ignore(x => x.IdWorkflowActivity)
                 .Ignore(x => x.WorkflowActions);

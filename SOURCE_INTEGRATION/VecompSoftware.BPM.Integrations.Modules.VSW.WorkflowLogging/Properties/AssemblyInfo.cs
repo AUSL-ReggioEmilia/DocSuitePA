@@ -1,13 +1,12 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging")]
+[assembly: AssemblyTitle("VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowAutoNotify")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
-[assembly: AssemblyProduct("VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowLogging")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2019")]
+[assembly: AssemblyProduct("VecompSoftware.BPM.Integrations.Modules.VSW.WorkflowAutoNotify")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -15,5 +14,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("c11ce2cf-e318-4f5d-8374-88ca97f14242")]
 
-[assembly: AssemblyVersion("8.84.0.0")]
-[assembly: AssemblyFileVersion("8.84.0.0")]
+[assembly: AssemblyVersion("9.09.0.0")]
+[assembly: AssemblyFileVersion("9.09.0.0")]

@@ -6,6 +6,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID.Models
     {
         public string TenantName { get; set; }
         public Guid TenantId { get; set; }
+        public Guid TenantAOOId { get; set; }
         public string TopicWorkflowIntegration { get; set; }
         public string WorkflowStartSPIDSubscription { get; set; }
         public string WorkflowSPIDUpdateSubscription { get; set; }
@@ -18,7 +19,5 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID.Models
         public Guid IdMetadataRepository { get; set; }
         public Guid IdPDFTemplate { get; set; }
         public string PDFGeneratorServiceUrl { get; set; }
-        public string WorkflowFascicleBuildCompleteSubscription { get; set; }
-        public string TopicBuilderEvent { get; set; }
     }
 }

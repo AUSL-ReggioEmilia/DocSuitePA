@@ -5,6 +5,7 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
 using VecompSoftware.DocSuiteWeb.Entity.Tenants;
+using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Tenants;
 
@@ -29,6 +30,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Tenants
         public DateTimeOffset RegistrationDate { get; set; }
         public string LastChangedUser { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
+        public TenantTypologyType TenantTypologyType { get; set; }
 
         #endregion
 
@@ -40,6 +42,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Tenants
         public ICollection<PECMailBox> PECMailBoxes { get; set; }
         public ICollection<TenantWorkflowRepository> TenantWorkflowRepositories { get; set; }
         public ICollection<Contact> Contacts { get; set; }
+        public ICollection<WorkflowActivity> WorkflowActivities { get; set; }
 
         #endregion
     }

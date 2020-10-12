@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VecompSoftware.DocSuiteWeb.Model.Metadata;
 
 namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
@@ -10,7 +8,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
     internal class SPIDMetadataModelWrapper
     {
         #region [ Fields ]
-        private readonly MetadataModel _spidMetadataModel;
+        private readonly ICollection<MetadataValueModel> _spidMetadataModel;
         private string _tipologiaUtente = null;
         private string _tipologiaAccesso = null;
         private string _documenti = null;
@@ -60,10 +58,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
             {
                 if (_tipologiaUtente == null)
                 {
-                    TextFieldModel fieldModel = GetTextFieldModel(TIPOLOGIA_UTENTE_KEY);
+                    MetadataValueModel fieldModel = GetTextFieldModel(TIPOLOGIA_UTENTE_KEY);
                     if (fieldModel == null)
                     {
-                        fieldModel = new TextFieldModel() { Value = "0" };
+                        fieldModel = new MetadataValueModel() { Value = "0" };
                     }
                     _tipologiaUtente = _tipologiaUtenteLabels[fieldModel.Value];
                 }
@@ -77,10 +75,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
             {
                 if (_tipologiaAccesso == null)
                 {
-                    TextFieldModel fieldModel = GetTextFieldModel(TIPOLOGIA_ACCESSO_KEY);
+                    MetadataValueModel fieldModel = GetTextFieldModel(TIPOLOGIA_ACCESSO_KEY);
                     if (fieldModel == null)
                     {
-                        fieldModel = new TextFieldModel() { Value = "0" };
+                        fieldModel = new MetadataValueModel() { Value = "0" };
                     }
                     _tipologiaAccesso = _tipologiaAccessoLabels[fieldModel.Value];
                 }
@@ -94,7 +92,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
             {
                 if (_documenti == null)
                 {
-                    TextFieldModel fieldModel = GetTextFieldModel(DOCUMENTI_KEY);
+                    MetadataValueModel fieldModel = GetTextFieldModel(DOCUMENTI_KEY);
                     _documenti = fieldModel?.Value;
                 }
                 return _documenti;
@@ -107,7 +105,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
             {
                 if (_motivazioni == null)
                 {
-                    TextFieldModel fieldModel = GetTextFieldModel(MOTIVAZIONI_KEY);
+                    MetadataValueModel fieldModel = GetTextFieldModel(MOTIVAZIONI_KEY);
                     _motivazioni = fieldModel?.Value;
                 }
                 return _motivazioni;
@@ -120,10 +118,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
             {
                 if (_ritornoDocumentazione == null)
                 {
-                    TextFieldModel fieldModel = GetTextFieldModel(RITORNO_DOCUMENTAZIONE_KEY);
+                    MetadataValueModel fieldModel = GetTextFieldModel(RITORNO_DOCUMENTAZIONE_KEY);
                     if (fieldModel == null)
                     {
-                        fieldModel = new TextFieldModel() { Value = "0" };
+                        fieldModel = new MetadataValueModel() { Value = "0" };
                     }
                     _ritornoDocumentazione = _ritornoDocumentazioneLabels[fieldModel.Value];
                 }
@@ -137,10 +135,10 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
             {
                 if (_statoRichiesta == null)
                 {
-                    TextFieldModel fieldModel = GetTextFieldModel(STATO_RICHIESTA_KEY);
+                    MetadataValueModel fieldModel = GetTextFieldModel(STATO_RICHIESTA_KEY);
                     if (fieldModel == null)
                     {
-                        fieldModel = new TextFieldModel() { Value = "0" };
+                        fieldModel = new MetadataValueModel() { Value = "0" };
                     }
                     _statoRichiesta = _statoRichiestaLabels[fieldModel.Value];
                 }
@@ -150,16 +148,16 @@ namespace VecompSoftware.BPM.Integrations.Modules.AUSLRE.SPID
         #endregion
 
         #region [ Constructor ]
-        public SPIDMetadataModelWrapper(MetadataModel spidMetadataModel)
+        public SPIDMetadataModelWrapper(ICollection<MetadataValueModel> spidMetadataModel)
         {
-            _spidMetadataModel = spidMetadataModel;   
+            _spidMetadataModel = spidMetadataModel;
         }
         #endregion
 
         #region [ Methods ]
-        private TextFieldModel GetTextFieldModel(string keyName)
+        private MetadataValueModel GetTextFieldModel(string keyName)
         {
-            return _spidMetadataModel.TextFields.SingleOrDefault(x => x.Label.Equals(keyName, StringComparison.InvariantCultureIgnoreCase));
+            return _spidMetadataModel.SingleOrDefault(x => x.KeyName.Equals(keyName, StringComparison.InvariantCultureIgnoreCase));
         }
         #endregion
     }

@@ -55,8 +55,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage
         public UDSStorageFacade(ILogger logger, string xml, string xmlSchema, BiblosDS.BiblosDSManagement.AdministrationClient administrationClient, string dbSchema = "")
         {
             _logger = logger;
-            List<string> validationErrors;
-            bool validate = UDSModel.ValidateXml(xml, xmlSchema, out validationErrors);
+            bool validate = UDSModel.ValidateXml(xml, xmlSchema, out List<string> validationErrors);
             if (!validate)
             {
                 throw new UDSStorageException(string.Format("UDSStorageFacade - Errore di validazione: {0}", string.Join("\n", validationErrors)));

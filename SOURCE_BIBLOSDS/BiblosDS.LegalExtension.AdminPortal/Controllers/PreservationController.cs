@@ -115,7 +115,6 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             return ActionResultHelper.TryCatchWithLogger(() =>
             {
                 Preservation preservation = _preservationService.GetPreservation(id, false);
-                _preservationService.ArchiveConfigFile = ConfigurationHelper.GetArchiveConfigurationFilePath(preservation.Archive.Name);
                 _preservationService.VerifyExistingPreservation(id);
                 return RedirectToAction("PreservationCheck", "Preservation", new { id });
             }, _loggerService);
@@ -155,7 +154,8 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             return ActionResultHelper.TryCatchWithLogger(() =>
             {
                 DataSourceResult result = new DataSourceResult();
-                IList<Preservation> preservations = PreservationService.PreservationToClose();
+                CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
+                IList<Preservation> preservations = PreservationService.PreservationToClose(customerCompany.CompanyId);
                 result.Total = preservations.Count;
                 result.Data = preservations;
                 return Json(result, JsonRequestBehavior.AllowGet);
@@ -180,6 +180,9 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
             return ActionResultHelper.TryCatchWithLogger(() =>
             {
                 DataSourceResult result = new DataSourceResult();
+                CustomerCompanyViewModel customerCompany = Session["idCompany"] as CustomerCompanyViewModel;
+
+
                 bool sortingDescending = request.Sorts.Any(x => x.Member == "ActivityDate" && x.SortDirection == ListSortDirection.Descending);
                 if (toDate.HasValue)
                 {
@@ -195,7 +198,7 @@ namespace BiblosDS.LegalExtension.AdminPortal.Controllers
                     }
                 }
 
-                ICollection<PreservationJournaling> audits = _preservationService.GetPreservationJournalings(null, null, fromDate, toDate, idPreservationJournalActivity, (request.Page - 1) * request.PageSize, request.PageSize, out int journalingsInArchive, false, sortingDescending);
+                ICollection<PreservationJournaling> audits = _preservationService.GetPreservationJournalings(null, null, fromDate, toDate, idPreservationJournalActivity, customerCompany.CompanyId, (request.Page - 1) * request.PageSize, request.PageSize, out int journalingsInArchive, false, sortingDescending);
                 result.Total = journalingsInArchive;
                 result.Data = audits.Select(s => new PreservationAuditGridViewModel()
                 {

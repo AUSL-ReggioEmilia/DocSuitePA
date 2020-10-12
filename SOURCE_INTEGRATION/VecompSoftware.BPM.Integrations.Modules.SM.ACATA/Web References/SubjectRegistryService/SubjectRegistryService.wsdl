@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="subjectregistryservice.acaris.acta.doqui.it" xmlns:common="common.acaris.acta.doqui.it" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:subjectregistry="subjectregistryservice.acaris.acta.doqui.it" name="SubjectRegistryService" targetNamespace="subjectregistryservice.acaris.acta.doqui.it" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="common.acaris.acta.doqui.it">
+      <xsd:include schemaLocation="ACARIS-Common.xsd" />
+    </xsd:schema>
+    <xsd:schema targetNamespace="subjectregistryservice.acaris.acta.doqui.it">
+      <xsd:include schemaLocation="ACARIS-SubjectRegistry.xsd" />
+      <xsd:include schemaLocation="ACARIS-SubjectRegistryMessaging.xsd" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="acarisException">
+    <wsdl:part name="fault" element="common:acarisFault" />
+  </wsdl:message>
+  <wsdl:message name="creaSoggettoRequest">
+    <wsdl:part name="input" element="subjectregistry:creaSoggetto" />
+  </wsdl:message>
+  <wsdl:message name="creaSoggettoResponse">
+    <wsdl:part name="output" element="subjectregistry:creaSoggettoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ricercaSoggettoRequest">
+    <wsdl:part name="input" element="subjectregistry:ricercaSoggetto" />
+  </wsdl:message>
+  <wsdl:message name="ricercaSoggettoResponse">
+    <wsdl:part name="output" element="subjectregistry:ricercaSoggettoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ricercaSoggettoDaFonteEsternaRequest">
+    <wsdl:part name="input" element="subjectregistry:ricercaSoggettoDaFonteEsterna" />
+  </wsdl:message>
+  <wsdl:message name="ricercaSoggettoDaFonteEsternaResponse">
+    <wsdl:part name="output" element="subjectregistry:ricercaSoggettoDaFonteEsternaResponse" />
+  </wsdl:message>
+  <wsdl:message name="getPropertiesRequest">
+    <wsdl:part name="input" element="subjectregistry:getProperties" />
+  </wsdl:message>
+  <wsdl:message name="getPropertiesResponse">
+    <wsdl:part name="output" element="subjectregistry:getPropertiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="updatePropertiesRequest">
+    <wsdl:part name="input" element="subjectregistry:updateProperties" />
+  </wsdl:message>
+  <wsdl:message name="updatePropertiesResponse">
+    <wsdl:part name="output" element="subjectregistry:updatePropertiesResponse" />
+  </wsdl:message>
+  <wsdl:message name="queryRequest">
+    <wsdl:part name="input" element="common:query" />
+  </wsdl:message>
+  <wsdl:message name="queryResponse">
+    <wsdl:part name="output" element="common:queryResponse" />
+  </wsdl:message>
+  <wsdl:message name="getPropertiesMassiveRequest">
+    <wsdl:part name="input" element="common:getPropertiesMassive" />
+  </wsdl:message>
+  <wsdl:message name="getPropertiesMassiveResponse">
+    <wsdl:part name="output" element="common:getPropertiesMassiveResponse" />
+  </wsdl:message>
+  <wsdl:message name="creaIndirizzoRequest">
+    <wsdl:part name="input" element="subjectregistry:creaIndirizzo" />
+  </wsdl:message>
+  <wsdl:message name="creaIndirizzoResponse">
+    <wsdl:part name="output" element="subjectregistry:creaIndirizzoResponse" />
+  </wsdl:message>
+  <wsdl:message name="creaCategoriaAnagraficaRequest">
+    <wsdl:part name="input" element="subjectregistry:creaCategoriaAnagrafica" />
+  </wsdl:message>
+  <wsdl:message name="creaCategoriaAnagraficaResponse">
+    <wsdl:part name="output" element="subjectregistry:creaCategoriaAnagraficaResponse" />
+  </wsdl:message>
+  <wsdl:portType name="SubjectRegistryServicePort">
+    <wsdl:operation name="creaSoggetto">
+      <wsdl:input message="subjectregistry:creaSoggettoRequest" />
+      <wsdl:output message="subjectregistry:creaSoggettoResponse" />
+      <wsdl:fault name="creaSoggettoFault" message="subjectregistry:acarisException" />
+    </wsdl:operation>
+    <wsdl:operation name="ricercaSoggetto">
+      <wsdl:input message="subjectregistry:ricercaSoggettoRequest" />
+      <wsdl:output message="subjectregistry:ricercaSoggettoResponse" />
+      <wsdl:fault name="ricercaSoggettoFault" message="subjectregistry:acarisException" />
+    </wsdl:operation>
+    <wsdl:operation name="ricercaSoggettoDaFonteEsterna">
+      <wsdl:input message="subjectregistry:ricercaSoggettoDaFonteEsternaRequest" />
+      <wsdl:output message="subjectregistry:ricercaSoggettoDaFonteEsternaResponse" />
+      <wsdl:fault name="ricercaSoggettoDaFonteEsternaFault" message="subjectregistry:acarisException" />
+    </wsdl:operation>
+    <wsdl:operation name="getProperties">
+      <wsdl:input message="subjectregistry:getPropertiesRequest" />
+      <wsdl:output message="subjectregistry:getPropertiesResponse" />
+      <wsdl:fault name="getPropertiesFault" message="subjectregistry:acarisException" />
+    </wsdl:operation>
+    <wsdl:operation name="updateProperties">
+      <wsdl:input message="subjectregistry:updatePropertiesRequest" />
+      <wsdl:output message="subjectregistry:updatePropertiesResponse" />
+      <wsdl:fault name="updatePropertiesFault" message="subjectregistry:acarisException" />
+    </wsdl:operation>
+    <wsdl:operation name="query">
+      <wsdl:input message="subjectregistry:queryRequest" />
+      <wsdl:output message="subjectregistry:queryResponse" />
+      <wsdl:fault name="queryFault" message="subjectregistry:acarisException" />
+    </wsdl:operation>
+    <wsdl:operation name="getPropertiesMassive">
+      <wsdl:input message="subjectregistry:getPropertiesMassiveRequest" />
+      <wsdl:output message="subjectregistry:getPropertiesMassiveResponse" />
+      <wsdl:fault name="getPropertiesMassiveFault" message="subjectregistry:acarisException" />
+    </wsdl:operation>
+    <wsdl:operation name="creaIndirizzo">
+      <wsdl:input message="subjectregistry:creaIndirizzoRequest" />
+      <wsdl:output message="subjectregistry:creaIndirizzoResponse" />
+      <wsdl:fault name="creaIndirizzoFault" message="subjectregistry:acarisException" />
+    </wsdl:operation>
+    <wsdl:operation name="creaCategoriaAnagrafica">
+      <wsdl:input message="subjectregistry:creaCategoriaAnagraficaRequest" />
+      <wsdl:output message="subjectregistry:creaCategoriaAnagraficaResponse" />
+      <wsdl:fault name="creaCategoriaAnagraficaFault" message="subjectregistry:acarisException" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SubjectRegistryServiceBinding" type="subjectregistry:SubjectRegistryServicePort">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="creaSoggetto">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="creaSoggettoFault">
+        <soap:fault use="literal" name="creaSoggettoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ricercaSoggetto">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ricercaSoggettoFault">
+        <soap:fault use="literal" name="ricercaSoggettoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ricercaSoggettoDaFonteEsterna">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="ricercaSoggettoDaFonteEsternaFault">
+        <soap:fault use="literal" name="ricercaSoggettoDaFonteEsternaFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getProperties">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="getPropertiesFault">
+        <soap:fault use="literal" name="getPropertiesFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="updateProperties">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="updatePropertiesFault">
+        <soap:fault use="literal" name="updatePropertiesFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="query">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="queryFault">
+        <soap:fault use="literal" name="queryFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="getPropertiesMassive">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="getPropertiesMassiveFault">
+        <soap:fault use="literal" name="getPropertiesMassiveFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="creaIndirizzo">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="creaIndirizzoFault">
+        <soap:fault use="literal" name="creaIndirizzoFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="creaCategoriaAnagrafica">
+      <soap:operation soapAction="" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+      <wsdl:fault name="creaCategoriaAnagraficaFault">
+        <soap:fault use="literal" name="creaCategoriaAnagraficaFault" namespace="" />
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SubjectRegistryService">
+    <wsdl:port name="SubjectRegistryServicePort" binding="subjectregistry:SubjectRegistryServiceBinding">
+      <soap:address location="http://localhost:${HttpDefaultPort}/subjectregistryservice/subjectregistryserviceaPort" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

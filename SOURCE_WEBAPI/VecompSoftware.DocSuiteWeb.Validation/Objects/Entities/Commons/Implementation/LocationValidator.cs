@@ -31,50 +31,43 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
         public string Name { get; set; }
 
         /// <summary>
-        /// Get or set Biblos server name
-        /// </summary>
-        public string DocumentServer { get; set; }
-
-        /// <summary>
         /// Get or set Biblos protocol archive name
         /// </summary>
-        public string ProtBiblosDsDb { get; set; }
+        public string ProtocolArchive { get; set; }
 
         /// <summary>
         /// Get or set Biblos document archive name
         /// </summary>
-        public string DocmBiblosDsDb { get; set; }
+        public string DossierArchive { get; set; }
 
         /// <summary>
         /// Get or set Biblos resolution archive name
         /// </summary>
-        public string ReslBiblosDsDb { get; set; }
+        public string ResolutionArchive { get; set; }
 
         /// <summary>
         /// Get or set Biblos conservation archive name
         /// </summary>
-        public string ConsBiblosDsDb { get; set; }
+        public string ConservationArchive { get; set; }
 
-        /// <summary>
-        /// Get or set Biblos conservation server name
-        /// </summary>
-        public string ConservationServer { get; set; }
+
         public Guid UniqueId { get; set; }
 
         #endregion
 
         #region [ Navigation Properties ]
-
-        public Location DocmLocation { get; set; }
-        public Location ProtLocation { get; set; }
-        public Location ReslLocation { get; set; }
         public ICollection<Container> DocmContainers { get; set; }
         public ICollection<Container> ProtContainers { get; set; }
         public ICollection<Container> ReslContainers { get; set; }
         public ICollection<Container> DeskContainers { get; set; }
         public ICollection<Container> UDSContainers { get; set; }
+        public ICollection<Container> ProtAttachContainers { get; set; }
+        public ICollection<Container> DocumentSeriesContainers { get; set; }
+        public ICollection<Container> DocumentSeriesAnnexedContainers { get; set; }
+        public ICollection<Container> DocumentSeriesUnpublishedAnnexedContainers { get; set; }
         public ICollection<Message> Messages { get; set; }
         public ICollection<Protocol> Protocols { get; set; }
+        public ICollection<Protocol> AttachProtocols { get; set; }
         public ICollection<PECMail> PECMails { get; set; }
         public ICollection<PECMailBox> PECMailBoxes { get; set; }
         public ICollection<Collaboration> Collaborations { get; set; }

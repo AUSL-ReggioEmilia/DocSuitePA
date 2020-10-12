@@ -21,6 +21,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         public FascicleType FascicleType { get; set; }
 
         public int DSWEnvironment { get; set; }
+        public string CustomActions { get; set; }
 
         #endregion
 

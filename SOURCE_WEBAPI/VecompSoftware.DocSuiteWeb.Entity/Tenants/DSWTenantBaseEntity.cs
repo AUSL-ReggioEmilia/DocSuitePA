@@ -4,10 +4,13 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Tenants
 {
     public abstract class DSWTenantBaseEntity : DSWBaseEntity
     {
+        #region [ Constructor ]
+
         protected DSWTenantBaseEntity(Guid uniqueId) : base(uniqueId)
         {
         }
 
+        #endregion
         #region [ Properties ]
         public DateTimeOffset StartDate { get; set; }
 

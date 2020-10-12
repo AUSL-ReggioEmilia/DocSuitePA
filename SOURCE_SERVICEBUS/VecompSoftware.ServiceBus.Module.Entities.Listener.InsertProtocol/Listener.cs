@@ -9,7 +9,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
     public class Listener : ListenerMessageBase<ICommandBuildProtocol>, IListenerMessageGeneric<ICommandBuildProtocol>
     {
         public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandBuildProtocol")
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient), "CommandBuildProtocol", webApiClient)
         {
 
         }

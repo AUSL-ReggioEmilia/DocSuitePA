@@ -103,14 +103,18 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Workflows
 
             if (entity.Roles != null && entity.Roles.Count > 0)
             {
-                List<Role> rolesToDelete = entityTransformed.Roles.Where(f => !entity.Roles.Any(c => c.UniqueId == f.UniqueId)).ToList();
-                foreach (Role item in rolesToDelete)
-                {
-                    entityTransformed.Roles.Remove(item);
-                }
                 foreach (Role item in entity.Roles.Where(f => !entityTransformed.Roles.Any(t => f.UniqueId == t.UniqueId)))
                 {
                     entityTransformed.Roles.Add(_unitOfWork.Repository<Role>().Find(item.EntityShortId));
+                }
+            }
+
+            List<Role> rolesToDelete = entityTransformed.Roles.Where(f => !entity.Roles.Any(c => c.UniqueId == f.UniqueId)).ToList();
+            if(rolesToDelete.Count > 0)
+            {
+                foreach (Role item in rolesToDelete)
+                {
+                    entityTransformed.Roles.Remove(item);
                 }
             }
 

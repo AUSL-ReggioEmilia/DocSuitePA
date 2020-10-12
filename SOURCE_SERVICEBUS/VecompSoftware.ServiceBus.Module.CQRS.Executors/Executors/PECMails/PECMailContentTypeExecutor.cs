@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.Core.Command.CQRS;
@@ -38,8 +36,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.PECMails
         #region [ Constructor ]
 
 
-        public PECMailContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient)
-            : base(logger, webApiClient, biblosClient)
+        public PECMailContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
             _logger = logger;
             _webApiClient = webApiClient;
@@ -54,20 +52,17 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.PECMails
         {
             IEvent evt = null;
             PECMail pecMail;
-            Guid guidResult;
-            int intResult;
-            short shortResult;
             try
             {
                 pecMail = ((ICommandCreatePECMail)command).ContentType.ContentTypeValue;
 
                 CollaborationUniqueId = null;
-                if (command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Any() && Guid.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).FirstOrDefault().Value.ToString(), out guidResult))
+                if (command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Any() && Guid.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).FirstOrDefault().Value.ToString(), out Guid guidResult))
                 {
                     CollaborationUniqueId = guidResult;
                 }
                 CollaborationId = null;
-                if (command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_ID).Any() && int.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_ID).FirstOrDefault().Value.ToString(), out intResult))
+                if (command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_ID).Any() && int.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_ID).FirstOrDefault().Value.ToString(), out int intResult))
                 {
                     CollaborationId = intResult;
                 }
@@ -87,12 +82,12 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.PECMails
                     ProtocolNumber = intResult;
                 }
                 ProtocolYear = null;
-                if (command.CustomProperties.Where(x => x.Key == CustomPropertyName.PROTOCOL_YEAR).Any() && short.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.PROTOCOL_YEAR).FirstOrDefault().Value.ToString(), out shortResult))
+                if (command.CustomProperties.Where(x => x.Key == CustomPropertyName.PROTOCOL_YEAR).Any() && short.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.PROTOCOL_YEAR).FirstOrDefault().Value.ToString(), out short shortResult))
                 {
                     ProtocolYear = shortResult;
                 }
 
-                evt = new EventCreatePECMail(command.TenantName, command.TenantId, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, ProtocolUniqueId, ProtocolYear, ProtocolNumber, false, command.Identity, pecMail, null);
+                evt = new EventCreatePECMail(command.TenantName, command.TenantId, command.TenantAOOId, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, ProtocolUniqueId, ProtocolYear, ProtocolNumber, false, command.Identity, pecMail, null);
             }
             catch (Exception ex)
             {
@@ -107,20 +102,17 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.PECMails
 
             IEvent evt = null;
             PECMail pecMail;
-            Guid guidResult;
-            int intResult;
-            short shortResult;
             try
             {
                 pecMail = ((ICommandUpdatePECMail)command).ContentType.ContentTypeValue;
 
                 CollaborationUniqueId = null;
-                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID) && Guid.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Value.ToString(), out guidResult))
+                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID) && Guid.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Value.ToString(), out Guid guidResult))
                 {
                     CollaborationUniqueId = guidResult;
                 }
                 CollaborationId = null;
-                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_ID) && int.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_ID).FirstOrDefault().Value.ToString(), out intResult))
+                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_ID) && int.TryParse(command.CustomProperties.Where(x => x.Key == CustomPropertyName.COLLABORATION_ID).FirstOrDefault().Value.ToString(), out int intResult))
                 {
                     CollaborationId = intResult;
                 }
@@ -140,12 +132,12 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.PECMails
                     ProtocolNumber = intResult;
                 }
                 ProtocolYear = null;
-                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.PROTOCOL_YEAR) && short.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.PROTOCOL_YEAR).Value.ToString(), out shortResult))
+                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.PROTOCOL_YEAR) && short.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.PROTOCOL_YEAR).Value.ToString(), out short shortResult))
                 {
                     ProtocolYear = shortResult;
                 }
 
-                evt = new EventUpdatePECMail(command.TenantName, command.TenantId, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, ProtocolUniqueId, ProtocolYear, ProtocolNumber, false, command.Identity, pecMail, null);
+                evt = new EventUpdatePECMail(command.TenantName, command.TenantId, command.TenantAOOId, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, ProtocolUniqueId, ProtocolYear, ProtocolNumber, false, command.Identity, pecMail, null);
             }
             catch (Exception ex)
             {

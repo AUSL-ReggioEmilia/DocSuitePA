@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using BiblosDS.Library.Common.Objects;
 using System.ComponentModel;
 using BiblosDS.Library.Common.Objects.Response;
 using BiblosDS.Library.Common.Objects.Enums;
-using System.Data.Common;
-using BiblosDS.Library.Common.DB;
-using BiblosDS.Library.Helper;
 
 namespace BiblosDS.Library.Common.Preservation.Services
 {
@@ -248,13 +244,13 @@ namespace BiblosDS.Library.Common.Preservation.Services
             return retval;
         }
 
-        public void ResetErrorFlagForPreservationTask(Guid idPreservationTask, bool updateAlsoCorrelatedTasks)
+        public void ResetErrorFlagForPreservationTask(Guid idPreservationTask, bool updateAlsoCorrelatedTasks, bool forceAutoInc)
         {
             logger.InfoFormat("ResetErrorFlagForPreservationTask - id task {0}, update also parent and children {2}", idPreservationTask, updateAlsoCorrelatedTasks ? "YES" : "NO");
 
             try
             {
-                DbProvider.ResetPreservationTask(idPreservationTask, true, PreservationHelper.GetForceAutoInc(ArchiveConfigFile));
+                DbProvider.ResetPreservationTask(idPreservationTask, true, forceAutoInc);
             }
             catch(Exception ex)
             {
@@ -267,13 +263,13 @@ namespace BiblosDS.Library.Common.Preservation.Services
             }
         }
 
-        public void ResetPreservationTask(Guid idPreservationTask, bool updateAlsoCorrelatedTasks)
+        public void ResetPreservationTask(Guid idPreservationTask, bool updateAlsoCorrelatedTasks, bool forceAutoInc)
         {
             logger.InfoFormat("ResetPreservationTask - id task {0}, update also parent and children {2}", idPreservationTask, updateAlsoCorrelatedTasks ? "YES" : "NO");
 
             try
             {
-                DbProvider.ResetPreservationTask(idPreservationTask, false, PreservationHelper.GetForceAutoInc(ArchiveConfigFile));
+                DbProvider.ResetPreservationTask(idPreservationTask, false, forceAutoInc);
             }
             catch (Exception ex)
             {

@@ -1,7 +1,6 @@
 ﻿using FluentFTP;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using VecompSoftware.BPM.Integrations.Modules.ENEA.Wide.Configurations;
@@ -92,8 +91,8 @@ namespace VecompSoftware.BPM.Integrations.Modules.ENEA.Wide.Clients
                 new NetworkCredential(_moduleConfiguration.FTPUsername, _moduleConfiguration.FTPPassword)))
             {
                 client.Connect();
-                if (!client.Upload(content, destinationFilename, FtpExists.Overwrite,
-                    progress: (p) => _logger.WriteDebug(new LogMessage($"Uploading {p.Progress} ..."), LogCategories)))
+                if (client.Upload(content, destinationFilename, FtpRemoteExists.Overwrite,
+                    progress: (p) => _logger.WriteDebug(new LogMessage($"Uploading {p.Progress} ..."), LogCategories)).IsFailure())
                 {
                     throw new InvalidOperationException($"Error occoured during uploading file to FTP {destinationFilename} folder");
                 }

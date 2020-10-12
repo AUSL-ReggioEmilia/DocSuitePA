@@ -1,40 +1,35 @@
-﻿using System;
+﻿using BiblosDS.Library.Common.DB;
+using BiblosDS.Library.Common.Enums;
+using BiblosDS.Library.Common.Objects;
+using BiblosDS.Library.Common.Objects.Enums;
+using BiblosDS.Library.Common.Objects.Response;
+using BiblosDS.Library.Common.Preservation.IpdaDoc;
+using BiblosDS.Library.Common.Preservation.ObjectsXml;
+using BiblosDS.Library.Common.Preservation.ServiceReferenceStorage;
+using BiblosDS.Library.Common.Services;
+using BiblosDS.Library.Common.Utility;
+using BiblosDS.WCF.DigitalSign;
+using log4net;
+using Newtonsoft.Json;
+using SharpCompress.Archives;
+using SharpCompress.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
-using System.Configuration;
-using System.Text.RegularExpressions;
-
-using log4net;
-using Newtonsoft.Json;
-
-using BiblosDS.Library.Common.CompEd;
-using BiblosDS.Library.Common.DB;
-using BiblosDS.Library.Common.Enums;
-using BiblosDS.Library.Common.Objects;
-using BiblosDS.Library.Common.Objects.Response;
-using BiblosDS.Library.Common.Preservation.ObjectsXml;
-using BiblosDS.Library.Common.Preservation.ServiceReferenceStorage;
-using BiblosDS.Library.Common.Services;
-using BiblosDS.Library.Common.Objects.Enums;
-using BiblosDS.Library.Common.Preservation.Properties;
-using BiblosDS.Library.Common.Objects.UtilityService;
-using BiblosDS.WCF.DigitalSign;
-using BiblosDS.Library.Common.Utility;
-using BiblosDS.Library.Common.Preservation.IpdaDoc;
-using BiblosDS.Library.Helper;
-using SharpCompress.Archives;
-using SharpCompress.Common;
+using VecompSoftware.BiblosDS.Model.Parameters;
+using VecompSoftware.BiblosDS.WCF.Common;
 
 namespace BiblosDS.Library.Common.Preservation.Services
 {
@@ -45,38 +40,17 @@ namespace BiblosDS.Library.Common.Preservation.Services
         private const string TESTO_HASH_INDICE_XML = "Evidenza informatica file indice XML (formato Hex): ";
         private const string TESTO_HASH_INDICE_XSL = "Evidenza informatica foglio di stile di visualizzazione (formato Hex): ";
         private const string TESTO_SEPARATORE = "-------------------------------------------------------------------------------------------------------------------------";
-        private string _archiveConfigFile = string.Empty;
 
         public List<string> ErrorMessages = new List<string>();  // lista dei messaggi di errore 
         public string VerifyFile = "";
         public Ipda verifiedIpda = null;
         public bool PulseHighFrequencyEnabled = false;
 
-        public string ArchiveConfigFile
-        {
-            get
-            {
-                return _archiveConfigFile;
-            }
-            set
-            {
-                if (string.IsNullOrEmpty(_archiveConfigFile))
-                {
-                    _archiveConfigFile = value;
-                }
-            }
-        }
-
         public event EventHandler<PulseEventArgs> OnPulse;
 
         public PreservationService() : base()
         {
 
-        }
-
-        public PreservationService(string path) : base()
-        {
-            ArchiveConfigFile = path;
         }
 
         public Guid GetIdPreservationArchiveFromName(string archiveName)
@@ -121,7 +95,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
         {
             logger.InfoFormat("GetPreservationArchives - utente {0}", domainUserName);
 
-            BindingList<PreservationArchiveInfoResponse> ret = ArchiveService.GetLegalArchives(domainUserName);
+            BindingList<PreservationArchiveInfoResponse> ret = ArchiveService.GetLegalArchives(domainUserName, null);
 
             logger.Info("GetPreservationArchives - ritorno al chiamante");
 
@@ -182,6 +156,23 @@ namespace BiblosDS.Library.Common.Preservation.Services
             logger.Info("GetCompanies - ritorno al chiamante");
 
             return ret;
+        }
+
+        public List<Company> GetCustomerCompanies(string idCustomer)
+        {
+            try
+            {
+                return DbProvider.GetCustomerCompanies(idCustomer);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
+            finally
+            {
+                logger.Info("END");
+            }
         }
 
         public Company GetCompany(Guid IdCompany)
@@ -340,6 +331,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
             const string METHOD_NAME = "CreatePreservation";
             var result = new PreservationInfoResponse();
             var archive = ArchiveService.GetArchive(idArchive);
+            ArchiveConfiguration archiveConfiguration = JsonConvert.DeserializeObject<ArchiveConfiguration>(archive.PreservationConfiguration);
             var useSHA256 = MustUseSHA256Mark();
             var workingDir = archive.PathPreservation;
             if (string.IsNullOrEmpty(workingDir))
@@ -385,7 +377,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 }
 
                 Pulse(METHOD_NAME, "", 50);
-                var errors = DbProvider.UpdateDocumentsPreservation(preservationId, archive, documents);
+                var errors = DbProvider.UpdateDocumentsPreservation(preservationId, archive, documents, archiveConfiguration.VerifyPreservationDateEnabled);
                 if (errors.Count() > 0)
                 {
                     exceptions = string.Join(Environment.NewLine, errors);
@@ -401,7 +393,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
 
                 Pulse(METHOD_NAME, "Verifica eccezioni.", 61);
                 Objects.Preservation tmpPres;
-                if (!CheckPreservationExceptions(preservationId, out errors, documents, out tmpPres))
+                if (!CheckPreservationExceptions(preservationId, out errors, documents, out tmpPres, archiveConfiguration))
                 {
                     //Nel caso di eccezione non va cancellata la conservazione                    
                     exceptions = string.Join(Environment.NewLine, errors.Take(20));
@@ -639,7 +631,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
             return ret;
         }
 
-        [Obsolete("Utilizzare il metodo MoveDocumentToPreservationFolder") ]
+        [Obsolete("Utilizzare il metodo MoveDocumentToPreservationFolder")]
         public string CopyPreservationObject(string folderPath, Document doc, Guid idPreservation, bool useSHA256)
         {
             logger.InfoFormat("CopyPreservationObject - folder {0} id conservazione {1}", folderPath, idPreservation);
@@ -647,9 +639,9 @@ namespace BiblosDS.Library.Common.Preservation.Services
             try
             {
                 Document document;
-                using (var svc = new ServiceDocumentStorageClient("ServiceDocumentStorage", AzureService.GetWcfUrl("BiblosDS_StorageUrl", "ServiceDocumentStorage")))
+                using (var svc = WCFUtility.GetClientConfigChannel<IServiceDocumentStorage>("ServiceDocumentStorage"))
                 {
-                    document = svc.GetDocument(doc);
+                    document = (svc as IServiceDocumentStorage).GetDocument(doc);
 
                     if (document == null)
                         throw new Exception(string.Format("Errore in \"{0}\": il documento con ID \"{1}\" non e' stato trovato.", "CopyPreservationObject", doc.IdDocument));
@@ -1239,7 +1231,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 myRow["Valore"] = string.Format("{0}{1}", PurgeFileName(doc.AttributeValues, string.IsNullOrEmpty(doc.PrimaryKeyValue) ? doc.PreservationIndex.GetValueOrDefault().ToString() : doc.PrimaryKeyValue), Path.GetExtension(doc.Name));
                 dtCv.Rows.Add(myRow);
 
-                BindingList<DocumentAttributeValue> docAttributes = DbProvider.GetFullDocumentAttributeValues(doc.IdDocument);                
+                BindingList<DocumentAttributeValue> docAttributes = DbProvider.GetFullDocumentAttributeValues(doc.IdDocument);
                 foreach (DocumentAttribute attr in attributes)
                 {
                     PopolaDataTableColumnsValues(dtCv, attr, docAttributes);
@@ -1282,7 +1274,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
         }
 
         private void PopolaDataTableColumnsValues(DataTable dtCv, DocumentAttribute attr, ICollection<DocumentAttributeValue> documentAttributes)
-        {            
+        {
             var currAttributeValue = documentAttributes.Where(x => x.IdAttribute == attr.IdAttribute).FirstOrDefault();
 
             if (currAttributeValue == null)
@@ -2326,6 +2318,13 @@ namespace BiblosDS.Library.Common.Preservation.Services
 
         public bool CheckPreservationExceptions(Guid idPreservation, out List<string> exceptions, IEnumerable<Document> documents, out Objects.Preservation preservation)
         {
+            DocumentArchive currentArchive = ArchiveService.GetArchiveFromPreservation(idPreservation);
+            ArchiveConfiguration archiveConfiguration = JsonConvert.DeserializeObject<ArchiveConfiguration>(currentArchive.PreservationConfiguration);
+            return CheckPreservationExceptions(idPreservation, out exceptions, documents, out preservation, archiveConfiguration);
+        }
+
+        public bool CheckPreservationExceptions(Guid idPreservation, out List<string> exceptions, IEnumerable<Document> documents, out Objects.Preservation preservation, ArchiveConfiguration archiveConfiguration)
+        {
             logger.InfoFormat("CheckPreservationExceptions - IdPreservation = {0}", idPreservation);
 
             const string METHOD_NAME = "CheckPreservationExceptions";
@@ -2341,7 +2340,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
 
             logger.Info("Recupero conservazione con id = " + idPreservation);
 
-            var pres = DbProvider.GetPreservation(idPreservation, false);
+            Objects.Preservation pres = DbProvider.GetPreservation(idPreservation, false);
 
             if (pres == null)
             {
@@ -2349,12 +2348,11 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 return false;
             }
 
-            var archive = pres.Archive;
-            var verifyIncrementalActive = archive.VerifyPreservationIncrementalEnabled ? "attiva" : "non attiva";
+            DocumentArchive archive = pres.Archive;
+            var verifyIncrementalActive = archiveConfiguration.VerifyPreservationIncrementalEnabled ? "attiva" : "non attiva";
             logger.InfoFormat("verifica dell'incrementale {0}", verifyIncrementalActive);
 
-            Int64 incremental = 0;
-
+            long incremental = 0;
             long totalPres = 0;
             Objects.Preservation lastExecutedPreservation = null;
             Dictionary<string, long> preservationSectionalValue = new Dictionary<string, long>(); ;
@@ -2374,17 +2372,17 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 Document docLastPres = GetLastDocumentPreservation(lastPres.IdPreservation);
                 if (docLastPres != null)
                 {
-                    logger.InfoFormat("numero documenti da conservare {0}", documents.Count());
-                    var year = documents.OrderBy(x => x.DateMain).FirstOrDefault().DateMain.Value.Year;
-                    logger.InfoFormat("anno documenti da conservare {0}", documents.Count());
-                    if (PreservationHelper.GetForceAutoInc(this.ArchiveConfigFile) == true && !archive.VerifyPreservationIncrementalEnabled && lastPres.EndDate.HasValue
+                    logger.InfoFormat($"Numero documenti da conservare {documents.Count()}");
+                    int year = documents.OrderBy(x => x.DateMain).FirstOrDefault().DateMain.Value.Year;
+                    logger.InfoFormat($"Anno documenti da conservare {year}");
+                    if (archiveConfiguration.ForceAutoInc && !archiveConfiguration.VerifyPreservationIncrementalEnabled && lastPres.EndDate.HasValue
                         && lastPres.EndDate.Value.Year == year)
                     {
                         var att = docLastPres.AttributeValues.Where(x => x.Attribute.IsAutoInc.GetValueOrDefault()).FirstOrDefault();
                         logger.InfoFormat("ultimo incrementale {0}", att.Value);
                         incremental = (Int64)att.Value;
                     }
-                }                
+                }
             }
 
             documents = documents.OrderBy(x => x.PreservationIndex);
@@ -2398,7 +2396,6 @@ namespace BiblosDS.Library.Common.Preservation.Services
             //BindingList<DocumentAttribute> attributes = AttributeService.GetAttributesFromArchive(idArchive);
 
             var i = 0;
-            var progress = 0.0m;
             var numDocuments = documents.Count();
             Dictionary<string, long> lastIncrementalValue = new Dictionary<string, long>();
             foreach (var doc in documents)
@@ -2413,7 +2410,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                     Int64 incrementalValue = -1;
 
                     // se l'autoincrementale è popolato e da verificare 
-                    if (archive.VerifyPreservationIncrementalEnabled)
+                    if (archiveConfiguration.VerifyPreservationIncrementalEnabled)
                     {
                         var attributes = docAttributes.Where(x => x.Attribute.IsAutoInc.GetValueOrDefault());
 
@@ -2488,7 +2485,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                     }
                     else
                     {
-                        if (PreservationHelper.GetForceAutoInc(this.ArchiveConfigFile) == true)
+                        if (archiveConfiguration.ForceAutoInc)
                         {
                             // se archive.VerifyPreservationIncrementalEnabled = false ed è configurato 
                             // un metadato AutoInc , intero (uno ed uno solo) e non ha valore, allora genera
@@ -2549,7 +2546,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                     {
                         if (preservationSectionalValue.ContainsKey(sectional))
                         {
-                            if (preservationSectionalValue[sectional] + 1 != incrementalValue && archive.VerifyPreservationIncrementalEnabled)
+                            if (preservationSectionalValue[sectional] + 1 != incrementalValue && archiveConfiguration.VerifyPreservationIncrementalEnabled)
                             {
                                 string log = string.Format("Numerazione progressiva errata rispetto alla conservazione precedente, Document Id {0}, Ultimo sezionale salvato: {1}", doc.IdBiblos, preservationSectionalValue[sectional]);
                                 logger.InfoFormat("Add Exceptions - " + log);
@@ -3387,19 +3384,19 @@ namespace BiblosDS.Library.Common.Preservation.Services
         }
 
         public BindingList<PreservationJournaling> GetPreservationJournalings(Guid? idArchive, Guid? idPreservation,
-                                                                              DateTime? startDate, DateTime? endDate,
+                                                                              DateTime? startDate, DateTime? endDate, Guid? idCompany,
                                                                               int skip, int take,
                                                                               out int journalingsInArchive, bool includePreservation = true, bool sortingDescending = true)
         {
-            return GetPreservationJournalings(idArchive, idPreservation, startDate, endDate, null, skip, take, out journalingsInArchive, includePreservation, sortingDescending);
+            return GetPreservationJournalings(idArchive, idPreservation, startDate, endDate, null, idCompany, skip, take, out journalingsInArchive, includePreservation, sortingDescending);
         }
 
         public BindingList<PreservationJournaling> GetPreservationJournalings(Guid? idArchive, Guid? idPreservation,
-                                                                              DateTime? startDate, DateTime? endDate, Guid? idActivityType,
+                                                                              DateTime? startDate, DateTime? endDate, Guid? idActivityType, Guid? idCompany,
                                                                               int skip, int take,
                                                                               out int journalingsInArchive, bool includePreservation = true, bool sortingDescending = true)
         {
-            return DbProvider.GetPreservationJournalings(idArchive, idPreservation, startDate, endDate, idActivityType, skip, take,
+            return DbProvider.GetPreservationJournalings(idArchive, idPreservation, startDate, endDate, idActivityType, idCompany, skip, take,
                                                          out journalingsInArchive, includePreservation, sortingDescending);
         }
 
@@ -4308,7 +4305,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
                         lastNotify = DateTime.Now;
                         OnPulse(this, PulseEventArgs.Create(progress, message, methos));
                     }
-                }                
+                }
             }
         }
 
@@ -4963,10 +4960,11 @@ namespace BiblosDS.Library.Common.Preservation.Services
             //fine test
 
             //se esiste il file idpa..tsd esegue la verifica di questo altrimenti esegue la verifica standard del file di chiusura e gli altri
+            ArchiveConfiguration archiveConfiguration = JsonConvert.DeserializeObject<ArchiveConfiguration>(thisPreservation.Archive.PreservationConfiguration);
             string ipdaTsdFile = IpdaUtil.GetIpdaTsdFile(PathToVerify);
             if (ipdaTsdFile != "")
             {
-                bEsito = CheckIpdaTsd(ipdaTsdFile, out this.verifiedIpda);
+                bEsito = CheckIpdaTsd(ipdaTsdFile, out this.verifiedIpda, archiveConfiguration);
             }
             else
             {
@@ -5301,7 +5299,7 @@ namespace BiblosDS.Library.Common.Preservation.Services
         /// Controlla la validità 
         /// </summary>
         /// <param name="ipdaTsdFile">File tsd da controllare</param>
-        private bool CheckIpdaTsd(string ipdaTsdFile, out Ipda ipda)
+        private bool CheckIpdaTsd(string ipdaTsdFile, out Ipda ipda, ArchiveConfiguration archiveConfiguration)
         {
             logger.Info("CheckIpdaTsd INIT");
             ipda = null;
@@ -5321,13 +5319,12 @@ namespace BiblosDS.Library.Common.Preservation.Services
             string Metadata;
 
             p7mContent = File.ReadAllBytes(ChiusuraTimestampedFileName);
-            if (PreservationHelper.GetCheckTsd(this.ArchiveConfigFile) == true)
+            if (archiveConfiguration.CheckTsd)
             {
                 using (CompEdLib comped = new CompEdLib())
                 {
                     plainContent = comped.GetContent(false, p7mContent, out Metadata);
-                    if (plainContent != null)
-                        plainContent = comped.GetContent(true, plainContent, out Metadata);
+                    plainContent = comped.GetContent(true, (plainContent != null ? plainContent : p7mContent), out Metadata);
 
                     if (plainContent == null)
                     {
@@ -5501,6 +5498,32 @@ namespace BiblosDS.Library.Common.Preservation.Services
                 logger.Error(string.Concat("GetZipPreservationPDA error -> ", ex.Message), ex);
                 throw;
             }
+        }
+
+        public ICollection<PreservationTask> CreateClosePreviousPreservationTask(PreservationTask limitPreservationTask, int startYear)
+        {
+            DateTime endDocumentDate = (startYear != limitPreservationTask.StartDocumentDate.Value.Year) ? new DateTime(startYear, 12, 31) : limitPreservationTask.StartDocumentDate.Value.AddDays(-1);
+            PreservationTask preservationTask = new PreservationTask()
+            {
+                Archive = new DocumentArchive(limitPreservationTask.Archive.IdArchive),
+                Enabled = true,
+                TaskType = new PreservationTaskType { IdPreservationTaskType = Guid.Empty, Type = PreservationTaskTypes.Verify },
+                StartDocumentDate = new DateTime(startYear, 1, 1),
+                EndDocumentDate = endDocumentDate,
+                EstimatedDate = endDocumentDate.AddDays(1)
+            };
+
+            preservationTask.CorrelatedTasks = new BindingList<PreservationTask>();
+            preservationTask.CorrelatedTasks.Add(new PreservationTask
+            {
+                TaskType = new PreservationTaskType { IdPreservationTaskType = Guid.Empty, Type = PreservationTaskTypes.CloseAnnualPreservation },
+                Archive = new DocumentArchive(limitPreservationTask.Archive.IdArchive),
+                StartDocumentDate = preservationTask.StartDocumentDate,
+                EndDocumentDate = preservationTask.EndDocumentDate,
+                EstimatedDate = preservationTask.EstimatedDate,
+                Enabled = preservationTask.Enabled
+            });
+            return CreatePreservationTask(new BindingList<PreservationTask>() { preservationTask });
         }
     }
 }

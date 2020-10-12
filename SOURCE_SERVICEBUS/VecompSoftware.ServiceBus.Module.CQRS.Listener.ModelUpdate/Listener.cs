@@ -8,9 +8,9 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Listener.ModelUpdate
 {
     public class Listener : ListenerMessageBase<ICommandCQRSUpdate>, IListenerMessageGeneric<ICommandCQRSUpdate>
     {
-        public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient)
-            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient),
-                  string.Empty, commandNameFilterEnabled: false)
+        public Listener(MessageReceiver receiver, ILogger logger, IWebAPIClient webApiClient, BiblosDS.BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(receiver, logger, new Execution(logger, webApiClient, biblosClient, serviceBusClient),
+                  string.Empty, webApiClient, commandNameFilterEnabled: false)
         {
 
         }

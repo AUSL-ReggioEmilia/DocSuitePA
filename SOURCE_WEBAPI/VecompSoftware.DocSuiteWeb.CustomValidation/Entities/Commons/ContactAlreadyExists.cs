@@ -24,7 +24,8 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Commons
         #region [ Methods ]
         protected override void ValidateObject(ContactValidator objectToValidate)
         {
-            bool existContacts = CurrentUnitOfWork.Repository<Contact>().FindContactsByDescriptionOrFiscalCode(objectToValidate.Description, objectToValidate.FiscalCode, true).Any();
+            bool existContacts = CurrentUnitOfWork.Repository<Contact>().FindContactsByDescriptionOrFiscalCode(objectToValidate.Description, objectToValidate.FiscalCode, 
+                objectToValidate.IncrementalFather, true).Any();
             if (existContacts)
             {
                 GenerateInvalidateResult();

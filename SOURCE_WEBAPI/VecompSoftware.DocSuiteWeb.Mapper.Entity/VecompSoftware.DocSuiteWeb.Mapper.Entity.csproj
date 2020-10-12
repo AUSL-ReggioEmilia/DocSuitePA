@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.DocSuiteWeb.Mapper.Entity</RootNamespace>
     <AssemblyName>VecompSoftware.DocSuiteWeb.Mapper.Entity</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -49,7 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commons\ICategoryFascicleRightMapper.cs" />
+    <Compile Include="Commons\IMetadataContactValueMapper.cs" />
+    <Compile Include="Commons\IMetadataValueMapper.cs" />
     <Compile Include="Commons\Implementation\CategoryFascicleRightMapper.cs" />
+    <Compile Include="Commons\Implementation\MetadataContactValueMapper.cs" />
+    <Compile Include="Commons\Implementation\MetadataValueMapper.cs" />
     <Compile Include="Commons\Implementation\UserLogMapper.cs" />
     <Compile Include="Commons\IUserLogMapper.cs" />
     <Compile Include="DocumentArchives\IDocumentSeriesItemLinkMapper.cs" />
@@ -66,6 +70,8 @@
     <Compile Include="PECMails\Implementation\PECMailBoxConfigurationMapper.cs" />
     <Compile Include="PECMails\IPECMailAttachmentMapper.cs" />
     <Compile Include="PECMails\IPECMailBoxConfigurationMapper.cs" />
+    <Compile Include="PosteWeb\Implementation\POLRequestMapper.cs" />
+    <Compile Include="PosteWeb\IPOLRequestMapper.cs" />
     <Compile Include="Processes\Implementation\ProcessFascicleTemplateMapper.cs" />
     <Compile Include="Processes\Implementation\ProcessFascicleWorkflowRepositoryMapper.cs" />
     <Compile Include="Processes\Implementation\ProcessMapper.cs" />
@@ -129,6 +135,10 @@
     <Compile Include="Resolutions\IResolutionLogMapper.cs" />
     <Compile Include="Resolutions\IResolutionKindMapper.cs" />
     <Compile Include="Resolutions\IResolutionKindDocumentSeriesMapper.cs" />
+    <Compile Include="Tasks\Implementation\TaskHeaderProtocolMapper.cs" />
+    <Compile Include="Tasks\Implementation\TaskHeaderMapper.cs" />
+    <Compile Include="Tasks\ITaskHeaderProtocolMapper.cs" />
+    <Compile Include="Tasks\ITaskHeaderMapper.cs" />
     <Compile Include="Templates\Implementation\TemplateDocumentRepositoryMapper.cs" />
     <Compile Include="Templates\Implementation\TemplateCollaborationDocumentRepositoryMapper.cs" />
     <Compile Include="Templates\Implementation\TemplateCollaborationMapper.cs" />
@@ -269,9 +279,11 @@
     <Compile Include="Resolutions\IResolutionMapper.cs" />
     <Compile Include="Resolutions\Implementation\ResolutionMapper.cs" />
     <Compile Include="Resolutions\IResolutionRoleMapper.cs" />
+    <Compile Include="Tenants\Implementation\TenantAOOMapper.cs" />
     <Compile Include="Tenants\Implementation\TenantConfigurationMapper.cs" />
     <Compile Include="Tenants\Implementation\TenantMapper.cs" />
     <Compile Include="Tenants\Implementation\TenantWorkflowRepositoryMapper.cs" />
+    <Compile Include="Tenants\ITenantAOOMapper.cs" />
     <Compile Include="Tenants\ITenantConfigurationMapper.cs" />
     <Compile Include="Tenants\ITenantMapper.cs" />
     <Compile Include="Tenants\ITenantWorkflowRepositoryMapper.cs" />
@@ -323,14 +335,11 @@
     <Content Include="favicon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="VecompSoftware.DocSuiteWeb.Mapper.Entity.nuspec">
+    <Content Include="VecompSoftware.DocSuiteWeb.Mapper.Entity.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tasks\" />
-    <Folder Include="Tenders\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
       <Project>{c6f323c0-c21b-433b-90c8-0b64a42115ab}</Project>

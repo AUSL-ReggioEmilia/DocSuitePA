@@ -80,6 +80,37 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Dossiers
             }, _logger, LogCategories);
         }
 
+        [HttpGet]
+        public IHttpActionResult GetAllParentsOfFascicle(ODataQueryOptions<DossierFolder> options, Guid idDossier, Guid idFascicle)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
+            {
+                ICollection<DossierFolderTableValuedModel> dossierFolders = _unitOfWork.Repository<DossierFolder>().GetAllParentsOfFascicle(idDossier, idFascicle);
+                ICollection<DossierFolderModel> dossierFoldersModel = _mapperUnitOfwork.Repository<IDomainMapper<DossierFolderTableValuedModel, DossierFolderModel>>().MapCollection(dossierFolders).ToList();
+                return Ok(dossierFoldersModel);
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult HasAssociatedFascicles(ODataQueryOptions<DossierFolder> options, Guid idDossier)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
+            {
+                return Ok(_unitOfWork.Repository<DossierFolder>().HasAssociatedFascicles(idDossier));
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetParent(ODataQueryOptions<DossierFolder> options, Guid idDossierFolder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
+            {
+                ICollection<DossierFolderTableValuedModel> dossierFolders = _unitOfWork.Repository<DossierFolder>().GetParent(idDossierFolder);
+                ICollection<DossierFolderModel> dossierFoldersModel = _mapperUnitOfwork.Repository<IDomainMapper<DossierFolderTableValuedModel, DossierFolderModel>>().MapCollection(dossierFolders).ToList();
+
+                return Ok(dossierFoldersModel);
+            }, _logger, LogCategories);
+        }
         #region [ Helpers ]
 
         private ICollection<DossierFolderModel> MapDossierFoldersRecursive(ICollection<DossierFolderModel> dossierFoldersModel)
@@ -96,7 +127,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Dossiers
                 ICollection<DossierFolderModel> childDossiers = _mapperUnitOfwork.Repository<IDomainMapper<DossierFolderTableValuedModel, DossierFolderModel>>().MapCollection(dossierFolders).ToList();
 
                 //exclude parent dossier from list
-                if (dossierFolderModel.DossierFolderLevel == 1 && childDossiers.Count != 0)
+                if (dossierFolderModel.DossierFolderLevel == 1)
                 {
                     dossierFoldersModel = MapDossierFoldersRecursive(childDossiers);
                     continue;
@@ -109,7 +140,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Dossiers
             }
 
             return dossierFoldersModel;
-        }        
+        }
 
         #endregion
 

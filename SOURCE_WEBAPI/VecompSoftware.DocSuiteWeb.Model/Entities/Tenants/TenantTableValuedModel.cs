@@ -12,9 +12,10 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Tenants
 
         #region [ Properties ]
 
-        public Guid IdTenant { get; set; }
+        public Guid IdTenantModel { get; set; }
         public string TenantName { get; set; }
         public string CompanyName { get; set; }
+        public TenantTypologyType TenantTypology { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public string Note { get; set; }

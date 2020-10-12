@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Model.DocumentUnits
 {
@@ -37,6 +38,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.DocumentUnits
             modelTransformed.Category = _mapperUnitOfWork.Repository<IDomainMapper<ICategoryTableValuedModel, CategoryModel>>().Map(model, null);
             modelTransformed.Container = _mapperUnitOfWork.Repository<IDomainMapper<IContainerTableValuedModel, ContainerModel>>().Map(model, null);
             modelTransformed.DocumentUnitChain = _mapperUnitOfWork.Repository<IDomainMapper<DocumentUnitTableValuedModel, DocumentUnitChainModel>>().Map(model, null);
+            modelTransformed.TenantAOO = _mapperUnitOfWork.Repository<IDomainMapper<ITenantAOOTableValuedModel, TenantAOOModel>>().Map(model, null);
 
             return modelTransformed;
         }

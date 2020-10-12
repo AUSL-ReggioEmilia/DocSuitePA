@@ -28,6 +28,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Resolutions
         public int? IdResolution { get; set; }
 
         public Guid UniqueId { get; set; }
+        public bool WorkflowAutoComplete { get; set; }
 
         public string WorkflowName { get; set; }
 

@@ -255,6 +255,38 @@ IF @@TRANCOUNT = 0
     END
 GO
 --#############################################################################
+PRINT N'Inserita nuova schedulazione settimanale in [PreservationSchedule]';
+GO
+
+INSERT INTO [dbo].[PreservationSchedule]
+           ([IdPreservationSchedule]
+           ,[Name]
+           ,[Period]
+           ,[ValidWeekDays]
+           ,[FrequencyType]
+           ,[Active]
+           ,[IsDefault])
+     VALUES
+           (NEWID()
+           ,'Settimanale'
+           ,'7|14|21|31'
+           ,'1|2|3|4|5'
+           ,2
+           ,1
+           ,0)
+GO
+
+IF @@ERROR <> 0 AND @@TRANCOUNT > 0
+    BEGIN ROLLBACK;
+END
+
+IF @@TRANCOUNT = 0
+    BEGIN
+        INSERT  INTO #tmpErrors (Error) VALUES (1);
+        BEGIN TRANSACTION;
+    END
+GO
+--#############################################################################
 IF EXISTS (SELECT * FROM #tmpErrors) ROLLBACK TRANSACTION
 GO
 IF @@TRANCOUNT>0 BEGIN

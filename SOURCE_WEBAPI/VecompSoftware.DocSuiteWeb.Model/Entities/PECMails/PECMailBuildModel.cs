@@ -18,6 +18,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.PECMails
         #endregion
 
         #region [ Properties ]
+        public bool WorkflowAutoComplete { get; set; }
         public Guid UniqueId { get; set; }
         public string WorkflowName { get; set; }
         public Guid? IdWorkflowActivity { get; set; }

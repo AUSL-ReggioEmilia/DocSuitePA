@@ -10,6 +10,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Workflow
         public WorkflowReferenceModel()
         {
             Documents = new List<WorkflowReferenceBiblosModel>();
+            DocumentUnits = new List<WorkflowReferenceDocumentUnitModel>();
         }
         #endregion
 
@@ -25,6 +26,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Workflow
 
         public ICollection<WorkflowReferenceBiblosModel> Documents { get; set; }
 
+        public ICollection<WorkflowReferenceDocumentUnitModel> DocumentUnits { get; set; }
         #endregion
     }
 }

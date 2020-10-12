@@ -24,8 +24,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.DocumentArch
         #endregion
 
         #region [ Constructor ]
-        public DocumentSeriesItemContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient)
-            : base(logger, webApiClient, biblosClient)
+        public DocumentSeriesItemContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
             _logger = logger;
             _webApiClient = webApiClient;
@@ -39,7 +39,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.DocumentArch
             try
             {
                 DocumentSeriesItem documentSeriesItem = ((ICommandCreateDocumentSeriesItem)command).ContentType.ContentTypeValue;
-                evt = new EventCreateDocumentSeriesItem(command.TenantName, command.TenantId, command.Identity, documentSeriesItem, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
+                evt = new EventCreateDocumentSeriesItem(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, documentSeriesItem, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
             }
             catch (Exception ex)
             {
@@ -56,7 +56,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.DocumentArch
             try
             {
                 DocumentSeriesItem documentSeriesItem = ((ICommandUpdateDocumentSeriesItem)command).ContentType.ContentTypeValue;
-                evt = new EventUpdateDocumentSeriesItem(command.TenantName, command.TenantId, command.Identity, documentSeriesItem, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
+                evt = new EventUpdateDocumentSeriesItem(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, documentSeriesItem, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
             }
             catch (Exception ex)
             {
@@ -302,6 +302,6 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.DocumentArch
 
             return documentUnit;
         }
-       
+
     }
 }

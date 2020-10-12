@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Fascicles
 {
@@ -17,6 +18,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Fascicles
         public override FascicleModel Map(FascicleTableValuedModel entity, FascicleModel entityTransformed)
         {
             entityTransformed.Category = _mapperUnitOfWork.Repository<IDomainMapper<ICategoryTableValuedModel, CategoryModel>>().Map(entity, null);
+            entityTransformed.TenantAOO = _mapperUnitOfWork.Repository<IDomainMapper<ITenantAOOTableValuedModel, TenantAOOModel>>().Map(entity, null);
             entityTransformed.Conservation = entity.Conservation;
             entityTransformed.EndDate = entity.EndDate;
             entityTransformed.FascicleObject = entity.FascicleObject;
@@ -34,6 +36,11 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Fascicles
             entityTransformed.Title = entity.Title;
             entityTransformed.UniqueId = entity.UniqueId;
             entityTransformed.Year = entity.Year;
+            entityTransformed.MetadataValues = entity.MetadataValues;
+            entityTransformed.MetadataDesigner = entity.MetadataDesigner;
+            entityTransformed.DSWEnvironment = entity.DSWEnvironment;
+            entityTransformed.LastChangedDate = entity.LastChangedDate;
+
             return entityTransformed;
         }
 

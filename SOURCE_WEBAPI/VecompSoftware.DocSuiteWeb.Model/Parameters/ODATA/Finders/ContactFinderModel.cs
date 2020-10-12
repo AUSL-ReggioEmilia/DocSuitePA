@@ -1,4 +1,6 @@
-﻿namespace VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders
+﻿using System;
+
+namespace VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders
 {
     public class ContactFinderModel
     {
@@ -8,6 +10,7 @@
         public bool? ExcludeRoleContacts { get; set; }
         public int? ParentId { get; set; }
         public int? ParentToExclude { get; set; }
+        public Guid? IdTenant { get; set; }
         #endregion
     }
 }

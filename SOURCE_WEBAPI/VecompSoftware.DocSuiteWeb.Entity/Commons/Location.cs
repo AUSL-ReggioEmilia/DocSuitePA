@@ -28,7 +28,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
             ProtAttachContainers = new HashSet<Container>();
             DocumentSeriesContainers = new HashSet<Container>();
             DocumentSeriesAnnexedContainers = new HashSet<Container>();
-            DoDocumentSeriesUnpublishedAnnexedContainers = new HashSet<Container>();
+            DocumentSeriesUnpublishedAnnexedContainers = new HashSet<Container>();
             Messages = new HashSet<Message>();
             Protocols = new HashSet<Protocol>();
             PECMails = new HashSet<PECMail>();
@@ -46,11 +46,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         /// Get or set name location
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// Get or set Biblos server name
-        /// </summary>
-        public string DocumentServer { get; set; }
 
         /// <summary>
         /// Get or set Biblos protocol archive name
@@ -72,11 +67,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         /// </summary>
         public string ConservationArchive { get; set; }
 
-        /// <summary>
-        /// Get or set Biblos conservation server name
-        /// </summary>
-        public string ConservationServer { get; set; }
-
         #endregion
 
         #region [ Navigation Properties ]
@@ -89,7 +79,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         public virtual ICollection<Container> ProtAttachContainers { get; set; }
         public virtual ICollection<Container> DocumentSeriesContainers { get; set; }
         public virtual ICollection<Container> DocumentSeriesAnnexedContainers { get; set; }
-        public virtual ICollection<Container> DoDocumentSeriesUnpublishedAnnexedContainers { get; set; }
+        public virtual ICollection<Container> DocumentSeriesUnpublishedAnnexedContainers { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
         public virtual ICollection<Protocol> Protocols { get; set; }
         public virtual ICollection<Protocol> AttachProtocols { get; set; }

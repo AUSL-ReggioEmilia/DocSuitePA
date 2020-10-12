@@ -12,6 +12,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Dossiers
         public AuthorizationRoleType Type { get; set; }
 
         public RoleModel Role { get; set; }
+        public bool IsMaster { get; set; }
 
     }
 }

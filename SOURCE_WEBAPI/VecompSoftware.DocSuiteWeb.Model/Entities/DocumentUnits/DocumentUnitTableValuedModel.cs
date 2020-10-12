@@ -1,10 +1,11 @@
 ﻿using System;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
 {
-    public class DocumentUnitTableValuedModel : ICategoryTableValuedModel, IContainerTableValuedModel
+    public class DocumentUnitTableValuedModel : ICategoryTableValuedModel, IContainerTableValuedModel, ITenantAOOTableValuedModel
     {
         #region [ Constructor ]
 
@@ -75,6 +76,11 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
 
         public Guid? DocumentUnitRole_UniqueIdRole { get; set; }
 
+        #endregion
+
+        #region [ TenantAOO ]
+        public Guid? TenantAOO_IdTenantAOO { get; set; }
+        public string TenantAOO_Name { get; set; }
         #endregion
 
         #endregion

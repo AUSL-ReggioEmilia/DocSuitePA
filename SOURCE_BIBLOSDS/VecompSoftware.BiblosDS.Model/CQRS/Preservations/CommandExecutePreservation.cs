@@ -8,6 +8,5 @@ namespace VecompSoftware.BiblosDS.Model.CQRS.Preservations
         public bool AutoGenerateNextTask { get; set; }
         public string PDVArchive { get; set; }
         public string RDVArchive { get; set; }
-        public string ArchiveConfigurationPath { get; set; }
     }
 }

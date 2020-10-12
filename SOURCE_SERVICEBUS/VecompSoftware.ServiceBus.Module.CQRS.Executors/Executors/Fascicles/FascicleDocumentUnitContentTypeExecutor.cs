@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.Core.Command.CQRS.Events.Entities.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
-using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
-using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
-using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
 using VecompSoftware.ServiceBus.BiblosDS;
 using VecompSoftware.ServiceBus.WebAPI;
 using VecompSoftware.Services.Command;
@@ -37,8 +31,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Fascicles
 
         #region [ Constructor ]
 
-        public FascicleDocumentUnitContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient) 
-            : base(logger, webApiClient, biblosClient)
+        public FascicleDocumentUnitContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
             _logger = logger;
             _webApiClient = webApiClient;
@@ -60,7 +54,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Fascicles
                 {
                     Task.Run(async () => await InsertFascicleDocumentUnitCategory(fascicleDocumentUnit));
                 }
-                evt = new EventCreateFascicleDocumentUnit(command.TenantName, command.TenantId, command.Identity, fascicleDocumentUnit);
+                evt = new EventCreateFascicleDocumentUnit(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, fascicleDocumentUnit);
             }
             catch (Exception ex)
             {
@@ -81,7 +75,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Fascicles
                 {
                     Task.Run(async () => await DeleteFascicleDocumentUnitCategory(fascicleDocumentUnit));
                 }
-                evt = new EventDeleteFascicleDocumentUnit(command.TenantName, command.TenantId, command.Identity, fascicleDocumentUnit);
+                evt = new EventDeleteFascicleDocumentUnit(command.TenantName, command.TenantId, command.TenantAOOId, command.Identity, fascicleDocumentUnit);
             }
             catch (Exception ex)
             {
@@ -97,7 +91,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Fascicles
         }
 
         internal override Task<DocumentUnit> MappingUpdateAsync(IContentBase entity, DocumentUnit documentUnit, IIdentityContext identity)
-        {            
+        {
             return null;
         }
 
@@ -126,7 +120,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.Fascicles
                 _logger.WriteDebug(new LogMessage($"DocumentUnitFascicleHistoricizedCategory - {documentUnitFascicleHistoricizedCategory.GetType()} - {documentUnitFascicleHistoricizedCategory.UniqueId} has been successfully created."), LogCategories);
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.WriteError(new LogMessage("FascicleDocumentUnit, InsertFascicleDocumentUnitCategory Error: "), ex, LogCategories);
                 throw ex;

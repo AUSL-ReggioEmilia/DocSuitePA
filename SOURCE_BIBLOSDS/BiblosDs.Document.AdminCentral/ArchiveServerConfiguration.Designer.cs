@@ -48,6 +48,7 @@
             this.label1.Size = new System.Drawing.Size(67, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Transit Path:";
+            this.label1.Visible = false;
             // 
             // label2
             // 
@@ -57,6 +58,7 @@
             this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 1;
             this.label2.Text = "Enabled:";
+            this.label2.Visible = false;
             // 
             // ckEnabled
             // 
@@ -68,6 +70,7 @@
             this.ckEnabled.Size = new System.Drawing.Size(15, 14);
             this.ckEnabled.TabIndex = 2;
             this.ckEnabled.UseVisualStyleBackColor = true;
+            this.ckEnabled.Visible = false;
             this.ckEnabled.CheckedChanged += new System.EventHandler(this.ckEnabled_CheckedChanged);
             // 
             // txtTransitPath
@@ -76,6 +79,7 @@
             this.txtTransitPath.Name = "txtTransitPath";
             this.txtTransitPath.Size = new System.Drawing.Size(356, 20);
             this.txtTransitPath.TabIndex = 3;
+            this.txtTransitPath.Visible = false;
             // 
             // btnSave
             // 
@@ -107,6 +111,7 @@
             this.btnBrowse.TabIndex = 6;
             this.btnBrowse.Text = "...";
             this.btnBrowse.UseVisualStyleBackColor = true;
+            this.btnBrowse.Visible = false;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
             // label3

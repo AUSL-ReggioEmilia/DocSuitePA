@@ -20,6 +20,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Processes
         public ProcessFascicleTemplatesController(IProcessFascicleTemplateService service, IDataUnitOfWork unitOfWork, ILogger logger, ISecurity security) 
             : base(service, unitOfWork, logger, security)
         {
+            _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         #endregion

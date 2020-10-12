@@ -46,10 +46,11 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
         private readonly ModuleConfigurationModel _moduleConfiguration;
         private readonly IList<Guid> _subscriptions = new List<Guid>();
         private bool _needInitializeModule = false;
+        private UDSRepository _receivableInvoiceUDSName;
         private readonly IdentityContext _identityContext = null;
-        private readonly UDSRepository _receivableInvoiceUDSName;
         private readonly TimeSpan _threadWaiting = TimeSpan.FromSeconds(5);
         private const string LOOKIN_EXTENSION_PDF = "*.pdf";
+        private Location _workflowLocation;
 
         private const string METADATA_DATAFATTURA = "DataFattura";
         private const string METADATA_NUMEROFATTURA = "NumeroFattura";
@@ -57,9 +58,9 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
         private const string METADATA_SEZIONALENUMERICO = "SezionaleNumerico";
         private const string METADATA_PROTOCOLLOIVA = "ProtocolloIVA";
         private const string METADATA_DATAIVA = "DataIVA";
-        private const string METADATA_PARTITAIVA= "PartitaIVA";
-        private const string METADATA_CODICEFISCALE= "CodiceFiscale";
-        private static string VALUE_TIPOFATTURA = JsonConvert.SerializeObject(new List<string>() { "Fattura" });
+        private const string METADATA_PARTITAIVA = "PartitaIVA";
+        private const string METADATA_CODICEFISCALE = "CodiceFiscale";
+        private static readonly string VALUE_TIPOFATTURA = JsonConvert.SerializeObject(new List<string>() { "Fattura" });
         #endregion
 
         #region [ Properties ]
@@ -95,11 +96,6 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
                     username = WindowsIdentity.GetCurrent().Name;
                 }
                 _identityContext = new IdentityContext(username);
-                _receivableInvoiceUDSName = _webAPIClient.GetUDSRepository(_moduleConfiguration.ReceivableInvoiceUDSName).Result.Last(f => f.Status == DocSuiteWeb.Entity.UDS.UDSRepositoryStatus.Confirmed);
-                if (_receivableInvoiceUDSName == null)
-                {
-                    throw new ArgumentException($"UDSRepository {_moduleConfiguration.ReceivableInvoiceUDSName} not found");
-                }
             }
             catch (Exception ex)
             {
@@ -124,36 +120,49 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
                 _logger.WriteInfo(new LogMessage($"Looking attachments invoice in folder {_moduleConfiguration.FolderLookingAttachmentInvoice}"), LogCategories);
                 IEnumerable<FileInfo> resultFiles = new DirectoryInfo(_moduleConfiguration.FolderLookingAttachmentInvoice).EnumerateFiles(LOOKIN_EXTENSION_PDF, SearchOption.AllDirectories).ToList();
                 string movedPath;
+                string workingPath = string.Empty;
+                FileInfo currentFileInfo = null;
                 foreach (FileInfo fileInfo in resultFiles)
                 {
                     try
                     {
+                        currentFileInfo = fileInfo;
                         _logger.WriteInfo(new LogMessage($"Waiting {_threadWaiting.TotalSeconds} seconds ...."), LogCategories);
                         Task.Delay(_threadWaiting).Wait();
-                        _logger.WriteInfo(new LogMessage($"Evaluating {fileInfo.FullName} ...."), LogCategories);
-
-                        UpdateReceivableInvoiceAsync(fileInfo).Wait();
-                        movedPath = Path.Combine(_moduleConfiguration.FolderBackupAttachmentInvoice, fileInfo.Name);
+                        _logger.WriteInfo(new LogMessage($"Evaluating {currentFileInfo.FullName} ...."), LogCategories);
+                        workingPath = Path.Combine(_moduleConfiguration.FolderWorkingAttachmentInvoice, currentFileInfo.Name);
+                        if (File.Exists(workingPath))
+                        {
+                            File.Delete(workingPath);
+                        }
+                        File.Move(currentFileInfo.FullName, workingPath);
+                        _logger.WriteInfo(new LogMessage($"{fileInfo.FullName} has been moved to {workingPath}"), LogCategories);
+                        currentFileInfo = new FileInfo(workingPath);
+                        UpdateReceivableInvoiceAsync(currentFileInfo).Wait();
+                        movedPath = Path.Combine(_moduleConfiguration.FolderBackupAttachmentInvoice, currentFileInfo.Name);
                         if (Directory.Exists(Path.Combine(_moduleConfiguration.FolderBackupAttachmentInvoice)))
                         {
-                            File.Move(fileInfo.FullName, movedPath);
-                            _logger.WriteInfo(new LogMessage($"{fileInfo.Name} has been moved to {movedPath}"), LogCategories);
+                            if (File.Exists(movedPath))
+                            {
+                                File.Delete(movedPath);
+                            }
+                            File.Move(currentFileInfo.FullName, movedPath);
+                            _logger.WriteInfo(new LogMessage($"{currentFileInfo.Name} has been moved to {movedPath}"), LogCategories);
                         }
                         else
                         {
-                            File.Delete(fileInfo.FullName);
+                            File.Delete(currentFileInfo.FullName);
                         }
-                        _logger.WriteInfo(new LogMessage($"{fileInfo.FullName} has been successfully completed."), LogCategories);
+                        _logger.WriteInfo(new LogMessage($"{currentFileInfo.FullName} has been successfully completed."), LogCategories);
                     }
                     catch (Exception ex)
                     {
-                        _logger.WriteError(new LogMessage($"Error during {fileInfo.FullName} evaluation. This file was skipped"), ex, LogCategories);
+                        _logger.WriteError(new LogMessage($"Error during {currentFileInfo.FullName} evaluation. This file was skipped"), ex, LogCategories);
                         if (Directory.Exists(_moduleConfiguration.FolderRejectedAttachmentInvoice))
                         {
-                            File.Move(fileInfo.FullName, _moduleConfiguration.FolderRejectedAttachmentInvoice);
+                            File.Move(currentFileInfo.FullName, _moduleConfiguration.FolderRejectedAttachmentInvoice);
                         }
                     }
-
                 }
             }
             catch (Exception ex)
@@ -177,6 +186,19 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
                 _subscriptions.Add(_serviceBusClient.StartListening<IEventCreateProtocol>(ModuleConfigurationHelper.MODULE_NAME, _moduleConfiguration.WorkflowIntegrationTopic,
                     _moduleConfiguration.WorkflowStartArchiveInvoiceSubscription, WorkflowStartArchiveInvoiceCallback));
 
+                _receivableInvoiceUDSName = _webAPIClient.GetUDSRepository(_moduleConfiguration.ReceivableInvoiceUDSName).Result.Last(f => f.Status == DocSuiteWeb.Entity.UDS.UDSRepositoryStatus.Confirmed);
+                if (_receivableInvoiceUDSName == null)
+                {
+                    throw new ArgumentException($"UDSRepository {_moduleConfiguration.ReceivableInvoiceUDSName} not found");
+                }
+
+                int? workflowLocationId = _webAPIClient.GetParameterWorkflowLocationIdAsync().Result;
+                if (!workflowLocationId.HasValue)
+                {
+                    throw new ArgumentNullException("Parameter WorkflowLocationId is not defined");
+                }
+                _workflowLocation = _webAPIClient.GetLocationAsync(workflowLocationId.Value).Result.Single();
+
                 _needInitializeModule = false;
             }
         }
@@ -191,7 +213,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
             _needInitializeModule = true;
         }
 
-        private async Task WorkflowStartArchiveInvoiceCallback(IEventCreateProtocol evt)
+        private async Task WorkflowStartArchiveInvoiceCallback(IEventCreateProtocol evt, IDictionary<string, object> properties)
         {
             try
             {
@@ -217,10 +239,17 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
                 {
                     throw new ArgumentException($"Main document for protocol {protocol.UniqueId} not found");
                 }
+
                 byte[] mainDocumentContent = await _documentClient.GetDocumentStreamAsync(mainDocument.IdDocument);
+                ArchiveDocument archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+                {
+                    Archive = _workflowLocation.ProtocolArchive,
+                    ContentStream = mainDocumentContent,
+                    Name = mainDocument.Name,
+                });
                 InvoiceFileModel mainInvoiceFileModel = new InvoiceFileModel()
                 {
-                    InvoiceContent = mainDocumentContent,
+                    InvoiceBiblosDocumentId = archiveDocument.IdDocument,
                     InvoiceFilename = mainDocument.Name
                 };
 
@@ -231,7 +260,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
                     _logger.WriteDebug(new LogMessage($"Invoice metadata [{invoice_metadata.Key}] with value [{invoice_metadata.Value?.ToString()}]"), LogCategories);
                 }
 
-                ICollection<InvoiceFileModel> attachmentInvoiceFileModels = new List<InvoiceFileModel>();
+                IDictionary<string, byte[]> invoiceAttachments = new Dictionary<string, byte[]>();
                 if (HasAttachments(documentUnitChains))
                 {
                     Guid attachmentsChain = documentUnitChains.Single(s => s.ChainType == DocSuiteWeb.Entity.DocumentUnits.ChainType.AttachmentsChain).IdArchiveChain;
@@ -240,11 +269,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
                     foreach (ArchiveDocument attachment in attachments)
                     {
                         attachmentContent = await _documentClient.GetDocumentStreamAsync(attachment.IdDocument);
-                        attachmentInvoiceFileModels.Add(new InvoiceFileModel()
-                        {
-                            InvoiceContent = attachmentContent,
-                            InvoiceFilename = attachment.Name
-                        });
+                        invoiceAttachments.Add(attachment.Name, attachmentContent);
                     }
                 }
 
@@ -267,7 +292,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
                     description = protocolContact.Description.Replace('|', ' ');
                     pivacf = protocolContact.FiscalCode;
                 }
-                
+
                 if (string.IsNullOrEmpty(pivacf) && mainDocument.Metadata.Any(x => (x.Key == METADATA_PARTITAIVA || x.Key == METADATA_CODICEFISCALE) && x.Value != null))
                 {
                     pivacf = mainDocument.Metadata.Single(x => (x.Key == METADATA_PARTITAIVA || x.Key == METADATA_CODICEFISCALE)).Value.ToString();
@@ -288,8 +313,8 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
                 }).ToList();
 
                 _logger.WriteDebug(new LogMessage("Create UDS build model for insert"), LogCategories);
-                UDSBuildModel buildModel = CreateUDSBuildModel(mainInvoiceFileModel, protocolContact, protocolRoles, protocol, invoice_metadatas, attachmentInvoiceFileModels);
-                CommandInsertUDSData commandInsertUDSData = new CommandInsertUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _identityContext, buildModel);
+                UDSBuildModel buildModel = await CreateUDSBuildModelAsync(mainInvoiceFileModel, protocolContact, protocolRoles, protocol, invoice_metadatas, invoiceAttachments);
+                CommandInsertUDSData commandInsertUDSData = new CommandInsertUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _moduleConfiguration.TenantAOOId, _identityContext, buildModel);
 
                 await _webAPIClient.SendCommandAsync(commandInsertUDSData);
                 _logger.WriteInfo(new LogMessage($"Insert invoice command {commandInsertUDSData.Id} has been sended"), LogCategories);
@@ -313,21 +338,23 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
 
         private IDictionary<string, object> GetInvoiceMetadatasFromDocument(ArchiveDocument document)
         {
-            IDictionary<string, object> invoice_metadatas = new Dictionary<string, object>();
-            invoice_metadatas.Add(UDSEInvoiceHelper.UDSMetadata_DataFattura, document.Metadata.Where(s => s.Key == METADATA_DATAFATTURA).Select(s => DateTimeOffset.Parse(s.Value.ToString())).SingleOrDefault());
-            invoice_metadatas.Add(UDSEInvoiceHelper.UDSMetadata_NumeroFattura, document.Metadata.Where(s => s.Key == METADATA_NUMEROFATTURA).Select(s => s.Value.ToString()).SingleOrDefault());
-            invoice_metadatas.Add(UDSEInvoiceHelper.UDSMetadata_AnnoIva, document.Metadata.Where(s => s.Key == METADATA_ANNOIVA).Select(s => int.Parse(s.Value.ToString())).SingleOrDefault());
-            invoice_metadatas.Add(UDSEInvoiceHelper.UDSMetadata_SezionaleIva, document.Metadata.Where(s => s.Key == METADATA_SEZIONALENUMERICO).Select(s => s.Value.ToString()).SingleOrDefault());
-            invoice_metadatas.Add(UDSEInvoiceHelper.UDSMetadata_ProtocolloIva, document.Metadata.Where(s => s.Key == METADATA_PROTOCOLLOIVA).Select(s => int.Parse(s.Value.ToString())).SingleOrDefault());
-            invoice_metadatas.Add(UDSEInvoiceHelper.UDSMetadata_DataIva, document.Metadata.Where(s => s.Key == METADATA_DATAIVA).Select(s => DateTime.Parse(s.Value.ToString())).SingleOrDefault());
+            IDictionary<string, object> invoice_metadatas = new Dictionary<string, object>
+            {
+                { UDSEInvoiceHelper.UDSMetadata_DataFattura, document.Metadata.Where(s => s.Key == METADATA_DATAFATTURA).Select(s => DateTimeOffset.Parse(s.Value.ToString())).SingleOrDefault() },
+                { UDSEInvoiceHelper.UDSMetadata_NumeroFattura, document.Metadata.Where(s => s.Key == METADATA_NUMEROFATTURA).Select(s => s.Value.ToString()).SingleOrDefault() },
+                { UDSEInvoiceHelper.UDSMetadata_AnnoIva, document.Metadata.Where(s => s.Key == METADATA_ANNOIVA).Select(s => int.Parse(s.Value.ToString())).SingleOrDefault() },
+                { UDSEInvoiceHelper.UDSMetadata_SezionaleIva, document.Metadata.Where(s => s.Key == METADATA_SEZIONALENUMERICO).Select(s => s.Value.ToString()).SingleOrDefault() },
+                { UDSEInvoiceHelper.UDSMetadata_ProtocolloIva, document.Metadata.Where(s => s.Key == METADATA_PROTOCOLLOIVA).Select(s => int.Parse(s.Value.ToString())).SingleOrDefault() },
+                { UDSEInvoiceHelper.UDSMetadata_DataIva, document.Metadata.Where(s => s.Key == METADATA_DATAIVA).Select(s => DateTime.Parse(s.Value.ToString())).SingleOrDefault() }
+            };
             return invoice_metadatas;
         }
 
-        private UDSBuildModel CreateUDSBuildModel(InvoiceFileModel invoiceFileModel, Contact contact, ICollection<RoleModel> roleModels,
-            Protocol protocol, IDictionary<string, object> invoice_metadatas, ICollection<InvoiceFileModel> invoiceAttachments)
+        private async Task<UDSBuildModel> CreateUDSBuildModelAsync(InvoiceFileModel invoiceFileModel, Contact contact, ICollection<RoleModel> roleModels,
+            Protocol protocol, IDictionary<string, object> invoice_metadatas, IDictionary<string, byte[]> invoiceAttachments)
         {
             Guid udsID = Guid.NewGuid();
-            Guid correlationId = Guid.NewGuid();            
+            Guid correlationId = Guid.NewGuid();
             UDSModel model = UDSModel.LoadXml(_receivableInvoiceUDSName.ModuleXML);
             model.Model.UDSId = udsID.ToString();
             model.Model.Subject.Value = $"{invoice_metadatas[EInvoiceHelper.Metadata_Denominazione]} - Fattura passiva n° {invoice_metadatas[EInvoiceHelper.Metadata_NumeroFattura]} del {((DateTimeOffset)invoice_metadatas[EInvoiceHelper.Metadata_DataFattura]).LocalDateTime.ToShortDateString()}";
@@ -344,24 +371,25 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
             uds_metadatas[UDSEInvoiceHelper.UDSMetadata_DataRicezioneSdi] = null;
             model.FillMetaData(uds_metadatas);
             model = UDSEInvoiceHelper.InitDocumentStructures(model);
+            model.Model.Documents.Document.Instances = UDSEInvoiceHelper.FillDocumentInstances(new List<InvoiceFileModel>() { invoiceFileModel });
 
-            List<InvoiceFileModel> invoiceFileModels = new List<InvoiceFileModel>
+            List<InvoiceFileModel> invoiceAttachmentFiles = new List<InvoiceFileModel>();
+            ArchiveDocument archiveDocument;
+            foreach (KeyValuePair<string, byte[]> item in invoiceAttachments)
             {
-                new InvoiceFileModel()
+                archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
                 {
-                    InvoiceContent = invoiceFileModel.InvoiceContent,
-                    InvoiceFilename = invoiceFileModel.InvoiceFilename
-                }
-            };
-            model.Model.Documents.Document.Instances = UDSEInvoiceHelper.FillDocumentInstances(invoiceFileModels);
-
-            invoiceFileModels.Clear();
-            if (invoiceAttachments?.Count > 0)
-            {
-                invoiceFileModels.AddRange(invoiceAttachments);
+                    Archive = _workflowLocation.ProtocolArchive,
+                    ContentStream = item.Value,
+                    Name = item.Key,
+                });
+                invoiceAttachmentFiles.Add(new InvoiceFileModel()
+                {
+                    InvoiceFilename = item.Key,
+                    InvoiceBiblosDocumentId = archiveDocument.IdDocument
+                });
             }
-            model.Model.Documents.DocumentAttachment.Instances = UDSEInvoiceHelper.FillDocumentInstances(invoiceFileModels);
-            invoiceFileModels.Clear();
+            model.Model.Documents.DocumentAttachment.Instances = UDSEInvoiceHelper.FillDocumentInstances(invoiceAttachmentFiles);
 
             Contacts contacts = model.Model.Contacts.Single();
             if (contacts.ContactInstances == null)
@@ -376,7 +404,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
             if (roleModels != null)
             {
                 model = UDSEInvoiceHelper.FillAuthorizations(model, roleModels.ToList());
-            }            
+            }
 
             UDSBuildModel udsBuildModel = new UDSBuildModel(model.SerializeToXml())
             {
@@ -417,17 +445,23 @@ namespace VecompSoftware.BPM.Integrations.Modules.TEAFLEX.ArchiveInvoice
             ICollection<UDSMessage> udsMessages = await _webAPIClient.GetUDSMessages(idUDS);
             ICollection<UDSPECMail> udsPECMails = await _webAPIClient.GetUDSPECMails(idUDS);
             ICollection<UDSDocumentUnit> udsDocumentUnits = await _webAPIClient.GetUDSDocumentUnits(idUDS, false, false);
+            ArchiveDocument archiveDocument = await _documentClient.InsertDocumentAsync(new ArchiveDocument()
+            {
+                Archive = _workflowLocation.ProtocolArchive,
+                ContentStream = File.ReadAllBytes(fileInfo.FullName),
+                Name = fileInfo.Name,
+            });
             List<InvoiceFileModel> invoiceFiles = new List<InvoiceFileModel>()
             {
                 new InvoiceFileModel()
                 {
-                    InvoiceContent = File.ReadAllBytes(fileInfo.FullName),
+                    InvoiceBiblosDocumentId = archiveDocument.IdDocument,
                     InvoiceFilename = fileInfo.Name
                 }
             };
             UDSBuildModel udsBuildModel = UDSEInvoiceHelper.PrepareUpdateUDSBuildModel(_receivableInvoiceUDSName, idUDS, uds_metadatas, documents, udsRoles, udsContacts,
                 udsMessages, udsPECMails, udsDocumentUnits, invoiceFiles, _identityContext.User);
-            CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _identityContext, udsBuildModel);
+            CommandUpdateUDSData commandUpdateUDSData = new CommandUpdateUDSData(_moduleConfiguration.TenantName, _moduleConfiguration.TenantId, _moduleConfiguration.TenantAOOId, _identityContext, udsBuildModel);
             await _webAPIClient.SendCommandAsync(commandUpdateUDSData);
             _logger.WriteInfo(new LogMessage($"Updating invoice {commandUpdateUDSData.Id} has been sended"), LogCategories);
         }

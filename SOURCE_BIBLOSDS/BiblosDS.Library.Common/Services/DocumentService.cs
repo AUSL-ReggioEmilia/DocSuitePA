@@ -268,23 +268,25 @@ namespace BiblosDS.Library.Common.Services
             DbProvider.UpdateDocument(Document);
         }
 
-        public static void ConfirmDocument(Guid idDocument)
+        public static void ConfirmDocument(Guid idDocument, bool verifyprimaryKey = true)
         {
             Document document = DocumentService.GetDocument(idDocument);
 
             document.IsConfirmed = true;
-            DateTime? mainDate = null;
-            var attributesValues = AttributeService.GetFullDocumentAttributeValues(idDocument);
-            document.PrimaryKeyValue = AttributeService.ParseAttributeValues(document.Archive, attributesValues, out mainDate);
-
-            if (!string.IsNullOrEmpty(document.PrimaryKeyValue))
+            if (verifyprimaryKey)
             {
-                if (!DocumentService.CheckPrimaryKey(document.IdDocument, document.Archive.IdArchive, document.PrimaryKeyValue))
-                    throw new BiblosDS.Library.Common.Exceptions.DocumentPrimaryKey_Exception();
-            }
+                DateTime? mainDate = null;
+                var attributesValues = AttributeService.GetFullDocumentAttributeValues(idDocument);
+                document.PrimaryKeyValue = AttributeService.ParseAttributeValues(document.Archive, attributesValues, out mainDate);
+
+                if (!string.IsNullOrEmpty(document.PrimaryKeyValue))
+                {
+                    if (!DocumentService.CheckPrimaryKey(document.IdDocument, document.Archive.IdArchive, document.PrimaryKeyValue))
+                        throw new BiblosDS.Library.Common.Exceptions.DocumentPrimaryKey_Exception();
+                }
+            }            
 
             DbProvider.ConfirmDocument(document, document.PrimaryKeyValue);
-
             if (document.DocumentParent == null)
             {
                 var childrens = DocumentService.GetChainDocuments(document.IdDocument);
@@ -978,28 +980,7 @@ namespace BiblosDS.Library.Common.Services
                     throw new Exception("Nessun nome file impostato. Impossibile continuare");
                 if (Document.Archive == null || Document.Archive.IdArchive == Guid.Empty)
                     throw new Exception("Nessun archivio selezionato. Impossibile continuare");
-                Document.Archive = ArchiveService.GetArchive(Document.Archive.IdArchive);
-                var currentServer = ServerService.GetCurrentServer();
-                if (currentServer != null)
-                {
-                    if (currentServer.ServerRole == ServerRole.Proxy)
-                    {
-                        var masterServer = ServerService.GetMasterServer();
-                        if (masterServer == null)
-                            throw new Exceptions.Generic_Exception("Nessun server Master definito.");
-                        logger.DebugFormat("Server {0} is a proxy, Call Master: {1}", currentServer.ServerName, masterServer.ServerName);
-                        using (var clientChannel = WCFUtility.GetClientConfigChannel<IDocuments>(ServerService.WCF_Document_HostName, masterServer.ServerName))
-                        {
-                            return (clientChannel as IDocuments).AddDocumentToChain(Document, IdParent, DocumentContentFormat.Binary);
-                        }
-                    }
-                    var archiveConfig = ServerService.GetArchiveServerConfig(currentServer.IdServer, Document.Archive.IdArchive);
-                    if (archiveConfig != null)
-                    {
-                        Document.Archive.TransitoEnabled = archiveConfig.TransitEnabled;
-                        Document.Archive.PathTransito = archiveConfig.TransitPath;
-                    }
-                }
+                Document.Archive = ArchiveService.GetArchive(Document.Archive.IdArchive);                
                 if (Document.AttributeValues == null)
                     Document.AttributeValues = new BindingList<DocumentAttributeValue>();
 
@@ -1164,7 +1145,7 @@ namespace BiblosDS.Library.Common.Services
                     }
                 }
                 //Add the docuement and the attibutes value into the DB
-                AddDocument(Document, currentServer);
+                AddDocument(Document, null);
 
                 return Document;
             }
@@ -2855,6 +2836,16 @@ namespace BiblosDS.Library.Common.Services
         public static void UpdateDocumentStatus(Document document, Status status)
         {
             DbProvider.UpdateDocumentStatus(document, status);
+        }
+
+        public static ICollection<Document> GetDocumentsFromArchive(DocumentArchive archive)
+        {
+            return DbProvider.GetDocumentsFromArchive(archive);
+        }
+
+        public static void UpdatePrimaryKeyAndDateMainDocument(Document document, DateTime? dateMain, string primaryKey)
+        {
+            DbProvider.UpdatePrimaryKey(document.IdDocument, primaryKey, dateMain);
         }
     }
 }

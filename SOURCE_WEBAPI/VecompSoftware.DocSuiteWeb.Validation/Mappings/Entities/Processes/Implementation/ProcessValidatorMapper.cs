@@ -20,7 +20,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Processes
             entityTransformed.RegistrationDate = entity.RegistrationDate;
             entityTransformed.RegistrationUser = entity.RegistrationUser;
             entityTransformed.Timestamp = entity.Timestamp;
-            entityTransformed.FascicleType = entity.FascicleType;
             entityTransformed.Note = entity.Note;
             entityTransformed.Name = entity.Name;
             entityTransformed.StartDate = entity.StartDate;

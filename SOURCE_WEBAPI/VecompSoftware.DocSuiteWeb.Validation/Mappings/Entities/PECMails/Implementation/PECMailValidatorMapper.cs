@@ -63,8 +63,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.PECMails
             entityTransformed.LastChangedDate = entity.LastChangedDate;
             entityTransformed.LastChangedUser = entity.LastChangedUser;
             entityTransformed.UniqueId = entity.UniqueId;
-            entityTransformed.IdUDS = entity.IdUDS;
-            entityTransformed.DocumentUnitType = entity.DocumentUnitType;
             entityTransformed.InvoiceStatus = entity.InvoiceStatus;
 
             #endregion
@@ -72,10 +70,10 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.PECMails
             #region [ Navigation Properties ]
             entityTransformed.Location = entity.Location;
             entityTransformed.PECMailBox = entity.PECMailBox;
-            entityTransformed.UDSRepository = entity.UDSRepository;
             entityTransformed.PECMailReceipts = entity.PECMailReceipts;
             entityTransformed.PECMailChildrenReceipts = entity.PECMailChildrenReceipts;
             entityTransformed.Attachments = entity.Attachments;
+            entityTransformed.DocumentUnit = entity.DocumentUnit;
             #endregion
 
 

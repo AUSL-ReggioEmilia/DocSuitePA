@@ -331,6 +331,30 @@ namespace BiblosDS.API.Model
         private Nullable<global::System.DateTime> _DateCreated;
         partial void OnDateCreatedChanging(Nullable<global::System.DateTime> value);
         partial void OnDateCreatedChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String SignInfo
+        {
+            get
+            {
+                return _SignInfo;
+            }
+            set
+            {
+                OnSignInfoChanging(value);
+                ReportPropertyChanging("SignInfo");
+                _SignInfo = StructuralObject.SetValidValue(value, true, "SignInfo");
+                ReportPropertyChanged("SignInfo");
+                OnSignInfoChanged();
+            }
+        }
+        private global::System.String _SignInfo;
+        partial void OnSignInfoChanging(global::System.String value);
+        partial void OnSignInfoChanged();
 
         #endregion
 
@@ -560,6 +584,30 @@ namespace BiblosDS.API.Model
         private global::System.String _Description;
         partial void OnDescriptionChanging(global::System.String value);
         partial void OnDescriptionChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Boolean> FlagAddNewDocument
+        {
+            get
+            {
+                return _FlagAddNewDocument;
+            }
+            set
+            {
+                OnFlagAddNewDocumentChanging(value);
+                ReportPropertyChanging("FlagAddNewDocument");
+                _FlagAddNewDocument = StructuralObject.SetValidValue(value, "FlagAddNewDocument");
+                ReportPropertyChanged("FlagAddNewDocument");
+                OnFlagAddNewDocumentChanged();
+            }
+        }
+        private Nullable<global::System.Boolean> _FlagAddNewDocument;
+        partial void OnFlagAddNewDocumentChanging(Nullable<global::System.Boolean> value);
+        partial void OnFlagAddNewDocumentChanged();
 
         #endregion
 
@@ -760,6 +808,30 @@ namespace BiblosDS.API.Model
         private Nullable<global::System.DateTime> _DateCreated;
         partial void OnDateCreatedChanging(Nullable<global::System.DateTime> value);
         partial void OnDateCreatedChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Roles
+        {
+            get
+            {
+                return _Roles;
+            }
+            set
+            {
+                OnRolesChanging(value);
+                ReportPropertyChanging("Roles");
+                _Roles = StructuralObject.SetValidValue(value, true, "Roles");
+                ReportPropertyChanged("Roles");
+                OnRolesChanged();
+            }
+        }
+        private global::System.String _Roles;
+        partial void OnRolesChanging(global::System.String value);
+        partial void OnRolesChanged();
 
         #endregion
 

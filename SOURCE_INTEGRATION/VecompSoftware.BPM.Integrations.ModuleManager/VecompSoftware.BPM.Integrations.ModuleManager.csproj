@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,12 +9,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.BPM.Integrations.ModuleManager</RootNamespace>
     <AssemblyName>VecompSoftware.BPM.Integrations.ModuleManager</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,6 +33,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -54,11 +58,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Common, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Common.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Common.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.EnterpriseLogging, Version=8.87.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.EnterpriseLogging.8.87.19295.1\lib\net461\VecompSoftware.DocSuiteWeb.EnterpriseLogging.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.EnterpriseLogging, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.EnterpriseLogging.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.EnterpriseLogging.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -87,7 +91,7 @@
       <Project>{fbfed947-be1b-4c76-a530-cb9692009853}</Project>
       <Name>VecompSoftware.BPM.Integrations.Services.ServiceBus</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.SignService\VecompSoftware.BPM.Integrations.Services.SignServices.csproj">
+    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.SignServices\VecompSoftware.BPM.Integrations.Services.SignServices.csproj">
       <Project>{6dbd65e3-a831-4d8d-b226-a419c7a5bf15}</Project>
       <Name>VecompSoftware.BPM.Integrations.Services.SignServices</Name>
     </ProjectReference>
@@ -98,10 +102,6 @@
     <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.WebAPI\VecompSoftware.BPM.Integrations.Services.WebAPI.csproj">
       <Project>{d819e5e7-454a-4a1e-a2d7-f4ef9991998a}</Project>
       <Name>VecompSoftware.BPM.Integrations.Services.WebAPI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VecompSoftware.BPM.Integrations.Services.WorkflowManager\VecompSoftware.BPM.Integrations.Services.WorkflowManager.csproj">
-      <Project>{50a958ce-8ac4-4eb7-bdd9-b63b469f1d54}</Project>
-      <Name>VecompSoftware.BPM.Integrations.Services.WorkflowManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.BPM.Integrations.ServiceWake.Periodic\VecompSoftware.BPM.Integrations.ServiceWake.Periodic.csproj">
       <Project>{5708e79b-a518-434a-98af-30c48f8d93c5}</Project>

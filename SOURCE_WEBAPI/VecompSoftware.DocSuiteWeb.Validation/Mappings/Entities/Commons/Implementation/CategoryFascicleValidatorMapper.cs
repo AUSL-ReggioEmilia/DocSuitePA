@@ -13,6 +13,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Commons
             #region [ Base ]
             entityTransformed.DSWEnvironment = entity.DSWEnvironment;
             entityTransformed.FascicleType = entity.FascicleType;
+            entityTransformed.CustomActions = entity.CustomActions;
             entityTransformed.RegistrationDate = entity.RegistrationDate;
             entityTransformed.RegistrationUser = entity.RegistrationUser;
             entityTransformed.LastChangedDate = entity.LastChangedDate;

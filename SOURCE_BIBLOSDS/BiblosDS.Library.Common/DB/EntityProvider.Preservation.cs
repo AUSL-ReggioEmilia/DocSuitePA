@@ -1597,8 +1597,6 @@ ORDER BY Descrizione
         {
             var query = this.db.PreservationStorageDevice
                     .Include(x => x.PreservationInStorageDevice)
-                    .Include(x => x.PreservationInStorageDevice.First().Preservation)
-                    .Include(x => x.PreservationInStorageDevice.First().Preservation.Archive)
                     .Include(x => x.PreservationStorageDeviceStatus)
                     .Where(x => x.IdPreservationStorageDevice == idPreservationStorageDevice)
                     .OrderByDescending(x => x.DateCreated);
@@ -1724,6 +1722,13 @@ ORDER BY Descrizione
 
             return retval;
         }
+
+        public ICollection<Guid> GetIdPreservationsInStorageDevice(Guid idStorageDevice)
+        {
+            return this.db.PreservationInStorageDevice.Where(x => x.IdPreservationStorageDevice == idStorageDevice)
+                .Select(s => s.IdPreservation).ToList();
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -1875,7 +1880,7 @@ ORDER BY Descrizione
             return entityStatus.IdPreservationStorageDeviceStatus;
         }
 
-        public BindingList<PreservationJournaling> GetPreservationJournalings(Guid? idArchive, Guid? idPreservation, DateTime? startDate, DateTime? endDate, Guid? idActivityType,
+        public BindingList<PreservationJournaling> GetPreservationJournalings(Guid? idArchive, Guid? idPreservation, DateTime? startDate, DateTime? endDate, Guid? idActivityType, Guid? idCompany,
             int skip, int take, out int journalingsInArchive, bool includePreservation = true, bool sortingDescending = true)
         {
             var retval = new BindingList<PreservationJournaling>();
@@ -1886,16 +1891,19 @@ ORDER BY Descrizione
 
             try
             {
-                IQueryable<Model.PreservationJournaling> queryExt = this.db.PreservationJournaling
+                IQueryable<Model.PreservationJournaling> queryExt = this.db.PreservationJournaling.Include(x=>x.Preservation)
+                    .Include(x=>x.Preservation.Archive)
+                    .Include(x=>x.Preservation.Archive.ArchiveCompany)
                     .Where(x => ((idArchive.HasValue && idArchive.Value != Guid.Empty) ? x.Preservation.IdArchive == idArchive.Value : true)
                             && ((idPreservation.HasValue && idPreservation.Value != Guid.Empty) ? x.IdPreservation == idPreservation.Value : true)
                             && ((startDate.HasValue && x.DateActivity.HasValue) ? x.DateActivity.Value >= startDate.Value : true)
                             && ((endDate.HasValue && x.DateActivity.HasValue) ? x.DateActivity.Value <= endDate.Value : true)
-                            && ((idActivityType.HasValue && idActivityType.Value != Guid.Empty) ? x.IdPreservationJournalingActivity == idActivityType.Value : true));
+                            && ((idActivityType.HasValue && idActivityType.Value != Guid.Empty) ? x.IdPreservationJournalingActivity == idActivityType.Value : true)
+                            && ((idCompany.HasValue && idCompany.Value != Guid.Empty) ? x.Preservation.Archive.ArchiveCompany.Any(ac=>ac.IdCompany == idCompany) : true));
 
                 journalingsInArchive = queryExt.Count();
                 string sortingType = sortingDescending ? "DESC" : "ASC";
-                IQueryable<PreservationJournalingTableValuedResult> query = this.db.PreservationJournalings_FX_SearchAudits(idArchive, idPreservation, idActivityType, startDate, endDate, skip, take, sortingType);
+                IQueryable <PreservationJournalingTableValuedResult> query = this.db.PreservationJournalings_FX_SearchAudits(idArchive, idPreservation, idActivityType,idCompany, startDate, endDate, skip, take, sortingType);
                 query.ToList().ForEach(f => retval.Add(f.Convert()));
                 return retval;
             }
@@ -1903,8 +1911,6 @@ ORDER BY Descrizione
             {
                 Dispose();
             }
-
-            return retval;
         }
 
         public BindingList<Preservation> GetPreservationsFromJournaling(Guid idJournaling, int skip, int take, out int preservationsCount)
@@ -2955,6 +2961,32 @@ ORDER BY Descrizione
             return company;
         }
 
+       public List<Objects.Company> GetCustomerCompanies(string idCustomer)
+        {
+            try
+            {
+                List<Model.Company> currentUserCompanyList = db.Company
+                    .Where(x => x.CustomerCompany.Select(y => y.IdCustomer).Contains(idCustomer)).ToList();
+
+                List<Objects.Company> listCurrentUserCompany = new List<Objects.Company>();
+
+                foreach (Model.Company item in currentUserCompanyList)
+                {
+                    listCurrentUserCompany.Add(new Objects.Company()
+                    {
+                        IdCompany = item.IdCompany,
+                        CompanyName = item.CompanyName
+                    });
+                }
+                                
+                return listCurrentUserCompany;
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
+
         public BiblosDS.Library.Common.Objects.Company AddCompany(BiblosDS.Library.Common.Objects.Company company)
         {
             if (company == null)
@@ -3003,6 +3035,7 @@ ORDER BY Descrizione
                 dbArchiveCompany.WorkingDir = archiveCompany.WorkingDir;
                 dbArchiveCompany.XmlFileTemplatePath = archiveCompany.XmlFileTemplatePath;
                 dbArchiveCompany.TemplateXSLTFile = archiveCompany.TemplateXSLTFile;
+                dbArchiveCompany.AwardBatchXSLTFile = archiveCompany.AwardBatchXSLTFile;
 
                 if (requireSave)
                 {
@@ -3131,7 +3164,6 @@ ORDER BY Descrizione
                 }
 
                 Model.Preservation entity = db.Preservation
-                    .Include(i => i.PreservationDocuments)
                     .Where(x => x.IdPreservation == preservation.IdPreservation).SingleOrDefault();
 
                 if (entity == null)
@@ -3147,11 +3179,7 @@ ORDER BY Descrizione
 
                 if (withDocument && preservation.Documents?.Count > 0)
                 {
-                    ICollection<PreservationDocuments> preservationDocuments = new List<PreservationDocuments>();
-                    if (entity.PreservationDocuments != null)
-                    {
-                        preservationDocuments = entity.PreservationDocuments;
-                    }
+                    ICollection<PreservationDocuments> preservationDocuments = db.PreservationDocuments.Where(x => x.IdPreservation == preservation.IdPreservation).ToList();
                     ICollection<Document> toInsertDocuments = preservation.Documents.Where(x => !preservationDocuments.Any(pd => pd.IdDocument == x.IdDocument)).ToList();
                     Model.PreservationDocuments preservationDocument;
                     foreach (Document document in toInsertDocuments)
@@ -3169,7 +3197,7 @@ ORDER BY Descrizione
                 }
                 logger.InfoFormat("UpdatePreservation: requireSave = {0}", requireSave);
                 if (requireSave)
-                    this.db.SaveChanges();
+                     this.db.SaveChanges();
             }
             finally
             {
@@ -3666,7 +3694,7 @@ ORDER BY Descrizione
             Dispose();
         }
 
-        public List<string> UpdateDocumentsPreservation(Guid? idPreservation, DocumentArchive archive, BindingList<Document> documents)
+        public List<string> UpdateDocumentsPreservation(Guid? idPreservation, DocumentArchive archive, BindingList<Document> documents, bool verifyPreservationDate)
         {
             var exceptions = new List<string>();
 
@@ -3690,7 +3718,7 @@ ORDER BY Descrizione
                     //if (docs.Select(x => x.Archive).Take(1).Single().VerifyPreservationDateEnabled.GetValueOrDefault(false))
                     IOrderedEnumerable<Model.Document> documenti = null;
 
-                    if (archive.VerifyPreservationDateEnabled)
+                    if (verifyPreservationDate)
                         documenti = docs.OrderBy(x => GetOrderAttributeValueString(x.AttributesValue.Where(a => a.Attributes.IsSectional.HasValue && a.Attributes.IsSectional.Value))).ThenBy(x => x.DateMain).ThenBy(x => GetOrderAttributeValue(x.AttributesValue.Where(a => a.Attributes.IsAutoInc.HasValue && a.Attributes.IsAutoInc.Value == 1)));
                     else
                         documenti = docs.OrderBy(x => GetOrderAttributeValueString(x.AttributesValue.Where(a => a.Attributes.IsSectional.HasValue && a.Attributes.IsSectional.Value))).ThenBy(x => GetOrderAttributeValue(x.AttributesValue.Where(a => a.Attributes.IsAutoInc.HasValue && a.Attributes.IsAutoInc.Value == 1)));
@@ -4721,7 +4749,7 @@ ORDER BY Descrizione
             return infoResponse;
         }
 
-        public BindingList<Document> PrepareDocumentsForPreservation(DocumentArchive archive, PreservationTask task, Guid idPreservation, bool forceAutoInc)
+        public BindingList<Document> PrepareDocumentsForPreservation(DocumentArchive archive, PreservationTask task, Guid idPreservation, bool orderByDateMain)
         {
             IQueryable<Model.Document> queryDocuments = GetPreservationDocumentQuery(
                 (ObjectQuery<Model.Document>)this.db.Document.Include(x => x.PreservationDocuments).Include(x => x.AttributesValue.First().Attributes).Where(x => x.DateMain >= task.StartDocumentDate && x.DateMain <= task.EndDocumentDate), 
@@ -4729,7 +4757,7 @@ ORDER BY Descrizione
             ICollection<Model.Document> documentsToOrder = queryDocuments.ToList();
 
             IOrderedEnumerable<Model.Document> orderedDocuments = null;
-            if (archive.VerifyPreservationDateEnabled || forceAutoInc)
+            if (orderByDateMain)
             {
                 orderedDocuments = documentsToOrder.OrderBy(x => GetOrderAttributeValueString(x.AttributesValue.Where(a => a.Attributes.IsSectional.HasValue && a.Attributes.IsSectional.Value)))
                     .ThenBy(x => x.DateMain)
@@ -5427,17 +5455,28 @@ ORDER BY Descrizione
         }
 
 
-        public void SavePreservationTaskStatus(PreservationTask task, bool hasError, string errorMessage)
+        public void SavePreservationTaskStatus(PreservationTask task, Objects.Enums.PreservationTaskStatus taskStatus, bool hasError, string errorMessage)
         {
             try
             {
-                var preservationTask = db.PreservationTask.Where(x => x.IdPreservationTask == task.IdPreservationTask).FirstOrDefault();
+                Model.PreservationTask preservationTask = db.PreservationTask.Where(x => x.IdPreservationTask == task.IdPreservationTask).FirstOrDefault();
                 if (preservationTask == null)
-                    throw new Exceptions.Generic_Exception("Nessuna conservazione definita con l'id tassk: " + task.IdPreservationTask);
+                {
+                    throw new Exceptions.Generic_Exception($"Nessuna conservazione definita con l'id task: {task.IdPreservationTask}");
+                }
+
+                string taskStatusString = taskStatus.ToString();
+                Model.PreservationTaskStatus preservationTaskStatus = db.PreservationTaskStatus.FirstOrDefault(x => x.Status == taskStatusString);
+                if (preservationTaskStatus == null)
+                {
+                    throw new Exceptions.Generic_Exception($"Nessuno status trovato con descrizione {taskStatus.ToString()}");
+                }
                 preservationTask.HasError = hasError;
                 preservationTask.ErrorMessages = errorMessage == null ? null : errorMessage.Substring(0, Math.Min(errorMessage.Length, 3999));
                 preservationTask.ExecutedDate = DateTime.Now;
                 preservationTask.Executed = true;
+                preservationTask.PreservationTaskStatus = preservationTaskStatus;
+
                 if (requireSave)
                     SaveChanges();
             }
@@ -5606,6 +5645,18 @@ ORDER BY Descrizione
             {
                 Dispose();
             }
-        }        
+        }
+        
+        public bool ExistPreservationsByArchive(Guid idArchive)
+        {
+            try
+            {
+                return db.Preservation.Any(x => x.Archive.IdArchive == idArchive);
+            }
+            finally
+            {
+                Dispose();
+            }
+        }
     }
 }

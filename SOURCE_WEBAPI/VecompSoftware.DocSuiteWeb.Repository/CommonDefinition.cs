@@ -14,6 +14,8 @@
 
         #region [ Store Name ]
         public const string SQL_SP_DossierFolder_PropagateAtuthorizationToDescendants = "[dbo].DossierFolder_SP_PropagateAuthorizationToDescendants";
+        public const string SQL_SP_DossierFolder_UpdateHierarchy = "[dbo].[DossierFolder_Clone_Hierarchy]";
+
         #endregion
         #endregion
     }

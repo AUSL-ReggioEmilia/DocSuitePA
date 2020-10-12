@@ -1,10 +1,9 @@
-using System.Runtime.CompilerServices;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("VecompSoftware.DocSuiteWeb.EntityMapper")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("release")]
+[assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("VecompSoftware.DocSuiteWeb.EntityMapper")]
 [assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
@@ -18,5 +17,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("ff84e0c8-fa8b-477e-9eed-a3b2bc078349")]
 
-[assembly: AssemblyVersion("9.09.20286.02")]
-[assembly: AssemblyFileVersion("9.09.20286.02")]
+[assembly: AssemblyVersion("9.09.0.0")]
+[assembly: AssemblyFileVersion("9.09.0.0")]

@@ -110,7 +110,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.UDS
         public static IQueryable<UDSRepository> GetTenantUDSRepositories(this IRepository<UDSRepository> repository, string tenantName, string udsName, bool optimization = false)
         {
             IQueryable<UDSRepository> results = repository.Query(x => x.Container.Tenants
-                    .Any(y => y.TenantName == tenantName) &&
+                    .Any(y => y.TenantName == tenantName) &&  x.ExpiredDate == null &&
                         (string.IsNullOrEmpty(udsName) || (!string.IsNullOrEmpty(udsName) && x.Name.Contains(udsName))), optimization).SelectAsQueryable();
             return results;
         }

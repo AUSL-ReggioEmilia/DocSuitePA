@@ -11,8 +11,6 @@
             : base(name)
         {
             Value = value;
-            //todo: remove after nuget packages
-            HasHtmlValue = true;
         }
         #endregion
 

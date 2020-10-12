@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Workflows;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
 {
@@ -17,6 +18,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
             Authorizations = new List<int>();
             Recipients = new List<ContactBagDraftModel>();
             Senders = new List<ContactBagDraftModel>();
+            WorkflowMetadatas = new List<WorkflowMetadataDraftModel>();
         }
 
         #endregion
@@ -61,6 +63,10 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
 
         [XmlElement("Type")]
         public int Type { get; set; }
+
+        [XmlArray("WorkflowMetadatas")]
+        [XmlArrayItem("WorkflowMetadata")]
+        public List<WorkflowMetadataDraftModel> WorkflowMetadatas { get; set; }
 
         [XmlArray("Authorizations")]
         [XmlArrayItem("RoleId")]

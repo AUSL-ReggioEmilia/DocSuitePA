@@ -20,8 +20,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
         public string Code { get; set; }
         public string Description { get; set; }
         public bool? IsActive { get; set; }
-        public string HiddenFields { get; set; }
-        public string NeedPackage { get; set; }
+        public bool? HiddenFields { get; set; }
+        public bool? NeedPackage { get; set; }
         public string CommonUser { get; set; }
 
         #endregion

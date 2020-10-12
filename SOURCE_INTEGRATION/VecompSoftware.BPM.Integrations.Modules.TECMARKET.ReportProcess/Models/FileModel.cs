@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess.Models
+﻿namespace VecompSoftware.BPM.Integrations.Modules.TECMARKET.ReportProcess.Models
 {
     public class FileModel
     {

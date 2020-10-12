@@ -160,8 +160,7 @@ namespace VecompSoftware.BPM.Integrations.Modules.ENEA.Wide.Clients
 
             if (categoryIds.Count > index)
             {
-                int shortId = 0;
-                bool parseResult = int.TryParse(categoryIds[index], out shortId);
+                bool parseResult = int.TryParse(categoryIds[index], out int shortId);
                 if (parseResult)
                 {
                     Category cat = await _webAPIClient.GetCategoryAsync(shortId).ConfigureAwait(false);

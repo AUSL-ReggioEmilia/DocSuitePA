@@ -113,7 +113,17 @@ namespace VecompSoftware.DocSuiteWeb.Service.ServiceBus
             return this;
         }
 
-        public async Task<IServiceBusContext> CreateSubscriptionAsync(string subscriptionName, string correlationId, string defaultFilter, Action<BrokeredMessage> callback)
+        public async Task<ICollection<BrokeredMessage>> GetMessagesAsync(string subscriptionName)
+        {
+            if (string.IsNullOrEmpty(subscriptionName))
+            {
+                throw new DSWException(SUBSCRIPTION_NOT_INITIALIZE, null, DSWExceptionCode.SS_Mapper);
+            }
+            SubscriptionClient client = SubscriptionClient.Create(TopicName, subscriptionName, ReceiveMode.ReceiveAndDelete);
+            return (await client.ReceiveBatchAsync(1)).ToList();
+        }
+
+        private void ValidateParameters(string subscriptionName, string correlationId, string defaultFilter)
         {
             if (string.IsNullOrEmpty(subscriptionName))
             {
@@ -128,6 +138,35 @@ namespace VecompSoftware.DocSuiteWeb.Service.ServiceBus
                 throw new DSWException(DEFAULTFILTER_NOT_INITIALIZE, null, DSWExceptionCode.SS_Mapper);
             }
 
+        }
+        public bool SubscriptionExists(string subscriptionName)
+        {
+            if (string.IsNullOrEmpty(subscriptionName))
+            {
+                throw new DSWException(SUBSCRIPTION_NOT_INITIALIZE, null, DSWExceptionCode.SS_Mapper);
+            }
+            if (NamespaceManager.SubscriptionExists(TopicName, subscriptionName))
+            {
+                _logger.WriteInfo(new LogMessage($"Subscription with the name: {subscriptionName} exist"), LogCategories);
+                return true;
+            }
+            _logger.WriteInfo(new LogMessage($"Subscription with the name: {subscriptionName} not exist"), LogCategories);
+            return false;
+        }
+
+        public async Task<IServiceBusContext> CreateSubscriptionAsync(string subscriptionName, string correlationId, string defaultFilter, bool createSubscription)
+        {
+            ValidateParameters(subscriptionName, correlationId, defaultFilter);
+            if (createSubscription)
+            {
+                await InitializeSubscriptionAsync(subscriptionName, correlationId, defaultFilter, null);
+            }
+            return this;
+        }
+
+        public async Task<IServiceBusContext> CreateSubscriptionAsync(string subscriptionName, string correlationId, string defaultFilter, Action<BrokeredMessage> callback)
+        {
+            ValidateParameters(subscriptionName, correlationId, defaultFilter);
             if (callback != null)
             {
                 await InitializeSubscriptionAsync(subscriptionName, correlationId, defaultFilter, callback);
@@ -262,7 +301,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.ServiceBus
                 {
                     AutoDeleteOnIdle = ServiceBusConfiguration.AutoDeleteOnIdle,
                     DefaultMessageTimeToLive = ServiceBusConfiguration.DefaultMessageTimeToLive,
-                    EnableBatchedOperations = false,
+                    EnableBatchedOperations = true,
                     EnableDeadLetteringOnFilterEvaluationExceptions = true,
                     EnableDeadLetteringOnMessageExpiration = false,
                     LockDuration = ServiceBusConfiguration.LockDuration,
@@ -270,13 +309,15 @@ namespace VecompSoftware.DocSuiteWeb.Service.ServiceBus
                     Name = subscriptionName
                 };
                 subscriptionDescription = await NamespaceManager.CreateSubscriptionAsync(subscriptionDescription, defaultRuleDescription);
-                _logger.WriteInfo(new LogMessage(string.Concat("Subscription ", subscriptionName, " in topic ", TopicName, " has been created")),
-                    LogCategories);
-                SubscriptionClient client = SubscriptionClient.Create(TopicName, subscriptionName, ReceiveMode.PeekLock);
-                client.OnMessageAsync(async (message) => await EvaluateMessageAsync(message, callback), _messageOptions);
-                _logger.WriteInfo(new LogMessage(string.Concat("Subscription ", subscriptionName, " has been activated")), LogCategories);
+                _logger.WriteInfo(new LogMessage($"Subscription {subscriptionName} in topic {TopicName} has been created"), LogCategories);
 
-                _subscriptionClient.Add(subscriptionName, client);
+                if (callback != null)
+                {
+                    SubscriptionClient client = SubscriptionClient.Create(TopicName, subscriptionName, ReceiveMode.PeekLock);
+                    client.OnMessageAsync(async (message) => await EvaluateMessageAsync(message, callback), _messageOptions);
+                    _logger.WriteInfo(new LogMessage($"Subscription {subscriptionName} has been activated"), LogCategories);
+                    _subscriptionClient.Add(subscriptionName, client);
+                }
             }
         }
 

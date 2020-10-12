@@ -47,7 +47,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.PECMails
         public string RulesetDefinition { get; set; }
         public InvoiceType? InvoiceType { get; set; }
 
-        public bool HumanEnabled { get; set; }
+        public bool LoginError { get; set; }
 
         public LocationModel Location { get; set; }
         #endregion

@@ -43,9 +43,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
                 Entity = dossier,
                 DossierFolder = dossierFolder
             };
-
-            string str = string.Concat(dossierLog.RegistrationUser, "|", dossierLog.LogType, "|", dossierLog.LogDescription, "|", dossierLog.UniqueId, "|", dossier.UniqueId, "|", dossierLog.RegistrationDate.ToString("yyyyMMddHHmmss"));
-            dossierLog.Hash = HashGenerator.GenerateHash(str);
+            dossierLog.Hash = HashGenerator.GenerateHash($"{dossierLog.RegistrationUser}|{dossierLog.LogType}|{dossierLog.LogDescription}|{dossierLog.UniqueId}|{dossier.UniqueId}|{dossierLog.RegistrationDate:yyyyMMddHHmmss}");
             return dossierLog;
         }
 

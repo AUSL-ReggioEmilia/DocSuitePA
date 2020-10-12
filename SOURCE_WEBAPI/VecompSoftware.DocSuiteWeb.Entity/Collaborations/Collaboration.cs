@@ -5,6 +5,7 @@ using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Desks;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentArchives;
+using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
@@ -147,9 +148,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Collaborations
         /// </summary>
         public virtual DocumentSeriesItem DocumentSeriesItem { get; set; }
 
-        //todo: implementare reference mancanti
-        //public virtual Protocol Protocol { get; set; }
-
         /// <summary>
         /// Get or set Resolution
         /// </summary>
@@ -159,6 +157,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Collaborations
         /// Get or sert WorkflowInstance
         /// </summary>
         public virtual WorkflowInstance WorkflowInstance { get; set; }
+
+        public virtual DocumentUnit DocumentUnit { get; set; }
 
         /// <summary>
         /// Get or set CollaborationLog reference
@@ -198,6 +198,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Collaborations
         #endregion
 
         #region [ Not Mapping Properties ]
+        public bool WorkflowAutoComplete { get; set; }
         public Guid? IdWorkflowActivity { get; set; }
         public string WorkflowName { get; set; }
         public ICollection<IWorkflowAction> WorkflowActions { get; set; }

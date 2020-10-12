@@ -114,7 +114,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Collaborations
         /// </summary>
         public Location Location { get; set; }
 
-        //todo: implementare reference mancanti
         public DocumentSeriesItem DocumentSeriesItem { get; set; }
 
         //public Protocol Protocol { get; set; }

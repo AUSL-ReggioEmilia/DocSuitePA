@@ -26,6 +26,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
 
         #region [ Navigation Properties ]
         public virtual Collaboration Collaboration { get; set; }
+        public virtual Protocol Protocol { get; set; }
         #endregion
     }
 }

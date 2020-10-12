@@ -1,0 +1,23 @@
+{
+  "SyncTopicName": "sync",
+  "TenantAOOCreateSubscriptions": [
+    {
+      "SubscriptionName": "AOO001_CreateTenantAOO",
+      "WebAPIUrl": "http://localhost/dsw.webapi"
+    },
+    {
+      "SubscriptionName": "AOO001_CreateTenantAOO",
+      "WebAPIUrl": "http://localhost/dsw.webapi"
+    }
+  ],
+  "TenantCreateSubscriptions": [
+    {
+      "SubscriptionName": "AOO02_CreateTenant",
+      "WebAPIUrl": "http://localhost/dsw.webapi"
+    },
+    {
+      "SubscriptionName": "AOO02_CreateTenant",
+      "WebAPIUrl": "http://localhost/dsw.webapi"
+    }
+  ]
+}

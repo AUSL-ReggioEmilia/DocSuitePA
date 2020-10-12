@@ -99,8 +99,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage
         #region [ Constructor ]
         public UDSDataFacade(ILogger logger, BiblosClient biblosClient, string xml, string xmlSchema, string dbSchema = "dbo")
         {
-            List<string> validationErrors;
-            bool validate = UDSModel.ValidateXml(xml, xmlSchema, out validationErrors);
+            bool validate = UDSModel.ValidateXml(xml, xmlSchema, out List<string> validationErrors);
             if (!validate)
             {
                 throw new UDSDataException(string.Format("UdsDataFacade - Errori di validazione Xml: {0}", string.Join("\n", validationErrors)));
@@ -127,8 +126,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage
             try
             {
                 //validazione
-                List<string> validationErrors;
-                bool validate = _uds.ValidateValues(out validationErrors);
+                bool validate = _uds.ValidateValues(out List<string> validationErrors);
                 if (!validate)
                 {
                     throw new UDSDataException(string.Format("AddUds - Errore di validazione dei valori: {0}", string.Join("\n", validationErrors)));
@@ -471,30 +469,50 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage
             }
 
             Guid? chainId;
+            BiblosDS.BiblosDS.Content documentContent;
             List<BiblosDS.BiblosDS.AttributeValue> attributeValues = GetChainAttributes(attributes, metadatas, UDSRepositoryName, isMainDoc, signature: signatureValue);
             chainId = RetryingPolicyAction(() => documentsClient.CreateDocumentChain(archive.Name, attributeValues));
             _logger.WriteInfo(new LogMessage($"inserted document chain {chainId} in archive {archive.IdArchive}"), LogCategories);
-
-            foreach (DocumentInstance doc in documents)
+            Guid idDocumentToStore;
+            BiblosDS.BiblosDS.Document documentToStore;
+            BiblosDS.BiblosDS.AttributeValue documentToStoreAttribute;
+            foreach (DocumentInstance documentInstance in documents)
             {
+
+                idDocumentToStore = Guid.Parse(documentInstance.IdDocumentToStore);
+                _logger.WriteInfo(new LogMessage($"reading document content {documentInstance.IdDocumentToStore} ..."), LogCategories);
+                documentContent = RetryingPolicyAction(() => documentsClient.GetDocumentContentById(idDocumentToStore));
+                _logger.WriteInfo(new LogMessage($"reading document Info {documentInstance.IdDocumentToStore} ..."), LogCategories);
+                documentToStore = RetryingPolicyAction(() => documentsClient.GetDocumentInfoById(idDocumentToStore));
+
                 biblosDoc = new BiblosDS.BiblosDS.Document
                 {
                     Archive = archive,
-                    Content = new BiblosDS.BiblosDS.Content { Blob = Convert.FromBase64String(doc.DocumentContent) },
-                    Name = doc.DocumentName,
+                    Content = new BiblosDS.BiblosDS.Content { Blob = documentContent.Blob },
+                    Name = documentInstance.DocumentName,
                     IsVisible = true,
                     AttributeValues = new List<BiblosDS.BiblosDS.AttributeValue>()
-                {
-                    CreateBiblosDSAttribute((x) => x.Single(f=> f.Name.Equals(AttributeHelper.AttributeName_Filename, StringComparison.InvariantCultureIgnoreCase)),
-                        attributes, AttributeHelper.AttributeName_Filename, doc.DocumentName),
+                    {
+                        CreateBiblosDSAttribute((x) => x.Single(f=> f.Name.Equals(AttributeHelper.AttributeName_Filename, StringComparison.InvariantCultureIgnoreCase)),
+                            attributes, AttributeHelper.AttributeName_Filename, documentInstance.DocumentName),
 
-                    CreateSignatureAttribute(attributes, metadatas, UDSRepositoryName, signatureValue: signatureValue)
-                }
+                       CreateSignatureAttribute(attributes, metadatas, UDSRepositoryName, signatureValue: signatureValue)
+                    }
                 };
 
+                documentToStoreAttribute = documentToStore.AttributeValues.SingleOrDefault((x) => x.Attribute.Name == AttributeHelper.AttributeName_SignModels);
+                if (documentToStoreAttribute != null)
+                {
+                    BiblosDS.BiblosDS.AttributeValue attributeValue = null;
+                    attributeValue = CreateBiblosDSAttribute((x) => x.SingleOrDefault(f => f.Name.Equals(AttributeHelper.AttributeName_SignModels, StringComparison.InvariantCultureIgnoreCase)),
+                           attributes, AttributeHelper.AttributeName_SignModels, documentToStoreAttribute.Value);
+                    biblosDoc.AttributeValues.Add(attributeValue);
+                }
                 biblosDoc = RetryingPolicyAction(() => documentsClient.AddDocumentToChain(biblosDoc, chainId, BiblosDS.BiblosDS.ContentFormat.Binary));
                 _logger.WriteInfo(new LogMessage($"inserted document {biblosDoc.IdDocument} in archive { archive.IdArchive }"), LogCategories);
-                doc.IdDocument = biblosDoc.DocumentParent.IdDocument.ToString();
+                documentInstance.StoredChainId = biblosDoc.DocumentParent.IdDocument.ToString();
+                _logger.WriteInfo(new LogMessage($"detaching workflow document {documentInstance.IdDocumentToStore} ..."), LogCategories);
+                RetryingPolicyAction(() => documentsClient.DocumentDetach(new BiblosDS.BiblosDS.Document() { IdDocument = idDocumentToStore }));
             }
             return documents;
         }
@@ -550,7 +568,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage
             return udsModel;
         }
 
-        private DocumentInstance[] UpdateInBiblosDS(BiblosDS.BiblosDS.DocumentsClient client, BiblosDS.BiblosDS.Archive archive,
+        private DocumentInstance[] UpdateInBiblosDS(BiblosDS.BiblosDS.DocumentsClient documentsClient, BiblosDS.BiblosDS.Archive archive,
             List<BiblosDS.BiblosDS.Attribute> attributes, DocumentInstance[] documents, IDictionary<string, object> metadatas,
             string UDSRepositoryName, UDSRelations existingRels, Relations.UDSDocumentType docType, string userName, bool checkoutOptimization = false, bool isMainDoc = false)
         {
@@ -563,7 +581,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage
             bool existingType = existingRels.Documents.Any(p => p.DocumentType == (short)docType);
             if (!existingType)
             {
-                chainId = client.CreateDocumentChain(archive.Name, attributeValues);
+                chainId = documentsClient.CreateDocumentChain(archive.Name, attributeValues);
                 checkoutOptimization = false;
                 _logger.WriteInfo(new LogMessage(string.Concat("inserted document chain ", chainId, " in archive ", archive.IdArchive.ToString())), LogCategories);
             }
@@ -578,48 +596,55 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Storage
                 }
             }
 
-            foreach (DocumentInstance doc in documents)
+            BiblosDS.BiblosDS.Content documentContent;
+            Guid idDocumentToStore;
+            foreach (DocumentInstance documentInstance in documents)
             {
-                if (!string.IsNullOrEmpty(doc.IdDocument))
+                if (!string.IsNullOrEmpty(documentInstance.StoredChainId))
                 {
                     continue;
                 }
+                _logger.WriteInfo(new LogMessage($"reading document content {documentInstance.IdDocumentToStore} ..."), LogCategories);
+                idDocumentToStore = Guid.Parse(documentInstance.IdDocumentToStore);
+                documentContent = RetryingPolicyAction(() => documentsClient.GetDocumentContentById(idDocumentToStore));
 
                 biblosDoc = new BiblosDS.BiblosDS.Document()
                 {
                     Archive = archive,
-                    Content = new BiblosDS.BiblosDS.Content { Blob = Convert.FromBase64String(doc.DocumentContent) },
-                    Name = doc.DocumentName,
+                    Content = new BiblosDS.BiblosDS.Content { Blob = documentContent.Blob },
+                    Name = documentInstance.DocumentName,
                     IsVisible = true,
                     AttributeValues = new List<BiblosDS.BiblosDS.AttributeValue>()
                         {
                             CreateBiblosDSAttribute((x) => x.Single(f=> f.Name.Equals(AttributeHelper.AttributeName_Filename, StringComparison.InvariantCultureIgnoreCase)),
-                                attributes, AttributeHelper.AttributeName_Filename, doc.DocumentName),
+                                attributes, AttributeHelper.AttributeName_Filename, documentInstance.DocumentName),
                             CreateSignatureAttribute(attributes, metadatas, UDSRepositoryName)
                         }
                 };
 
                 if (checkoutOptimization)
                 {
-                    BiblosDS.BiblosDS.Document temp = client.GetDocumentChildren(chainId).FirstOrDefault();
+                    BiblosDS.BiblosDS.Document temp = documentsClient.GetDocumentChildren(chainId).FirstOrDefault();
                     if (temp != null)
                     {
                         attributeValues = attributeValues.Where(f => !f.Attribute.Name.Equals(AttributeHelper.AttributeName_Filename, StringComparison.InvariantCultureIgnoreCase)
                                                                               && !f.Attribute.Name.Equals(AttributeHelper.AttributeName_Signature, StringComparison.InvariantCultureIgnoreCase)).ToList();
-                        biblosDoc = UpdateDocument(client, archive, temp, biblosDoc, biblosDoc.AttributeValues.Concat(attributeValues).ToList(), userName);
+                        biblosDoc = UpdateDocument(documentsClient, archive, temp, biblosDoc, biblosDoc.AttributeValues.Concat(attributeValues).ToList(), userName);
                     }
                     else
                     {
-                        biblosDoc = client.AddDocumentToChain(biblosDoc, chainId, BiblosDS.BiblosDS.ContentFormat.Binary);
+                        biblosDoc = documentsClient.AddDocumentToChain(biblosDoc, chainId, BiblosDS.BiblosDS.ContentFormat.Binary);
                         _logger.WriteInfo(new LogMessage(string.Concat("inserted document ", biblosDoc.IdDocument.ToString(), " in archive ", archive.IdArchive.ToString())), LogCategories);
                     }
                 }
                 else
                 {
-                    biblosDoc = client.AddDocumentToChain(biblosDoc, chainId, BiblosDS.BiblosDS.ContentFormat.Binary);
+                    biblosDoc = documentsClient.AddDocumentToChain(biblosDoc, chainId, BiblosDS.BiblosDS.ContentFormat.Binary);
                     _logger.WriteInfo(new LogMessage(string.Concat("inserted document ", biblosDoc.IdDocument.ToString(), " in archive ", archive.IdArchive.ToString())), LogCategories);
                 }
-                doc.IdDocument = biblosDoc.DocumentParent.IdDocument.ToString();
+                documentInstance.StoredChainId = biblosDoc.DocumentParent.IdDocument.ToString();
+                _logger.WriteInfo(new LogMessage($"detaching workflow document {documentInstance.IdDocumentToStore} ..."), LogCategories);
+                RetryingPolicyAction(() => documentsClient.DocumentDetach(new BiblosDS.BiblosDS.Document() { IdDocument = idDocumentToStore }));
             }
             return documents;
         }

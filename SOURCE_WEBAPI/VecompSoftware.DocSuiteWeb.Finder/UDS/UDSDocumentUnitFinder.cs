@@ -13,5 +13,12 @@ namespace VecompSoftware.DocSuiteWeb.Finder.UDS
                 .Include(i => i.Relation)
                 .SelectAsQueryable();
         }
+
+        public static IQueryable<UDSDocumentUnit> GetByUDSIdAndDocumentUnit(this IRepository<UDSDocumentUnit> repository, Guid udsId, Guid documentUnitId, bool optimization = true)
+        {
+            return repository.Query(x => x.IdUDS == udsId && x.Relation.UniqueId == documentUnitId, optimization)
+                .Include(i => i.Relation)
+                .SelectAsQueryable();
+        }
     }
 }

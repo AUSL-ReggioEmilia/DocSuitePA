@@ -14,7 +14,6 @@ using VecompSoftware.ServiceBus.Module.UDS.Roslyn.Generators.Controllers;
 using VecompSoftware.ServiceBus.Module.UDS.Storage;
 using VecompSoftware.ServiceBus.Module.UDS.Storage.Smo;
 using VecompSoftware.ServiceBus.WebAPI;
-using VecompSoftware.Services.Command;
 using VecompSoftware.Services.Command.CQRS.Commands.Models.UDS;
 
 namespace VecompSoftware.ServiceBus.Module.UDS.Listener.Update
@@ -242,7 +241,7 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.Update
                         Metadata[] addedMetadata = uds.MetaData.Where(m => !attributes.Any(a => a.Name.Equals(m.PropertyName))).ToArray();
 
                         string[] requiredAttributes = { AttributeHelper.AttributeName_Signature, AttributeHelper.AttributeName_Filename, AttributeHelper.AttributeName_UDSSubject,
-                            AttributeHelper.AttributeName_UDSYear, AttributeHelper.AttributeName_UDSNumber, AttributeHelper.AttributeName_Date};
+                            AttributeHelper.AttributeName_UDSYear, AttributeHelper.AttributeName_UDSNumber, AttributeHelper.AttributeName_Date, AttributeHelper.AttributeName_SignModels};
                         BiblosDS.BiblosDSManagement.Attribute[] dynamicAttributes = attributes.Where(a => !requiredAttributes.Any(r => r.Equals(a.Name))).ToArray();
                         BiblosDS.BiblosDSManagement.Attribute[] deprecatedAttribute = dynamicAttributes.Where(a => !uds.MetaData.Any(m => m.PropertyName.Equals(a.Name))).ToArray();
 
@@ -332,10 +331,10 @@ namespace VecompSoftware.ServiceBus.Module.UDS.Listener.Update
                     BiblosDS.BiblosDSManagement.AttributeGroup attributeGroup_chain = attributeGroups.SingleOrDefault(a => a.GroupType.Equals(BiblosDS.BiblosDSManagement.AttributeGroupType.Chain));
                     BiblosDS.BiblosDSManagement.AttributeGroup attributeGroup_default = attributeGroups.SingleOrDefault(a => a.GroupType.Equals(BiblosDS.BiblosDSManagement.AttributeGroupType.Undefined));
 
-                    await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ReadOnly, "Signature", "System.String", true);
-                    await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ReadOnly, "Filename", "System.String", true);
+                    await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ReadOnly, AttributeHelper.AttributeName_Signature, "System.String", true);
+                    await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ReadOnly, AttributeHelper.AttributeName_Filename, "System.String", true);
                     await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ModifyAlways, AttributeHelper.AttributeName_PrivacyLevel, "System.Int64", false);
-                    await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ModifyAlways, AttributeHelper.AttributeName_SecureDocumentId, "System.String", false);
+                    await udsStorageFacade.GenerateBiblosDSAttribute(udsArchive, attributeGroup_default, attributeMode_ModifyAlways, AttributeHelper.AttributeName_SignModels, "System.String", false);
 
                     if (isMainDocument)
                     {

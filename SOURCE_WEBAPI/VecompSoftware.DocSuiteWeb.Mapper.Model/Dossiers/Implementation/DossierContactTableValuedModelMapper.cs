@@ -8,6 +8,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Dossiers
         public override ContactModel Map(DossierTableValuedModel model, ContactModel modelTransformed)
         {
             modelTransformed.Id = model.Contact_Incremental;
+            modelTransformed.EntityId = model.Contact_Incremental;
             modelTransformed.Description = model.Container_Name;
 
             return modelTransformed;

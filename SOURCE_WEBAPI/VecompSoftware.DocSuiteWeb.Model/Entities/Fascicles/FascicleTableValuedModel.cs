@@ -1,9 +1,10 @@
 ﻿using System;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
 {
-    public class FascicleTableValuedModel : ICategoryTableValuedModel, IContactTableValuedModel
+    public class FascicleTableValuedModel : ICategoryTableValuedModel, IContactTableValuedModel, ITenantAOOTableValuedModel
     {
         #region [ Constructor ]
         public FascicleTableValuedModel()
@@ -29,6 +30,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
         public DateTimeOffset StartDate { get; set; }
 
         public DateTimeOffset? EndDate { get; set; }
+        public DateTimeOffset? LastChangedDate { get; set; }
 
         public string Title { get; set; }
 
@@ -45,7 +47,9 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
         public FascicleType FascicleType { get; set; }
 
         public VisibilityType VisibilityType { get; set; }
-
+        public string MetadataValues { get; set; }
+        public string MetadataDesigner { get; set; }
+        public int? DSWEnvironment { get; set; }
 
         #region [ Category ]
 
@@ -59,6 +63,11 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
         public int? Contact_Incremental { get; set; }
 
         public string Contact_Description { get; set; }
+        #endregion
+
+        #region [ TenantAOO ]
+        public Guid? TenantAOO_IdTenantAOO { get; set; }
+        public string TenantAOO_Name { get; set; }
         #endregion
 
         #endregion

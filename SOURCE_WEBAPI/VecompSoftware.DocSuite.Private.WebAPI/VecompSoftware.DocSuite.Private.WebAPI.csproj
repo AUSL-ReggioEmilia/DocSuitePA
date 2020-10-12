@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VecompSoftware.DocSuite.Private.WebAPI</RootNamespace>
     <AssemblyName>VecompSoftware.DocSuite.Private.WebAPI</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <UseIISExpress>false</UseIISExpress>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -55,17 +56,17 @@
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DocumentFormat.OpenXml, Version=2.9.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
-      <HintPath>..\packages\DocumentFormat.OpenXml.2.9.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.11.3.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.11.3\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.OData, Version=7.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.OData.7.2.2\lib\net45\Microsoft.AspNet.OData.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.OData, Version=7.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.OData.7.5.0\lib\net45\Microsoft.AspNet.OData.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -73,39 +74,42 @@
     <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.4.1\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.WebApi.Versioning, Version=3.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Versioning.3.0.4\lib\net45\Microsoft.AspNet.WebApi.Versioning.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.WebApi.Versioning, Version=4.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Versioning.4.0.0\lib\net45\Microsoft.AspNet.WebApi.Versioning.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=3.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.3.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=3.1.8.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.3.1.8\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.3.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=3.1.8.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.3.1.8\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.OData.Core, Version=7.6.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.OData.Core.7.6.1\lib\portable-net45+win8+wpa81\Microsoft.OData.Core.dll</HintPath>
+    <Reference Include="Microsoft.OData.Core, Version=7.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.OData.Core.7.7.1\lib\net45\Microsoft.OData.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.OData.Edm, Version=7.6.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.OData.Edm.7.6.1\lib\portable-net45+win8+wpa81\Microsoft.OData.Edm.dll</HintPath>
+    <Reference Include="Microsoft.OData.Edm, Version=7.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.OData.Edm.7.7.1\lib\net45\Microsoft.OData.Edm.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.1.1\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Cors, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Cors.4.0.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Cors, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Cors.4.1.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.4.0.1\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.4.1.1\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.1.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Hosting, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Hosting.4.0.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Hosting, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Hosting.4.1.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.4.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.1.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
@@ -162,8 +166,8 @@
       <HintPath>..\packages\ServiceBus.v1_1.1.0.6\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Spatial, Version=7.6.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Spatial.7.6.1\lib\portable-net45+win8+wpa81\Microsoft.Spatial.dll</HintPath>
+    <Reference Include="Microsoft.Spatial, Version=7.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Spatial.7.7.1\lib\net45\Microsoft.Spatial.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -173,10 +177,7 @@
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.2.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json.Schema, Version=3.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.Schema.3.0.11\lib\net45\Newtonsoft.Json.Schema.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -187,16 +188,22 @@
       <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Packaging, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Packaging.4.6.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    <Reference Include="System.IO.Packaging, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Packaging.4.7.0\lib\net46\System.IO.Packaging.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Cors, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.7\lib\net45\System.Web.Cors.dll</HintPath>
     </Reference>
@@ -206,9 +213,9 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
@@ -226,14 +233,17 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="VecompSoftware.Core.Command, Version=8.87.19296.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Core.Command.8.87.19296.3\lib\net461\VecompSoftware.Core.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Core.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Core.Command.9.9.20267.1\lib\net48\VecompSoftware.Core.Command.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Workflow, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.8.87.19296.2\lib\net461\VecompSoftware.Helpers.Workflow.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Shibboleth, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Shibboleth.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Shibboleth.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Command, Version=8.87.19296.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Command.8.87.19296.2\lib\net461\VecompSoftware.Services.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
     </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
@@ -283,6 +293,7 @@
     <Compile Include="Controllers\Entity\Resolutions\ResolutionKindController.cs" />
     <Compile Include="Controllers\Entity\Resolutions\ResolutionKindDocumentSeriesController.cs" />
     <Compile Include="Controllers\Entity\Resolutions\ResolutionLogController.cs" />
+    <Compile Include="Controllers\Entity\Tenants\TenantAOOController.cs" />
     <Compile Include="Controllers\Entity\Tenants\TenantConfigurationController.cs" />
     <Compile Include="Controllers\Entity\Tenants\TenantController.cs" />
     <Compile Include="Controllers\Entity\Tenants\TenantWorkflowRepositoryController.cs" />
@@ -314,6 +325,7 @@
     <Compile Include="Controllers\OData\PECMails\PECMailAttachmentsController.cs" />
     <Compile Include="Controllers\OData\PECMails\PECMailBoxConfigurationsController.cs" />
     <Compile Include="Controllers\OData\PECMails\PECMailBoxesController.cs" />
+    <Compile Include="Controllers\OData\PosteWeb\POLRequestsController.cs" />
     <Compile Include="Controllers\OData\Processes\ProcessesController.cs" />
     <Compile Include="Controllers\OData\Processes\ProcessFascicleTemplatesController.cs" />
     <Compile Include="Controllers\OData\Processes\ProcessFascicleWorkflowRepositoriesController.cs" />
@@ -336,13 +348,15 @@
     <Compile Include="Controllers\OData\Fascicles\FascicleFolderssController.cs" />
     <Compile Include="Controllers\OData\Monitors\TransparentAdministrationMonitorLogsController.cs" />
     <Compile Include="Controllers\OData\ParametersController.cs" />
-    <Compile Include="Controllers\OData\Reportings\ReportServicesController.cs" />
     <Compile Include="Controllers\OData\Resolutions\FileResolutionsController.cs" />
     <Compile Include="Controllers\OData\Resolutions\ResolutionDocumentSeriesItemsController.cs" />
     <Compile Include="Controllers\OData\Resolutions\ResolutionLogsController.cs" />
     <Compile Include="Controllers\OData\Resolutions\ResolutionKindsController.cs" />
     <Compile Include="Controllers\OData\Resolutions\ResolutionKindDocumentSeriessController.cs" />
     <Compile Include="Controllers\OData\ServiceBusTopics\ServiceBusTopicsController.cs" />
+    <Compile Include="Controllers\OData\Tasks\TaskHeaderProtocolsController.cs" />
+    <Compile Include="Controllers\OData\Tasks\TaskHeadersController.cs" />
+    <Compile Include="Controllers\OData\Tenants\TenantsAOOController.cs" />
     <Compile Include="Controllers\OData\Tenants\TenantConfigurationsController.cs" />
     <Compile Include="Controllers\OData\Tenants\TenantsController.cs" />
     <Compile Include="Controllers\OData\Tenants\TenantWorkflowRepositoriesController.cs" />
@@ -358,9 +372,10 @@
     <Compile Include="Controllers\OData\UDS\UDSUsersController.cs" />
     <Compile Include="Controllers\OData\Workflows\WorkflowEvaluationPropertiesController.cs" />
     <Compile Include="Controllers\OData\Workflows\WorkflowInstanceRolesController.cs" />
-    <Compile Include="Controllers\Reportings\ReportServiceController.cs" />
+    <Compile Include="Controllers\Entity\PosteWeb\POLRequestController.cs" />
     <Compile Include="Hubs\BaseAuthenticateHub.cs" />
     <Compile Include="Hubs\Workflows\WorkflowHub.cs" />
+    <Compile Include="Middleware\DSWShibbolethMiddleware.cs" />
     <Compile Include="Startup.cs" />
     <Content Include="App_Data\ConfigurationFiles\MessageConfiguration.json" />
     <Content Include="Global.asax" />
@@ -424,8 +439,28 @@
     <Content Include="install\sql updates\8.82\_readme.txt" />
     <Content Include="install\sql updates\8.81\ProtocolloDB_migrations.sql" />
     <Content Include="install\sql updates\8.81\_readme.txt" />
+    <Content Include="install\sql updates\9.00\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.00\_readme.txt" />
     <Content Include="install\sql updates\8.87\ProtocolloDB_migrations.sql" />
     <Content Include="install\sql updates\8.87\_readme.txt" />
+    <Content Include="install\sql updates\9.02\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.02\_readme.txt" />
+    <Content Include="install\sql updates\9.01\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.01\_readme.txt" />
+    <Content Include="install\sql updates\9.03\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.03\_readme.txt" />
+    <Content Include="install\sql updates\9.04\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.04\_readme.txt" />
+    <Content Include="install\sql updates\9.06\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.06\_readme.txt" />
+    <Content Include="install\sql updates\9.05\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.05\_readme.txt" />
+    <Content Include="install\sql updates\9.07\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.07\_readme.txt" />
+    <Content Include="install\sql updates\9.09\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.09\_readme.txt" />
+    <Content Include="install\sql updates\9.08\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.08\_readme.txt" />
     <Content Include="UDS\readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -434,8 +469,6 @@
     </Content>
     <Compile Include="App_Start\JsonSerializerConfig.cs" />
     <Compile Include="App_Start\Startup.WebAPI.cs" />
-    <Content Include="App_Data\ConfigurationFiles\Workflow.Client.Config.json" />
-    <Content Include="App_Data\ConfigurationFiles\Workflow.Client.Config.schema.json" />
     <Content Include="install\Piano_di_Lavoro_DSW.WebAPI_Installazione.pdf" />
     <Content Include="install\sql updates\8.54\default_configurations\WebApi.appSettings.config">
       <SubType>Designer</SubType>
@@ -913,6 +946,76 @@
     <Content Include="install\sql updates\8.87\default_configurations\WebApi.system.servicemodel.behaviors.config" />
     <Content Include="install\sql updates\8.87\default_configurations\WebApi.system.servicemodel.bindings.config" />
     <Content Include="install\sql updates\8.87\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.00\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.00\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.00\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.00\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.00\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.00\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.00\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.01\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.01\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.01\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.01\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.01\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.01\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.01\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.02\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.02\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.02\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.02\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.02\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.02\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.02\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.03\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.03\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.03\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.03\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.03\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.03\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.03\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.04\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.05\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.06\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.07\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.08\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.09\default_configurations\WebApi.system.servicemodel.client.config" />
     <None Include="Properties\PublishProfiles\LocalDeploy.pubxml" />
     <None Include="WebApi.appSettings.config">
       <SubType>Designer</SubType>
@@ -1041,10 +1144,8 @@
     <Compile Include="Controllers\ServiceBus\QueueController.cs" />
     <Compile Include="Controllers\ServiceBus\TopicController.cs" />
     <Compile Include="Controllers\Workflow\BaseWorkflowController.cs" />
-    <Compile Include="Controllers\Workflow\WorkflowPublishController.cs" />
     <Compile Include="Controllers\Workflow\WorkflowNotifyController.cs" />
     <Compile Include="Controllers\Workflow\WorkflowStartController.cs" />
-    <Compile Include="Controllers\Workflow\WorkflowValidateController.cs" />
     <Compile Include="AssemblyResolvers\UDSAssemblyResolver.cs" />
     <Compile Include="Controllers\Entity\BaseWebApiController.cs" />
     <Compile Include="Controllers\Entity\IWebApiController.cs" />
@@ -1078,9 +1179,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\Entity\Tasks\" />
-    <Folder Include="Controllers\Entity\Tenders\" />
-    <Folder Include="Controllers\OData\Tasks\" />
-    <Folder Include="Controllers\OData\Tenders\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -1098,10 +1196,6 @@
       <Project>{5f08f790-8c37-4575-82c2-5ffe91e6f214}</Project>
       <Name>VecompSoftware.DocSuite.Document.Generator.PDF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VecompSoftware.Docsuite.Document.TelerikReport\VecompSoftware.DocSuite.Document.TelerikReport.csproj">
-      <Project>{C391E159-A79D-4B7E-9868-C5A136E05832}</Project>
-      <Name>VecompSoftware.DocSuite.Document.TelerikReport</Name>
-    </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.DocSuite.Document\VecompSoftware.DocSuite.Document.csproj">
       <Project>{ea3f23a5-9eb3-4512-a847-083de0efe278}</Project>
       <Name>VecompSoftware.DocSuite.Document</Name>
@@ -1113,6 +1207,10 @@
     <ProjectReference Include="..\VecompSoftware.DocSuite.Service.Models\VecompSoftware.DocSuite.Service.Models.csproj">
       <Project>{666bdbda-d461-4692-9cf7-ff03784a6e96}</Project>
       <Name>VecompSoftware.DocSuite.Service.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.Service.SignalR\VecompSoftware.DocSuite.Service.SignalR.csproj">
+      <Project>{203a04a0-1c6e-455c-a5cd-d63808855bc9}</Project>
+      <Name>VecompSoftware.DocSuite.Service.SignalR</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.DocSuite.WebAPI.Common\VecompSoftware.DocSuite.WebAPI.Common.csproj">
       <Project>{0e7722c7-e7e0-4ca4-98dd-741894bfabc7}</Project>
@@ -1243,10 +1341,10 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
   </Target>
-  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

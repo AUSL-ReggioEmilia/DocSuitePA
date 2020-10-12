@@ -52,6 +52,12 @@
       "Enabled": false
     },
     {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.***REMOVED***.Malware",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\***REMOVED***.Malware",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
       "Name": "VecompSoftware.BPM.Integrations.Modules.FALCK.Workflows",
       "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\FALCK.Workflows",
       "ServiceWakeType": "Timer",
@@ -191,6 +197,26 @@
       "ServiceWakeType": "Timer",
       "Timer": "ReportingTimer",
       "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.DGROOVE.ImportCedolini",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\DGROOVE.ImportCedolini",
+      "ServiceWakeType": "Single",
+      "Timer": "",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.***REMOVED***.Malware",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\***REMOVED***.Malware",
+      "ServiceWakeType": "Single",
+      "Enabled": false
+    },
+    {
+      "Name": "VecompSoftware.BPM.Integrations.Modules.AUSLPC.COVID19",
+      "Path": "C:\\Program Files (x86)\\Dgroove\\BPM\\Integrations\\Modules\\AUSLPC.COVID19",
+      "ServiceWakeType": "Timer",
+      "Timer": "AUSLPC.COVID19Timer",
+      "Enabled": false
     }
   ],
   "PeriodConfigurations": [
@@ -253,6 +279,12 @@
       "Period": "00:05:00",
       "StartHour": "07:00:00",
       "EndHour": "07:05:00"
+    },
+    {
+      "Name": "AUSLPC.COVID19Timer",
+      "Period": "01:00:00",
+      "StartHour": "07:00:00",
+      "EndHour": "19:00:00"
     }
   ]
 }

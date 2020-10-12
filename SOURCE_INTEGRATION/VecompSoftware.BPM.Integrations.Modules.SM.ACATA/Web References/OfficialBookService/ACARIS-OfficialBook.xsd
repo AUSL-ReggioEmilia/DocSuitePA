@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:tns="officialbookservice.acaris.acta.doqui.it" xmlns:common="common.acaris.acta.doqui.it" targetNamespace="officialbookservice.acaris.acta.doqui.it" jaxb:version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="ACARIS-Common.xsd" namespace="common.acaris.acta.doqui.it" />
+  <xs:simpleType name="enumOfficialBookObjectType">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="RegistrazionePropertiesType" />
+      <xs:enumeration value="CorrispondentePropertiesType" />
+      <xs:enumeration value="AnnotazioneOBPropertiesType" />
+      <xs:enumeration value="RegistroProtocolloPropertiesType" />
+      <xs:enumeration value="LogProtocolloPropertiesType" />
+      <xs:enumeration value="MessaggioPropertiesType" />
+      <xs:enumeration value="CorrispondenteMessaggioPropertiesType" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumStatoRegistrazione">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Registrata" />
+      <xs:enumeration value="Modificata" />
+      <xs:enumeration value="Annullata" />
+      <xs:enumeration value="DaInoltrareAltraAOO" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumCondizioneRegistrazione">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Registrazione" />
+      <xs:enumeration value="Classificazione" />
+      <xs:enumeration value="Smistamento" />
+      <xs:enumeration value="ModificaDocumento" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumTipoRegistrazione">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Arrivo" />
+      <xs:enumeration value="Partenza" />
+      <xs:enumeration value="Interna" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumTipoCorrispondente">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Mittente" />
+      <xs:enumeration value="Destinatario" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumTipoIE">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Interno" />
+      <xs:enumeration value="Esterno" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumStatoRegistro">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Bozza" />
+      <xs:enumeration value="Aperto" />
+      <xs:enumeration value="Chiuso" />
+      <xs:enumeration value="Archiviato" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumStatoMessaggio">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Acquisito" />
+      <xs:enumeration value="NonAcquisito" />
+      <xs:enumeration value="Aggiornato" />
+      <xs:enumeration value="Confermato" />
+      <xs:enumeration value="Annullato" />
+      <xs:enumeration value="Inviato" />
+      <xs:enumeration value="Ripudiato" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumTipoMessaggio">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="Segnatura" />
+      <xs:enumeration value="Conferma" />
+      <xs:enumeration value="Aggiornamento" />
+      <xs:enumeration value="Annullamento" />
+      <xs:enumeration value="NotificaEccezione" />
+      <xs:enumeration value="RicevutaPEC" />
+      <xs:enumeration value="MailPECNonStrutturata" />
+      <xs:enumeration value="MailNonPEC" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="enumRuoloCorrispondente">
+    <xs:restriction base="common:string">
+      <xs:enumeration value="PerCompetenza" />
+      <xs:enumeration value="PerQuantoDiCompetenza" />
+      <xs:enumeration value="PerConoscenza" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="OfficialBookPropertiesType" abstract="true">
+    <xs:complexContent mixed="false">
+      <xs:extension base="common:CommonPropertiesType">
+        <xs:sequence>
+          <xs:element name="objectTypeId" type="tns:enumOfficialBookObjectType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="RegistroProtocolloPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:OfficialBookPropertiesType">
+        <xs:sequence>
+          <xs:element name="anno" type="common:integer" />
+          <xs:element name="stato" type="common:DecodificaType" />
+          <xs:element name="storico" type="common:boolean" />
+          <xs:element name="codiceUltimaRegistrazione" type="common:IDDBType" />
+          <xs:element name="dataUltimaRegistrazione" type="common:date" />
+          <xs:element name="dataCreazione" type="common:date" />
+          <xs:element name="dataApertura" type="common:date" />
+          <xs:element name="dataChiusura" type="common:date" />
+          <xs:element name="dataArchiviazione" type="common:date" />
+          <xs:element name="idAOOProtocollante" type="common:ObjectIdType" />
+          <xs:element name="idAOOResponsabile" type="common:ObjectIdType" />
+          <xs:element name="idStrutturaResponsabile" type="common:ObjectIdType" />
+          <xs:element name="idNodoResponsabile" type="common:ObjectIdType" />
+          <xs:element name="idUtenteCreazione" type="common:ObjectIdType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idAnnotazioneOB" type="common:ObjectIdType" />
+          <xs:element name="idClassificazioneDocStampaDefinitiva" type="common:ObjectIdType" />
+          <xs:element name="idAggregazioneDocStampaDefinitiva" type="common:ObjectIdType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="RegistrazionePropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:OfficialBookPropertiesType">
+        <xs:sequence>
+          <xs:element name="uuid" type="common:string" />
+          <xs:element name="codice" type="common:string" />
+          <xs:element name="stato" type="common:DecodificaType" />
+          <xs:element name="condizione" type="common:DecodificaType" />
+          <xs:element name="storico" type="common:boolean" />
+          <xs:element name="tipoRegistrazione" type="common:DecodificaType" />
+          <xs:element name="riservato" type="common:boolean" />
+          <xs:element name="oggetto" type="common:string" />
+          <xs:element name="classificazioneProposta" type="common:string" />
+          <xs:element name="mezzoTrasmissivo" type="common:string" />
+          <xs:element name="dataDocumento" type="common:date" />
+          <xs:element name="dataRicezione" type="common:date" />
+          <xs:element name="dataTimbroPostale" type="common:date" />
+          <xs:element name="codiceProtocolloMittente" type="common:string" />
+          <xs:element name="annoProtocolloMittente" type="common:integer" />
+          <xs:element name="dataProtocolloMittente" type="common:date" />
+          <xs:element name="numeroAllegati" type="common:integer" />
+          <xs:element name="dataProtocollo" type="common:date" />
+          <xs:element name="dataInoltro" type="common:date" />
+          <xs:element name="codiceEmergenza" type="common:string" />
+          <xs:element name="dataEmergenza" type="common:date" />
+          <xs:element name="dataRecupero" type="common:date" />
+          <xs:element name="dataAnnullamento" type="common:date" />
+          <xs:element name="motivoCreazione" type="common:DecodificaType" />
+          <xs:element name="idCaricamento" type="common:IDDBType" />
+          <xs:element name="idAOOProtocollante" type="common:ObjectIdType" />
+          <xs:element name="idAOOResponsabile" type="common:ObjectIdType" />
+          <xs:element name="idStrutturaProtocollante" type="common:ObjectIdType" />
+          <xs:element name="idStrutturaResponsabile" type="common:ObjectIdType" />
+          <xs:element name="idNodoProtocollante" type="common:ObjectIdType" />
+          <xs:element name="idNodoResponsabile" type="common:ObjectIdType" />
+          <xs:element name="idUtenteAnnullamento" type="common:ObjectIdType" />
+          <xs:element name="idUtenteCreazione" type="common:ObjectIdType" />
+          <xs:element name="idUtenteProtocollista" type="common:ObjectIdType" />
+          <xs:element name="idClassificazione" type="common:ObjectIdType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idDocumento" type="common:ObjectIdType" />
+          <xs:element name="idRegistro" type="common:ObjectIdType" />
+          <xs:element name="idRegistrazionePrecedente" type="common:ObjectIdType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idRegistrazioneSuccessiva" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="idCorrispondente" type="common:ObjectIdType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idAnnotazioneOB" type="common:ObjectIdType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idMessaggio" type="common:ObjectIdType" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="idSmistamento" type="common:ObjectIdType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="CorrispondentePropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:OfficialBookPropertiesType">
+        <xs:sequence>
+          <xs:element name="denominazione" type="common:string" />
+          <xs:element name="nome" type="common:string" />
+          <xs:element name="cognome" type="common:string" />
+          <xs:element name="tipoMD" type="tns:enumTipoCorrispondente" />
+          <xs:element name="interno" type="common:boolean" />
+          <xs:element name="ordinale" type="common:integer" />
+          <xs:element name="carica" type="common:string" />
+          <xs:element name="persona" type="common:string" />
+          <xs:element name="motivoCancellazione" type="common:string" />
+          <xs:element name="dataInizioValidita" type="common:date" />
+          <xs:element name="dataFineValidita" type="common:date" />
+          <xs:element name="testoFoglioTrasmissione" type="common:string" />
+          <xs:element name="ruolo" type="common:DecodificaType" />
+          <xs:element name="idSoggetto" type="common:ObjectIdType" />
+          <xs:element name="idRegistrazione" type="common:ObjectIdType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AnnotazioneOBPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:OfficialBookPropertiesType">
+        <xs:sequence>
+          <xs:element name="descrizione" type="common:string" />
+          <xs:element name="data" type="common:date" />
+          <xs:element name="annotazioneFormale" type="common:boolean" />
+          <xs:element name="idUtenteCreazione" type="common:ObjectIdType" />
+          <xs:element name="idRegistrazione" type="common:ObjectIdType" />
+          <xs:element name="idRegistro" type="common:ObjectIdType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="LogProtocolloPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:OfficialBookPropertiesType">
+        <xs:sequence>
+          <xs:element name="dataModifica" type="common:date" />
+          <xs:element name="vecchioValore" type="common:string" />
+          <xs:element name="idCampo" type="common:integer" />
+          <xs:element name="idRegistroProtocollo" type="common:ObjectIdType" />
+          <xs:element name="idRegistrazione" type="common:ObjectIdType" />
+          <xs:element name="idUtenteCreazione" type="common:ObjectIdType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="MessaggioPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:OfficialBookPropertiesType">
+        <xs:sequence>
+          <xs:element name="stato" type="common:DecodificaType" />
+          <xs:element name="tipo" type="common:DecodificaType" />
+          <xs:element name="ricevuto" type="common:boolean" />
+          <xs:element name="idMessaggioINPA" type="common:string" />
+          <xs:element name="dataRicezione" type="common:date" />
+          <xs:element name="dataAcquisizione" type="common:date" />
+          <xs:element name="dataInvio" type="common:date" />
+          <xs:element name="inpaAggiornato" type="common:boolean" />
+          <xs:element name="riservato" type="common:boolean" />
+          <xs:element name="note" type="common:string" />
+          <xs:element name="presenzaAllegati" type="common:boolean" />
+          <xs:element name="oggetto" type="common:string" />
+          <xs:element name="idRegistrazioneProtocollo" type="common:ObjectIdType" />
+          <xs:element name="idUtenteCreazione" type="common:ObjectIdType" />
+          <xs:element name="idAOO" type="common:ObjectIdType" />
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="idCorrispondenteMessaggio" type="common:ObjectIdType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="CorrispondenteMessaggioPropertiesType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:OfficialBookPropertiesType">
+        <xs:sequence>
+          <xs:element name="tipoMD" type="tns:enumTipoCorrispondente" />
+          <xs:element name="email" type="common:string" />
+          <xs:element name="corrispondente" type="common:string" />
+          <xs:element name="protocollo" type="common:string" />
+          <xs:element name="dataProtocollo" type="common:date" />
+          <xs:element name="denominazioneAmministrazione" type="common:string" />
+          <xs:element name="denominazioneAOO" type="common:string" />
+          <xs:element name="primaRegistrazione" type="common:boolean" />
+          <xs:element name="competenza" type="common:boolean" />
+          <xs:element name="richiestaConferma" type="common:boolean" />
+          <xs:element name="confermaInviata" type="common:boolean" />
+          <xs:element name="idMessaggio" type="common:ObjectIdType" />
+          <xs:element name="idSoggetto" type="common:ObjectIdType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

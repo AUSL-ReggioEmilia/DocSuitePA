@@ -30,6 +30,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.UDS
         public DateTimeOffset? ActiveDate { get; set; }
         public Guid UniqueId { get; set; }
         public Guid? UDSId { get; set; }
+        public bool WorkflowAutoComplete { get; set; }
         public string WorkflowName { get; set; }
         public Guid? IdWorkflowActivity { get; set; }
         public string RegistrationUser { get; set; }

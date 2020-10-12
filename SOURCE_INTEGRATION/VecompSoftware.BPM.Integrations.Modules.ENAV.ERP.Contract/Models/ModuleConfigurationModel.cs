@@ -18,5 +18,6 @@ namespace VecompSoftware.BPM.Integrations.Modules.***REMOVED***.ERP.Contract.Mod
         public string WorkflowERPContrattiSubscription { get; set; }
         public string TenantName { get; set; }
         public Guid TenantId { get; set; }
+        public Guid TenantAOOId { get; set; }
     }
 }

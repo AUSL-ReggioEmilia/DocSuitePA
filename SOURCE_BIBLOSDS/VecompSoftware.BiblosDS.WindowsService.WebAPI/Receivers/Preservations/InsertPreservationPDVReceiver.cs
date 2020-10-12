@@ -14,6 +14,7 @@ using VecompSoftware.BiblosDS.Model.CQRS;
 using VecompSoftware.BiblosDS.Model.CQRS.Notifications;
 using VecompSoftware.BiblosDS.Model.CQRS.Notifications.Preservations;
 using VecompSoftware.BiblosDS.Model.CQRS.Preservations;
+using VecompSoftware.BiblosDS.WCF.Common;
 using VecompSoftware.ServiceContract.BiblosDS.Documents;
 
 namespace VecompSoftware.BiblosDS.WindowsService.WebAPI.Receivers.Preservations

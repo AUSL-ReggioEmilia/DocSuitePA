@@ -22,6 +22,20 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
                 new QueryParameter(CommonDefinition.SQL_Param_FascicleFolder_IdFascicleFolder, idFascicleFolder));
         }
 
+        public static ICollection<FascicleFolderTableValuedModel> GetFascicleFoldersWithSameName(this IRepository<FascicleFolder> repository, Guid referenceFascicleId, Guid destinationFascicleId, int? fascicleFolderLevel = null)
+        {
+            QueryParameter fascicleFolderLevelParameter = new QueryParameter(CommonDefinition.SQL_Param_FascicleFolder_FascicleFolderLevel, DBNull.Value);
+
+            if (fascicleFolderLevel.HasValue)
+            {
+                fascicleFolderLevelParameter.ParameterValue = fascicleFolderLevel;
+            }
+
+            ICollection<FascicleFolderTableValuedModel> results = repository.ExecuteModelFunction<FascicleFolderTableValuedModel>(CommonDefinition.SQL_FX_FascicleFolder_FX_FascicleFoldersWithSameName,
+                new QueryParameter(CommonDefinition.SQL_Param_FascicleFolder_ReferenceFascicleId, referenceFascicleId),
+                new QueryParameter(CommonDefinition.SQL_Param_FascicleFolder_DestinationFascicleId, destinationFascicleId), fascicleFolderLevelParameter);
+            return results;
+        }
 
         public static bool NameAlreadyExists(this IRepository<FascicleFolder> repository, string name, Guid? idParent, Guid idFascicle)
         {
@@ -50,7 +64,6 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             bool res = repository.Queryable(true).Any(x => x.FascicleFolder.UniqueId == idFascicleFolder);
             return res;
         }
-
 
         public static int CountChildren(this IRepository<FascicleFolder> repository, Guid idFascicleFolder)
         {
@@ -102,6 +115,20 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             return repository.Query(x => x.Fascicle.UniqueId == idFascicle && x.Status == Entity.Fascicles.FascicleFolderStatus.Internet, optimization)
                 .Include(i => i.Fascicle)
                 .SelectAsQueryable();
+        }
+
+        public static IQueryable<FascicleFolder> GetByIdFascicleAndLevel(this IRepository<FascicleFolder> repository, Guid idFascicle, int folderLevel, bool optimization = false)
+        {
+            return repository.Query(f => f.Fascicle.UniqueId == idFascicle && f.FascicleFolderLevel == folderLevel, optimization)
+                .SelectAsQueryable();
+        }
+
+        public static FascicleFolder GetByIdFascicleLevelAndName(this IRepository<FascicleFolder> repository, Guid idFascicle, int folderLevel, string folderName, bool optimization = false)
+        {
+            return repository
+                .Query(f => f.Fascicle.UniqueId == idFascicle && f.FascicleFolderLevel == folderLevel && f.Name == folderName, optimization)
+                .SelectAsQueryable()
+                .SingleOrDefault();
         }
     }
 }

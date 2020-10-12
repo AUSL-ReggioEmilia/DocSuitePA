@@ -130,8 +130,14 @@ namespace VecompSoftware.DocSuiteWeb.Security.Microsoft
             return ActionHelper.TryUserPrincipalCatchWithLogger((d,x) =>
             {
                 DomainUserModel user = _mapperUnitOfWork.Repository<IDomainUserModelMapper>().Map(x, new DomainUserModel(), d);
-                user.DomainGroups = _mapperUnitOfWork.Repository<IDomainGroupModelMapper>().MapCollection(x.GetAuthorizationGroups());
+                try
+                {
+                    user.DomainGroups = _mapperUnitOfWork.Repository<IDomainGroupModelMapper>().MapCollection(x.GetAuthorizationGroups());
+                }
+                catch { }
+                
                 return user;
+
             }, _logger, _parameterEnvService, fullUserName, _cache_getCurrentUser, LogCategories);
         }
 

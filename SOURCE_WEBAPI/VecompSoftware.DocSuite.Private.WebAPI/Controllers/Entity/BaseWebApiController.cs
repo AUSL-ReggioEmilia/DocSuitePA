@@ -55,10 +55,11 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity
         protected UpdateActionType? CurrentUpdateActionType => _updateActionType;
         protected InsertActionType? CurrentInsertActionType => _insertActionType;
         protected DeleteActionType? CurrentDeleteActionType => _deleteActionType;
-
         protected ICollection<IWorkflowAction> WorkflowActions { get; set; }
         protected string WorkflowName { get; set; }
         protected Guid? IdWorkflowActivity { get; set; }
+        protected bool WorkflowAutoComplete { get; set; }
+
         #endregion
 
         #region [ Constructor ]
@@ -129,12 +130,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity
         {
             return await ActionHelper.TryCatchWithLoggerAsync(async () =>
             {
-                _unitOfWork.BeginTransaction(PostIsolationLevel);
-                if (entity is IWorkflowContentBase)
-                {
-                    WorkflowActions = ((IWorkflowContentBase)entity).WorkflowActions ?? new List<IWorkflowAction>();
-                    WorkflowName = ((IWorkflowContentBase)entity).WorkflowName;
-                    IdWorkflowActivity = ((IWorkflowContentBase)entity).IdWorkflowActivity;
+            _unitOfWork.BeginTransaction(PostIsolationLevel);
+            if (entity is IWorkflowContentBase)
+            {
+                    IWorkflowContentBase workflow = (IWorkflowContentBase)entity;
+                    WorkflowActions = workflow.WorkflowActions ?? new List<IWorkflowAction>();
+                    WorkflowName = workflow.WorkflowName;
+                    IdWorkflowActivity = workflow.IdWorkflowActivity;
+                    WorkflowAutoComplete = workflow.WorkflowAutoComplete;
                 }
                 entity = await lambda(entity);
                 bool result = await _unitOfWork.SaveAsync();
@@ -174,9 +177,11 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity
                 _unitOfWork.BeginTransaction();
                 if (entity is IWorkflowContentBase)
                 {
-                    WorkflowActions = ((IWorkflowContentBase)entity).WorkflowActions ?? new List<IWorkflowAction>();
-                    WorkflowName = ((IWorkflowContentBase)entity).WorkflowName;
-                    IdWorkflowActivity = ((IWorkflowContentBase)entity).IdWorkflowActivity;
+                    IWorkflowContentBase workflow = (IWorkflowContentBase)entity;
+                    WorkflowActions = workflow.WorkflowActions ?? new List<IWorkflowAction>();
+                    WorkflowName = workflow.WorkflowName;
+                    IdWorkflowActivity = workflow.IdWorkflowActivity;
+                    WorkflowAutoComplete = workflow.WorkflowAutoComplete;
                 }
                 entity = await lambda(entity);
                 bool result = await _unitOfWork.SaveAsync();
@@ -231,9 +236,11 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity
                 _unitOfWork.BeginTransaction();
                 if (entity is IWorkflowContentBase)
                 {
-                    WorkflowActions = ((IWorkflowContentBase)entity).WorkflowActions ?? new List<IWorkflowAction>();
-                    WorkflowName = ((IWorkflowContentBase)entity).WorkflowName;
-                    IdWorkflowActivity = ((IWorkflowContentBase)entity).IdWorkflowActivity;
+                    IWorkflowContentBase workflow = (IWorkflowContentBase)entity;
+                    WorkflowActions = workflow.WorkflowActions ?? new List<IWorkflowAction>();
+                    WorkflowName = workflow.WorkflowName;
+                    IdWorkflowActivity = workflow.IdWorkflowActivity;
+                    WorkflowAutoComplete = workflow.WorkflowAutoComplete;
                 }
                 await lambda(entity);
                 await _unitOfWork.SaveAsync();

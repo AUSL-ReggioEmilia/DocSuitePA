@@ -23,8 +23,15 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
                             .FirstOrDefault();
         }
 
+        public static WorkflowRepository GetPublicWorkflowByName(this IRepository<WorkflowRepository> repository, string workflowName, bool optimization = false)
+        {
+            return repository.Query(f => f.Name == workflowName && f.DSWEnvironment == DocSuiteWeb.Entity.Commons.DSWEnvironmentType.Any, optimization: optimization)
+                    .Include(f => f.WorkflowRoleMappings)
+                    .Select().FirstOrDefault();
+        }
+
         public static ICollection<WorkflowRepository> GetAuthorizedActiveWorkflowRepositories(this IRepository<WorkflowRepository> repository, string username, string domain, int env, bool anyEnv, 
-            bool documentRequired, bool showOnlyNoInstanceWorkflows)
+            bool documentRequired, bool showOnlyNoInstanceWorkflows, bool showOnlyHasIsFascicleClosedRequired)
         {
             return repository.ExecuteModelFunction<WorkflowRepository>(CommonDefinition.SQL_FX_WorkflowRepository_AuthorizedActiveWorkflowRepositories,
                 new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_UserName, username),
@@ -32,7 +39,9 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
                 new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_Environment, env),
                 new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_AnyEnvironment, anyEnv),
                 new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_DocumentRequired, documentRequired),
-                new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_ShowOnlyNoInstanceWorkflows, showOnlyNoInstanceWorkflows));
+                new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_ShowOnlyNoInstanceWorkflows, showOnlyNoInstanceWorkflows),
+                new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_ShowOnlyHasIsFascicleClosedRequired, showOnlyHasIsFascicleClosedRequired));
+
         }
 
         public static bool HasAuthorizedWorkflowRepositories(this IRepository<WorkflowRepository> repository, string username, string domain, int env, bool anyEnv)

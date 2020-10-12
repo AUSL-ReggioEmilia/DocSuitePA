@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.Core.Command.CQRS;
@@ -38,8 +37,8 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.UDS
         #endregion
 
         #region [ Constructor ]
-        public UDSContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient)
-            : base(logger, webApiClient, biblosClient)
+        public UDSContentTypeExecutor(ILogger logger, IWebAPIClient webApiClient, BiblosClient biblosClient, ServiceBus.ServiceBusClient serviceBusClient)
+            : base(logger, webApiClient, biblosClient, serviceBusClient)
         {
             _logger = logger;
             _webApiClient = webApiClient;
@@ -51,20 +50,18 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.UDS
         internal override IEvent CreateInsertEvent(ICommandCQRSCreate command, DocumentUnit documentUnit = null)
         {
             IEvent evt = null;
-            Guid guidResult;
-            int intResult;
             UDSBuildModel udsBuildModel;
             try
             {
                 udsBuildModel = ((ICommandCQRSCreateUDSData)command).ContentType.ContentTypeValue;
 
                 CollaborationUniqueId = null;
-                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID) && Guid.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Value.ToString(), out guidResult))
+                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID) && Guid.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Value.ToString(), out Guid guidResult))
                 {
                     CollaborationUniqueId = guidResult;
                 }
                 CollaborationId = null;
-                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_ID) && int.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_ID).Value.ToString(), out intResult))
+                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_ID) && int.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_ID).Value.ToString(), out int intResult))
                 {
                     CollaborationId = intResult;
                 }
@@ -73,7 +70,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.UDS
                 {
                     CollaborationTemplateName = command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_TEMPLATE_NAME).Value.ToString();
                 }
-                evt = new EventCQRSCreateUDSData(command.TenantName, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, command.TenantId, command.Identity, udsBuildModel, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
+                evt = new EventCQRSCreateUDSData(command.TenantName, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, command.TenantId, command.TenantAOOId, command.Identity, udsBuildModel, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
             }
             catch (Exception ex)
             {
@@ -87,20 +84,18 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.UDS
         internal override IEvent CreateUpdateEvent(ICommandCQRSUpdate command, DocumentUnit documentUnit = null)
         {
             IEvent evt = null;
-            Guid guidResult;
-            int intResult;
             UDSBuildModel udsBuildModel;
             try
             {
                 udsBuildModel = ((ICommandCQRSUpdateUDSData)command).ContentType.ContentTypeValue;
 
                 CollaborationUniqueId = null;
-                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID) && Guid.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Value.ToString(), out guidResult))
+                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID) && Guid.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_UNIQUE_ID).Value.ToString(), out Guid guidResult))
                 {
                     CollaborationUniqueId = guidResult;
                 }
                 CollaborationId = null;
-                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_ID) && int.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_ID).Value.ToString(), out intResult))
+                if (command.CustomProperties.Any(x => x.Key == CustomPropertyName.COLLABORATION_ID) && int.TryParse(command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_ID).Value.ToString(), out int intResult))
                 {
                     CollaborationId = intResult;
                 }
@@ -110,7 +105,7 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.UDS
                     CollaborationTemplateName = command.CustomProperties.Single(x => x.Key == CustomPropertyName.COLLABORATION_TEMPLATE_NAME).Value.ToString();
                 }
 
-                evt = new EventCQRSUpdateUDSData(command.TenantName, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, command.TenantId, command.Identity, udsBuildModel, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
+                evt = new EventCQRSUpdateUDSData(command.TenantName, CollaborationUniqueId, CollaborationId, CollaborationTemplateName, command.TenantId, command.TenantAOOId, command.Identity, udsBuildModel, ((ICommandCQRSFascicolable)command).CategoryFascicle, documentUnit);
             }
             catch (Exception ex)
             {
@@ -143,7 +138,6 @@ namespace VecompSoftware.ServiceBus.Module.CQRS.Executors.Executors.UDS
                 documentUnit.Title = string.Concat(udsBuildModel.Year.Value, "/", udsBuildModel.Number.Value.ToString("0000000"));
                 documentUnit.DocumentUnitName = udsBuildModel.Title;
                 documentUnit.Status = DocumentUnitStatus.Active;
-
                 #endregion
 
                 #region [ Navigation Properties ]

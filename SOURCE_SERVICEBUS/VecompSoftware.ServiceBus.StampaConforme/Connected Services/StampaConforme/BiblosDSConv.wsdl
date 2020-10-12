@@ -29,6 +29,7 @@
           <s:element minOccurs="0" maxOccurs="1" name="XmlValues" type="s:string" />
           <s:element minOccurs="0" maxOccurs="1" name="WmfP7m" type="s:string" />
           <s:element minOccurs="0" maxOccurs="1" name="ReferenceId" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SimpleSignersAttribute" type="s:string" />
         </s:sequence>
       </s:complexType>
       <s:element name="ToRasterFormatRgWatermarkedResponse">

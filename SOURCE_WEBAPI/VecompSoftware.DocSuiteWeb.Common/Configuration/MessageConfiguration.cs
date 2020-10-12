@@ -10,6 +10,7 @@ namespace VecompSoftware.DocSuiteWeb.Common.Configuration
     {
         #region [ Fields ]
         private readonly string _pathFileConfig;
+        private IDictionary<string, ServiceBusMessageConfiguration> _configurations = null;
         #endregion
 
         #region [ Constructor ]
@@ -23,18 +24,12 @@ namespace VecompSoftware.DocSuiteWeb.Common.Configuration
 
         public IDictionary<string, ServiceBusMessageConfiguration> GetConfigurations()
         {
-            string configurationJson = string.Empty;
-            IDictionary<string, ServiceBusMessageConfiguration> configurations = null;
-            try
+            if (_configurations == null)
             {
-                configurationJson = File.ReadAllText(_pathFileConfig, Encoding.UTF8);
-                configurations = JsonConvert.DeserializeObject<IDictionary<string, ServiceBusMessageConfiguration>>(configurationJson);
+                string configurationJson = File.ReadAllText(_pathFileConfig, Encoding.UTF8);
+                _configurations = JsonConvert.DeserializeObject<Dictionary<string, ServiceBusMessageConfiguration>>(configurationJson);
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return configurations;
+            return _configurations;
         }
         #endregion
     }

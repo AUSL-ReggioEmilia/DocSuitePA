@@ -13,6 +13,8 @@
         Fascicle = 8,
         Dossier = 9,
         Build = 10,
-        PECMail = 11
+        PECMail = 11,
+        Collaboration = 12,
+        Message = 13
     }
 }

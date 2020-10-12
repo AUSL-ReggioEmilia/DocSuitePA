@@ -12,6 +12,7 @@ using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Protocols;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
@@ -35,12 +36,14 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
     public class Execution : IListenerExecution<ICommandBuildProtocol>
     {
         #region [ Fields ]
+        private const int _retry_tentative = 5;
+        private readonly TimeSpan _threadWaiting = TimeSpan.FromSeconds(2);
+
         private const string VALIDATION_KEY_ISPROTOCOLCREATABLE = "IsProtocolCreatable";
         private readonly ILogger _logger;
         private readonly BiblosClient _biblosClient;
         private readonly IWebAPIClient _webApiClient;
         protected static IEnumerable<LogCategory> _logCategories = null;
-        private readonly StampaConforme.StampaConformeClient _stampaConformeClient;
         private readonly List<Archive> _biblosArchives;
         private readonly JsonSerializerSettings _serializerSettings;
         private readonly short _signatureProtocolType;
@@ -67,6 +70,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
         public IDictionary<string, object> Properties { get; set; }
 
         public EvaluationModel RetryPolicyEvaluation { get; set; }
+        public Guid? IdWorkflowActivity { get; set; }
 
         #endregion
 
@@ -76,7 +80,6 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
             _logger = logger;
             _biblosClient = biblosClient;
             _webApiClient = webApiClient;
-            //_stampaConformeClient = stampaConformeClient;
             _biblosArchives = _biblosClient.Document.GetArchives();
             _serializerSettings = new JsonSerializerSettings
             {
@@ -111,6 +114,8 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
 
             ProtocolBuildModel protocolBuildModel = command.ContentType.ContentTypeValue;
             ProtocolModel protocolModel = protocolBuildModel.Protocol;
+            IdWorkflowActivity = protocolBuildModel.IdWorkflowActivity;
+
             try
             {
                 if (RetryPolicyEvaluation != null && !string.IsNullOrEmpty(RetryPolicyEvaluation.ReferenceModel))
@@ -132,8 +137,17 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                     protocol.UniqueId = protocolModel.UniqueId;
                     protocol.AdvancedProtocol = new AdvancedProtocol
                     {
-                        IdentificationSdi = protocolModel.SDIIdentification
+                        IdentificationSdi = protocolModel.SDIIdentification                        
                     };
+                    if (protocolModel.AdvancedProtocols != null) 
+                    {
+                        protocol.AdvancedProtocol.ServiceCategory = protocolModel.AdvancedProtocols.ServiceCategory;
+                    }
+                    short documentTypeCode = -1;
+                    if (!string.IsNullOrEmpty(protocolModel.DocumentTypeCode) && short.TryParse(protocolModel.DocumentTypeCode, out documentTypeCode))
+                    {
+                        protocol.DocType = new ProtocolDocumentType() { EntityShortId = documentTypeCode };
+                    }
                     protocol.Category = new Category() { EntityShortId = (short)protocolModel.Category.IdCategory.Value };
                     protocol.Container = await _webApiClient.GetContainerAsync(protocolModel.Container.IdContainer.Value);
                     protocol.Location = new Location() { EntityShortId = protocolModel.Container.ProtLocation.IdLocation.Value };
@@ -141,6 +155,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                     protocol.ProtocolType = new ProtocolType() { EntityShortId = protocolModel.ProtocolType.EntityShortId };
                     protocol.Object = protocolModel.Object;
                     protocol.DocumentCode = protocolModel.MainDocument.FileName;
+                    protocol.TenantAOO = new TenantAOO() { UniqueId = command.TenantAOOId };
                     foreach (ProtocolContactModel model in protocolModel.Contacts)
                     {
                         protocol.ProtocolContacts.Add(new ProtocolContact()
@@ -368,9 +383,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                 formatterModel.Year = protocol.Year;
                 #endregion
 
-                //Attraverso il layer di BiblosDS salvare lo il file del documento con relativa segnatura(metadato)
-
-                #region Creazione Documeto Principale REQUIRED 
+                #region Creazione catena documenti principale REQUIRED 
                 _logger.WriteDebug(new LogMessage($"Looking _biblosArchives {protocolModel.Container.ProtLocation.ProtocolArchive} ..."), LogCategories);
                 Archive protocolMainArchive = _biblosArchives.Single(f => f.Name.Equals(protocolModel.Container.ProtLocation.ProtocolArchive, StringComparison.InvariantCultureIgnoreCase));
 
@@ -404,7 +417,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                 }
                 //CREO CATENA IDENTIFICATIVA
                 Guid mainChainId = protocolModel.MainDocument.ChainId ?? Guid.Empty; //se c'e' lo prende dal giro precedente in quanto protocolModel e' preso dal RetryPolicyEvaluation all inizio
-
+                Content documentContent;
                 if (!RetryPolicyEvaluation.Steps.Any(f => f.Name == "MAIN_CHAIN_ID"))
                 {
                     protocolModel.MainDocument.ChainId = _biblosClient.Document.CreateDocumentChain(protocolMainArchive.Name, mainDocumentAttributeValues);
@@ -416,15 +429,18 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                     _logger.WriteDebug(new LogMessage("Set MAIN_CHAIN_ID RetryPolicyEvaluation"), LogCategories);
                 }
 
-                _logger.WriteDebug(new LogMessage(string.Concat("biblos main chain ", mainChainId, " in archive name ", protocolMainArchive.Name)), LogCategories);
+                _logger.WriteDebug(new LogMessage($"biblos main chain {mainChainId} in archive name {protocolMainArchive.Name}"), LogCategories);
 
                 if (!RetryPolicyEvaluation.Steps.Any(f => f.Name == "CREATE_MAIN_DOCUMENT"))
                 {
+                    _logger.WriteInfo(new LogMessage($"reading document content {protocolModel.MainDocument.DocumentToStoreId} ..."), LogCategories);
+                    documentContent = RetryingPolicyAction(() => _biblosClient.Document.GetDocumentContentById(protocolModel.MainDocument.DocumentToStoreId.Value));
+
                     //CREO IL DOCUMENTO
                     Document mainProtocolDocument = new Document
                     {
                         Archive = protocolMainArchive,
-                        Content = new Content { Blob = protocolModel.MainDocument.ContentStream },
+                        Content = new Content { Blob = documentContent.Blob },
                         Name = protocolModel.MainDocument.FileName,
                         IsVisible = true,
                         AttributeValues = mainDocumentAttributeValues
@@ -435,7 +451,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                     protocolModel.MainDocument.DocumentId = mainProtocolDocument.DocumentParent.IdDocument;
                     protocol.IdDocument = mainProtocolDocument.DocumentParent.IdBiblos.Value;
                     protocol.ProtocolLogs.Add(new ProtocolLog() { LogType = "PM", LogDescription = $"Documento (Add): {protocolModel.MainDocument.FileName}" });
-                    _logger.WriteInfo(new LogMessage($"inserted document {mainProtocolDocument.IdDocument.ToString()} in archive {protocolMainArchive.IdArchive}"), LogCategories);
+                    _logger.WriteInfo(new LogMessage($"inserted document {mainProtocolDocument.IdDocument} in archive {protocolMainArchive.IdArchive}"), LogCategories);
 
                     RetryPolicyEvaluation.Steps.Add(new StepModel()
                     {
@@ -453,23 +469,22 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
 
                 #endregion
 
-                //Attraverso il layer di BiblosDS salvare tutti gli allegati con relativa segnatura (metadato)
+                #region Creazione catena allegati (Attachments OPTIONAL)
 
-                #region Creazione Documenti Allegati (Attachments OPTIONAL)
-
-                string attachName = protocolModel.Container.ProtocolAttachmentLocation != null ? protocolModel.Container.ProtocolAttachmentLocation.ProtocolArchive : protocolModel.Container.ProtLocation.ProtocolArchive;
-                Archive protocolAttachmentAndAnnexedArchive = _biblosArchives.Single(f => f.Name.Equals(attachName, StringComparison.InvariantCultureIgnoreCase));
+                string protocolAttachmentArchiveName = protocolModel.Container.ProtocolAttachmentLocation != null ? protocolModel.Container.ProtocolAttachmentLocation.ProtocolArchive : protocolModel.Container.ProtLocation.ProtocolArchive;
+                Archive protocolAttachmentArchive = _biblosArchives.Single(f => f.Name.Equals(protocolAttachmentArchiveName, StringComparison.InvariantCultureIgnoreCase));
+                _logger.WriteDebug(new LogMessage($"biblos attachment archive name is {protocolAttachmentArchive.Name}"), LogCategories);
 
                 if (!RetryPolicyEvaluation.Steps.Any(f => f.Name == "CREATE_ATTACHMENTS") && protocolModel.Attachments.Any())
                 {
-                    List<BiblosDS.BiblosDS.Attribute> attachmentAttributes = _biblosClient.Document.GetAttributesDefinition(protocolAttachmentAndAnnexedArchive.Name);
+                    List<BiblosDS.BiblosDS.Attribute> attachmentAttributes = _biblosClient.Document.GetAttributesDefinition(protocolAttachmentArchive.Name);
 
                     //CREO CATENA IDENTIFICATIVA
                     Guid? attachmentChainId = protocolModel.IdChainAttachment;
                     if (!attachmentChainId.HasValue)
                     {
                         //cerchi attachmentChainId dagli Attachments/Annexed
-                        attachmentChainId = _biblosClient.Document.CreateDocumentChain(protocolAttachmentAndAnnexedArchive.Name, new List<AttributeValue>());
+                        attachmentChainId = _biblosClient.Document.CreateDocumentChain(protocolAttachmentArchive.Name, new List<AttributeValue>());
                         protocolModel.IdChainAttachment = attachmentChainId;
                     }
                     List<AttributeValue> attachmentAttributeValues;
@@ -478,7 +493,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                     _logger.WriteDebug(new LogMessage($"Looking attachment attribute {AttributeHelper.AttributeName_Signature} ...{attachmentAttributes.Any(f => f.Name.Equals(AttributeHelper.AttributeName_Signature, StringComparison.InvariantCultureIgnoreCase))}"), LogCategories);
                     _logger.WriteDebug(new LogMessage($"Looking attachment attribute {AttributeHelper.AttributeName_PrivacyLevel} ...{attachmentAttributes.Any(f => f.Name.Equals(AttributeHelper.AttributeName_PrivacyLevel, StringComparison.InvariantCultureIgnoreCase))}"), LogCategories);
 
-                    foreach (DocumentModel attachment in protocolModel.Attachments.Where(f => !f.DocumentId.HasValue))
+                    foreach (DocumentModel attachment in protocolModel.Attachments.Where(f => !f.DocumentId.HasValue && f.DocumentToStoreId.HasValue))
                     {
                         formatterModel.DocumentNumber = pos++;
                         formatterModel.DocumentType = SegnatureDocumentType.Attachment;
@@ -505,13 +520,15 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                             });
                         }
                         attachment.ChainId = attachmentChainId;
-                        _logger.WriteDebug(new LogMessage(string.Concat("biblos attachment archive name is ", protocolAttachmentAndAnnexedArchive.Name)), LogCategories);
+
+                        _logger.WriteInfo(new LogMessage($"reading document content {attachment.DocumentToStoreId} ..."), LogCategories);
+                        documentContent = RetryingPolicyAction(() => _biblosClient.Document.GetDocumentContentById(attachment.DocumentToStoreId.Value));
 
                         //CREO IL DOCUMENTO
                         Document attachmentProtocolDocument = new Document
                         {
-                            Archive = protocolAttachmentAndAnnexedArchive,
-                            Content = new Content { Blob = attachment.ContentStream },
+                            Archive = protocolAttachmentArchive,
+                            Content = new Content { Blob = documentContent.Blob },
                             Name = attachment.FileName,
                             IsVisible = true,
                             AttributeValues = attachmentAttributeValues
@@ -520,7 +537,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                         //ASSOCIO IL DOCUMENTO ALLA SUA CATENA DI COMPETENZA
                         attachmentProtocolDocument = _biblosClient.Document.AddDocumentToChain(attachmentProtocolDocument, attachmentChainId, ContentFormat.Binary);
                         attachment.DocumentId = attachmentProtocolDocument.IdDocument;
-                        _logger.WriteInfo(new LogMessage(string.Concat("inserted document ", attachmentProtocolDocument.IdDocument.ToString(), " in archive ", protocolAttachmentAndAnnexedArchive.IdArchive.ToString())), LogCategories);
+                        _logger.WriteInfo(new LogMessage($"inserted document {attachmentProtocolDocument.IdDocument} in archive {protocolAttachmentArchive.IdArchive}"), LogCategories);
 
                         //Se fa questo ad ogni iterazione lo sovrascriva ma non crea problemi in quanto DocumentParent è sempre lo stesso
                         protocol.IdAttachments = attachmentProtocolDocument.DocumentParent.IdBiblos.Value;
@@ -546,19 +563,18 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
 
                 #endregion
 
-                //Attraverso il layer di BiblosDS salvare tutti gli annessi con relativa segnatura (metadato)
-
-                #region Creazione Documeti Annessi (Annexed OPTIONAL)
+                #region Creazione catena annessi (Annexed OPTIONAL)
 
                 if (!RetryPolicyEvaluation.Steps.Any(f => f.Name == "CREATE_ANNEXED") && protocolModel.Annexes.Any())
                 {
-                    List<BiblosDS.BiblosDS.Attribute> annexedAttributes = _biblosClient.Document.GetAttributesDefinition(protocolAttachmentAndAnnexedArchive.Name);
+                    _logger.WriteDebug(new LogMessage($"biblos anexed archive name is {protocolAttachmentArchive.Name}"), LogCategories);
+                    List<BiblosDS.BiblosDS.Attribute> annexedAttributes = _biblosClient.Document.GetAttributesDefinition(protocolAttachmentArchive.Name);
 
                     //CREO CATENA IDENTIFICATIVA
                     Guid? annexedChainId = protocolModel.IdChainAnnexed;
                     if (!annexedChainId.HasValue)
                     {
-                        annexedChainId = _biblosClient.Document.CreateDocumentChain(protocolAttachmentAndAnnexedArchive.Name, new List<AttributeValue>());
+                        annexedChainId = _biblosClient.Document.CreateDocumentChain(protocolAttachmentArchive.Name, new List<AttributeValue>());
                         protocolModel.IdChainAnnexed = annexedChainId;
                     }
 
@@ -568,7 +584,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                     _logger.WriteDebug(new LogMessage($"Looking annexed attribute {AttributeHelper.AttributeName_Signature} ...{annexedAttributes.Any(f => f.Name.Equals(AttributeHelper.AttributeName_Signature, StringComparison.InvariantCultureIgnoreCase))}"), LogCategories);
                     _logger.WriteDebug(new LogMessage($"Looking annexed attribute {AttributeHelper.AttributeName_PrivacyLevel} ...{annexedAttributes.Any(f => f.Name.Equals(AttributeHelper.AttributeName_PrivacyLevel, StringComparison.InvariantCultureIgnoreCase))}"), LogCategories);
 
-                    foreach (DocumentModel annexedItem in protocolModel.Annexes.Where(f => !f.DocumentId.HasValue))
+                    foreach (DocumentModel annexedItem in protocolModel.Annexes.Where(f => !f.DocumentId.HasValue && f.DocumentToStoreId.HasValue))
                     {
                         formatterModel.DocumentNumber = pos++;
                         formatterModel.DocumentType = SegnatureDocumentType.Annexed;
@@ -595,13 +611,15 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                             });
                         }
                         annexedItem.ChainId = annexedChainId;
-                        _logger.WriteDebug(new LogMessage(string.Concat("biblos anexed archive name is ", protocolAttachmentAndAnnexedArchive.Name)), LogCategories);
+
+                        _logger.WriteInfo(new LogMessage($"reading document content {annexedItem.DocumentToStoreId} ..."), LogCategories);
+                        documentContent = RetryingPolicyAction(() => _biblosClient.Document.GetDocumentContentById(annexedItem.DocumentToStoreId.Value));
 
                         //CREO IL DOCUMENTO
                         Document annexedProtocolDocument = new Document
                         {
-                            Archive = protocolAttachmentAndAnnexedArchive,
-                            Content = new Content { Blob = annexedItem.ContentStream },
+                            Archive = protocolAttachmentArchive,
+                            Content = new Content { Blob = documentContent.Blob },
                             Name = annexedItem.FileName,
                             IsVisible = true,
                             AttributeValues = annexedAttributeValues
@@ -611,7 +629,7 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                         annexedProtocolDocument = _biblosClient.Document.AddDocumentToChain(annexedProtocolDocument, annexedChainId, ContentFormat.Binary);
 
                         _logger.WriteInfo(new LogMessage(string.Concat("inserted document ", annexedProtocolDocument.IdDocument.ToString(), " in archive ",
-                            protocolAttachmentAndAnnexedArchive.IdArchive.ToString())), LogCategories);
+                            protocolAttachmentArchive.IdArchive.ToString())), LogCategories);
                         annexedItem.DocumentId = annexedProtocolDocument.IdDocument;
                         protocol.ProtocolLogs.Add(new ProtocolLog() { LogType = "PM", LogDescription = $"Annesso (Add): {annexedItem.FileName}" });
                     }
@@ -635,8 +653,6 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                 }
 
                 #endregion
-
-                //Attraverso le WebAPI comunicando col verbo PUT col controller Rest Protocol usando il valore UpdateActionType "ActivateProtocol",, aggiornare l'entità di protocollo coi relativi identificativi di Biblos delle colonne idDocument,idAttachments,idAnnexed
 
                 #region Attivazione del protocollo
 
@@ -673,17 +689,8 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                 protocolModel.Number = protocol.Number;
                 protocolModel.RegistrationDate = protocol.RegistrationDate;
                 protocolBuildModel.Protocol = protocolModel;
-                protocolModel.MainDocument.ContentStream = null;
-                foreach (DocumentModel item in protocolModel.Attachments)
-                {
-                    item.ContentStream = null;
-                }
-                foreach (DocumentModel item in protocolModel.Annexes)
-                {
-                    item.ContentStream = null;
-                }
                 IEventCompleteProtocolBuild eventCompleteProtocolBuild = new EventCompleteProtocolBuild(Guid.NewGuid(), protocolBuildModel.UniqueId, command.TenantName, command.TenantId,
-                    command.Identity, protocolBuildModel, null);
+                    command.TenantAOOId, command.Identity, protocolBuildModel, null);
                 if (!await _webApiClient.PushEventAsync(eventCompleteProtocolBuild))
                 {
                     _logger.WriteError(new LogMessage($"EventCompleteProtocolBuild {protocol.GetTitle()} has not been sended"), LogCategories);
@@ -691,6 +698,25 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
                 }
                 _logger.WriteInfo(new LogMessage($"EventCompleteProtocolBuild {eventCompleteProtocolBuild.Id} has been sended"), LogCategories);
                 #endregion
+
+
+                #region Detach documenti archivio workflow
+                _logger.WriteInfo(new LogMessage($"detaching main workflow document {protocolModel.MainDocument.DocumentToStoreId.Value} ..."), LogCategories);
+                RetryingPolicyAction(() => _biblosClient.Document.DocumentDetach(new Document() { IdDocument = protocolModel.MainDocument.DocumentToStoreId.Value }));
+
+                foreach (DocumentModel attachment in protocolModel.Attachments.Where(f => f.DocumentToStoreId.HasValue))
+                {
+                    _logger.WriteInfo(new LogMessage($"detaching attach workflow document {attachment.DocumentToStoreId} ..."), LogCategories);
+                    RetryingPolicyAction(() => _biblosClient.Document.DocumentDetach(new Document() { IdDocument = attachment.DocumentToStoreId.Value }));
+                }
+
+                foreach (DocumentModel annex in protocolModel.Annexes.Where(f => f.DocumentToStoreId.HasValue))
+                {
+                    _logger.WriteInfo(new LogMessage($"detaching annex workflow document {annex.DocumentToStoreId} ..."), LogCategories);
+                    RetryingPolicyAction(() => _biblosClient.Document.DocumentDetach(new Document() { IdDocument = annex.DocumentToStoreId.Value }));
+                }
+                #endregion
+
             }
             catch (Exception ex)
             {
@@ -803,6 +829,27 @@ namespace VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol
             }
 
             return signature.ToString();
+        }
+
+        private T RetryingPolicyAction<T>(Func<T> func, int step = 1)
+        {
+            _logger.WriteDebug(new LogMessage($"RetryingPolicyAction : tentative {step}/{_retry_tentative} in progress..."), LogCategories);
+            if (step >= _retry_tentative)
+            {
+                _logger.WriteError(new LogMessage("VecompSoftware.ServiceBus.Module.Entities.Listener.InsertProtocol.RetryingPolicyAction: retry policy expired maximum tentatives"), LogCategories);
+                throw new Exception("InsertPECMail retry policy expired maximum tentatives");
+            }
+            try
+            {
+                return func();
+            }
+            catch (Exception ex)
+            {
+                _logger.WriteWarning(new LogMessage($"SafeActionWithRetryPolicy : tentative {step}/{_retry_tentative} faild. Waiting {_threadWaiting} second before retrying action"), ex, LogCategories);
+                Task.Delay(_threadWaiting).Wait();
+                return RetryingPolicyAction(func, ++step);
+            }
+
         }
 
         #endregion
