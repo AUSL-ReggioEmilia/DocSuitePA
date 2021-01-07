@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Results>
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="file:///D:/WSDL/wsdl actasrv/ACARISWS-BackOfficeService.wsdl" filename="BackOfficeService.wsdl" />
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///D:/WSDL/wsdl actasrv/ACARIS-BackOfficeMessaging.xsd" filename="ACARIS-BackOfficeMessaging.xsd" />
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///D:/WSDL/wsdl actasrv/ACARIS-Common.xsd" filename="ACARIS-Common.xsd" />
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="file:///D:/WSDL/wsdl actasrv/ACARIS-BackOffice.xsd" filename="ACARIS-BackOffice.xsd" />
-  </Results>
-</DiscoveryClientResultsFile>

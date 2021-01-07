@@ -1,6 +1,0 @@
-﻿{
-  "TemplatePath": "D:\\Workspaces\\DSWPDFGenerator\\DocSuite.Services.PDFGenerator\\App_Data",
-  "BiblosArchiveName": "BIBLAUSL",
-  "GraphometricSharedFolders": [ "D:\\PDFFileTemplates\\firmati" ],
-  "SETIWebAPIUrl": "http://localhost:12847/api/Episodio"
-}

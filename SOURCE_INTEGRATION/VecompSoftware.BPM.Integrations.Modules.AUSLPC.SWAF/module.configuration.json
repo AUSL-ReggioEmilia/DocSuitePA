@@ -1,8 +1,0 @@
-﻿{
-  "WorkflowIntegrationTopic": "workflow_integration",
-  "WorkflowStartSWAFNotificationSubscription": "WorkflowStartSWAFNotification",
-  "WorkflowStartShareToSWAFNotificationSubscription": "WorkflowStartShareToSWAFNotification",
-  "ArchiveContactSectionLabel": "Contatti",
-  "ArchiveDocumentTypeMetadata": "DocumentType",
-  "SWAFAPIUrl": "http://localhost/SWAF.API/Notifications"
-}

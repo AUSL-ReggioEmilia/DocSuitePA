@@ -1,9 +1,0 @@
-{
-  "DatabaseConnectionString": "Server=10.11.2.130;Database=DocSuiteAOOManagement;User Id=webapi2;Password=Passw0rd!;",
-  "ServiceBusConfiguration": {
-    "TopicName": "management",
-    "CreateContactSubscription": "CreateContact",
-    "DeleteContactSubscription": "DeleteContact",
-    "UpdateContactSubscription": "UpdateContact"
-  }
-}

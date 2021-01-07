@@ -1,8 +1,0 @@
-﻿{
-  "WorkflowIntegrationTopic": "workflow_integration",
-  "WorkflowStartCovidPortalNotificationSubscription": "WorkflowStartCovidPortalNotification",
-  "PortaleCovidAPIUrl": "http://srvgeddev9999.cloudapp.net/PortaleCovid/api/Protocol/Upload",
-  "PortaleCovidAPIAuthUrl": "http://srvgeddev9999.cloudapp.net/PortaleCovid/api/Account/LoginForService",
-  "PortaleCovidAPIUsername": "username",
-  "PortaleCovidAPIPassword": "password"
-}

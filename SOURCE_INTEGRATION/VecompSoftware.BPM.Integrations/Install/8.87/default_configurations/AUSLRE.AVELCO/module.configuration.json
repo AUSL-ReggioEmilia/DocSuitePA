@@ -1,5 +1,0 @@
-﻿{
-  "WorkflowIntegrationTopic": "workflow_integration",
-  "WorkflowStartAvelcoShareDocumentUnitSubscription": "WorkflowStartAvelcoShareDocumentUnit",
-  "AVELCOWebApiUrl": "http://localhost:60293/api/SIDRest/FBprotocollo"
-}

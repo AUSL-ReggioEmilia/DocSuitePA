@@ -1,9 +1,0 @@
-﻿{
-  "FilterContainerId": -32758,
-  "FilterDateFrom": "2010-01-01", //Nel formato yyyy-MM-dd
-  "FilterDocumentType": 1,
-  "FolderDrop": "D:\\AUSLPC.COVID19\\DROP",
-  "ImpersonatedUsername": "developer",
-  "ImpersonatedDomain": "VECOMPSOFTWARE",
-  "ImpersonatedPassword": "XXXXXX"
-}

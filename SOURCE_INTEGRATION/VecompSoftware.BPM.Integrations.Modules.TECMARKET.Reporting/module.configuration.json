@@ -1,5 +1,0 @@
-{
-  "TopicWorkflowIntegration": "workflow_integration",
-  "WorkflowStartEventAnalyzerSubscription": "WorkflowStartEventAnalyzer",
-  "WorkflowEventsPath": "C:\\Program Files (x86)\\BPM\\Integration_Drops\\TECMARKET.Reporting"
-}
