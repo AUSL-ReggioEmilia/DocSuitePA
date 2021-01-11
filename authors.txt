@@ -1,5 +1,4 @@
-D  
-DocSuite PA è la soluzione di gestione documentale in riuso
+DocSuite PA è la soluzione di gestione documentale e protocollo informatico in riuso
 con azienda pubblica cedente la AUSL di Reggio Emilia. 
 
 La DocSuite nasce come soluzione di protocollo informatico nel 2000
