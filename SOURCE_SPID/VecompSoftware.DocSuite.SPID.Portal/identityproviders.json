@@ -1,0 +1,59 @@
+﻿[
+  {
+    "IdpCode": "idp_aruba",
+    "SingleSignOnService": "https://loginspid.aruba.it/ServiceLoginWelcome",
+    "SingleLogoutService": "",
+    "IssuerId": "https://loginspid.aruba.it"
+  },
+  {
+    "IdpCode": "idp_intesa",
+    "SingleSignOnService": "https://spid.intesa.it/Time4UserServices/services/idp/AuthnRequest",
+    "SingleLogoutService": "",
+    "IssuerId": "https://spid.intesa.it"
+  },
+  {
+    "IdpCode": "idp_infocert",
+    "SingleSignOnService": "https://identity.infocert.it/spid/samlsso",
+    "SingleLogoutService": "",
+    "IssuerId": "https://identity.infocert.it"
+  },
+  {
+    "IdpCode": "idp_namirial",
+    "SingleSignOnService": "https://idp.namirialtsp.com/idp/profile/SAML2/POST/SSO",
+    "SingleLogoutService": "",
+    "IssuerId": "https://idp.namirialtsp.com/idp"
+  },
+  {
+    "IdpCode": "idp_poste",
+    //"SingleSignOnService": "https://posteid.poste.it/jod-fs/ssoservicepost",
+    "SingleSignOnService": "https://spidposte.test.poste.it/jod-fs/ssoservicepost",
+    "SingleLogoutService": "https://spidposte.test.poste.it/jod-fs/sloservicepost",
+    //"IssuerId": "https://posteid.poste.it"
+    "IssuerId": "https://spidposte.test.poste.it"
+  },
+  {
+    "IdpCode": "idp_register",
+    "SingleSignOnService": "https://spid.register.it/login/sso",
+    "SingleLogoutService": "",
+    "IssuerId": "https://spid.register.it"
+  },
+  {
+    "IdpCode": "idp_sielte",
+    "SingleSignOnService": "https://identity.sieltecloud.it/simplesaml/saml2/idp/SSO.php",
+    "SingleLogoutService": "",
+    "IssuerId": "https://identity.sieltecloud.it"
+  },
+  {
+    "IdpCode": "idp_tim",
+    "SingleSignOnService": "https://login.id.tim.it/affwebservices/public/saml2sso",
+    "SingleLogoutService": "",
+    "IssuerId": "https://login.id.tim.it/affwebservices/public/saml2sso"
+  },
+  {
+    "IdpCode": "idp_federa",
+    //"SingleSignOnService": "https://federa.lepida.it/gw/SSOProxy/SAML2",
+    "SingleSignOnService": "https://federatest.lepida.it/gw/SSOProxy/SAML2",
+    "SingleLogoutService": "",
+    "IssuerId": "https://loginspid.aruba.it"
+  }
+]

@@ -1,0 +1,105 @@
+﻿.sidebar {
+    border-radius: 0;
+    position: fixed;
+    z-index: 1000;
+    top: 50px;
+    left: 235px;
+    width: 235px;
+    margin-left: -235px;
+    border: none;
+    border-radius: 0;
+    overflow-y: auto;
+    background-color: #1abc9c;
+    color: #fff;
+    bottom: 0;
+    overflow-x: hidden;
+    padding-bottom: 40px;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+    .sidebar .list-group a.list-group-item {
+        background: #1abc9c;
+        border: 0;
+        border-radius: 0;
+        color: #fff;
+        text-decoration: none;
+    }
+
+        .sidebar .list-group a.list-group-item .fa {
+            margin-right: 10px;
+        }
+
+    .sidebar .list-group a:hover {
+        color: #fff;
+        background: rgb(139, 195, 74) !important;
+    }
+
+    .sidebar .list-group a.router-link-active {
+        color: #fff;
+        background: #16a085;
+    }
+
+    .sidebar .sidebar-search {
+        padding: 10px;
+    }
+
+    .sidebar .divider {
+        height: 1px;
+        margin: 9px 3px;
+        overflow: hidden;
+        background-color: #16a085;
+    }
+
+.item-nested {
+    margin-left: 10px;
+}
+
+.nested-icon {
+    float: right;
+    margin-top: 4px;
+    transition: all 0.75s 0.25s;
+}
+
+    .nested-icon.toggle-down {
+        transform: rotate(0deg);
+    }
+
+
+    .nested-icon.toggle-up {
+        transform: rotate(180deg);
+    }
+
+.sidebar .nav-title {
+    padding: 0.55rem 1rem;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    text-transform: uppercase;
+}
+
+.nav-dropdown.open > .list-group-item {
+    background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.nav-dropdown.open > .collapse > li > .list-group-item,
+.nav-dropdown.open > .collapsing > li > .list-group-item {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.nav-user {
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    .sidebar {
+        left: 0px;
+    }
+
+    .nav-user {
+        display: block;
+    }
+}

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/PreservationJournalingActivity" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationJournalingActivity" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="PreservationJournalingActivity">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IdPreservationJournalingActivity" type="ser:guid" />
+      <xs:element minOccurs="0" name="IsUserActivity" type="xs:boolean" />
+      <xs:element minOccurs="0" name="KeyCode" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PreservationJournalingActivity" nillable="true" type="tns:PreservationJournalingActivity" />
+  <xs:complexType name="ArrayOfPreservationJournalingActivity">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PreservationJournalingActivity" nillable="true" type="tns:PreservationJournalingActivity" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPreservationJournalingActivity" nillable="true" type="tns:ArrayOfPreservationJournalingActivity" />
+</xs:schema>

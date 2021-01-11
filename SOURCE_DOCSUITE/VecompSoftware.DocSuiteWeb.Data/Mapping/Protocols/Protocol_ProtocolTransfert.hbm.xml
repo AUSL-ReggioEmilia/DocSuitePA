@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolTransfert" table="ProtocolTransfert">
+
+    <id name="Id" column="UniqueId" >
+      <generator class="guid.comb" />
+    </id>
+    
+    <property name="Year" column="Year" not-null="true" />
+    <property name="Number" column="Number" not-null="true" />
+    <property name="ProtocolObject" column="Object" />
+    <property name="Note" column="Note" type="StringClob" />
+    <property name="Request" column="Request" type="StringClob" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" />
+
+    <many-to-one class="Container" name="Container" column="idContainer" />
+    <many-to-one class="Category" name="Category" column="idCategory" />
+    <many-to-one class="ProtocolType" name="Type" column="Type" />
+    <many-to-one name="Protocol" class="Protocol" not-null="true">
+      <column name="UniqueIdProtocol" />
+    </many-to-one>
+  
+  </class>
+
+</hibernate-mapping>

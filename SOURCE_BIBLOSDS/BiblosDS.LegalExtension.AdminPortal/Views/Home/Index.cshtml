@@ -1,0 +1,22 @@
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@section featured {
+    @if (!Request.IsAuthenticated)
+    {
+        <p>
+            Amministrazione conservazione sostitutiva.
+        </p>
+    }
+}
+
+@if (Request.IsAuthenticated)
+{
+    <div>
+        @Html.Partial("PreservationTaskView")
+        <br />
+        @Html.Partial("PreservationVerifyTaskView")
+    </div>
+
+}

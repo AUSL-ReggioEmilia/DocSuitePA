@@ -1,0 +1,3 @@
+"C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\xsd.exe" saml-schema-protocol-2.0.xsd saml-schema-assertion-2.0.xsd xmldsig-core-schema.xsd xenc-schema.xsd /classes /namespace:VecompSoftware.DocSuite.SPID.Model /outputdir:"D:\Workspaces\SPID\Main\VecompSoftware.DocSuite.SPID.Model"
+move "D:\Workspaces\SPID\VecompSoftware.SPID\VecompSoftware.DocSuite.SPID.Model\saml-schema-protocol-2_0_saml-schema-assertion-2_0_xmldsig-core-schema_xenc-schema.cs" "D:\Workspaces\SPID\VecompSoftware.SPID\VecompSoftware.DocSuite.SPID.Model\SamlSchemaProtocol.cs"
+pause

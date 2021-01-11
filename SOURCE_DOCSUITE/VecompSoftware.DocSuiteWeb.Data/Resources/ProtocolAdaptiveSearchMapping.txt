@@ -1,0 +1,202 @@
+[
+  {
+    "Name": "Anno",
+    "Id": "txtYear",
+    "Label": "Anno"
+  },
+  {
+    "Name": "Numero",
+    "Id": "txtNumber",
+    "Label": "Numero"
+  },
+  {
+    "Name": "Data",
+    "Id": "txtRegistrationDateFrom",
+    "Label": "Data"
+  },
+  {
+    "Name": "DaLeggere",
+    "Id": "chbNoRead",
+    "Label": "Da leggere"
+  },
+  {
+    "Name": "Tipo",
+    "Id": "ddlType",
+    "Label": "Tipo"
+  },
+  {
+    "Name": "Locazione",
+    "Id": "ddlLocation",
+    "Label": "Locazione"
+  },
+  {
+    "Name": "Contenitore",
+    "Id": "rcbContainer",
+    "Label": "Contenitore"
+  },
+  {
+    "Name": "TipologiaSpedizione",
+    "Id": "idDocType",
+    "Label": "Tipologia Spedizione"
+  },
+  {
+    "Name": "Reclamo",
+    "Id": "rblClaim",
+    "Label": "Reclamo"
+  },
+  {
+    "Name": "Origine",
+    "Id": "Origin",
+    "Label": "Origine"
+  },
+  {
+    "Name": "Scatolone",
+    "Id": "Package",
+    "Label": "Scatolone"
+  },
+  {
+    "Name": "Lotto",
+    "Id": "Lot",
+    "Label": "Lotto"
+  },
+  {
+    "Name": "Progressivo",
+    "Id": "Incremental",
+    "Label": "Progressivo"
+  },
+  {
+    "Name": "NumeroFattura",
+    "Id": "InvoiceNumber",
+    "Label": "Numero Fattura"
+  },
+  {
+    "Name": "DataFattura",
+    "Id": "InvoiceDateFrom",
+    "Label": "Data Fattura"
+  },
+  {
+    "Name": "Sezionale",
+    "Id": "AccountingSectional",
+    "Label": "Sezionale"
+  },
+  {
+    "Name": "SezionaleAnno",
+    "Id": "AccountingYear",
+    "Label": "Sezionale Anno"
+  },
+  {
+    "Name": "SezionaleNumero",
+    "Id": "AccountingNumber",
+    "Label": "Sezionale Numero"
+  },
+  {
+    "Name": "Settore",
+    "Id": "uscSettore",
+    "Label": "Settore"
+  },
+  {
+    "Name": "ProtMittenteNumero",
+    "Id": "txtDocumentNumber",
+    "Label": "Protocollo Mittente Numero"
+  },
+  {
+    "Name": "ProtMittenteData",
+    "Id": "txtDocumentDateFrom",
+    "Label": "Protocollo Mittente Data"
+  },
+  {
+    "Name": "Oggetto",
+    "Id": "txtObjectProtocol",
+    "Label": "Oggetto"
+  },
+  {
+    "Name": "Note",
+    "Id": "txtNote",
+    "Label": "Note"
+  },
+  {
+    "Name": "Contatti",
+    "Id": "UscContattiSel1",
+    "Label": "Contatti"
+  },
+  {
+    "Name": "MittenteDestinatario",
+    "Id": "txtRecipient",
+    "Label": "Mittente/Destinatario"
+  },
+  {
+    "Name": "TitoloStudio",
+    "Id": "cmbTitoliStudio",
+    "Label": "Titolo di Studio"
+  },
+  {
+    "Name": "DataNascita",
+    "Id": "txtBirthDateFrom",
+    "Label": "Data Nascita"
+  },
+  {
+    "Name": "ComuneResidenza",
+    "Id": "txtCity",
+    "Label": "Comune di Residenza"
+  },
+  {
+    "Name": "AssegnatarioProponente",
+    "Id": "txtSubject",
+    "Label": "Assegnatario Proponente"
+  },
+  {
+    "Name": "CategoriaServizio",
+    "Id": "txtServiceCategory",
+    "Label": "Categoria di Servizio"
+  },
+  {
+    "Name": "Classificazione",
+    "Id": "UscClassificatore1",
+    "Label": "Classificazione"
+  },
+  {
+    "Name": "NomeDocumento",
+    "Id": "txtDocumentName",
+    "Label": "Nome Documento"
+  },
+  {
+    "Name": "Incompleti",
+    "Id": "cbIncomplete",
+    "Label": "Incompleti"
+  },
+  {
+    "Name": "Annullati",
+    "Id": "chbStatusCancel",
+    "Label": "Annullati"
+  },
+  {
+    "Name": "SenzaAutorizzazioni",
+    "Id": "chbNoRoles",
+    "Label": "Senza Autorizzazioni"
+  },
+  {
+    "Name": "StatoProtocollo",
+    "Id": "ProtocolStatus",
+    "Label": "Stato del Protocollo"
+  },
+  {
+    "Name": "CreatiDaMe",
+    "Id": "cbOnlyMyProt",
+    "Label": "Creati Da Me"
+  },
+  {
+    "Name": "DaPec",
+    "Id": "hasIngoingPec",
+    "Label": "Da Pec"
+  },
+  {
+    "Name": "DaDistribuire",
+    "Id": "IsProtocolDistribution",
+    "Label": "Da Distribuire"
+  },
+  {
+    "Name": "InEvidenza",
+    "Id": "cbProtocolHighlight",
+    "Label": "InEvidenza"
+  }
+]

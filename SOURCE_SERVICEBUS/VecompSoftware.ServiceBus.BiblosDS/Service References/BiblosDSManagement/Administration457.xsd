@@ -1,0 +1,943 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://Vecomp.BiblosDs.Administration" elementFormDefault="qualified" targetNamespace="http://Vecomp.BiblosDs.Administration" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/Company" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd10" namespace="http://BiblosDS/2009/10/Storage" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/StorageArea" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd20" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd40" namespace="http://BiblosDS/2009/10/StorageRule" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Archive" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd42" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd43" namespace="http://BiblosDS/2009/10/ArchiveStorage" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd13" namespace="http://BiblosDS/2009/10/Attribute" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd14" namespace="http://BiblosDS/2009/10/AttributeGroup" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/StorageType" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd16" namespace="http://BiblosDS/2009/10/AttributeMode" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd44" namespace="http://BiblosDS/2009/10/DocumentStorageAreaRule" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd41" namespace="http://BiblosDS/2009/10/RuleOperator" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Server" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/ArchiveServerConfig" />
+  <xs:element name="DoWork">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DoWorkResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CloneArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="templateName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CloneArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="CloneArchiveResult" type="q1:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CloneCompanyArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="templateName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="archiveName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q2="http://BiblosDS/2009/10/Company" minOccurs="0" name="company" nillable="true" type="q2:Company" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CloneCompanyArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="CloneCompanyArchiveResult" type="q3:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CheckConnection">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CheckConnectionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="CheckConnectionResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentsInTransito">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentsInTransitoResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://BiblosDS/2009/10/Document" minOccurs="0" name="GetDocumentsInTransitoResult" nillable="true" type="q4:ArrayOfDocument" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentsInStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q5:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentsInStorageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://BiblosDS/2009/10/Document" minOccurs="0" name="GetDocumentsInStorageResult" nillable="true" type="q6:ArrayOfDocument" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllStorages">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllStoragesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://BiblosDS/2009/10/Storage" minOccurs="0" name="GetAllStoragesResult" nillable="true" type="q7:ArrayOfStorage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllStoragesWithServer">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllStoragesWithServerResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://BiblosDS/2009/10/Storage" minOccurs="0" name="GetAllStoragesWithServerResult" nillable="true" type="q8:ArrayOfStorage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStoragesFromArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q9:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStoragesFromArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://BiblosDS/2009/10/Storage" minOccurs="0" name="GetStoragesFromArchiveResult" nillable="true" type="q10:ArrayOfStorage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q11:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://BiblosDS/2009/10/Storage" minOccurs="0" name="GetStorageResult" nillable="true" type="q12:Storage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageWithServer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q13:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageWithServerResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q14="http://BiblosDS/2009/10/Storage" minOccurs="0" name="GetStorageWithServerResult" nillable="true" type="q14:Storage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageAreas">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q15="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q15:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageAreasResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q16="http://BiblosDS/2009/10/StorageArea" minOccurs="0" name="GetStorageAreasResult" nillable="true" type="q16:ArrayOfStorageArea" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageAreasFromStorageArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q17="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q17:guid" />
+        <xs:element xmlns:q18="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q18:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageAreasFromStorageArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q19="http://BiblosDS/2009/10/StorageArea" minOccurs="0" name="GetStorageAreasFromStorageArchiveResult" nillable="true" type="q19:ArrayOfStorageArea" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageArea">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q20="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorageArea" type="q20:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageAreaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q21="http://BiblosDS/2009/10/StorageArea" minOccurs="0" name="GetStorageAreaResult" nillable="true" type="q21:StorageArea" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllStorageAreaStatus">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllStorageAreaStatusResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" minOccurs="0" name="GetAllStorageAreaStatusResult" nillable="true" type="q22:ArrayOfStatus" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageRulesFromStorageAreaArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q23="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorageArea" type="q23:guid" />
+        <xs:element xmlns:q24="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q24:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageRulesFromStorageAreaArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q25="http://BiblosDS/2009/10/StorageRule" minOccurs="0" name="GetStorageRulesFromStorageAreaArchiveResult" nillable="true" type="q25:ArrayOfStorageRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStoragesNotRelatedToArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q26="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q26:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStoragesNotRelatedToArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q27="http://BiblosDS/2009/10/Storage" minOccurs="0" name="GetStoragesNotRelatedToArchiveResult" nillable="true" type="q27:ArrayOfStorage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q28="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q28:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q29="http://BiblosDS/2009/10/Archive" minOccurs="0" name="GetArchiveResult" nillable="true" type="q29:Archive" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveWithServerConfigs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q30="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q30:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveWithServerConfigsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q31="http://BiblosDS/2009/10/Archive" minOccurs="0" name="GetArchiveWithServerConfigsResult" nillable="true" type="q31:Archive" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchives">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q32="http://BiblosDS/2009/10/Archive" minOccurs="0" name="GetArchivesResult" nillable="true" type="q32:ArrayOfArchive" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivesById">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q33="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="idsArchive" nillable="true" type="q33:ArrayOfguid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivesByIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q34="http://BiblosDS/2009/10/Archive" minOccurs="0" name="GetArchivesByIdResult" nillable="true" type="q34:ArrayOfArchive" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivesFromStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q35="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q35:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivesFromStorageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q36="http://BiblosDS/2009/10/Archive" minOccurs="0" name="GetArchivesFromStorageResult" nillable="true" type="q36:ArrayOfArchive" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivesNotRelatedToStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q37="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q37:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivesNotRelatedToStorageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q38="http://BiblosDS/2009/10/Archive" minOccurs="0" name="GetArchivesNotRelatedToStorageResult" nillable="true" type="q38:ArrayOfArchive" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageArchiveRelationsFromStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q39="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q39:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageArchiveRelationsFromStorageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q40="http://BiblosDS/2009/10/ArchiveStorage" minOccurs="0" name="GetStorageArchiveRelationsFromStorageResult" nillable="true" type="q40:ArrayOfArchiveStorage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageArchiveRelationsFromArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q41="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q41:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageArchiveRelationsFromArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q42="http://BiblosDS/2009/10/ArchiveStorage" minOccurs="0" name="GetStorageArchiveRelationsFromArchiveResult" nillable="true" type="q42:ArrayOfArchiveStorage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAttributesFromArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q43="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q43:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAttributesFromArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q44="http://BiblosDS/2009/10/Attribute" minOccurs="0" name="GetAttributesFromArchiveResult" nillable="true" type="q44:ArrayOfAttribute" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAttribute">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q45="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdAttribute" type="q45:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAttributeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q46="http://BiblosDS/2009/10/Attribute" minOccurs="0" name="GetAttributeResult" nillable="true" type="q46:Attribute" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAttributeGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q47="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q47:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAttributeGroupResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q48="http://BiblosDS/2009/10/AttributeGroup" minOccurs="0" name="GetAttributeGroupResult" nillable="true" type="q48:ArrayOfAttributeGroup" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageRulesFromStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q49="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q49:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageRulesFromStorageResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q50="http://BiblosDS/2009/10/StorageRule" minOccurs="0" name="GetStorageRulesFromStorageResult" nillable="true" type="q50:ArrayOfStorageRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageRule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q51="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q51:guid" />
+        <xs:element xmlns:q52="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdAttribute" type="q52:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageRuleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q53="http://BiblosDS/2009/10/StorageRule" minOccurs="0" name="GetStorageRuleResult" nillable="true" type="q53:StorageRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageRules">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q54="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q54:guid" />
+        <xs:element xmlns:q55="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q55:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageRulesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q56="http://BiblosDS/2009/10/StorageRule" minOccurs="0" name="GetStorageRulesResult" nillable="true" type="q56:ArrayOfStorageRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStoragesType">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStoragesTypeResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q57="http://BiblosDS/2009/10/StorageType" minOccurs="0" name="GetStoragesTypeResult" nillable="true" type="q57:ArrayOfStorageType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q58="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdDocument" type="q58:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q59="http://BiblosDS/2009/10/Document" minOccurs="0" name="GetDocumentResult" nillable="true" type="q59:Document" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAttributeModes">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAttributeModesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q60="http://BiblosDS/2009/10/AttributeMode" minOccurs="0" name="GetAttributeModesResult" nillable="true" type="q60:ArrayOfAttributeMode" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageAreaRuleFromStorageArea">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q61="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorageArea" type="q61:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageAreaRuleFromStorageAreaResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q62="http://BiblosDS/2009/10/DocumentStorageAreaRule" minOccurs="0" name="GetStorageAreaRuleFromStorageAreaResult" nillable="true" type="q62:ArrayOfStorageAreaRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageAreaRule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q63="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorageArea" type="q63:guid" />
+        <xs:element xmlns:q64="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdAttribute" type="q64:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetStorageAreaRuleResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q65="http://BiblosDS/2009/10/DocumentStorageAreaRule" minOccurs="0" name="GetStorageAreaRuleResult" nillable="true" type="q65:StorageAreaRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRuleOperators">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetRuleOperatorsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q66="http://BiblosDS/2009/10/RuleOperator" minOccurs="0" name="GetRuleOperatorsResult" nillable="true" type="q66:ArrayOfRuleOperator" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationFiscalDocumentsTypes">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPreservationFiscalDocumentsTypesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q67="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetPreservationFiscalDocumentsTypesResult" nillable="true" type="q67:ArrayOfstring" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetServers">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetServersResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q68="http://BiblosDS/2009/10/Server" minOccurs="0" name="GetServersResult" nillable="true" type="q68:ArrayOfServer" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetServer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q69="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="serverId" type="q69:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetServerResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q70="http://BiblosDS/2009/10/Server" minOccurs="0" name="GetServerResult" nillable="true" type="q70:Server" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateServer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q71="http://BiblosDS/2009/10/Server" minOccurs="0" name="server" nillable="true" type="q71:Server" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateServerResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q72="http://BiblosDS/2009/10/Server" minOccurs="0" name="UpdateServerResult" nillable="true" type="q72:Server" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddServer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q73="http://BiblosDS/2009/10/Server" minOccurs="0" name="server" nillable="true" type="q73:Server" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddServerResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q74="http://BiblosDS/2009/10/Server" minOccurs="0" name="AddServerResult" nillable="true" type="q74:Server" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteServer">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q75="http://BiblosDS/2009/10/Server" minOccurs="0" name="server" nillable="true" type="q75:Server" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteServerResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="DeleteServerResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddArchiveServerConfig">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q76="http://BiblosDS/2009/10/ArchiveServerConfig" minOccurs="0" name="config" nillable="true" type="q76:ArchiveServerConfig" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddArchiveServerConfigResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q77="http://BiblosDS/2009/10/ArchiveServerConfig" minOccurs="0" name="AddArchiveServerConfigResult" nillable="true" type="q77:ArchiveServerConfig" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteArchiveServerConfig">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q78="http://BiblosDS/2009/10/ArchiveServerConfig" minOccurs="0" name="config" nillable="true" type="q78:ArchiveServerConfig" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteArchiveServerConfigResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q79="http://BiblosDS/2009/10/Storage" minOccurs="0" name="Storage" nillable="true" type="q79:Storage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddStorageResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q80="http://BiblosDS/2009/10/Archive" minOccurs="0" name="Archive" nillable="true" type="q80:Archive" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q81="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="AddArchiveResult" type="q81:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q82="http://BiblosDS/2009/10/Archive" minOccurs="0" name="Archive" nillable="true" type="q82:Archive" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateArchiveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddStorageToArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q83="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q83:guid" />
+        <xs:element xmlns:q84="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q84:guid" />
+        <xs:element minOccurs="0" name="Enable" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddStorageToArchiveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EnableDisableStorageToArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q85="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdStorage" type="q85:guid" />
+        <xs:element xmlns:q86="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdArchive" type="q86:guid" />
+        <xs:element minOccurs="0" name="Enable" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EnableDisableStorageToArchiveResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddStorageRule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q87="http://BiblosDS/2009/10/StorageRule" minOccurs="0" name="StorageRule" nillable="true" type="q87:StorageRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddStorageRuleResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateStorageRule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q88="http://BiblosDS/2009/10/StorageRule" minOccurs="0" name="StorageRule" nillable="true" type="q88:StorageRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateStorageRuleResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddStorageArea">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q89="http://BiblosDS/2009/10/StorageArea" minOccurs="0" name="StorageArea" nillable="true" type="q89:StorageArea" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddStorageAreaResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateStorageArea">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q90="http://BiblosDS/2009/10/StorageArea" minOccurs="0" name="StorageArea" nillable="true" type="q90:StorageArea" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateStorageAreaResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddStorageAreaRule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q91="http://BiblosDS/2009/10/DocumentStorageAreaRule" minOccurs="0" name="StorageAreaRule" nillable="true" type="q91:StorageAreaRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddStorageAreaRuleResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateStorageAreaRule">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q92="http://BiblosDS/2009/10/DocumentStorageAreaRule" minOccurs="0" name="StorageAreaRule" nillable="true" type="q92:StorageAreaRule" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateStorageAreaRuleResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddAttribute">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q93="http://BiblosDS/2009/10/Attribute" minOccurs="0" name="DocumentAttribute" nillable="true" type="q93:Attribute" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddAttributeResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddAttributeGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q94="http://BiblosDS/2009/10/AttributeGroup" minOccurs="0" name="AttributeGroup" nillable="true" type="q94:AttributeGroup" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddAttributeGroupResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateAttributeGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q95="http://BiblosDS/2009/10/AttributeGroup" minOccurs="0" name="AttributeGroup" nillable="true" type="q95:AttributeGroup" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateAttributeGroupResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteAttributeGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q96="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdAttributeGroup" type="q96:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteAttributeGroupResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateAttribute">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q97="http://BiblosDS/2009/10/Attribute" minOccurs="0" name="DocumentAttribute" nillable="true" type="q97:Attribute" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateAttributeResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteAttribute">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q98="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdAttribute" type="q98:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteAttributeResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q99="http://BiblosDS/2009/10/Storage" minOccurs="0" name="storage" nillable="true" type="q99:Storage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateStorageResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateArchiveStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q100="http://BiblosDS/2009/10/ArchiveStorage" minOccurs="0" name="ArchiveStorage" nillable="true" type="q100:ArchiveStorage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateArchiveStorageResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddArchiveStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q101="http://BiblosDS/2009/10/ArchiveStorage" minOccurs="0" name="ArchiveStorage" nillable="true" type="q101:ArchiveStorage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddArchiveStorageResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteArchiveStorage">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q102="http://BiblosDS/2009/10/ArchiveStorage" minOccurs="0" name="ArchiveStorage" nillable="true" type="q102:ArchiveStorage" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteArchiveStorageResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddDocumentAttributeGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q103="http://BiblosDS/2009/10/AttributeGroup" minOccurs="0" name="AttributeGroup" nillable="true" type="q103:AttributeGroup" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddDocumentAttributeGroupResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateDocumentAttributeGroup">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q104="http://BiblosDS/2009/10/AttributeGroup" minOccurs="0" name="AttributeGroup" nillable="true" type="q104:AttributeGroup" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateDocumentAttributeGroupResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddArchiveCertificate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q105="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idArchive" type="q105:guid" />
+        <xs:element minOccurs="0" name="userName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="pin" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="fileName" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="certificateBlob" nillable="true" type="xs:base64Binary" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddArchiveCertificateResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveCertificate">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q106="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idArchive" type="q106:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveCertificateResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q107="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" minOccurs="0" name="GetArchiveCertificateResult" nillable="true" type="q107:DocumentArchiveCertificate" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

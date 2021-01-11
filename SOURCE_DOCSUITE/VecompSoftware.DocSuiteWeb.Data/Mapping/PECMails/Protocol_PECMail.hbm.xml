@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="PECMail" table="PECMail">
+    
+    <id name="Id" column="IDPECMail">
+      <generator class="identity" />
+    </id>
+
+    <property name="Year" column="Year" />
+    <property name="Number" column="Number" />
+    <property name="Direction" column="Direction" />
+    <property name="MailUID" column="MailUID" />
+    <property name="OriginalRecipient" column="OriginalRecipient" />
+    <property name="MailContent" column="MailContent" type="StringClob" />
+    <property name="MailSubject" column="MailSubject" type="StringClob" />
+    <property name="MailSenders" column="MailSenders" />
+    <property name="MailRecipients" column="MailRecipients" type="StringClob" />
+    <property name="MailRecipientsCc" column="MailRecipientsCc" type="StringClob" />
+    <property name="ReceivedAsCc" column="ReceivedAsCc" />
+    <property name="MailDate" column="MailDate" />
+    <property name="MailType" column="MailType" type="AnsiString" />
+    <property name="MailError" column="MailError" />
+    <property name="MailPriority" column="MailPriority" />
+    <property name="MailStatus" column="MailStatus" />
+    <property name="XTrasporto" column="xTrasporto" />
+    <property name="MessageID" column="messageID" />
+    <property name="XRiferimentoMessageID" column="xRiferimentoMessageID" />
+    <property name="Segnatura" column="Segnatura" type="StringClob" />
+    <property name="MessaggioRitornoName" column="MessaggioRitornoName" />
+    <property name="MessaggioRitornoStream" column="MessaggioRitornoStream" />
+    <property name="MailBody" column="MailBody" type="StringClob" />
+    <property name="RecordedInDocSuite" column="RecordedInDocSuite" />
+    <property name="IsActive" column="IsActive" />
+    <property name="IsToForward" column="IsToForward" />
+    <property name="IsValidForInterop" column="IsValidForInterop" />
+    <property name="IsDestinated" column="IsDestinated" />
+    <property name="DestinationNote" column="DestinationNote" />
+    <property name="IDMailContent" column="IDMailContent" />
+    <property name="IDAttachments" column="IDAttachments" />
+    <property name="IDPostacert" column="IDPostacert" />
+    <property name="IDDaticert" column="IDDaticert" />
+    <property name="IDSegnatura" column="IDSegnatura" />
+    <property name="IDSmime" column="IDSmime" />
+    <property name="IDEnvelope" column="IDEnvelope" />
+    <property name="PECType" column="PECType" />
+    <property name="Checksum" column="Checksum" />
+    <property name="HeaderChecksum" column="HeaderChecksum" />
+    <property name="Multiple" column="Multiple" />
+    <property name="SplittedFrom" column="SplittedFrom" />
+    <property name="MultipleType" column="MultipleType" />
+    <property name="Handler" column="Handler" type="AnsiString" />
+    <property name="LastChangedDate" />
+    <property name="LastChangedUser" />
+    <property name="RegistrationDate" />
+    <property name="RegistrationUser" />
+    <property name="ProcessStatus" />
+    <property name="Size" column="Size" />
+    <property name="UniqueId" column="UniqueId" />
+    <property name="InvoiceStatus" column="InvoiceStatus" />
+
+    <many-to-one class="PECMailBox" name="MailBox" column="IDPECMailBox" not-null="true" />
+    <many-to-one class="Location" name="Location" column="IDLocation" lazy="false" />
+    <many-to-one class="DocumentUnit" name="DocumentUnit" column="IdDocumentUnit" />
+    
+    <bag name="Receipts" table="PECMailReceipts" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="IDPECMail" />
+      </key>
+      <one-to-many class="PECMailReceipt" />
+    </bag>
+    <bag name="Attachments" table="PECMailAttachment" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="IDPECMail" />
+      </key>
+      <one-to-many class="PECMailAttachment" />
+    </bag>
+    <bag name="LogEntries" table="PECMailLog" cascade="all-delete-orphan" inverse="true" order-by="Date">
+      <key>
+        <column name="IDMail" />
+      </key>
+      <one-to-many class="PECMailLog" />
+    </bag>
+    <bag name="TaskHeader" table="TaskHeaderPECMail">
+      <key column="IdPECMail" />
+      <one-to-many class="TaskHeaderPECMail" />
+    </bag>
+
+  </class>
+  
+</hibernate-mapping>

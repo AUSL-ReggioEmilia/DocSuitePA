@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolRoleUser" table="ProtocolRoleUser">
+
+    <id name="Id" column="UniqueId" >
+      <generator class="guid.comb" />
+    </id>
+    
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+
+    <property name="Year" column="Year" not-null="true" />
+    <property name="Number" column="Number" not-null="true" />
+    <property name="GroupName" column="GroupName" not-null="true" />
+    <property name="UserName" column="UserName" not-null="true" />
+    <property name="Account" column="Account" />
+    <property name="IsActive" column="IsActive" />
+    <property name="Status" column="Status" not-null="true" />
+
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+
+    <many-to-one class="Role" name="Role" column="idRole" not-null="true" />
+    <many-to-one class="ProtocolRole" name="ProtocolRole" column="IdProtocolRole" not-null="true" />
+    <many-to-one name="Protocol" class="Protocol" not-null="true">
+      <column name="UniqueIdProtocol" />
+    </many-to-one>
+  
+  </class>
+
+</hibernate-mapping>

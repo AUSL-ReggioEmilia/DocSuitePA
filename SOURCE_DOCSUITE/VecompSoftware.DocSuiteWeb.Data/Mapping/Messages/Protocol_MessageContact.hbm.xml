@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name ="MessageContact" table="MessageContact">
+    
+    <id name="Id" column="IDMessageContact">
+      <generator class="native" />
+    </id>
+
+    <property name="ContactType" column="ContactType" />
+    <property name="ContactPosition" column="ContactPosition" />
+    <property name="Description" column="Description" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    
+    <many-to-one name="Message" column="IDMessage" class="DSWMessage" not-null="true" />
+    <bag name="ContactEmails" table="MessageContactEmail" cascade="none" inverse="true" fetch="select">
+      <key column="IDMessageContact" />
+      <one-to-many class="MessageContactEmail" />
+    </bag>
+    
+  </class>
+
+</hibernate-mapping>

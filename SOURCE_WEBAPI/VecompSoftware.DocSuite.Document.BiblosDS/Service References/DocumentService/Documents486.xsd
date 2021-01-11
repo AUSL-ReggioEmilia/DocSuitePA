@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/BiblosDSObject" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/BiblosDSObject" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="BiblosDSObject">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:element name="BiblosDSObject" nillable="true" type="tns:BiblosDSObject" />
+</xs:schema>

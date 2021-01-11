@@ -1,0 +1,109 @@
+
+<div class="panel card panel-fix">
+    <div>
+        <div class="card-header card-header-icon">
+            <div class="card-icon card-azure">
+                <h3 class="card-category ">Dossier - Sommario</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon card-azure">
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category">Anno</p>
+                    </div>
+                    <div class="responsive-text responsive-text-left">{{dossier.year}}</div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon card-azure">
+                            <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category">Numero</p>
+                    </div>
+                    <div class="responsive-text responsive-text-left">{{dossier.number}}</div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon card-azure">
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category">Data Apertura</p>
+                    </div>
+                    <div class="responsive-text responsive-text-left">{{dossier.startDate | dateFormat}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon-adjustments card-azure">
+                            <i class="fa fa-cube" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category clearfix-label">Oggetto</p>
+                    </div>
+                    <div class="table-padding-sm-all">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide" scope="row">Oggetto</th>
+                                    <td class="responsive-text border-hide">{{dossier.subject}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide " scope="row">Note</th>
+                                    <td class="responsive-text border-hide">{{dossier.note}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon card-azure">
+                            <i class="fa fa-info" aria-hidden="true"></i>
+                        </div>
+                        <p class="card-category clearfix-label">Informazioni</p>
+                    </div>
+                    <div class="table-padding-sm-all">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide" scope="row">Contenitore</th>
+                                    <td class="responsive-text border-hide">{{dossier.containerName}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide " scope="row">Creato da</th>
+                                    <td class="responsive-text border-hide">{{dossier.registrationUser}} {{dossier.registrationDate | dateFormat}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide " scope="row">Modificato da</th>
+                                    <td class="responsive-text border-hide">{{dossier.lastChangedUser}} {{dossier.lastChangedDate | dateFormat}}</td>
+                                </tr>
+                                <tr>
+                                    <th class="responsive-text column-right border-hide " scope="row">Settore Responsabile</th>
+                                    <td class="responsive-text border-hide">{{dossierRoleName}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

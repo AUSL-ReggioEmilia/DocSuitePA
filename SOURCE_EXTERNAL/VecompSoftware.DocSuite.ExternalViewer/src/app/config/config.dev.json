@@ -1,0 +1,33 @@
+{
+  "apiOdataAddress": "http://localhost/DSW.PublicWebAPI/odata/",
+  "apiRestAddress": "http://localhost/DSW.PublicWebAPI/api/",
+  "apiAuthAddress": "http://localhost/DSW.PublicWebAPI/Auth/Token",
+  "apiOdataControllers": {
+    "protocol": true,
+    "archive": true,
+    "fascicle": true,
+    "document": true,
+    "pecMail": true,
+    "errorLog": true,
+    "documentUnit": true,
+    "dossier": true,
+    "dossierFolder": true,
+    "fascicleFolder": true
+  },
+  "apiRestControllers": {
+  },
+  "appLogo": "app/images/app-logo.png",
+  "title": "DocSuite - External Viewer",
+  "documentHandler": "http://localhost/DocumentUnitHandler/DocumentUnitHandler.ashx/",
+  "toastLife": 5000,
+  "applicationName": "DocSuite - External Viewer",
+  "gridItemsNumber": 10,
+  "titleIntroduction": "DocSuite - External Viewer",
+  "introduction": "Sito disponibile solo per le integrazioni ufficiali con DocSuite - Per visualizzare un protocollo, comporre l'URL indicando l'identificativo o la coppia anno e numero.",
+  "oauthUsername": {
+    "C39ADF96-AAEF-4237-BA56-A22A8C6BD4EF": "**REMOVE**.IP4D",
+    "51DAE147-3E30-4434-A73F-DCB5E062CA5E": "**REMOVE**.ERP_CONTRATTI",
+    "49DC7004-EFC1-454A-9174-CEA12D06061E": "**REMOVE**.SAP_FATTURE",
+    "7AF08013-7018-4583-942C-73441C680994": "ENPACL.SMC"
+  }
+}

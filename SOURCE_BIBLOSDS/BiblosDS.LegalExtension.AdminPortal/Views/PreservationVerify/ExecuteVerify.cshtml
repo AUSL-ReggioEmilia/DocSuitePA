@@ -1,0 +1,125 @@
+﻿@using Newtonsoft.Json
+@model BiblosDS.LegalExtension.AdminPortal.Models.PreservationVerifyExecuteModel
+@{
+    ViewBag.Title = "Esecuzione verifica";
+}
+
+@section featured {
+    <hgroup class="title">
+        <h1>@ViewBag.Title</h1>
+        <h4>Data/Ora esecuzione <b>@DateTime.Today.ToShortDateString() - @DateTime.Now.ToString("HH:mm")</b></h4>
+        <h4>Verifica stato conservazioni chiuse nel periodo dal <b>@Model.fromDate.ToShortDateString()</b> al <b>@Model.toDate.ToShortDateString()</b></h4>
+    </hgroup>
+}
+
+<div style="padding:10px 0px 15px 0px;">
+
+</div>
+
+<div id="spinner" style="display:none; padding-bottom:20px;">
+    <img src="@Href("~/content/images/wait.gif")" alt="" style="vertical-align:middle; text-align:center; " />
+    &nbsp;
+    <b>Verifica in corso...</b>
+</div>
+
+<div id="success" style="display:none; padding-bottom:20px;">
+
+</div>
+
+<div id="result">
+    @if (this.Model.jobs.Count() == 0)
+    {
+        <b>Nessuna CONSERVAZIONE da verificare</b>
+    }
+</div>
+
+<script type="text/html" id="archiveTemplate">
+    <div id="{idArchive}">
+        <div class="k-block" style="padding:10px;">
+            <h3>Archivio <b>{archiveName}</b></h3>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" id="preservTemplate">
+    <div style="padding:10px;">
+        <span style="margin-right:20px; font-weight:bold;">{preservationLabel}</span>
+        <a href="javascript:void(0);" onclick="showContent('content_{idPreservation}')"><b>{verifyTitle}</b></a>
+        <div id="content_{idPreservation}" class="{contentClass}" style="margin-top:6px; display:{displayStyle}; padding:10px;">{errors}</div>
+    </div>
+</script>
+
+
+<script type="text/javascript">
+    $(function () {
+        var serverModel =@Html.Raw(JsonConvert.SerializeObject(this.Model))
+        $.each(serverModel.jobs, function (index, model){
+            $("#result").append($("<p>", {
+                html: parseTemplate($("#archiveTemplate").html(), model)
+            }));
+        });
+
+        $("#spinner").show();
+        $.post('./DoVerify', { model: serverModel }, function (result) {
+            if (result) {
+                updateJobsInformations(result.Jobs);
+                if (result.Response.FileName != "error") {
+                    $("#success").append($("<div>", {
+                        html: "Elaborazione completata <a target='_blank' href='../Reports/" + result.Response.FileName + "'><b>Visualizza rapporto Pdf</b></a>"
+                    }));
+                }
+                else {
+                    $("#success").append($("<div>", {
+                        html: "<div class='k-block k-error-colored'>" + result.Response.Response + "</div>"
+                    }));
+                }
+                $("#success").show("fast");
+            }
+        }).fail(function () {            
+            $("#success").append($("<div>", {
+                html: "<div class='k-block k-error-colored'>E' avvenuto un errore durante la fase di verifica delle conservazioni</div>"
+            }));
+            $("#success").show("fast");
+        }).always(function () {
+            clearInterval(intervalId);            
+            $("#spinner").hide();
+        });
+
+        var intervalId = setInterval(function () {
+            $.getJSON('./DoVerifyProgress', { executionId: serverModel.executionId }, function (results) {
+                if (results) {
+                    updateJobsInformations(results);
+                }
+            });
+        }, 3000);
+
+        function updateJobsInformations(results) {
+            clearJobsInformationPanel();
+            $.each(results, function (index, model) {
+                var htmlString = parseTemplate($("#preservTemplate").html(), {
+                    preservationLabel: model.preservationLabel,
+                    idPreservation: model.idPreservation,
+                    verifyTitle: model.verifyTitle,
+                    contentClass: model.result == "ok" ? "k-block k-info-colored" : "k-block k-error-colored",
+                    displayStyle: model.result == "ok" ? "none" : "block",
+                    errors: model.errors
+                });
+
+                $("#" + model.idArchive).append($("<div>", {
+                    html: htmlString
+                }));
+            });
+        }
+
+        function clearJobsInformationPanel() {
+            $.each(serverModel.jobs, function (index, model) {
+                $("#" +  model.idArchive + " > div:gt(0)").remove();
+            });
+        }
+    });
+
+    function showContent(div)
+    {
+        $("#"+div).toggle("fast");
+    }
+</script>

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ResolutionLog" table="ResolutionLog">
+  
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
+    <property name="LogDate" column="LogDate" />
+    <property name="SystemComputer" column="SystemComputer" type="AnsiString" />
+    <property name="SystemUser" column="SystemUser" type="AnsiString" />
+    <property name="Program" column="Program" type="AnsiString" />
+    <property name="LogType" column="LogType" type="AnsiString" />
+    <property name="LogDescription" column="LogDescription" type="AnsiString" />
+    <property name="IdResolution" column="IdResolution" />
+    <property name="Severity" column="Severity" />
+    <property name="UniqueId" column="UniqueId" unique="true" />
+    <property name="UniqueIdResolution" column="UniqueIdResolution" not-null="true" />    
+    
+    <many-to-one name="Resolution" class="Resolution" column="idResolution" lazy="false" fetch="join" insert="false" update="false" not-found="ignore" />
+
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="PECMailReceipt" table="PECMailReceipt">
+    
+    <id name="Id" column ="ID">
+      <generator class="identity" />
+    </id>
+    
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+
+  
+    <property name="ReceiptType" column="ReceiptType" />
+    <property name="ErrorShort" column="ErrorShort" />
+    <property name="ErrorDescription" column="ErrorDescription" />
+    <property name="DateZone" column="DateZone" />
+    <property name="ReceiptDate" column="ReceiptDate" />
+    <property name="Sender" column="Sender" />
+    <property name="Receiver" column="Receiver" />
+    <property name="ReceiverType" column="ReceiverType" />
+    <property name="Subject" column="Subject" />
+    <property name="Provider" column="Provider" />
+    <property name="Identification" column="Identification" />
+    <property name="MSGID" column="MSGID" />
+    <property name="UniqueId" column="UniqueId" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="RegistrationUser" column="RegistrationUser" />
+    
+    <many-to-one class="PECMail" name="PECMail" column="IDPECMail" />
+    <many-to-one class="PECMail" name="Parent" column="IDParent" />
+
+  </class>
+  
+</hibernate-mapping>

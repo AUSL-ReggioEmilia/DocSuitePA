@@ -1,0 +1,90 @@
+{
+  "Areas": {
+    "Protocol": {
+      "Actions": {
+        "Create": {
+          "Page": "~/Prot/ProtInserimento.aspx?Type=Prot&Action=FromWorkflow",
+          "Options": {
+            "SecurityCheck": "False",
+            "Year": "False",
+            "Number": "False"
+          }
+        },
+        "ToPEC": {
+          "Page": "~/PEC/PECInsert.aspx?Type=Pec&SimpleMode=True&UniqueIdProtocol={0}",
+          "Options": {
+            "SecurityCheck": "False",
+            "UniqueIdProtocol": "True"
+          }
+        }
+      }
+    },
+    "UDS": {
+      "Actions": {
+        "Create": {
+          "Page": "~/UDS/UDSInsert.aspx?Type=UDS",
+          "Options": {
+            "SecurityCheck": "True",
+            "UDSId": "False",
+            "UDSRepositoryId": "False"
+          }
+        },
+        "ToProtocol": {
+          "Page": "~/Prot/ProtInserimento.aspx?Type=Prot&Action=FromUDS&IdUDS={0}&IdUDSRepository={1}",
+          "Options": {
+            "SecurityCheck": "False",
+            "UDSId": "True",
+            "UDSRepositoryId": "True"
+          }
+        },
+        "ToPEC": {
+          "Page": "~/PEC/PECInsert.aspx?Type=Pec&SimpleMode=True&UniqueIdProtocol={0}",
+          "Options": {
+            "SecurityCheck": "False",
+            "UniqueIdProtocol": "True"
+          }
+        }
+      }
+    },
+    "Collaboration": {
+      "Actions": {
+        "ToSign": {
+          "Page": "~/User/UserCollGestione.aspx?Type=Prot&Titolo=Inserimento&Action=Fir&idCollaboration={0}&Action2=CF&Title2=Da Visionare/Firmare",
+          "Options": {
+            "SecurityCheck": "False",
+            "IdCollaboration": "True"
+          }
+        },
+        "ToProtocol": {
+          "Page": "~/Prot/ProtInserimento.aspx?Type=Prot&Action=FromCollaboration&IdCollaboration={0}",
+          "Options": {
+            "SecurityCheck": "False",
+            "IdCollaboration": "True"
+          }
+        }
+      }
+    },
+    "Fascicle": {
+      "Actions": {
+        "ToAssignment": {
+          "Page": "~/Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle={0}",
+          "Options": {
+            "SecurityCheck": "True",
+            "IdFascicle": "True"
+          }
+        }
+      }
+    },
+    "Dossier": {
+      "Actions": {
+        "ToAssignment": {
+          "Page": "~/Dossiers/DossierVisualizza.aspx?Type=Dossier&IdDossier={0}",
+          "Options": {
+            "SecurityCheck": "True",
+            "IdDossier": "True"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+D  
+DocSuite PA è la soluzione di gestione documentale in riuso
+con azienda pubblica cedente la AUSL di Reggio Emilia. 
+
+La DocSuite nasce come soluzione di protocollo informatico nel 2000
+a seguito della entrata in vigore del DPR 445.
+AUSL di Reggio Emilia per mezzo di gara iniziò gli sviluppi con la
+Vecomp Software Srl (ora Dgroove Srl), esentendendo l'uso anche
+all'Ospedale Santa Maria Nuova di Reggio Emilia
+
+Nel 2005 la soluzione fu adottata, per mezzo di gara, anche dalla
+AUSL di Picenza e successivamente, sempre per mezzo di gara, dalla ASL Torino 4 (ora ASL Città di Torino)
+
+Negli anni successivi le pubbliche amministrazioni che hanno adottato la soluzione, hanno
+investito nelle evoluzioni del prodotto e dei suoi moduli condividendone gli 
+obbiettivi e realizzazioni, seppur tenendo conto delle specificità delle singole realtà.
+
+Nel 2017 la Vecomp Software Srl dando adempimento alla visione di partenariato con 
+i propri clienti, consapevole che il valore espresso nel suo operato
+è nell'accompagnamento del percorso evolutivo sulla digitalizzazione, 
+condiviso con la AUSL di Reggio Emilia e altre aziende; 
+ha donato la soluzione software (i sorgenti) alla 
+AUSL di Reggio Emilia che si è quindi attivata per adempiere al suo riuso seguendo quanto indicato da CAD

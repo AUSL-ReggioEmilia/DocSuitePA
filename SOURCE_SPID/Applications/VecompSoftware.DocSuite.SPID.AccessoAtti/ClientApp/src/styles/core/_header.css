@@ -1,0 +1,52 @@
+﻿.app-header.navbar.navbar-default {
+    background-color: #fff;
+    border-bottom: 1px solid #c2cfd6
+}
+
+.mobile-collapse-button  {
+    margin-left: 10px;
+}
+
+.user-image {
+    padding-top: 6px;
+    margin-right: 20px;
+}
+
+.logo {
+    background: url('../logo_vecomp.png');
+    height: 32px;
+    width: 32px;
+    margin-top: 10px;
+    display: inline-block;
+    float: left;
+    margin-right: 15px;
+}
+
+.user-logged-icon {
+    background: url('../user_logged.png');
+    height: 32px;
+    width: 32px;
+    margin-left: 10px;
+}
+
+.user-logged {
+    padding-top: 9px !important;
+    padding-bottom: 9px !important;
+    color: #536c79 !important;
+}
+
+@media (max-width: 768px) {
+    .app-header.navbar .app-navbar-brand {
+        position: absolute;
+        left: 45%;
+        margin-left: -77.5px;
+    }
+
+    .app-user-header {
+        display: none;
+    }
+
+    .logo {
+        margin-right: 0;
+    }
+}

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://Vecomp.StampaConforme.Office.Converter" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://Vecomp.StampaConforme.Office.Converter" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://Vecomp.StampaConforme.Office.Converter/Imports">
+      <xsd:import namespace="http://Vecomp.StampaConforme.Office.Converter" />
+      <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://BiblosDS/2009/10/AttachConversionMode" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IStampaConformeConverter_IsAlive_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsAlive" />
+  </wsdl:message>
+  <wsdl:message name="IStampaConformeConverter_IsAlive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsAliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IStampaConformeConverter_GetVersion_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetVersion" />
+  </wsdl:message>
+  <wsdl:message name="IStampaConformeConverter_GetVersion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="IStampaConformeConverter_Convert_InputMessage">
+    <wsdl:part name="parameters" element="tns:Convert" />
+  </wsdl:message>
+  <wsdl:message name="IStampaConformeConverter_Convert_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConvertResponse" />
+  </wsdl:message>
+  <wsdl:message name="IStampaConformeConverter_ConvertWithParameters_InputMessage">
+    <wsdl:part name="parameters" element="tns:ConvertWithParameters" />
+  </wsdl:message>
+  <wsdl:message name="IStampaConformeConverter_ConvertWithParameters_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ConvertWithParametersResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IStampaConformeConverter">
+    <wsdl:operation name="IsAlive">
+      <wsdl:input wsaw:Action="http://Vecomp.StampaConforme.Office.Converter/IStampaConformeConverter/IsAlive" message="tns:IStampaConformeConverter_IsAlive_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.StampaConforme.Office.Converter/IStampaConformeConverter/IsAliveResponse" message="tns:IStampaConformeConverter_IsAlive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVersion">
+      <wsdl:input wsaw:Action="http://Vecomp.StampaConforme.Office.Converter/IStampaConformeConverter/GetVersion" message="tns:IStampaConformeConverter_GetVersion_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.StampaConforme.Office.Converter/IStampaConformeConverter/GetVersionResponse" message="tns:IStampaConformeConverter_GetVersion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Convert">
+      <wsdl:input wsaw:Action="http://Vecomp.StampaConforme.Office.Converter/IStampaConformeConverter/Convert" message="tns:IStampaConformeConverter_Convert_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.StampaConforme.Office.Converter/IStampaConformeConverter/ConvertResponse" message="tns:IStampaConformeConverter_Convert_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ConvertWithParameters">
+      <wsdl:input wsaw:Action="http://Vecomp.StampaConforme.Office.Converter/IStampaConformeConverter/ConvertWithParameters" message="tns:IStampaConformeConverter_ConvertWithParameters_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.StampaConforme.Office.Converter/IStampaConformeConverter/ConvertWithParametersResponse" message="tns:IStampaConformeConverter_ConvertWithParameters_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

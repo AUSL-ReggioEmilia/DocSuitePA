@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/RuleOperator" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/RuleOperator" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Enums" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="ArrayOfLog">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Log" nillable="true" type="tns:Log" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfLog" nillable="true" type="tns:ArrayOfLog" />
+  <xs:complexType name="Log">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Client" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="IdArchive" type="ser:guid" />
+          <xs:element minOccurs="0" name="IdCorrelation" nillable="true" type="ser:guid" />
+          <xs:element minOccurs="0" name="IdEntry" type="ser:guid" />
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Enums" minOccurs="0" name="IdOperationType" type="q2:LoggingOperationType" />
+          <xs:element minOccurs="0" name="IdStorage" type="ser:guid" />
+          <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Server" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="TimeStamp" nillable="true" type="xs:dateTime" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Log" nillable="true" type="tns:Log" />
+</xs:schema>

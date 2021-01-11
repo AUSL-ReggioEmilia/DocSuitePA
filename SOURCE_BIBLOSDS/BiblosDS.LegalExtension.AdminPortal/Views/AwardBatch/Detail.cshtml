@@ -1,0 +1,84 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.AwardBatches.AwardBatchDetailsViewModel
+@{
+    ViewBag.Title = "Dettaglio documenti";
+}
+
+
+@section featured {
+    <hgroup class="title">
+        <h1>@ViewBag.Title</h1>
+        <h4>@Model.Name</h4>
+    </hgroup>
+}
+
+<div style="padding:10px 0px 15px 0px;">
+    @Html.ActionLink("Ritorna ai pacchetti di versamento dell'archivio", "Index", new { id = Model.IdArchive })
+</div>
+
+@if (!Model.IsOpen)
+{
+    @(Html.Kendo().Window().Name("xmlwindow")
+        .Title("Visualizza pacchetto di versamento")
+        .Modal(true)
+        .Visible(false)
+        .Resizable()
+        .Animation(true)
+        .Width(600)
+        .Height(500)
+        .Actions(actions => {
+            actions.Maximize();
+            actions.Close();            
+        })
+        .Events(events => {
+            events.Open("onOpen");
+            events.Refresh("onRefresh");
+        })
+    )
+
+    <div style="margin-bottom: 10px;">
+        @Html.Kendo().Button().Name("pdvButton").Content("Pacchetto di versamento").Icon("txt").Events(e => e.Click("openWindow"))
+    </div>
+}
+
+<div>
+    @(Html.Kendo().Grid<BiblosDS.LegalExtension.AdminPortal.Models.DocumentItem>()
+        .Name("Grid")
+        .Columns(columns =>
+        {
+            columns.Bound(o => o.Name).Title("Nome File").Width(500);
+            columns.Bound(o => o.DateMain).Format("{0:dd/MM/yyyy}").Title("Data versamento");
+            columns.Bound(o => o.DocumentHash).Title("Impronta SHA");
+        })
+        .Pageable(pager => pager.Refresh(true))
+        .Resizable(a => a.Columns(true))
+        .Scrollable()
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .Model(model => model.Id(p => p.IdDocument))
+            .PageSize(10)
+            .Read(read => read.Action("GetAwardBatchDocuments", "AwardBatch", new { id = Model.IdAwardBatch }))
+        ))
+</div>
+
+<script type="text/javascript">
+    var myWindow;
+    $(function () {
+        myWindow = $("#xmlwindow");
+    });
+
+    function openWindow(e) {
+        var wnd = myWindow.data("kendoWindow");
+        wnd.refresh({
+            url: "@Url.Action("ViewAwardPDV", "AwardBatch", new { id = Model.IdAwardBatch })"
+        });
+        wnd.open().center();
+    }
+
+    function onOpen(e) {
+        kendo.ui.progress(e.sender.element, true);
+    }
+
+    function onRefresh(e) {
+        kendo.ui.progress(e.sender.element, false);
+    }
+</script>

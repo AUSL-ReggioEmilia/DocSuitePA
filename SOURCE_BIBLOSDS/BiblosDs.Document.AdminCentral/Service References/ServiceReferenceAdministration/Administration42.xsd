@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/ArchiveServerConfig" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/ArchiveServerConfig" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Archive" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Server" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="ArrayOfArchiveServerConfig">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ArchiveServerConfig" nillable="true" type="tns:ArchiveServerConfig" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfArchiveServerConfig" nillable="true" type="tns:ArrayOfArchiveServerConfig" />
+  <xs:complexType name="ArchiveServerConfig">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/Archive" minOccurs="0" name="Archive" nillable="true" type="q2:Archive" />
+          <xs:element minOccurs="0" name="IdArchiveServerConfig" type="ser:guid" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/Server" minOccurs="0" name="Server" nillable="true" type="q3:Server" />
+          <xs:element minOccurs="0" name="TransitEnabled" type="xs:boolean" />
+          <xs:element minOccurs="0" name="TransitPath" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="ArchiveServerConfig" nillable="true" type="tns:ArchiveServerConfig" />
+</xs:schema>

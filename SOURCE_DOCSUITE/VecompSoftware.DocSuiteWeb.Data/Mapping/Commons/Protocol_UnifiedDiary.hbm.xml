@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="UnifiedDiary">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <property name="Type" column="Type" />
+    <property name="LogDate" column="LogDate" />
+    <property name="LogType" column="LogType" />
+    <property name="LogDescription" column="LogDescription" />
+    <property name="User" column="User" />
+    <property name="Severity" column="Severity" />
+    <property name="UDSId" column="UDSId" />
+    <property name="IdUDSRepository" column="IdUDSRepository" />
+
+    <many-to-one name="Collaboration" column="IdCollaboration" class="Collaboration" lazy="proxy" cascade="none" not-null="false" not-found="ignore" />
+    <many-to-one name="Document" class="Document" not-found="ignore" lazy="proxy" insert="false" update="false" cascade="none" not-null="false">
+      <column name="DocmYear" />
+      <column name="DocmNumber" />
+    </many-to-one>
+    <many-to-one name="DocumentSeriesItem" column="IdDocumentSeriesItem" class="DocumentSeriesItem" lazy="proxy" cascade="none" not-null="false" not-found="ignore" />
+    <many-to-one name="Message" column="IdMessage" class="DSWMessage" lazy="proxy" cascade="none" not-null="false" not-found="ignore" />
+    <many-to-one name="PecMail" column="IDPECMail" class="PECMail" lazy="proxy" cascade="none" not-null="false" not-found="ignore" />
+    <many-to-one name="Protocol" class="Protocol" not-found="ignore" lazy="proxy" insert="false" update="false" cascade="none" not-null="false">
+      <column name="UniqueIdProtocol" />
+    </many-to-one>
+    <many-to-one name="Resolution" column="IdResolution" class="Resolution" lazy="proxy" not-found="ignore" not-null="false" />
+    
+  </class>
+
+  <sql-query name="GetUnifiedDiary">
+    <return alias="UnifiedDiary" class="UnifiedDiary" />
+    exec dbo.GetDiarioUnificatoTestata :IdTipologia, :DataDal, :DataAl, :User, :Subject, :IdTenantAOO
+  </sql-query>
+
+  <sql-query name="GetUnifiedDiaryDetails">
+    <return alias="UnifiedDiary" class="UnifiedDiary" />
+    exec dbo.GetDiarioUnificatoDettaglio :IdTipologia, :DataDal, :DataAl, :User, :Riferimento1, :Riferimento2, :Riferimento3, :IdTenantAOO
+  </sql-query>
+
+  <sql-query name="ProtUserDiary">
+    <![CDATA[
+        SELECT P.Year, P.Number, P.Object,
+          Convert(varchar, P.year) + '/' + Right('0000000' + Convert(varchar, P.number), 7) AS Codice,
+          PL.LogDate, Type='Prot',
+          PL.PI, PL.PS, PL.PD, PL.PZ, PL.PM, AdoptionDate = CAST(NULL as datetime), (CASE WHEN P.HandlerDate IS NOT NULL THEN 1 ELSE 0 END) AS IsHandled,
+          P.UniqueId AS UniqueIdProtocol
+          FROM Protocol P INNER JOIN (
+            SELECT
+            PL.UniqueIdProtocol, MAX(PL.LogDate) as LogDate,
+            SUM(CASE PL.LogType WHEN 'PI' THEN 1 ELSE 0 END) AS PI,
+            SUM(CASE PL.LogType WHEN 'PS' THEN 1 ELSE 0 END) AS PS,
+            SUM(CASE PL.LogType WHEN 'PD' THEN 1 ELSE 0 END) AS PD,
+            SUM(CASE PL.LogType WHEN 'PZ' THEN 1 ELSE 0 END) AS PZ,
+            SUM(CASE PL.LogType WHEN 'PM' THEN 1 ELSE 0 END) AS PM
+            FROM ProtocolLog AS PL
+            WHERE PL.SystemUser = :SystemUser
+            AND PL.LogDate >= :LogDateFrom
+            AND PL.LogDate <= :LogDateTo
+            GROUP BY PL.UniqueIdProtocol )
+          AS PL ON P.UniqueId = PL.UniqueIdProtocol
+          WHERE P.IdTenantAOO = :IdTenantAOO
+          ORDER BY PL.LogDate DESC
+      ]]>
+  </sql-query>
+
+
+</hibernate-mapping>

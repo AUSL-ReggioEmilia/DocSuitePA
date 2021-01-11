@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Comunicazione xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <DatiFornitura>
+    <CodiceFornitura>IMP00</CodiceFornitura>
+    <PeriodoImposta>%PeriodoImposta%</PeriodoImposta>
+    <TipoComunicazione>1</TipoComunicazione>
+  </DatiFornitura>
+  <DatiTitolareContabilita>
+    <DatiAnagr>
+      <CodFisc>02062090234</CodFisc>
+      <Denominazione>Dgroove Srl</Denominazione>
+      <DomFiscaleSedeLegale>
+        <ComuneStato>VILLAFRANCA DI VERONA</ComuneStato>
+        <SiglaProvincia>VR</SiglaProvincia>
+        <Indirizzo>
+          <FrazioneVia>VIA MONTE BALDO</FrazioneVia>
+          <NumeroCivico>6</NumeroCivico>
+          <Cap>37069</Cap>
+        </Indirizzo>
+      </DomFiscaleSedeLegale>
+    </DatiAnagr>
+    <FatturazioneElettronica>No</FatturazioneElettronica>
+  </DatiTitolareContabilita>
+  <DatiResponsabileConservazione>
+    <CodFisc>02062090234</CodFisc>
+    <Denominazione>Dgroove Srl</Denominazione>
+    <DomFiscaleSedeLegale>
+      <ComuneStato>VILLAFRANCA DI VERONA</ComuneStato>
+      <SiglaProvincia>VR</SiglaProvincia>
+      <Indirizzo>
+        <FrazioneVia>VIA MONTE BALDO</FrazioneVia>
+        <NumeroCivico>6</NumeroCivico>
+        <Cap>37069</Cap>
+      </Indirizzo>
+    </DomFiscaleSedeLegale>
+  </DatiResponsabileConservazione>
+  <DatiTrasmissione ciccia="puzza">
+    <SoggettoObbligatoTrasmissione>02062090234</SoggettoObbligatoTrasmissione>
+  </DatiTrasmissione>
+  <DatiArchivioInformatico ciccia="puzzettinen">
+    <LuogoConservazione>
+      <ComuneStato>VILLAFRANCA DI VERONA</ComuneStato>
+      <SiglaProvincia>VR</SiglaProvincia>
+      <Indirizzo>
+        <FrazioneVia>VIA MONTE BALDO</FrazioneVia>
+        <NumeroCivico>6</NumeroCivico>
+        <Cap>39069</Cap>
+      </Indirizzo>
+    </LuogoConservazione>
+    <Impronta>%Impronta%</Impronta>
+    <MarcaTemporale>%MarcaTemporale%</MarcaTemporale>
+    <IndiceDocumentiInArchivio>
+      <NumElemIndice>%NumDocumenti%</NumElemIndice>
+      %ListaDocumenti%
+    </IndiceDocumentiInArchivio>
+  </DatiArchivioInformatico>
+</Comunicazione>

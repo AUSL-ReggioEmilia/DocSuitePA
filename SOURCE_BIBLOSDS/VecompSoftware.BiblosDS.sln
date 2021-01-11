@@ -1,0 +1,645 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28917.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BiblosDS.UI", "BiblosDS.UI", "{CC620348-75D9-4F3B-BB07-122DAE34B1F7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BiblosDS.WCF", "BiblosDS.WCF", "{EF45BDF3-C4E7-4F38-B574-EDA86CA5083C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BiblosDS.Library.Storage", "BiblosDS.Library.Storage", "{23204686-B067-4792-88A4-02320CC7BDB6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalLibs", "ExternalLibs", "{35716559-8A36-49CC-9AD6-069CAEA3FB0B}"
+	ProjectSection(SolutionItems) = preProject
+		ExternalLibs\ICSharpCode.SharpZipLib.dll = ExternalLibs\ICSharpCode.SharpZipLib.dll
+		ExternalLibs\Interop.CCypher.dll = ExternalLibs\Interop.CCypher.dll
+		ExternalLibs\Microsoft.ServiceHosting.ServiceRuntime.dll = ExternalLibs\Microsoft.ServiceHosting.ServiceRuntime.dll
+		ExternalLibs\Microsoft.SharePoint.dll = ExternalLibs\Microsoft.SharePoint.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BiblosDS.WindowsService", "BiblosDS.WindowsService", "{1F197954-F29E-44DC-AB76-E8F4C7153AB7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharePoint2010", "SharePoint2010", "{7EAB0AB2-B007-4E2D-A809-A360B6F412FC}"
+	ProjectSection(SolutionItems) = preProject
+		ExternalLibs\SharePoint2010\Microsoft.SharePoint.Client.dll = ExternalLibs\SharePoint2010\Microsoft.SharePoint.Client.dll
+		ExternalLibs\SharePoint2010\Microsoft.SharePoint.Client.Runtime.dll = ExternalLibs\SharePoint2010\Microsoft.SharePoint.Client.Runtime.dll
+		ExternalLibs\SharePoint2010\Microsoft.SharePoint.Linq.dll = ExternalLibs\SharePoint2010\Microsoft.SharePoint.Linq.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Telerik", "Telerik", "{F675D3C4-4EBB-4D3E-842F-877FB475E4D4}"
+	ProjectSection(SolutionItems) = preProject
+		ExternalLibs\Telerik\Kendo.Mvc.dll = ExternalLibs\Telerik\Kendo.Mvc.dll
+		ExternalLibs\Telerik\Telerik.WinControls.dll = ExternalLibs\Telerik\Telerik.WinControls.dll
+		ExternalLibs\Telerik\Telerik.WinControls.Docking.dll = ExternalLibs\Telerik\Telerik.WinControls.Docking.dll
+		ExternalLibs\Telerik\Telerik.WinControls.GridView.dll = ExternalLibs\Telerik\Telerik.WinControls.GridView.dll
+		ExternalLibs\Telerik\Telerik.WinControls.RadDock.dll = ExternalLibs\Telerik\Telerik.WinControls.RadDock.dll
+		ExternalLibs\Telerik\Telerik.WinControls.UI.dll = ExternalLibs\Telerik\Telerik.WinControls.UI.dll
+		ExternalLibs\Telerik\TelerikCommon.dll = ExternalLibs\Telerik\TelerikCommon.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDs.Document.AdminCentral", "BiblosDs.Document.AdminCentral\BiblosDs.Document.AdminCentral.csproj", "{4268A9A6-6E7D-441F-83BC-C2408B041E76}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA} = {A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Common", "BiblosDS.Library.Common\BiblosDS.Library.Common.csproj", "{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Common.CompEd", "BiblosDS.Library.Common.CompEd\BiblosDS.Library.Common.CompEd.csproj", "{296B2D42-BE61-423F-8525-5CD8C8BF1677}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Common.Objects", "BiblosDS.Library.Common.Objects\BiblosDS.Library.Common.Objects.csproj", "{BE2B09F0-D141-41B7-820E-85FE7D9A7360}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.WCF.DigitalSign", "BiblosDS.WCF.DigitalSign\BiblosDS.WCF.DigitalSign.csproj", "{2938CC2A-7650-47D6-8020-6066792A0788}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.WCF.Documents", "BiblosDS.WCF.Documents\BiblosDS.WCF.Documents.csproj", "{7F6CBAFE-917B-41B7-AAC6-9CFEAFD7C9FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.WCF.Storage", "BiblosDS.WCF.Storage\BiblosDS.WCF.Storage.csproj", "{5C5F998D-61C1-4F68-848C-B127BEE1F50B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.IStorage", "BiblosDS.Library.IStorage\BiblosDS.Library.IStorage.csproj", "{373B3C22-ED21-43CD-8E4F-6820DB71E850}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Storage.Azure", "BiblosDS.Library.Storage.Azure\BiblosDS.Library.Storage.Azure.csproj", "{B56C2CBC-5CBD-46AC-B653-56988CC86CB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Storage.FileSystem", "BiblosDS.Library.Storage.LegacyBiblosDS\BiblosDS.Library.Storage.FileSystem.csproj", "{23320850-9E43-4560-9F2C-3AB3CD96A8BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Storage.SharePoint", "BiblosDS.Library.Storage.SharePoint\BiblosDS.Library.Storage.SharePoint.csproj", "{7D4F58B8-96E3-4055-8C22-01EB59DA6983}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Storage.SqlServer", "BiblosDS.Library.Storage.SQL2008\BiblosDS.Library.Storage.SqlServer.csproj", "{2BC55B3E-358C-47B6-9BC5-83CFB5E31933}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.WindowsService.WCFHost", "BiblosDS.WindowsService.WCFHost\BiblosDS.WindowsService.WCFHost.csproj", "{9772C7E4-04AF-49B2-ADF0-C1C4D1AE7FF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Storage.SharePoint2010DS", "BiblosDS.Library.Storage.SharePoint2010DS\BiblosDS.Library.Storage.SharePoint2010DS.csproj", "{7DDD9137-26CE-4BA6-B775-7F04CE32C0D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Storage.Ftp", "BiblosDS.Library.Storage.Ftp\BiblosDS.Library.Storage.Ftp.csproj", "{5653F486-1147-4606-A09F-5B3D3CF234D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Storage.BDSCom", "BiblosDS.Library.Storage.BDSCom\BiblosDS.Library.Storage.BDSCom.csproj", "{3657B5A7-6915-4964-8BB1-C79A91013D70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.WCF.Preservation", "BiblosDS.WCF.Preservation\BiblosDS.WCF.Preservation.csproj", "{D5B7D3B1-E3DE-4CFF-9AE6-6CE1C9A388CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Common.Preservation", "BiblosDS.Library.Common.Preservation\BiblosDS.Library.Common.Preservation.csproj", "{7A3FC3A4-FD1B-4426-8A05-437279F55CCC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5C5F998D-61C1-4F68-848C-B127BEE1F50B} = {5C5F998D-61C1-4F68-848C-B127BEE1F50B}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.WCF.WCFServices", "BiblosDS.WCF.WCFServices\BiblosDS.WCF.WCFServices.csproj", "{A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D5B7D3B1-E3DE-4CFF-9AE6-6CE1C9A388CA} = {D5B7D3B1-E3DE-4CFF-9AE6-6CE1C9A388CA}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.WindowsService.WCFHost_DigitalSign", "BiblosDS.WindowsService.WCFHost_DigitalSign\BiblosDS.WindowsService.WCFHost_DigitalSign.csproj", "{AFE2AAF7-0F2F-4F2E-989E-CFB2C918D874}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.WindowsService.Library", "BiblosDS.WindowsService.Library\BiblosDS.WindowsService.Library.csproj", "{C95B3495-5A1E-48A7-9819-7CD0DC37134E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Storage.SharePoint2010", "BiblosDS.Library.Storage.SharePoint2010\BiblosDS.Library.Storage.SharePoint2010.csproj", "{474346AF-ECE5-4F32-9D98-40DFED5A062F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.API", "BiblosDS.API\BiblosDS.API.csproj", "{EDFF1FA2-616C-45EA-9398-E80824FB3ECC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.Library.Storage.PaRERReferti", "BiblosDS.Library.Storage.PaRERReferti\BiblosDS.Library.Storage.PaRERReferti.csproj", "{3E00E01C-B002-4389-986D-41315D321C1C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{03390578-3E1A-4644-AE95-AD7AD7585C62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DataContract", "VecompSoftware.DataContract\VecompSoftware.DataContract.csproj", "{B1F470EF-081A-4186-B41B-73A5A38A0242}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.MessageContract", "VecompSoftware.MessageContract\VecompSoftware.MessageContract.csproj", "{D51EBE5E-2A4D-4FCF-B4BB-D52D40939DC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.MessageContract.BiblosDS", "VecompSoftware.MessageContract.BiblosDS\VecompSoftware.MessageContract.BiblosDS.csproj", "{B26A3765-61B1-4881-9769-3573CBAE89F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceContract", "VecompSoftware.ServiceContract\VecompSoftware.ServiceContract.csproj", "{C917A52B-467F-4976-88D7-0F5ECCE3E6E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.ServiceContract.BiblosDS", "VecompSoftware.ServiceContract.BiblosDS\VecompSoftware.ServiceContract.BiblosDS.csproj", "{7B33F200-7E95-4AE7-A993-995F3A4D2FF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.Common", "VecompSoftware.Commons\VecompSoftware.Common.csproj", "{54AD4B78-46B4-4A62-8EC2-228F29C0AE56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.CompEd", "VecompSoftware.CompEd\VecompSoftware.CompEd.csproj", "{229661D4-D040-4BC4-B4D2-BFD7A6170935}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.MagicNumber", "VecompSoftware.MagicNumber\VecompSoftware.MagicNumber.csproj", "{EB3904A7-F5E9-41CB-AE91-D81DC015CF78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblosDS.LegalExtension.AdminPortal", "BiblosDS.LegalExtension.AdminPortal\BiblosDS.LegalExtension.AdminPortal.csproj", "{4CCD926D-E638-4C13-B1BE-FB1B8D85D409}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{67186914-7A3B-49DA-ADCD-EDA58627654E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BiblosDS.WindowsService.Common", "VecompSoftware.BiblosDS.WindowsService.Common\VecompSoftware.BiblosDS.WindowsService.Common.csproj", "{AD128691-FEFE-4B1C-B873-9EE137B9E189}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BiblosDS.WindowsService.WebAPI", "VecompSoftware.BiblosDS.WindowsService.WebAPI\VecompSoftware.BiblosDS.WindowsService.WebAPI.csproj", "{C7FD27BE-6F45-4C51-B54D-6EB47A93845E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BiblosDS.Model", "VecompSoftware.BiblosDS.Model\VecompSoftware.BiblosDS.Model.csproj", "{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{7444E506-F6E8-4436-9657-88405B05658C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BiblosDS.Service.Storage", "VecompSoftware.BiblosDS.Service.Storage\VecompSoftware.BiblosDS.Service.Storage.csproj", "{8E30BECC-AF85-467D-BA7C-A1B61F584C00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.Sign", "VecompSoftware.Sign\VecompSoftware.Sign.csproj", "{3EF78364-A8E5-4D94-AA7F-E276190E5C5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.BiblosDS.WCF.Common", "VecompSoftware.BiblosDS.WCF.Common\VecompSoftware.BiblosDS.WCF.Common.csproj", "{B6988E8D-4B45-4D4B-8B8E-058BB6C18111}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4268A9A6-6E7D-441F-83BC-C2408B041E76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4268A9A6-6E7D-441F-83BC-C2408B041E76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4268A9A6-6E7D-441F-83BC-C2408B041E76}.Debug|x86.ActiveCfg = Debug|x86
+		{4268A9A6-6E7D-441F-83BC-C2408B041E76}.Debug|x86.Build.0 = Debug|x86
+		{4268A9A6-6E7D-441F-83BC-C2408B041E76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4268A9A6-6E7D-441F-83BC-C2408B041E76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4268A9A6-6E7D-441F-83BC-C2408B041E76}.Release|x86.ActiveCfg = Release|Any CPU
+		{4268A9A6-6E7D-441F-83BC-C2408B041E76}.Release|x86.Build.0 = Release|Any CPU
+		{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}.Debug|x86.ActiveCfg = Debug|x86
+		{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}.Debug|x86.Build.0 = Debug|x86
+		{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}.Release|x86.ActiveCfg = Release|Any CPU
+		{DB93D492-2AB1-42B8-A6BA-831EF3EF2841}.Release|x86.Build.0 = Release|Any CPU
+		{296B2D42-BE61-423F-8525-5CD8C8BF1677}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{296B2D42-BE61-423F-8525-5CD8C8BF1677}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{296B2D42-BE61-423F-8525-5CD8C8BF1677}.Debug|x86.ActiveCfg = Debug|x86
+		{296B2D42-BE61-423F-8525-5CD8C8BF1677}.Debug|x86.Build.0 = Debug|x86
+		{296B2D42-BE61-423F-8525-5CD8C8BF1677}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{296B2D42-BE61-423F-8525-5CD8C8BF1677}.Release|Any CPU.Build.0 = Release|Any CPU
+		{296B2D42-BE61-423F-8525-5CD8C8BF1677}.Release|x86.ActiveCfg = Release|Any CPU
+		{296B2D42-BE61-423F-8525-5CD8C8BF1677}.Release|x86.Build.0 = Release|Any CPU
+		{BE2B09F0-D141-41B7-820E-85FE7D9A7360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE2B09F0-D141-41B7-820E-85FE7D9A7360}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE2B09F0-D141-41B7-820E-85FE7D9A7360}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BE2B09F0-D141-41B7-820E-85FE7D9A7360}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE2B09F0-D141-41B7-820E-85FE7D9A7360}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE2B09F0-D141-41B7-820E-85FE7D9A7360}.Release|x86.ActiveCfg = Release|Any CPU
+		{2938CC2A-7650-47D6-8020-6066792A0788}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2938CC2A-7650-47D6-8020-6066792A0788}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2938CC2A-7650-47D6-8020-6066792A0788}.Debug|x86.ActiveCfg = Debug|x86
+		{2938CC2A-7650-47D6-8020-6066792A0788}.Debug|x86.Build.0 = Debug|x86
+		{2938CC2A-7650-47D6-8020-6066792A0788}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2938CC2A-7650-47D6-8020-6066792A0788}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2938CC2A-7650-47D6-8020-6066792A0788}.Release|x86.ActiveCfg = Release|x86
+		{2938CC2A-7650-47D6-8020-6066792A0788}.Release|x86.Build.0 = Release|x86
+		{7F6CBAFE-917B-41B7-AAC6-9CFEAFD7C9FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F6CBAFE-917B-41B7-AAC6-9CFEAFD7C9FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F6CBAFE-917B-41B7-AAC6-9CFEAFD7C9FC}.Debug|x86.ActiveCfg = Debug|x86
+		{7F6CBAFE-917B-41B7-AAC6-9CFEAFD7C9FC}.Debug|x86.Build.0 = Debug|x86
+		{7F6CBAFE-917B-41B7-AAC6-9CFEAFD7C9FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F6CBAFE-917B-41B7-AAC6-9CFEAFD7C9FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F6CBAFE-917B-41B7-AAC6-9CFEAFD7C9FC}.Release|x86.ActiveCfg = Release|x86
+		{7F6CBAFE-917B-41B7-AAC6-9CFEAFD7C9FC}.Release|x86.Build.0 = Release|x86
+		{5C5F998D-61C1-4F68-848C-B127BEE1F50B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C5F998D-61C1-4F68-848C-B127BEE1F50B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C5F998D-61C1-4F68-848C-B127BEE1F50B}.Debug|x86.ActiveCfg = Debug|x86
+		{5C5F998D-61C1-4F68-848C-B127BEE1F50B}.Debug|x86.Build.0 = Debug|x86
+		{5C5F998D-61C1-4F68-848C-B127BEE1F50B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C5F998D-61C1-4F68-848C-B127BEE1F50B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C5F998D-61C1-4F68-848C-B127BEE1F50B}.Release|x86.ActiveCfg = Release|x86
+		{5C5F998D-61C1-4F68-848C-B127BEE1F50B}.Release|x86.Build.0 = Release|x86
+		{373B3C22-ED21-43CD-8E4F-6820DB71E850}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{373B3C22-ED21-43CD-8E4F-6820DB71E850}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{373B3C22-ED21-43CD-8E4F-6820DB71E850}.Debug|x86.ActiveCfg = Debug|x86
+		{373B3C22-ED21-43CD-8E4F-6820DB71E850}.Debug|x86.Build.0 = Debug|x86
+		{373B3C22-ED21-43CD-8E4F-6820DB71E850}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{373B3C22-ED21-43CD-8E4F-6820DB71E850}.Release|Any CPU.Build.0 = Release|Any CPU
+		{373B3C22-ED21-43CD-8E4F-6820DB71E850}.Release|x86.ActiveCfg = Release|x86
+		{373B3C22-ED21-43CD-8E4F-6820DB71E850}.Release|x86.Build.0 = Release|x86
+		{B56C2CBC-5CBD-46AC-B653-56988CC86CB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B56C2CBC-5CBD-46AC-B653-56988CC86CB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B56C2CBC-5CBD-46AC-B653-56988CC86CB7}.Debug|x86.ActiveCfg = Debug|x86
+		{B56C2CBC-5CBD-46AC-B653-56988CC86CB7}.Debug|x86.Build.0 = Debug|x86
+		{B56C2CBC-5CBD-46AC-B653-56988CC86CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B56C2CBC-5CBD-46AC-B653-56988CC86CB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B56C2CBC-5CBD-46AC-B653-56988CC86CB7}.Release|x86.ActiveCfg = Release|x86
+		{B56C2CBC-5CBD-46AC-B653-56988CC86CB7}.Release|x86.Build.0 = Release|x86
+		{23320850-9E43-4560-9F2C-3AB3CD96A8BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23320850-9E43-4560-9F2C-3AB3CD96A8BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23320850-9E43-4560-9F2C-3AB3CD96A8BF}.Debug|x86.ActiveCfg = Debug|x86
+		{23320850-9E43-4560-9F2C-3AB3CD96A8BF}.Debug|x86.Build.0 = Debug|x86
+		{23320850-9E43-4560-9F2C-3AB3CD96A8BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23320850-9E43-4560-9F2C-3AB3CD96A8BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23320850-9E43-4560-9F2C-3AB3CD96A8BF}.Release|x86.ActiveCfg = Release|x86
+		{23320850-9E43-4560-9F2C-3AB3CD96A8BF}.Release|x86.Build.0 = Release|x86
+		{7D4F58B8-96E3-4055-8C22-01EB59DA6983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D4F58B8-96E3-4055-8C22-01EB59DA6983}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D4F58B8-96E3-4055-8C22-01EB59DA6983}.Debug|x86.ActiveCfg = Debug|x86
+		{7D4F58B8-96E3-4055-8C22-01EB59DA6983}.Debug|x86.Build.0 = Debug|x86
+		{7D4F58B8-96E3-4055-8C22-01EB59DA6983}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D4F58B8-96E3-4055-8C22-01EB59DA6983}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D4F58B8-96E3-4055-8C22-01EB59DA6983}.Release|x86.ActiveCfg = Release|x86
+		{7D4F58B8-96E3-4055-8C22-01EB59DA6983}.Release|x86.Build.0 = Release|x86
+		{2BC55B3E-358C-47B6-9BC5-83CFB5E31933}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BC55B3E-358C-47B6-9BC5-83CFB5E31933}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BC55B3E-358C-47B6-9BC5-83CFB5E31933}.Debug|x86.ActiveCfg = Debug|x86
+		{2BC55B3E-358C-47B6-9BC5-83CFB5E31933}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BC55B3E-358C-47B6-9BC5-83CFB5E31933}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BC55B3E-358C-47B6-9BC5-83CFB5E31933}.Release|x86.ActiveCfg = Release|x86
+		{2BC55B3E-358C-47B6-9BC5-83CFB5E31933}.Release|x86.Build.0 = Release|x86
+		{9772C7E4-04AF-49B2-ADF0-C1C4D1AE7FF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9772C7E4-04AF-49B2-ADF0-C1C4D1AE7FF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9772C7E4-04AF-49B2-ADF0-C1C4D1AE7FF0}.Debug|x86.ActiveCfg = Debug|x86
+		{9772C7E4-04AF-49B2-ADF0-C1C4D1AE7FF0}.Debug|x86.Build.0 = Debug|x86
+		{9772C7E4-04AF-49B2-ADF0-C1C4D1AE7FF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9772C7E4-04AF-49B2-ADF0-C1C4D1AE7FF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9772C7E4-04AF-49B2-ADF0-C1C4D1AE7FF0}.Release|x86.ActiveCfg = Release|x86
+		{9772C7E4-04AF-49B2-ADF0-C1C4D1AE7FF0}.Release|x86.Build.0 = Release|x86
+		{7DDD9137-26CE-4BA6-B775-7F04CE32C0D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DDD9137-26CE-4BA6-B775-7F04CE32C0D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DDD9137-26CE-4BA6-B775-7F04CE32C0D9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7DDD9137-26CE-4BA6-B775-7F04CE32C0D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DDD9137-26CE-4BA6-B775-7F04CE32C0D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DDD9137-26CE-4BA6-B775-7F04CE32C0D9}.Release|x86.ActiveCfg = Release|Any CPU
+		{5653F486-1147-4606-A09F-5B3D3CF234D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5653F486-1147-4606-A09F-5B3D3CF234D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5653F486-1147-4606-A09F-5B3D3CF234D3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5653F486-1147-4606-A09F-5B3D3CF234D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5653F486-1147-4606-A09F-5B3D3CF234D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5653F486-1147-4606-A09F-5B3D3CF234D3}.Release|x86.ActiveCfg = Release|Any CPU
+		{3657B5A7-6915-4964-8BB1-C79A91013D70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3657B5A7-6915-4964-8BB1-C79A91013D70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3657B5A7-6915-4964-8BB1-C79A91013D70}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3657B5A7-6915-4964-8BB1-C79A91013D70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3657B5A7-6915-4964-8BB1-C79A91013D70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3657B5A7-6915-4964-8BB1-C79A91013D70}.Release|x86.ActiveCfg = Release|Any CPU
+		{D5B7D3B1-E3DE-4CFF-9AE6-6CE1C9A388CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5B7D3B1-E3DE-4CFF-9AE6-6CE1C9A388CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5B7D3B1-E3DE-4CFF-9AE6-6CE1C9A388CA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D5B7D3B1-E3DE-4CFF-9AE6-6CE1C9A388CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5B7D3B1-E3DE-4CFF-9AE6-6CE1C9A388CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5B7D3B1-E3DE-4CFF-9AE6-6CE1C9A388CA}.Release|x86.ActiveCfg = Release|Any CPU
+		{7A3FC3A4-FD1B-4426-8A05-437279F55CCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A3FC3A4-FD1B-4426-8A05-437279F55CCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A3FC3A4-FD1B-4426-8A05-437279F55CCC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7A3FC3A4-FD1B-4426-8A05-437279F55CCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A3FC3A4-FD1B-4426-8A05-437279F55CCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A3FC3A4-FD1B-4426-8A05-437279F55CCC}.Release|x86.ActiveCfg = Release|Any CPU
+		{A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA}.Release|x86.ActiveCfg = Release|Any CPU
+		{AFE2AAF7-0F2F-4F2E-989E-CFB2C918D874}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{AFE2AAF7-0F2F-4F2E-989E-CFB2C918D874}.Debug|Any CPU.Build.0 = Debug|x86
+		{AFE2AAF7-0F2F-4F2E-989E-CFB2C918D874}.Debug|x86.ActiveCfg = Debug|x86
+		{AFE2AAF7-0F2F-4F2E-989E-CFB2C918D874}.Debug|x86.Build.0 = Debug|x86
+		{AFE2AAF7-0F2F-4F2E-989E-CFB2C918D874}.Release|Any CPU.ActiveCfg = Release|x86
+		{AFE2AAF7-0F2F-4F2E-989E-CFB2C918D874}.Release|Any CPU.Build.0 = Release|x86
+		{AFE2AAF7-0F2F-4F2E-989E-CFB2C918D874}.Release|x86.ActiveCfg = Release|x86
+		{AFE2AAF7-0F2F-4F2E-989E-CFB2C918D874}.Release|x86.Build.0 = Release|x86
+		{C95B3495-5A1E-48A7-9819-7CD0DC37134E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C95B3495-5A1E-48A7-9819-7CD0DC37134E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C95B3495-5A1E-48A7-9819-7CD0DC37134E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C95B3495-5A1E-48A7-9819-7CD0DC37134E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C95B3495-5A1E-48A7-9819-7CD0DC37134E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C95B3495-5A1E-48A7-9819-7CD0DC37134E}.Release|x86.ActiveCfg = Release|Any CPU
+		{474346AF-ECE5-4F32-9D98-40DFED5A062F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{474346AF-ECE5-4F32-9D98-40DFED5A062F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{474346AF-ECE5-4F32-9D98-40DFED5A062F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{474346AF-ECE5-4F32-9D98-40DFED5A062F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{474346AF-ECE5-4F32-9D98-40DFED5A062F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{474346AF-ECE5-4F32-9D98-40DFED5A062F}.Release|x86.ActiveCfg = Release|Any CPU
+		{EDFF1FA2-616C-45EA-9398-E80824FB3ECC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDFF1FA2-616C-45EA-9398-E80824FB3ECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDFF1FA2-616C-45EA-9398-E80824FB3ECC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EDFF1FA2-616C-45EA-9398-E80824FB3ECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDFF1FA2-616C-45EA-9398-E80824FB3ECC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDFF1FA2-616C-45EA-9398-E80824FB3ECC}.Release|x86.ActiveCfg = Release|Any CPU
+		{3E00E01C-B002-4389-986D-41315D321C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E00E01C-B002-4389-986D-41315D321C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E00E01C-B002-4389-986D-41315D321C1C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3E00E01C-B002-4389-986D-41315D321C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E00E01C-B002-4389-986D-41315D321C1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E00E01C-B002-4389-986D-41315D321C1C}.Release|x86.ActiveCfg = Release|Any CPU
+		{B1F470EF-081A-4186-B41B-73A5A38A0242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1F470EF-081A-4186-B41B-73A5A38A0242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1F470EF-081A-4186-B41B-73A5A38A0242}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B1F470EF-081A-4186-B41B-73A5A38A0242}.Debug|x86.Build.0 = Debug|Any CPU
+		{B1F470EF-081A-4186-B41B-73A5A38A0242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1F470EF-081A-4186-B41B-73A5A38A0242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1F470EF-081A-4186-B41B-73A5A38A0242}.Release|x86.ActiveCfg = Release|Any CPU
+		{B1F470EF-081A-4186-B41B-73A5A38A0242}.Release|x86.Build.0 = Release|Any CPU
+		{D51EBE5E-2A4D-4FCF-B4BB-D52D40939DC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D51EBE5E-2A4D-4FCF-B4BB-D52D40939DC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D51EBE5E-2A4D-4FCF-B4BB-D52D40939DC0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D51EBE5E-2A4D-4FCF-B4BB-D52D40939DC0}.Debug|x86.Build.0 = Debug|Any CPU
+		{D51EBE5E-2A4D-4FCF-B4BB-D52D40939DC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D51EBE5E-2A4D-4FCF-B4BB-D52D40939DC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D51EBE5E-2A4D-4FCF-B4BB-D52D40939DC0}.Release|x86.ActiveCfg = Release|Any CPU
+		{D51EBE5E-2A4D-4FCF-B4BB-D52D40939DC0}.Release|x86.Build.0 = Release|Any CPU
+		{B26A3765-61B1-4881-9769-3573CBAE89F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B26A3765-61B1-4881-9769-3573CBAE89F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B26A3765-61B1-4881-9769-3573CBAE89F0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B26A3765-61B1-4881-9769-3573CBAE89F0}.Debug|x86.Build.0 = Debug|Any CPU
+		{B26A3765-61B1-4881-9769-3573CBAE89F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B26A3765-61B1-4881-9769-3573CBAE89F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B26A3765-61B1-4881-9769-3573CBAE89F0}.Release|x86.ActiveCfg = Release|Any CPU
+		{B26A3765-61B1-4881-9769-3573CBAE89F0}.Release|x86.Build.0 = Release|Any CPU
+		{C917A52B-467F-4976-88D7-0F5ECCE3E6E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C917A52B-467F-4976-88D7-0F5ECCE3E6E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C917A52B-467F-4976-88D7-0F5ECCE3E6E5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C917A52B-467F-4976-88D7-0F5ECCE3E6E5}.Debug|x86.Build.0 = Debug|Any CPU
+		{C917A52B-467F-4976-88D7-0F5ECCE3E6E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C917A52B-467F-4976-88D7-0F5ECCE3E6E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C917A52B-467F-4976-88D7-0F5ECCE3E6E5}.Release|x86.ActiveCfg = Release|Any CPU
+		{C917A52B-467F-4976-88D7-0F5ECCE3E6E5}.Release|x86.Build.0 = Release|Any CPU
+		{7B33F200-7E95-4AE7-A993-995F3A4D2FF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B33F200-7E95-4AE7-A993-995F3A4D2FF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B33F200-7E95-4AE7-A993-995F3A4D2FF3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7B33F200-7E95-4AE7-A993-995F3A4D2FF3}.Debug|x86.Build.0 = Debug|Any CPU
+		{7B33F200-7E95-4AE7-A993-995F3A4D2FF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B33F200-7E95-4AE7-A993-995F3A4D2FF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B33F200-7E95-4AE7-A993-995F3A4D2FF3}.Release|x86.ActiveCfg = Release|Any CPU
+		{7B33F200-7E95-4AE7-A993-995F3A4D2FF3}.Release|x86.Build.0 = Release|Any CPU
+		{54AD4B78-46B4-4A62-8EC2-228F29C0AE56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54AD4B78-46B4-4A62-8EC2-228F29C0AE56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54AD4B78-46B4-4A62-8EC2-228F29C0AE56}.Debug|x86.ActiveCfg = Debug|x86
+		{54AD4B78-46B4-4A62-8EC2-228F29C0AE56}.Debug|x86.Build.0 = Debug|x86
+		{54AD4B78-46B4-4A62-8EC2-228F29C0AE56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54AD4B78-46B4-4A62-8EC2-228F29C0AE56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54AD4B78-46B4-4A62-8EC2-228F29C0AE56}.Release|x86.ActiveCfg = Release|x86
+		{54AD4B78-46B4-4A62-8EC2-228F29C0AE56}.Release|x86.Build.0 = Release|x86
+		{229661D4-D040-4BC4-B4D2-BFD7A6170935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{229661D4-D040-4BC4-B4D2-BFD7A6170935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{229661D4-D040-4BC4-B4D2-BFD7A6170935}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{229661D4-D040-4BC4-B4D2-BFD7A6170935}.Debug|x86.Build.0 = Debug|Any CPU
+		{229661D4-D040-4BC4-B4D2-BFD7A6170935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{229661D4-D040-4BC4-B4D2-BFD7A6170935}.Release|Any CPU.Build.0 = Release|Any CPU
+		{229661D4-D040-4BC4-B4D2-BFD7A6170935}.Release|x86.ActiveCfg = Release|Any CPU
+		{229661D4-D040-4BC4-B4D2-BFD7A6170935}.Release|x86.Build.0 = Release|Any CPU
+		{EB3904A7-F5E9-41CB-AE91-D81DC015CF78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB3904A7-F5E9-41CB-AE91-D81DC015CF78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB3904A7-F5E9-41CB-AE91-D81DC015CF78}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EB3904A7-F5E9-41CB-AE91-D81DC015CF78}.Debug|x86.Build.0 = Debug|Any CPU
+		{EB3904A7-F5E9-41CB-AE91-D81DC015CF78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB3904A7-F5E9-41CB-AE91-D81DC015CF78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB3904A7-F5E9-41CB-AE91-D81DC015CF78}.Release|x86.ActiveCfg = Release|Any CPU
+		{EB3904A7-F5E9-41CB-AE91-D81DC015CF78}.Release|x86.Build.0 = Release|Any CPU
+		{4CCD926D-E638-4C13-B1BE-FB1B8D85D409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CCD926D-E638-4C13-B1BE-FB1B8D85D409}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CCD926D-E638-4C13-B1BE-FB1B8D85D409}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4CCD926D-E638-4C13-B1BE-FB1B8D85D409}.Debug|x86.Build.0 = Debug|Any CPU
+		{4CCD926D-E638-4C13-B1BE-FB1B8D85D409}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CCD926D-E638-4C13-B1BE-FB1B8D85D409}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CCD926D-E638-4C13-B1BE-FB1B8D85D409}.Release|x86.ActiveCfg = Release|Any CPU
+		{4CCD926D-E638-4C13-B1BE-FB1B8D85D409}.Release|x86.Build.0 = Release|Any CPU
+		{AD128691-FEFE-4B1C-B873-9EE137B9E189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD128691-FEFE-4B1C-B873-9EE137B9E189}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD128691-FEFE-4B1C-B873-9EE137B9E189}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AD128691-FEFE-4B1C-B873-9EE137B9E189}.Debug|x86.Build.0 = Debug|Any CPU
+		{AD128691-FEFE-4B1C-B873-9EE137B9E189}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD128691-FEFE-4B1C-B873-9EE137B9E189}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD128691-FEFE-4B1C-B873-9EE137B9E189}.Release|x86.ActiveCfg = Release|Any CPU
+		{AD128691-FEFE-4B1C-B873-9EE137B9E189}.Release|x86.Build.0 = Release|Any CPU
+		{C7FD27BE-6F45-4C51-B54D-6EB47A93845E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7FD27BE-6F45-4C51-B54D-6EB47A93845E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7FD27BE-6F45-4C51-B54D-6EB47A93845E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C7FD27BE-6F45-4C51-B54D-6EB47A93845E}.Debug|x86.Build.0 = Debug|Any CPU
+		{C7FD27BE-6F45-4C51-B54D-6EB47A93845E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7FD27BE-6F45-4C51-B54D-6EB47A93845E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7FD27BE-6F45-4C51-B54D-6EB47A93845E}.Release|x86.ActiveCfg = Release|Any CPU
+		{C7FD27BE-6F45-4C51-B54D-6EB47A93845E}.Release|x86.Build.0 = Release|Any CPU
+		{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}.Debug|x86.Build.0 = Debug|Any CPU
+		{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}.Release|x86.ActiveCfg = Release|Any CPU
+		{B99FC765-98EB-4BEF-A81C-3B6D60E3C187}.Release|x86.Build.0 = Release|Any CPU
+		{8E30BECC-AF85-467D-BA7C-A1B61F584C00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E30BECC-AF85-467D-BA7C-A1B61F584C00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E30BECC-AF85-467D-BA7C-A1B61F584C00}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8E30BECC-AF85-467D-BA7C-A1B61F584C00}.Debug|x86.Build.0 = Debug|Any CPU
+		{8E30BECC-AF85-467D-BA7C-A1B61F584C00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E30BECC-AF85-467D-BA7C-A1B61F584C00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E30BECC-AF85-467D-BA7C-A1B61F584C00}.Release|x86.ActiveCfg = Release|Any CPU
+		{8E30BECC-AF85-467D-BA7C-A1B61F584C00}.Release|x86.Build.0 = Release|Any CPU
+		{3EF78364-A8E5-4D94-AA7F-E276190E5C5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EF78364-A8E5-4D94-AA7F-E276190E5C5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EF78364-A8E5-4D94-AA7F-E276190E5C5C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3EF78364-A8E5-4D94-AA7F-E276190E5C5C}.Debug|x86.Build.0 = Debug|Any CPU
+		{3EF78364-A8E5-4D94-AA7F-E276190E5C5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EF78364-A8E5-4D94-AA7F-E276190E5C5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EF78364-A8E5-4D94-AA7F-E276190E5C5C}.Release|x86.ActiveCfg = Release|Any CPU
+		{3EF78364-A8E5-4D94-AA7F-E276190E5C5C}.Release|x86.Build.0 = Release|Any CPU
+		{B6988E8D-4B45-4D4B-8B8E-058BB6C18111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6988E8D-4B45-4D4B-8B8E-058BB6C18111}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6988E8D-4B45-4D4B-8B8E-058BB6C18111}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B6988E8D-4B45-4D4B-8B8E-058BB6C18111}.Debug|x86.Build.0 = Debug|Any CPU
+		{B6988E8D-4B45-4D4B-8B8E-058BB6C18111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6988E8D-4B45-4D4B-8B8E-058BB6C18111}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6988E8D-4B45-4D4B-8B8E-058BB6C18111}.Release|x86.ActiveCfg = Release|Any CPU
+		{B6988E8D-4B45-4D4B-8B8E-058BB6C18111}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7EAB0AB2-B007-4E2D-A809-A360B6F412FC} = {35716559-8A36-49CC-9AD6-069CAEA3FB0B}
+		{F675D3C4-4EBB-4D3E-842F-877FB475E4D4} = {35716559-8A36-49CC-9AD6-069CAEA3FB0B}
+		{4268A9A6-6E7D-441F-83BC-C2408B041E76} = {CC620348-75D9-4F3B-BB07-122DAE34B1F7}
+		{DB93D492-2AB1-42B8-A6BA-831EF3EF2841} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+		{296B2D42-BE61-423F-8525-5CD8C8BF1677} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+		{BE2B09F0-D141-41B7-820E-85FE7D9A7360} = {03390578-3E1A-4644-AE95-AD7AD7585C62}
+		{2938CC2A-7650-47D6-8020-6066792A0788} = {EF45BDF3-C4E7-4F38-B574-EDA86CA5083C}
+		{7F6CBAFE-917B-41B7-AAC6-9CFEAFD7C9FC} = {EF45BDF3-C4E7-4F38-B574-EDA86CA5083C}
+		{5C5F998D-61C1-4F68-848C-B127BEE1F50B} = {EF45BDF3-C4E7-4F38-B574-EDA86CA5083C}
+		{373B3C22-ED21-43CD-8E4F-6820DB71E850} = {23204686-B067-4792-88A4-02320CC7BDB6}
+		{B56C2CBC-5CBD-46AC-B653-56988CC86CB7} = {23204686-B067-4792-88A4-02320CC7BDB6}
+		{23320850-9E43-4560-9F2C-3AB3CD96A8BF} = {23204686-B067-4792-88A4-02320CC7BDB6}
+		{7D4F58B8-96E3-4055-8C22-01EB59DA6983} = {23204686-B067-4792-88A4-02320CC7BDB6}
+		{2BC55B3E-358C-47B6-9BC5-83CFB5E31933} = {23204686-B067-4792-88A4-02320CC7BDB6}
+		{9772C7E4-04AF-49B2-ADF0-C1C4D1AE7FF0} = {1F197954-F29E-44DC-AB76-E8F4C7153AB7}
+		{7DDD9137-26CE-4BA6-B775-7F04CE32C0D9} = {23204686-B067-4792-88A4-02320CC7BDB6}
+		{5653F486-1147-4606-A09F-5B3D3CF234D3} = {23204686-B067-4792-88A4-02320CC7BDB6}
+		{3657B5A7-6915-4964-8BB1-C79A91013D70} = {23204686-B067-4792-88A4-02320CC7BDB6}
+		{D5B7D3B1-E3DE-4CFF-9AE6-6CE1C9A388CA} = {EF45BDF3-C4E7-4F38-B574-EDA86CA5083C}
+		{7A3FC3A4-FD1B-4426-8A05-437279F55CCC} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+		{A2C9E2DF-4EFB-4BB2-BAF8-3DE30F8796DA} = {EF45BDF3-C4E7-4F38-B574-EDA86CA5083C}
+		{AFE2AAF7-0F2F-4F2E-989E-CFB2C918D874} = {1F197954-F29E-44DC-AB76-E8F4C7153AB7}
+		{C95B3495-5A1E-48A7-9819-7CD0DC37134E} = {1F197954-F29E-44DC-AB76-E8F4C7153AB7}
+		{474346AF-ECE5-4F32-9D98-40DFED5A062F} = {23204686-B067-4792-88A4-02320CC7BDB6}
+		{EDFF1FA2-616C-45EA-9398-E80824FB3ECC} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+		{3E00E01C-B002-4389-986D-41315D321C1C} = {23204686-B067-4792-88A4-02320CC7BDB6}
+		{B1F470EF-081A-4186-B41B-73A5A38A0242} = {03390578-3E1A-4644-AE95-AD7AD7585C62}
+		{D51EBE5E-2A4D-4FCF-B4BB-D52D40939DC0} = {03390578-3E1A-4644-AE95-AD7AD7585C62}
+		{B26A3765-61B1-4881-9769-3573CBAE89F0} = {03390578-3E1A-4644-AE95-AD7AD7585C62}
+		{C917A52B-467F-4976-88D7-0F5ECCE3E6E5} = {03390578-3E1A-4644-AE95-AD7AD7585C62}
+		{7B33F200-7E95-4AE7-A993-995F3A4D2FF3} = {03390578-3E1A-4644-AE95-AD7AD7585C62}
+		{54AD4B78-46B4-4A62-8EC2-228F29C0AE56} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+		{229661D4-D040-4BC4-B4D2-BFD7A6170935} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+		{EB3904A7-F5E9-41CB-AE91-D81DC015CF78} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+		{4CCD926D-E638-4C13-B1BE-FB1B8D85D409} = {CC620348-75D9-4F3B-BB07-122DAE34B1F7}
+		{AD128691-FEFE-4B1C-B873-9EE137B9E189} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+		{C7FD27BE-6F45-4C51-B54D-6EB47A93845E} = {1F197954-F29E-44DC-AB76-E8F4C7153AB7}
+		{B99FC765-98EB-4BEF-A81C-3B6D60E3C187} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+		{8E30BECC-AF85-467D-BA7C-A1B61F584C00} = {7444E506-F6E8-4436-9657-88405B05658C}
+		{3EF78364-A8E5-4D94-AA7F-E276190E5C5C} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+		{B6988E8D-4B45-4D4B-8B8E-058BB6C18111} = {67186914-7A3B-49DA-ADCD-EDA58627654E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D6914BC6-7FD5-44EC-8D4F-2EDF79EC67EA}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 40
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://dev.azure.com/docsuiteweb
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = BiblosDs.Document.AdminCentral\\BiblosDs.Document.AdminCentral.csproj
+		SccProjectTopLevelParentUniqueName1 = VecompSoftware.BiblosDS.sln
+		SccProjectName1 = BiblosDs.Document.AdminCentral
+		SccLocalPath1 = BiblosDs.Document.AdminCentral
+		SccProjectUniqueName2 = BiblosDS.Library.Common\\BiblosDS.Library.Common.csproj
+		SccProjectTopLevelParentUniqueName2 = VecompSoftware.BiblosDS.sln
+		SccProjectName2 = BiblosDS.Library.Common
+		SccLocalPath2 = BiblosDS.Library.Common
+		SccProjectUniqueName3 = BiblosDS.Library.Common.CompEd\\BiblosDS.Library.Common.CompEd.csproj
+		SccProjectTopLevelParentUniqueName3 = VecompSoftware.BiblosDS.sln
+		SccProjectName3 = BiblosDS.Library.Common.CompEd
+		SccLocalPath3 = BiblosDS.Library.Common.CompEd
+		SccProjectUniqueName4 = BiblosDS.WCF.DigitalSign\\BiblosDS.WCF.DigitalSign.csproj
+		SccProjectTopLevelParentUniqueName4 = VecompSoftware.BiblosDS.sln
+		SccProjectName4 = BiblosDS.WCF.DigitalSign
+		SccLocalPath4 = BiblosDS.WCF.DigitalSign
+		SccProjectUniqueName5 = BiblosDS.WCF.Documents\\BiblosDS.WCF.Documents.csproj
+		SccProjectTopLevelParentUniqueName5 = VecompSoftware.BiblosDS.sln
+		SccProjectName5 = BiblosDS.WCF.Documents
+		SccLocalPath5 = BiblosDS.WCF.Documents
+		SccProjectUniqueName6 = BiblosDS.WCF.Storage\\BiblosDS.WCF.Storage.csproj
+		SccProjectTopLevelParentUniqueName6 = VecompSoftware.BiblosDS.sln
+		SccProjectName6 = BiblosDS.WCF.Storage
+		SccLocalPath6 = BiblosDS.WCF.Storage
+		SccProjectUniqueName7 = BiblosDS.Library.IStorage\\BiblosDS.Library.IStorage.csproj
+		SccProjectTopLevelParentUniqueName7 = VecompSoftware.BiblosDS.sln
+		SccProjectName7 = BiblosDS.Library.IStorage
+		SccLocalPath7 = BiblosDS.Library.IStorage
+		SccProjectUniqueName8 = BiblosDS.Library.Storage.Azure\\BiblosDS.Library.Storage.Azure.csproj
+		SccProjectTopLevelParentUniqueName8 = VecompSoftware.BiblosDS.sln
+		SccProjectName8 = BiblosDS.Library.Storage.Azure
+		SccLocalPath8 = BiblosDS.Library.Storage.Azure
+		SccProjectUniqueName9 = BiblosDS.Library.Storage.LegacyBiblosDS\\BiblosDS.Library.Storage.FileSystem.csproj
+		SccProjectTopLevelParentUniqueName9 = VecompSoftware.BiblosDS.sln
+		SccProjectName9 = BiblosDS.Library.Storage.LegacyBiblosDS
+		SccLocalPath9 = BiblosDS.Library.Storage.LegacyBiblosDS
+		SccProjectUniqueName10 = BiblosDS.Library.Storage.SharePoint\\BiblosDS.Library.Storage.SharePoint.csproj
+		SccProjectTopLevelParentUniqueName10 = VecompSoftware.BiblosDS.sln
+		SccProjectName10 = BiblosDS.Library.Storage.SharePoint
+		SccLocalPath10 = BiblosDS.Library.Storage.SharePoint
+		SccProjectUniqueName11 = BiblosDS.Library.Storage.SQL2008\\BiblosDS.Library.Storage.SqlServer.csproj
+		SccProjectTopLevelParentUniqueName11 = VecompSoftware.BiblosDS.sln
+		SccProjectName11 = BiblosDS.Library.Storage.SQL2008
+		SccLocalPath11 = BiblosDS.Library.Storage.SQL2008
+		SccProjectUniqueName12 = BiblosDS.WindowsService.WCFHost\\BiblosDS.WindowsService.WCFHost.csproj
+		SccProjectTopLevelParentUniqueName12 = VecompSoftware.BiblosDS.sln
+		SccProjectName12 = BiblosDS.WindowsService.WCFHost
+		SccLocalPath12 = BiblosDS.WindowsService.WCFHost
+		SccProjectUniqueName13 = BiblosDS.Library.Storage.SharePoint2010DS\\BiblosDS.Library.Storage.SharePoint2010DS.csproj
+		SccProjectTopLevelParentUniqueName13 = VecompSoftware.BiblosDS.sln
+		SccProjectName13 = BiblosDS.Library.Storage.SharePoint2010DS
+		SccLocalPath13 = BiblosDS.Library.Storage.SharePoint2010DS
+		SccProjectUniqueName14 = BiblosDS.Library.Storage.Ftp\\BiblosDS.Library.Storage.Ftp.csproj
+		SccProjectTopLevelParentUniqueName14 = VecompSoftware.BiblosDS.sln
+		SccProjectName14 = BiblosDS.Library.Storage.Ftp
+		SccLocalPath14 = BiblosDS.Library.Storage.Ftp
+		SccProjectUniqueName15 = BiblosDS.Library.Storage.BDSCom\\BiblosDS.Library.Storage.BDSCom.csproj
+		SccProjectTopLevelParentUniqueName15 = VecompSoftware.BiblosDS.sln
+		SccProjectName15 = BiblosDS.Library.Storage.BDSCom
+		SccLocalPath15 = BiblosDS.Library.Storage.BDSCom
+		SccProjectUniqueName16 = BiblosDS.WCF.Preservation\\BiblosDS.WCF.Preservation.csproj
+		SccProjectTopLevelParentUniqueName16 = VecompSoftware.BiblosDS.sln
+		SccProjectName16 = BiblosDS.WCF.Preservation
+		SccLocalPath16 = BiblosDS.WCF.Preservation
+		SccProjectUniqueName17 = BiblosDS.Library.Common.Preservation\\BiblosDS.Library.Common.Preservation.csproj
+		SccProjectTopLevelParentUniqueName17 = VecompSoftware.BiblosDS.sln
+		SccProjectName17 = BiblosDS.Library.Common.Preservation
+		SccLocalPath17 = BiblosDS.Library.Common.Preservation
+		SccProjectUniqueName18 = BiblosDS.WCF.WCFServices\\BiblosDS.WCF.WCFServices.csproj
+		SccProjectTopLevelParentUniqueName18 = VecompSoftware.BiblosDS.sln
+		SccProjectName18 = BiblosDS.WCF.WCFServices
+		SccLocalPath18 = BiblosDS.WCF.WCFServices
+		SccProjectUniqueName19 = BiblosDS.WindowsService.WCFHost_DigitalSign\\BiblosDS.WindowsService.WCFHost_DigitalSign.csproj
+		SccProjectTopLevelParentUniqueName19 = VecompSoftware.BiblosDS.sln
+		SccProjectName19 = BiblosDS.WindowsService.WCFHost_DigitalSign
+		SccLocalPath19 = BiblosDS.WindowsService.WCFHost_DigitalSign
+		SccProjectUniqueName20 = BiblosDS.WindowsService.Library\\BiblosDS.WindowsService.Library.csproj
+		SccProjectTopLevelParentUniqueName20 = VecompSoftware.BiblosDS.sln
+		SccProjectName20 = BiblosDS.WindowsService.Library
+		SccLocalPath20 = BiblosDS.WindowsService.Library
+		SccProjectUniqueName21 = BiblosDS.Library.Storage.SharePoint2010\\BiblosDS.Library.Storage.SharePoint2010.csproj
+		SccProjectTopLevelParentUniqueName21 = VecompSoftware.BiblosDS.sln
+		SccProjectName21 = BiblosDS.Library.Storage.SharePoint2010
+		SccLocalPath21 = BiblosDS.Library.Storage.SharePoint2010
+		SccProjectUniqueName22 = BiblosDS.API\\BiblosDS.API.csproj
+		SccProjectTopLevelParentUniqueName22 = VecompSoftware.BiblosDS.sln
+		SccProjectName22 = BiblosDS.API
+		SccLocalPath22 = BiblosDS.API
+		SccProjectUniqueName23 = BiblosDS.Library.Storage.PaRERReferti\\BiblosDS.Library.Storage.PaRERReferti.csproj
+		SccProjectTopLevelParentUniqueName23 = VecompSoftware.BiblosDS.sln
+		SccProjectName23 = BiblosDS.Library.Storage.PaRERReferti
+		SccLocalPath23 = BiblosDS.Library.Storage.PaRERReferti
+		SccProjectUniqueName24 = BiblosDS.Library.Common.Objects\\BiblosDS.Library.Common.Objects.csproj
+		SccProjectTopLevelParentUniqueName24 = VecompSoftware.BiblosDS.sln
+		SccProjectName24 = BiblosDS.Library.Common.Objects
+		SccLocalPath24 = BiblosDS.Library.Common.Objects
+		SccProjectUniqueName25 = VecompSoftware.DataContract\\VecompSoftware.DataContract.csproj
+		SccProjectTopLevelParentUniqueName25 = VecompSoftware.BiblosDS.sln
+		SccProjectName25 = VecompSoftware.DataContract
+		SccLocalPath25 = VecompSoftware.DataContract
+		SccProjectUniqueName26 = VecompSoftware.MessageContract\\VecompSoftware.MessageContract.csproj
+		SccProjectTopLevelParentUniqueName26 = VecompSoftware.BiblosDS.sln
+		SccProjectName26 = VecompSoftware.MessageContract
+		SccLocalPath26 = VecompSoftware.MessageContract
+		SccProjectUniqueName27 = VecompSoftware.MessageContract.BiblosDS\\VecompSoftware.MessageContract.BiblosDS.csproj
+		SccProjectTopLevelParentUniqueName27 = VecompSoftware.BiblosDS.sln
+		SccProjectName27 = VecompSoftware.MessageContract.BiblosDS
+		SccLocalPath27 = VecompSoftware.MessageContract.BiblosDS
+		SccProjectUniqueName28 = VecompSoftware.ServiceContract\\VecompSoftware.ServiceContract.csproj
+		SccProjectTopLevelParentUniqueName28 = VecompSoftware.BiblosDS.sln
+		SccProjectName28 = VecompSoftware.ServiceContract
+		SccLocalPath28 = VecompSoftware.ServiceContract
+		SccProjectUniqueName29 = VecompSoftware.ServiceContract.BiblosDS\\VecompSoftware.ServiceContract.BiblosDS.csproj
+		SccProjectTopLevelParentUniqueName29 = VecompSoftware.BiblosDS.sln
+		SccProjectName29 = VecompSoftware.ServiceContract.BiblosDS
+		SccLocalPath29 = VecompSoftware.ServiceContract.BiblosDS
+		SccProjectUniqueName30 = VecompSoftware.Commons\\VecompSoftware.Common.csproj
+		SccProjectTopLevelParentUniqueName30 = VecompSoftware.BiblosDS.sln
+		SccProjectName30 = VecompSoftware.Commons
+		SccLocalPath30 = VecompSoftware.Commons
+		SccProjectUniqueName31 = VecompSoftware.CompEd\\VecompSoftware.CompEd.csproj
+		SccProjectTopLevelParentUniqueName31 = VecompSoftware.BiblosDS.sln
+		SccProjectName31 = VecompSoftware.CompEd
+		SccLocalPath31 = VecompSoftware.CompEd
+		SccProjectUniqueName32 = VecompSoftware.MagicNumber\\VecompSoftware.MagicNumber.csproj
+		SccProjectTopLevelParentUniqueName32 = VecompSoftware.BiblosDS.sln
+		SccProjectName32 = VecompSoftware.MagicNumber
+		SccLocalPath32 = VecompSoftware.MagicNumber
+		SccProjectUniqueName33 = BiblosDS.LegalExtension.AdminPortal\\BiblosDS.LegalExtension.AdminPortal.csproj
+		SccProjectTopLevelParentUniqueName33 = VecompSoftware.BiblosDS.sln
+		SccProjectName33 = BiblosDS.LegalExtension.AdminPortal
+		SccLocalPath33 = BiblosDS.LegalExtension.AdminPortal
+		SccProjectUniqueName34 = VecompSoftware.BiblosDS.WindowsService.Common\\VecompSoftware.BiblosDS.WindowsService.Common.csproj
+		SccProjectTopLevelParentUniqueName34 = VecompSoftware.BiblosDS.sln
+		SccProjectName34 = VecompSoftware.BiblosDS.WindowsService.Common
+		SccLocalPath34 = VecompSoftware.BiblosDS.WindowsService.Common
+		SccProjectUniqueName35 = VecompSoftware.BiblosDS.WindowsService.WebAPI\\VecompSoftware.BiblosDS.WindowsService.WebAPI.csproj
+		SccProjectTopLevelParentUniqueName35 = VecompSoftware.BiblosDS.sln
+		SccProjectName35 = VecompSoftware.BiblosDS.WindowsService.WebAPI
+		SccLocalPath35 = VecompSoftware.BiblosDS.WindowsService.WebAPI
+		SccProjectUniqueName36 = VecompSoftware.BiblosDS.Model\\VecompSoftware.BiblosDS.Model.csproj
+		SccProjectTopLevelParentUniqueName36 = VecompSoftware.BiblosDS.sln
+		SccProjectName36 = VecompSoftware.BiblosDS.Model
+		SccLocalPath36 = VecompSoftware.BiblosDS.Model
+		SccProjectUniqueName37 = VecompSoftware.BiblosDS.Service.Storage\\VecompSoftware.BiblosDS.Service.Storage.csproj
+		SccProjectTopLevelParentUniqueName37 = VecompSoftware.BiblosDS.sln
+		SccProjectName37 = VecompSoftware.BiblosDS.Service.Storage
+		SccLocalPath37 = VecompSoftware.BiblosDS.Service.Storage
+		SccProjectUniqueName38 = VecompSoftware.Sign\\VecompSoftware.Sign.csproj
+		SccProjectTopLevelParentUniqueName38 = VecompSoftware.BiblosDS.sln
+		SccProjectName38 = VecompSoftware.Sign
+		SccLocalPath38 = VecompSoftware.Sign
+		SccProjectUniqueName39 = VecompSoftware.BiblosDS.WCF.Common\\VecompSoftware.BiblosDS.WCF.Common.csproj
+		SccProjectTopLevelParentUniqueName39 = VecompSoftware.BiblosDS.sln
+		SccProjectName39 = VecompSoftware.BiblosDS.WCF.Common
+		SccLocalPath39 = VecompSoftware.BiblosDS.WCF.Common
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+EndGlobal

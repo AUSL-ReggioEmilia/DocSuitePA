@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="Package" table="TablePackage">
+    
+    <composite-id class="PackageCompositeKey" name="Id">
+      <key-property column="Origin" name="Origin" type="AnsiChar" />
+      <key-property column="Package" name="Package" />
+    </composite-id>
+    
+    <property name="Origin" column="Origin" insert="false" update="false" type="AnsiChar" />
+    <property name="Package" column="Package" insert="false" update="false" />
+    <property name="Account" column="Account" type="AnsiString" />
+    <property name="Lot" column="Lot" />
+    <property name="Incremental" column="Incremental" />
+    <property name="TotalIncremental" column="TotalIncremental" />
+    <property name="MaxDocuments" column="MaxDocuments" />
+    <property name="State" column="State" type="AnsiChar" />
+    
+  </class>
+  
+</hibernate-mapping>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ComputerLog" table="ComputerLog">
+    
+    <id name="Id" column="SystemComputer" type="AnsiString">
+      <generator class="assigned" />
+    </id>
+    
+    <property name="SystemServer" column="SystemServer" type="AnsiString" />
+    <property name="SystemUser" column="SystemUser" type="AnsiString" />
+    <property name="LastOperationDate" column="LastOperationDate" />
+    <property name="AccessNumber" column="AccessNumber" />
+    <property name="PrevOperationDate" column="PrevOperationDate" />
+    <property name="SessionId" column="SessionId" type="AnsiString" />
+    <property name="AdvancedScanner" column="AdvancedScanner" />
+    <property name="AdvancedViewer" column="AdvancedViewer" />
+    
+    <many-to-one name="ZebraPrinter" column="IdZebraPrinter" class="ZebraPrinter" />
+    <many-to-one name="ScannerConfiguration" column="IdScannerConfiguration" class="ScannerConfiguration" />
+    
+  </class>
+  
+</hibernate-mapping>

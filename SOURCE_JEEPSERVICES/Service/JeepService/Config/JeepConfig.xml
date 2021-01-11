@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CONFIG>
+  <MODULES>
+    <MODULE id="Messaggi" spool="Spool" timer="Messaggi_Timer_30sec" assembly="C:\_w\JeepService_global\releases\iterations [2018]\JeepService 8.77\Modules\VecompSoftware.JeepService.DSWMessages\bin\Debug\VecompSoftware.JeepService.DSWMessages.dll" class="VecompSoftware.JeepService.DSWMessages" parametersType="VecompSoftware.JeepService.DSWMessageParameters" enabled="false" EnableMainLog="false" ThreadLogLevel="Info">
+      <PARAMETERS>
+        <PARAMETER key="DefaultBody" value="In allegato i documenti spediti da DocSuite" />
+        <PARAMETER key="DefaultSubject" value="Invio documenti da DocSuite" />
+        <PARAMETER key="Server" value="smtp.office365.com" />
+        <PARAMETER key="AuthenticationType" value="Ssl" />
+        <PARAMETER key="ServerPort" value="587" />
+        <PARAMETER key="UserName" value="serviziodocsuiteweb**REMOVE**.it" />
+        <PARAMETER key="UserPassword" value="Passw0rd" />
+        <PARAMETER key="Sender" value="servizio.docsuiteweb**REMOVE**.it" />
+        <PARAMETER key="ServerType" value="Smtp" />
+        <PARAMETER key="MaxErrorCount" value="5" />
+        <PARAMETER key="DebugModeAddress" value="**REMOVE**.fabbri**REMOVE**.it" />
+        <PARAMETER key="DebugModeEnabled" value="False" />
+        <PARAMETER key="TempFolder" value="C:\Temp\TMP" />
+        <PARAMETER key="MaxMailsForSession" value="5" />
+        <PARAMETER key="SleepBetweenSends" value="5" />
+        <PARAMETER key="NotifySender" value="True" />
+      </PARAMETERS>
+    </MODULE>
+    <MODULE id="Pec_Ingoing" spool="Spool" timer="PEC_In_Timer_60sec" assembly="C:\_w\JeepService_global\releases\iterations [2018]\JeepService 8.77\Modules\VecompSoftware.JeepService.Pec\bin\Debug\VecompSoftware.JeepService.Pec.dll" class="VecompSoftware.JeepService.Pec.PecModule" parametersType="VecompSoftware.JeepService.Pec.PecParams" enabled="true" EnableMainLog="false" ThreadLogLevel="Info">
+      <PARAMETERS>
+        <PARAMETER key="HostName" value="" />
+        <PARAMETER key="PECOldDay" value="8" />
+        <PARAMETER key="DropFolder" value="C:\Temp\DROP" />
+        <PARAMETER key="ErrorFolder" value="C:\Temp\ERROR" />
+        <PARAMETER key="PecDirection" value="In" />
+        <PARAMETER key="AllowedMailBoxIDs" value="1" />
+        <PARAMETER key="DisallowedMailBoxIDs" value="" />
+        <PARAMETER key="ForwardedAnalyzer" value="False" />
+        <PARAMETER key="SendSleep" value="2" />
+        <PARAMETER key="SendReceiptEventsEnabled" value="True" />
+        <PARAMETER key="TempFolder" value="C:\Temp\TMP" />
+        <PARAMETER key="DumpFolder" value="C:\Temp\DUMP" />
+        <PARAMETER key="PecMailBoxCache" value="False" />
+        <PARAMETER key="PecOutAddressDebugMode" value="**REMOVE**.fabbri**REMOVE**.it" />
+        <PARAMETER key="DebugModeEnabled" value="False" />
+        <PARAMETER key="IgnoreLimilabsLicence" value="False" />
+        <PARAMETER key="RecoverEnvelopeAttachment" value="False" />
+        <PARAMETER key="RecoverEnvelopeAttachmentStartDate" value="1/1/0001 12:00:00 AM" />
+        <PARAMETER key="RecoverEnvelopeAttachmentEndDate" value="1/1/0001 12:00:00 AM" />
+        <PARAMETER key="RecoverOriginalRecipient" value="False" />
+        <PARAMETER key="BiblosMaxLength" value="255" />
+        <PARAMETER key="RecoverLegacyPecMailContentStartDate" value="1/1/0001 12:00:00 AM" />
+        <PARAMETER key="RecoverLegacyPecMailContentEndDate" value="1/1/0001 12:00:00 AM" />
+        <PARAMETER key="DefaultSubstitutionChar" value="-" />
+        <PARAMETER key="SendReceiptEventsEnabled" value="False" />
+      </PARAMETERS>
+    </MODULE>
+    <MODULE id="Pec_Outgoing" spool="Spool" timer="PEC_Out_Timer_10sec" assembly="C:\_w\JeepService_global\releases\iterations [2018]\JeepService 8.77\Modules\VecompSoftware.JeepService.Pec\bin\Debug\VecompSoftware.JeepService.Pec.dll" class="VecompSoftware.JeepService.Pec.PecModule" parametersType="VecompSoftware.JeepService.Pec.PecParams" enabled="false" EnableMainLog="false" ThreadLogLevel="Info">
+      <PARAMETERS>
+        <PARAMETER key="HostName" value="PecOutgoing" />
+        <PARAMETER key="PECOldDay" value="8" />
+        <PARAMETER key="DropFolder" value="C:\Temp\DROP" />
+        <PARAMETER key="ErrorFolder" value="C:\Temp\ERROR" />
+        <PARAMETER key="PecDirection" value="Out" />
+        <PARAMETER key="ForwardedAnalyzer" value="False" />
+        <PARAMETER key="SendSleep" value="5" />
+        <PARAMETER key="TempFolder" value="C:\Temp\TMP" />
+        <PARAMETER key="DumpFolder" value="C:\Temp\DUMP" />
+        <PARAMETER key="PecMailBoxCache" value="False" />
+        <PARAMETER key="PecOutAddressDebugMode" value="**REMOVE**.fabbri**REMOVE**.it" />
+        <PARAMETER key="DebugModeEnabled" value="true" />
+        <PARAMETER key="IgnoreLimilabsLicence" value="False" />
+        <PARAMETER key="RecoverEnvelopeAttachment" value="False" />
+        <PARAMETER key="RecoverEnvelopeAttachmentStartDate" value="1/1/0001 12:00:00 AM" />
+        <PARAMETER key="RecoverEnvelopeAttachmentEndDate" value="1/1/0001 12:00:00 AM" />
+        <PARAMETER key="RecoverOriginalRecipient" value="False" />
+        <PARAMETER key="BiblosMaxLength" value="255" />
+        <PARAMETER key="RecoverLegacyPecMailContentStartDate" value="1/1/0001 12:00:00 AM" />
+        <PARAMETER key="RecoverLegacyPecMailContentEndDate" value="1/1/0001 12:00:00 AM" />
+        <PARAMETER key="DefaultSubstitutionChar" value="-" />
+        <PARAMETER key="SendReceiptEventsEnabled" value="False" />
+      </PARAMETERS>
+    </MODULE>
+  </MODULES>
+  <SPOOLS>
+    <SPOOL id="Spool">
+      <TIMERS>
+        <TIMER id="PEC_Out_Timer_10sec" duetime="10" period="10000" BeginTime="07:31" EndTime="21:00" type="Timerange" />
+        <TIMER id="PEC_In_Timer_60sec" duetime="40" period="60000" BeginTime="07:30" EndTime="21:00" type="Timerange" />
+        <TIMER id="Messaggi_Timer_30sec" duetime="15" period="30000" BeginTime="07:00" EndTime="21:00" type="Timerange" />
+      </TIMERS>
+    </SPOOL>
+  </SPOOLS>
+</CONFIG>

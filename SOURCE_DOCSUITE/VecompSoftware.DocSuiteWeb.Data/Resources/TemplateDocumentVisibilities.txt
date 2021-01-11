@@ -1,0 +1,16 @@
+﻿[
+	{
+		"Name": "Collaboration",
+		"VisibilityChains": {
+			"MainChain": false,
+			"AttachmentsChain": false,
+			"AnnexedChain": false
+		}
+	}, 
+	{
+		"Name": "Desk",
+		"VisibilityChains": {
+			"MainChain": false
+		}
+	}
+]

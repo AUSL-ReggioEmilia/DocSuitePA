@@ -1,0 +1,153 @@
+﻿.docm .titolo {
+    background: #44C0EA;
+    height: 15pt;
+    padding-top: 3px;
+}
+
+.docm tr.titolo {
+    background-image: url(../App_Themes/DocSuite2008/Images/Docm/DocmTitoloGrad.png);
+    color: white;
+}
+
+.docm .Table {
+    border-width: 0;
+    border-collapse: collapse;
+    color: black;
+    width: 100%;
+    height: 15pt;
+}
+
+    .docm .Table td {
+        padding: 2px;
+    }
+
+.docm tr.tabella {
+    font-weight: bold;
+    color: navy;
+    height: 15pt;
+    background-image: url(../App_Themes/DocSuite2008/Images/Docm/DocmTabellaGrad.png);
+}
+
+.docm tr.Scuro, .docm td.SXScuro {
+    background-color: #D3ECF5;
+}
+
+.docm td.SXScuro {
+    font-weight: bold;
+    text-align: right;
+}
+
+.docm tr.Chiaro, .docm td.DXChiaro {
+    background-color: #EBF5F9;
+}
+
+.docm tr.ChiaroNoPadding, .docm td.DXChiaroNoPadding {
+    background-color: #EBF5F9;
+    padding-bottom: 0px !important;
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+
+.docm tr.Selezionato {
+    background-color: #f1c15f;
+    cursor: hand;
+}
+
+/* classe datatable */
+.docm table.datatable {
+    border: 1px solid #808080;
+    background-color: #EBF5F9;
+}
+
+    .docm table.datatable th, .docm table.datatable td.head, .docm .datatable.tHead {
+        background-color: #aedef1;
+        border-bottom: 1px solid #808080;
+        color: navy;
+    }
+
+    .docm table.datatable td {
+        font-weight: normal;
+        font-size: 11px;
+        color: #000;
+        background-color: #EBF5F9;
+        text-align: left;
+        vertical-align: top;
+        padding: 2px;
+        font-size: 11px;
+    }
+
+.docm table.datatable td.label {
+    font-weight: bold;
+    text-align: right;
+    vertical-align: middle;
+    font-size: 11px;
+}
+
+        .docm table.datatable .labelPanel {
+            background-color: #D3ECF5;
+        }
+
+/* Eliminare datataform a favore di datatable */
+.docm table.dataform {
+    background: #EBF5F9;
+    border-top-style: none;
+    border-right-style: none;
+    border-left-style: none;
+    border-collapse: collapse;
+    border-bottom-style: none;
+    border-color: #999999;
+}
+
+    .docm table.dataform td {
+        background-color: #EBF5F9;
+        padding: 1px 2px 1px 2px;
+        font-size: 11px;
+    }
+
+        .docm table.dataform td.label {
+            background-color: #D3ECF5;
+            font-size: 11px;
+        }
+/* Eliminare datataform a favore di datatable */
+
+.tblFrame {
+    height: 100%;
+}
+
+.tdMenu {
+    padding-top: 1%;
+    padding-right: 2px;
+    width: 20%;
+    vertical-align: top;
+}
+
+.tdContent {
+    padding-left: 2px;
+    width: 80%;
+}
+
+TR.docm-Tabella {
+    font-weight: bold;
+    color: navy;
+    height: 15pt;
+    background-image: url(../App_Themes/DocSuite2008/Images/Docm/DocmTabellaGrad.png);
+}
+
+.docm .control-label {
+    background-color: #D3ECF5;
+}
+
+.docm .dsw-arrow-down {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_down.png);
+    background-position: center;
+    width: 16px;
+    height: 16px;
+}
+
+.docm .dsw-arrow-up {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_up.png);
+    width: 16px;
+    height: 16px;
+}

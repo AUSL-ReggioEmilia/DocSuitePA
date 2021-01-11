@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="PECOC" table="PECOC">
+    
+    <id name="Id" column="Id">
+      <generator class="identity"></generator>
+    </id>
+    
+    <property name="FromDate" column="FromDate" />
+    <property name="ToDate" column="ToDate" />
+    <property name="ExtractAttachments" column="ExtractAttachments" />
+    <property name="Status" column="Status" />
+    <property name="Message" column="Message" />
+    <property name="IdMail" column="IdMail" />
+    <property name="IsActive" column="IsActive" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    
+    <many-to-one name="ResolutionType" column="IdResolutionType" class="ResolutionType" />
+    
+    <bag name="LogEntries" table="PECOCLog" cascade="none" inverse="true" order-by="Date">
+      <key>
+        <column name="Id" />
+      </key>
+      <one-to-many class="PECOCLog" />
+    </bag>
+    
+  </class>
+
+</hibernate-mapping>

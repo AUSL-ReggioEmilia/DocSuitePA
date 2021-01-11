@@ -1,0 +1,114 @@
+html,
+body,
+form{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /*font-family: "Segoe UI", "Helvetica Neue", Arial, "sans-serif" !important;*/
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: antialiased;
+    -ms-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    padding-top: 60px !important;
+}
+
+
+/* FORM CONTENT BOX */
+
+#content {
+    padding: 1px;
+}
+
+#source {
+    padding: 1px;
+}
+
+
+#content_form_name {
+    cursor: pointer;
+}
+
+.content-hover {
+    border: 1px dashed #3a87ad !important;
+    color: #3a87ad;
+    background: #d9edf7;
+    opacity: 0.5;
+}
+
+    .content-hover legend {
+        color: #3a87ad;
+        border-color: -moz-use-text-color -moz-use-text-color #3a87ad;
+    }
+
+    .content-hover .element {
+        border: 1px solid #d9edf7;
+    }
+
+/* RANDOM BOOTSTAP FIX BECAUSE INPUT HEIGHT IS SET AT 30px ?!?! */
+input[type=text] {
+    height: auto;
+}
+
+/* COMPONENTS */
+.component {
+    cursor: move;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+    .component:hover {
+        background: #eee !important;
+    }
+
+.component-drag {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 10px;
+    background: #FFF;
+}
+
+/* ELEMENTS */
+.element {
+    cursor: pointer;
+    padding: 0px 0px 0px 0px;
+    background: #efefef;
+    margin: 1px;
+}
+
+.element-Title {
+    cursor: pointer;
+    background: #d5ddf6;
+    padding: 6px;
+}
+
+.element:hover {
+    background: #d9edf7;
+}
+
+.element-placeholder {
+    border: 1px dashed #3a87ad;
+    color: #3a87ad;
+    background: #d9edf7;
+    min-height: 50px;
+    opacity: 0.5;
+}
+
+.close {
+    margin-right: 5px;
+}
+
+.radGridWrapper {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 300px;
+    overflow-x: hidden;
+}

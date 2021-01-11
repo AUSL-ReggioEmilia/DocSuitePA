@@ -1,0 +1,457 @@
+<?xml version="1.0"?>
+<XmlEnvironment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="www.vecompsoftware.it">
+  <Name>pratiche</Name>
+  <Parameters>
+    <XmlParameter>
+      <Key>BiblosDSdb</Key>
+      <Value>WORKFLOW</Value>
+      <Group>B</Group>
+      <Note>assente</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Catalog</Key>
+      <Value>Document</Value>
+      <Group>C</Group>
+      <Note>assente</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CategorySelEnabled</Key>
+      <Value>0</Value>
+      <Group>C</Group>
+      <Note>assente</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CommSearchDefault</Key>
+      <Value>0</Value>
+      <Group>C</Group>
+      <Note>assente</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ContactRoot</Key>
+      <Group>C</Group>
+      <Signature>DocumentEnv.ContactRoot</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CorporateAcronym</Key>
+      <Value>AASP</Value>
+      <Group>C</Group>
+      <Description>sigla  azienda (usata in menu e signature)</Description>
+      <Signature>DocumentEnv.CorporateAcronym</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>CorporateName</Key>
+      <Value>AASP San Marino</Value>
+      <Group>C</Group>
+      <Description>nome completo dell' azienda (usato in signature)</Description>
+      <Note>
+        assente.
+        nome completo (usato in signature)
+      </Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DesktopDayDiff</Key>
+      <Value>30</Value>
+      <Group>Scrivania</Group>
+      <Description>Numero di giorni da considerare a partire dall'attuale nelle viste per la scrivania.</Description>
+      <Note>Se 0 o nullo di default è 30 (giorni).</Note>
+      <Signature>DocumentEnv.DesktopDayDiff</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DesktopMaxRecords</Key>
+      <Value>300</Value>
+      <Group>Scrivania</Group>
+      <Description>Numero massimo di record da ritirare.</Description>
+      <Note>Se 0 o nullo di default è 300 (record).</Note>
+      <Signature>ResolutionEnv.DesktopMaxRecords</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Domain</Key>
+      <Value>AASP</Value>
+      <Group>D</Group>
+      <Description>Stringa che indica il dominio AD</Description>
+      <Signature>DocumentEnv.DocumentDomain</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DomainBackup</Key>
+      <Value>GIZA</Value>
+      <Group>D</Group>
+      <Note>assente</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>FDQEnabled</Key>
+      <Value>0</Value>
+      <Group>F</Group>
+      <Description>abilita\disabilita il pulsante di firma</Description>
+      <Note>
+        assente.
+        pulsante di firma abilitato
+      </Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>InteropEnabled</Key>
+      <Value>0</Value>
+      <Group>I</Group>
+      <Description>se valore è 1 viene abilitato il bottone interoperabilità</Description>
+      <Note>bottone interop abilitato</Note>
+      <Signature>DocumentEnv.IsInteropEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>IntranetUrl</Key>
+      <Value>http://DocSuite/Default.aspx?Tipo=Docm&amp;Azione=Apri&amp;</Value>
+      <Group>I</Group>
+      <Note>assente</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>LinkVerify</Key>
+      <Value>0</Value>
+      <Group>L</Group>
+      <Description>imposta una stringa che indica il livello di sicurezza per chi esegue collegamenti</Description>
+      <Note>livello di sicurezza per chi esegue collegamenti</Note>
+      <Signature>DocumentEnv.EnvLinkVerify</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Location</Key>
+      <Value>10</Value>
+      <Group>L</Group>
+      <Note>assente</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>LogEnabled</Key>
+      <Value>0</Value>
+      <Group>L</Group>
+      <Description>abilitazione della scrittura del log</Description>
+      <Note>abilitazione della scrittura del log</Note>
+      <Signature>DocumentEnv.IsEnvLogEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>LogSecurity</Key>
+      <Value>3</Value>
+      <Group>L</Group>
+      <Description> livello di sicurezza per chi vede i log</Description>
+      <Note>
+        assente.
+         livello di sicurezza per chi vede i log
+      </Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MailEnabled</Key>
+      <Value>0</Value>
+      <Group>M</Group>
+      <Description>abilita\dsisabilita le mail automatiche in collaborazione</Description>
+      <Note>collaborazione mail automatiche</Note>
+      <Signature>DocumentEnv.IsMailEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MailSmtpServer</Key>
+      <Group>L</Group>
+      <Description>imposta il server Smtp per l'invio delle email</Description>
+      <Note>imposta il server Smtp per l'invio delle email</Note>
+      <Signature>DocumentEnv.MailSmtpServer</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ObjectMinLength</Key>
+      <Value>1</Value>
+      <Group>Business Logic</Group>
+      <Description>Valore numerico che indica la lunghezza minima dell'oggetto</Description>
+      <Signature>DocumentEnv.ObjectMinLength</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Protocol</Key>
+      <Value>1</Value>
+      <Group>P</Group>
+      <Description>collegamento al protocollo abilitato</Description>
+      <Note>
+        assente.
+        collegamento al protocollo abilitato
+      </Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ProtocolAttachLocationEnabled</Key>
+      <Value>1</Value>
+      <Group>P</Group>
+      <Note>assente</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ProtSecurity</Key>
+      <Value>3</Value>
+      <Group>P</Group>
+      <Description>livello di sicurezza per chi collega al protocollo</Description>
+      <Note>livello di sicurezza per chi collega al protocollo</Note>
+      <Signature>DocumentEnv.ProtSecurity</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PublicationEnabled</Key>
+      <Value>0</Value>
+      <Group>P</Group>
+      <Description>abilita\disabilita il controllo sulla pubblicazione internet se 1 è abilitato</Description>
+      <Note>se 1 è abilitato e ritorna true altrimenti false</Note>
+      <Signature>DocumentEnv.IsPubblicationEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Replication</Key>
+      <Value>0</Value>
+      <Group>R</Group>
+      <Note>assente.</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ReslSecurity</Key>
+      <Value>3</Value>
+      <Group>Atti</Group>
+      <Description>Stringa di sicurezza per agganciare atti</Description>
+      <Note>Posizionale della sequenza dei diritti</Note>
+      <Signature>DocumentEnv.ReslSecurity</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Resolution</Key>
+      <Value>1</Value>
+      <Group>R</Group>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>RubricaCheckDuplicati</Key>
+      <Value>0</Value>
+      <Group>R</Group>
+      <Note>assente</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SearchMaxRecords</Key>
+      <Value>100</Value>
+      <Group>S</Group>
+      <Note>se la chiave ha valore nullo o zero ritorna 100 altrimenti il valore impostato</Note>
+      <Signature>DocumentEnv.SearchMaxRecords</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Security</Key>
+      <Value>0</Value>
+      <Group>S</Group>
+      <Description>risultati ricerca : fa vedere tutti i protocolli (0) o solo quelli che l'utente può aprire(1)</Description>
+      <Note>risultati ricerca : fa vedere tutti i protocolli (0) o solo quelli che l'utente può aprire(1)</Note>
+      <Signature>DocumentEnv.IsSecurityEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>Signature</Key>
+      <Value>0</Value>
+      <Group>S</Group>
+      <Description>Abilita\disabilita la signatura di protocollo</Description>
+      <Note>signatura protocollo abilitata</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SignatureAlign</Key>
+      <Value>LEFT</Value>
+      <Group>S</Group>
+      <Description>allineamento signatura a destra o a sinistra. valori accettai :left | right</Description>
+      <Note>allineamento signatura left | right</Note>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SignatureString</Key>
+      <Value>Pratica n. {123XX}</Value>
+      <Group>S</Group>
+      <Description>imposta la stringa per la signatura usata in alto nel documento</Description>
+      <Signature>DocumentEnv.Signature</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>SignatureType</Key>
+      <Value>0</Value>
+      <Group>S</Group>
+      <Description>stringa usata per la signatura con o senza nome dell'azienda</Description>
+      <Signature>DocumentEnv.SignatureType</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>ThinClientxDefaultButton</Key>
+      <Value>4</Value>
+      <Group>T</Group>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>VersioningEnabled</Key>
+      <Value>0</Value>
+      <Group>V</Group>
+      <Description>abilita\disabilita cartella di rete usata per checkin/checkout</Description>
+      <Note>cartella di rete usata per checkin/checkout</Note>
+      <Signature>DocumentEnv.IsVersioningEnabled</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>WorkFlowCapture</Key>
+      <Value>W</Value>
+      <Group>W</Group>
+      <Note>se il valore è nullo ritorna "W" altrimenti il valore impostato</Note>
+      <Signature>DocumentEnv.WorkFlowCapture</Signature>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>MultipleUploadEnabled</Key>
+      <Value>0</Value>
+      <Group>File Manager</Group>
+      <Description>Abilita l'inserimento multiplo di documenti nelle pratiche</Description>
+      <Signature>DocumentEnv.MultipleUploadEnabled</Signature>
+      <Version>7.2.9</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>PraticheHiddenColumns</Key>
+      <Value />
+      <Group>File Manager</Group>
+      <Description>Elenco delle colonne del riepilogo documenti da nascondere.</Description>
+      <Note>Colonne: IncrementalFolder, cSelezione, cCartella, cTipoDocumento, cDocumentoFirmato, cVersioningDocumento, StepLinearDescription, cArrowUp, cArrowDown, RegistrationDate, Description, DocumentDate, cOggetto, Reason, Note, RegistrationUserDateDescription, LastChangeUserDateDescription, MailCC.</Note>
+      <Signature>DocumentEnv.PraticheHiddenColumns</Signature>
+      <Version>8.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DefaultWindowWidth</Key>
+      <Value>700</Value>
+      <Group>Windows</Group>
+      <Description>Larghezza di default delle finestre.</Description>
+      <Signature>DocumentEnv.DefaultWindowWidth</Signature>
+      <Version>8.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>DefaultWindowHeight</Key>
+      <Value>500</Value>
+      <Group>Windows</Group>
+      <Description>Altezza di default delle finestre.</Description>
+      <Signature>DocumentEnv.DefaultWindowHeight</Signature>
+      <Version>8.0.0</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+    <XmlParameter>
+      <Key>EnableButtonNuovaPratica</Key>
+      <Value />
+      <Group>Button</Group>
+      <Description>
+        Abilita il bottone nuova pratica dal sommario di una pratica
+      </Description>
+      <Note>
+        [AUSL-PC=1]
+        Abilitare in base al bisogno del cliente
+        se vero = Abilitato
+        se falso = Non abilitato
+      </Note>
+      <Signature>DocumentEnv.EnableButtonNuovaPratica</Signature>
+      <Version>8.25</Version>
+      <Container>false</Container>
+      <Customer />
+      <ParameterType xsi:nil="true" />
+    </XmlParameter>
+  </Parameters>
+</XmlEnvironment>

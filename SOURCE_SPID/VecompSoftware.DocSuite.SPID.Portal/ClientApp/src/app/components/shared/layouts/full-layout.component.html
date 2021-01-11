@@ -1,0 +1,9 @@
+<app-header [applicationName]="applicationName"></app-header>
+<div class="app-body">
+    <app-sidebar [applications]="applications" [isBusy]="isBusy"></app-sidebar>
+    <section class="main-container">
+        <div class="container-fluid">
+            <router-outlet></router-outlet>
+        </div>
+    </section>
+</div>

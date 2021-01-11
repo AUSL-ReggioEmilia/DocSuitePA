@@ -1,0 +1,36 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.DynamicFormFieldsViewModel
+
+@if (Model != null)
+{
+    <span class="k-hr" style="margin-top: 5px;"></span>
+    <ul class="fieldlist">
+        <li>
+            <label><b>Da Data</b></label>
+            <div style="margin-left: 5px; width: 70%; float: left;">
+                @Html.Kendo().DatePickerFor(x => x.FromDate).Format("dd/MM/yyyy")
+            </div>
+        </li>
+        <li>
+            <label><b>A Data</b></label>
+            <div style="margin-left: 5px; width: 70%; float: left;">
+                @Html.Kendo().DatePickerFor(x => x.ToDate).Format("dd/MM/yyyy")
+            </div>
+        </li>
+        @foreach (var dynamicControl in Model.DynamicControlViewModels)
+        {
+            <li>
+                <label><b>@dynamicControl.Caption</b></label>
+                <div style="margin-left: 5px; width: 70%; float: left;">
+                    @if (dynamicControl.ControlType == "System.DateTime")
+                    {
+                        @Html.Kendo().DatePicker().Name(dynamicControl.ControlName).Format("dd/MM/yyyy").HtmlAttributes(new { @class = "searchable-control" })
+                    }
+                    else
+                    {
+                        @Html.Kendo().TextBox().Name(dynamicControl.ControlName).HtmlAttributes(new { @style = "width: 100%;", @class = "searchable-control" })
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+}

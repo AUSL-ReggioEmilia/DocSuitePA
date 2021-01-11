@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="UserError" table="UserError">
+    
+    <id name="Id" column="Id">
+      <generator class="assigned" />
+    </id>
+    
+    <property name="SystemUser" column="SystemUser" type="AnsiString" />
+    <property name="SystemServer" column="SystemServer" type="AnsiString" />
+    <property name="SystemComputer" column="SystemComputer" type="AnsiString" />
+    <property name="ModuleName" column="ModuleName" type="AnsiString" />
+    <property name="ErroreLevel" column="ErroreLevel" type="AnsiChar" />
+    <property name="ErrorDate" column="ErrorDate" />
+    <property name="ErrorDescription" column="ErrorDescription" type="AnsiString" />
+    
+  </class>
+  
+</hibernate-mapping>

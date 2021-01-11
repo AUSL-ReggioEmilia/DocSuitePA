@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Workflows">
+
+  <class name="WorkflowAuthorization" table="WorkflowAuthorizations" lazy="true" >
+    <id name="Id" column="IdWorkflowAuthorization" >
+      <generator class="guid.comb" />
+    </id>
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    <property name="Account">
+      <column name="Account" not-null="true" />
+    </property>
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+    <property name="IsHandler">
+      <column name="IsHandler" not-null="true" />
+    </property>
+    <many-to-one name="WorkflowActivity">
+      <column name="IdWorkflowActivity" not-null="true" />
+    </many-to-one>
+  </class>
+
+</hibernate-mapping>

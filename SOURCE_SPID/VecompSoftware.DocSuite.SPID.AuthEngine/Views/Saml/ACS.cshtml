@@ -1,0 +1,40 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Spid</title>
+    <script type="text/javascript">
+        function initialize() {
+            var token = '@Html.Raw(ViewData["Token"])';
+            if (token) {
+                localStorage.setItem('jwt-application-token', token);
+            }
+
+            var authorizationCode = '@Html.Raw(ViewData["ReferenceCode"])';
+            if (authorizationCode) {
+                localStorage.setItem('reference-token-code', authorizationCode);
+            }
+
+            var idpName = '@Html.Raw(ViewData["IdpName"])';
+            if (idpName) {
+                localStorage.setItem('idpName', idpName);
+            }
+
+            document.forms[0].submit();
+        }
+    </script>
+</head>
+<body onload="initialize()">
+    <form method="post" action="@Html.Raw(ViewData["Callback"])">
+        <input type="hidden" name="authenticated"
+               value="@Html.Raw(ViewData["IsAuthenticated"])">
+        <input type="submit" value="Invia" style="display:none" />
+    </form>
+    <h3>Accesso all'applicazione in corso...</h3>
+</body>
+</html>

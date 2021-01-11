@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="FastMergeService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="BasicHttpBinding_IFastMergeService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <http:NegotiateAuthentication xmlns:http="http://schemas.microsoft.com/ws/06/2004/policy/http" />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost/DSW.API/FastMergeService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost/DSW.API/FastMergeService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IFastMergeService_IsAlive_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsAlive" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_IsAlive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsAliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetContainers_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetContainers" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetContainers_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetContainersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetCategories_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCategories" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetCategories_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCategoriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetPECMailboxes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPECMailboxes" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetPECMailboxes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPECMailboxesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetPOLMailboxes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPOLMailboxes" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetPOLMailboxes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPOLMailboxesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetDocumentTypes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentTypes" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetDocumentTypes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetDocumentTypesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetServiceCategories_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetServiceCategories" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetServiceCategories_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetServiceCategoriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_InsertProtocol_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertProtocol" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_InsertProtocol_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertProtocolResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_SendMail_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendMail" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_SendMail_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendMailResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_SendProtocolMail_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendProtocolMail" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_SendProtocolMail_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendProtocolMailResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_CreateTask_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateTask" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_CreateTask_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateTaskResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_UpdateStatus_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateStatus" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_UpdateStatus_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateStatusResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetRecentFastMergeCodes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetRecentFastMergeCodes" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetRecentFastMergeCodes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetRecentFastMergeCodesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetProtocolDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolDocument" />
+  </wsdl:message>
+  <wsdl:message name="IFastMergeService_GetProtocolDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolDocumentResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IFastMergeService">
+    <wsdl:operation name="IsAlive">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/IsAlive" message="tns:IFastMergeService_IsAlive_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/IsAliveResponse" message="tns:IFastMergeService_IsAlive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetContainers">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/GetContainers" message="tns:IFastMergeService_GetContainers_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/GetContainersResponse" message="tns:IFastMergeService_GetContainers_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCategories">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/GetCategories" message="tns:IFastMergeService_GetCategories_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/GetCategoriesResponse" message="tns:IFastMergeService_GetCategories_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPECMailboxes">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/GetPECMailboxes" message="tns:IFastMergeService_GetPECMailboxes_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/GetPECMailboxesResponse" message="tns:IFastMergeService_GetPECMailboxes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPOLMailboxes">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/GetPOLMailboxes" message="tns:IFastMergeService_GetPOLMailboxes_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/GetPOLMailboxesResponse" message="tns:IFastMergeService_GetPOLMailboxes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentTypes">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/GetDocumentTypes" message="tns:IFastMergeService_GetDocumentTypes_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/GetDocumentTypesResponse" message="tns:IFastMergeService_GetDocumentTypes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetServiceCategories">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/GetServiceCategories" message="tns:IFastMergeService_GetServiceCategories_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/GetServiceCategoriesResponse" message="tns:IFastMergeService_GetServiceCategories_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertProtocol">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/InsertProtocol" message="tns:IFastMergeService_InsertProtocol_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/InsertProtocolResponse" message="tns:IFastMergeService_InsertProtocol_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendMail">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/SendMail" message="tns:IFastMergeService_SendMail_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/SendMailResponse" message="tns:IFastMergeService_SendMail_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendProtocolMail">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/SendProtocolMail" message="tns:IFastMergeService_SendProtocolMail_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/SendProtocolMailResponse" message="tns:IFastMergeService_SendProtocolMail_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateTask">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/CreateTask" message="tns:IFastMergeService_CreateTask_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/CreateTaskResponse" message="tns:IFastMergeService_CreateTask_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateStatus">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/UpdateStatus" message="tns:IFastMergeService_UpdateStatus_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/UpdateStatusResponse" message="tns:IFastMergeService_UpdateStatus_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRecentFastMergeCodes">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/GetRecentFastMergeCodes" message="tns:IFastMergeService_GetRecentFastMergeCodes_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/GetRecentFastMergeCodesResponse" message="tns:IFastMergeService_GetRecentFastMergeCodes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocolDocument">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastMergeService/GetProtocolDocument" message="tns:IFastMergeService_GetProtocolDocument_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastMergeService/GetProtocolDocumentResponse" message="tns:IFastMergeService_GetProtocolDocument_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IFastMergeService" type="tns:IFastMergeService">
+    <wsp:PolicyReference URI="#BasicHttpBinding_IFastMergeService_policy" />
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="IsAlive">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/IsAlive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetContainers">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/GetContainers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCategories">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/GetCategories" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPECMailboxes">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/GetPECMailboxes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPOLMailboxes">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/GetPOLMailboxes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDocumentTypes">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/GetDocumentTypes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetServiceCategories">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/GetServiceCategories" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertProtocol">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/InsertProtocol" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendMail">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/SendMail" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendProtocolMail">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/SendProtocolMail" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateTask">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/CreateTask" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateStatus">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/UpdateStatus" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRecentFastMergeCodes">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/GetRecentFastMergeCodes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocolDocument">
+      <soap:operation soapAction="http://tempuri.org/IFastMergeService/GetProtocolDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FastMergeService">
+    <wsdl:port name="BasicHttpBinding_IFastMergeService" binding="tns:BasicHttpBinding_IFastMergeService">
+      <soap:address location="http://localhost/DSW.API/FastMergeService.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

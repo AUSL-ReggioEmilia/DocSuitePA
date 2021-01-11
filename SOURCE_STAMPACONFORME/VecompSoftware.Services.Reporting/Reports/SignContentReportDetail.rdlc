@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2008/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <Body>
+    <ReportItems>
+      <Textbox Name="Reason">
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=StrDup(Fields!Level.Value * 4, " ") &amp; "Commento: " &amp; Fields!Reason.Value</Value>
+                <Style>
+                  <FontStyle>Italic</FontStyle>
+                  <FontFamily>Garamond</FontFamily>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Reason</rd:DefaultName>
+        <Top>72pt</Top>
+        <Left>0pt</Left>
+        <Height>15pt</Height>
+        <Width>420.19685pt</Width>
+        <Visibility>
+          <Hidden>=Len(Trim(Fields!Reason.Value)) = 0</Hidden>
+        </Visibility>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Certificate">
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=StrDup(Fields!Level.Value * 4, " ") &amp; "Validità certificato dal " &amp; CDate(Fields!Certificate.Value.NotBefore).ToString("dd/MM/yyyy HH:mm:ss") &amp; " al " &amp; CDate(Fields!Certificate.Value.NotAfter).ToString("dd/MM/yyyy HH:mm:ss")</Value>
+                <Style>
+                  <FontFamily>Garamond</FontFamily>
+                  <Format>dd/MM/yyyy HH:mm:ss</Format>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style>
+              <TextAlign>Left</TextAlign>
+            </Style>
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Certificate</rd:DefaultName>
+        <Top>1.27cm</Top>
+        <Height>15pt</Height>
+        <Width>420.19685pt</Width>
+        <ZIndex>1</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="SignDate2">
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=StrDup(Fields!Level.Value * 4, " ") &amp; "Soggetto: " &amp; Fields!Certificate.Value.Subject.CommonName &amp; "    " &amp; Fields!Certificate.Value.Subject.SerialNumber</Value>
+                <Style>
+                  <FontFamily>Garamond</FontFamily>
+                  <Format>dd/MM/yyyy HH:mm:ss</Format>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style>
+              <TextAlign>Left</TextAlign>
+            </Style>
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>SignDate</rd:DefaultName>
+        <Top>0.635cm</Top>
+        <Height>15pt</Height>
+        <Width>420.19685pt</Width>
+        <ZIndex>2</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="SignDate3">
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=StrDup(Fields!Level.Value * 4, " ") &amp; "Rilasciato da " &amp; Fields!Certificate.Value.Issuer.Organization &amp; " con S.N. " &amp; Fields!Certificate.Value.SerialNumber</Value>
+                <Style>
+                  <FontFamily>Garamond</FontFamily>
+                  <Format>dd/MM/yyyy HH:mm:ss</Format>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style>
+              <TextAlign>Left</TextAlign>
+            </Style>
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>SignDate</rd:DefaultName>
+        <Top>1.905cm</Top>
+        <Height>15pt</Height>
+        <Width>420.19685pt</Width>
+        <ZIndex>3</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Textbox Name="Id">
+        <KeepTogether>true</KeepTogether>
+        <Paragraphs>
+          <Paragraph>
+            <TextRuns>
+              <TextRun>
+                <Value>=StrDup(Fields!Level.Value * 4, " ") &amp; Fields!SignType.Value &amp; " " &amp; Fields!Id.Value &amp; " di " &amp; Fields!RowCount.Value &amp; " del " &amp; CDate(Fields!SignDate.Value).ToString("dd/MM/yyyy HH:mm:ss")</Value>
+                <Style>
+                  <FontFamily>Garamond</FontFamily>
+                  <FontWeight>Bold</FontWeight>
+                </Style>
+              </TextRun>
+            </TextRuns>
+            <Style />
+          </Paragraph>
+        </Paragraphs>
+        <rd:DefaultName>Id</rd:DefaultName>
+        <Height>0.52917cm</Height>
+        <Width>14.82361cm</Width>
+        <ZIndex>4</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+          <PaddingLeft>2pt</PaddingLeft>
+          <PaddingRight>2pt</PaddingRight>
+          <PaddingTop>2pt</PaddingTop>
+          <PaddingBottom>2pt</PaddingBottom>
+        </Style>
+      </Textbox>
+      <Image Name="Image3">
+        <Source>Embedded</Source>
+        <Value>=IIf(First(Fields!IsVerified.Value, "DataSet1"), "rosette_valid", "error")</Value>
+        <Sizing>Fit</Sizing>
+        <Top>0.1cm</Top>
+        <Left>15cm</Left>
+        <Height>24pt</Height>
+        <Width>24pt</Width>
+        <ZIndex>5</ZIndex>
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
+      </Image>
+    </ReportItems>
+    <Height>3.5cm</Height>
+    <Style>
+      <Border>
+        <Style>None</Style>
+      </Border>
+      <BottomBorder>
+        <Style>Dotted</Style>
+      </BottomBorder>
+    </Style>
+  </Body>
+  <Width>16cm</Width>
+  <Page>
+    <PageHeight>10cm</PageHeight>
+    <PageWidth>16cm</PageWidth>
+    <LeftMargin>0cm</LeftMargin>
+    <RightMargin>0cm</RightMargin>
+    <TopMargin>0cm</TopMargin>
+    <BottomMargin>0cm</BottomMargin>
+    <ColumnSpacing>0.13cm</ColumnSpacing>
+    <Style />
+  </Page>
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="VecompSoftwareReporting">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>9429420f-d2d8-4a07-b65d-17aa56cecd5b</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="DataSet1">
+      <Query>
+        <DataSourceName>VecompSoftwareReporting</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="Certificate">
+          <DataField>Certificate</DataField>
+          <rd:TypeName>VecompSoftware.Common.SignInfo+SigningCertificate</rd:TypeName>
+        </Field>
+        <Field Name="Children">
+          <DataField>Children</DataField>
+          <rd:TypeName>System.Collections.Generic.IEnumerable`1[[VecompSoftware.Common.SignInfo, VecompSoftware.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd4cbb031a2ae285]]</rd:TypeName>
+        </Field>
+        <Field Name="HasCertificate">
+          <DataField>HasCertificate</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="HasChildren">
+          <DataField>HasChildren</DataField>
+          <rd:TypeName>System.Boolean</rd:TypeName>
+        </Field>
+        <Field Name="Heading">
+          <DataField>Heading</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Id">
+          <DataField>Id</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="IsVerified">
+          <DataField>IsVerified</DataField>
+          <rd:TypeName>System.Nullable`1[[System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
+        </Field>
+        <Field Name="Level">
+          <DataField>Level</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="Reason">
+          <DataField>Reason</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="RowCount">
+          <DataField>RowCount</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="SHA1">
+          <DataField>SHA1</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="SignDate">
+          <DataField>SignDate</DataField>
+          <rd:TypeName>System.Nullable`1[[System.DateTime, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]</rd:TypeName>
+        </Field>
+        <Field Name="SignType">
+          <DataField>SignType</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>VecompSoftware.Reporting</rd:DataSetName>
+        <rd:TableName>SignContentReport</rd:TableName>
+        <rd:ObjectDataSourceType>VecompSoftware.Reporting.SignContentReport, VecompSoftware.Reporting.BiblosDS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cd4cbb031a2ae285</rd:ObjectDataSourceType>
+      </rd:DataSetInfo>
+    </DataSet>
+  </DataSets>
+  <ReportParameters>
+    <ReportParameter Name="Id">
+      <DataType>Integer</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+  </ReportParameters>
+  <EmbeddedImages>
+    <EmbeddedImage Name="rosette_valid">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>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</ImageData>
+    </EmbeddedImage>
+    <EmbeddedImage Name="error">
+      <MIMEType>image/png</MIMEType>
+      <ImageData>iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABD1JREFUeNrkV01sVFUUPve9++bNtA7zl5ZOS9phWmmxFEtpUfkZUpWVJm5ZEI3EYJQEA5oY3dPEhMCCFWogEkKCDQuEsGmghIQFlOCiAQUiLQQoilK1Mul0Ou/5nXffg7bMMDNA6YKbnJk7956f757zvfPuCNu2aS6HRnM85hyA5A8hRNnAT37d9WGlQd/zj/tZ+ujNnoF9mFplI3gSDnz6dn3VwPbVtj2y1xGe89rzKoGx/rXqw3Udy4lun3CE57zGe7MNQOzbtOT1ynBoTbx9MdHQKaLhUxRfkiBe4z3WmU0Avpaair6mt1JEv/2EiueIcpDrfcRrvMc6swVAO/Z5x7ZQbdycFwVv7vwMCptKMOc13mOdcvyWA8AfDeg9Le90E109imojsCFdMZ013mMd1n3WAPT+rzoPJlYuI5G+SjQ+ikQj0wFNiYl5ZtTZYx3WZZtnBUDs/2TpylAk+F58aRLE61dp92m0amc3rdnVTZd/j2ANIIb7iXVYl21KIWQpAHyNMfNQ4o02oj8vuO1LOgBCAUHhCoEEaKoUPKDDumxTCiGLAdCOf7F8W2RBVTyyMEh09xIC+RQAXScDQQ0DmZZwo0uVBeiwLtuwbbEYxQD4I369p3Htq0S3ziEIAmgIpOmOGAjKInRvTSod6LIN2xYj5OMA6H1fdu6ubU+Sz/wXxLuHExrqpDg96ZqTASkZgO6uSaUDXbZhW/bxOEIWAiB2bWhZFHrJ3Fi/ogFpvQhNEE8z3Awo4eCG9DLgiaF0YcO27IN9FSKkLNTvOxuCvU2pZqL0TXS7SVV3z4eGRqRbOLBEIuyHGXhwHk3ZwJZ9ZMYHe7HYAZkoJQPaka0d78fqoq2Rl8NEYyMzUv9QpG7gy1D1n7bnlgK27IN9sc988fIB
+MKsrje8a1+KZHx3iy8I04jkidCd5ljBxATApJ3xqbaoO27AtfLAv9sm+H6k13wemXEiYeN8m22o2JlO1RH8NuRhnlI9/6jm68UfYiVEXvo+YeClZM8tsqztKbCFdO32brg3e2bvum/ObsJjLBwDEW9yyqjl6qesDNJ2xW0STVuFmJuHcZ6ntLD4mtQL3IVv1iWAdDfwwSGcu33tl64FffnXRTSOh0ZkI9ia6auDsP2wLVcu8zwgn06LU5jhpwqY9n41ScwKky4lC1y7HJ/vOZLLTCOlxQPy4pf3dUKyitaoNfT2bzku6ByLVd838akd8fn9hXY+U8Mm+OQbH8lLrHdGsjwQONaXmq+AOiYp38R0fjygORC2XdEVM4JtjpP/O8HsCvZ3GPQB4pZAMNOAkE5aqWTFvSH19MuumGG4sWcQGZdAEBRoM1mLliqkA9LFs7uLZ3Vdabct26TELA5EFQEzY9k2vPXtPwTzM0XMpVupF4ikGPyt4sdAw5B8PgJcSs9xb7RMM230C0swKmus/p+KF/3f8vwADAI/AMsoFsvSRAAAAAElFTkSuQmCC</ImageData>
+    </EmbeddedImage>
+  </EmbeddedImages>
+  <Language>it-IT</Language>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Cm</rd:ReportUnitType>
+  <rd:ReportID>5a759a84-b33b-42b8-8d6a-bf5d513ed9a4</rd:ReportID>
+</Report>

@@ -1,0 +1,1633 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="15.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{26FC3668-B677-40A7-ABBB-512736E7A815}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Data</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Data</AssemblyName>
+    <MyType>Windows</MyType>
+    <OptionStrict>Off</OptionStrict>
+    <OptionExplicit>On</OptionExplicit>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>VecompSoftware.DocSuiteWeb.Data.xml</DocumentationFile>
+    <NoWarn>42017,42018,42019,42032,42036,42353,42354,42355</NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>VecompSoftware.DocSuiteWeb.Data.xml</DocumentationFile>
+    <NoWarn>42017,42018,42019,42032,42036,42353,42354,42355</NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DocumentationFile>VecompSoftware.DocSuiteWeb.Data.xml</DocumentationFile>
+    <NoWarn>42017,42018,42019,42032,42036,42353,42354,42355</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DocumentationFile>VecompSoftware.DocSuiteWeb.Data.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>42017,42018,42019,42032,42036,42353,42354,42355</NoWarn>
+    <DebugType>None</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.9.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.9\lib\net45\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=5.1.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NHibernate.5.1.3\lib\net461\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Telerik.Web.UI, Version=2020.1.114.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Web.UI.2020.1.114.45\lib\net45\Telerik.Web.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Clients.WebAPI, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Clients.WebAPI.9.9.20267.1\lib\net48\VecompSoftware.Clients.WebAPI.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.9.20254.2\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.9.20254.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.9.20254.5\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.9.9.20267.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.Json, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Json.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.NHibernate, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.NHibernate.9.9.20267.1\lib\net48\VecompSoftware.Helpers.NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.Web, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Web.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Logging, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Logging.9.9.20267.1\lib\net48\VecompSoftware.Services.Logging.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="API\dto\APIProviderDTO.vb" />
+    <Compile Include="API\NHibernateAPIProviderDao.vb" />
+    <Compile Include="API\domain\APIProvider.vb" />
+    <Compile Include="Common\Finder\NHCategorySchemaFinder.vb" />
+    <Compile Include="Common\Finder\NHRoleUserFinder.vb" />
+    <Compile Include="Common\Finder\NHSecurityGroupFinder.vb" />
+    <Compile Include="Common\Finder\NHSecurityUserFinder.vb" />
+    <Compile Include="Common\NHibernateCategorySchemaDao.vb" />
+    <Compile Include="Common\NHibernateContactNameDao.vb" />
+    <Compile Include="Common\NHibernateContainerPropertyDao.vb" />
+    <Compile Include="Common\NHibernateRoleNameDao.vb" />
+    <Compile Include="Context\ContainerEnv.vb" />
+    <Compile Include="Context\ProtocolEnv.vb" />
+    <Compile Include="CustomizationSchemaApplyer\SessionFactory\MappingType.vb" />
+    <Compile Include="CustomizationSchemaApplyer\SessionFactory\NHibernateConfiguration.vb" />
+    <Compile Include="Data\ContainerPropertyType.vb" />
+    <Compile Include="Data\IMessageAttachmentDao.vb" />
+    <Compile Include="Data\IMessageContactDao.vb" />
+    <Compile Include="Data\IMessageContactEmailDao.vb" />
+    <Compile Include="Data\IMessageDao.vb" />
+    <Compile Include="Data\IMessageEmailDao.vb" />
+    <Compile Include="Data\IMessageLogDao.vb" />
+    <Compile Include="Data\PrivacyType.vb" />
+    <Compile Include="Data\ParameterViewMode.vb" />
+    <Compile Include="DocSuiteSignRequiredException.vb" />
+    <Compile Include="DocumentSeries\DTO\MonitoringQualityDetailsDTO.vb" />
+    <Compile Include="DocumentSeries\DTO\MonitoringQualitySummaryDTO.vb" />
+    <Compile Include="Domain\Collaboration\DTO\CollaborationManagerDTO.vb" />
+    <Compile Include="Domain\Collaboration\WorkflowMetadataXml.vb" />
+    <Compile Include="Domain\Common\AuthorizationRoleType.vb" />
+    <Compile Include="Domain\Common\CategorySchema.vb" />
+    <Compile Include="Domain\Common\Contact\ContactList.vb" />
+    <Compile Include="Domain\Common\Contact\LanguageType.vb" />
+    <Compile Include="Domain\Common\Contact\TenantContact.vb" />
+    <Compile Include="Domain\Common\DTO\ContactListDto.vb" />
+    <Compile Include="Domain\Common\LogEvent.vb" />
+    <Compile Include="Domain\Common\TenantRole.vb" />
+    <Compile Include="Domain\DocumentUnits\DocumentUnit.vb" />
+    <Compile Include="Domain\DocumentUnits\DocumentUnitStatus.vb" />
+    <Compile Include="Domain\Fascicle\FascicleDocumentUnit.vb" />
+    <Compile Include="Domain\Fascicle\FascicleStatus.vb" />
+    <Compile Include="Domain\Fascicle\RoleAuthorizationType.vb" />
+    <Compile Include="Domain\Fascicle\VisibilityType.vb" />
+    <Compile Include="Domain\Fascicle\ReferenceType.vb" />
+    <Compile Include="Domain\Fascicle\FascicleType.vb" />
+    <Compile Include="Domain\ISupportTenant.vb" />
+    <Compile Include="Domain\PEC\InvoiceStatus.vb" />
+    <Compile Include="Domain\PEC\InvoiceType.vb" />
+    <Compile Include="Domain\PEC\PECMailReceiptType.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesItemLink.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesItemLinks.vb" />
+    <Compile Include="DocumentSeries\DTO\DocumentSeriesLogSummaryDTO.vb" />
+    <Compile Include="DocumentSeries\Finder\NHibernateDocumentSeriesItemResolutionLinkFinder.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesItemMessageDao.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesItemLinkDao.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesItemMessage.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationAggregate.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationMainAction.vb" />
+    <Compile Include="Domain\Common\Contact\ContactName.vb" />
+    <Compile Include="Domain\Common\Contact\RoleName.vb" />
+    <Compile Include="Domain\Common\ContainerProperty.vb" />
+    <Compile Include="Domain\Common\DTO\ContainerRightsDto.vb" />
+    <Compile Include="Domain\Common\UserDiary.vb" />
+    <Compile Include="Domain\Document\DocumentLogType.vb" />
+    <Compile Include="Domain\ISupportChanged.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASEContattiTrasmittente.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASEContratto.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASEDatiTrasmissione.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASEFattura.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASEIdTrasmittente.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASEMitente.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASESede.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASESpedizione.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PolAccountSercAuth.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PolAccountSercExtendedProperties.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\POLRequestContactSercExtendedProperties.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PRCEProtocolInformation.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PRCESede.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLAccountExtendedProperties.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestContactExtendedProperties.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\ExceptionInfo.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\POLRequestExtendedProperties.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\POLRequestMetaData.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\TNoticeFatalErrorType.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\PRETNoticeGetStatusResponse.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\PRETNoticePushResponse.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\TNoticeReturnCodeType.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestExtendedProperties\TNoticeStatusCodeType.vb" />
+    <Compile Include="Domain\PosteOnLine\DTO\POLRequestRecipientHeader.vb" />
+    <Compile Include="Domain\PosteOnLine\SOLRequest.vb" />
+    <Compile Include="Domain\Protocol\IProtocolLog.vb" />
+    <Compile Include="Domain\Protocol\ProtocolRoleNoteType.vb" />
+    <Compile Include="Domain\Protocol\ProtocolRoleStatus.vb" />
+    <Compile Include="Domain\Protocol\DTO\ProtocolContactDTO.vb" />
+    <Compile Include="Domain\PEC\ImapFlag.vb" />
+    <Compile Include="Domain\PEC\IncomingProtocol.vb" />
+    <Compile Include="Domain\Protocol\DTO\ProtocolDocumentDTO.vb" />
+    <Compile Include="Domain\Protocol\DTO\ProtocolCount.vb" />
+    <Compile Include="Domain\Protocol\Log\UnifiedDiary.vb" />
+    <Compile Include="Domain\Message\DTO\MessageContactEmailFull.vb" />
+    <Compile Include="Domain\Message\DTO\MessageLogHeader.vb" />
+    <Compile Include="Domain\PEC\PECMailActiveType.vb" />
+    <Compile Include="Domain\Protocol\ContainerArchive.vb" />
+    <Compile Include="Domain\Common\ContainerBehaviourAction.vb" />
+    <Compile Include="Domain\Common\LocationTypeEnum.vb" />
+    <Compile Include="Domain\PEC\PECMailBoxConfiguration.vb" />
+    <Compile Include="Domain\PEC\PECMailMultipleTypeEnum.vb" />
+    <Compile Include="Domain\PEC\PECMailProcessStatus.vb" />
+    <Compile Include="Domain\Protocol\Incremental.vb" />
+    <Compile Include="Domain\Protocol\Log\LogKind.vb" />
+    <Compile Include="Domain\Protocol\Log\LogKindEnum.vb" />
+    <Compile Include="Domain\Protocol\ProtocolDistributionType.vb" />
+    <Compile Include="Domain\Protocol\ProtocolKind.vb" />
+    <Compile Include="Domain\Protocol\ProtocolMessage.vb" />
+    <Compile Include="Domain\Protocol\ProtocolUser.vb" />
+    <Compile Include="Domain\Protocol\ProtocolRejectedRole.vb" />
+    <Compile Include="Domain\Protocol\ProtocolRoleTypes.vb" />
+    <Compile Include="Domain\Protocol\ProtocolDocumentSeriesItem.vb" />
+    <Compile Include="Domain\Protocol\ProtocolUserType.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateAdvancedProtocol.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateProtocol.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateProtocolContact.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateProtocolContactCompositeKey.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateProtocolContactManual.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateProtocolContactManualCompositeKey.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateProtocolRole.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateProtocolRoleCompositeKey.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateProtocolRoleUser.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateProtocolRoleUserCompositeKey.vb" />
+    <Compile Include="Domain\Protocol\Template\TemplateStatus.vb" />
+    <Compile Include="Domain\Resolution\DTO\ResolutionActivityHeader.vb" />
+    <Compile Include="Domain\Resolution\Key\ResolutionRoleCompositeKey.vb" />
+    <Compile Include="Domain\Resolution\ResolutionActivity.vb" />
+    <Compile Include="Domain\Resolution\ResolutionActivityStatus.vb" />
+    <Compile Include="Domain\Resolution\ResolutionActivityType.vb" />
+    <Compile Include="Domain\Resolution\ResolutionKind.vb" />
+    <Compile Include="Domain\Resolution\ResolutionKindDocumentSeries.vb" />
+    <Compile Include="Domain\Resolution\ResolutionMessage.vb" />
+    <Compile Include="Domain\Resolution\PrintLetterRole.vb" />
+    <Compile Include="Events\EventListenerUtil.vb" />
+    <Compile Include="Events\TenantInsertEventListener.vb" />
+    <Compile Include="ExtensionMethods\CategoryDTOEx.vb" />
+    <Compile Include="ExtensionMethods\ContactDTOEx.vb" />
+    <Compile Include="ExtensionMethods\ContainerDTOEx.vb" />
+    <Compile Include="ExtensionMethods\MailboxDTOEx.vb" />
+    <Compile Include="ExtensionMethods\ProtocolDTOEx.vb" />
+    <Compile Include="ExtensionMethods\ServiceCategoryDTOEx.vb" />
+    <Compile Include="ExtensionMethods\TableDocTypeDTOex.vb" />
+    <Compile Include="ExtensionMethods\TaskDTOEx.vb" />
+    <Compile Include="ExtensionMethods\ProtocolModelEx.vb" />
+    <Compile Include="ExtensionMethods\DocumentUnitModelEx.vb" />
+    <Compile Include="Finder\NHContainerFinder.vb" />
+    <Compile Include="Finder\NHibernateResolutionActivityFinder.vb" />
+    <Compile Include="Finder\NHibernateResolutionFinder.vb" />
+    <Compile Include="Finder\NHMessageLogFinder.vb" />
+    <Compile Include="Finder\NHMessageEmailFinder.vb" />
+    <Compile Include="Formatter\ProtocolDocumentType.vb" />
+    <Compile Include="Formatter\ProtocolSignatureInfo.vb" />
+    <Compile Include="Models\AdaptiveSearchMappingControl.vb" />
+    <Compile Include="Models\AdaptiveSearchModel.vb" />
+    <Compile Include="Models\ColumnOrder.vb" />
+    <Compile Include="Models\ContactDelegateModel.vb" />
+    <Compile Include="Models\HighlightProtocolGroup.vb" />
+    <Compile Include="Models\IconModality.vb" />
+    <Compile Include="Models\DocumentSeriesConfigurationOrder.vb" />
+    <Compile Include="Models\InvoiceResources.vb" />
+    <Compile Include="Models\InvoiceResourcesFactory.vb" />
+    <Compile Include="Models\InvoiceStylesheetNames.vb" />
+    <Compile Include="Models\PublicationResolutionDocumentModel.vb" />
+    <Compile Include="Models\ResolutionActivityDocumentModel.vb" />
+    <Compile Include="Models\SignedIconRenderingModality.vb" />
+    <Compile Include="Models\TenantEntityConfigurationEx.vb" />
+    <Compile Include="Models\WebDoc.vb" />
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="OrganizationChart\domain\OChartItemWorkflow.vb" />
+    <Compile Include="OrganizationChart\ExtensionMethods\OChartItemWorkflowExtensions.vb" />
+    <Compile Include="OrganizationChart\NHibernateOChartItemWorkflowDao.vb" />
+    <Compile Include="PEC\Finder\NHibernatePECMailBoxFinder.vb" />
+    <Compile Include="PEC\Finder\PECTaskHeaderCriteria.vb" />
+    <Compile Include="PEC\Finder\PECRegistrationUserCriteria.vb" />
+    <Compile Include="PEC\Finder\PECReceiptCriteria.vb" />
+    <Compile Include="PEC\NHibernatePECMailBoxConfigurationDao.vb" />
+    <Compile Include="PEC\NHibernatePECMailBoxRoleDao.vb" />
+    <Compile Include="Protocol\Finder\NHibernateTemplateProtocolFinder.vb" />
+    <Compile Include="Protocol\Finder\NHPosteOnlineRequestFinder.vb" />
+    <Compile Include="Protocol\NHibenateIncrementalDao.vb" />
+    <Compile Include="Protocol\NHibernateCollaborationAggregateDao.vb" />
+    <Compile Include="Protocol\NHibernateContainerArchiveDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolRejectedRoleDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolRoleUserDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolUserDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolMessageDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolDocumentSeriesDao.vb" />
+    <Compile Include="Protocol\NHibernateTemplateProtocolDao.vb" />
+    <Compile Include="Protocol\NHibernateUnifiedDiaryDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionMessageDao.vb" />
+    <Compile Include="Resolution\NHibernatePrintLetterRoleDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionActivityDao.vb" />
+    <Compile Include="Resolution\SqlExceptionCodeError.vb" />
+    <Compile Include="Task\Domain\TaskHeader.vb" />
+    <Compile Include="Task\Domain\TaskDetail.vb" />
+    <Compile Include="Task\Domain\TaskHeaderPECMail.vb" />
+    <Compile Include="Task\Domain\TaskHeaderPOLRequest.vb" />
+    <Compile Include="Task\Domain\TaskHeaderProtocol.vb" />
+    <Compile Include="Task\Domain\TaskHeaderSendedStatus.vb" />
+    <Compile Include="Task\Domain\TaskHeaderSendingProcessStatus.vb" />
+    <Compile Include="Task\Domain\TaskParameter.vb" />
+    <Compile Include="Task\finder\NHibernateTaskDetailFinder.vb" />
+    <Compile Include="Task\finder\NHibernateTaskHeaderFinder.vb" />
+    <Compile Include="Task\Dao\NHibernateTaskHeaderDao.vb" />
+    <Compile Include="Task\Dao\NHibernateTaskDetailDao.vb" />
+    <Compile Include="Task\Dao\NHibernateTaskHeaderPOLRequestDao.vb" />
+    <Compile Include="Task\Dao\NHibernateTaskHeaderPECMailDao.vb" />
+    <Compile Include="Task\Dao\NHibernateTaskHeaderProtocolDao.vb" />
+    <Compile Include="Task\Dao\NHibernateTaskParameterDao.vb" />
+    <Compile Include="Tender\domain\TenderLot.vb" />
+    <Compile Include="Tender\domain\TenderHeader.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesAttributeEnum.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesAttributeEnumValue.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesAttributeEnumDao.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationStatusCode.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationStatusRecipient.vb" />
+    <Compile Include="Protocol\NHibernateCollaborationStatusRecipientDao.vb" />
+    <Compile Include="Common\NHibernateContainerBehaviourDao.vb" />
+    <Compile Include="Domain\Common\ContainerBehaviour.vb" />
+    <Compile Include="InformationException.vb" />
+    <Compile Include="Data\NotificationHandlerType.vb" />
+    <Compile Include="Data\NotificationType.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationDocumentType.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationSecretaryRoleAllowance.vb" />
+    <Compile Include="Domain\Collaboration\DestinatonType.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationXmlData.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationStatusType.vb" />
+    <Compile Include="Domain\ISupportRange.vb" />
+    <Compile Include="Domain\Protocol\ProtocolStatusId.vb" />
+    <Compile Include="Domain\Resolution\ResolutionXML.vb" />
+    <Compile Include="Finder\NHResolutionFinder2.vb" />
+    <Compile Include="Formatter\ProtocolSignatureFormatter.vb" />
+    <Compile Include="OrganizationChart\domain\OChart.vb" />
+    <Compile Include="OrganizationChart\domain\OChartItemContact.vb" />
+    <Compile Include="OrganizationChart\domain\OChartItemContainer.vb" />
+    <Compile Include="OrganizationChart\domain\OChartItemMailbox.vb" />
+    <Compile Include="OrganizationChart\domain\OChartItemRole.vb" />
+    <Compile Include="Domain\Protocol\FilterItem.vb" />
+    <Compile Include="Domain\Common\RoleUserType.vb" />
+    <Compile Include="Domain\Resolution\ResolutionComunicationType.vb" />
+    <Compile Include="Domain\Resolution\ResolutionLogType.vb" />
+    <Compile Include="Domain\Resolution\ResolutionRightPositions.vb" />
+    <Compile Include="Domain\Resolution\ResolutionRoleType.vb" />
+    <Compile Include="Domain\Resolution\RoleRestictions.vb" />
+    <Compile Include="DSWEnvironment.vb" />
+    <Compile Include="Common\NHibernateContactTitleDao.vb" />
+    <Compile Include="Common\NHibernateContainerDocTypeDao.vb" />
+    <Compile Include="Common\NHibernateContainerGroupDao.vb" />
+    <Compile Include="Common\NHibernateParameterEnvDao.vb" />
+    <Compile Include="Common\NHibernateResolutionDocumentSeriesDao.vb" />
+    <Compile Include="Common\NHibernateRoleGroupDao.vb" />
+    <Compile Include="Common\NHibernateRoleUserDao.vb" />
+    <Compile Include="Common\NHibernateSecurityGroupsDao.vb" />
+    <Compile Include="Common\NHibernateSecurityUsersDao.vb" />
+    <Compile Include="Common\NHibernateDocumentTypeDao.vb" />
+    <Compile Include="Common\NHibernateRecipientDao.vb" />
+    <Compile Include="Common\NHibernateParameterDao.vb" />
+    <Compile Include="Common\NHibernateObjectDao.vb" />
+    <Compile Include="Common\NHibernateDistributionListDao.vb" />
+    <Compile Include="Common\NHibernateContactTypeDao.vb" />
+    <Compile Include="Common\NHibernateContactPlaceNameDao.vb" />
+    <Compile Include="Common\NHibernateContactDao.vb" />
+    <Compile Include="Common\NHibernateContainerDao.vb" />
+    <Compile Include="Common\NHibernateRoleDao.vb" />
+    <Compile Include="Common\NHibernateLocationDao.vb" />
+    <Compile Include="Common\NHibernateTaskLockDao.vb" />
+    <Compile Include="Context\BaseEnvironment.vb" />
+    <Compile Include="Context\DocSuiteContext.vb" />
+    <Compile Include="Context\DocSuiteUser.vb" />
+    <Compile Include="Context\DocumentEnv.vb" />
+    <Compile Include="Context\EnvironmentDataCode.vb" />
+    <Compile Include="Context\Parameters\ChangeObjectParameter.vb" />
+    <Compile Include="Context\Parameters\ContactModifyParameter.vb" />
+    <Compile Include="Context\Parameters\TopMediaParameters.vb" />
+    <Compile Include="Context\ResolutionEnv.vb" />
+    <Compile Include="Context\XmlEnvironment.vb" />
+    <Compile Include="Context\XmlParameter.vb" />
+    <Compile Include="Domain\PEC\PECMailType.vb" />
+    <Compile Include="Data\ContactTypeEnum.vb" />
+    <Compile Include="Data\IFinder.vb" />
+    <Compile Include="Data\ILog.vb" />
+    <Compile Include="DocSuiteException.vb" />
+    <Compile Include="DocSuiteInterceptor.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesDao.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesFamilyDao.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesIncrementalDao.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesAttributeBehaviourDao.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesItemDao.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesItemLogDao.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesItemRoleDao.vb" />
+    <Compile Include="DocumentSeries\NHibernateDocumentSeriesSubsectionDao.vb" />
+    <Compile Include="Document\Collection\NHContainerExtensionCollection.vb" />
+    <Compile Include="Document\NHibernateDocumentTabStatusDao.vb" />
+    <Compile Include="Document\NHibernateDocumentTabTokenDao.vb" />
+    <Compile Include="Document\NHibernateDocumentVersioningDao.vb" />
+    <Compile Include="Document\NHibernateDocumentTokenUserDao.vb" />
+    <Compile Include="Document\NHibernateDocumentTokenDao.vb" />
+    <Compile Include="Document\NHibernateContainerExtensionDao.vb" />
+    <Compile Include="Document\NHibernateDocumentObjectDao.vb" />
+    <Compile Include="Document\NHibernateDocumentNoteDao.vb" />
+    <Compile Include="Document\NHibernateDocumentFolderDao.vb" />
+    <Compile Include="Document\NHibernateDocumentContactDao.vb" />
+    <Compile Include="Document\NHibernateDocumentLogDao.vb" />
+    <Compile Include="Document\NHibernateDocumentDao.vb" />
+    <Compile Include="Common\NHibernateCategoryDao.vb" />
+    <Compile Include="Domain\AuditableDomainObject.vb" />
+    <Compile Include="Domain\Collaboration\Collaboration.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationContact.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationLog.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationSign.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationStatus.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationUser.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationVersioning.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationXML.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationStatusXML.vb" />
+    <Compile Include="Domain\Collaboration\DTO\ChangeSignerDTO.vb" />
+    <Compile Include="Domain\Collaboration\DTO\CollaborationHeader.vb" />
+    <Compile Include="Domain\Collaboration\DTO\DocumentFDQDTO.vb" />
+    <Compile Include="Domain\Common\Category.vb" />
+    <Compile Include="Domain\Common\CommonObject.vb" />
+    <Compile Include="Domain\Common\Contact\Address.vb" />
+    <Compile Include="Domain\Common\Contact\Contact.vb" />
+    <Compile Include="Domain\Common\Contact\ContactDTO.vb" />
+    <Compile Include="Domain\Common\Contact\ContactPlaceName.vb" />
+    <Compile Include="Domain\Common\Contact\ContactTitle.vb" />
+    <Compile Include="Domain\Common\Contact\ContactType.vb" />
+    <Compile Include="Domain\Common\Contact\DistributionList.vb" />
+    <Compile Include="Domain\Common\Contact\Recipient.vb" />
+    <Compile Include="Domain\Common\Container.vb" />
+    <Compile Include="Domain\Common\ContainerExtensionCollection.vb" />
+    <Compile Include="Domain\Common\ContainerExtensionType.vb" />
+    <Compile Include="Domain\Common\DocumentRightPositions.vb" />
+    <Compile Include="Domain\Common\ContainerExtension.vb" />
+    <Compile Include="Domain\Common\ContainerDocType.vb" />
+    <Compile Include="Domain\Common\ContainerGroup.vb" />
+    <Compile Include="Domain\Common\ContainerType.vb" />
+    <Compile Include="Domain\Common\DocumentType.vb" />
+    <Compile Include="Domain\Common\GroupRights.vb" />
+    <Compile Include="Domain\Common\IContainerExtensionCollection.vb" />
+    <Compile Include="Domain\Common\Location.vb" />
+    <Compile Include="Domain\Common\Parameter.vb" />
+    <Compile Include="Domain\Common\ParameterEnv.vb" />
+    <Compile Include="Domain\Common\Role.vb" />
+    <Compile Include="Domain\Common\RoleGroup.vb" />
+    <Compile Include="Domain\Common\RoleUser.vb" />
+    <Compile Include="Domain\Common\SecurityGroups.vb" />
+    <Compile Include="Domain\Common\SecurityUsers.vb" />
+    <Compile Include="Domain\Common\Security\CategoryProtocolRights.vb" />
+    <Compile Include="Domain\Common\Security\RoleDocumentRights.vb" />
+    <Compile Include="Domain\Common\Security\RoleProtocolRights.vb" />
+    <Compile Include="Domain\Common\TaskLock.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeries.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesFamily.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesIncremental.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesItem.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesAttributeBehaviour.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesItemLog.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesItemLogType.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesItemRole.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesItemRoleLinkType.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesItemStatus.vb" />
+    <Compile Include="DocumentSeries\domain\DocumentSeriesSubsection.vb" />
+    <Compile Include="DocumentSeries\DTO\DocumentSeriesItemDTO.vb" />
+    <Compile Include="Domain\Document\Document.vb" />
+    <Compile Include="Domain\Document\DocumentContact.vb" />
+    <Compile Include="Domain\Document\DocumentFolder.vb" />
+    <Compile Include="Domain\Document\DocumentLog.vb" />
+    <Compile Include="Domain\Document\DocumentNote.vb" />
+    <Compile Include="Domain\Document\DocumentObject.vb" />
+    <Compile Include="Domain\Document\DocumentTabStatus.vb" />
+    <Compile Include="Domain\Document\DocumentTabToken.vb" />
+    <Compile Include="Domain\Document\DocumentToken.vb" />
+    <Compile Include="Domain\Document\DocumentTokenUser.vb" />
+    <Compile Include="Domain\Document\DocumentVersioning.vb" />
+    <Compile Include="Domain\Document\DTO\DocumentHeader.vb" />
+    <Compile Include="Domain\Document\DTO\DocumentObjectHeader.vb" />
+    <Compile Include="Domain\Document\Key\ContainerExtensionCompositeKey.vb" />
+    <Compile Include="Domain\Document\Key\YearNumberIncrCompositeKey.vb" />
+    <Compile Include="Domain\DomainObject.vb" />
+    <Compile Include="Domain\Fascicle\DTO\FascicleParam.vb" />
+    <Compile Include="Domain\Fascicle\Fascicle.vb" />
+    <Compile Include="Domain\File\SharedFile.vb" />
+    <Compile Include="Domain\IAuditable.vb" />
+    <Compile Include="Domain\IPA\IPA.vb" />
+    <Compile Include="Domain\ISupportLogicDelete.vb" />
+    <Compile Include="Domain\Message\DSWMessage.vb" />
+    <Compile Include="Domain\Message\MessageAttachment.vb" />
+    <Compile Include="Domain\Message\MessageContact.vb" />
+    <Compile Include="Domain\Message\MessageContactEmail.vb" />
+    <Compile Include="Domain\Message\MessageEmail.vb" />
+    <Compile Include="Domain\Message\MessageLog.vb" />
+    <Compile Include="Domain\PackageCompositeKey.vb" />
+    <Compile Include="Domain\PEC\DTO\PECMailLogHeader.vb" />
+    <Compile Include="Domain\PEC\PECMailViewRole.vb" />
+    <Compile Include="Domain\PEC\PECMailViewDefault.vb" />
+    <Compile Include="Domain\PEC\PECMailView.vb" />
+    <Compile Include="Domain\PEC\PECMailBoxComparer.vb" />
+    <Compile Include="Domain\PEC\PECMailBoxLog.vb" />
+    <Compile Include="Domain\PEC\PECMailBoxRole.vb" />
+    <Compile Include="Domain\PEC\PECMailBoxRoleCompositeKey.vb" />
+    <Compile Include="Domain\PEC\PECMailContent.vb" />
+    <Compile Include="Domain\PEC\PECMailDirection.vb" />
+    <Compile Include="Domain\PEC\PECMailLog.vb" />
+    <Compile Include="Domain\PEC\PECMailLogType.vb" />
+    <Compile Include="Domain\PEC\PECMailPriority.vb" />
+    <Compile Include="Domain\PEC\PECMailReceipt.vb" />
+    <Compile Include="Domain\PEC\PECMailTypes.vb" />
+    <Compile Include="Domain\PosteOnLine\PolDtoCosti.vb" />
+    <Compile Include="Domain\PosteOnLine\POLRequestType.vb" />
+    <Compile Include="Domain\Protocol\AdvancedProtocol.vb" />
+    <Compile Include="Domain\Protocol\DTO\ProtocolHeader.vb" />
+    <Compile Include="Domain\PosteOnLine\POLAccount.vb" />
+    <Compile Include="Domain\PosteOnLine\POLMessageContactEnum.vb" />
+    <Compile Include="Domain\PosteOnLine\POLRequestStatusEnum.vb" />
+    <Compile Include="Domain\Protocol\ProtocolContactCommunicationType.vb" />
+    <Compile Include="Domain\Protocol\ProtocolDraft.vb" />
+    <Compile Include="Domain\Protocol\ProtocolParer.vb" />
+    <Compile Include="Domain\Protocol\ProtocolPecXML.vb" />
+    <Compile Include="Domain\Protocol\ProtocolXML.vb" />
+    <Compile Include="Domain\Protocol\ScannerParameter.vb" />
+    <Compile Include="Domain\Protocol\ScannerConfiguration.vb" />
+    <Compile Include="Domain\Protocol\ZebraPrinter.vb" />
+    <Compile Include="Domain\Protocol\Log\ComputerLog.vb" />
+    <Compile Include="Domain\PosteOnLine\LOLRequest..vb" />
+    <Compile Include="Domain\PosteOnLine\POLRequest.vb" />
+    <Compile Include="Domain\PosteOnLine\POLRequestContact.vb" />
+    <Compile Include="Domain\PosteOnLine\POLRequestRecipient.vb" />
+    <Compile Include="Domain\PosteOnLine\POLRequestSender.vb" />
+    <Compile Include="Domain\Protocol\ProtocolTransfert.vb" />
+    <Compile Include="Domain\PosteOnLine\ROLRequest.vb" />
+    <Compile Include="Domain\Protocol\ServiceCategory.vb" />
+    <Compile Include="Domain\Protocol\Conservation\ProtocolConservationHeader.vb" />
+    <Compile Include="Domain\Protocol\DocArea\DocAreaImportStatus.vb" />
+    <Compile Include="Domain\Protocol\DocArea\ProtocolMetaData.vb" />
+    <Compile Include="Domain\Protocol\DTO\ProtocolContactJournalDTO.vb" />
+    <Compile Include="Domain\Protocol\Log\ServiceLog.vb" />
+    <Compile Include="Domain\Protocol\Log\TableLog.vb" />
+    <Compile Include="Domain\Protocol\Log\UserError.vb" />
+    <Compile Include="Domain\Protocol\Log\UserLog.vb" />
+    <Compile Include="Domain\Protocol\Package.vb" />
+    <Compile Include="Domain\PEC\PECMail.vb" />
+    <Compile Include="Domain\PEC\PECMailAttachment.vb" />
+    <Compile Include="Domain\PEC\PECMailBox.vb" />
+    <Compile Include="Domain\Protocol\Protocol.vb" />
+    <Compile Include="Domain\Protocol\ProtocolContact.vb" />
+    <Compile Include="Domain\Protocol\ProtocolContactIssue.vb" />
+    <Compile Include="Domain\Protocol\ProtocolContactManual.vb" />
+    <Compile Include="Domain\Protocol\ProtocolFile.vb" />
+    <Compile Include="Domain\Protocol\ProtocolJournalLog.vb" />
+    <Compile Include="Domain\Protocol\ProtocolLink.vb" />
+    <Compile Include="Domain\Protocol\ProtocolLog.vb" />
+    <Compile Include="Domain\Protocol\ProtocolRole.vb" />
+    <Compile Include="Domain\Protocol\ProtocolRoleUser.vb" />
+    <Compile Include="Domain\Protocol\ProtocolStatus.vb" />
+    <Compile Include="Domain\Protocol\ProtocolType.vb" />
+    <Compile Include="Domain\Protocol\Security\ProtocolRoleRights.vb" />
+    <Compile Include="Domain\PosteOnLine\TOLRequest.vb" />
+    <Compile Include="Domain\Resolution\BidType.vb" />
+    <Compile Include="Domain\Resolution\ContainerResolutionType.vb" />
+    <Compile Include="Domain\Resolution\ControllerStatusResolution.vb" />
+    <Compile Include="Domain\Resolution\DTO\ResolutionHeader.vb" />
+    <Compile Include="Domain\Resolution\DTO\ResolutionLetter.vb" />
+    <Compile Include="Domain\Resolution\DTO\ResolutionMultiPublication.vb" />
+    <Compile Include="Domain\Resolution\DTO\ResolutionParam.vb" />
+    <Compile Include="Domain\Resolution\FileResolution.vb" />
+    <Compile Include="Domain\Resolution\Key\ContainerResolutionTypeCompositeKey.vb" />
+    <Compile Include="Domain\Resolution\Key\ResolutionContactCompositeKey.vb" />
+    <Compile Include="Domain\Resolution\Key\ResolutionRecipientCompositeKey.vb" />
+    <Compile Include="Domain\Resolution\Key\ResolutionWorkflowCompositeKey.vb" />
+    <Compile Include="Domain\Resolution\Key\TabMasterCompositeKey.vb" />
+    <Compile Include="Domain\Resolution\Key\TabWorkflowCompositeKey.vb" />
+    <Compile Include="Domain\Resolution\PECOC.vb" />
+    <Compile Include="Domain\Resolution\PECOCLog.vb" />
+    <Compile Include="Domain\Resolution\PECOCStatus.vb" />
+    <Compile Include="Domain\Resolution\Resolution.vb" />
+    <Compile Include="Domain\Resolution\ResolutionContact.vb" />
+    <Compile Include="Domain\Resolution\ResolutionDocumentSeries.vb" />
+    <Compile Include="Domain\Resolution\ResolutionJournal.vb" />
+    <Compile Include="Domain\Resolution\ResolutionJournalDetail.vb" />
+    <Compile Include="Domain\Resolution\ResolutionJournalTemplate.vb" />
+    <Compile Include="Domain\Resolution\ResolutionJournalTemplateSpecification.vb" />
+    <Compile Include="Domain\Resolution\ResolutionLog.vb" />
+    <Compile Include="Domain\Resolution\ResolutionParer.vb" />
+    <Compile Include="Domain\Resolution\ResolutionRecipient.vb" />
+    <Compile Include="Domain\Resolution\ResolutionRole.vb" />
+    <Compile Include="Domain\Resolution\ResolutionStatus.vb" />
+    <Compile Include="Domain\Resolution\ResolutionType.vb" />
+    <Compile Include="Domain\Resolution\ResolutionWorkflow.vb" />
+    <Compile Include="Domain\Resolution\TabMaster.vb" />
+    <Compile Include="Domain\Resolution\TabWorkflow.vb" />
+    <Compile Include="Domain\Resolution\WebPublication.vb" />
+    <Compile Include="Domain\ServiceCodeDescriptor.vb" />
+    <Compile Include="Domain\TaskTypeTaskIdCompositeKey.vb" />
+    <Compile Include="Domain\YearNumberCompositeKey.vb" />
+    <Compile Include="Domain\YearNumberIdCompositeKey.vb" />
+    <Compile Include="ExpiredSessionStateException.vb" />
+    <Compile Include="Finder\Alias\AliasFinder.vb" />
+    <Compile Include="Finder\Alias\IAliasFinder.vb" />
+    <Compile Include="Finder\CollaborationHeaderMatcher.vb" />
+    <Compile Include="Finder\ContactsStatisticsDTO.vb" />
+    <Compile Include="Protocol\Finder\NHibernateProtocolContactManualFinder2.vb" />
+    <Compile Include="Protocol\Finder\NHibernateProtocolContactFinder2.vb" />
+    <Compile Include="Finder\NHibernateCollaborationVersioningFinder.vb" />
+    <Compile Include="DocumentSeries\Finder\NHibernateDocumentSeriesItemFinder.vb" />
+    <Compile Include="DocumentSeries\Finder\NHibernateDocumentSeriesItemLogFinder.vb" />
+    <Compile Include="PEC\Finder\NHibernatePECMailLogFinder.vb" />
+    <Compile Include="Protocol\Finder\NHibernateProtocolFinder.vb" />
+    <Compile Include="Finder\NHibernatePECOCFinder.vb" />
+    <Compile Include="Protocol\Finder\NHibernateProtocolContactFinder.vb" />
+    <Compile Include="Protocol\Finder\NHibernateProtocolContactManualFinder.vb" />
+    <Compile Include="Resolution\Finder\NHibernateResolutionJournalFinder.vb" />
+    <Compile Include="Finder\NHibernateScannerParameterFinder.vb" />
+    <Compile Include="Finder\NHibernateComputerLogFinder.vb" />
+    <Compile Include="Finder\Filter\FilterExpression.vb" />
+    <Compile Include="Finder\Filter\IFilterExpression.vb" />
+    <Compile Include="Document\Finder\NHibernateDocumentObjectFinder.vb" />
+    <Compile Include="Document\Finder\NHibernateDocumentTokenFinder.vb" />
+    <Compile Include="Document\Finder\NHibernateDocumentVersioningFinder.vb" />
+    <Compile Include="PEC\Finder\NHibernatePECMailFinder.vb" />
+    <Compile Include="Protocol\Finder\NHibernateProtocolHeaderFinderTD.vb" />
+    <Compile Include="Protocol\Finder\NHibernateProtocolJournalLogFinder.vb" />
+    <Compile Include="Protocol\Finder\NHibernateProtocolObjectFinder.vb" />
+    <Compile Include="Resolution\Finder\NHibernateResolutionWorkflowFinder.vb" />
+    <Compile Include="Document\Finder\NHibernateDocumentTokenUserFinder.vb" />
+    <Compile Include="Domain\PEC\DTO\PecMailHeader.vb" />
+    <Compile Include="Finder\SQLExpression\ISQLExpression.vb" />
+    <Compile Include="Finder\NHibernateBaseFinder.vb" />
+    <Compile Include="Finder\NHibernateBaseLogFinder.vb" />
+    <Compile Include="Finder\NHibernateContactFinder.vb" />
+    <Compile Include="Document\Finder\NHibernateDocumentFinder.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Document\Finder\NHibernateDocumentLogFinder.vb" />
+    <Compile Include="Finder\NHibernateDomainObjectFinder.vb" />
+    <Compile Include="Protocol\Finder\NHibernateProtocolLogFinder.vb" />
+    <Compile Include="Resolution\Finder\NHibernateResolutionLogFinder.vb" />
+    <Compile Include="Finder\NHibernateServiceLogFinder.vb" />
+    <Compile Include="Finder\NHibernateTableLogFinder.vb" />
+    <Compile Include="Finder\NHibernateUserErrorFinder.vb" />
+    <Compile Include="Finder\NHibernateUserLogFinder.vb" />
+    <Compile Include="PEC\Finder\NHibernatePECMailBoxLogFinder.vb" />
+    <Compile Include="Finder\SQLExpression\SQLExpression.vb" />
+    <Compile Include="Finder\TOWorkflow.vb" />
+    <Compile Include="Formatter\ResolutionJournalFormatter.vb" />
+    <Compile Include="Message\NHibernateMessageAttachmentDAO.vb" />
+    <Compile Include="Message\NHibernateMessageContactDAO.vb" />
+    <Compile Include="Message\NHibernateMessageContactEmailDAO.vb" />
+    <Compile Include="Message\NHibernateMessageDAO.vb" />
+    <Compile Include="Message\NHibernateMessageEmailDAO.vb" />
+    <Compile Include="Message\NHibernateMessageLogDAO.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="OrganizationChart\domain\OChartItem.vb" />
+    <Compile Include="OrganizationChart\dto\OChartTransformerDTO.vb" />
+    <Compile Include="OrganizationChart\dto\OrgDeptDTO.vb" />
+    <Compile Include="OrganizationChart\dto\OChartItemDTO.vb" />
+    <Compile Include="OrganizationChart\ExtensionMethods\OChartTransformerDTOExtensions.vb" />
+    <Compile Include="OrganizationChart\ExtensionMethods\OChartExtensions.vb" />
+    <Compile Include="OrganizationChart\ExtensionMethods\OChartItemContactExtensions.vb" />
+    <Compile Include="OrganizationChart\ExtensionMethods\OChartItemExtensions.vb" />
+    <Compile Include="OrganizationChart\ExtensionMethods\OChartItemMailboxExtensions.vb" />
+    <Compile Include="OrganizationChart\ExtensionMethods\OChartItemRoleExtensions.vb" />
+    <Compile Include="OrganizationChart\ExtensionMethods\OChartItemContainerExtensions.vb" />
+    <Compile Include="OrganizationChart\interfaces\OChartCommunicationDataBase.vb" />
+    <Compile Include="OrganizationChart\finder\NHibernateOChartFinder.vb" />
+    <Compile Include="OrganizationChart\NHibernateOChartItemContactDao.vb" />
+    <Compile Include="OrganizationChart\NHibernateOChartItemMailboxDao.vb" />
+    <Compile Include="OrganizationChart\NHibernateOChartDao.vb" />
+    <Compile Include="OrganizationChart\NHibernateOChartItemContainerDao.vb" />
+    <Compile Include="OrganizationChart\NHibernateOChartItemDao.vb" />
+    <Compile Include="OrganizationChart\NHibernateOChartItemRoleDao.vb" />
+    <Compile Include="OrganizationChart\xml\DocumentTypeXml.vb" />
+    <Compile Include="OrganizationChart\xml\ProtocolTypeXml.vb" />
+    <Compile Include="OrganizationChart\xml\FullAuthorization.vb" />
+    <Compile Include="OrganizationChart\xml\FullCategory.vb" />
+    <Compile Include="OrganizationChart\xml\FullContact.vb" />
+    <Compile Include="OrganizationChart\xml\OChartProtocolXml.vb" />
+    <Compile Include="OrganizationChart\xml\ProtocolXmlData.vb" />
+    <Compile Include="Predicates\ContactPredicate.vb" />
+    <Compile Include="Protocol\Finder\NHProtocolFinder.vb" />
+    <Compile Include="Protocol\NHibernateProtocolTransferDao.vb" />
+    <Compile Include="PEC\NHibernatePECMailViewDao.vb" />
+    <Compile Include="PEC\NHibernatePECMailContentDao.vb" />
+    <Compile Include="PEC\NHibernatePECMailReceiptDao.vb" />
+    <Compile Include="Protocol\NHibernatePosteOnlineAccountDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolDraftDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolParerDao.vb" />
+    <Compile Include="Protocol\NHibernateScannerParameterDao.vb" />
+    <Compile Include="Protocol\NHibernateScannerConfigurationDao.vb" />
+    <Compile Include="Protocol\NHibernateZebraPrinterDao.vb" />
+    <Compile Include="Protocol\NHibernateComputerLogDao.vb" />
+    <Compile Include="PEC\NHibernatePECMailBoxLogDao.vb" />
+    <Compile Include="PEC\NHibernatePECMailLogDao.vb" />
+    <Compile Include="Protocol\NHibernatePosteOnlineContactDao.vb" />
+    <Compile Include="Protocol\NHibernatePosteOnlineRequestDao.vb" />
+    <Compile Include="Protocol\NHibernateAdvancedProtocolDao.vb" />
+    <Compile Include="Protocol\NHibernateCollaborationLogDao.vb" />
+    <Compile Include="Protocol\NHibernateCollaborationStatusDao.vb" />
+    <Compile Include="Protocol\NHibernateServiceCategoryDao.vb" />
+    <Compile Include="Protocol\NHibernatePackageDao.vb" />
+    <Compile Include="PEC\NHibernatePECMailAttachmentDao.vb" />
+    <Compile Include="PEC\NHibernatePECMailBoxDao.vb" />
+    <Compile Include="PEC\NHibernatePECMailDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolContactDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolContactIssueDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolJournalLogDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolLinkDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolContactManualDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolLogDao.vb" />
+    <Compile Include="Protocol\NHibernateCollaborationUsersDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolStatusDao.vb" />
+    <Compile Include="Protocol\NHibernateTableLogDao.vb" />
+    <Compile Include="Protocol\NHibernateUserLogDao.vb" />
+    <Compile Include="Protocol\NHibernateUserErrorDao.vb" />
+    <Compile Include="Protocol\NHibernateServiceLogDao.vb" />
+    <Compile Include="Protocol\NHibernateFascicleDocumentUnitsDao.vb" />
+    <Compile Include="Protocol\NHibernateFascicleDao.vb" />
+    <Compile Include="Protocol\NHibernateCollaborationVersioningDao.vb" />
+    <Compile Include="Protocol\NHibernateCollaborationSignsDao.vb" />
+    <Compile Include="Protocol\NHibernateCollaborationDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolTypeDao.vb" />
+    <Compile Include="Protocol\NHibernateProtocolDao.vb" />
+    <Compile Include="Domain\Protocol\ProtocolLogEvent.vb" />
+    <Compile Include="Resolution\NHibernatePECOCDao.vb" />
+    <Compile Include="Resolution\NHibernatePECOCLogDao.vb.vb" />
+    <Compile Include="Resolution\NHibernateResolutionJournalDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionJournalDetailDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionJournalTemplateSpecificationDao.vb" />
+    <Compile Include="Resolution\NHibernateContainerResolutionTypeDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionJournalTemplateDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionParerDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionRoleTypeDao.vb" />
+    <Compile Include="Resolution\NHibernateServiceCodeDescriptorDao.vb" />
+    <Compile Include="Resolution\NHibernateTabMasterDao.vb" />
+    <Compile Include="Resolution\NHibernateTabWorkflowDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionWorkflowDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionRecipientDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionRoleDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionStatusDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionTypeDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionLogDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionContactDao.vb" />
+    <Compile Include="Resolution\NHibernateFileResolutionDao.vb" />
+    <Compile Include="Resolution\NHibernateControllerStatusResolutionDao.vb" />
+    <Compile Include="Resolution\NHibernateBidTypeDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionDao.vb" />
+    <Compile Include="Resolution\NHibernateWebPublicationDao.vb" />
+    <Compile Include="Resolution\ResolutionStatusId.vb" />
+    <Compile Include="Resolution\WorkflowStep.vb" />
+    <Compile Include="Tender\domain\TenderLotPayment.vb" />
+    <Compile Include="Tender\NHibernateTenderLotDao.vb" />
+    <Compile Include="Tender\NHibernateTenderHeaderDao.vb" />
+    <Compile Include="Tender\NHibernateTenderLotPaymentDao.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Common.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\ParameterEnv.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Context\EnvironmentPratiche.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Context\EnvironmentAtti.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Context\EnvironmentProtocollo.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DaoManager\VecompSoftware.DaoManager.csproj">
+      <Project>{992a4c8e-ea09-4650-bb89-d48e201f4bb0}</Project>
+      <Name>VecompSoftware.DaoManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.API.Interface\VecompSoftware.DocSuiteWeb.API.Interface.csproj">
+      <Project>{67d6b9bc-df38-4b3d-9fac-80b21ce274e3}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.API.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.NHibernateManager\VecompSoftware.NHibernateManager.csproj">
+      <Project>{531372fd-aa62-4cd8-8d94-b5f3f835b185}</Project>
+      <Name>VecompSoftware.NHibernateManager</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="OrganizationChart\interfaces\IOChartCommunicationData.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Desks\Protocol_Desk.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PosteOnLine\Protocol_POLAccount.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Desks\Protocol_DeskDocumentEndorsement.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Desks\Protocol_DeskDocument.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Desks\Protocol_DeskLog.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Desks\Protocol_DeskMessage.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Desks\Protocol_DeskRoleUser.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Desks\Protocol_DeskStoryBoard.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Desks\Protocol_DeskDocumentVersions.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionKind.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionKindDocumentSeries.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailBoxUser.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Messages\Protocol_SMSNotification.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Desks\Protocol_DeskCollaboration.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_JeepServiceHosts.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PEC\Finder\PECMailBoxReportDateDto.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowActivity.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowInstance.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowRepository.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\UDS\Protocol_UdsSchemaRepository.hbm.xml" />
+    <EmbeddedResource Include="Mapping\UDS\Protocol_UdsRepository.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowAuthorization.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailBox.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailBoxConfiguration.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailBoxRole.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailBoxLog.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailAttachment.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailContent.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailReceipt.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMail.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailLog.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Fascicles\Protocol_Fascicle.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_ServiceCategory.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Messages\Protocol_Message.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Messages\Protocol_MessageAttachment.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Messages\Protocol_MessageContact.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Messages\Protocol_MessageContactEmail.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Messages\Protocol_MessageEmail.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Messages\Protocol_MessageLog.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\OrganizationChart\Protocol_OChart.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\OrganizationChart\Protocol_OChartItem.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\OrganizationChart\Protocol_OChartItemContainer.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\OrganizationChart\Protocol_OChartItemRole.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\OrganizationChart\Protocol_OChartItemContact.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\OrganizationChart\Protocol_OChartItemMailbox.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_APIProvider.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Collaborations\Protocol_CollaborationSign.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Collaborations\Protocol_CollaborationUser.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Collaborations\Protocol_CollaborationVersioning.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Collaborations\Protocol_CollaborationLog.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Collaborations\Protocol_Collaboration.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Collaborations\Protocol_CollaborationAggregate.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Collaborations\Protocol_CollaborationStatus.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Collaborations\Protocol_CollaborationStatusCode.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Collaborations\Protocol_CollaborationStatusRecipient.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeries.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesFamily.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesIncremental.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesItem.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesItemMessage.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesSubsection.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesItemLog.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesItemLink.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesAttributeBehaviour.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesAttributeEnum.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesAttributeEnumValue.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\DocumentSeries\Protocol_DocumentSeriesItemRole.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_Protocol.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolTransfert.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_AdvancedProtocol.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolLink.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolDraft.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolRole.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolRoleUser.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolContact.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolContactManual.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolType.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolLog.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolContactIssue.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolJournalLog.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolStatus.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_Package.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Tasks\Protocol_TaskLock.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolMessage.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolParer.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailViewDefault.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailView.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailViewRole.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Tasks\Protocol_TaskHeader.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Tasks\Protocol_TaskHeaderProtocol.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Tasks\Protocol_TaskHeaderPECMail.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Tasks\Protocol_TaskHeaderPOLRequest.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Tasks\Protocol_TaskDetail.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Tasks\Protocol_TaskParameter.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_TemplateProtocol.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_TemplateAdvancedProtocol.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_TemplateProtocolContact.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_TemplateProtocolContactManual.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_TemplateProtocolRole.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_TemplateProtocolRoleUser.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Tasks\Protocol_TenderHeader.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Tenders\Protocol_TenderLot.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Tenders\Protocol_TenderLotPayment.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PosteOnLine\Protocol_POLRequest.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PosteOnLine\Protocol_POLRequestContact.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_UnifiedDiary.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_ContainerDocType.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_ContainerBehaviour.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_Incremental.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_LogKind.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_ContainerArchive.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_TableLog.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_ServiceLog.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_UserError.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_UserLog.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_ComputerLog.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_ZebraPrinter.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_ScannerConfiguration.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_ScannerParameter.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionRole.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionRoleType.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionRecipient.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionWorkflow.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionContact.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionType.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionLog.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionJournalTemplate.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionJournalTemplateSpecification.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionJournal.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionJournalDetail.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_Resolution.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionMessage.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_FileResolution.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionParer.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionDocumentSeriesItem.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Workflow\Resolution_TabMaster.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Workflow\Resolution_TabWorkflow.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ContainerResolutionType.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionStatus.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ControllerStatusResolution.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Resolution_PECOC.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\PECMails\Resolution_PECOCLog.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ServiceCodeDescriptor.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_BidType.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_PrintLetterRole.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ReslUserDiary.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_WebPublication.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\OrganizationChart\Protocol_OChartItemWorkflow.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Fascicles\Protocol_FasciclePeriod.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Mapping\Commons\Protocol_CategoryFascicle.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SearchProtocolRblDefaultValue.txt" />
+    <None Include="Resources\FascicleRoleLabels.txt" />
+    <EmbeddedResource Include="Mapping\DocumentUnits\Protocol_DocumentUnit.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Tenants\Protocol_TenantRole.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Tenants\Protocol_TenantContact.hbm.xml" />
+    <Content Include="favicon.ico" />
+    <Content Include="Resources\WorkflowActivityImages.txt" />
+    <None Include="Resources\ProtocolAdaptiveSearchMapping.txt" />
+    <None Include="Resources\RadGridLocalizeConfig.txt" />
+    <None Include="Resources\MonitoringTransparentRatings.txt" />
+    <EmbeddedResource Include="Mapping\Commons\Protocol_CategoryFascicleRight.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Fascicles\Protocol_FascicleDocumentUnit.hbm.xml" />
+    <Content Include="Resources\InvoicePA\XSL_AGID_1.2.xsl" />
+    <Content Include="Resources\InvoicePA\XSL_AssoSoftware_1.2.xsl" />
+    <Content Include="Resources\ProtocolDistributionTypologies.txt" />
+    <Content Include="Resources\SecureDocumentWorkflowStatementVisibility.txt" />
+    <None Include="Resources\WorkflowOperationConfig.txt" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocmUserDiary.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_Document.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocumentContact.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocumentFolder.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocumentLog.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocumentNote.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocumentObject.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocumentTabStatus.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocumentTabToken.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocumentToken.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocumentTokenUser.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Paperworks\Document_DocumentVersioning.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolDocumentSeriesItem.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Content Include="Resources\DocumentUnitDocumentsLabel.txt" />
+    <None Include="Resources\FasciclesPanelVisibilities.txt" />
+    <Content Include="Resources\SecureDocumentVisibilities.txt" />
+    <Content Include="Resources\TemplateDocumentVisibilities.txt" />
+    <None Include="Resources\AbsentManagersCertificates.txt" />
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionActivity.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Content Include="Resources\ProtocolDefaultAdaptiveSearch.txt" />
+    <EmbeddedResource Include="Mapping\Commons\Protocol_ContactList.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolRejectedRole.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Resources\HighlightProtocolGroups.txt" />
+    <None Include="Resources\SeriesConfigurationOrder.txt" />
+    <None Include="Resources\SignedIconRenderingModality.txt" />
+    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolUser.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CollaborationGridColumns.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PECInOutColumns.json.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

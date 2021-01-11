@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="OChartItem">
+    
+    <id name="Id" column="Id" generator="guid.comb" />
+    
+    <property name="LastChangedDate" />
+    <property name="LastChangedUser" />
+    <property name="RegistrationDate" />
+    <property name="RegistrationUser" />
+    <property name="Enabled" />
+    <property name="Code" />
+    <property name="FullCode" />
+    <property name="Title" />
+    <property name="Description" />
+    <property name="Acronym" />
+    <property name="Imported" />
+
+    <many-to-one name="Parent" column="IdParent" class="OChartItem" cascade="none" />
+    <many-to-one name="OrganizationChart" column="IdOChart" class="OChart" cascade="none" />
+    
+    <bag name="Items" table="OChartItem" inverse="true" cascade="none" >
+      <key column="IdParent" />
+      <one-to-many class="OChartItem" />
+    </bag>
+    <bag name="Containers" table="OChartItemContainer" cascade="save-update">
+      <key column="IdOChartItem" />
+      <one-to-many class="OChartItemContainer" />
+    </bag>
+    <bag name="Roles" table="OChartItemRole"  cascade="save-update">
+      <key column="IdOChartItem" />
+      <one-to-many class="OChartItemRole" />
+    </bag>
+    <bag name="Contacts" table="OChartItemContact" cascade="save-update">
+      <key column="IdOChartItem" />
+      <one-to-many class="OChartItemContact" />
+    </bag>
+    <bag name="Mailboxes" table="OChartItemMailbox" cascade="save-update">
+      <key column="IdOChartItem" />
+      <one-to-many class="OChartItemMailbox" />
+    </bag>
+    
+  </class>
+  
+</hibernate-mapping>

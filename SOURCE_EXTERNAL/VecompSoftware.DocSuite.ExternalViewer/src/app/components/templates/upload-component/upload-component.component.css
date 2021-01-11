@@ -1,0 +1,51 @@
+.uploadLabel {
+    margin-top: 12px;
+    margin-bottom: 2px;
+    margin-left: 0px;
+}
+
+.k-upload .k-dropzone {
+    margin: 0px 23px;
+}
+
+.chips {
+    border-radius: 15px !important;
+    font-size: 14px;
+    color: white;
+    padding: 1px 7px;
+    background-color: #436c98;
+    width: auto;
+    margin-right: 5px;
+    margin-top: 4px;
+    float: left;
+}
+
+.chipsContainer {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+    .inputfile + label {
+        color: white;
+        padding: 6px 28px;
+        background-color: #436c98;
+        display: inline-block;
+    }
+
+        .inputfile:focus + label,
+        .inputfile + label:hover {
+            background-color: #436c98;
+        }
+
+    .inputfile + label {
+        cursor: pointer;
+        /* "hand" cursor */
+    }

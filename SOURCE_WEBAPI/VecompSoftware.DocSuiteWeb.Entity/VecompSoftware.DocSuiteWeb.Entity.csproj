@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{34901FA6-4816-4872-9986-E42B2E866095}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Entity</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Entity</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Collaborations\CollaborationDocumentType.cs" />
+    <Compile Include="Commons\CategoryFascicleRight.cs" />
+    <Compile Include="Commons\ContactType.cs" />
+    <Compile Include="Commons\MetadataValueContact.cs" />
+    <Compile Include="Commons\MetadataValue.cs" />
+    <Compile Include="Commons\UserLog.cs" />
+    <Compile Include="Commons\MetadataPropertyType.cs" />
+    <Compile Include="DocumentArchives\DocumentSeriesItemLink.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitFascicleCategory.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitFascicleHistoricizedCategory.cs" />
+    <Compile Include="Dossiers\DossierStatus.cs" />
+    <Compile Include="Dossiers\DossierType.cs" />
+    <Compile Include="Fascicles\FascicleDocumentUnit.cs" />
+    <Compile Include="PECMails\InvoiceStatus.cs" />
+    <Compile Include="Commons\ActiveType.cs" />
+    <Compile Include="JeepServiceHosts\JeepServiceHost.cs" />
+    <Compile Include="PECMails\InvoiceType.cs" />
+    <Compile Include="PECMails\PECMailActiveType.cs" />
+    <Compile Include="PECMails\PECMailAttachment.cs" />
+    <Compile Include="PECMails\PECMailBoxConfiguration.cs" />
+    <Compile Include="PECMails\PECMailMultipleType.cs" />
+    <Compile Include="PECMails\PECMailPriority.cs" />
+    <Compile Include="PECMails\PECMailProcessStatus.cs" />
+    <Compile Include="PosteWeb\LOLRequest.cs" />
+    <Compile Include="PosteWeb\POLRequestStatusEnum.cs" />
+    <Compile Include="PosteWeb\PosteOnLineRequest.cs" />
+    <Compile Include="PosteWeb\ROLRequest.cs" />
+    <Compile Include="PosteWeb\SOLRequest.cs" />
+    <Compile Include="PosteWeb\TOLRequest.cs" />
+    <Compile Include="Processes\Process.cs" />
+    <Compile Include="Processes\ProcessFascicleTemplate.cs" />
+    <Compile Include="Processes\ProcessFascicleWorkflowRepository.cs" />
+    <Compile Include="Processes\ProcessType.cs" />
+    <Compile Include="Protocols\AdvancedProtocol.cs" />
+    <Compile Include="Collaborations\Collaboration.cs" />
+    <Compile Include="Collaborations\CollaborationAggregate.cs" />
+    <Compile Include="Collaborations\CollaborationLog.cs" />
+    <Compile Include="Collaborations\CollaborationLogType.cs" />
+    <Compile Include="Collaborations\CollaborationSign.cs" />
+    <Compile Include="Collaborations\CollaborationStatusType.cs" />
+    <Compile Include="Collaborations\CollaborationUser.cs" />
+    <Compile Include="Collaborations\CollaborationVersioning.cs" />
+    <Compile Include="Commons\ContainerProperty.cs" />
+    <Compile Include="Commons\ContainerPropertyType.cs" />
+    <Compile Include="Commons\PrivacyLevel.cs" />
+    <Compile Include="Commons\ContainerType.cs" />
+    <Compile Include="Conservations\Conservation.cs" />
+    <Compile Include="Conservations\ConservationStatus.cs" />
+    <Compile Include="Conservations\ConservationType.cs" />
+    <Compile Include="DocumentArchives\DocumentSeriesConstraint.cs" />
+    <Compile Include="DocumentArchives\DocumentSeriesItemLog.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitUser.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitStatus.cs" />
+    <Compile Include="Dossiers\DossierComment.cs" />
+    <Compile Include="Dossiers\DossierFolder.cs" />
+    <Compile Include="Dossiers\DossierFolderRole.cs" />
+    <Compile Include="Dossiers\DossierDocument.cs" />
+    <Compile Include="Dossiers\DossierLink.cs" />
+    <Compile Include="Dossiers\DossierLinkType.cs" />
+    <Compile Include="Dossiers\DossierLog.cs" />
+    <Compile Include="Dossiers\Dossier.cs" />
+    <Compile Include="Dossiers\DossierFolderStatus.cs" />
+    <Compile Include="Dossiers\DossierLogType.cs" />
+    <Compile Include="Dossiers\DossierRole.cs" />
+    <Compile Include="Dossiers\DossierRoleStatus.cs" />
+    <Compile Include="Fascicles\FascicleFolderTypology.cs" />
+    <Compile Include="Fascicles\FascicleFolderStatus.cs" />
+    <Compile Include="Fascicles\FascicleFolder.cs" />
+    <Compile Include="Fascicles\VisibilityType.cs" />
+    <Compile Include="Messages\MessagePriorityType.cs" />
+    <Compile Include="Monitors\TransparentAdministrationMonitorLog.cs" />
+    <Compile Include="Parameters\Parameter.cs" />
+    <Compile Include="Protocols\ProtocolContactType.cs" />
+    <Compile Include="Protocols\ProtocolLogEvent.cs" />
+    <Compile Include="Protocols\ProtocolRoleType.cs" />
+    <Compile Include="Protocols\ProtocolRoleDistributionType.cs" />
+    <Compile Include="Protocols\ProtocolRoleNoteType.cs" />
+    <Compile Include="Protocols\ProtocolRoleStatus.cs" />
+    <Compile Include="Protocols\ProtocolTypology.cs" />
+    <Compile Include="Protocols\ProtocolUserType.cs" />
+    <Compile Include="Resolutions\ResolutionDocumentSeriesItem.cs" />
+    <Compile Include="Resolutions\ResolutionKind.cs" />
+    <Compile Include="Resolutions\ResolutionKindDocumentSeries.cs" />
+    <Compile Include="Resolutions\ResolutionLog.cs" />
+    <Compile Include="Tasks\TaskHeader.cs" />
+    <Compile Include="Tasks\TaskHeaderProtocol.cs" />
+    <Compile Include="Tasks\TaskHeaderSendedStatus.cs" />
+    <Compile Include="Tasks\TaskHeaderSendingProcessStatus.cs" />
+    <Compile Include="Tasks\TaskStatus.cs" />
+    <Compile Include="Tasks\TaskType.cs" />
+    <Compile Include="Templates\TemplateCollaboration.cs" />
+    <Compile Include="Templates\TemplateCollaborationDocumentRepository.cs" />
+    <Compile Include="Templates\TemplateCollaborationStatus.cs" />
+    <Compile Include="Templates\TemplateCollaborationUser.cs" />
+    <Compile Include="Templates\TemplateDocumentationRepositoryType.cs" />
+    <Compile Include="Templates\TemplateCollaborationUserType.cs" />
+    <Compile Include="Commons\CategorySchema.cs" />
+    <Compile Include="Commons\CategoryFascicle.cs" />
+    <Compile Include="Commons\MetadataRepository.cs" />
+    <Compile Include="Commons\MetadataRepositoryStatus.cs" />
+    <Compile Include="Commons\TableLogEvent.cs" />
+    <Compile Include="Commons\TableLog.cs" />
+    <Compile Include="Commons\Incremental.cs" />
+    <Compile Include="Commons\LanguageType.cs" />
+    <Compile Include="Commons\DSWEnvironmentType.cs" />
+    <Compile Include="Commons\RoleGroup.cs" />
+    <Compile Include="Commons\ContainerGroup.cs" />
+    <Compile Include="Commons\Container.cs" />
+    <Compile Include="Commons\Category.cs" />
+    <Compile Include="Commons\ContactPlaceName.cs" />
+    <Compile Include="Commons\ContactTitle.cs" />
+    <Compile Include="Commons\Contact.cs" />
+    <Compile Include="Commons\RoleUser.cs" />
+    <Compile Include="Commons\RoleUserType.cs" />
+    <Compile Include="DocumentArchives\DocumentSeriesItem.cs" />
+    <Compile Include="DocumentArchives\DocumentSeries.cs" />
+    <Compile Include="DocumentArchives\DocumentSeriesItemRole.cs" />
+    <Compile Include="DocumentArchives\DocumentSeriesItemRoleLinkType.cs" />
+    <Compile Include="DocumentArchives\DocumentSeriesItemStatus.cs" />
+    <Compile Include="DocumentUnits\ChainType.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitChain.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitRole.cs" />
+    <Compile Include="DocumentUnits\DocumentUnit.cs" />
+    <Compile Include="DSWBaseLogEntity.cs" />
+    <Compile Include="Fascicles\FascicleDocument.cs" />
+    <Compile Include="Commons\AuthorizationRoleType.cs" />
+    <Compile Include="Fascicles\FascicleRole.cs" />
+    <Compile Include="Fascicles\FascicleLog.cs" />
+    <Compile Include="Fascicles\FascicleLogType.cs" />
+    <Compile Include="Fascicles\FascicleLink.cs" />
+    <Compile Include="Fascicles\FasciclePeriod.cs" />
+    <Compile Include="Fascicles\FascicleLinkType.cs" />
+    <Compile Include="Fascicles\Fascicle.cs" />
+    <Compile Include="Fascicles\ReferenceType.cs" />
+    <Compile Include="Fascicles\FascicleType.cs" />
+    <Compile Include="Fascicles\DSWBaseEntityFascicolable.cs" />
+    <Compile Include="Fascicles\IDSWEntityFascicolable.cs" />
+    <Compile Include="IDSWLogEntity.cs" />
+    <Compile Include="MassimariScarto\MassimarioScarto.cs" />
+    <Compile Include="MassimariScarto\MassimarioScartoStatus.cs" />
+    <Compile Include="OCharts\OChartItemContainer.cs" />
+    <Compile Include="OCharts\OChartItem.cs" />
+    <Compile Include="OCharts\OChart.cs" />
+    <Compile Include="Parameters\ParameterEnv.cs" />
+    <Compile Include="PECMails\PECMailReceipt.cs" />
+    <Compile Include="PECMails\PECMailBox.cs" />
+    <Compile Include="PECMails\PECMail.cs" />
+    <Compile Include="PECMails\PECMailLog.cs" />
+    <Compile Include="PECMails\PECMailLogType.cs" />
+    <Compile Include="PECMails\PECType.cs" />
+    <Compile Include="PECMails\PECMailDirection.cs" />
+    <Compile Include="Commons\ComunicationType.cs" />
+    <Compile Include="Protocols\ProtocolContactManual.cs" />
+    <Compile Include="Protocols\ProtocolContact.cs" />
+    <Compile Include="Protocols\ProtocolDocumentType.cs" />
+    <Compile Include="Protocols\ProtocolDraft.cs" />
+    <Compile Include="Protocols\ProtocolUser.cs" />
+    <Compile Include="Protocols\ProtocolLog.cs" />
+    <Compile Include="Protocols\ProtocolLink.cs" />
+    <Compile Include="Protocols\ProtocolRoleUser.cs" />
+    <Compile Include="Protocols\ProtocolRole.cs" />
+    <Compile Include="Protocols\ProtocolParer.cs" />
+    <Compile Include="Protocols\ProtocolType.cs" />
+    <Compile Include="Commons\Role.cs" />
+    <Compile Include="DSWBaseEntity.cs" />
+    <Compile Include="IDSWEntity.cs" />
+    <Compile Include="Commons\Location.cs" />
+    <Compile Include="Commons\SecurityGroup.cs" />
+    <Compile Include="Commons\SecurityUser.cs" />
+    <Compile Include="Commons\SeverityLog.cs" />
+    <Compile Include="Desks\Desk.cs" />
+    <Compile Include="Desks\DeskCollaboration.cs" />
+    <Compile Include="Desks\DeskDocument.cs" />
+    <Compile Include="Desks\DeskDocumentEndorsement.cs" />
+    <Compile Include="Desks\DeskDocumentType.cs" />
+    <Compile Include="Desks\DeskDocumentVersion.cs" />
+    <Compile Include="Desks\DeskLog.cs" />
+    <Compile Include="Desks\DeskLogType.cs" />
+    <Compile Include="Desks\DeskMessage.cs" />
+    <Compile Include="Desks\DeskPermissionType.cs" />
+    <Compile Include="Desks\DeskRightPositions.cs" />
+    <Compile Include="Desks\DeskRoleUser.cs" />
+    <Compile Include="Desks\DeskState.cs" />
+    <Compile Include="Desks\DeskStoryBoard.cs" />
+    <Compile Include="Desks\DeskStoryBoardType.cs" />
+    <Compile Include="Messages\MessageContactPosition.cs" />
+    <Compile Include="Messages\MessageContactType.cs" />
+    <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\MessageAttachment.cs" />
+    <Compile Include="Messages\MessageContact.cs" />
+    <Compile Include="Messages\MessageContactEmail.cs" />
+    <Compile Include="Messages\MessageEmail.cs" />
+    <Compile Include="Messages\MessageLog.cs" />
+    <Compile Include="Messages\MessageLogType.cs" />
+    <Compile Include="Messages\MessageStatus.cs" />
+    <Compile Include="Messages\MessageType.cs" />
+    <Compile Include="Protocols\Protocol.cs" />
+    <Compile Include="Templates\TemplateDocumentRepository.cs" />
+    <Compile Include="Resolutions\FileResolution.cs" />
+    <Compile Include="Resolutions\ResolutionContact.cs" />
+    <Compile Include="Resolutions\Resolution.cs" />
+    <Compile Include="Resolutions\ResolutionRole.cs" />
+    <Compile Include="Resolutions\ResolutionStatus.cs" />
+    <Compile Include="Tenants\DSWTenantBaseEntity.cs" />
+    <Compile Include="Tenants\TenantAOO.cs" />
+    <Compile Include="Tenants\TenantConfigurationType.cs" />
+    <Compile Include="Tenants\TenantConfiguration.cs" />
+    <Compile Include="Tenants\Tenant.cs" />
+    <Compile Include="Tenants\TenantTypologyType.cs" />
+    <Compile Include="Tenants\TenantWorkflowRepository.cs" />
+    <Compile Include="Tenants\TenantWorkflowRepositoryType.cs" />
+    <Compile Include="UDS\DSWUDSBaseEntity.cs" />
+    <Compile Include="UDS\DSWUDSRelationBaseEntity.cs" />
+    <Compile Include="UDS\IDSWUDSRelationEntity.cs" />
+    <Compile Include="UDS\UDSContact.cs" />
+    <Compile Include="UDS\UDSContactType.cs" />
+    <Compile Include="UDS\UDSDocumentUnit.cs" />
+    <Compile Include="UDS\UDSMessage.cs" />
+    <Compile Include="UDS\UDSCollaboration.cs" />
+    <Compile Include="UDS\UDSPECMail.cs" />
+    <Compile Include="UDS\UDSRelationType.cs" />
+    <Compile Include="UDS\UDSRole.cs" />
+    <Compile Include="UDS\UDSLog.cs" />
+    <Compile Include="UDS\UDSLogType.cs" />
+    <Compile Include="Templates\TemplateReport.cs" />
+    <Compile Include="Templates\TemplateReportStatus.cs" />
+    <Compile Include="UDS\UDSTypologyStatus.cs" />
+    <Compile Include="UDS\UDSTypology.cs" />
+    <Compile Include="UDS\UDSRepository.cs" />
+    <Compile Include="UDS\UDSRepositoryStatus.cs" />
+    <Compile Include="UDS\UDSSchemaRepository.cs" />
+    <Compile Include="UDS\UDSUser.cs" />
+    <Compile Include="UDS\UDSUserStatus.cs" />
+    <Compile Include="Workflows\WorkflowActivityType.cs" />
+    <Compile Include="Workflows\WorkflowActivityAction.cs" />
+    <Compile Include="Workflows\WorkflowActivityArea.cs" />
+    <Compile Include="Workflows\WorkflowAuthorization.cs" />
+    <Compile Include="Workflows\WorkflowActivity.cs" />
+    <Compile Include="Workflows\WorkflowActivityLog.cs" />
+    <Compile Include="Workflows\WorkflowAuthorizationType.cs" />
+    <Compile Include="Workflows\WorkflowEvaluationProperty.cs" />
+    <Compile Include="Workflows\WorkflowInstanceRole.cs" />
+    <Compile Include="Workflows\WorkflowInstance.cs" />
+    <Compile Include="Workflows\WorkflowInstanceLog.cs" />
+    <Compile Include="Workflows\WorkflowInstanceLogType.cs" />
+    <Compile Include="Workflows\WorkflowPriorityType.cs" />
+    <Compile Include="Workflows\WorkflowProperty.cs" />
+    <Compile Include="Workflows\WorkflowPropertyType.cs" />
+    <Compile Include="Workflows\WorkflowRepositoryStatus.cs" />
+    <Compile Include="Workflows\WorkflowRoleMapping.cs" />
+    <Compile Include="Workflows\WorkflowRepository.cs" />
+    <Compile Include="Workflows\WorkflowStatus.cs" />
+    <Compile Include="Workflows\WorkflowType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
+      <Project>{c6f323c0-c21b-433b-90c8-0b64a42115ab}</Project>
+      <Name>VecompSoftware.Commons.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Repository\VecompSoftware.DocSuiteWeb.Repository.csproj">
+      <Project>{27d8fcbb-8a8e-430b-8747-a5ace9b4ffca}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="VecompSoftware.DocSuiteWeb.Entity.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

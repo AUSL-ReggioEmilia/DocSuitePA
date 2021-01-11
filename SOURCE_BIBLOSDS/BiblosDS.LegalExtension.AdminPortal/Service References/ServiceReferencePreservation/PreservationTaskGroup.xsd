@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/PreservationTaskGroup" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationTaskGroup" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://BiblosDS/2009/10/Archive" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationTaskGroupType" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationSchedule" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationTask" />
+  <xs:import namespace="http://BiblosDS/2009/10/PreservationUser" />
+  <xs:complexType name="PreservationTaskGroup">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://BiblosDS/2009/10/Archive" minOccurs="0" name="Archive" nillable="true" type="q1:Archive" />
+      <xs:element minOccurs="0" name="Closed" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="EstimatedExpiry" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="Expiry" type="xs:dateTime" />
+      <xs:element xmlns:q2="http://BiblosDS/2009/10/PreservationTaskGroupType" minOccurs="0" name="GroupType" nillable="true" type="q2:PreservationTaskGroupType" />
+      <xs:element minOccurs="0" name="IdPreservationTaskGroup" type="ser:guid" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+      <xs:element xmlns:q3="http://BiblosDS/2009/10/PreservationSchedule" minOccurs="0" name="Schedule" nillable="true" type="q3:PreservationSchedule" />
+      <xs:element xmlns:q4="http://BiblosDS/2009/10/PreservationTask" minOccurs="0" name="Tasks" nillable="true" type="q4:ArrayOfPreservationTask" />
+      <xs:element xmlns:q5="http://BiblosDS/2009/10/PreservationUser" minOccurs="0" name="User" nillable="true" type="q5:PreservationUser" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PreservationTaskGroup" nillable="true" type="tns:PreservationTaskGroup" />
+  <xs:complexType name="ArrayOfPreservationTaskGroup">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PreservationTaskGroup" nillable="true" type="tns:PreservationTaskGroup" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPreservationTaskGroup" nillable="true" type="tns:ArrayOfPreservationTaskGroup" />
+</xs:schema>

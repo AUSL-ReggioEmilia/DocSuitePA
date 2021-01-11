@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="Collaboration" table="Collaboration">
+    
+    <id name="Id" column="IdCollaboration">
+      <generator class="assigned" />
+    </id>
+    
+    <property name="DocumentType" column="DocumentType" type="AnsiString" />
+    <property name="IdPriority" column="IdPriority" type="AnsiString" />
+    <property name="IdStatus" column="IdStatus" type="AnsiString" />
+    <property name="SignCount" column="SignCount" />
+    <property name="MemorandumDate" column="MemorandumDate" />
+    <property name="CollaborationObject" column="Object" type="AnsiString" />
+    <property name="Note" column="Note" type="AnsiString" />
+    <property name="Year" column="Year" />
+    <property name="Number" column="Number" />
+    <property name="TemplateName" column="TemplateName" />
+    <property name="PublicationUser" column="PublicationUser" type="AnsiString" />
+    <property name="PublicationDate" column="PublicationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" not-null="true" />
+    <property name="RegistrationDate" column="RegistrationDate" not-null="true" />
+    <property name="RegistrationName" column="RegistrationName" type="AnsiString" />
+    <property name="RegistrationEMail" column="RegistrationEMail" type="AnsiString" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="AlertDate" column="AlertDate" />
+    <property name="SourceProtocolYear" />
+    <property name="SourceProtocolNumber" />
+    <property name="IdWorkflowInstance" />
+    <property name="UniqueId" column="UniqueId" unique="true" />
+    <property name="IdDocumentUnit" column="IdDocumentUnit" />
+    
+    <many-to-one name="Location" column="IdLocation" class="Location" />
+    <many-to-one name="Resolution" column="IdResolution" class="Resolution" />
+    <many-to-one name="DocumentSeriesItem" column="idDocumentSeriesItem" class="DocumentSeriesItem" />
+    <many-to-one name="SourceProtocol" class="Protocol" update="false">
+      <column name="UniqueIdSourceProtocol" />
+    </many-to-one>
+    <bag name="CollaborationSigns" table="CollaborationSigns" cascade="all-delete-orphan" inverse="true">
+      <key column="IdCollaboration" />
+      <one-to-many class="CollaborationSign" />
+    </bag>
+    <bag name="CollaborationVersioning" table="CollaborationVersioning" cascade="all-delete-orphan" inverse="true">
+      <key column="IdCollaboration" />
+      <one-to-many class="CollaborationVersioning" />
+    </bag>
+    <bag name="CollaborationUsers" table="CollaborationUsers" cascade="all-delete-orphan" inverse="true">
+      <key column="IdCollaboration" />
+      <one-to-many class="CollaborationUser" />
+    </bag>
+    <bag name="CollaborationLogs" table="CollaborationLog" cascade="all-delete-orphan" inverse="true">
+      <key column="IdCollaboration" />
+      <one-to-many class="CollaborationLog" />
+    </bag>
+    <bag name="CollaborationAggregates" table="CollaborationAggregate" cascade="all-delete-orphan" inverse="true">
+      <key column="idCollaborationFather" />
+      <one-to-many class="CollaborationAggregate" />
+    </bag>
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,141 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+applicationSuite: 'DocSuite PA - Protocollo, Gestione Documentale e Trasparenza'
+categories:
+  - document-management
+  - collaboration
+description:
+  it:
+    apiDocumentation: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/wiki/Integrazioni-applicative-con-DocSuite-PA'
+    documentation: 'https://ged.dgroove.it'
+    features:
+      - Protocollo Informatico
+      - Archivi (Repertori)
+      - Provvedimenti Amministrativi (Delibere, Determinazioni, Disposizioni, Verbali, ..)
+      - Fascicoli e Aggregazioni archivistiche (Procedimenti amministrativi e Attività)
+      - Dossier (Pratiche)
+      - PEC, Email e PosteWeb, TNotice
+      - Tavoli e flussi Collaborativi con integrazione Firma Digitale
+      - Workflow e Scrivania Attività
+      - Conservazione Digitale e versamento a Conservatore Accreditato
+      - Trasparenza e SPID (anche accesso pubblico e istanze digitali) (FOIA)
+    genericName: Gestione Documentale
+    localisedName: DocSuite PA
+    longDescription: >
+      DocSuite è la soluzione per la gestione documentale, comprende le
+      funzionalità per:
+      - archivi e serie documentali, registri
+      - protocollo e flussi documentali,
+      - PEC, email e integrazione servizi di postalizzazione (PosteWeb, TNotice)
+      - fascicoli e attività di workflow, procedimenti amministrativi e attività
+      - Dossier, serie e aggregazioni archivistiche, volumi di fascicoli, piano di fascicolazione e scarto
+      - scrivania delle attività, documenti e fascicoli
+      - integrazione con firme digitali (dispositivi di firma,remote, remote automatiche, grafometriche)
+      - flusso di formazione, firma, adozione, pubblicazione dei provvedimenti amministrativi (Delibere, Determinazioni, Disposizioni, Verbali, ...)
+      - flussi di pubblicazione sul sito amministrazione trasparente e flussi ANAC
+      - flussi di gestione dell'accesso agli atti (FOIA)
+      - integrazione con accesso SPID
+      - conservazione digitale e versamento a conservatore accreditato
+    shortDescription: >
+      DocSuite PA Gestione Documentale: Protocollo e PEC, Fascicoli,
+      Provvedimenti Amministrativi e Albo Online, Trasparenza 
+developmentStatus: stable
+intendedAudience:
+  countries:
+    - it
+  scope:
+    - government
+    - local-authorities
+it:
+  conforme:
+    gdpr: true
+    lineeGuidaDesign: false
+    misureMinimeSicurezza: true
+    modelloInteroperabilita: true
+  countryExtensionVersion: '0.2'
+  piattaforme:
+    anpr: false
+    cie: false
+    pagopa: false
+    spid: true
+  riuso:
+    codiceIPA: auslre
+landingURL: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA'
+legal:
+  authorsFile: authors.txt
+  license: EUPL-1.2
+  mainCopyrightOwner: AUSL Reggio Emilia
+  repoOwner: AUSL Reggio Emilia
+localisation:
+  availableLanguages:
+    - it
+  localisationReady: false
+maintenance:
+  contacts:
+    - affiliation: Dgroove Srl
+      email: **REMOVE**.**REMOVE**@dgroove.it
+      name: **REMOVE** **REMOVE**
+  contractors:
+    - name: Dgroove Srl
+      until: '2022-12-31'
+  type: contract
+
+dependsOn:
+  proprietary:
+    - name: Microsoft SQL Server (anche Express Open)
+      versionMin: "2014"
+      versionMax: "2019"
+      optional: yes
+    - name: LimiLabs Mail.dll (developer)
+      versionMin: ""
+      versionMax: ""
+      optional: no
+    - name: Dynamic Web Twain
+      versionMin: "8"
+      versionMax: "15"
+      optional: yes
+    - name: ITextSharp (developer)
+      versionMin: ""
+      versionMax: ""
+      optional: no
+    - name: Comped DigitaL Sign
+      versionMin: "3.x"
+      versionMax: "5.x"
+      optional: yes
+
+  hardware:
+    - name: Smart Card Reader
+      optional: yes
+    - name: Scanner Twain 
+      optional: yes
+    - name: Zebra Label Printer 
+      optional: yes
+
+
+name: DocSuite PA
+platforms:
+  - windows
+releaseDate: '2020-10-12'
+roadmap: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/projects/1'
+softwareType: standalone/web
+softwareVersion: '9.09'
+url: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA.git'
+usedBy:
+  - (auslre)    AUSL Reggio Emilia
+  - (auslpc)    AUSL Piacenza
+  - (aslto)     ASL Città di Torino
+  - (ausltc)    ASL Toscana Centro (in valutazione)
+  - (agenas)    AGENAS
+  - (eanln_rm)  ENEA
+  - (enpai_)    ENPACL
+  - (cnocl_rm)  Consiglio dell'ordine dei Consulenti del Lavoro 
+  -             AFOL Monza Brianza
+  -             Pubblica Amministrazione e degli Enti e delle Aziende del settore pubblico
+                allargato nella Repubblica di San Marino
+  -             One Scarl, Compagnia Toscana Trasporti e altre aziende pubbliche del gruppo
+  -             Uirnet Spa
+  - (aoui_ve)   Azienda Ospedaliera Universitaria di Verona (Trasparenza)
+  - (avscr)     Acque Veronesi (Trasparenza)

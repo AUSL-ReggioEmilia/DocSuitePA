@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <sql-query name="DocmUserDiary">
+    <![CDATA[
+          SELECT P.Year, P.Number, P.Object,    
+	          Convert(varchar, DL.year) + '/' + Right('0000000' + Convert(varchar, DL.number), 7) AS Codice,
+	          DL.LogDate, Type='Docm',
+	          DL.PI , DL.PS , DL.PD , DL.PZ , PM = 0 ,
+            AdoptionDate = CAST(NULL as datetime) , IsHandled = 0 
+            FROM Document P INNER JOIN
+	              (
+	                SELECT 
+		                DL.Year, DL.Number, MAX(DL.LogDate) as LogDate,
+		                SUM(CASE DL.LogType WHEN 'DI' THEN 1 ELSE 0 END) AS PI,
+		                SUM(CASE DL.LogType WHEN 'DS' THEN 1 ELSE 0 END) AS PS,
+		                SUM(CASE DL.LogType WHEN 'DD' THEN 1 ELSE 0 END) AS PD,
+		                SUM(CASE DL.LogType WHEN 'DZ' THEN 1 ELSE 0 END) AS PZ
+	                FROM DocumentLog AS DL 
+	                WHERE DL.SystemUser = :SystemUser
+                            AND DL.LogDate >= :LogDateFrom
+                            AND DL.LogDate <= :LogDateTo
+	                GROUP BY DL.Year, DL.Number
+	          ) as DL ON DL.Year = P.Year AND DL.Number = P.Number
+          ORDER BY DL.LogDate DESC
+      ]]>
+  </sql-query>
+
+  <filter-def name="DocmLogUser">
+    <filter-param name="User" type="AnsiString" />
+  </filter-def>
+  <filter-def name="Status">
+    <filter-param name="CheckStatus" type="AnsiString" />
+  </filter-def>
+  
+</hibernate-mapping>

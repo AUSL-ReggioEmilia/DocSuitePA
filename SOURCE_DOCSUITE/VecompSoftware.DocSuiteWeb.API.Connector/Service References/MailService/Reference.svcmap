@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="cab94a95-ae28-42ff-8305-8b2fc72b9fc3" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost/DSW.API/MailService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="MailService.xsd" MetadataType="Schema" ID="79d60003-86f0-44d3-8694-c5672b519b26" SourceId="1" SourceUrl="http://localhost/DSW.API/MailService.svc?xsd=xsd1" />
+    <MetadataFile FileName="MailService.disco" MetadataType="Disco" ID="81ef8809-fd2b-4aeb-a19c-68230ab2a2be" SourceId="1" SourceUrl="http://localhost/DSW.API/MailService.svc?disco" />
+    <MetadataFile FileName="MailService.wsdl" MetadataType="Wsdl" ID="97f60605-2995-4925-a320-69a398797c70" SourceId="1" SourceUrl="http://localhost/DSW.API/MailService.svc?wsdl" />
+    <MetadataFile FileName="MailService1.xsd" MetadataType="Schema" ID="744f9451-fe73-4f69-ba0e-c207647ec865" SourceId="1" SourceUrl="http://localhost/DSW.API/MailService.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

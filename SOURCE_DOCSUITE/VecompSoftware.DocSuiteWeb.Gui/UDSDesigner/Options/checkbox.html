@@ -1,0 +1,38 @@
+
+
+<div id="CheckboxOption" class="form-horizontal">
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Etichetta</label>
+        <div class="controls col-sm-9">
+            <input type="text" class="form-control" placeholder="Etichetta" rv-value="ctrl.label">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-sm-3">Funzioni</label>
+        <div class="controls col-sm-4">
+            <label for="required">
+                <input id="required" type="checkbox" rv-checked="ctrl.required" rv-disabled="ctrl.requiredEnabled"> Richiesto
+            </label>
+            <label for="modifyEnable">
+                <input id="modifyEnable" type="checkbox" rv-checked="ctrl.modifyEnable"> Campo modificabile
+            </label>
+            <label for="readOnly">
+                <input id="readOnly" type="checkbox" rv-checked="ctrl.readOnly" rv-disabled="ctrl.required" rv-on-click="ctrl.changeRequired"> Sola lettura
+            </label>
+        </div>
+        <div class="controls col-sm-4">
+            <label for="required">
+                <input id="searchable" type="checkbox" rv-checked="ctrl.searchable"> Visibile in ricerca
+            </label>
+            <label for="defaultValue">
+                <input id="defaultValue" type="checkbox" rv-checked="ctrl.defaultValue"> Selezionato
+            </label>
+            <label for="hiddenField">
+                <input id="hiddenField" type="checkbox" rv-checked="ctrl.hiddenField" rv-disabled="ctrl.required" rv-on-click="ctrl.changeRequired"> Campo nascosto
+            </label>
+        </div>
+    </div>
+
+</div>

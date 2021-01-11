@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="TemplateAdvancedProtocol" table="TemplateAdvancedProtocol">
+    
+    <id name="Id" column="idTemplateProtocol" />
+
+    <property name="IsClaim" column="IsClaim" />
+    <property name="Note" column="Note" />
+    <property name="Subject" column="Subject" />
+    <property name="ServiceCategory" column="ServiceCategory" />
+    <property name="AccountingSectional" column="AccountingSectional" />
+
+    <many-to-one class="TemplateProtocol" name="TemplateProtocol" column="idTemplateProtocol" insert="false" update="false" />
+    <many-to-one name="Status" column="idProtocolStatus" class="ProtocolStatus" />
+    <many-to-one name="SubCategory" column="idSubCategory" class="Category" />
+    
+  </class>
+
+</hibernate-mapping>

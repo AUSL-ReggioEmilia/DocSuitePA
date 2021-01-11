@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost/DSW.WSSeries/WSSeries.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:element name="IsAlive">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsAliveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IsAliveResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Insert">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlSeries" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="InsertResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="InsertResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Consultation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="id" type="xs:int" />
+        <xs:element minOccurs="0" name="withDocument" type="xs:boolean" />
+        <xs:element minOccurs="0" name="withAnnexed" type="xs:boolean" />
+        <xs:element minOccurs="0" name="withUnPublished" type="xs:boolean" />
+        <xs:element minOccurs="0" name="pdf" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConsultationResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ConsultationResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConsultationNew">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="id" type="xs:int" />
+        <xs:element minOccurs="0" name="withDocument" type="xs:boolean" />
+        <xs:element minOccurs="0" name="withAnnexed" type="xs:boolean" />
+        <xs:element minOccurs="0" name="withUnPublished" type="xs:boolean" />
+        <xs:element minOccurs="0" name="pdf" type="xs:boolean" />
+        <xs:element minOccurs="0" name="onlyPublished" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ConsultationNewResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="ConsultationNewResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentSeriesItem">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="id" type="xs:int" />
+        <xs:element minOccurs="0" name="withDocument" type="xs:boolean" />
+        <xs:element minOccurs="0" name="withAnnexed" type="xs:boolean" />
+        <xs:element minOccurs="0" name="withUnPublished" type="xs:boolean" />
+        <xs:element minOccurs="0" name="includeStream" type="xs:boolean" />
+        <xs:element minOccurs="0" name="pdf" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentSeriesItemResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetDocumentSeriesItemResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentSeriesItemNew">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idDocumentSeriesItem" type="xs:int" />
+        <xs:element minOccurs="0" name="includeDocuments" type="xs:boolean" />
+        <xs:element minOccurs="0" name="includeAnnexedDocuments" type="xs:boolean" />
+        <xs:element minOccurs="0" name="includeUnPublishedAnnexedDocuments" type="xs:boolean" />
+        <xs:element minOccurs="0" name="includeStream" type="xs:boolean" />
+        <xs:element minOccurs="0" name="pdf" type="xs:boolean" />
+        <xs:element minOccurs="0" name="onlyPublished" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentSeriesItemNewResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetDocumentSeriesItemNewResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Update">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlSeries" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="UpdateResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddAnnexed">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="id" type="xs:int" />
+        <xs:element minOccurs="0" name="nameDocument" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="base64DocumentStream" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddAnnexedResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Search">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlFinder" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="pdf" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SearchResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchRetired">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlFinder" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="pdf" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchRetiredResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SearchRetiredResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPublicationEnabledContainers">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetPublicationEnabledContainersResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetPublicationEnabledContainersResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFamilies">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="onlyPublicationEnabled" type="xs:boolean" />
+        <xs:element minOccurs="0" name="includeSubsections" type="xs:boolean" />
+        <xs:element minOccurs="0" name="includeEmptyFamilies" type="xs:boolean" />
+        <xs:element minOccurs="0" name="idArchive" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFamiliesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetFamiliesResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDynamicData">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idDocumentSeries" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDynamicDataResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetDynamicDataResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMainDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idDocumentSeriesItem" type="xs:int" />
+        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idDoc" type="q1:guid" />
+        <xs:element minOccurs="0" name="pdf" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMainDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetMainDocumentResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMainDocumentWithSignature">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idDocumentSeriesItem" type="xs:int" />
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idDoc" type="q2:guid" />
+        <xs:element minOccurs="0" name="signature" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMainDocumentWithSignatureResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetMainDocumentWithSignatureResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAnnexed">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idDocumentSeriesItem" type="xs:int" />
+        <xs:element xmlns:q3="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idAnnexed" type="q3:guid" />
+        <xs:element minOccurs="0" name="pdf" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAnnexedResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetAnnexedResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAnnexedWithSignature">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idDocumentSeriesItem" type="xs:int" />
+        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idAnnexed" type="q4:guid" />
+        <xs:element minOccurs="0" name="signature" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAnnexedWithSignatureResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetAnnexedWithSignatureResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentSeriesItemsByResolution">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idResolution" type="xs:int" />
+        <xs:element minOccurs="0" name="pdf" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentSeriesItemsByResolutionResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetDocumentSeriesItemsByResolutionResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFamily">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idFamily" type="xs:int" />
+        <xs:element minOccurs="0" name="onlyPublicationEnabled" type="xs:boolean" />
+        <xs:element minOccurs="0" name="includeSubsections" type="xs:boolean" />
+        <xs:element minOccurs="0" name="idArchive" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFamilyResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetFamilyResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetUnPublished">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idDocumentSeriesItem" type="xs:int" />
+        <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idUnpublished" type="q5:guid" />
+        <xs:element minOccurs="0" name="pdf" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetUnPublishedResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetUnPublishedResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetUnPublishedWithSignature">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idDocumentSeriesItem" type="xs:int" />
+        <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idUnPublished" type="q6:guid" />
+        <xs:element minOccurs="0" name="signature" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetUnPublishedWithSignatureResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetUnPublishedWithSignatureResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLatestDocumentSeriesItemByArchive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idArchive" type="xs:int" />
+        <xs:element minOccurs="0" name="topResults" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLatestDocumentSeriesItemByArchiveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetLatestDocumentSeriesItemByArchiveResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentSeriesByDocumentId">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idDocument" type="q7:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentSeriesByDocumentIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetDocumentSeriesByDocumentIdResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivesNameByContainerArchiveId">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idArchive" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchivesNameByContainerArchiveIdResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetArchivesNameByContainerArchiveIdResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentSeries">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idSeries" type="xs:int" />
+        <xs:element minOccurs="0" name="includeSubsections" type="xs:boolean" />
+        <xs:element minOccurs="0" name="idArchive" nillable="true" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentSeriesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetDocumentSeriesResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchCount">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlFinder" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchCountResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SearchCountResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchCountRetired">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlFinder" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchCountRetiredResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SearchCountRetiredResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetIndex">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="idSeries" type="xs:int" />
+        <xs:element minOccurs="0" name="impersonatingUser" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="urlFile" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="titolo" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="abstract" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="entePubblicatore" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="licenza" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="urlMask" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="year" nillable="true" type="xs:int" />
+        <xs:element minOccurs="0" name="checkPublished" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetIndexResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetIndexResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchConstraints">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlFinder" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchConstraintsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SearchConstraintsResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchConstraintsRetired">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="xmlFinder" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SearchConstraintsRetiredResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="SearchConstraintsRetiredResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

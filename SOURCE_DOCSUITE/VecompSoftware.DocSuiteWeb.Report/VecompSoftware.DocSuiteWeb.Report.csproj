@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E7B7CB6C-11C4-4DED-9566-8C7AF7028E11}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VecompSoftware.DocSuiteWeb.Report</RootNamespace>
+    <AssemblyName>VecompSoftware.DocSuiteWeb.Report</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.8.6.7\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.pdfa, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.pdfa.5.5.13.1\lib\itextsharp.pdfa.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.13.1\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xtra, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.xtra.5.5.13.1\lib\itextsharp.xtra.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.9.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.9\lib\net45\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ReportViewer.WebForms.11.0.2802.16\lib\net20\Microsoft.ReportViewer.WebForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=5.1.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NHibernate.5.1.3\lib\net461\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="Remotion.Linq.EagerFetching, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Telerik.Web.UI, Version=2020.1.114.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Web.UI.2020.1.114.45\lib\net45\Telerik.Web.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Commons, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=cd4cbb031a2ae285, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.9.9.20267.1\lib\net48\VecompSoftware.Commons.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.9.20254.2\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.9.20254.5, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.9.20254.5\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.9.9.20267.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.PDF, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.PDF.9.9.20267.1\lib\net48\VecompSoftware.Helpers.PDF.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.Signer, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=76f780eb4d2d0f1b, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Signer.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Signer.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.Web, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Web.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Biblos, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Biblos.9.9.20267.1\lib\net48\VecompSoftware.Services.Biblos.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Logging, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Logging.9.9.20267.1\lib\net48\VecompSoftware.Services.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.StampaConforme, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.StampaConforme.9.9.20267.1\lib\net48\VecompSoftware.Services.StampaConforme.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Column.cs" />
+    <Compile Include="ReportType.cs" />
+    <Compile Include="Dynamic\RdlGenerator.cs" />
+    <Compile Include="Dynamic\ReportDefinition.cs" />
+    <Compile Include="Dynamic\TableRdlGenerator.cs" />
+    <Compile Include="Templates\Resolution\ResolutionDataSet.cs">
+      <DependentUpon>ResolutionDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="IReport.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Templates\Protocol\ProtocolDataSet.cs">
+      <DependentUpon>ProtocolDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Templates\Protocol\ProtocolDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProtocolDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="ReportBase.cs" />
+    <Compile Include="Templates\Resolution\ResolutionDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResolutionDataSet.xsd</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Templates\Resolution\Letters\Letters_Del_TrasmAdozioneCollegioSindacaleFirmaDigitale.rdlc" />
+    <None Include="Templates\Resolution\ResolutionDataSet.xsc">
+      <DependentUpon>ResolutionDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Templates\Resolution\ResolutionDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>ResolutionDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\Resolution\ResolutionDataSet.xss">
+      <DependentUpon>ResolutionDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Templates\Protocol\ProtocolDataSet.xsc">
+      <DependentUpon>ProtocolDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="Templates\Protocol\ProtocolDataSet.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ProtocolDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Templates\Protocol\ProtocolDataSet.xss">
+      <DependentUpon>ProtocolDataSet.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data\VecompSoftware.DocSuiteWeb.Data.vbproj">
+      <Project>{26FC3668-B677-40A7-ABBB-512736E7A815}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.NHibernateManager\VecompSoftware.NHibernateManager.csproj">
+      <Project>{531372fd-aa62-4cd8-8d94-b5f3f835b185}</Project>
+      <Name>VecompSoftware.NHibernateManager</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Templates\Protocol\Collaboration\CollaborationUoia.rdlc" />
+    <None Include="Templates\Protocol\Concorsi\CONCORSIGRID_Esporta.rdlc">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Templates\Protocol\Concorsi\FullContactGrid.rdlc" />
+    <None Include="Templates\Protocol\ProtocolJournal\REPORTGRID_Asmn_RegistroProtocollo.rdlc" />
+    <None Include="Templates\Protocol\ProtocolJournal\REPORTGRID_AuslPc_RegistroProtocollo.rdlc" />
+    <None Include="Templates\Protocol\ProtocolJournal\ProtocolFormattedContactsReportGrid.rdlc" />
+    <None Include="Templates\Protocol\Grid\ProtocolContactsReportGrid.rdlc" />
+    <None Include="Templates\Protocol\Grid\ProtocolGroupContactsGrid.rdlc" />
+    <None Include="Templates\Protocol\ProtocolJournal\REPORTGRID_ProtocolJournal.rdlc" />
+    <None Include="Templates\Protocol\Ricevuta\MessageMails.rdlc" />
+    <None Include="Templates\Protocol\Ricevuta\OutgoingPecMails.rdlc" />
+    <None Include="Templates\Protocol\Ricevuta\ProtocolContactsReport.rdlc" />
+    <None Include="Templates\Protocol\Grid\REPORTGRID_ProtocolGrid.rdlc" />
+    <None Include="Templates\Protocol\Ricevuta\ProtocolRoleReport.rdlc" />
+    <None Include="Templates\Protocol\Ricevuta\REPORT_Ricevuta.rdlc" />
+    <None Include="Templates\Protocol\Ricevuta\REPORT_Sommario.rdlc" />
+    <None Include="Templates\Protocol\Ricevuta\REPORT_Stampa ritiro originali.rdlc" />
+    <None Include="Templates\Resolution\Letters\Letters_Det_TrasmAdozioneCollegioSindacaleFirmaDigitale.rdlc">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Templates\Resolution\Letters\Letters_TrasmAdozioneServiziFirmaDigitale.rdlc">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+    <Content Include="Templates\Resolution\ResolutionDataSet.vb">
+      <DependentUpon>ResolutionDataSet.xsd</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

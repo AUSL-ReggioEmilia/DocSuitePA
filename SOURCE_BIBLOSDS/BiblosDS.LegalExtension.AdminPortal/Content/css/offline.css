@@ -1,0 +1,56 @@
+*{
+	font-size: 12px;
+	color: #454545;
+}
+
+body {
+	background:#bbb url(../images/bokeh.png) 50% 0 repeat-x;
+	font-weight: normal;
+	text-align:center;
+	padding-top:50px;
+}
+
+img{border: 0 none;margin-left: auto;margin-right: auto;}
+#frame{
+	width:350px;
+	overflow:hidden;
+	margin: 35px auto 0 auto!important;
+	padding:20px 30px;
+	border:1px solid #aaa;
+	border-radius:10px; 
+	-moz-border-radius:10px; 
+	-webkit-border-radius:10px;
+	background:url(../images/gradient1.png) 50% 0 repeat-y;)
+}
+
+#frame form{
+	text-align: left;
+}
+
+form p{
+	margin: 0 0 10px 0!important;
+	padding: 0!important; }
+form fieldset 					{
+	border:0; 
+	margin:0; 
+	padding:3px;
+}
+
+label{
+	display: block; 
+	float: left;
+}
+
+input{padding: 1px;}
+input.button{padding:4px 10px; cursor: pointer; float:right; margin-top:-30px; margin-right:10px;}
+
+label{margin:2px 0; width:90px;}
+form p{padding: 0.2em 0 0.2em 0; }
+form br {display: none; }
+input.button{float:right; margin-top:-30px; margin-right:10px;}
+#frame.outline #username.inputbox, #frame.outline #passwd.inputbox{width:230px!important;}
+#frame.outline #remember.inputbox{margin-top:6px!important;}
+.inputbox{background:#ddd; border:1px solid #ccc;}
+
+
+

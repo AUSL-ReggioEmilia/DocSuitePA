@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="TemplateProtocol" table="TemplateProtocol">
+    
+    <id name="Id" column="idTemplateProtocol">
+      <generator class="native"></generator>
+    </id>
+
+    <property name="TemplateName" column="TemplateName" />
+    <property name="IsDefault" column="IsDefault" />
+    <property name="IdTemplateStatus" column="idTemplateStatus" />
+    <property name="ProtocolObject" column="Object" />
+    <property name="IdProtocolKind" column="idProtocolKind" />
+    <property name="LastChangedUser" />
+    <property name="LastChangedDate" />
+    <property name="RegistrationUser" />
+    <property name="RegistrationDate" />
+
+    <one-to-one class="TemplateAdvancedProtocol" name="TemplateAdvancedProtocol" cascade="all" />
+
+    <many-to-one class="Container" name="Container" column="idContainer" />
+    <many-to-one class="Category" name="Category" column="idCategory" />
+    <many-to-one class="DocumentType" name="DocType" column="idDocType" />
+    <many-to-one class="ProtocolType" name="Type" column="idType" />
+
+    <bag name="RoleUsers" table="TemplateProtocolRoleUser" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="idTemplateProtocol" />
+      </key>
+      <one-to-many class="TemplateProtocolRoleUser" />
+    </bag>
+    <bag name="Roles" table="TemplateProtocolRole" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="idTemplateProtocol" />
+      </key>
+      <one-to-many class="TemplateProtocolRole" />
+    </bag>
+    <bag name="Contacts" table="TemplateProtocolContact" order-by="Incremental" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="idTemplateProtocol" />
+      </key>
+      <one-to-many class="TemplateProtocolContact" />
+      <filter condition=":Type=ComunicationType" name="ContactComType"/>
+    </bag>
+    <bag name="ContactsManual" table="TemplateProtocolContactManual" order-by="Incremental" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="idTemplateProtocol" />
+      </key>
+      <one-to-many class="TemplateProtocolContactManual" />
+      <filter condition=":Type=ComunicationType" name="ManualContactComType"/>
+    </bag>
+    
+  </class>
+
+</hibernate-mapping>

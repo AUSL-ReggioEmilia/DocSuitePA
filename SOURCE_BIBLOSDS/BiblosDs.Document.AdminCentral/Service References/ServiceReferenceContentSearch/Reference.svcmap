@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="e0dd3c9e-4d6b-4288-8a34-2486aff59d5d" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.ComponentModel.BindingList`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:1526/ContentSearch.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="ContentSearch16.xsd" MetadataType="Schema" ID="ff4c637b-751b-42ed-9550-60410da11c88" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd19" />
+    <MetadataFile FileName="ContentSearch17.xsd" MetadataType="Schema" ID="616c97cb-9d95-4135-a048-36f61318d040" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd18" />
+    <MetadataFile FileName="ContentSearch18.xsd" MetadataType="Schema" ID="4428b273-d96c-4cc0-a302-b9d15c615b54" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd29" />
+    <MetadataFile FileName="ContentSearch19.xsd" MetadataType="Schema" ID="46ccbaa0-4fae-4bbe-a863-f8d0170da482" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd13" />
+    <MetadataFile FileName="ContentSearch20.xsd" MetadataType="Schema" ID="6e750f27-a07f-4691-b988-12e45e3b14e6" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd12" />
+    <MetadataFile FileName="ContentSearch21.xsd" MetadataType="Schema" ID="061d1b40-2c6e-4ecb-88f7-2f1b98b253b6" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd11" />
+    <MetadataFile FileName="ContentSearch22.xsd" MetadataType="Schema" ID="4ccb5456-3e02-467a-a425-2613d8787ed2" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd10" />
+    <MetadataFile FileName="ContentSearch23.xsd" MetadataType="Schema" ID="96568f54-aa6a-44bd-a579-5534d4c789aa" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd17" />
+    <MetadataFile FileName="ContentSearch24.xsd" MetadataType="Schema" ID="e7d02ef0-a1c4-4012-a1b3-65a575ff6aeb" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd16" />
+    <MetadataFile FileName="ContentSearch25.xsd" MetadataType="Schema" ID="fa0bd2f3-5edb-4101-960f-c61021ff4095" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd15" />
+    <MetadataFile FileName="ContentSearch26.xsd" MetadataType="Schema" ID="b6ea85f8-bd56-4333-94c9-1920a3b7dd34" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd14" />
+    <MetadataFile FileName="ContentSearch27.xsd" MetadataType="Schema" ID="1c10be5b-ead0-47e8-bea4-6a4572721a6b" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd8" />
+    <MetadataFile FileName="ContentSearch28.xsd" MetadataType="Schema" ID="ccffaf3c-b726-48d9-aa99-09f0d06f0424" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd7" />
+    <MetadataFile FileName="ContentSearch2.wsdl" MetadataType="Wsdl" ID="e6113fda-3309-420a-8e26-df5ab847f961" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="ContentSearch29.xsd" MetadataType="Schema" ID="28a6d420-74ee-406f-a3f9-3d9e435ea475" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd9" />
+    <MetadataFile FileName="ContentSearch3.wsdl" MetadataType="Wsdl" ID="bc1db685-daa0-4b93-880f-2d9085af89f2" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?wsdl" />
+    <MetadataFile FileName="ContentSearch30.xsd" MetadataType="Schema" ID="9646187f-449e-4c3d-b1c5-2766550bb8f0" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd4" />
+    <MetadataFile FileName="ContentSearch31.xsd" MetadataType="Schema" ID="46c67e0c-38ae-4129-a9de-2917bdc00b94" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd23" />
+    <MetadataFile FileName="ContentSearch32.xsd" MetadataType="Schema" ID="a8750b5e-68f3-4f39-899a-ce8b3dbf9ee6" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd22" />
+    <MetadataFile FileName="ContentSearch33.xsd" MetadataType="Schema" ID="bc773d75-d963-442d-9d8e-d665953e75d8" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd21" />
+    <MetadataFile FileName="ContentSearch34.xsd" MetadataType="Schema" ID="accec6ab-d151-4975-9a79-46c894348f4b" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd20" />
+    <MetadataFile FileName="ContentSearch35.xsd" MetadataType="Schema" ID="4bc7d023-1381-453e-8986-d4124992927b" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd27" />
+    <MetadataFile FileName="ContentSearch36.xsd" MetadataType="Schema" ID="03704ef6-f79a-40f1-8bed-3aeb97977349" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd26" />
+    <MetadataFile FileName="ContentSearch37.xsd" MetadataType="Schema" ID="3a40c23f-346e-4455-9ee1-e78d735303b9" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd25" />
+    <MetadataFile FileName="ContentSearch38.xsd" MetadataType="Schema" ID="5e547db5-57c2-4388-a20d-23e73775e891" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd24" />
+    <MetadataFile FileName="ContentSearch39.xsd" MetadataType="Schema" ID="d209e20d-c42e-4716-994d-f2243523c57d" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd5" />
+    <MetadataFile FileName="ContentSearch40.xsd" MetadataType="Schema" ID="a27f7791-854e-4576-b49d-a5ed00e0513f" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd2" />
+    <MetadataFile FileName="ContentSearch41.xsd" MetadataType="Schema" ID="414cc4f0-e6fc-4391-bc92-2d502cc71e9b" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd33" />
+    <MetadataFile FileName="ContentSearch42.xsd" MetadataType="Schema" ID="3022ed99-c7cc-4950-9c0c-a039ed60d673" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd28" />
+    <MetadataFile FileName="ContentSearch43.xsd" MetadataType="Schema" ID="40054e0b-c853-430a-8324-7310a7e7bcb0" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd0" />
+    <MetadataFile FileName="ContentSearch44.xsd" MetadataType="Schema" ID="47f582bf-c0d8-47aa-b2c3-bf390889ddb8" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd30" />
+    <MetadataFile FileName="ContentSearch45.xsd" MetadataType="Schema" ID="d4f42574-1eb7-49c7-8b5f-4d3d7e0c0416" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd6" />
+    <MetadataFile FileName="ContentSearch46.xsd" MetadataType="Schema" ID="c03d828d-5b35-4ecb-b3bb-2d2e857009c8" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd36" />
+    <MetadataFile FileName="ContentSearch47.xsd" MetadataType="Schema" ID="235dc27f-8057-4c54-8684-4f743cde6b10" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd35" />
+    <MetadataFile FileName="ContentSearch48.xsd" MetadataType="Schema" ID="73f92dc2-c819-47b3-bc74-782c36e51348" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd34" />
+    <MetadataFile FileName="ContentSearch49.xsd" MetadataType="Schema" ID="aa4ad54d-41f8-47d6-8337-5179254710cc" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd32" />
+    <MetadataFile FileName="ContentSearch50.xsd" MetadataType="Schema" ID="04060faa-6529-4fe2-b4b0-c770031e1b11" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd3" />
+    <MetadataFile FileName="ContentSearch1.disco" MetadataType="Disco" ID="1ac179f8-78f3-43f8-9458-bf6b5ced39a4" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?disco" />
+    <MetadataFile FileName="ContentSearch51.xsd" MetadataType="Schema" ID="fc88cf43-3684-4202-8393-bdf5523900f9" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd31" />
+    <MetadataFile FileName="ContentSearch52.xsd" MetadataType="Schema" ID="b3f9b56b-77e4-4664-86f8-e72afd0558bf" SourceId="1" SourceUrl="http://localhost:1526/ContentSearch.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

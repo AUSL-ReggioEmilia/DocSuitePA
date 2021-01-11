@@ -1,0 +1,37 @@
+﻿@if (Request.IsAuthenticated)
+{
+    @(Html.Kendo().Menu()
+        .Name("signInMenu")
+        .Animation(animation => animation.Open(open => open.SlideIn(SlideDirection.Down)))
+        .OpenOnClick(true)
+        .Items(items =>
+        {
+            items.Add().Text(User.Identity.Name.ToUpper())
+                .SpriteCssClasses("fas fa-user")
+                .Content(@<text>
+                            <div style="height: 110px; width: 250px; text-align: center;">
+                                <div><span class="far fa-user-circle fa-3x" style="margin-top: 10px;"></span></div>
+                                @(Html.Kendo().Button().Name("signOut")
+                                        .Content("Log Off").HtmlAttributes(new { @style = "margin-top: 20px; margin-left: 3px;", @class = "k-primary" })
+                                        .Events(events => events.Click("onLogOff"))
+                                        .SpriteCssClass("fas fa-sign-out-alt"))
+                                @(Html.Kendo().Button().Name("changePassword")
+                                        .Content("Modifica Password").HtmlAttributes(new { @style = "margin-top: 20px;" })
+                                        .Events(events => events.Click("onChangePassword"))
+                                        .SpriteCssClass("fas fa-edit"))
+                            </div>
+                        </text>
+                );
+        })
+        .CloseOnClick(true))
+
+    <script type="text/javascript">
+        function onLogOff(e) {
+            location.href = "@Url.Action("LogOff", "Account")";
+        }
+
+        function onChangePassword(e) {
+            location.href = "@Url.Action("ChangePassword", "Account")";
+        }
+    </script>
+}

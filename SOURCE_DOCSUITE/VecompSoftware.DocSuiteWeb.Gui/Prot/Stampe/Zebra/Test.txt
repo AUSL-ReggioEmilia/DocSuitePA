@@ -1,0 +1,8 @@
+Anno: %YEAR%
+Numero pad 7: %NUMBER7%
+Numero pad 8: %NUMBER8%
+Data e ora: %DATE%
+Data: %DATEONLY%
+Note (subs 10): %NOTE(10)%
+Note (subs 5): %NOTE(5)%
+Copie: %COPIES%

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<class name="DocumentFinder">
+  <property name="Anno" field="Anno" type="System.Int16"/>
+  <property name="Numero" field="Numero" type="System.Int32" />
+  <property name="Stato" field="Status" type="System.Int32" />
+  <property name="DataInizioDa" field="DataInizioFrom" type="System.DateTime" />
+  <property name="DataInizioA" field="DataInizioTo" type="System.DateTime" />
+  <property name="DataScadenzaDa" field="DataScadenzaFrom" type="System.DateTime" />
+  <property name="DataScadenzaA" field="DataScadenzaTo" type="System.DateTime" />
+  <property name="NumeroPosizione" field="NumeroServizio" type="System.String" />
+  <property name="Nome" field="Nome" type="System.String" />
+  <property name="Oggetto" field="Oggetto" type="System.String" />
+  <property name="OggettoAlmenoParola" field="DocumentObjectSearch" type="System.Boolean" />
+  <property name="Responsabile" field="Manager" type="System.String" />
+  <property name="Note" field="Note" type="System.String" />
+  <property name="Contenitore" field="IDContainer" type="System.String" />
+  <property name="Documento" field="DocumentDescription" type="System.String" />
+  <property name="DataDocumentoDa" field="DocumentDate_From" type="System.DateTime" />
+  <property name="DataDocumentoA" field="DocumentDate_To" type="System.DateTime" />
+  <property name="OggettoDocumento" field="DocumentObject" type="System.String" />
+  <property name="MotivoDocumento" field="DocumentReason" type="System.String" />
+  <property name="NoteDocumento" field="DocumentNote" type="System.String" />
+  <property name="DataInserimentoDa" field="DocumentRegDate_From" type="System.DateTime" />
+  <property name="DataInserimentoA" field="DocumentRegDate_To" type="System.DateTime" />
+</class>

@@ -1,0 +1,87 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.AwardBatches.AwardBatchViewModel
+@{
+    ViewBag.Title = "Pacchetti di versamento per archivio";
+}
+
+
+@section featured {
+    <hgroup class="title">
+        <h1>@ViewBag.Title <b>@Model.ArchiveName</b></h1>
+    </hgroup>
+}
+
+<div style="padding:10px 0px 15px 0px;">
+    @if (Model.IdPreservation.HasValue)
+    {
+        @Html.ActionLink("Ritorna al dettaglio della conservazione", "PreservationCheck", "Preservation", new { id = Model.IdPreservation }, null)
+    }
+</div>
+
+<div class="k-block" style="padding:10px; margin-bottom: 10px;">
+    <div>
+        <span>Data apertura dal</span>
+        @Html.Kendo().DatePickerFor(x => x.FromDate).Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 200px" })
+        <span>al</span>
+        @Html.Kendo().DatePickerFor(x => x.ToDate).Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 200px" })
+        @Html.Kendo().Button().Name("gridSearchButton").Events(events => events.Click("searchGrid")).Content("Cerca").Icon("search")
+    </div>
+</div>
+
+@(Html.Kendo().Grid<BiblosDS.Library.Common.Objects.AwardBatch>()
+                .Name("Grid")
+                .Columns(columns =>
+                {
+                        columns.Bound(o => o.Name).ClientTemplate("<a href='../../AwardBatch/Detail/#=IdAwardBatch#' class='k-button' title='Documenti'>Documenti</a>"+
+                            "# if (IsOpen == true) { #" +
+                            "<input type='button' class='k-button' onclick=\"closeAwardBatch('#=IdAwardBatch#')\" value='Chiudi' />" +
+                            "# } #")
+                          .Width(180)
+                          .Title("");
+                        columns.Bound(o => o.IsOpen).Title("Stato").ClientTemplate("# if (IsOpen == true) { #" +
+                          "<span class='k-icon k-i-tick'></span> <b>Aperto</b>" +
+                          "# } else { #" +
+                          "<span class='k-icon k-i-cancel'></span> Chiuso" +
+                          "# } #")
+                          .Width(120);
+                        columns.Bound(o => o.Name).Title("Descrizione");
+                        columns.Bound(o => o.DateFrom).Format("{0:dd/MM/yyyy}").Title("Data apertura").Width(120);
+                        columns.Bound(o => o.DateTo).Format("{0:dd/MM/yyyy}").Title("Data chiusura");
+                })
+                .Pageable(pager => pager.Refresh(true))
+                .Resizable(a => a.Columns(true))
+                .Scrollable()
+                .DataSource(dataSource => dataSource
+                    .Ajax()
+                    .Model(model => model.Id(p => p.IdAwardBatch))
+                    .PageSize(10)
+                    .Read(read => read.Action("GetAwardBatches", "AwardBatch", new { id = Model.IdArchive, idPreservation = Model.IdPreservation }).Data("readData")))
+)
+
+<script type="text/javascript">
+    function searchGrid(e) {
+        e.preventDefault();
+        $("#Grid").data("kendoGrid").dataSource.read();
+    }
+
+    function readData() {
+        var fromDateControl = $("#FromDate").data("kendoDatePicker");
+        var toDateControl = $("#ToDate").data("kendoDatePicker");
+        return {
+            fromDate: fromDateControl.value() != null ? fromDateControl.value().toUTCString() : null,
+            toDate: toDateControl.value() != null ? toDateControl.value().toUTCString() : null
+        }
+    }
+
+    function closeAwardBatch(idAwardBatch) {
+        kendo.ui.progress($("#Grid"), true);
+        $.post('@Url.Action("CloseAwardBatch", "AwardBatch")', { id: idAwardBatch })
+            .done(function (result) {
+                kendo.ui.progress($("#Grid"), false);
+                $("#Grid").data("kendoGrid").dataSource.read();                
+            })
+            .fail(function (xhr, ajaxOptions, thrownError) {
+                kendo.ui.progress($("#Grid"), false);
+                alert('Errore nella procedura di chiusura del pacchetto di conservazione');
+            });
+    }
+</script>

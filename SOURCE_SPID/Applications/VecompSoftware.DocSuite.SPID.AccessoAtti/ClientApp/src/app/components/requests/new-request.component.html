@@ -1,0 +1,138 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Nuova richiesta accesso agli atti</h3>
+    </div>
+    <div class="panel-body">
+        <form #requestForm="ngForm">
+            <div [hidden]="requestForm.submitted">
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-6">
+                        <label for="inputFrom">Nome Richiedente</label>
+                        <input type="text" class="form-control input-sm" id="inputFrom" name="name" [(ngModel)]="model.Name" required #name="ngModel" placeholder="Nome Richiedente">
+                        <app-form-show-errors [control]="name"></app-form-show-errors>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6">
+                        <label for="inputFrom">Cognome Richiedente</label>
+                        <input type="text" class="form-control input-sm" id="inputFrom" name="surname" [(ngModel)]="model.Surname" required #surname="ngModel" placeholder="Cognome Richiedente">
+                        <app-form-show-errors [control]="surname"></app-form-show-errors>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-8 col-md-9">
+                        <label for="inputFrom">Nato a</label>
+                        <input type="text" class="form-control input-sm" id="inputFrom" name="placeofbirth" [(ngModel)]="model.PlaceOfBirth" required #placeofbirth="ngModel" placeholder="Nato a">
+                        <app-form-show-errors [control]="placeofbirth"></app-form-show-errors>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-4 col-md-3">
+                        <label for="inputBirthday">Nato il</label>
+                        <kendo-datepicker [(ngModel)]="model.DateOfBirth" class="form-control input-sm" name="dateofbirth" required #dateofbirth="ngModel"></kendo-datepicker>
+                        <app-form-show-errors [control]="dateofbirth"></app-form-show-errors>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-8 col-md-9">
+                        <label for="inputAddress">Residente in</label>
+                        <input type="text" class="form-control input-sm" id="inputAddress" [(ngModel)]="model.City" required name="city" #city="ngModel" placeholder="Residente in">
+                        <app-form-show-errors [control]="city"></app-form-show-errors>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-4 col-md-3">
+                        <label for="inputZipCode">CAP</label>
+                        <kendo-numerictextbox class="form-control input-sm" id="inputZipCode" [spinners]="false" [step]="1" [(ngModel)]="model.ZipCode" [format]="'#'" name="zipcode" required #zipcode="ngModel" placeholder="CAP"></kendo-numerictextbox>
+                        <app-form-show-errors [control]="zipcode"></app-form-show-errors>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-6 col-md-6">
+                        <label for="inputAddressStreet">Via/Piazza</label>
+                        <input type="text" class="form-control input-sm" id="inputAddressStreet" [(ngModel)]="model.Address" required name="address" #address="ngModel" placeholder="Via/Piazza">
+                        <app-form-show-errors [control]="address"></app-form-show-errors>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-2 col-md-1">
+                        <label for="inputAddressNumber">N.</label>
+                        <input type="text" class="form-control input-sm" id="inputAddressNumber" [(ngModel)]="model.CivicNumber" required name="civicnumber" #civicnumber="ngModel" placeholder="N.">
+                        <app-form-show-errors [control]="civicnumber"></app-form-show-errors>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-4 col-md-5">
+                        <label for="inputPhone">Telefono</label>
+                        <input type="text" class="form-control input-sm" id="inputPhone" [(ngModel)]="model.TelephoneNumber" required telephoneNumberValidator name="phone" #phone="ngModel" placeholder="Telefono">
+                        <app-form-show-errors [control]="phone"></app-form-show-errors>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-6 col-md-6">
+                        <label for="inputEmail">Email</label>
+                        <input type="email" class="form-control input-sm" id="inputEmail" [(ngModel)]="model.Email" required emailValidator name="email" #email="ngModel" placeholder="Email">
+                        <app-form-show-errors [control]="email"></app-form-show-errors>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-md-6">
+                        <label for="inputPEC">PEC</label>
+                        <input type="email" class="form-control input-sm" id="inputPEC" [(ngModel)]="model.PEC" emailValidator name="pec" #pec="ngModel" placeholder="PEC">
+                        <app-form-show-errors [control]="pec"></app-form-show-errors>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-12">
+                        <label>In qualit&aacute; di</label>
+                        <div class="checkbox">
+                            <input type="radio" id="interessato" name="usertype" [(ngModel)]="model.UserType" class="k-radio" [value]="0" />
+                            <label class="k-radio-label" for="interessato">Interessato</label>
+
+                            <input type="radio" id="legittimato" name="usertype" [(ngModel)]="model.UserType" class="k-radio" [value]="1" />
+                            <label class="k-radio-label" for="legittimato">Legittimato</label>
+
+                            <input type="radio" id="delegato" name="usertype" [(ngModel)]="model.UserType" class="k-radio" [value]="2" />
+                            <label class="k-radio-label" for="delegato">Delegato</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-12">
+                        <label>Tipo di accesso</label>
+                        <div class="checkbox">
+                            <input type="radio" id="visione" name="accesstype" [(ngModel)]="model.AccessType" class="k-radio" [value]="0" />
+                            <label class="k-radio-label" for="visione">Visione</label>
+
+                            <input type="radio" id="cs" name="accesstype" [(ngModel)]="model.AccessType" class="k-radio" [value]="1" />
+                            <label class="k-radio-label" for="cs">Copia semplice</label>
+
+                            <input type="radio" id="ca" name="accesstype" [(ngModel)]="model.AccessType" class="k-radio" [value]="2" />
+                            <label class="k-radio-label" for="ca">Copia autenticata</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-12">
+                        <label for="inputDocuments">Documenti che si vogliono visualizzare</label>
+                        <textarea class="form-control input-sm" id="inputDocuments" [(ngModel)]="model.Documents" rows="3" name="documents" required #documents="ngModel"></textarea>
+                        <app-form-show-errors [control]="documents"></app-form-show-errors>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-12">
+                        <label for="inputMotivation">Motivazioni</label>
+                        <textarea class="form-control input-sm" id="inputMotivation" [(ngModel)]="model.Motivations" rows="3" name="motivations" required #motivations="ngModel"></textarea>
+                        <app-form-show-errors [control]="motivations"></app-form-show-errors>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-12">
+                        <label>Si chiede di ottenere la documentazione</label>
+                        <div class="checkbox">
+                            <input type="radio" id="pec" name="returntype" [(ngModel)]="model.ReturnType" class="k-radio" [value]="0" />
+                            <label class="k-radio-label" for="pec">Presso indirizzo di Posta elettronica certificata (PEC)</label>
+
+                            <input type="radio" id="ufficio" name="returntype" [(ngModel)]="model.ReturnType" class="k-radio" [value]="1" />
+                            <label class="k-radio-label" for="ufficio">Personalmente o a mezzo di persona delegata</label>
+
+                            <input type="radio" id="raccomandata" name="returntype" [(ngModel)]="model.ReturnType" class="k-radio" [value]="2" />
+                            <label class="k-radio-label" for="raccomandata">A mezzo raccomandata con ricevuta di ritorno</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="panel-footer">
+        <button type="submit" class="btn btn-sm btn-info" (click)="onClick()" [disabled]="isBusy || requestForm.invalid"><i class="fa fa-dot-circle-o"></i> {{isBusy ? 'Attendere creazione richiesta...' : 'Conferma'}}</button>
+    </div>
+</div>

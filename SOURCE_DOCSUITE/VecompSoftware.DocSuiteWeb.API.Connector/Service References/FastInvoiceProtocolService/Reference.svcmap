@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="adce2235-6d98-4d02-bb47-7ee0b5e8089a" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost/DSW.API/FastInvoiceProtocolService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="FastInvoiceProtocolService.xsd" MetadataType="Schema" ID="05ddd34f-87c3-4c26-aa7f-ef6bc729866f" SourceId="1" SourceUrl="http://localhost/DSW.API/FastInvoiceProtocolService.svc?xsd=xsd0" />
+    <MetadataFile FileName="FastInvoiceProtocolService1.xsd" MetadataType="Schema" ID="64c394d9-4302-4428-abef-da31d03c235f" SourceId="1" SourceUrl="http://localhost/DSW.API/FastInvoiceProtocolService.svc?xsd=xsd1" />
+    <MetadataFile FileName="FastInvoiceProtocolService.wsdl" MetadataType="Wsdl" ID="afcb0312-b2e4-4ffe-b65b-eddec79433de" SourceId="1" SourceUrl="http://localhost/DSW.API/FastInvoiceProtocolService.svc?wsdl" />
+    <MetadataFile FileName="FastInvoiceProtocolService.disco" MetadataType="Disco" ID="61fb80d5-5028-4b3c-a8df-932cd945132d" SourceId="1" SourceUrl="http://localhost/DSW.API/FastInvoiceProtocolService.svc?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

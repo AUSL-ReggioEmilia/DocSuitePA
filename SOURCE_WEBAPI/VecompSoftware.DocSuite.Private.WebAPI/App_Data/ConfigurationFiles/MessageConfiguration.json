@@ -1,0 +1,536 @@
+﻿{
+  "CommandCreateUDS": {
+    "QueueName": "management_uds_create",
+    "TopicName": "",
+    "MessageType": "Queue",
+    "DefaultFilterEvent": "Name='EventCreateUDS'"
+  },
+  "CommandUpdateUDSData": {
+    "QueueName": "data_uds_update",
+    "TopicName": "",
+    "MessageType": "Queue",
+    "DefaultFilterEvent": "Name='EventUpdateUDSData'"
+  },
+  "CommandInsertUDSData": {
+    "QueueName": "data_uds_insert",
+    "TopicName": "",
+    "MessageType": "Queue",
+    "DefaultFilterEvent": "Name='EventInsertUDSData'"
+  },
+  "CommandUpdateUDS": {
+    "QueueName": "management_uds_update",
+    "TopicName": "",
+    "MessageType": "Queue",
+    "DefaultFilterEvent": "Name='EventUpdateUDS'"
+  },
+  "CommandDeleteUDSData": {
+    "QueueName": "data_uds_delete",
+    "TopicName": "",
+    "MessageType": "Queue",
+    "DefaultFilterEvent": "Name='EventDeleteUDSData'"
+  },
+  "EventCreateUDS": {
+    "QueueName": "",
+    "TopicName": "uds_event",
+    "MessageType": "Topic",
+    "DefaultFilterEvent": ""
+  },
+  "EventInsertUDSData": {
+    "QueueName": "",
+    "TopicName": "uds_event",
+    "MessageType": "Topic"
+  },
+  "EventUpdateUDS": {
+    "QueueName": "",
+    "TopicName": "uds_event",
+    "MessageType": "Topic"
+  },
+  "EventUpdateUDSData": {
+    "QueueName": "",
+    "TopicName": "uds_event",
+    "MessageType": "Topic"
+  },
+  "EventDeleteUDSData": {
+    "QueueName": "",
+    "TopicName": "uds_event",
+    "MessageType": "Topic"
+  },
+  "EventCompleteUDSDelete": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowCreateProtocol": {
+    "QueueName": "",
+    "TopicName": "uds_event",
+    "MessageType": "Topic"
+  },
+  "EventCompleteWorkflowInstance": {
+    "QueueName": "",
+    "TopicName": "workflow_completed",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowStartRequest": {
+    "QueueName": "",
+    "TopicName": "workflow_integration",
+    "MessageType": "Topic"
+  },
+  "EventCompleteWorkflowActivity": {
+    "QueueName": "",
+    "TopicName": "workflow_activity_completed",
+    "MessageType": "Topic"
+  },
+  "WorkflowStatusDone": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowStartRequestDone": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic",
+    "DefaultFilterEvent": "Name='EventWorkflowStartRequestDone'"
+  },
+  "WorkflowStatusError": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowStartRequestError": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic",
+    "DefaultFilterEvent": "Name='EventWorkflowStartRequestError'"
+  },
+  "WorkflowNotificationInfo": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic"
+  },
+  "WorkflowNotificationInfoModel": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowNotificationInfo": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic",
+    "DefaultFilterEvent": "Name='EventWorkflowNotificationInfo'"
+  },
+  "EventWorkflowNotificationInfoAsModel": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic",
+    "DefaultFilterEvent": "Name='EventWorkflowNotificationInfoAsModel'"
+  },
+  "WorkflowNotificationWarning": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowNotificationWarning": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic",
+    "DefaultFilterEvent": "Name='EventWorkflowNotificationWarning'"
+  },
+  "WorkflowNotificationError": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowNotificationError": {
+    "QueueName": "",
+    "TopicName": "workflow_notification",
+    "MessageType": "Topic",
+    "DefaultFilterEvent": "Name='EventWorkflowNotificationError'"
+  },
+  "UDSDataEvent": {
+    "QueueName": "",
+    "TopicName": "uds_event",
+    "MessageType": "Topic"
+  },
+  "EventCreatePECMail": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventReceivedReceiptPECMail": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateRoleAuthorization": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventDeleteRoleAuthorization": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateUserAuthorization": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventDeleteUserAuthorization": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateCollaboration": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventDeleteCollaboration": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateMessage": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateFascicle": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventUpdateFascicle": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateDossier": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventUpdateDossier": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateProtocol": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventUpdateProtocol": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCancelProtocol": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateDocumentSeriesItem": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventUpdateDocumentSeriesItem": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateResolution": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCQRSCreateUDSData": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCQRSUpdateUDSData": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventUpdateResolution": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "CommandCreateDocumentSeriesItem": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandUpdateDocumentSeriesItem": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreatePECMail": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreateCollaboration": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandDeleteCollaboration": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreateMessage": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreateFascicle": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandUpdateFascicle": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandUpdateFascicleData": {
+    "QueueName": "data_fascicle_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreateDossier": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandUpdateDossier": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandUpdateDossierData": {
+    "QueueName": "data_dossier_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreateProtocol": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandUpdateProtocol": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreateResolution": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandUpdateResolution": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCQRSCreateUDSData": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCQRSUpdateUDSData": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreateMassivePeriodicFascicle": {
+    "QueueName": "fascicle_management",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandProtocolExternalViewer": {
+    "QueueName": "ip4d_send",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventProtocolExternalViewer": {
+    "QueueName": "",
+    "TopicName": "workflow_activity_completed",
+    "MessageType": "Topic"
+  },
+  "EventError": {
+    "QueueName": "",
+    "TopicName": "uds_event",
+    "MessageType": "Topic",
+    "DefaultFilterEvent": "Name='EventError'"
+  },
+  "EventRetireDocumentSeriesItem": {
+    "QueueName": "",
+    "TopicName": "workflow_integration",
+    "MessageType": "Topic"
+  },
+  "CommandCreateCategoryFascicle": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandDeleteCategoryFascicle": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreateFascicleDocumentUnit": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandDeleteFascicleDocumentUnit": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventTokenSecurity": {
+    "QueueName": "",
+    "TopicName": "security/token_event",
+    "MessageType": "Topic",
+    "DefaultFilterEvent": "Name='EventTokenSecurity'"
+  },
+  "EventCompleteProtocolBuild": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "EventCompleteProtocolDelete": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "CommandBuildProtocol": {
+    "QueueName": "data_protocol_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandDeleteProtocol": {
+    "QueueName": "data_protocol_delete",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventCompleteUDSBuild": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "CommandBuildPECMail": {
+    "QueueName": "data_pecmail_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventCompletePECMailBuild": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "CommandBuildCollaboration": {
+    "QueueName": "data_collaboration_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventCompleteCollaborationBuild": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "EventCompleteFascicleBuild": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "CommandBuildFascicle": {
+    "QueueName": "data_fascicle_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventCompleteDossierBuild": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "CommandBuildDossier": {
+    "QueueName": "data_dossier_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventCompleteMessageBuild": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "CommandBuildMessage": {
+    "QueueName": "data_message_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventWorkflowActionDocumentUnitLink": {
+    "QueueName": "",
+    "TopicName": "workflow_integration",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowActionFascicle": {
+    "QueueName": "",
+    "TopicName": "workflow_integration",
+    "MessageType": "Topic"
+  },
+  "EventCreateCategoryFascicle": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventUpdateCategoryFascicle": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventDeleteCategoryFascicle": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCreateFascicleDocumentUnit": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventDeleteFascicleDocumentUnit": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventShareDocumentUnit": {
+    "QueueName": "",
+    "TopicName": "workflow_integration",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowActionFascicleClose": {
+    "QueueName": "",
+    "TopicName": "workflow_integration",
+    "MessageType": "Topic"
+  },
+  "EventWorkflowActionAggregation": {
+    "QueueName": "",
+    "TopicName": "workflow_aggregation",
+    "MessageType": "Topic"
+  },
+  "EventIntegrationRequest": {
+    "QueueName": "",
+    "TopicName": "workflow_integration",
+    "MessageType": "Topic"
+  }
+}

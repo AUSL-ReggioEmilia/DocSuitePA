@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import namespace="http://BiblosDS/2009/10/DocumentAttach" />
+  <xs:element name="AddDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://BiblosDS/2009/10/Document" minOccurs="0" name="Document" nillable="true" type="q1:Document" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="AddDocumentResult" type="q2:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddAttachToDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://BiblosDS/2009/10/DocumentAttach" minOccurs="0" name="Document" nillable="true" type="q3:DocumentAttach" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddAttachToDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="AddAttachToDocumentResult" type="q4:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://BiblosDS/2009/10/Document" minOccurs="0" name="Document" nillable="true" type="q5:Document" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://BiblosDS/2009/10/Document" minOccurs="0" name="GetDocumentResult" nillable="true" type="q6:Document" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentAttach">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://BiblosDS/2009/10/DocumentAttach" minOccurs="0" name="Document" nillable="true" type="q7:DocumentAttach" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentAttachResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://BiblosDS/2009/10/DocumentAttach" minOccurs="0" name="GetDocumentAttachResult" nillable="true" type="q8:DocumentAttach" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentConformAttach">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://BiblosDS/2009/10/Document" minOccurs="0" name="Document" nillable="true" type="q9:Document" />
+        <xs:element minOccurs="0" name="fileName" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetDocumentConformAttachResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://BiblosDS/2009/10/Document" minOccurs="0" name="GetDocumentConformAttachResult" nillable="true" type="q10:Document" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdDocument" type="q11:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DeleteDocumentResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RestoreAttribute">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="IdDocument" type="q12:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RestoreAttributeResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WriteAttribute">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://BiblosDS/2009/10/Document" minOccurs="0" name="Document" nillable="true" type="q13:Document" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WriteAttributeResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CheckIntegrity">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q14="http://BiblosDS/2009/10/Document" minOccurs="0" name="Document" nillable="true" type="q14:Document" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CheckIntegrityResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="CheckIntegrityResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsAlive">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsAliveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IsAliveResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

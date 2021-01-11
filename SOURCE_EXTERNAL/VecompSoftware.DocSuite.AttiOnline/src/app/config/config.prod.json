@@ -1,0 +1,27 @@
+{
+  "apiOdataAddress": "http://srvgeddev9999.cloudapp.net/DSW.PublicWebAPI/odata/",
+  "executiveDocumentHandlerUrl": "http://srvgeddev9999.cloudapp.net/DocumentHandler/ExecutiveResolutionDocumentHandler.ashx/",
+  "publishedDocumentHandlerUrl": "http://srvgeddev9999.cloudapp.net/DocumentHandler/PublishedResolutionDocumentHandler.ashx/",
+  "alboPretorioDocumentHandlerUrl": "http://srvgeddev9999.cloudapp.net/DocumentHandler/AlboPretorioDocumentHandler.ashx/",
+  "gridItemsNumber": 10,
+  "toastLife": 5000,
+  "alboPretorioProposerColumnVisibility": false,
+  "alboPretorioServiceColumnVisibility": true,
+  "executiveConsultationServiceColumnVisibility": true,
+  "executiveConsultationProposerColumnVisibility": true,
+  "publishedConsultationServiceColumnVisibility": true,
+  "publishedConsultationProposerColumnVisibility": true,
+  "attiGroupableGridEnabled": true,
+  "attiPublicationDateSorting": "asc",
+  "deliberePublicationDateSorting": "desc",
+  "activeRoutes": {
+    "executiveConsultation": false,
+    "publishedConsultation": false,
+    "alboPretorio": false
+  },
+  "delibere": "Deliberazioni",
+  "determine": "Atti dirigenziali",
+  "headerUrl": "http://www.ausl.re.it/inc_header.php",
+  "footerUrl": "http://www.ausl.re.it/inc_footer.php",
+  "ASMNAlboUrl": "http://pubblico.asmn.re.it/PubblicazioneAtti/default.aspx"
+}

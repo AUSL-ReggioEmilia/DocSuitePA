@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/PreservationAlertType" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationAlertType" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd31" namespace="http://BiblosDS/2009/10/PreservationAlert" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd29" namespace="http://BiblosDS/2009/10/PreservationRole" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd33" namespace="http://BiblosDS/2009/10/PreservationTaskType" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="PreservationAlertType">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AlertText" nillable="true" type="xs:string" />
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/PreservationAlert" minOccurs="0" name="Alerts" nillable="true" type="q2:ArrayOfPreservationAlert" />
+          <xs:element minOccurs="0" name="IdPreservationAlertType" type="ser:guid" />
+          <xs:element minOccurs="0" name="Offset" type="xs:short" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/PreservationRole" minOccurs="0" name="Role" nillable="true" type="q3:PreservationRole" />
+          <xs:element xmlns:q4="http://BiblosDS/2009/10/PreservationTaskType" minOccurs="0" name="TaskTypes" nillable="true" type="q4:ArrayOfPreservationTaskType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PreservationAlertType" nillable="true" type="tns:PreservationAlertType" />
+</xs:schema>

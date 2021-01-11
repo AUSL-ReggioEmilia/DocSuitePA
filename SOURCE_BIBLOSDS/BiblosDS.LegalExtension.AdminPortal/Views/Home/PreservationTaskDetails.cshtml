@@ -1,0 +1,248 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.PreservationTaskViewModel
+@using BiblosDS.Library.Common.Objects.Enums
+@{
+    ViewBag.Title = "Task su archivio: " + @Model.ArchiveName;
+}
+
+@section featured{
+    <hgroup class="title">
+        <h1>@ViewBag.Title</h1>
+    </hgroup>
+}
+<br />
+
+<div id="example" class="k-block">
+
+    <div id="window_ade">
+        @if (Model.Company != null)
+        {
+            @Model.Company.TemplateADEFile
+        }
+    </div>
+
+    <div id="window_closeFile">
+        @if (Model.Company != null)
+        {
+            @Model.Company.TemplateCloseFile
+        }
+    </div>
+
+    <table class="k-custom-table">
+        @if (Model.HasVerifyTaskDefined)
+        {
+            <tr>
+                <td></td>
+                <td>
+                    @if (Model.VerifyTask.Enabled)
+                    {
+                        <b>Task pronto alla conservazione</b>
+                    }
+                    else
+                    {
+                        @:Task disabilitato @Html.ActionLink("Abilita", "PreservationTaskEnable", "Home", new { id = Model.VerifyTask.IdPreservationTask }, new { @class = "k-button" })
+                    }
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:200px;" align="right">Path</td>
+                <td>
+                    <span id="path" class="pathLink" onclick="selectText('path');">@Model.Archive.PathPreservation</span>
+                </td>
+            </tr>
+            <tr>
+                <td align="right"><label>Data conservazione</label></td>
+                <td>Dal <b>@Model.VerifyTask.StartDocumentDate.GetValueOrDefault().ToString("dd/MM/yyyy")</b> al <b>@Model.VerifyTask.EndDocumentDate.GetValueOrDefault().ToString("dd/MM/yyyy")</b> </td>
+            </tr>
+        }
+
+        @if (Model.HasCompanyDefined)
+        {
+            <tr>
+                <td align="right">Ragione sociale</td>
+                <td><b>@Model.Company.CompanyName</b></td>
+            </tr>
+            <tr>
+                <td align="right">Codice Fiscale/P.IVA</td>
+                <td><b>@Model.Company.FiscalCode</b></td>
+            </tr>
+            <tr>
+                <td align="right">Chiusura Template</td>
+                <td><a href="#" onclick="OpenPreservationCloseFileWindows()">Visualizza</a></td>
+            </tr>
+            <tr>
+                <td align="right">ADE Template</td>
+                <td><a href="#" onclick="OpenPreservationAdeWindows()">Visualizza</a></td>
+            </tr>
+        }
+    </table>
+    @if (Model.HasCompanyDefined && Model.HasArchiveConfigurationFile)
+    {
+        <hr />
+        <table class="k-custom-table no-wrap">
+            @foreach (var item in Model.Tasks.OrderByDescending(x => (int)x.TaskType.Type))
+            {
+                <tr>
+                    <td align="right" style="width:200px;"><b>@item.TaskType.Description</b></td>
+                    <td>
+                        @(item.ExecutedDate.HasValue ? "Eseguito il: " + item.ExecutedDate.Value.ToString("dd/MM/yyyy") : "Da eseguire il: " + item.EstimatedDate.ToString("dd/MM/yyyy"))
+                        @if (item.HasError)
+                        {
+                            <b>In Errore</b>
+                        }
+                    </td>
+                    <td>
+                        @if (item.TaskType.Type == PreservationTaskTypes.Verify && !item.HasError && item.Executed && !item.CorrelatedTasks.FirstOrDefault().Executed)
+                        {
+                            <span>@Html.ActionLink("Reset Task", "ResetTask", "Home", new { idTask = item.IdPreservationTask }, new { @class = "k-button" })</span>
+                        }
+                        @if (item.HasError && item.TaskType.Type == PreservationTaskTypes.Verify)
+                        {
+                            <span>@Html.ActionLink("Reset errori", "ResetTaskErrors", "Home", new { idTask = item.IdPreservationTask }, new { @class = "k-button" })</span>
+                        }
+                        @if (item.CanExecute)
+                        {
+                            <span>@Html.ActionLink("Esegui", "ExecutePreservationTask", "Home", new { id = item.IdPreservationTask }, new { @class = "k-button" })</span>
+                        }
+                        @if (item.LockDate.HasValue)
+                        {
+                            <b>Locked</b> @item.LockDate
+                        }
+                    </td>
+                    <td style="white-space:normal !important;">
+                        @item.ErrorMessages
+                        @if (!item.HasError && item.Executed && item.IdPreservation != null)
+                        {
+                            if (item.TaskType.Type == PreservationTaskTypes.Preservation)
+                            {
+                                @ViewPreservationCloseFile(item)
+                            }
+                            else if (!item.CorrelatedTasks.FirstOrDefault().Executed)
+                            {
+                                @ViewPreservationCloseFile(item)
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+        if (Model.Tasks.Any(x => x.TaskStatus == PreservationTaskStatus.NoDocuments))
+        {
+            <table class="k-custom-table no-wrap" style="width: 100%;">
+                <tr>
+                    <td>
+                        <div style="margin:5px 0; padding:10px;" class="k-block k-error-colored">
+                            <b>Attenzione!</b> Il task non presenta documenti da portare in conservazione, è possibile forzarne la chiusura.
+                        </div>
+                        <span>@Html.ActionLink("Chiudi senza documenti", "ClosePreservationWithoutDocuments", "Home", new { idPreservationTask = Model.VerifyTask.IdPreservationTask }, new { @class = "k-button" })</span>
+                    </td>
+                </tr>                
+            </table>
+        }
+    }
+    else
+    {
+        if (!Model.HasCompanyDefined)
+        {
+            @:Dati insufficienti per la conservazione. Definire i dati anagrafici della Company associata alla conservazione.
+            <br />
+        }
+        if (!Model.HasArchiveConfigurationFile)
+        {
+            @:Dati insufficienti per la conservazione. Configurare l'archivio associato alla conservazione.
+            <br />
+            @Html.ActionLink("Configura Archivio", "ArchivePreservationConfiguration", "Home", new { id = Model.Archive.IdArchive }, new { @class = "k-button" })
+        }
+
+    }
+</div>
+
+<script>
+    function OpenPreservationError(id) {
+
+        var window = $("#window_" + id).kendoWindow(
+            {
+                height: "400px",
+                width: "615px",
+                title: "Dettagli",
+                modal: true,
+                resizable: false
+            });
+        window.show();
+        return false;
+    }
+
+    function OpenPreservationAdeWindows() {
+        $("#window_ade").data("kendoWindow").open();
+        return false;
+    }
+
+    function OpenPreservationCloseFileWindows() {
+        $("#window_closeFile").data("kendoWindow").open();
+        return false;
+    }
+
+    function showContent(div) {
+        $("#" + div).toggle("fast");
+    }
+
+
+    $(document).ready(function () {
+
+        var window = $("#window_ade");
+
+        if (!window.data("kendoWindow")) {
+            window.kendoWindow({
+                width: "500px",
+                height: "400px",
+                actions: ["Minimize", "Maximize", "Close"],
+                title: "ADE Template",
+                close: function () {
+                    $("error").html();
+                },
+                visible: false
+            });
+        }
+
+        window.data("kendoWindow").wrapper.find(".k-i-custom").click(function (e) {
+            alert("Custom action button clicked");
+            e.preventDefault();
+        });
+
+        window = $("#window_closeFile");
+
+        if (!window.data("kendoWindow")) {
+            window.kendoWindow({
+                width: "500px",
+                height: "400px",
+                actions: ["Minimize", "Maximize", "Close"],
+                title: "Chiusura Template",
+                close: function () {
+                    $("error").html();
+                },
+                visible: false
+            });
+        }
+
+        window.data("kendoWindow").wrapper.find(".k-i-custom").click(function (e) {
+            alert("Custom action button clicked");
+            e.preventDefault();
+        });
+    });
+
+</script>
+
+@helper ViewPreservationCloseFile(BiblosDS.Library.Common.Objects.PreservationTask item)
+{
+    if (!item.PreservationCloseFile.IsEmpty())
+    {
+        <a href="javascript:void(0);" onclick="showContent('closeFile')">Visualizza file di CHIUSURA</a>
+        <div id="closeFile" style="display:none; margin-top:5px;">
+            @Html.Raw(String.Join("<br/>", File.ReadAllLines(item.PreservationCloseFile)))
+        </div>
+    }
+    else
+    {
+        <div>File di CHIUSURA non trovato</div>
+    }
+}

@@ -1,0 +1,17 @@
+﻿.ie9 .window-footer-wrapper {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.ie9 table.dataform {
+}
+
+    .ie9 table.dataform td {
+        padding: 3px 3px !important;
+    }
+
+.ie9 .datatable {
+    border-collapse: separate;
+    border-spacing: 0;
+}

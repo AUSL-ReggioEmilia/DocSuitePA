@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://BiblosDS/2009/10/Content" />
+  <xs:import namespace="http://BiblosDS/2009/10/Certificate" />
+  <xs:element name="GetAllExpireDates">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="fileName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q1="http://BiblosDS/2009/10/Content" minOccurs="0" name="Content" nillable="true" type="q1:Content" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllExpireDatesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://BiblosDS/2009/10/Certificate" minOccurs="0" name="GetAllExpireDatesResult" nillable="true" type="q2:ArrayOfCertificate" />
+        <xs:element xmlns:q3="http://BiblosDS/2009/10/Certificate" minOccurs="0" name="FirstCertificate" nillable="true" type="q3:Certificate" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CalculateBlobHash">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://BiblosDS/2009/10/Content" minOccurs="0" name="Content" nillable="true" type="q4:Content" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CalculateBlobHashResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://BiblosDS/2009/10/Content" minOccurs="0" name="CalculateBlobHashResult" nillable="true" type="q5:Content" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetContent">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="FileName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q6="http://BiblosDS/2009/10/Content" minOccurs="0" name="Content" nillable="true" type="q6:Content" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetContentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://BiblosDS/2009/10/Content" minOccurs="0" name="GetContentResult" nillable="true" type="q7:Content" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TimeStampDocument">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="FileName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q8="http://BiblosDS/2009/10/Content" minOccurs="0" name="Content" nillable="true" type="q8:Content" />
+        <xs:element minOccurs="0" name="InfoCamereFormat" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TimeStampDocumentResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://BiblosDS/2009/10/Content" minOccurs="0" name="TimeStampDocumentResult" nillable="true" type="q9:Content" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTimeStampAvailable">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="Service" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="User" nillable="true" type="xs:string" />
+        <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetTimeStampAvailableResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetTimeStampAvailableResult" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddRawSignature">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="FileName" nillable="true" type="xs:string" />
+        <xs:element xmlns:q10="http://BiblosDS/2009/10/Content" minOccurs="0" name="SignerCert" nillable="true" type="q10:Content" />
+        <xs:element xmlns:q11="http://BiblosDS/2009/10/Content" minOccurs="0" name="SignedDigest" nillable="true" type="q11:Content" />
+        <xs:element xmlns:q12="http://BiblosDS/2009/10/Content" minOccurs="0" name="Content" nillable="true" type="q12:Content" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddRawSignatureResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q13="http://BiblosDS/2009/10/Content" minOccurs="0" name="AddRawSignatureResult" nillable="true" type="q13:Content" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsAlive">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IsAliveResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="IsAliveResult" type="xs:boolean" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

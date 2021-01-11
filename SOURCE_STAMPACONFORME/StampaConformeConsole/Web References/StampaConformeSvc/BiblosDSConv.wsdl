@@ -1,0 +1,671 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://www.vecompsoftware.it/BiblosDSConv/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://www.vecompsoftware.it/BiblosDSConv/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.vecompsoftware.it/BiblosDSConv/">
+      <s:element name="Test">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="document" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TestResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRaster">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="stDoc">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="FileExtension" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Blob" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="XmlValues" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="WmfP7m" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ToRasterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatRgWatermarked">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="ext" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="watermark" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowPrinting" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowModifyContents" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowCopy" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowModifyAnnotations" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowFillIn" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowScreenReaders" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowAssembly" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowDegradedPrinting" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatRgWatermarkedResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatRgWatermarkedResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatRg">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="ext" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="user" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="password" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowPrinting" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowModifyContents" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowCopy" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowModifyAnnotations" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowFillIn" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowScreenReaders" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowAssembly" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="AllowDegradedPrinting" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatRgResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatRgResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatWatermarked">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="watermark" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatWatermarkedResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatWatermarkedResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatExBox">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="ext" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="boxConfig" type="tns:BoxConfig" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="BoxConfig">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="BoxLine" type="tns:ArrayOfBoxLineConfig" />
+          <s:element minOccurs="1" maxOccurs="1" name="X" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="Y" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="Width" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="Height" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="WrapContent" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="DrawingPageNumber" nillable="true" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="BackgroundColor" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="BorderWidth" nillable="true" type="s:float" />
+          <s:element minOccurs="0" maxOccurs="1" name="BorderColor" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="InlineOption" nillable="true" type="s:boolean" />
+          <s:element minOccurs="1" maxOccurs="1" name="Opacity" nillable="true" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfBoxLineConfig">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="BoxLineConfig" nillable="true" type="tns:BoxLineConfig" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="BoxLineConfig">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="Message" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Options" type="tns:ArrayOfString" />
+          <s:element minOccurs="0" maxOccurs="1" name="SelectedValue" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="TrueFalseBox" nillable="true" type="s:boolean" />
+          <s:element minOccurs="0" maxOccurs="1" name="ForeColor" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="FontSize" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="Width" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="Height" nillable="true" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="Spacing" nillable="true" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfString">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="ToRasterFormatExBoxResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatExBoxResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatExParameters">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="ext" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="parameters" type="tns:ArrayOfStParameter" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfStParameter">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="stParameter" type="tns:stParameter" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="stParameter">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Name" type="tns:stParameterOption" />
+          <s:element minOccurs="0" maxOccurs="1" name="Value" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="stParameterOption">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="AttachMode" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="ToRasterFormatExParametersResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatExParametersResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatEx">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="ext" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="label" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatExResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatExResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormat">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+            <s:element minOccurs="0" maxOccurs="1" name="ext" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterFormatResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterFormatResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Sign">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileExtension" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="WmfP7m" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XmlValues" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Blob" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SignResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SignResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterExt">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="FileExtension" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="WmfP7m" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="XmlValues" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="Blob" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ToRasterExtResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="ToRasterExtResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PdfToPngThumbnail">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="Doc" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PdfToPngThumbnailResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="PdfToPngThumbnailResult" type="tns:stDoc" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVersion">
+        <s:complexType />
+      </s:element>
+      <s:element name="GetVersionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVersionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="TestSoapIn">
+    <wsdl:part name="parameters" element="tns:Test" />
+  </wsdl:message>
+  <wsdl:message name="TestSoapOut">
+    <wsdl:part name="parameters" element="tns:TestResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRaster" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatRgWatermarkedSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatRgWatermarked" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatRgWatermarkedSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatRgWatermarkedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatRgSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatRg" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatRgSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatRgResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatWatermarkedSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatWatermarked" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatWatermarkedSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatWatermarkedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatExBoxSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatExBox" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatExBoxSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatExBoxResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatExParametersSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatExParameters" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatExParametersSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatExParametersResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatExSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatEx" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatExSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatExResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterFormat" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterFormatSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterFormatResponse" />
+  </wsdl:message>
+  <wsdl:message name="SignSoapIn">
+    <wsdl:part name="parameters" element="tns:Sign" />
+  </wsdl:message>
+  <wsdl:message name="SignSoapOut">
+    <wsdl:part name="parameters" element="tns:SignResponse" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterExtSoapIn">
+    <wsdl:part name="parameters" element="tns:ToRasterExt" />
+  </wsdl:message>
+  <wsdl:message name="ToRasterExtSoapOut">
+    <wsdl:part name="parameters" element="tns:ToRasterExtResponse" />
+  </wsdl:message>
+  <wsdl:message name="PdfToPngThumbnailSoapIn">
+    <wsdl:part name="parameters" element="tns:PdfToPngThumbnail" />
+  </wsdl:message>
+  <wsdl:message name="PdfToPngThumbnailSoapOut">
+    <wsdl:part name="parameters" element="tns:PdfToPngThumbnailResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVersionSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVersion" />
+  </wsdl:message>
+  <wsdl:message name="GetVersionSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVersionResponse" />
+  </wsdl:message>
+  <wsdl:portType name="BiblosDSConvSoap">
+    <wsdl:operation name="Test">
+      <wsdl:input message="tns:TestSoapIn" />
+      <wsdl:output message="tns:TestSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRaster">
+      <wsdl:input message="tns:ToRasterSoapIn" />
+      <wsdl:output message="tns:ToRasterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatRgWatermarked">
+      <wsdl:input message="tns:ToRasterFormatRgWatermarkedSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatRgWatermarkedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatRg">
+      <wsdl:input message="tns:ToRasterFormatRgSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatRgSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatWatermarked">
+      <wsdl:input message="tns:ToRasterFormatWatermarkedSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatWatermarkedSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatExBox">
+      <wsdl:input message="tns:ToRasterFormatExBoxSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatExBoxSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatExParameters">
+      <wsdl:input message="tns:ToRasterFormatExParametersSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatExParametersSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatEx">
+      <wsdl:input message="tns:ToRasterFormatExSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatExSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormat">
+      <wsdl:input message="tns:ToRasterFormatSoapIn" />
+      <wsdl:output message="tns:ToRasterFormatSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Sign">
+      <wsdl:input message="tns:SignSoapIn" />
+      <wsdl:output message="tns:SignSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterExt">
+      <wsdl:input message="tns:ToRasterExtSoapIn" />
+      <wsdl:output message="tns:ToRasterExtSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PdfToPngThumbnail">
+      <wsdl:input message="tns:PdfToPngThumbnailSoapIn" />
+      <wsdl:output message="tns:PdfToPngThumbnailSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVersion">
+      <wsdl:input message="tns:GetVersionSoapIn" />
+      <wsdl:output message="tns:GetVersionSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BiblosDSConvSoap" type="tns:BiblosDSConvSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Test">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/Test" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRaster">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRaster" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatRgWatermarked">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatRgWatermarked" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatRg">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatRg" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatWatermarked">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatWatermarked" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatExBox">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatExBox" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatExParameters">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatExParameters" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatEx">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatEx" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormat">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormat" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Sign">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/Sign" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterExt">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterExt" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PdfToPngThumbnail">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/PdfToPngThumbnail" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersion">
+      <soap:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/GetVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BiblosDSConvSoap12" type="tns:BiblosDSConvSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Test">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/Test" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRaster">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRaster" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatRgWatermarked">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatRgWatermarked" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatRg">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatRg" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatWatermarked">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatWatermarked" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatExBox">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatExBox" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatExParameters">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatExParameters" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormatEx">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormatEx" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterFormat">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterFormat" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Sign">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/Sign" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ToRasterExt">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/ToRasterExt" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PdfToPngThumbnail">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/PdfToPngThumbnail" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVersion">
+      <soap12:operation soapAction="http://www.vecompsoftware.it/BiblosDSConv/GetVersion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BiblosDSConv">
+    <wsdl:port name="BiblosDSConvSoap" binding="tns:BiblosDSConvSoap">
+      <soap:address location="http://localhost:50894/BiblosDSConv.asmx" />
+    </wsdl:port>
+    <wsdl:port name="BiblosDSConvSoap12" binding="tns:BiblosDSConvSoap12">
+      <soap12:address location="http://localhost:50894/BiblosDSConv.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://Vecomp.BiblosDs.Log" elementFormDefault="qualified" targetNamespace="http://Vecomp.BiblosDs.Log" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/RuleOperator" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/LogResponse" />
+  <xs:import schemaLocation="http://localhost:1526/BiblosDs.WCF/Log.svc?xsd=xsd8" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:element name="DoWork">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DoWorkResponse">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllLogs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="from" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="to" type="xs:dateTime" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetAllLogsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://BiblosDS/2009/10/RuleOperator" minOccurs="0" name="GetAllLogsResult" nillable="true" type="q1:ArrayOfLog" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveLogs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="from" type="xs:dateTime" />
+        <xs:element xmlns:q2="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idArchive" type="q2:guid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetArchiveLogsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://BiblosDS/2009/10/RuleOperator" minOccurs="0" name="GetArchiveLogsResult" nillable="true" type="q3:ArrayOfLog" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLogsPaged">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="from" type="xs:dateTime" />
+        <xs:element minOccurs="0" name="to" type="xs:dateTime" />
+        <xs:element xmlns:q4="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="idArchive" nillable="true" type="q4:guid" />
+        <xs:element minOccurs="0" name="skip" type="xs:int" />
+        <xs:element minOccurs="0" name="take" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLogsPagedResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://BiblosDS/2009/10/LogResponse" minOccurs="0" name="GetLogsPagedResult" nillable="true" type="q5:LogResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLogIDArchives">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetLogIDArchivesResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="GetLogIDArchivesResult" nillable="true" type="q6:ArrayOfguid" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

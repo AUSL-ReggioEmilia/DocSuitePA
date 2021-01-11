@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name ="MessageEmail" table="MessageEmail">
+    
+    <id name="Id" column="IDMessageEmail">
+      <generator class="native" />
+    </id>
+
+    <property name="SentDate" column="SentDate" />
+    <property name="Subject" column="Subject" />
+    <property name="Body" column="Body" type="StringClob"/>
+    <property name="Priority" column="Priority" />
+    <property name="IsDispositionNotification" column="IsDispositionNotification" />
+    <property name="EmlDocumentId" column="EmlDocumentId" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    
+    <many-to-one name="Message" column="IDMessage" class="DSWMessage" not-null="true" />
+    
+  </class>
+
+</hibernate-mapping>

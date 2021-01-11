@@ -1,0 +1,8 @@
+﻿{
+	"Documents": {
+		"PropertyFieldName": "Documents",
+		"BaseClassName": "UDSDocumentBase",
+		"ClassName": "Document",
+		"TableAnnotation": "Documents"
+	}
+}

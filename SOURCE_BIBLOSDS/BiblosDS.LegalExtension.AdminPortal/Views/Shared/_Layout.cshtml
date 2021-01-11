@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title - Preservation portal</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    @Styles.Render("~/Content/styles/kendo")
+    @Styles.Render("~/Content/fontawesome")
+    @Styles.Render("~/Content/app")
+    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/app")
+</head>
+<body>
+    <header>
+        <div class="content-wrapper">
+            <div>
+                <div style="float:right; margin:20px;">
+                    @Html.Partial("_LoginPartial")
+                </div>
+                <div style="float:right; margin: 20px 10px;">
+                    @Html.Partial("_CompanyPartial", Session["idCompany"] != null ? Session["idCompany"] : new BiblosDS.LegalExtension.AdminPortal.ViewModel.CustomerCompanyViewModel())
+                </div>
+                <div style="padding:10px; padding-bottom:20px; color:#5c97d1">
+                    <div class="site-title"><a href="@Url.Action("Index", "Home")">Biblos preservation portal</a></div>
+                </div>
+                <div>
+                    @(Html.Kendo().Menu()
+                        .Name("MainMenu")
+                        .Items(items =>
+                        {
+                            if (!Request.IsAuthenticated)
+                            {
+                                items.Add().Text("LogIn").Action("LogIn", "Account").SpriteCssClasses("fas fa-lock");
+                            }
+                            items.Add().Text("Home").Action("Index", "Home").SpriteCssClasses("fas fa-home");
+                            items.Add().Text("Archivi da configurare").Action("PreservationArchivesConfigurable", "Archive").SpriteCssClasses("fas fa-box-open");
+                            items.Add().Text("Archivi abilitati").Action("ArchiveAdmin", "Home").SpriteCssClasses("fas fa-archive");
+                            items.Add().Text("Conservazioni da chiudere").Action("PreservationToClose", "Ipda").SpriteCssClasses("fas fa-list-ul");
+                            items.Add().Text("Verifica conservazioni").Action("Index", "PreservationVerify").SpriteCssClasses("fas fa-tasks");
+                            items.Add().Text("Pacchetto di distribuzione").Action("DistributionPackages", "Home").SpriteCssClasses("fas fa-file-archive");
+                            items.Add().Text("Audit").Action("PreservationAudit", "Preservation").SpriteCssClasses("fab fa-audible");
+                        })
+                    )
+                </div>
+            </div>
+            <div id="menu">
+            </div>
+        </div>
+    </header>
+    <div id="page">
+        <section class="featured">
+            <div class="content-wrapper">
+                @RenderSection("featured", required: false)
+            </div>
+        </section>
+        @RenderBody()
+    </div>
+
+    <footer>
+        <div class="content-wrapper">
+            <div>
+                <p><b>Biblos preservation portal</b> &copy; @DateTime.Now.Year Dgroove Srl </p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        $(function () {
+            kendo.culture("it-IT");
+        });
+    </script>
+</body>
+</html>

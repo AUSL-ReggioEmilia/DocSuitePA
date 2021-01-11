@@ -1,0 +1,45 @@
+﻿i{
+    margin-left: 20px;
+}
+
+.combobox{
+    margin-bottom: 0px;
+    padding: 15px 15px 40px 15px;
+}
+
+.document-list ul{
+    padding-left: 20px;
+}
+
+.document-list{
+    padding-left: 25px;
+    margin-top: 20px;
+    margin-bottom: -10px;
+}
+
+.document-loading{
+    position: absolute; 
+    left: 50%; 
+    margin-left: -60px;  /*se spin-bar --> margin-left: -120px*/
+    padding-top: 10px;
+}
+.title{
+    font-weight: bold !important;
+}
+
+.input-style {
+    width: 75%;
+    margin: 2% 5%;
+}
+
+.s-sidebar__nav {
+    position: fixed;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transition: all .3s ease-in;
+    width: 20%;
+    background-color: white;
+    color: black;
+    bottom: 0;
+    top: 7.5%;
+}

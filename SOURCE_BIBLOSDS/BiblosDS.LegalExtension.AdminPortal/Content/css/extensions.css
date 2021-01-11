@@ -1,0 +1,215 @@
+/*News Pro GK4 Module*/
+h4.nspHeader{line-height:normal; padding-bottom:0; margin:0;}
+#ja-container h4.nspHeader a{font-weight:bold;}
+div.gkTabsItem .nspPages1{margin:0 15px; width:960px;}
+.nspArtPage{margin:0; padding:0;}
+#ja-container img.nspImage{float:left; padding:0; border:0;}
+img.nspImage:hover{opacity:1; }
+
+.nspArtPage:hover .nspArt{opacity:0.4;}
+.nspArtPage:hover .nspArt:hover{opacity:1;}
+.nspArt a{display:block;width:auto;}
+.nspArt a img{display:block;}
+.nspArt p.nspInfo{margin:0; padding:0; font-size:11px;}
+.nspText{margin-top:3px!important;}
+#ja-container .nspTopInterface{position:absolute; right:22px; top:20px;}
+
+.nspMain { overflow:hidden; }
+.nspBotInterface, .nspTopInterface {overflow:hidden;padding:5px 10px;background:white;position:absolute;right:0;top:-7px;}
+.nspBotInterface div, .nspTopInterface div { float:right; }
+
+/* Interface - for different looking Top and Bottom interface use the following classes:  .nspTopInterface and .nspBotInterface (e.g.: .nspTopInterface .nspPagination li ...) */
+.nspPagination { list-style-type:none; margin:5px 0 0 5px; padding:0; float:left; }
+.nspPagination li { float:left; width:12px; height:11px; padding:0; margin: 0 4px 0 0 ; text-indent:-999em; cursor:pointer; }
+.nspPagination li:hover, .nspPagination li.active { background-position: 50% -11px; }
+.nspNext, .nspPrev {float:left; width:16px; height:16px; margin:0 0 0 4px; text-indent:-999em; cursor:pointer;background:url(../images/arrowsm.png) no-repeat;}
+.nspPagination li {}
+.nspNext{background-position:-16px 0;}
+.nspPrev {background-position:0 0;}
+.nspNext:hover{opacity:0.8; background-position:-16px 0;}
+.nspPrev:hover{opacity:0.8; background-position:0 0;}
+.nspCounter {float:left; margin:0 0 0 8px; padding:1px 4px; border: 1px solid #ddd; border-radius:2px 2px; -moz-border-radius:2px 2px; -webkit-border-radius:2px 2px; color: #878787; font-size:9px;cursor:pointer; }
+.nspCounter span { }
+.nspBotInterface .nspCounter strong,
+.nspTopInterface .nspCounter strong { }
+.nspArts { overflow:hidden; }
+.nspArt { float:left; }
+div.gkTabsItem .nspArt { position:relative;overflow:hidden; }
+.nspArt div { overflow: hidden; }
+.nspArt h4.nspHeader {}
+div.gkTabsItem .nspArt h4.nspHeader {font-size:16px;position:absolute;width:200px;top:20px;left:-250px;padding:5px 10px;background:#FFF;opacity:0.9;}
+div.gkTabsItem .nspArt:hover h4.nspHeader {left:12px;}
+.nspArt h4.nspHeader a { text-decoration: none }
+.nspArt h4.nspHeader a:hover { }
+.nspArt img.nspImage {border:1px solid #ddd;padding:6px;}
+.nspArt p.nspText { float:none; }
+.nspArt p.nspText a { }
+.nspArt p.nspText a:hover { }
+.nspArt .tjustify { text-align:justify; }
+.readon.left, .readon.right, .readon.center { clear:both; padding-top:6px;}
+.readon.left { float:left; margin-top:6px;}
+.readon.right { float:right; }
+.readon.center { display:inline; float:none; }
+.nspAvatar { }
+.nspLinks { }
+.nspLinks ul { padding:0 !important; list-style-type:none !important; }
+.nspLinks ul li {}
+.nspLinks ul li:hover { }
+.nspLinks ul li h4 { }
+.nspLinks ul li h4 a { text-decoration: none }
+.nspLinks ul li h4 a:hover { }
+.nspLinks ul li p { }
+
+/* other module class suffix */
+div.moduletable-portfo .nspArt img.nspImage { border: 1px solid #ddd; padding: 6px;}
+
+/* positioning */
+
+.nspArts.left { float:right; }
+.nspLinksWrap.left { float:left; }
+.nspArts.right { float:left; }
+.nspLinksWrap.right { float:right; }
+/* make element unvisible */
+
+.nspMain .unvisible { height:1px; left:-10000px; overflow:hidden; position:absolute; top:auto; width:1px; }
+/* font-size classes */
+
+.nspFs80 { font-size:80%; }
+.nspFs90 { font-size:90%; }
+.nspFs100 { font-size:100%; }
+.nspFs110 { font-size:110%; }
+.nspFs120 { font-size:120%; }
+.nspFs130 { font-size:130%; }
+.nspFs140 { font-size:140%; }
+.nspFs150 { font-size:150%; }
+.nspFs160 { font-size:160%; }
+.nspFs170 { font-size:170%; }
+.nspFs180 { font-size:180%; }
+.nspFs190 { font-size:190%; }
+.nspFs200 { font-size:200%; }
+
+/* Portal Mode */
+.nspMainPortalMode3 .nspTitleBlock .nspArtMore{overflow:visible;}
+.nspMainPortalMode3 .nspTitleBlock .nspArtMain{overflow:visible;}
+.nspMainPortalMode2 .nspBotInterface .nspArtHeadline .nspHeadline{margin-top:15px;}
+
+/* GK Tab - style 1 **/
+
+.gkTab { position: relative; }
+.gkTabWrap { margin: 0 auto; }
+ul.gkTabs { margin:0!important; padding: 0!important; position:absolute; top:-45px; right:0;}
+ul.gkTabs li { list-style-type: none; position: relative; line-height:28px!important; margin:0 0 0 6px!important; padding: 0 18px!important; border: none !important; background:#000!important; float: left; cursor: pointer;}
+ul.gkTabs li:hover,
+ul.gkTabs li.active {}
+ul.gkTabs li:hover:first-child,
+ul.gkTabs li.active:first-child {}
+.gkTabContainer0 { clear: both; }
+.gkTabContainer1 { overflow: hidden; }
+.gkTabItem { float: left; overflow: hidden; padding:5px 0 15px 0; }
+.gkTabButtonNext,
+.gkTabButtonPrev { width: 18px; height: 18px; background: url('../images/style1/b_next.png') no-repeat 0 0; cursor: pointer; position: absolute; top: 43%; right: 0; text-indent:-999em; }
+.gkTabButtonPrev { background: url('../images/style1/b_prev.png') no-repeat 0 0; left: 0; right:inherit; }
+.gkTabButtonNext:hover,
+.gkTabButtonPrev:hover { background-position: 100% 0; }
+.gkTabContainer0,
+.gkTabContainer1,
+.gkTabContainer2 { position:relative; }
+.gkTabItem { position: absolute; left: -999em; top: 0; width: 100%; }
+.gkTabItem.active { position: static; left: 0; }
+ul.gkTabs li span{color:#fff;}
+
+/*Acymailing Newsletter Modules ---*/
+.acysubbuttons .button{margin:0;}
+.acymailing_form .inputbox{font-size:13px; width:185px; vertical-align:bottom; text-transform:lowercase; margin:0; padding:5px; color:#505050; height:16px;}
+.acymailing_form .inputbox:focus{background-color:#fff;}
+p.acysubbuttons{text-align:left;}
+.acymailing_module_form{margin-bottom:10px;}
+.acymailing_module_form p{width:auto; display:inline;}
+.acymailing_introtext{margin-bottom:10px!important; display:block;}
+.acysubbuttons .button{font-size:11px; padding:7px 8px 7px 8px;}
+.onefield span{display:block; margin-bottom:10px;}
+
+/*Twitter Module ---*/
+.TDB-tweet-container{margin:0 0 25px 0;}
+.TDB-tweet-text{margin:0;}
+.TDB-tweet-time{font-size:11px;}
+
+/* SIGPLUS Modules ---*/
+#ja-botsl div.boxplus-slider{padding:0; margin:-6px 0 0 -6px!important; position:relative;}
+div.boxplus-slider img{margin:0 10px 10px 0!important;}
+
+#siteForm table, #siteForm td {background:none; color:#888;}
+#siteForm table{border:1px solid #d5d5d5;}
+#siteForm td{border:1px solid #d5d5d5;}
+#Array_toolbargroup td, #siteForm #Array_toolbargroup table{border:0!important;}
+#recaptcha_area table{border:0!important;}
+#siteForm table#Array_tbl{border:0!important;}
+td.mceToolbar, table.mceToolbar{border:0!important;}
+td.mceStatusbar{border-top:0!important;}
+input#recaptcha_response_field{	
+	width:auto; 
+	padding:7px 6px 8px 6px; 
+	color:#888; 
+	margin:0 5px 3px 0;
+	border-top:1px solid #d9d9d9!important; 
+	border-left:1px solid #d9d9d9!important; 
+	border-bottom:1px solid #fff!important; 
+	border-right:1px solid #fff!important; 
+	background:#f4f4f4; 
+}
+
+/*fox contact----------------------------------------------------*/
+#FoxForm {padding:0;}
+.foxform input, .foxform textarea, input.validfoxtext, textarea.validfoxtext, input.invalidfoxtext, textarea.invalidfoxtext, select.foxtext, select.validfoxtext, select.invalidfoxtext, .foxcheckbox, .validcheckbox, .invalidcheckbox, .outer_dropdown, .foxcheckbox{
+	box-shadow:none;
+	-moz-box-shadow:none;
+	-webkit-box-shadow:none; 
+}
+
+.foxform input, .foxform textarea, input.validfoxtext, textarea.validfoxtext,input.invalidfoxtext, textarea.invalidfoxtext{padding:6px 5px;}
+.foxform input:focus, .foxform textarea:focus{border:1px solid #ddd!important;}
+.foxbutton{color:#fff; padding:6px 10px!important; border:0;}
+
+.foxform input, .foxform textarea, .foxbutton, select.fox_dropdown{border-radius:0px; -moz-border-radius:0px; -webkit-border-radius:0px;}
+
+/* CAPTIFY CONTENT MODULES ------------------------*/
+.viewport a span {font-weight:normal!important; font-size:14px!important; padding-left:8%!important; width:84%!important; padding-right:8%!important;}
+.captifyTitle {clear:both;}
+
+/* Back To top*/
+#toTop{text-transform:uppercase!important; border:1px solid #ccc!important; border-right:0!important; border-bottom:0!important;}
+
+/* BT SLIDESHOW MODULES ---------------------------*/
+.box_skitter{background:white; margin-bottom:10px; border-top:2px solid #aaa; border-bottom:2px solid #999;}
+.box_skitter .info_slide_dots .image_number {background:url(../images/bg-switcher.jpg) no-repeat 50% 50%;width:16px;height:16px; border-radius:0;}
+.box_skitter .info_slide_dots .image_number.image_number_select {background:url(../images/bg-switcher-a.jpg) no-repeat 50% 50%;}
+
+/* Google Map MODULES ---------------------------*/
+#map{border-top:2px solid #aaa;}
+
+/* Tabs GK5 MODULES ---------------------------*/
+.gkTabsItem{padding:20px 0;}
+.gkTabsItem .custom {padding:10px 30px;} 
+.mod-ontab{}
+.mod-ontab img{padding:7px; border:1px solid #e5e5e5; float:left; margin-right:30px;}
+.gkTabsItem .from-top{position:absolute;top:-300px;right:50px; width:450px;}
+.gkTabsItem.active .from-top{top:50px;}
+.gkTabsItem .from-left{position:absolute;top:150px;left:-150px;padding:7px 19px;font-size:20px;background:#eee;border:1px solid #ddd;}
+.gkTabsItem.active .from-left{left:810px;}
+.gkTabsItem .welcome{position:relative;}
+.gkTabsItem .welcome img{padding:6px;border:1px solid #e5e5e5;float:right;margin-left:20px;opacity:0.1;
+	transform:translateY(-500px);
+	-ms-transform:translateY(-500px); /* IE 9 */
+	-moz-transform:translateY(-500px); /* Firefox */
+	-webkit-transform:translateY(-500px); /* Safari and Chrome */
+	-o-transform:translateY(-500px); /* Opera */
+}
+.gkTabsItem.active .welcome img{opacity:1;
+	transform:translateY(0px);
+	-ms-transform:translateY(0px); /* IE 9 */
+	-moz-transform:translateY(0px); /* Firefox */
+	-webkit-transform:translateY(0px); /* Safari and Chrome */
+	-o-transform:translateY(0px); /* Opera */
+}
+.gkTabsItem .welcome span{padding:15px;line-height:120%;text-align:center;display: block;float: left;margin-left:-990px;margin-right:20px;}
+.gkTabsItem.active .welcome span{margin-left:0px;}

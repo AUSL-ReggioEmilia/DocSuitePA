@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Enums" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Enums" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="LoggingOperationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="BiblosDS_General" />
+      <xs:enumeration value="BiblosDS_GetAlive" />
+      <xs:enumeration value="BiblosDS_InsertDocument" />
+      <xs:enumeration value="BiblosDS_CheckInTransitoDocument" />
+      <xs:enumeration value="BiblosWs_General" />
+      <xs:enumeration value="BiblosWs_Compatibility" />
+      <xs:enumeration value="BiblosDS_GetDocument" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="LoggingOperationType" nillable="true" type="tns:LoggingOperationType" />
+</xs:schema>

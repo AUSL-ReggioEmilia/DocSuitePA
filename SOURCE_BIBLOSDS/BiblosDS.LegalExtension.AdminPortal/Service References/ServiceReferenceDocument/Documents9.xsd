@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/Storage" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/Storage" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/Server" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd14" namespace="http://BiblosDS/2009/10/StorageType" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="Storage">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AuthenticationKey" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="AuthenticationPassword" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="EnableFulText" type="xs:boolean" />
+          <xs:element minOccurs="0" name="IdStorage" type="ser:guid" />
+          <xs:element minOccurs="0" name="IsVisible" nillable="true" type="xs:boolean" />
+          <xs:element minOccurs="0" name="MainPath" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Priority" nillable="true" type="xs:int" />
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/Server" minOccurs="0" name="Server" nillable="true" type="q2:Server" />
+          <xs:element minOccurs="0" name="StorageRuleAssembly" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="StorageRuleClassName" nillable="true" type="xs:string" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/StorageType" minOccurs="0" name="StorageType" nillable="true" type="q3:StorageType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Storage" nillable="true" type="tns:Storage" />
+  <xs:complexType name="ArrayOfStorage">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Storage" nillable="true" type="tns:Storage" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfStorage" nillable="true" type="tns:ArrayOfStorage" />
+</xs:schema>

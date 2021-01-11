@@ -1,0 +1,48 @@
+@model BiblosDS.LegalExtension.AdminPortal.Models.LoginModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+<h1>@ViewBag.Title</h1>
+<br />
+
+@using (Html.BeginForm((string)ViewBag.FormAction, "Account", new { ReturnUrl = ViewBag.ReturnUrl }))
+{
+    @Html.ValidationSummary(true, "E' avvenuto un errore durante la fase di login. Correggere gli errori e riprovare nuovamente l'accesso.")
+
+    <table class="form-table">
+        <tr>
+            <td>@Html.LabelFor(m => m.UserName, new { @style = "text-transform: uppercase; font-weight: bold;" })</td>
+            <td>
+                <span class="k-textbox k-space-left">
+                    @Html.Kendo().TextBoxFor(t => t.UserName).HtmlAttributes(new { tabindex = "1" })
+                    <a href="#" class="k-icon k-i-user">&nbsp;</a>
+                </span>
+            </td>
+            <td>@Html.ValidationMessageFor(m => m.UserName)</td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(m => m.Password, new { @style = "text-transform: uppercase; font-weight: bold;" })</td>
+            <td>
+                <span class="k-textbox k-space-left">
+                    @(Html.Kendo().TextBoxFor(m => m.Password).HtmlAttributes(new { type = "password", tabindex = "2" }))
+                    <a href="#" class="k-icon k-i-password">&nbsp;</a>
+                </span>                
+            </td>
+            <td>@Html.ValidationMessageFor(m => m.Password)</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td colspan="2">
+                @Html.CheckBoxFor(m => m.RememberMe)
+                @Html.LabelFor(m => m.RememberMe, new { @class = "checkbox" })
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>@Html.Kendo().Button().Name("loginButton").Content("Accedi").HtmlAttributes(new { @type = "submit" }).Icon("login")</td>
+        </tr>
+    </table>
+}

@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title - Preservation portal</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    @Styles.Render("~/Content/styles/kendo")
+    @Styles.Render("~/Content/app")
+    @Scripts.Render("~/bundles/kendo")
+    @Scripts.Render("~/bundles/app")
+</head>
+<body>
+    <div>
+        @RenderBody()
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            kendo.culture("it-IT");
+        });
+    </script>
+</body>
+</html>

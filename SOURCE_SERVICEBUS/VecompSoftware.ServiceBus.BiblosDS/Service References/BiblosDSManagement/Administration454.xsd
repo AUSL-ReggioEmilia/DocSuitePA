@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/Company" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/Company" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="Company">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Address" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="CompanyName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="FiscalCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="IdArchive" type="ser:guid" />
+          <xs:element minOccurs="0" name="IdCompany" type="ser:guid" />
+          <xs:element minOccurs="0" name="PECEmail" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="TemplateADEFile" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="TemplateCloseFile" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="TemplateIndexFile" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Company" nillable="true" type="tns:Company" />
+</xs:schema>

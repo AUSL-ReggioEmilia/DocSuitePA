@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="DocumentTokenUser" table="DocumentTokenUser">
+    
+    <composite-id class="YearNumberIncrCompositeKey" name="Id">
+      <key-property column="Year" name="Year" />
+      <key-property column="Number" name="Number" />
+      <key-property column="Incremental" name="Incremental" />
+    </composite-id>
+    
+    <property name="Year" column="Year" insert="false" update="false" />
+    <property name="Number" column="Number" insert="false" update="false" />
+    <property name="DocStep" column="Step" />
+    <property name="SubStep" column="SubStep" />
+    <property name="IsActive" column="IsActive" />
+    <property name="UserRole" column="UserRole" type="AnsiString" />
+    <property name="UserName" column="UserName" type="AnsiString" />
+    <property name="Account" column="Account" type="AnsiString" />
+    <property name="Note" column="Note" type="AnsiString" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastStep" column="LastStep" />
+    <property name="LastSubStep" column="LastSubStep" />
+
+    <many-to-one class="Role" name="Role" column="IdRoleDestination" />
+  
+  </class>
+  
+</hibernate-mapping>

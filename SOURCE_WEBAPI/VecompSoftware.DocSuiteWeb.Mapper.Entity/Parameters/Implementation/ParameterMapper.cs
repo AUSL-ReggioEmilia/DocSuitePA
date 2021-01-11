@@ -1,0 +1,35 @@
+﻿using VecompSoftware.DocSuiteWeb.Entity.Parameters;
+
+namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Parameters
+{
+    public class ParameterMapper : BaseEntityMapper<Parameter, Parameter>, IParameterMapper
+    {
+        public override Parameter Map(Parameter entity, Parameter entityTransformed)
+        {
+            #region [ Base ]
+            entityTransformed.LastUsedYear = entity.LastUsedYear;
+            entityTransformed.LastUsedNumber = entity.LastUsedNumber;
+            entityTransformed.Locked = entity.Locked;
+            entityTransformed.Password = entity.Password;
+            entityTransformed.LastUsedIdCategory = entity.LastUsedIdCategory;
+            entityTransformed.LastUsedIdRecipient = entity.LastUsedIdRecipient;
+            entityTransformed.LastUsedIdContainer = entity.LastUsedIdContainer;
+            entityTransformed.Version = entity.Version;
+            entityTransformed.LastUsedIdDistributionList = entity.LastUsedIdDistributionList;
+            entityTransformed.DomainName = entity.DomainName;
+            entityTransformed.AlternativePassword = entity.AlternativePassword;
+            entityTransformed.ServiceField = entity.ServiceField;
+            entityTransformed.LastUsedIdRole = entity.LastUsedIdRole;
+            entityTransformed.LastUsedIdRoleUser = entity.LastUsedIdRoleUser;
+            entityTransformed.LastUsedIdResolution = entity.LastUsedIdResolution;
+            entityTransformed.LastUsedResolutionYear = entity.LastUsedResolutionYear;
+            entityTransformed.LastUsedResolutionNumber = entity.LastUsedResolutionNumber;
+            entityTransformed.LastUsedBillNumber = entity.LastUsedBillNumber;
+            entityTransformed.LastUsedYearReg = entity.LastUsedYearReg;
+            entityTransformed.LastUsedNumberReg = entity.LastUsedNumberReg;
+            #endregion
+
+            return entityTransformed;
+        }
+    }
+}

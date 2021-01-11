@@ -1,0 +1,48 @@
+﻿
+<div id="spinner-gif">
+    <img align="middle" src="app/images/spinners/spin.gif" />
+</div>
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+
+        <div class="document-toolbar" tabindex="0" [ngClass]="{'toolbar-hidden':isPdfToolbarHidden}">
+            <div tabindex="0" class="k-overflow-anchor k-button" style="visibility: hidden; width: 1px;">
+                <span class="k-icon k-i-more-vertical"></span>
+            </div>
+            <div style="display:inline-block;">
+                <button title="Vai alla prima pagina" class="k-button k-button-icon k-flat k-pager-nav k-pager-first" [ngClass]="{'k-state-disabled':isFirstPage}" data-page="1" (click)="goToFirstPage()">
+                    <span class="k-icon k-i-arrow-end-left"></span>
+                </button>
+                <button title="Vai alla pagina precedente" class="k-button k-button-icon k-flat k-pager-nav" [ngClass]="{'k-state-disabled':isFirstPage}" data-page="0" (click)="goToPreviousPage()">
+                    <span class="k-icon k-i-arrow-60-left"></span>
+                </button>
+                <span class="k-pager-input k-label">
+                    <input class="k-textbox input-number-width" type="number" [(value)]="pageNumber" (change)="changePageNumber($event)" /> di {{totalPages}} pagine
+                </span>
+                <button title="Vai alla pagina successiva" class="k-button k-button-icon k-flat k-pager-nav" [ngClass]="{'k-state-disabled':isLastPage}" data-page="2" (click)="goToNextPage()">
+                    <span class="k-icon k-i-arrow-60-right"></span>
+                </button>
+                <button title="Vai all'ultima pagina" class="k-button k-button-icon k-flat k-pager-nav k-pager-last" [ngClass]="{'k-state-disabled':isLastPage}" data-page="3" (click)="goToLastPage()">
+                    <span class="k-icon k-i-arrow-end-right"></span>
+                </button>
+            </div>
+            <div style="float:right;">
+                <span class="k-label">
+                    <input class="k-textbox" placeholder="Cerca..." (input)="searchQueryChanged($event.target.value)" />
+                </span>
+                <button tabindex="0" title="Scarica" class="k-flat k-button k-button-icon k-toolbar-last-visible"
+                        (click)="download()"
+                        data-overflow="auto">
+                    <span class="k-icon k-i-download"></span>
+                </button>
+            </div>
+        </div>
+
+        <pdf-viewer [src]="source.changingThisBreaksApplicationSecurity"
+                    [render-text]="true" class="document-frame" [(page)]="pageNumber"
+                    (after-load-complete)="afterPdfLoad($event)" [show-all]="false" (error)="pdfError($event)"></pdf-viewer>
+    </div>
+
+</div>
+

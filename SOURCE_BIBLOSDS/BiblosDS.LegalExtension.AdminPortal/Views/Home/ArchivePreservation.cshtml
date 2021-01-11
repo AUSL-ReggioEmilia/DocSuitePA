@@ -1,0 +1,49 @@
+﻿@model BiblosDS.Library.Common.Objects.DocumentArchive
+@{
+  var idArchive = (Model != null) ? Model.IdArchive : Guid.Empty;
+  var archiveName = (Model != null) ? Model.Name : string.Empty;
+
+  ViewBag.Title = "Conservazioni per archivio";
+}
+
+@section featured {
+    <hgroup class="title">
+        <h1>@ViewBag.Title <b>@archiveName</b></h1>
+    </hgroup>
+}
+<br />
+
+@{
+  string presCheckUrl = Url.Action("PreservationCheck", "Preservation");
+  string ipdaIndexUrl = Url.Action("Index", "Ipda");
+}
+
+@(Html.Kendo().Grid<BiblosDS.LegalExtension.AdminPortal.Models.PreservationItem>()
+    .Name("Grid")
+    .Columns(columns =>
+        {
+          columns.Bound(o => o.Label).ClientTemplate(
+            "<a href='" + presCheckUrl + "/#=IdPreservation#' class='k-button'>Stato</a>"
+            ).Title("").Width(100);
+
+          columns.Bound(o => o.Label).ClientTemplate(
+            "<span style='display:#=DisplayCreate#;'><a href='" + ipdaIndexUrl + "/Index/#=IdPreservation#' class='k-button'>Crea IPDA</a></span>" +
+            "<span style='display:#=DisplaySign#;'><a href='"  + ipdaIndexUrl + "/Index/#=IdPreservation#' class='k-button'>Firma IPDA</a></span>" +
+            "<span style='display:#=DisplayClose#;'><a href='" + ipdaIndexUrl + "/Index/#=IdPreservation#' class='k-button'>Chiudi</a></span>" +
+            "<span style='display:#=DisplayPurge#;'><a href='" + Url.Action("ExecutePurgePreservation", "Home") + "/#=IdPreservation#' class='k-button' onclick='return confirm(\"Attenzione! Il procedimento di pulizia archivio corrente è irreversibile, sei sicuro di voler procedere?\")'>Pulisci archivio corrente</a></span>"
+            ).Title("Operazione").Width(190);
+
+          columns.Bound(o => o.StartDate).Format("{0:dd/MM/yyyy}").Title("Data inizio");
+          columns.Bound(o => o.EndDate).Format("{0:dd/MM/yyyy}").Title("Data fine");
+          columns.Bound(o => o.CloseDate).Format("{0:dd/MM/yyyy}").Title("Data chiusura");
+          columns.Bound(o => o.Username).Title("Utente");
+        })
+    .Pageable(pager => pager.Refresh(true))
+    .Resizable(a => a.Columns(true))
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+    .Ajax()
+    .Model(model => model.Id(p => p.IdPreservation))
+    .PageSize(10)
+    .Read(read => read.Action("GridPreservations", "Home", new { id = idArchive }))
+    ))

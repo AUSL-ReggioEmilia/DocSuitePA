@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolDraft" table="ProtocolDraft">
+
+    <id name="Id" column="UniqueId" >
+      <generator class="guid.comb" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+
+    <property name="Incremental" column="ID" insert="false" update="false" />
+    <property name="Year" column="Year" not-null="false" />
+    <property name="Number" column="Number" not-null="false" />
+    <property name="Description" column="Description" />
+    <property name="Data" column="Data" />
+    <property name="DraftType" column="DraftType" />
+    <property name="IsActive" column="IsActive" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" />    
+
+    <many-to-one class="Collaboration" name="Collaboration" column="IdCollaboration" />
+    <many-to-one name="Protocol" class="Protocol" insert="true" update="true">
+      <column name="UniqueIdProtocol" />
+    </many-to-one>
+   
+  </class>
+
+</hibernate-mapping>

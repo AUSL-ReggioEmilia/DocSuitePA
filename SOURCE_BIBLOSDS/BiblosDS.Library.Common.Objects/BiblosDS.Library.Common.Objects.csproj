@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BE2B09F0-D141-41B7-820E-85FE7D9A7360}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BiblosDS.Library.Common.Objects</RootNamespace>
+    <AssemblyName>BiblosDS.Library.Common.Objects</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\BiblosDS.Library.Common.Objects.XML</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>BiblosDS.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'AzureDebug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\AzureDebug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>bin\Debug\BiblosDS.Library.Common.Objects.XML</DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BiblosDS.Library.Common.Objects.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArchiveCompany.cs" />
+    <Compile Include="ArchiveServerConfig.cs" />
+    <Compile Include="ArchiveStatistics.cs" />
+    <Compile Include="AwardBatch.cs" />
+    <Compile Include="BiblosDSObject.cs" />
+    <Compile Include="Company.cs" />
+    <Compile Include="Converters\IConverter.cs" />
+    <Compile Include="DocumentArchiveCertificate.cs" />
+    <Compile Include="DocumentAttach.cs" />
+    <Compile Include="Document.cs" />
+    <Compile Include="DocumentArchive.cs" />
+    <Compile Include="DocumentArchiveStorage.cs" />
+    <Compile Include="DocumentAttachTransito.cs" />
+    <Compile Include="DocumentAttribute.cs" />
+    <Compile Include="DocumentAttributeGroup.cs" />
+    <Compile Include="DocumentAttributeMode.cs" />
+    <Compile Include="DocumentAttributeValue.cs" />
+    <Compile Include="DocumentCertificate.cs" />
+    <Compile Include="DocumentContent.cs" />
+    <Compile Include="DocumentNodeType.cs" />
+    <Compile Include="DocumentPermission.cs" />
+    <Compile Include="DocumentRuleOperator.cs" />
+    <Compile Include="DocumentServer.cs" />
+    <Compile Include="DocumentStorage.cs" />
+    <Compile Include="DocumentStorageArea.cs" />
+    <Compile Include="DocumentStorageAreaRule.cs" />
+    <Compile Include="DocumentStorageRule.cs" />
+    <Compile Include="DocumentStorageType.cs" />
+    <Compile Include="DocumentTransito.cs" />
+    <Compile Include="DocumentUnitExt.cs" />
+    <Compile Include="DocumentUnitAggregateExt.cs" />
+    <Compile Include="DocumentUnitAggregate.cs" />
+    <Compile Include="DocumentUnit.cs" />
+    <Compile Include="DocumentUnitChain.cs" />
+    <Compile Include="Enums\AttributeGroupType.cs" />
+    <Compile Include="Enums\BiblosDsFaultMessageException.cs" />
+    <Compile Include="Enums\AttachConversionMode.cs" />
+    <Compile Include="Enums\ComputeHashType.cs" />
+    <Compile Include="Enums\CryptoType.cs" />
+    <Compile Include="Enums\DocumentType.cs" />
+    <Compile Include="Enums\PreservationStatus.cs" />
+    <Compile Include="Enums\DocumentAttributeConditionFilterCondition.cs" />
+    <Compile Include="Enums\DocumentAttributeConditionFilterOperator.cs" />
+    <Compile Include="Enums\DocumentCheckState.cs" />
+    <Compile Include="Enums\DocumentContentOutputFormat.cs" />
+    <Compile Include="Enums\DocumentPermissionMode.cs" />
+    <Compile Include="Enums\DocumentStatus.cs" />
+    <Compile Include="Enums\DocumentTarnsitoStatus.cs" />
+    <Compile Include="Enums\LoggingLevel.cs" />
+    <Compile Include="Enums\LoggingOperationType.cs" />
+    <Compile Include="Enums\LoggingSource.cs" />
+    <Compile Include="Enums\PreservationErrorCode.cs" />
+    <Compile Include="Enums\PreservationTaskStatus.cs" />
+    <Compile Include="Enums\PreservationTaskTypes.cs" />
+    <Compile Include="Enums\RuleOperator.cs" />
+    <Compile Include="Enums\ServerRole.cs" />
+    <Compile Include="Exceptions\AwardBatch_Exception.cs" />
+    <Compile Include="Exceptions\ArchiveStorage_Exception.cs" />
+    <Compile Include="Exceptions\AttributeRequired_Exception.cs" />
+    <Compile Include="Exceptions\Attribute_Exception.cs" />
+    <Compile Include="Exceptions\BiblosDsException.cs" />
+    <Compile Include="Exceptions\CertificateNotFound_Exception.cs" />
+    <Compile Include="Exceptions\AttributeNotFoundException.cs" />
+    <Compile Include="Exceptions\DocumentAttachNotFound_Exception.cs" />
+    <Compile Include="Exceptions\DocumentUnitAggregateException.cs" />
+    <Compile Include="Exceptions\DocumentUnitException.cs" />
+    <Compile Include="Exceptions\ServerNotDefined_Exception.cs" />
+    <Compile Include="Exceptions\Generic_Exception.cs" />
+    <Compile Include="Exceptions\DocumentLinkExists_Exception.cs" />
+    <Compile Include="Exceptions\DocumentCheckOut_Exception.cs" />
+    <Compile Include="Exceptions\DocumentDateNotValid_Exception.cs" />
+    <Compile Include="Exceptions\DocumentNotConvertible_Exception.cs" />
+    <Compile Include="Exceptions\DocumentNotFound_Exception.cs" />
+    <Compile Include="Exceptions\DocumentNotReadyForAttach_Exception.cs" />
+    <Compile Include="Exceptions\DocumentNotSigned_Exception.cs" />
+    <Compile Include="Exceptions\DocumentPrimaryKey_Exception.cs" />
+    <Compile Include="Exceptions\DocumentReadOnly_Exception.cs" />
+    <Compile Include="Exceptions\DocumentWithoutContent_Exception.cs" />
+    <Compile Include="Exceptions\FileNotFound_Exception.cs" />
+    <Compile Include="Exceptions\FileNotUploaded_Exception.cs" />
+    <Compile Include="Exceptions\Permission_Exception.cs" />
+    <Compile Include="Exceptions\StorageAreaConfiguration_Exception.cs" />
+    <Compile Include="Exceptions\StorageConfiguration_Exception.cs" />
+    <Compile Include="Exceptions\StorageIsProcessingFile_Exception.cs" />
+    <Compile Include="Exceptions\StorageNotFound_Exception.cs" />
+    <Compile Include="Extension\CommonObject.cs" />
+    <Compile Include="Extension\System.cs" />
+    <Compile Include="FileTableModel.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="Preservation.cs" />
+    <Compile Include="PreservationAlert.cs" />
+    <Compile Include="PreservationAlertType.cs" />
+    <Compile Include="PreservationEvents.cs" />
+    <Compile Include="PreservationException.cs" />
+    <Compile Include="PreservationExceptionType.cs" />
+    <Compile Include="PreservationHolidays.cs" />
+    <Compile Include="PreservationInStorageDevice.cs" />
+    <Compile Include="PreservationJournaling.cs" />
+    <Compile Include="PreservationJournalingActivity.cs" />
+    <Compile Include="PreservationRole.cs" />
+    <Compile Include="PreservationSchedule.cs" />
+    <Compile Include="PreservationScheduleArchive.cs" />
+    <Compile Include="PreservationScheduleTaskType.cs" />
+    <Compile Include="PreservationStorageDevice.cs" />
+    <Compile Include="PreservationStorageDeviceStatus.cs" />
+    <Compile Include="PreservationTask.cs" />
+    <Compile Include="PreservationTaskGroup.cs" />
+    <Compile Include="PreservationTaskGroupType.cs" />
+    <Compile Include="PreservationTaskType.cs" />
+    <Compile Include="PreservationUser.cs" />
+    <Compile Include="PreservationUserRole.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Response\PreservationScheduleArchiveResponse.cs" />
+    <Compile Include="Response\PreservationTaskDatesResponse.cs" />
+    <Compile Include="Response\PreservationTaskResponse.cs" />
+    <Compile Include="Response\DocumentResponse.cs" />
+    <Compile Include="Response\LogResponse.cs" />
+    <Compile Include="Response\PreservationArchiveInfoResponse.cs" />
+    <Compile Include="Response\PreservationExpireResponse.cs" />
+    <Compile Include="Response\PreservationFileInfoResponse.cs" />
+    <Compile Include="Response\PreservationInfoResponse.cs" />
+    <Compile Include="Response\PreservationResponse.cs" />
+    <Compile Include="Response\ResponseBase.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="UtilityService\PasswordService.cs" />
+    <Compile Include="Status.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BiblosDS.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

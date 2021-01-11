@@ -1,0 +1,17 @@
+﻿.ie11 .window-footer-wrapper {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.ie11 table.dataform {
+}
+
+    .ie11 table.dataform td {
+        padding: 3px 3px !important;
+    }
+
+.ie11 .datatable {
+    border-collapse: separate;
+    border-spacing: 0;
+}

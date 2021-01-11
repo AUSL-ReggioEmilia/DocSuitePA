@@ -1,0 +1,37 @@
+﻿tr.Prnt-Titolo
+{
+    font-weight: bold;
+    color: Black;
+    height: 15pt;
+    background-color: lightgrey;
+}
+
+tr.Prnt-Tabella
+{
+    font-weight: bold;
+    color: Black;
+    height: 15pt;
+    background-color: gainsboro;
+}
+
+tr.Prnt-TabellaLbl
+{
+    font-weight: bold;
+    color: White;
+    height: 20pt;
+    background-color: Black;
+}
+
+tr.Prnt-Grigio
+{
+    font-weight: bold;
+    color: gray;
+    height: 15pt;
+    background-color: gainsboro;
+}
+
+tr.Prnt-Large, td.Prnt-Large
+{
+    font-size: 9pt;
+}
+

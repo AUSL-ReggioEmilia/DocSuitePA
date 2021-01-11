@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/PreservationRole" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationRole" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd23" namespace="http://BiblosDS/2009/10/PreservationUserRole" />
+  <xs:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="PreservationRole">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AlertEnabled" type="xs:boolean" />
+          <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
+          <xs:element minOccurs="0" name="IdPreservationRole" type="ser:guid" />
+          <xs:element minOccurs="0" name="KeyCode" type="xs:int" />
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/PreservationUserRole" minOccurs="0" name="UserRoles" nillable="true" type="q2:ArrayOfPreservationUserRole" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PreservationRole" nillable="true" type="tns:PreservationRole" />
+  <xs:complexType name="ArrayOfPreservationRole">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PreservationRole" nillable="true" type="tns:PreservationRole" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPreservationRole" nillable="true" type="tns:ArrayOfPreservationRole" />
+</xs:schema>

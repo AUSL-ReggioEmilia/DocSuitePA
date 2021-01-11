@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="Container" table="Container">
+    <id name="Id" column="idContainer">
+      <generator class="assigned" />
+    </id>
+    <property name="UniqueId" column="UniqueId" not-null="true" />
+    <property name="Name" column="Name" type="AnsiString" />
+    <property name="Note" column="Note" type="AnsiString" />
+    <many-to-one name="DocmLocation" column="DocmLocation" class="Location" />
+    <many-to-one name="ReslLocation" column="ReslLocation" class="Location" />
+    <many-to-one name="ProtLocation" column="ProtLocation" class="Location" />
+    <many-to-one name="ProtAttachLocation" column="ProtAttachLocation" class="Location" />
+    <many-to-one name="DocumentSeriesLocation" column="DocumentSeriesLocation" class="Location" />
+    <many-to-one name="DocumentSeriesAnnexedLocation" column="DocumentSeriesAnnexedLocation" class="Location" />
+    <many-to-one name="DocumentSeriesUnpublishedAnnexedLocation" column="DocumentSeriesUnpublishedAnnexedLocation" class="Location" />
+    <many-to-one name="DeskLocation" column="DeskLocation" class="Location" />
+    <many-to-one name="UDSLocation" column="UDSLocation" class="Location" />
+
+    <property name="IsActive" column="IsActive" />
+    <property name="ActiveFrom" />
+    <property name="ActiveTo" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="Conservation" column="Conservation" />
+    <property name="Massive" column="Massive" />
+    <property name="IdProtocolType" column="IdProtocolType" />
+    <property name="Privacy" column="Privacy" />
+    <property name="HeadingFrontalino" column="HeadingFrontalino" />
+    <property name="HeadingLetter" column="HeadingLetter" />
+    <property name="ManageSecureDocument" column="ManageSecureDocument" />
+    <property name="PrivacyLevel" column="PrivacyLevel" />
+    <property name="PrivacyEnabled" column="PrivacyEnabled" />
+    <many-to-one name="Archive" column="idArchive" class="ContainerArchive" />
+    <bag name="ContainerGroups" table="ContainerGroup" cascade="delete" >
+      <key column="idContainer" />
+      <one-to-many class="ContainerGroup"/>
+    </bag>
+    <bag name="ContainerExtensions" table="ContainerExtension" cascade="all" collection-type="VecompSoftware.NHibernateManager.Collection.PersistentListType`2[ [VecompSoftware.DocSuiteWeb.Data.ContainerExtension, VecompSoftware.DocSuiteWeb.Data], [VecompSoftware.DocSuiteWeb.Data.NHContainerExtensionCollection, VecompSoftware.DocSuiteWeb.Data]], VecompSoftware.NHibernateManager">
+      <key column="idContainer" />
+      <one-to-many class="ContainerExtension" />
+    </bag>
+    <bag name="ContainerDocTypes" table="ContainerDocType" cascade="delete" >
+      <key column="IdContainer"/>
+      <one-to-many class="ContainerDocType"/>
+    </bag>
+    <bag name="ContainerProperties" table="ContainerProperties" cascade="all">
+      <key column="idContainer" />
+      <one-to-many class="ContainerProperty" />
+    </bag>
+  </class>
+
+  <class name="ContainerExtension" table="ContainerExtension">
+    <composite-id class="ContainerExtensionCompositeKey" name="Id">
+      <key-property column="idContainer" name="idContainer" />
+      <key-property column="KeyType" name="KeyType" type="AnsiString" />
+      <key-property column="Incremental" name="Incremental" />
+    </composite-id>
+    <many-to-one class="Container" name="Container" column="idContainer" insert="false" update="false" />
+    <property name="IncrementalFather" column="IncrementalFather" />
+    <property name="KeyValue" column="KeyValue" type="AnsiString" />
+    <property name="AccountingSectionalNumber" column="AccountingSectionalNumber" />
+    <property name="NumeratorType" column="NumeratorType" type="AnsiString" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+  </class>
+
+  <class name="ContainerGroup" table="ContainerGroup">
+    <id name="Id" column="IdContainerGroup" >
+      <generator class="assigned" />
+    </id>
+
+    <many-to-one name="Container" column="IdContainer" class="Container" />
+    <property name="Name" column="GroupName" type="AnsiString" />
+    <property access="field" name="_protocolRights" column="Rights" type="AnsiString" />
+    <property access="field" name="_resolutionRights" column="ResolutionRights" type="AnsiString" />
+    <property access="field" name="_documentRights" column="DocumentRights" type="AnsiString" />
+    <property name="DocumentSeriesRights" column="DocumentSeriesRights" type="AnsiString" />
+    <property name="DeskRights" column="DeskRights" type="AnsiString" />
+    <property name="UDSRights" column="UDSRights" type="AnsiString" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="PrivacyLevel" column="PrivacyLevel" />
+    <many-to-one name="SecurityGroup" class="SecurityGroups" column="idGroup" />
+    <property name="FascicleRights" column="FascicleRights" />
+  </class>
+
+  <class name="Role" table="Role">
+    <id name="Id" column="idRole">
+      <generator class="assigned" />
+    </id>
+    <property name="UniqueId" column="UniqueId" not-null="true" />
+    <property name="Name" column="Name" type="AnsiString" />
+    <property name="EMailAddress" column="EMailAddress" type="AnsiString" />
+    <many-to-one name="Father" column="IdRoleFather" class="Role" fetch="join" />
+    <property name="FullIncrementalPath" column="FullIncrementalPath" type="AnsiString" />
+    <property name="IsActive" column="isActive" />
+    <property name="ActiveFrom" />
+    <property name="ActiveTo" />
+    <property name="Collapsed" column="Collapsed" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="ServiceCode" column="ServiceCode" type="AnsiString" />
+    <property name="IsChanged" column="isChanged" />
+    <property name="UriSharepoint" column="UriSharepoint" type="AnsiString" />
+    <property name="TenantId" column="TenantId" not-null="true" />
+    <property name="IdRoleTenant" column="IdRoleTenant" not-null="true" />
+
+    <bag name="RoleGroups" table="RoleGroup" cascade="all-delete-orphan" inverse="true" lazy="true">
+      <key column="idRole" />
+      <one-to-many class="RoleGroup" />
+    </bag>
+    <bag name="Protocols" table="ProtocolRole" cascade="all-delete-orphan" inverse="true" lazy="true">
+      <key column="idRole" />
+      <one-to-many class="ProtocolRole" />
+    </bag>
+    <bag name="TenantRoles" table="TenantRoles" cascade="none">
+      <key column="EntityShortId" />
+      <one-to-many class="TenantRole" />
+    </bag>
+    <bag name="RoleUsers" table="RoleUsers" cascade="all-delete-orphan" inverse="true" lazy="true">
+      <key column="idRole" />
+      <one-to-many class="RoleUser" />
+    </bag>
+    <bag name="Mailboxes" table="PECMailBoxRole" cascade="save-update" lazy="true">
+      <key column="idRole" />
+      <many-to-many class="PECMailBox" column="IDPECMailBox" />
+    </bag>
+    <bag name="RoleNames" table="RoleNames" lazy="true">
+      <key column="idRole" />
+      <one-to-many class="RoleName" />
+    </bag>
+    <bag name="Children" table="Role">
+      <key column="IdRoleFather" />
+      <one-to-many class="Role" />
+    </bag>
+  </class>
+
+  <class name="RoleGroup" table="RoleGroup">
+    <id name="Id" column="IdRoleGroup" >
+      <generator class="assigned" />
+    </id>
+
+    <many-to-one name="Role" column="IdRole" class="Role" />
+    <property name="Name" column="GroupName" type="AnsiString" />
+    <property access="field" name="_protocolRights" column="ProtocolRights" type="AnsiString" />
+    <property access="field" name="_documentRights" column="DocumentRights" type="AnsiString" />
+    <property access="field" name="_resolutionRights" column="ResolutionRights" type="AnsiString" />
+    <property name="DocumentSeriesRights" column="DocumentSeriesRights" type="AnsiString" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <many-to-one name="SecurityGroup" class="SecurityGroups" column="idGroup" />
+    <property name="FascicleRights" column="FascicleRights" />
+  </class>
+
+  <class name="Category" table="Category">
+    <id name="Id" column="idCategory">
+      <generator class="assigned" />
+    </id>
+    <property name="UniqueId" column="UniqueId" not-null="true" />
+    <property name="Name" column="Name" type="AnsiString" />
+    <many-to-one name="Parent" column="idParent" class="Category" />
+    <property name="IsActive" column="isActive" />
+    <property name="Code" column="Code" />
+    <property name="FullIncrementalPath" column="FullIncrementalPath" type="AnsiString" />
+    <property name="FullSearchComputed" column="FullSearchComputed" type="AnsiString"  generated="always" insert="false" update="false"/>
+    <property name="FullCode" column="FullCode" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="IdMassimarioScarto" column="IdMassimarioScarto" />
+    <property name="StartDate" column="StartDate" />
+    <property name="EndDate" column="EndDate" />
+    <property name="IdMetadataRepository" column="IdMetadataRepository" />
+    <property name="IdTenantAOO" column="IdTenantAOO" />
+
+    <many-to-one name="CategorySchema" column="IdCategorySchema" class="CategorySchema" />
+    <bag name="Children" table="Category" lazy="true">
+      <key column="idParent" />
+      <one-to-many class="Category" />
+    </bag>
+    <filter name="TenantFilter" condition=":tenantAOOId = IdTenantAOO" />
+  </class>
+
+  <class name="CategorySchema" table="CategorySchemas">
+    <id name="Id" column="IdCategorySchema" >
+      <generator class="assigned" />
+    </id>
+
+    <property name="Version" column="Version" />
+    <property name="StartDate" column="StartDate" />
+    <property name="EndDate" column="EndDate" />
+    <property name="Note" column="Note" type ="AnsiString" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+
+    <bag name="Categories" table="Category" cascade="none" lazy="true">
+      <key column="IdCategorySchema" />
+      <one-to-many class="Category" />
+    </bag>
+
+  </class>
+
+  <class name="Location" table="Location">
+    <id name="Id" column="idLocation">
+      <generator class="assigned" />
+    </id>
+    <property name="UniqueId" column="UniqueId" not-null="true" />
+    <property name="Name" column="Name" type="AnsiString" />
+    <property name="ProtBiblosDSDB" column="ProtBiblosDSDB" type="AnsiString" />
+    <property name="DocmBiblosDSDB" column="DocmBiblosDSDB" type="AnsiString" />
+    <property name="ReslBiblosDSDB" column="ReslBiblosDSDB" type="AnsiString" />
+    <property name="ConsBiblosDSDB" column="ConsBiblosDSDB" type="AnsiString" />
+  </class>
+
+  <class name="Parameter" table="Parameter">
+    <id name="Id" column="Incremental">
+      <generator class="native">
+      </generator>
+    </id>
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    <property column="LastUsedYear" name="LastUsedYear" />
+    <property column="LastUsedNumber" name="LastUsedNumber" />
+    <property column="Locked" name="Locked" />
+    <property name="Password" column="Password" type="AnsiString" />
+    <property name="LastUsedIdCategory" column="LastUsedIdCategory" />
+    <property name="LastUsedIdRecipient" column="LastUsedIdRecipient" />
+    <property name="LastUsedIdContainer" column="LastUsedIdContainer" />
+    <property name="Version" column="Version" />
+    <property name="LastUsedIdDistributionList" column="LastUsedIdDistributionList" />
+    <property name="LastUsedIdResolution" column="LastUsedidResolution" />
+    <property name="LastUsedResolutionYear" column="LastUsedResolutionYear" />
+    <property name="LastUsedResolutionNumber" column="LastUsedResolutionNumber" />
+    <property name="LastUsedBillNumber" column="LastUsedBillNumber" />
+    <property name="DomainName" column="DomainName" type="AnsiString" />
+    <property name="AlternativePassword" column="AlternativePassword" type="AnsiString" />
+    <property name="ServiceField" column="ServiceField" type="AnsiString" />
+    <property name="LastUsedIdRole" column="LastUsedIdRole" />
+    <property name="LastUsedIdRoleUser" column="LastUsedIdRoleUser" />
+    <property name="LastUsedYearReg" column="LastUsedYearReg" />
+    <property name="LastUsedNumberReg" column="LastUsedNumberReg" />
+    <property name="IdTenantAOO" column="IdTenantAOO" insert="false" update="false" />
+    <property name="UniqueId">
+      <column name="UniqueId" not-null="true" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <filter name="TenantFilter" condition=":tenantAOOId = IdTenantAOO" />
+  </class>
+
+  <class name="CommonObject" table="Object">
+    <id name="Id" column="idObject">
+      <generator class="assigned" />
+    </id>
+    <property name="Code" column="Code" type="AnsiString" />
+    <property name="Description" column="Description" type="AnsiString" />
+  </class>
+
+  <class name="DocumentType" table="TableDocType">
+    <id name="Id" column="idDocType">
+      <generator class="assigned" />
+    </id>
+    <property name="Code" column="Code" type="AnsiString" />
+    <property name="Description" column="Description" type="AnsiString" />
+    <property name="IsActive" column="isActive" />
+    <property name="NeedPackage" column="NeedPackage" />
+    <property name="CommonUser" column="CommonUser" type="AnsiString" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="HiddenFields" column="HiddenFields"/>
+    <bag name="ContainerDocTypes" table="ContainerDocType" cascade="delete" inverse="true">
+      <key column="IdDocType"/>
+      <one-to-many class="ContainerDocType"/>
+    </bag>
+  </class>
+
+  <class name="Contact" table="Contact">
+    <id name="Id" column="Incremental">
+      <generator class="assigned" />
+    </id>
+    <property name="UniqueId" column="UniqueId" not-null="true" />
+    <many-to-one name="Parent" column="IncrementalFather" class="Contact"  />
+    <many-to-one name="ContactType" column="IdContactType" class="ContactType" />
+    <many-to-one name="Role" column="IdRole" class="Role" />
+    <property name="Description" column="Description" type="AnsiString" />
+    <property name="Code" column="Code" type="AnsiString" />
+    <property name="SearchCode" column="SearchCode" type="AnsiString" />
+    <property name="FiscalCode" column="FiscalCode" type="AnsiString" />
+    <property name="TelephoneNumber" column="TelephoneNumber" type="AnsiString" />
+    <property name="FaxNumber" column="FaxNumber" type="AnsiString" />
+    <property name="EmailAddress" column="EMailAddress" type="AnsiString" />
+    <property name="CertifiedMail" column="CertifydMail" type="AnsiString" />
+    <property name="Note" column="Note" type="AnsiString" />
+    <property name="IsActive" column="isActive" />
+    <property name="ActiveFrom" />
+    <property name="ActiveTo" />
+    <property name="isLocked" column="isLocked" />
+    <property name="isNotExpandable" column="isNotExpandable" />
+    <property name="FullIncrementalPath" column="FullIncrementalPath" type="AnsiString" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="BirthDate" column="BirthDate" />
+    <property name="BirthPlace" column="BirthPlace" />
+    <property name="IsChanged" column="isChanged" />
+    <property name="SDIIdentification" column="SDIIdentification" />
+    <many-to-one name="RoleRootContact" column="IdRoleRootContact" class="Role" />
+    <many-to-one name="StudyTitle" class="ContactTitle" column="idTitle">
+    </many-to-one>
+    <component class="Address" name="Address">
+      <many-to-one name="PlaceName" column="IdPlaceName" class="ContactPlaceName" lazy="false">
+      </many-to-one>
+      <property name="Address" column="Address" />
+      <property name="CivicNumber" column="CivicNumber" />
+      <property name="ZipCode" column="ZipCode" />
+      <property name="City" column="City" />
+      <property name="CityCode" column="CityCode" />
+      <property name="Nationality" column="Nationality" />
+      <property name="Language" column="Language" />
+    </component>
+    <bag name="Protocols" table="ProtocolContact" cascade="none">
+      <key column="idContact" />
+      <one-to-many class="ProtocolContact" />
+    </bag>
+    <bag name="TenantContacts" table="TenantContacts" cascade="none">
+      <key column="EntityId" />
+      <one-to-many class="TenantContact" />
+    </bag>
+    <bag name="Documents" table="DocumentContact" cascade="none">
+      <key column="idContact" />
+      <one-to-many class="DocumentContact" />
+    </bag>
+    <bag name="Children" table="Contact">
+      <key column="IncrementalFather" />
+      <one-to-many class="Contact" />
+    </bag>
+    <bag name="ContactNames" table="ContactNames">
+      <key column="Incremental" />
+      <one-to-many class="ContactName" />
+    </bag>
+    <bag name="ContactLists" table="ContactContactLists" cascade="all-delete-orphan" inverse="true">
+      <key column="IdContact" />
+      <many-to-many class="ContactList" column="IdContactList" />
+    </bag>
+  </class>
+
+  <class name="ContactPlaceName" table="ContactPlaceName">
+    <id name="Id" column="idPlaceName">
+      <generator class="assigned" />
+    </id>
+    <property name="UniqueId" column="UniqueId" not-null="true" />
+    <property name="Description" column="Description" type="AnsiString" />
+  </class>
+
+  <class name="ContactType" table="ContactType">
+    <id name="Id" column="IdContactType" type="AnsiChar">
+      <generator class="assigned" />
+    </id>
+    <property name="Description" column="Description" type="AnsiString" />
+  </class>
+
+  <class name="DistributionList" table="DistributionList">
+    <id name="Id" column="idDistributionList">
+      <generator class="assigned" />
+    </id>
+    <property name="Name" column="Name" type="AnsiString" />
+    <bag name="Recipients" table="RecipientDistributionList" cascade="all-delete-orphan">
+      <key column="idDistributionList" />
+      <many-to-many class="Recipient" column="idRecipient">
+      </many-to-many>
+    </bag>
+  </class>
+
+  <class name="Recipient" table="Recipient">
+    <id name="Id" column="idRecipient">
+      <generator class="assigned" />
+    </id>
+    <property name="idType" column="idType" />
+    <property name="FullName" column="FullName" type="AnsiString" />
+    <property name="Company" column="Company" type="AnsiString" />
+    <property name="Address" column="Address" type="AnsiString" />
+    <property name="JobPosition" column="JobPosition" type="AnsiString" />
+    <property name="PhoneNumber" column="PhoneNumber" type="AnsiString" />
+    <property name="FaxNumber" column="FaxNumber" type="AnsiString" />
+    <property name="EmailAddress" column="EMailAddress" type="AnsiString" />
+    <property name="IsActive" column="isActive" />
+    <bag name="DistributionLists" table="RecipientDistributionList" cascade="all-delete-orphan" inverse="true">
+      <key column="idRecipient" />
+      <many-to-many class="DistributionList" column="idDistributionList">
+      </many-to-many>
+    </bag>
+    <bag name="Protocols" table="ProtocolRecipient" cascade="all-delete-orphan" inverse="true">
+      <key column="idRecipient" />
+      <many-to-many class="Protocol" column="UniqueId" />
+    </bag>
+  </class>
+
+  <class name="ContactTitle" table="ContactTitle">
+    <id name="Id" column="IdTitle">
+      <generator class="assigned" />
+    </id>
+    <property name="UniqueId" column="UniqueId" not-null="true" />
+    <property name="Code" column="Code" type="AnsiString" />
+    <property name="Description" column="Description" type="AnsiString" />
+    <property name="IsActive" column="isActive" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+  </class>
+
+  <class name="RoleUser" table="RoleUser">
+    <id name="Id" column="Incremental">
+      <generator class="assigned" />
+    </id>
+    <property name="UniqueId" column="UniqueId" not-null="true" />
+    <property name="Type" column="Type" type="AnsiString" />
+    <property name="Description" column="Description" type="AnsiString" />
+    <property name="Account" column="Account" type="AnsiString" />
+    <property name="Enabled" column="Enabled" />
+    <property name="Email" column="Email" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="IsMainRole" column="IsMainRole" />
+    <property name="DSWEnvironment" column="DSWEnvironment" />
+    <property name="IdUDSRepository" column="IdUDSRepository" not-null="false" />
+    <many-to-one name="OChartItemWorkflow" class="OChartItemWorkflow" column="IdOChartItemWorkflow" />
+    <many-to-one name="Role" class="Role" column="idRole" insert="true" update="false" />
+  </class>
+
+  <!-- SICUREZZA NON AD-->
+  <class name="SecurityGroups" table="SecurityGroups">
+    <id name="Id" column="idGroup">
+      <generator class="assigned" />
+    </id>
+    <property name="UniqueId" column="UniqueId" not-null="true" />
+    <property name="GroupName" column="GroupName" type="AnsiString" />
+    <property name="FullIncrementalPath" column="FullIncrementalPath" type="AnsiString" />
+    <property name="LogDescription" column="LogDescription" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="HasAllUsers" column="AllUsers" />
+    <property name="TenantId" column="TenantId" not-null="true" />
+    <property name="IdSecurityGroupTenant" column="IdSecurityGroupTenant" not-null="true" />
+
+    <many-to-one name="Parent" column="idGroupFather" class="SecurityGroups" />
+    <bag name="SecurityUsers" table="SecurityUsers" cascade="none" inverse="true">
+      <key column="idGroup" />
+      <one-to-many class="SecurityUsers" />
+    </bag>
+    <bag name="Children" table="SecurityGroups" cascade="none" order-by="GroupName">
+      <key column="idGroupFather" />
+      <one-to-many class="SecurityGroups" />
+    </bag>
+    <bag name="ContainerGroup" table="ContainerGroup" cascade="none">
+      <key column="idGroup" />
+      <one-to-many class="ContainerGroup" />
+    </bag>
+    <bag name="RoleGroup" table="RoleGroup" cascade="none">
+      <key column="idGroup" />
+      <one-to-many class="RoleGroup" />
+    </bag>
+  </class>
+
+  <class name="SecurityUsers" table="SecurityUsers">
+    <id name="Id" column="idUser">
+      <generator class="assigned" />
+    </id>
+    <property name="UniqueId" column="UniqueId" not-null="true" />
+    <property name="Account" column="Account" type="AnsiString" />
+    <property name="Description" column="Description" type="AnsiString" />
+    <property name="UserDomain" column="UserDomain" type="AnsiString" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <many-to-one name="Group" column="idGroup" class="SecurityGroups" />
+  </class>
+
+  <class name="ContactName" table="ContactNames">
+    <id name="Id" column="IdContactName">
+      <generator class="identity" />
+    </id>
+    <property name="Name" column="Name" type="AnsiString" />
+    <property name="FromDate" column="FromDate" />
+    <property name="ToDate" column="ToDate" />
+    <many-to-one name="Contact" column="Incremental" class="Contact" />
+  </class>
+
+  <class name="RoleName" table="RoleNames">
+    <id name="Id" column="IdRoleName">
+      <generator class="identity" />
+    </id>
+    <property name="Name" column="Name" type="AnsiString" />
+    <property name="FromDate" column="FromDate" />
+    <property name="ToDate" column="ToDate" />
+    <many-to-one name="Role" column="idRole" class="Role" />
+  </class>
+
+
+  <class name="ContainerProperty" table="ContainerProperties">
+    <id name="Id" column="IdContainerProperty">
+      <generator class="assigned" />
+    </id>
+    <property name="Name" column="Name" not-null="true"/>
+    <property name="ContainerType" column="ContainerType" not-null="true"/>
+    <property name="ValueInt" column="ValueInt" not-null="false" />
+    <property name="ValueDate" column="ValueDate" not-null="false" />
+    <property name="ValueDouble" column="ValueDouble" not-null="false" />
+    <property name="ValueBoolean" column="ValueBoolean" not-null="false" />
+    <property name="ValueGuid" column="ValueGuid" not-null="false" />
+    <property name="ValueString" column="ValueString" not-null="false" />
+    <property name="RegistrationDate" column="RegistrationDate" not-null="true" />
+    <property name="RegistrationUser" column="RegistrationUser" not-null="true" />
+    <property name="LastChangedDate" column="LastChangedDate" not-null="false"/>
+    <property name="LastChangedUser" column="LastChangedUser" not-null="false" />
+    <many-to-one  name="Container" class="Container">
+      <column name="idContainer" not-null="true" />
+    </many-to-one >
+
+  </class>
+
+  <filter-def name="TenantFilter">
+    <filter-param name="tenantAOOId" type="Guid" />
+  </filter-def>
+</hibernate-mapping>

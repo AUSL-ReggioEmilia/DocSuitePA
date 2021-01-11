@@ -1,0 +1,4 @@
+﻿{
+    "DOU": true,
+	"SecurePaper": true
+}

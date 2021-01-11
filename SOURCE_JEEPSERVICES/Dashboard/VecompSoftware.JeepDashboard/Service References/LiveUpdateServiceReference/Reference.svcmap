@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="bc2bf618-bc6d-48d4-a163-23531091e509" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.Generic.List`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>false</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://wcf.jeepserviceliveupdate.fabbrisoft.it/LiveUpdate.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="LiveUpdate3.xsd" MetadataType="Schema" ID="d17a43cd-f5a4-423f-85df-94073215902e" SourceId="1" SourceUrl="http://wcf.jeepserviceliveupdate.fabbrisoft.it/LiveUpdate.svc?xsd=xsd2" />
+    <MetadataFile FileName="LiveUpdate1.wsdl" MetadataType="Wsdl" ID="475ebf26-38f6-474c-a52a-7a799be09ace" SourceId="1" SourceUrl="http://wcf.jeepserviceliveupdate.fabbrisoft.it/LiveUpdate.svc?wsdl" />
+    <MetadataFile FileName="LiveUpdate31.xsd" MetadataType="Schema" ID="a5386f85-be40-4118-88c4-5435945093d0" SourceId="1" SourceUrl="http://wcf.jeepserviceliveupdate.fabbrisoft.it/LiveUpdate.svc?xsd=xsd1" />
+    <MetadataFile FileName="LiveUpdate1.disco" MetadataType="Disco" ID="9e016b3a-80bb-417d-acd0-19fe1e8750dd" SourceId="1" SourceUrl="http://wcf.jeepserviceliveupdate.fabbrisoft.it/LiveUpdate.svc?disco" />
+    <MetadataFile FileName="LiveUpdate32.xsd" MetadataType="Schema" ID="5939be3b-0a31-4819-a86f-dcbf20b2b965" SourceId="1" SourceUrl="http://wcf.jeepserviceliveupdate.fabbrisoft.it/LiveUpdate.svc?xsd=xsd0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

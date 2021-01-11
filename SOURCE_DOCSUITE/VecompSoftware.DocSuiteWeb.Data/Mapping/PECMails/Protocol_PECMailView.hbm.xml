@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="PECMailView" table="PECMailView">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <property name="Title" column="Title" />
+    <property name="Description" column="Description" />
+    <property name="FoldersToHide" column="FoldersToHide" />
+    <property name="FilesToHide" column="FilesToHide" />
+    <property name="ExtensionsToHide" column="ExtensionsToHide" />
+    <property name="HideExtensions" column="HideExtensions" />
+    <property name="FlatAttachments" column="FlatAttachments" />
+    <property name="DocumentoPrincipaleLabel" column="DocumentoPrincipaleLabel" />
+    <property name="CorpoDelMessaggioLabel" column="CorpoDelMessaggioLabel" />
+    <property name="AllegatiLabel" column="AllegatiLabel" />
+    <property name="AllegatiTecniciLabel" column="AllegatiTecniciLabel" />
+    <property name="RicevuteLabel" column="RicevuteLabel" />
+    <property name="RootNodeName" column="RootNodeName" />
+    <property name="ExclusivePageType" column="ExclusivePageType" />
+
+    <bag name="Roles" table="PECMailViewRole" cascade="all-delete-orphan" inverse="true">
+      <key column="IdPECMailView" />
+      <many-to-many class="Role" column="idRole" />
+    </bag>
+    <bag name="MailViewDefaults" table="PecMailViewDefault" cascade="none" inverse="true">
+      <key>
+        <column name="IdDefaultView" />
+      </key>
+      <one-to-many class="PECMailViewDefault"/>
+    </bag>
+  
+  </class>
+
+</hibernate-mapping>

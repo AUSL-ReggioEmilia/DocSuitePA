@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ca2a8403-a844-4a16-9fdd-f9e1c3f13feb" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>true</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.ComponentModel.BindingList`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="Administration4.xsd" MetadataType="Schema" ID="9d9b9cb8-34db-4cb4-a250-b7b8605bf288" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd16" />
+    <MetadataFile FileName="Administration41.xsd" MetadataType="Schema" ID="05cd5a5e-6811-470c-bf7b-b35d655d9fec" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd36" />
+    <MetadataFile FileName="Administration42.xsd" MetadataType="Schema" ID="825c9689-d478-426e-8bac-f385db6a8676" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd7" />
+    <MetadataFile FileName="Administration43.xsd" MetadataType="Schema" ID="e6eb47cb-bc52-4ac6-96b7-54fb49616908" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd19" />
+    <MetadataFile FileName="Administration44.xsd" MetadataType="Schema" ID="16ece433-0c49-4523-90f2-37d0158a1f5f" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd32" />
+    <MetadataFile FileName="Administration45.xsd" MetadataType="Schema" ID="ead48135-1ad4-43aa-8dbe-c302b6333533" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd29" />
+    <MetadataFile FileName="Administration46.xsd" MetadataType="Schema" ID="89ad691a-1ef3-48b9-844b-a981fdd5e3da" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd2" />
+    <MetadataFile FileName="Administration.disco" MetadataType="Disco" ID="2b11d31f-af3b-46d3-a6b1-e19c530a6297" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?disco" />
+    <MetadataFile FileName="Administration47.xsd" MetadataType="Schema" ID="85676441-5af4-43d7-ada6-769ff776a85c" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd13" />
+    <MetadataFile FileName="Administration48.xsd" MetadataType="Schema" ID="cc382e01-5202-4d7f-a7f2-89c15626c0e7" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd33" />
+    <MetadataFile FileName="Administration49.xsd" MetadataType="Schema" ID="3dd07970-a54d-46cd-b6ba-6e95b78f4e98" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd23" />
+    <MetadataFile FileName="Administration410.xsd" MetadataType="Schema" ID="e8ae9687-b6d4-4fa2-9834-aedc312b3c8b" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd43" />
+    <MetadataFile FileName="Administration411.xsd" MetadataType="Schema" ID="0037d065-99f4-40d2-ae43-5eb998a0584e" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd10" />
+    <MetadataFile FileName="Administration412.xsd" MetadataType="Schema" ID="3168db6f-37ac-4a15-ba14-dfed0cd73245" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd30" />
+    <MetadataFile FileName="Administration413.xsd" MetadataType="Schema" ID="67540c99-c20c-4887-9a4f-1df05e23126f" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd20" />
+    <MetadataFile FileName="Administration414.xsd" MetadataType="Schema" ID="13812f0b-8cc8-4117-ac25-d915bcd823ff" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd40" />
+    <MetadataFile FileName="Administration415.xsd" MetadataType="Schema" ID="da277269-6883-4ae3-b1f1-f1e9d3eb9482" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd15" />
+    <MetadataFile FileName="Administration416.xsd" MetadataType="Schema" ID="e5e7e983-a717-4c50-8702-88e659766508" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd35" />
+    <MetadataFile FileName="Administration417.xsd" MetadataType="Schema" ID="7a5e487a-ca5f-4a25-8d07-4bc17a23c324" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd25" />
+    <MetadataFile FileName="Administration418.xsd" MetadataType="Schema" ID="1f390b7f-7955-4a35-baf0-69f628643594" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd18" />
+    <MetadataFile FileName="Administration419.xsd" MetadataType="Schema" ID="8d6b8ef3-3e72-4993-8f4c-59328b5f2432" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd38" />
+    <MetadataFile FileName="Administration420.xsd" MetadataType="Schema" ID="45e05476-5b9a-441c-99c7-33795be78397" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd28" />
+    <MetadataFile FileName="Administration421.xsd" MetadataType="Schema" ID="70236585-bcb5-473f-8fa5-6968ec1ac415" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd42" />
+    <MetadataFile FileName="Administration422.xsd" MetadataType="Schema" ID="8150db76-421a-4096-bc13-38634b263328" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd26" />
+    <MetadataFile FileName="Administration423.xsd" MetadataType="Schema" ID="8bd1f160-07c6-4b29-9add-e702095b0f16" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd1" />
+    <MetadataFile FileName="Administration424.xsd" MetadataType="Schema" ID="a6257fe6-1e00-40b3-85d8-d096ae3b2abd" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd0" />
+    <MetadataFile FileName="Administration425.xsd" MetadataType="Schema" ID="773b3b44-1fcf-423b-ab06-385510308151" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd3" />
+    <MetadataFile FileName="Administration426.xsd" MetadataType="Schema" ID="78c66ec6-7d95-4943-8c14-92aa2c07ce4a" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd12" />
+    <MetadataFile FileName="Administration427.xsd" MetadataType="Schema" ID="17c71c0e-ac99-43dc-91b4-4d6183e624cd" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd5" />
+    <MetadataFile FileName="Administration428.xsd" MetadataType="Schema" ID="506b00c4-c089-4eb4-b09e-0185a0ee21b8" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd4" />
+    <MetadataFile FileName="Administration429.xsd" MetadataType="Schema" ID="b215f9d9-8de4-4894-805e-de238b758dc9" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd22" />
+    <MetadataFile FileName="Administration430.xsd" MetadataType="Schema" ID="9007a05f-1b64-4668-af71-3b6b109dd240" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd6" />
+    <MetadataFile FileName="Administration431.xsd" MetadataType="Schema" ID="886a7d45-4990-47e9-a89d-b11021575a73" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd9" />
+    <MetadataFile FileName="Administration432.xsd" MetadataType="Schema" ID="27c96547-4898-472a-a137-b608563f6e81" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd8" />
+    <MetadataFile FileName="Administration433.xsd" MetadataType="Schema" ID="0c63f588-7f02-4273-818a-68172034ee80" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd17" />
+    <MetadataFile FileName="Administration434.xsd" MetadataType="Schema" ID="8fc65ef1-729f-4b70-b5fa-71d0ce3c1abd" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd37" />
+    <MetadataFile FileName="Administration435.xsd" MetadataType="Schema" ID="52db8435-2720-452e-9167-50483e39f88c" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd27" />
+    <MetadataFile FileName="Administration436.xsd" MetadataType="Schema" ID="7c22a05f-22f2-42d2-891c-c1bba51aa13c" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd39" />
+    <MetadataFile FileName="Administration.wsdl" MetadataType="Wsdl" ID="c1208441-e3e7-4001-aeb4-46af6e860a05" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="Administration437.xsd" MetadataType="Schema" ID="805bd626-0bf3-4be6-a4af-ef63640f6387" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd14" />
+    <MetadataFile FileName="Administration438.xsd" MetadataType="Schema" ID="a7e49f9e-c84e-4baa-9337-93ac2898d80e" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd34" />
+    <MetadataFile FileName="Administration439.xsd" MetadataType="Schema" ID="1adfbfd0-18c6-4f4e-8a2e-556b1e3a956c" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd24" />
+    <MetadataFile FileName="Administration440.xsd" MetadataType="Schema" ID="093be82a-ae10-4019-968e-0cb3b7108720" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd44" />
+    <MetadataFile FileName="Administration1.wsdl" MetadataType="Wsdl" ID="b563ffc8-2ba4-4bc6-81e7-d834203117f3" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?wsdl" />
+    <MetadataFile FileName="Administration441.xsd" MetadataType="Schema" ID="8e64eb34-759f-4b7d-b4db-6754c8946a31" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd11" />
+    <MetadataFile FileName="Administration442.xsd" MetadataType="Schema" ID="96f89bee-d3d3-4af7-99fd-6e7bb1496e53" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd31" />
+    <MetadataFile FileName="Administration443.xsd" MetadataType="Schema" ID="7509c6a5-35e9-44d0-845b-94186f84df86" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd21" />
+    <MetadataFile FileName="Administration444.xsd" MetadataType="Schema" ID="13b441ba-0ef8-4f36-9b17-ab8a09cc527b" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd41" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

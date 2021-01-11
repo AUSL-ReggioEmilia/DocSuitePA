@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/PreservationFileInfoResponse" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationFileInfoResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://BiblosDS/2009/10/ResponseBase" />
+  <xs:complexType name="PreservationFileInfoResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/ResponseBase" base="q1:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DigitalSignFileExtension" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="File" nillable="true" type="xs:base64Binary" />
+          <xs:element minOccurs="0" name="FileName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="InfoCamereFileExtension" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PreservationFileInfoResponse" nillable="true" type="tns:PreservationFileInfoResponse" />
+</xs:schema>

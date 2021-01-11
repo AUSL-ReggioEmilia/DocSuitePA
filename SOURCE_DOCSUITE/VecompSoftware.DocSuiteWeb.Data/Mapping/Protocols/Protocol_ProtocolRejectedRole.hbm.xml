@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolRejectedRole" table="ProtocolRejectedRoles">
+
+    <id name="Id" column="UniqueId" >
+      <generator class="guid.comb" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+
+    <property name="Year" column="Year" not-null="true" />
+    <property name="Number" column="Number" not-null="true" />
+    <property name="Note" column="Note" />
+    <property name="DistributionType" column="DistributionType"/>
+    <property name="Type" column="Type"/>
+    <property name="NoteType" column="NoteType"/>
+    <property name="Rights" column="Rights" />
+    <property name="Status" column="Status" not-null="true"/>
+    <property name="RegistrationUser" column="RegistrationUser" not-null="true" />
+    <property name="RegistrationDate" column="RegistrationDate" not-null="true" />
+    <property name="LastChangedUser" column="LastChangedUser" not-null="false" />
+    <property name="LastChangedDate" column="LastChangedDate" not-null="false" />
+
+    <many-to-one class="Role" name="Role" column="idRole"/>
+    <many-to-one name="Protocol" class="Protocol" not-null="true">
+      <column name="UniqueIdProtocol" />
+    </many-to-one>
+
+  </class>
+
+</hibernate-mapping>

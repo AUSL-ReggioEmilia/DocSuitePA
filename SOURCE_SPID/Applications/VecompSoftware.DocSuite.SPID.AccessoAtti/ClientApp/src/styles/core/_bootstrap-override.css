@@ -1,0 +1,30 @@
+﻿.panel-default {
+    border: 1px solid #c2cfd6;
+}
+
+.form-control {
+    border: 1px solid #c2cfd6;
+}
+
+.list-group-item {
+    padding: 12px 15px;
+}
+
+.breadcrumb {
+    padding: 8px 5px 8px 20px;
+    background-color: #fff;
+    border: 1px solid #c2cfd6;
+}
+
+.navbar-default .navbar-brand {
+    color: #536c79;
+}
+
+.alert {
+    padding: 5px;
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: 7px;
+}

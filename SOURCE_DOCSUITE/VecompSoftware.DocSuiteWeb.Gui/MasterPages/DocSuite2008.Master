@@ -1,0 +1,278 @@
+﻿<%@ Master Language="VB" AutoEventWireup="false" CodeBehind="DocSuite2008.master.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.DocSuite2008" EnableTheming="true" %>
+
+<%@ Import Namespace="VecompSoftware.DocSuiteWeb.Data" %>
+<%@ Import Namespace="System.Web.Optimization" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml' runat="server">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <title runat="server" id="headTitle"></title>
+    <asp:PlaceHolder runat="server">
+        <%: Styles.Render("~/bundles/css")%>
+        <%: Styles.Render("~/bundles/browserConditions")%>
+    </asp:PlaceHolder>
+</head>
+<body runat="server" id="body">
+    <form id="frm" action="" method="post" runat="server">
+        <%-- Navigazione Griglia --%>
+        <telerik:RadScriptManager EnableHistory="true" EnablePartialRendering="true" EnableSecureHistoryState="false" ID="scmMasterPage" runat="server" ScriptMode="Release" SupportsPartialRendering="true"
+            OnAsyncPostBackError="RadScriptManager_PostBackError">
+            <Scripts>
+                <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.Core.js" />
+                <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQuery.js" />
+                <asp:ScriptReference Assembly="Telerik.Web.UI" Name="Telerik.Web.UI.Common.jQueryInclude.js" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+            </Scripts>
+        </telerik:RadScriptManager>
+        <telerik:RadStyleSheetManager runat="server" EnableStyleSheetCombine="true" OutputCompression="AutoDetect">
+            
+        </telerik:RadStyleSheetManager>
+        <telerik:RadScriptBlock runat="server">  
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/jquery.signalR-2.4.1.min.js") %>"></script>
+            <script type="text/javascript" src="../signalr/hubs"></script>
+            <!--[if lte IE 9]>
+                <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/jquery.xdomainrequest.min.js") %>"></script>
+            <![endif]-->
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/dsw.signalR.js") %>?version=<%= DSWVersion %>"></script>
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/dsw.extensions.js") %>?version=<%= DSWVersion %>"></script>
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/dsw.browserutil.js") %>?version=<%= DSWVersion %>"></script>
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/dsw.json.referenceHandling.js") %>?version=<%= DSWVersion %>"></script>
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/moment-with-locales.min.js") %>"></script>
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/resize-sensor.min.js") %>"></script>
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/require.js") %>"></script>
+            <script type="text/javascript">
+                require.config({
+                    baseUrl: '../',
+                    urlArgs: "DSW=<%= DSWVersion %>",
+                    paths: {
+                        jqueryui: 'Scripts/jquery-ui-1.11.4.min'
+                    }
+                });
+
+                define('jquery', [], function() {
+                    return jQuery;
+                });
+				
+				var tenantModelJson = '<%= WebAPIModels %>';
+                var tenantModelConfiguration;
+                require(["App/Helpers/TenantModelConfiguration"], function (TenantModelConfiguration) {
+                    $(function () {
+                        tenantModelConfiguration = new TenantModelConfiguration(tenantModelJson);
+                    });
+                });
+
+                moment.locale('it');
+            </script>
+        </telerik:RadScriptBlock>
+        <%-- Trucco telerik, lasciare qui --%>
+        <telerik:RadScriptBlock ID="rsbGrid" runat="server">
+            <script type="text/javascript">
+                if (!window.console) console = {log: function() {}}; 
+
+                <%-- Aggiungo al namespace della pagina il simbolo di jQuery preso dalla versione telerik --%>
+                window.$ = $telerik.$;
+
+                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(EndRequestHandler);
+                function EndRequestHandler(sender, args) {
+                    if (args.get_error() != undefined) {
+                        console.log("errore ajax", args);
+                        args.set_errorHandled(true);
+                        alert("Errore caricamento pagina.\n<%=DocSuiteContext.Current.ProtocolEnv.DefaultErrorMessage%>");
+                    }
+                }
+
+                function OpenMailWindow(url, width, height) {
+                    var manager = $find("<%=alertManager.ClientID %>");
+                    var wnd = manager.open(url, "wndMain");
+                    wnd.setSize(width, height);
+                    wnd.set_title("Creazione Mail");
+                    wnd.center();
+                    return false;
+                }
+
+                WindowTypeEnum = {
+                    SMALL: 0,
+                    NORMAL: 1,
+                    MAXIMIZED: 2,
+                    FULLMAX: 3,
+                    DOCUMENTS: 4,
+                    SLENDER: 5
+                };
+
+                var MyCaller = null;
+                
+                function DSWOpenGenericWindow(url, windowType) {
+                    var me = GetRadWindow();
+                    if (me) {
+                        // Sono dentro una finestra che rappresenta l'HOST
+                        return me.BrowserWindow.DSWOpenGenericWindow(url, windowType);
+                    }
+
+                    var width = null, height = null;
+                    switch (windowType) {
+                        case WindowTypeEnum.SMALL:
+                            width = <%= DocSuiteContext.Current.ProtocolEnv.PECSimpleModeWidth%>;
+                            height = <%= DocSuiteContext.Current.ProtocolEnv.PECSimpleModeHeight%>;
+                            break;
+                        case WindowTypeEnum.DOCUMENTS:
+                            width = 600;
+                            height = 160;
+                            break;
+                        case WindowTypeEnum.SLENDER:
+                            width = 330;
+                            height = 440;
+                            break;
+                        case WindowTypeEnum.FULLMAX:
+                            height = me.get_height();
+                            width = me.get_width() - 50;
+                            break;
+                    }
+                    
+                    var manager = $find("<%=alertManager.ClientID %>");
+                    var wnd = manager.open(url, null, null, width, height);
+                    
+                    if (windowType === WindowTypeEnum.FULLMAX) {
+                        wnd.maximize();
+                        wnd.set_visibleTitlebar(false);
+                        wnd.set_visibleStatusbar(false);
+                    }
+
+                    wnd.add_pageLoad(function () {
+                        wnd.setActive(true);
+                    });
+
+                    return wnd;
+                }
+
+                function pageSizeHandler() {
+                    var footerHeight = $(".footer-wrapper").height() + 3; //3px dati dal padding del footer                    
+                    var headerHeight = $(".header-wrapper").height() + 9; //9px dati dal padding e margin della classe titolo
+                    var wizardHeight = $(".wizard-wrapper").height();
+                    var windowHeight = $(window).height();
+                    //Explorer 7 Quirks mode
+                    if (windowHeight === 0) {
+                        windowHeight = document.documentElement.offsetHeight;
+                    }
+                    $(".page-content").css("height", (windowHeight - (footerHeight + headerHeight + wizardHeight + 2))); //2px del bordo
+                };
+
+                $(window).load(function() {               
+                    var _resizeEvt;
+                    $(window).bind('resize', function () {                        
+                        clearTimeout(this._resizeEvt);
+                        this._resizeEvt = setTimeout(function() {
+                            pageSizeHandler();
+                        }, 1);
+                    });
+
+                    new ResizeSensor($('.header-wrapper')[0], function(){ 
+                        pageSizeHandler();
+                    });
+
+                    new ResizeSensor($('.footer-wrapper')[0], function(){ 
+                        pageSizeHandler();
+                    });                   
+                });
+
+                function CompleteWorkflowHandler(e, args) {                   
+                    var ajaxManager = $find("<%= AjaxManager.ClientID %>");
+                    ajaxManager.ajaxRequest("CompleteWorkflowHandler");       
+                }
+
+                var currentBrowser = getBrowserType();
+                $('body').addClass(currentBrowser);   
+            </script>
+        </telerik:RadScriptBlock>
+
+        <telerik:RadAjaxManager ID="masterAjaxManager" runat="server" UpdatePanelsRenderMode="Inline" />
+
+        <telerik:RadAjaxLoadingPanel ID="LoadingPanel" runat="Server" Style="width: 320px; padding-top: 125px;">
+            <img alt="1_Caricamento in corso..." src='<%= RadAjaxLoadingPanel.GetWebResourceUrl(Page, "Telerik.Web.UI.Skins.Default.Ajax.loading.gif") %>' style="border: 0px;" />
+        </telerik:RadAjaxLoadingPanel>
+        <telerik:RadAjaxLoadingPanel Height="75px" ID="LoadingPanelSearch" runat="server" Transparency="25" Width="75px">
+            <img alt="2_Caricamento in corso..." src='<%= RadAjaxLoadingPanel.GetWebResourceUrl(Page, "Telerik.Web.UI.Skins.Default.Ajax.loading.gif") %>' style="border: 1px;" />
+        </telerik:RadAjaxLoadingPanel>
+        <telerik:RadAjaxLoadingPanel ID="LoadingPanelGrid" runat="server" Transparency="15">
+            <div style="background-color: #fff; height: 100%; width: 100%; padding-top: 50px">
+                <img alt="3_Caricamento in corso..." src='<%= RadAjaxLoadingPanel.GetWebResourceUrl(Page, "Telerik.Web.UI.Skins.Default.Ajax.loading.gif") %>' style="border: 1px;" />
+            </div>
+        </telerik:RadAjaxLoadingPanel>
+        <telerik:RadAjaxLoadingPanel ID="DefaultLoadingPanel" runat="server">
+        </telerik:RadAjaxLoadingPanel>
+        <telerik:RadAjaxLoadingPanel ID="FlatLoadingPanel" runat="server" Transparency="25">
+            <div style="background-color: #fff; height: 100%; width: 100%;">
+                <asp:Image ID="Image1" runat="server" ImageUrl="~/App_Themes/DocSuite2008/images/loading1.gif" AlternateText="loading"></asp:Image>
+            </div>
+        </telerik:RadAjaxLoadingPanel>
+        <telerik:RadWindowManager EnableViewState="False" ID="alertManager" runat="server">
+            <Windows>
+                <telerik:RadWindow ID="wndMain" runat="server" />
+            </Windows>
+        </telerik:RadWindowManager>
+
+        <telerik:RadPageLayout runat="server" RegisterWithScriptManager="True" ID="PageLayoutMaster" HtmlTag="None" GridType="Fluid">
+            <Rows>
+                <telerik:LayoutRow RowType="Generic" CssClass="pageContainer">
+                    <Rows>
+                        <telerik:LayoutRow RowType="Generic" CssClass="allContent">
+                            <Rows>
+                                <telerik:LayoutRow Visible="false" ID="rowWizard" runat="server" RowType="Container" WrapperCssClass="wizard-wrapper" WrapperHtmlTag="Div" HtmlTag="Div">
+                                    <Columns>
+                                        <telerik:LayoutColumn Span="10" SpanLg="10" SpanMd="10" SpanSm="10">
+                                            <telerik:RadWizard ID="workflowWizard" DisplayCancelButton="false" DisplayNavigationButtons="false" DisplayProgressBar="false" runat="server"
+                                                Width="100%" Height="33px" Skin="Office2010Blue">
+                                                <WizardSteps>
+                                                    <telerik:RadWizardStep ID="startWorkflowStep" Title="Attività" ToolTip="Attività del flusso di lavoro" Enabled="false" />
+                                                </WizardSteps>
+                                            </telerik:RadWizard>
+                                        </telerik:LayoutColumn>
+                                        <telerik:LayoutColumn ID="colWizardAction" Visible="false" runat="server" CssClass="wizard-action-wrapper" Span="2" SpanLg="2" SpanMd="2" SpanSm="2">
+                                            <telerik:RadButton runat="server" Text="Completa attività" CausesValidation="false" ID="btnCompleteWorkflow"></telerik:RadButton>
+                                        </telerik:LayoutColumn>
+                                    </Columns>
+                                </telerik:LayoutRow>
+                                <telerik:LayoutRow RowType="Container" WrapperCssClass="header-wrapper" StaticId="header" WrapperHtmlTag="Div" HtmlTag="None">
+                                    <Content>
+                                        <div class="header-content">
+                                            <div class="titolo" id="divTitolo" runat="server">
+                                                <asp:Label ID="lblHeader" runat="server" />
+                                            </div>
+                                            <asp:ContentPlaceHolder ID="cphHeader" runat="server">
+                                            </asp:ContentPlaceHolder>
+                                        </div>
+                                    </Content>
+                                </telerik:LayoutRow>
+                                <telerik:LayoutRow RowType="Container" WrapperCssClass="page-content-wrapper" StaticId="content" CssClass="t-container-padding" WrapperHtmlTag="Div" HtmlTag="Div">
+                                    <Content>
+                                        <div class="page-content" id="divContent">
+                                            <asp:ContentPlaceHolder ID="cphContent" runat="server" />
+                                        </div>
+                                    </Content>
+                                </telerik:LayoutRow>
+                            </Rows>
+                        </telerik:LayoutRow>
+                        <telerik:LayoutRow RowType="Container" WrapperCssClass="footer-wrapper" WrapperHtmlTag="Div" StaticId="footer" HtmlTag="None">
+                            <Content>
+                                <div runat="server" id="ft">
+                                    <div class="footer-buttons-wrapper">
+                                        <asp:ContentPlaceHolder ID="cphFooter" runat="server" />
+                                    </div>
+                                </div>
+                            </Content>
+                        </telerik:LayoutRow>
+                    </Rows>
+                </telerik:LayoutRow>
+            </Rows>
+        </telerik:RadPageLayout>
+        <asp:Button runat="server" ID="btnExport" Style="display: none;" />
+        <telerik:RadScriptBlock runat="server">
+            <script type="text/javascript">
+                pageSizeHandler();
+            </script>
+        </telerik:RadScriptBlock>
+    </form>
+</body>
+</html>

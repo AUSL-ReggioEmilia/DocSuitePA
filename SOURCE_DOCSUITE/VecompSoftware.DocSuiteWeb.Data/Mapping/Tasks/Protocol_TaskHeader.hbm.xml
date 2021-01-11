@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="TaskHeader">
+    
+    <id name="Id" column="Id">
+      <generator class="native" />
+    </id>
+
+    <property name="Code" type="StringClob" />
+    <property name="Title" />
+    <property name="Description" />
+    <property name="TaskType" />
+    <property name="Status" />
+    <property name="SendingProcessStatus" />
+    <property name="SendedStatus" not-null="false" />
+    <property name="LastChangedUser" />
+    <property name="LastChangedDate" not-null="false" />
+    <property name="RegistrationUser" />
+    <property name="RegistrationDate" />
+
+    <bag name="Details" table="TaskDetail" cascade="all-delete-orphan" inverse="true">
+      <key column="IdTask" />
+      <one-to-many class="TaskDetail" />
+    </bag>
+    <bag name="Parameters" table="TaskParameter" cascade="all-delete-orphan" inverse="true">
+      <key column="IdTask" />
+      <one-to-many class="TaskParameter" />
+    </bag>
+    <bag name="Protocols" table="TaskHeaderProtocol" cascade="all-delete-orphan" inverse="true">
+      <key column="IdTaskHeader" />
+      <one-to-many class="TaskHeaderProtocol" />
+    </bag>
+    <bag name="PECMails" table="TaskHeaderPECMail" cascade="all-delete-orphan" inverse="true">
+      <key column="IdTaskHeader" />
+      <one-to-many class="TaskHeaderPECMail" />
+    </bag>
+    <bag name="POLRequests" table="TaskHeaderPOLRequest" cascade="all-delete-orphan" inverse="true">
+      <key column="IdTaskHeader" />
+      <one-to-many class="TaskHeaderPOLRequest" />
+    </bag>
+
+  </class>
+
+</hibernate-mapping>

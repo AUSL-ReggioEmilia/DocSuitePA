@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Commons">
+
+  <class name="JeepServiceHost" table="JeepServiceHosts" lazy="true" >
+    <id name="Id" column="IdJeepServiceHost" >
+      <generator class="guid.comb" />
+    </id>
+    <property name="Hostname">
+      <column name="Hostname" not-null="false" />
+    </property>
+    <property name="IsActive">
+      <column name="IsActive" not-null="false" />
+    </property>
+    <property name="IsDefault">
+      <column name="IsDefault" not-null="false" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="false" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="false" />
+    </property>
+  </class>
+
+</hibernate-mapping>

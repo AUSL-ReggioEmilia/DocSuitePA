@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>VecompSoftware.DocSuite.Public.Core.Models</id>
+    <version>9.09.0.0</version>
+    <title>VecompSoftware DocSuite Public Models</title>
+    <authors>Dgroove Srl</authors>
+    <owners>Dgroove Srl</owners>
+    <iconUrl>https://vecompsoftwarenugetserver.azurewebsites.net/favicon.ico</iconUrl>
+    <description>Modelli standard per l'integrazione, tramite WebAPI, con il sistema documentale DocSuite</description>
+    <copyright>Copyright © Dgroove 2020</copyright>
+    <tags>VecompSoftware, Models, DocSuite, Integrazioni, Standard, DocSuite.Public.WebAPI</tags>
+	<dependencies>
+		<group targetFramework="net48" />
+		<group targetFramework="netstandard2.1">
+		  <dependency id="System.ComponentModel.Annotations" version="4.7.0" exclude="Build,Analyzers" />
+		</group>
+	</dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System.ComponentModel.DataAnnotations" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System.Core" targetFramework="net48" />
+      <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework="net48" />
+    </frameworkAssemblies>
+    <references />
+    <projectUrl>https://www.dgroove.it/</projectUrl>
+    <summary>Modelli standard per l'integrazione, tramite WebAPI, con il sistema documentale DocSuite</summary>
+  </metadata>
+  <files>
+    <file src="net48\VecompSoftware.DocSuite.Public.Core.Models.pdb" target="lib\net48" />
+    <file src="net48\VecompSoftware.DocSuite.Public.Core.Models.dll" target="lib\net48" />
+	<file src="netstandard2.1\VecompSoftware.DocSuite.Public.Core.Models.pdb" target="lib\netstandard2.1" />
+	<file src="netstandard2.1\VecompSoftware.DocSuite.Public.Core.Models.dll" target="lib\netstandard2.1" />
+  </files>
+</package>

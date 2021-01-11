@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/PreservationTask" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationTask" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd31" namespace="http://BiblosDS/2009/10/PreservationAlert" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/Archive" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd37" namespace="http://BiblosDS/2009/10/PreservationTaskGroup" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd33" namespace="http://BiblosDS/2009/10/PreservationTaskType" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd27" namespace="http://BiblosDS/2009/10/PreservationUser" />
+  <xs:import schemaLocation="http://localhost:1526/Documents.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:complexType name="PreservationTask">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ActivationPin" nillable="true" type="ser:guid" />
+          <xs:element xmlns:q2="http://BiblosDS/2009/10/PreservationAlert" minOccurs="0" name="Alerts" nillable="true" type="q2:ArrayOfPreservationAlert" />
+          <xs:element xmlns:q3="http://BiblosDS/2009/10/Archive" minOccurs="0" name="Archive" nillable="true" type="q3:Archive" />
+          <xs:element minOccurs="0" name="CorrelatedTasks" nillable="true" type="tns:ArrayOfPreservationTask" />
+          <xs:element minOccurs="0" name="Enabled" type="xs:boolean" />
+          <xs:element minOccurs="0" name="EndDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="EndDocumentDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="ErrorMessages" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="EstimatedDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="Executed" type="xs:boolean" />
+          <xs:element minOccurs="0" name="ExecutedDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="HasError" type="xs:boolean" />
+          <xs:element minOccurs="0" name="IdPreservation" nillable="true" type="ser:guid" />
+          <xs:element minOccurs="0" name="IdPreservationTask" type="ser:guid" />
+          <xs:element minOccurs="0" name="StartDate" nillable="true" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="StartDocumentDate" nillable="true" type="xs:dateTime" />
+          <xs:element xmlns:q4="http://BiblosDS/2009/10/PreservationTaskGroup" minOccurs="0" name="TaskGroup" nillable="true" type="q4:PreservationTaskGroup" />
+          <xs:element xmlns:q5="http://BiblosDS/2009/10/PreservationTaskType" minOccurs="0" name="TaskType" nillable="true" type="q5:PreservationTaskType" />
+          <xs:element xmlns:q6="http://BiblosDS/2009/10/PreservationUser" minOccurs="0" name="User" nillable="true" type="q6:PreservationUser" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PreservationTask" nillable="true" type="tns:PreservationTask" />
+  <xs:complexType name="ArrayOfPreservationTask">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="PreservationTask" nillable="true" type="tns:PreservationTask" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfPreservationTask" nillable="true" type="tns:ArrayOfPreservationTask" />
+</xs:schema>

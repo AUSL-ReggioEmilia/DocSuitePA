@@ -1,0 +1,186 @@
+﻿.resl .titolo {
+    background-color: #ffaa1d;
+    background-image: none;
+    color: #000000;
+    height: 15pt;
+    padding-top: 3px;
+}
+
+.resl tr.titolo {
+    background-image: url(../App_Themes/DocSuite2008/Images/Resl/ReslTitoloGrad.gif);
+    color: white;
+}
+
+/*Tabelle*/
+.resl .Table {
+    border-width: 0;
+    border-collapse: collapse;
+    color: black;
+    width: 100%;
+    height: 15pt;
+}
+
+.resl table.tabella {
+    border: 1px solid #999999;
+    border-collapse: collapse;
+    color: black;
+    width: 100%;
+    margin-bottom: 2px;
+    background: #FFE0C0;
+}
+
+/*Intestazione Tabelle*/
+.resl tr.tabella {
+    font-weight: bold;
+    color: navy;
+    height: 15pt;
+    background-image: url(../App_Themes/DocSuite2008/Images/Resl/ReslTabellaGrad.gif);
+}
+
+/*Colore Scuro*/
+.resl tr.Scuro, .resl td.SXScuro {
+    background-color: #FFC080;
+}
+
+.resl td.SXScuro {
+    font-weight: bold;
+    text-align: right;
+}
+
+/*Colore Chiaro*/
+.resl tr.Chiaro, .resl td.DXChiaro {
+    background-color: #FFE0C0;
+    vertical-align: middle;
+}
+
+.resl tr.ChiaroNoPadding, .resl td.DXChiaroNoPadding {
+    background-color: #FFE0C0;
+    vertical-align: middle;
+    padding-bottom: 0px !important;
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+/*Colore Selezionato*/
+.resl tr.Selezionato {
+    background-color: #f1c15f;
+    cursor: hand;
+}
+
+/*Spazio celle tabelle*/
+.resl .Table td {
+    padding: 2px;
+}
+
+.resl table.datatable {
+    border: 1px solid #999999;
+    background: #FFE0C0;
+}
+
+    .resl table.datatable fieldset {
+        background: #ffead4;
+    }
+
+    .resl table.datatable th, .resl table.datatable td.head {
+        background-image: none;
+        border-bottom: 1px solid #999999;
+        color: #000000;
+        background-color: #ffc78c;
+    }
+
+    .resl table.datatable td {
+        background-color: #ffead4;
+    }
+
+        .resl table.datatable td.label {
+        }
+
+    .resl table.datatable .labelPanel {
+        background-color: #FFCE9E;
+    }
+
+    /*Colore Selezionato*/
+    .resl table.datatable td.selected {
+        background-color: Yellow;
+        cursor: hand;
+    }
+
+    .resl table.datatable td.DocumentSeriesLabel {
+        vertical-align: middle;
+        font-size: 11px;
+        text-align: right;
+        width: 200px;
+        font-weight: bold;
+    }
+/* Eliminare datataform a favore di datatable */
+.resl table.dataform {
+    background: #FFE0C0;
+}
+
+    .resl table.dataform td {
+        background-color: #FFE0C0;
+        padding: 1px 2px 1px 2px;
+    }
+
+        .resl table.dataform td.label {
+            background-color: #FFCE9E;
+            font-size: 11px;
+        }
+
+.resl .form-group .control-label {
+    background-color: #FFCE9E;
+    font-size: 11px;
+}
+
+
+.resl .RadPanelBar_Office2007 .rpOut, .resl .RadPanelBar_Office2007 a.rpExpanded {
+    background: #ffc78c;
+    color: black;
+    border-color: #ffc78c;
+}
+
+.resl .RadPanelBar {
+    padding-bottom:2px;
+}
+
+.resl .RadPanelBar_Office2007 .rpFirst a.rpLink {
+    border-color: #999;
+}
+
+.resl div.RadPanelBar_Office2007 .rpText {
+    line-height: 20px;
+}
+
+.resl .form-group {
+    background-color: #FFE0C0;
+    font-size: 11px;
+    padding: 1px 2px 1px 2px;
+}
+
+.resl .dsw-panel .dsw-panel-title {
+    border-bottom: 1px solid #999999;
+    color: black;
+    background-color: #ffaa1d;
+}
+
+.resl .dsw-panel .dsw-panel-content {
+    color: #000;
+}
+
+.resl .dsw-arrow-down {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_down.png);
+    background-position: center;
+    width: 16px;
+    height: 16px;
+}
+
+.resl .dsw-arrow-up {
+    background: url(../App_Themes/DocSuite2008/imgset16/arrow_up.png);
+    width: 16px;
+    height: 16px;
+}
+
+.resl div.RadPanelBar_Office2007 .font_node {
+    font-weight: bold;
+}

@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<app>
+    <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+</app>
+
+@section prescripts {
+    <script type="text/javascript">
+        var userLogged = '@Html.Raw(ViewData["UserLogged"])';
+        if (userLogged) {
+            sessionStorage.setItem('user-model', userLogged);
+        }
+    </script>
+}

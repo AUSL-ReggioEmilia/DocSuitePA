@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="ProtocolLink" table="ProtocolLinks">
+
+    <id name="Id" column="UniqueId" >
+      <generator class="guid.comb" />
+    </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+
+    <property name="Year" column="Year" not-null="true" />
+    <property name="Number" column="Number" not-null="true" />
+    <property name="YearSon" column="YearSon" not-null="true" />
+    <property name="NumberSon" column="NumberSon" not-null="true" />
+    <property name="LinkType" column="LinkType"></property>
+
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    
+    <many-to-one name="Protocol" class="Protocol" not-null="true">
+      <column name="UniqueIdProtocolParent" />
+    </many-to-one>
+    <many-to-one name="ProtocolLinked" class="Protocol" not-null="true">
+      <column name="UniqueIdProtocolSon" />
+    </many-to-one>
+    
+  </class>
+
+</hibernate-mapping>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://Vecomp.BiblosDs.Transit" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://Vecomp.BiblosDs.Transit" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://Vecomp.BiblosDs.Transit/Imports">
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd0" namespace="http://Vecomp.BiblosDs.Transit" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/DocumentResponse" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/ResponseBase" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/ResponseError" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Document" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/Archive" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Storage" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd9" namespace="http://BiblosDS/2009/10/StorageType" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd10" namespace="http://BiblosDS/2009/10/AttributeValue" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/Attribute" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd12" namespace="http://BiblosDS/2009/10/AttributeGroup" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd13" namespace="http://BiblosDS/2009/10/FilterOperator" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd14" namespace="http://BiblosDS/2009/10/AttributeMode" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd15" namespace="http://BiblosDS/2009/10/Certificate" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd16" namespace="http://BiblosDS/2009/10/Content" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd17" namespace="http://BiblosDS/2009/10/Permission" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd18" namespace="http://BiblosDS/2009/10/PermissionMode" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd19" namespace="http://BiblosDS/2009/10/Preservation" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd20" namespace="http://BiblosDS/2009/10/PreservationJournaling" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/PreservationJournalingActivity" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd22" namespace="http://BiblosDS/2009/10/PreservationUser" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd23" namespace="http://BiblosDS/2009/10/PreservationUserRole" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd24" namespace="http://BiblosDS/2009/10/PreservationRole" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd25" namespace="http://BiblosDS/2009/10/PreservationTask" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd26" namespace="http://BiblosDS/2009/10/PreservationAlert" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd27" namespace="http://BiblosDS/2009/10/PreservationAlertType" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd28" namespace="http://BiblosDS/2009/10/PreservationTaskType" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd29" namespace="http://BiblosDS/2009/10/PreservationScheduleTaskType" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd30" namespace="http://BiblosDS/2009/10/PreservationSchedule" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd31" namespace="http://BiblosDS/2009/10/PreservationTaskGroup" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd32" namespace="http://BiblosDS/2009/10/PreservationTaskGroupType" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd33" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
+      <xsd:import schemaLocation="http://localhost:1526/Transit.svc?xsd=xsd34" namespace="http://BiblosDS/2009/10/StorageArea" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ITransit_GetTransitListDocumentsPaged_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetTransitListDocumentsPaged" />
+  </wsdl:message>
+  <wsdl:message name="ITransit_GetTransitListDocumentsPaged_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetTransitListDocumentsPagedResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransit_StoreTransitArchiveDocuments_InputMessage">
+    <wsdl:part name="parameters" element="tns:StoreTransitArchiveDocuments" />
+  </wsdl:message>
+  <wsdl:message name="ITransit_StoreTransitArchiveDocuments_OutputMessage">
+    <wsdl:part name="parameters" element="tns:StoreTransitArchiveDocumentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransit_StoreTransitDocuments_InputMessage">
+    <wsdl:part name="parameters" element="tns:StoreTransitDocuments" />
+  </wsdl:message>
+  <wsdl:message name="ITransit_StoreTransitDocuments_OutputMessage">
+    <wsdl:part name="parameters" element="tns:StoreTransitDocumentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="ITransit_StoreTransitDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:StoreTransitDocument" />
+  </wsdl:message>
+  <wsdl:message name="ITransit_StoreTransitDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:StoreTransitDocumentResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ITransit">
+    <wsdl:operation name="GetTransitListDocumentsPaged">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Transit/ITransit/GetTransitListDocumentsPaged" message="tns:ITransit_GetTransitListDocumentsPaged_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Transit/ITransit/GetTransitListDocumentsPagedResponse" message="tns:ITransit_GetTransitListDocumentsPaged_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="StoreTransitArchiveDocuments">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Transit/ITransit/StoreTransitArchiveDocuments" message="tns:ITransit_StoreTransitArchiveDocuments_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Transit/ITransit/StoreTransitArchiveDocumentsResponse" message="tns:ITransit_StoreTransitArchiveDocuments_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="StoreTransitDocuments">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Transit/ITransit/StoreTransitDocuments" message="tns:ITransit_StoreTransitDocuments_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Transit/ITransit/StoreTransitDocumentsResponse" message="tns:ITransit_StoreTransitDocuments_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="StoreTransitDocument">
+      <wsdl:input wsaw:Action="http://Vecomp.BiblosDs.Transit/ITransit/StoreTransitDocument" message="tns:ITransit_StoreTransitDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://Vecomp.BiblosDs.Transit/ITransit/StoreTransitDocumentResponse" message="tns:ITransit_StoreTransitDocument_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

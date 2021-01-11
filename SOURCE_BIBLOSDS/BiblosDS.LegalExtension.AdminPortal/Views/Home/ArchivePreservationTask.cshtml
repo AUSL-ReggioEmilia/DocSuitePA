@@ -1,0 +1,348 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.PreservationTaskViewModel
+
+@{
+    ViewBag.Title = "Task archivio";
+}
+
+@section featured {
+    <hgroup class="title">
+        <h1>@ViewBag.Title <b>@Model.ArchiveName</b></h1>
+    </hgroup>
+}
+
+@using (Html.BeginForm("SetArchiveDefaultSchedule", "Home", FormMethod.Post))
+{
+  @Html.ValidationSummary(false)
+
+  <input type="hidden" name="idArchive" value="@Model.IdArchive" />
+
+  <table class="form-table k-block">
+    <tr>
+      <td style="width: 200px;">
+        <label>
+          Periodicit&agrave; predefinita dell'archivio
+        </label>
+      </td>
+      <td>
+        @(Html.Kendo().DropDownList()
+                .Name("taskPeriodSetId")
+                .DataValueField("IdPreservationSchedule")
+                .DataTextField("Name")
+            .SelectedIndex(Model.SelectedScheduleIndex)
+                .BindTo(Model.PeriodSchedulers))
+      </td>
+      <td>
+        <input type="submit" class="k-button" value="Imposta" />
+      </td>
+    </tr>
+  </table>
+}
+
+
+<!-- Form per creazione tasks. -->
+@using (Html.BeginForm("CreatePreservationTask", "Home", FormMethod.Post))
+{
+  @Html.ValidationSummary(false)
+
+  <input type="hidden" name="idArchive" value="@Model.IdArchive" />
+
+  <table class="form-table k-block">
+    <tr>
+      <td style="width: 200px;">
+        <label>
+          Periodicit&agrave;
+        </label>
+      </td>
+      <td>
+        @(Html.Kendo().DropDownList()
+          .Name("taskPeriodId")
+          .DataValueField("IdPreservationSchedule")
+          .DataTextField("Name")
+          .SelectedIndex(Model.SelectedScheduleIndex)
+          .BindTo(Model.PeriodSchedulers))          
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>
+        <label>
+          Anno
+        </label>
+      </td>
+      <td>
+        @(Html.Kendo().NumericTextBox()
+                .Name("taskYear")
+                .Format("0000")
+                .Decimals(0)
+                .Min(DateTime.MinValue.Year)
+                .Max(DateTime.MaxValue.Year)
+                .Value(Model.NextPreservationTaskStartDocumentDate.Year))
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>
+        Genera un task @Html.CheckBox("onlyOneTask", true) (Mese/Giorno data inizio documenti)
+      </td>
+      <td id="month">
+        @(Html.Kendo().NumericTextBox()
+                .Name("taskMonth")
+                .Format("00")
+                .Decimals(0)
+                .Min(1)
+                .Max(12)
+                .Value(Model.NextPreservationTaskStartDocumentDate.Month))
+      </td>
+      <td>
+        @(Html.Kendo().NumericTextBox()
+                .Name("taskDay")
+                .Format("00")
+                .Decimals(0)
+                .Min(1)
+                .Max(31)
+                .Value(Model.NextPreservationTaskStartDocumentDate.Day))
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Task abilitato
+      </td>
+      <td>
+        @Html.CheckBox("isEnabled", true)
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td colspan="2">
+        <input type="submit" class="k-button" value="Crea task" />
+      </td>
+    </tr>
+  </table>
+  <br />
+}
+
+@if (TempData["Error"] != null)
+{
+  <div style="margin-top:5px; padding:10px;" class="k-block k-error-colored">
+    <b>@TempData["Error"]</b>
+  </div>
+}
+
+@(Html.Kendo().Window()
+    .Name("closePreviousTasks")
+    .Title("Crea task di chiusura")
+    .Width(400)
+    .Height(250)
+    .Modal(true)
+    .Visible(false))
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    /*
+    $("#onlyOneTask").click(
+    function () {
+      if ($('#onlyOneTask').attr('checked')) {
+        $("#month").show();
+      }
+      else {
+        $("#month").hide();
+      }
+    })
+    */
+  });
+</script>
+@(Html.Kendo().Grid<BiblosDS.Library.Common.Objects.PreservationTask>()
+              .Name("Grid")
+              .Columns(columns =>
+              {
+                  columns.Bound(o => o.Executed).ClientTemplate("<a href='../PreservationTaskDetails/#=IdPreservationTask#' class='k-button'>Dettaglio</a>").Title(" ");
+                  columns.Bound(o => o.EstimatedDate).Format("{0:dd/MM/yyyy}").Title("Data prevista");
+                  columns.Bound(o => o.StartDocumentDate).Format("{0:dd/MM/yyyy}").Title("Data inzio doc.");
+                  columns.Bound(o => o.EndDocumentDate).Format("{0:dd/MM/yyyy}").Title("Data fine doc.");
+                  columns.Bound(o => o.Enabled).Title("Abilitato");                  
+                  columns.Template(e => { }).ClientTemplate("#=actionsTemplate(data)#");
+              })
+      .ClientDetailTemplateId("taskTemplate")
+      .Pageable(pager => { pager.Enabled(true); pager.Refresh(true); pager.Info(true); })
+      .Resizable(a => a.Columns(true))
+      .Scrollable()
+      .Events(events => events.DataBound("dataBound"))
+      .DataSource(dataSource => dataSource
+        .Ajax()
+        .Model(model => model.Id(p => p.IdPreservationTask))
+        .PageSize(50)
+        .Read(read => read.Action("ReadTasks", "Home", new { id = Model.IdArchive, tmp = DateTime.Now.Ticks }))
+      )
+)
+<script id="taskTemplate" type="text/kendo-tmpl">
+  @(Html.Kendo().Grid<BiblosDS.Library.Common.Objects.PreservationTask>()
+            .Name("Tasks_#=IdPreservationTask#")
+            .Columns(columns =>
+            {
+              columns.Bound(o => o.TaskType.Description).Title("Descrizione");
+              columns.Bound(o => o.EstimatedDate).Format("{0:dd/MM/yyyy}").Title("Data prevista");
+              columns.Bound(o => o.ExecutedDate).Format("{0:dd/MM/yyyy}").Title("Data esecuzione");
+              columns.Bound(o => o.StartDocumentDate).Format("{0:dd/MM/yyyy}").Title("Data inizio doc.");
+              columns.Bound(o => o.EndDocumentDate).Format("{0:dd/MM/yyyy}").Title("Data fine doc.");
+              columns.Bound(o => o.Executed).Title("Eseguita");
+              columns.Bound(o => o.ErrorMessages).Title("Errori");
+              columns.Bound(o => o.CanExecute).Title("Abilitata");
+            })
+            .Pageable(pager => { pager.Enabled(false); pager.Refresh(true); pager.Info(true); })
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .Read(read => read.Action("ReadChildTasks", "Home", new { id = "#=IdPreservationTask#", t = DateTime.Now.Ticks }))
+            )
+            .Events(events => events.DataBound("dataBound_details"))
+            .ToClientTemplate()
+  )
+</script>
+<script>
+    function openClosePreviousArchiveTasksWindow(idPreservationTask) {
+        var window = $("#closePreviousTasks").data("kendoWindow");
+        window.refresh({
+            url: "@Url.Action("ClosePreviousArchiveTasks", "Home")?idPreservationTask=" + idPreservationTask
+        });
+        window.open().center();
+    }
+
+    function actionsTemplate(data) {
+        var htmlTemplate = "";
+        if (data.ExecutedDate == null) {
+            htmlTemplate = "<a href='../DeletePreservationTask/"+data.id+"' class='k-button'>Elimina Task</a>";
+        }
+
+        if (data.TaskStatus) {
+            switch (data.TaskStatus) {
+                case 4: {
+                    htmlTemplate = htmlTemplate + "<a href=\"#\" class=\"k-button\" onclick=\"openClosePreviousArchiveTasksWindow('"+data.id+"')\">Crea Task chiusura</a>";
+                }
+                    break;
+            }
+        }
+        return htmlTemplate;
+    }
+</script>
+<script>
+  function dataBound() {
+      //this.expandRow(this.tbody.find("tr.k-master-row").first());
+  }
+
+  function dataBound_details(e) {
+
+  }
+
+  function hideiffalse(val) {
+    debugger;
+    alert(val);
+    if (!val)
+      return "display:none;";
+    return "";
+  }
+</script>
+<div id="window">
+</div>
+<script>
+  
+ 
+  function OpenPreservationDetails(id) {
+
+    var window = $("#window").kendoWindow(
+    {
+      height: "400px",
+      width: "615px",
+      title: "Preservation details",
+      content: '@Url.Action("PreservationDetails", "Home")?idPreservation=' + id,
+      modal: true,
+      resizable: false,
+    });
+    window.data("kendoWindow").open();
+  }
+
+
+</script>
+<style scoped="scoped">
+  .product {
+    float: left;
+    width: 450px;
+    margin: 10px;
+    padding: 5px;
+  }
+
+    .product h3 {
+      margin: 0 auto;
+      padding: 10px 10px 10px 15px;
+      color: #fff;
+      font-size: 1em;
+      float: left;
+      width: 400px;
+      text-transform: uppercase;
+      background-color: rgba(0,0,0,0.4);
+      -moz-box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+      -webkit-box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+      box-shadow: inner 0 0 20px rgba(0,0,0,0.2);
+      -moz-border-radius-topright: 10px;
+      -moz-border-radius-bottomright: 10px;
+      -webkit-border-top-right-radius: 10px;
+      -webkit-border-bottom-right-radius: 10px;
+      -moz-border-radius-topleft: 10px;
+      -moz-border-radius-bottomleft: 10px;
+      -webkit-border-top-left-radius: 10px;
+      -webkit-border-bottom-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+
+    .product dl {
+      float: left;
+      margin: 15px 0 0 0;
+    }
+
+    .product dt, dd {
+      float: left;
+      margin: 0;
+      padding: 0 5px 0 15px;
+      width: 300px;
+    }
+
+    .product dt {
+      clear: left;
+      width: 300px;
+      font-weight: bold;
+      opacity: 0.6;
+      margin: 10px 0 0 0;
+    }
+
+    .k-listview:after, .product dl:after {
+      content: ".";
+      display: block;
+      height: 0;
+      clear: both;
+      visibility: hidden;
+    }
+
+  .k-listview {
+    border: 0;
+    padding: 0 0 20px 0;
+    min-width: 0;
+  }
+
+  .edit-buttons {
+    text-align: right;
+    padding: 5px;
+    min-width: 100px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+  }
+
+  #Grid {
+    height: 600px;
+  }
+
+  .k-grid-content {
+    min-height: 500px;
+  }
+</style>

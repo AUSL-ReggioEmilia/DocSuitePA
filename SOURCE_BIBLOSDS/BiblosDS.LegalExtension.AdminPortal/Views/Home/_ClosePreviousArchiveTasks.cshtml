@@ -1,0 +1,17 @@
+﻿
+@using (Html.BeginForm("ClosePreviousArchiveTasks", "Home", FormMethod.Post))
+{
+    @Html.Hidden("idPreservationTask", TempData["IdPreservationTask"])
+    <p style="font-style: italic;">Tramite questa funzionalità è possibile creare un Task di chiusura per l'anno specificato, parallelo ad eventuali
+    task di conservazione già creati</p>
+    <p>
+        @(Html.Kendo().DropDownList()
+         .Name("selectedTaskYear")
+         .BindTo(ViewBag.Years))
+    </p>
+    <p>
+        @(Html.Kendo().Button()
+            .Name("btnSubmit")
+            .Content("Conferma"))
+    </p>
+}

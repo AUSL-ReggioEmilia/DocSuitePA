@@ -1,0 +1,65 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.Archives.ArchiveConfigurationWizardViewModel
+@{
+    ViewBag.Title = "Wizard configurazione archivio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<div style="margin-bottom: 5px;">
+    @(Html.Kendo().ProgressBar()
+                  .Name("archiveConfigurationCompleteness")
+                  .Type(ProgressBarType.Value)
+                  .ShowStatus(false)
+                  .Min(0)
+                  .Max(4)
+                  .Value(Model.FlowActiveIndex)
+    )
+</div>
+
+@using (Html.BeginForm("ArchiveConfigurationWizard", "Archive", FormMethod.Post, new { @id = "wizardForm" }))
+{
+    @Html.AntiForgeryToken();
+    if (ViewData.ModelState.Any(x => x.Value.Errors.Any()))
+    {
+        @Html.ValidationSummary("", new { @class = "k-block k-error-colored", @style = "margin-bottom: 5px;" })
+    }
+    <div>
+        @(Html.Kendo().TabStrip()
+                .Name("wizardTabstrip")
+                .Animation(animation =>
+                    animation.Open(effect =>
+                        effect.Fade(FadeDirection.In)))
+                .Items(tabstrip =>
+                {
+                    tabstrip.Add().Text("Verifica configurazione archivio")
+                        .Selected(Model.FlowActiveIndex == 1)
+                        .Enabled(Model.FlowActiveIndex < 3)
+                        .LoadContentFrom("CheckArchivePreservationConfiguration", "Archive", new { id = Model.IdArchive });
+                    tabstrip.Add().Text("Selezione attributi conservazione")
+                        .Selected(Model.FlowActiveIndex == 2)
+                        .Enabled(Model.FlowActiveIndex == 2)
+                        .LoadContentFrom("ArchivePreservationAttributesConfiguration", "Archive", new { id = Model.IdArchive });
+                    tabstrip.Add().Text("Modifica archivio")
+                        .Selected(Model.FlowActiveIndex == 3)
+                        .Enabled(Model.FlowActiveIndex == 3)
+                        .LoadContentFrom("ExecuteArchivePreservationMigrator", "Archive", new { id = Model.IdArchive });
+                    tabstrip.Add().Text("Riepilogo")
+                        .Selected(Model.FlowActiveIndex == 4)
+                        .Enabled(Model.FlowActiveIndex == 4)
+                        .LoadContentFrom("ArchivePreservationConfigurationSummary", "Archive", new { id = Model.IdArchive, isCompleteWithErrors = Model.IsCompleteWithErrors });
+                })
+        )
+    </div>
+}
+
+<script type="text/javascript">
+    $(function () {
+        var validator = $("#wizardForm").kendoValidator().data("kendoValidator");
+        $("#wizardForm").submit(function (event) {
+            if (!validator.validate()) {
+                event.preventDefault();
+            }
+        });
+    });
+</script>

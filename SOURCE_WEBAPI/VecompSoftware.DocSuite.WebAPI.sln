@@ -1,0 +1,472 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistance", "Persistance", "{2BB3BB5A-5307-42CE-896D-6B567D3FF903}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{37B8128A-C78A-4B4B-996D-C21B646A4AFF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E4E39164-6A84-4204-8289-CB1D615A53BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{A1FFA5F8-646F-43EF-A72A-5640EC4A8CC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Common", "VecompSoftware.DocSuiteWeb.Common\VecompSoftware.DocSuiteWeb.Common.csproj", "{58938AA6-B3D6-4256-8C5C-4BCAB88517BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.EnterpriseLogging", "VecompSoftware.DocSuiteWeb.EnterpriseLogging\VecompSoftware.DocSuiteWeb.EnterpriseLogging.csproj", "{026DDF94-5554-4FE4-BCAE-1985E56EBD9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Common.Test", "VecompSoftware.DocSuiteWeb.Common.Test\VecompSoftware.DocSuiteWeb.Common.Test.csproj", "{1EEB6663-B72A-4EB7-A141-0086EC3C98EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Repository.EF.Test", "VecompSoftware.DocSuiteWeb.Repository.EF.Test\VecompSoftware.DocSuiteWeb.Repository.EF.Test.csproj", "{87478FAC-8084-44DB-A1C4-F4AC5FE6C72C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Service.EF.Test", "VecompSoftware.DocSuiteWeb.Service.EF.Test\VecompSoftware.DocSuiteWeb.Service.EF.Test.csproj", "{493EF3DB-1BFE-4A39-9C4D-EA8FE635636A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Data", "VecompSoftware.DocSuiteWeb.Data\VecompSoftware.DocSuiteWeb.Data.csproj", "{17962438-D43B-41E7-8D6F-5A0C33B054AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Data.EF", "VecompSoftware.DocSuiteWeb.Data.EF\VecompSoftware.DocSuiteWeb.Data.EF.csproj", "{E017CB37-4206-4875-B4D8-6D6FBA4CC5E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Repository", "VecompSoftware.DocSuiteWeb.Repository\VecompSoftware.DocSuiteWeb.Repository.csproj", "{27D8FCBB-8A8E-430B-8747-A5ACE9B4FFCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Repository.EF", "VecompSoftware.DocSuiteWeb.Repository.EF\VecompSoftware.DocSuiteWeb.Repository.EF.csproj", "{50C1E400-7A37-4F64-89E9-A0990F9E0DC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Finder", "VecompSoftware.DocSuiteWeb.Finder\VecompSoftware.DocSuiteWeb.Finder.csproj", "{B311CF16-3A65-44C6-850B-92FCFF26E79F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Mapper", "VecompSoftware.DocSuiteWeb.Mapper\VecompSoftware.DocSuiteWeb.Mapper.csproj", "{643B29B4-B25D-44D3-8831-E80C5E5F25D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Mapper.Entity", "VecompSoftware.DocSuiteWeb.Mapper.Entity\VecompSoftware.DocSuiteWeb.Mapper.Entity.csproj", "{A1C4A68A-A888-4CF1-A1E5-2ED391E4F826}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Mapper.Model", "VecompSoftware.DocSuiteWeb.Mapper.Model\VecompSoftware.DocSuiteWeb.Mapper.Model.csproj", "{3CFE3AD8-84E2-4755-A58E-BEB074B890D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Mapper.ServiceBus", "VecompSoftware.DocSuiteWeb.Mapper.ServiceBus\VecompSoftware.DocSuiteWeb.Mapper.ServiceBus.csproj", "{81AE4BA5-4A26-434D-82EE-7507A777126A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Mapper.Workflow", "VecompSoftware.DocSuiteWeb.Mapper.Workflow\VecompSoftware.DocSuiteWeb.Mapper.Workflow.csproj", "{BDD1E05F-E883-40D4-80A6-25B667D04D97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Model", "VecompSoftware.DocSuiteWeb.Model\VecompSoftware.DocSuiteWeb.Model.csproj", "{DF5935CA-367B-4124-9840-AAFD3C419EBA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Service", "VecompSoftware.DocSuiteWeb.Service\VecompSoftware.DocSuiteWeb.Service.csproj", "{5DAD3FD5-F0F4-485C-8C6C-B0BE0C288EE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Service.ServiceBus", "VecompSoftware.DocSuiteWeb.Service.ServiceBus\VecompSoftware.DocSuiteWeb.Service.ServiceBus.csproj", "{149E6A1E-2AE2-4279-986F-5B2815C7624D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Service.Workflow", "VecompSoftware.DocSuiteWeb.Service.Workflow\VecompSoftware.DocSuiteWeb.Service.Workflow.csproj", "{B179F4F0-9825-40FA-A38B-841B53B9B377}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Service.Entity", "VecompSoftware.DocSuiteWeb.Service.Entity\VecompSoftware.DocSuiteWeb.Service.Entity.csproj", "{395C7019-BDEE-4E20-9C53-5DF070E480FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Validation", "VecompSoftware.DocSuiteWeb.Validation\VecompSoftware.DocSuiteWeb.Validation.csproj", "{CBF9FE81-3A91-4B42-964D-17381F1CFBBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Entity", "VecompSoftware.DocSuiteWeb.Entity\VecompSoftware.DocSuiteWeb.Entity.csproj", "{34901FA6-4816-4872-9986-E42B2E866095}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.CustomValidation", "VecompSoftware.DocSuiteWeb.CustomValidation\VecompSoftware.DocSuiteWeb.CustomValidation.csproj", "{B8569C27-50B1-4787-9C9C-3FDD2079EEB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Security", "VecompSoftware.DocSuiteWeb.Security\VecompSoftware.DocSuiteWeb.Security.csproj", "{B4E770ED-2298-488A-856B-5BF53EBF88EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.Commons.Interfaces", "VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj", "{C6F323C0-C21B-433B-90C8-0B64A42115AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VecompSoftware.DocSuite.Public.Core.Models", "VecompSoftware.DocSuite.Public.Core.Models\VecompSoftware.DocSuite.Public.Core.Models.csproj", "{077AE562-309A-4F9D-A4F8-2808981D8BE8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VecompSoftware.DocSuite.Public.Core.Models.Customs", "VecompSoftware.DocSuite.Public.Core.Models.Customs\VecompSoftware.DocSuite.Public.Core.Models.Customs.csproj", "{0578D9C7-C7C4-43F3-B0ED-5A9272376461}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VecompSoftware.DocSuite.Public.Helpers", "VecompSoftware.DocSuite.Public.Helpers\VecompSoftware.DocSuite.Public.Helpers.csproj", "{57E84F5A-8BDC-40F3-9C74-3B07DB1D1D7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Public.Tests", "VecompSoftware.DocSuite.Public.Tests\VecompSoftware.DocSuite.Public.Tests.csproj", "{99FA040D-2F58-418A-AAA8-7E9A48C93ABE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Public.WebAPI", "VecompSoftware.DocSuite.Public.WebAPI\VecompSoftware.DocSuite.Public.WebAPI.csproj", "{67E0FB4F-96CB-40D0-AE41-F8D095C22E75}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VecompSoftware.DocSuite.Public.Core.Models.Helpers", "VecompSoftware.DocSuite.Public.Core.Models.Helpers\VecompSoftware.DocSuite.Public.Core.Models.Helpers.csproj", "{A6A979BA-38C8-4286-8964-F385FF89E07E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Document.BiblosDS", "VecompSoftware.DocSuite.Document.BiblosDS\VecompSoftware.DocSuite.Document.BiblosDS.csproj", "{1EA007B2-B9FE-4A04-AAE4-F86366FB3036}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Document", "VecompSoftware.DocSuite.Document\VecompSoftware.DocSuite.Document.csproj", "{EA3F23A5-9EB3-4512-A847-083DE0EFE278}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Private.WebAPI", "VecompSoftware.DocSuite.Private.WebAPI\VecompSoftware.DocSuite.Private.WebAPI.csproj", "{B74B30CC-01BD-4290-A6EA-EDB36154E9E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.WebAPI.Common", "VecompSoftware.DocSuite.WebAPI.Common\VecompSoftware.DocSuite.WebAPI.Common.csproj", "{0E7722C7-E7E0-4CA4-98DD-741894BFABC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Interceptions", "VecompSoftware.DocSuite.Interceptions\VecompSoftware.DocSuite.Interceptions.csproj", "{AD6836DA-8BAD-4E6B-AC30-B507778573C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Service.Models", "VecompSoftware.DocSuite.Service.Models\VecompSoftware.DocSuite.Service.Models.csproj", "{666BDBDA-D461-4692-9CF7-FF03784A6E96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Document.Generator.PDF", "VecompSoftware.DocSuite.Document.Generator.PDF\VecompSoftware.DocSuite.Document.Generator.PDF.csproj", "{5F08F790-8C37-4575-82C2-5FFE91E6F214}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Document.Generator.OpenXml.Word", "VecompSoftware.DocSuite.Document.Generator.OpenXml.Word\VecompSoftware.DocSuite.Document.Generator.OpenXml.Word.csproj", "{0C334C00-3B46-4A3A-B2C4-EDC741487544}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuite.Service.SignalR", "VecompSoftware.DocSuite.Service.SignalR\VecompSoftware.DocSuite.Service.SignalR.csproj", "{203A04A0-1C6E-455C-A5CD-D63808855BC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{58938AA6-B3D6-4256-8C5C-4BCAB88517BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58938AA6-B3D6-4256-8C5C-4BCAB88517BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58938AA6-B3D6-4256-8C5C-4BCAB88517BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58938AA6-B3D6-4256-8C5C-4BCAB88517BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{026DDF94-5554-4FE4-BCAE-1985E56EBD9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{026DDF94-5554-4FE4-BCAE-1985E56EBD9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{026DDF94-5554-4FE4-BCAE-1985E56EBD9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{026DDF94-5554-4FE4-BCAE-1985E56EBD9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EEB6663-B72A-4EB7-A141-0086EC3C98EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EEB6663-B72A-4EB7-A141-0086EC3C98EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EEB6663-B72A-4EB7-A141-0086EC3C98EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EEB6663-B72A-4EB7-A141-0086EC3C98EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87478FAC-8084-44DB-A1C4-F4AC5FE6C72C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87478FAC-8084-44DB-A1C4-F4AC5FE6C72C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87478FAC-8084-44DB-A1C4-F4AC5FE6C72C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87478FAC-8084-44DB-A1C4-F4AC5FE6C72C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{493EF3DB-1BFE-4A39-9C4D-EA8FE635636A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{493EF3DB-1BFE-4A39-9C4D-EA8FE635636A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{493EF3DB-1BFE-4A39-9C4D-EA8FE635636A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{493EF3DB-1BFE-4A39-9C4D-EA8FE635636A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17962438-D43B-41E7-8D6F-5A0C33B054AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17962438-D43B-41E7-8D6F-5A0C33B054AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17962438-D43B-41E7-8D6F-5A0C33B054AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17962438-D43B-41E7-8D6F-5A0C33B054AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E017CB37-4206-4875-B4D8-6D6FBA4CC5E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E017CB37-4206-4875-B4D8-6D6FBA4CC5E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E017CB37-4206-4875-B4D8-6D6FBA4CC5E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E017CB37-4206-4875-B4D8-6D6FBA4CC5E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27D8FCBB-8A8E-430B-8747-A5ACE9B4FFCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27D8FCBB-8A8E-430B-8747-A5ACE9B4FFCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27D8FCBB-8A8E-430B-8747-A5ACE9B4FFCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27D8FCBB-8A8E-430B-8747-A5ACE9B4FFCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50C1E400-7A37-4F64-89E9-A0990F9E0DC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50C1E400-7A37-4F64-89E9-A0990F9E0DC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50C1E400-7A37-4F64-89E9-A0990F9E0DC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50C1E400-7A37-4F64-89E9-A0990F9E0DC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B311CF16-3A65-44C6-850B-92FCFF26E79F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B311CF16-3A65-44C6-850B-92FCFF26E79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B311CF16-3A65-44C6-850B-92FCFF26E79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B311CF16-3A65-44C6-850B-92FCFF26E79F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{643B29B4-B25D-44D3-8831-E80C5E5F25D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{643B29B4-B25D-44D3-8831-E80C5E5F25D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{643B29B4-B25D-44D3-8831-E80C5E5F25D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{643B29B4-B25D-44D3-8831-E80C5E5F25D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1C4A68A-A888-4CF1-A1E5-2ED391E4F826}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1C4A68A-A888-4CF1-A1E5-2ED391E4F826}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1C4A68A-A888-4CF1-A1E5-2ED391E4F826}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1C4A68A-A888-4CF1-A1E5-2ED391E4F826}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CFE3AD8-84E2-4755-A58E-BEB074B890D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CFE3AD8-84E2-4755-A58E-BEB074B890D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CFE3AD8-84E2-4755-A58E-BEB074B890D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CFE3AD8-84E2-4755-A58E-BEB074B890D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81AE4BA5-4A26-434D-82EE-7507A777126A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81AE4BA5-4A26-434D-82EE-7507A777126A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81AE4BA5-4A26-434D-82EE-7507A777126A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81AE4BA5-4A26-434D-82EE-7507A777126A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDD1E05F-E883-40D4-80A6-25B667D04D97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDD1E05F-E883-40D4-80A6-25B667D04D97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDD1E05F-E883-40D4-80A6-25B667D04D97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDD1E05F-E883-40D4-80A6-25B667D04D97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF5935CA-367B-4124-9840-AAFD3C419EBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF5935CA-367B-4124-9840-AAFD3C419EBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF5935CA-367B-4124-9840-AAFD3C419EBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF5935CA-367B-4124-9840-AAFD3C419EBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DAD3FD5-F0F4-485C-8C6C-B0BE0C288EE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DAD3FD5-F0F4-485C-8C6C-B0BE0C288EE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DAD3FD5-F0F4-485C-8C6C-B0BE0C288EE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DAD3FD5-F0F4-485C-8C6C-B0BE0C288EE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{149E6A1E-2AE2-4279-986F-5B2815C7624D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{149E6A1E-2AE2-4279-986F-5B2815C7624D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{149E6A1E-2AE2-4279-986F-5B2815C7624D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{149E6A1E-2AE2-4279-986F-5B2815C7624D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B179F4F0-9825-40FA-A38B-841B53B9B377}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B179F4F0-9825-40FA-A38B-841B53B9B377}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B179F4F0-9825-40FA-A38B-841B53B9B377}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B179F4F0-9825-40FA-A38B-841B53B9B377}.Release|Any CPU.Build.0 = Release|Any CPU
+		{395C7019-BDEE-4E20-9C53-5DF070E480FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{395C7019-BDEE-4E20-9C53-5DF070E480FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{395C7019-BDEE-4E20-9C53-5DF070E480FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{395C7019-BDEE-4E20-9C53-5DF070E480FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBF9FE81-3A91-4B42-964D-17381F1CFBBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBF9FE81-3A91-4B42-964D-17381F1CFBBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBF9FE81-3A91-4B42-964D-17381F1CFBBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBF9FE81-3A91-4B42-964D-17381F1CFBBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34901FA6-4816-4872-9986-E42B2E866095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34901FA6-4816-4872-9986-E42B2E866095}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34901FA6-4816-4872-9986-E42B2E866095}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34901FA6-4816-4872-9986-E42B2E866095}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8569C27-50B1-4787-9C9C-3FDD2079EEB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8569C27-50B1-4787-9C9C-3FDD2079EEB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8569C27-50B1-4787-9C9C-3FDD2079EEB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8569C27-50B1-4787-9C9C-3FDD2079EEB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4E770ED-2298-488A-856B-5BF53EBF88EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4E770ED-2298-488A-856B-5BF53EBF88EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4E770ED-2298-488A-856B-5BF53EBF88EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4E770ED-2298-488A-856B-5BF53EBF88EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6F323C0-C21B-433B-90C8-0B64A42115AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6F323C0-C21B-433B-90C8-0B64A42115AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6F323C0-C21B-433B-90C8-0B64A42115AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6F323C0-C21B-433B-90C8-0B64A42115AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{077AE562-309A-4F9D-A4F8-2808981D8BE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{077AE562-309A-4F9D-A4F8-2808981D8BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{077AE562-309A-4F9D-A4F8-2808981D8BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{077AE562-309A-4F9D-A4F8-2808981D8BE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0578D9C7-C7C4-43F3-B0ED-5A9272376461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0578D9C7-C7C4-43F3-B0ED-5A9272376461}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0578D9C7-C7C4-43F3-B0ED-5A9272376461}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0578D9C7-C7C4-43F3-B0ED-5A9272376461}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57E84F5A-8BDC-40F3-9C74-3B07DB1D1D7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57E84F5A-8BDC-40F3-9C74-3B07DB1D1D7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57E84F5A-8BDC-40F3-9C74-3B07DB1D1D7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57E84F5A-8BDC-40F3-9C74-3B07DB1D1D7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99FA040D-2F58-418A-AAA8-7E9A48C93ABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99FA040D-2F58-418A-AAA8-7E9A48C93ABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99FA040D-2F58-418A-AAA8-7E9A48C93ABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99FA040D-2F58-418A-AAA8-7E9A48C93ABE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67E0FB4F-96CB-40D0-AE41-F8D095C22E75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67E0FB4F-96CB-40D0-AE41-F8D095C22E75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67E0FB4F-96CB-40D0-AE41-F8D095C22E75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67E0FB4F-96CB-40D0-AE41-F8D095C22E75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6A979BA-38C8-4286-8964-F385FF89E07E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6A979BA-38C8-4286-8964-F385FF89E07E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6A979BA-38C8-4286-8964-F385FF89E07E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6A979BA-38C8-4286-8964-F385FF89E07E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EA007B2-B9FE-4A04-AAE4-F86366FB3036}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EA007B2-B9FE-4A04-AAE4-F86366FB3036}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EA007B2-B9FE-4A04-AAE4-F86366FB3036}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EA007B2-B9FE-4A04-AAE4-F86366FB3036}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA3F23A5-9EB3-4512-A847-083DE0EFE278}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA3F23A5-9EB3-4512-A847-083DE0EFE278}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA3F23A5-9EB3-4512-A847-083DE0EFE278}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA3F23A5-9EB3-4512-A847-083DE0EFE278}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B74B30CC-01BD-4290-A6EA-EDB36154E9E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B74B30CC-01BD-4290-A6EA-EDB36154E9E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B74B30CC-01BD-4290-A6EA-EDB36154E9E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B74B30CC-01BD-4290-A6EA-EDB36154E9E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E7722C7-E7E0-4CA4-98DD-741894BFABC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E7722C7-E7E0-4CA4-98DD-741894BFABC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E7722C7-E7E0-4CA4-98DD-741894BFABC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E7722C7-E7E0-4CA4-98DD-741894BFABC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD6836DA-8BAD-4E6B-AC30-B507778573C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD6836DA-8BAD-4E6B-AC30-B507778573C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD6836DA-8BAD-4E6B-AC30-B507778573C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD6836DA-8BAD-4E6B-AC30-B507778573C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{666BDBDA-D461-4692-9CF7-FF03784A6E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{666BDBDA-D461-4692-9CF7-FF03784A6E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{666BDBDA-D461-4692-9CF7-FF03784A6E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{666BDBDA-D461-4692-9CF7-FF03784A6E96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F08F790-8C37-4575-82C2-5FFE91E6F214}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F08F790-8C37-4575-82C2-5FFE91E6F214}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F08F790-8C37-4575-82C2-5FFE91E6F214}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F08F790-8C37-4575-82C2-5FFE91E6F214}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C334C00-3B46-4A3A-B2C4-EDC741487544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C334C00-3B46-4A3A-B2C4-EDC741487544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C334C00-3B46-4A3A-B2C4-EDC741487544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C334C00-3B46-4A3A-B2C4-EDC741487544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{203A04A0-1C6E-455C-A5CD-D63808855BC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{203A04A0-1C6E-455C-A5CD-D63808855BC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{203A04A0-1C6E-455C-A5CD-D63808855BC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{203A04A0-1C6E-455C-A5CD-D63808855BC9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{58938AA6-B3D6-4256-8C5C-4BCAB88517BB} = {A1FFA5F8-646F-43EF-A72A-5640EC4A8CC5}
+		{026DDF94-5554-4FE4-BCAE-1985E56EBD9A} = {A1FFA5F8-646F-43EF-A72A-5640EC4A8CC5}
+		{1EEB6663-B72A-4EB7-A141-0086EC3C98EA} = {E4E39164-6A84-4204-8289-CB1D615A53BA}
+		{87478FAC-8084-44DB-A1C4-F4AC5FE6C72C} = {E4E39164-6A84-4204-8289-CB1D615A53BA}
+		{493EF3DB-1BFE-4A39-9C4D-EA8FE635636A} = {E4E39164-6A84-4204-8289-CB1D615A53BA}
+		{17962438-D43B-41E7-8D6F-5A0C33B054AE} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{E017CB37-4206-4875-B4D8-6D6FBA4CC5E5} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{27D8FCBB-8A8E-430B-8747-A5ACE9B4FFCA} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{50C1E400-7A37-4F64-89E9-A0990F9E0DC3} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{B311CF16-3A65-44C6-850B-92FCFF26E79F} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{643B29B4-B25D-44D3-8831-E80C5E5F25D0} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{A1C4A68A-A888-4CF1-A1E5-2ED391E4F826} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{3CFE3AD8-84E2-4755-A58E-BEB074B890D5} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{81AE4BA5-4A26-434D-82EE-7507A777126A} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{BDD1E05F-E883-40D4-80A6-25B667D04D97} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{DF5935CA-367B-4124-9840-AAFD3C419EBA} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{5DAD3FD5-F0F4-485C-8C6C-B0BE0C288EE6} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{149E6A1E-2AE2-4279-986F-5B2815C7624D} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{B179F4F0-9825-40FA-A38B-841B53B9B377} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{395C7019-BDEE-4E20-9C53-5DF070E480FC} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{CBF9FE81-3A91-4B42-964D-17381F1CFBBD} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{34901FA6-4816-4872-9986-E42B2E866095} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{B8569C27-50B1-4787-9C9C-3FDD2079EEB7} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{B4E770ED-2298-488A-856B-5BF53EBF88EC} = {A1FFA5F8-646F-43EF-A72A-5640EC4A8CC5}
+		{C6F323C0-C21B-433B-90C8-0B64A42115AB} = {A1FFA5F8-646F-43EF-A72A-5640EC4A8CC5}
+		{077AE562-309A-4F9D-A4F8-2808981D8BE8} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{0578D9C7-C7C4-43F3-B0ED-5A9272376461} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{57E84F5A-8BDC-40F3-9C74-3B07DB1D1D7D} = {A1FFA5F8-646F-43EF-A72A-5640EC4A8CC5}
+		{99FA040D-2F58-418A-AAA8-7E9A48C93ABE} = {E4E39164-6A84-4204-8289-CB1D615A53BA}
+		{A6A979BA-38C8-4286-8964-F385FF89E07E} = {A1FFA5F8-646F-43EF-A72A-5640EC4A8CC5}
+		{1EA007B2-B9FE-4A04-AAE4-F86366FB3036} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{EA3F23A5-9EB3-4512-A847-083DE0EFE278} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{0E7722C7-E7E0-4CA4-98DD-741894BFABC7} = {A1FFA5F8-646F-43EF-A72A-5640EC4A8CC5}
+		{AD6836DA-8BAD-4E6B-AC30-B507778573C7} = {A1FFA5F8-646F-43EF-A72A-5640EC4A8CC5}
+		{666BDBDA-D461-4692-9CF7-FF03784A6E96} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+		{5F08F790-8C37-4575-82C2-5FFE91E6F214} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{0C334C00-3B46-4A3A-B2C4-EDC741487544} = {2BB3BB5A-5307-42CE-896D-6B567D3FF903}
+		{203A04A0-1C6E-455C-A5CD-D63808855BC9} = {37B8128A-C78A-4B4B-996D-C21B646A4AFF}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D43683CA-EE78-4E25-866F-E62B400B7C8B}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\EnterpriseLibrary.Caching.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Security.Cryptography.5.0.505.0\lib\NET35;packages\EnterpriseLibrary.Caching.Cryptography.5.0.505.0\lib\NET35
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 41
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://dev.azure.com/docsuiteweb
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = VecompSoftware.DocSuiteWeb.Common\\VecompSoftware.DocSuiteWeb.Common.csproj
+		SccProjectTopLevelParentUniqueName1 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName1 = VecompSoftware.DocSuiteWeb.Common
+		SccLocalPath1 = VecompSoftware.DocSuiteWeb.Common
+		SccProjectUniqueName2 = VecompSoftware.DocSuiteWeb.EnterpriseLogging\\VecompSoftware.DocSuiteWeb.EnterpriseLogging.csproj
+		SccProjectTopLevelParentUniqueName2 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName2 = VecompSoftware.DocSuiteWeb.EnterpriseLogging
+		SccLocalPath2 = VecompSoftware.DocSuiteWeb.EnterpriseLogging
+		SccProjectUniqueName3 = VecompSoftware.DocSuiteWeb.Common.Test\\VecompSoftware.DocSuiteWeb.Common.Test.csproj
+		SccProjectTopLevelParentUniqueName3 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName3 = VecompSoftware.DocSuiteWeb.Common.Test
+		SccLocalPath3 = VecompSoftware.DocSuiteWeb.Common.Test
+		SccProjectUniqueName4 = VecompSoftware.Commons.Interfaces\\VecompSoftware.Commons.Interfaces.csproj
+		SccProjectTopLevelParentUniqueName4 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName4 = VecompSoftware.Commons.Interfaces
+		SccLocalPath4 = VecompSoftware.Commons.Interfaces
+		SccProjectUniqueName5 = VecompSoftware.DocSuiteWeb.Repository\\VecompSoftware.DocSuiteWeb.Repository.csproj
+		SccProjectTopLevelParentUniqueName5 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName5 = VecompSoftware.DocSuiteWeb.Repository
+		SccLocalPath5 = VecompSoftware.DocSuiteWeb.Repository
+		SccProjectUniqueName6 = VecompSoftware.DocSuiteWeb.Data\\VecompSoftware.DocSuiteWeb.Data.csproj
+		SccProjectTopLevelParentUniqueName6 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName6 = VecompSoftware.DocSuiteWeb.Data
+		SccLocalPath6 = VecompSoftware.DocSuiteWeb.Data
+		SccProjectUniqueName7 = VecompSoftware.DocSuiteWeb.Entity\\VecompSoftware.DocSuiteWeb.Entity.csproj
+		SccProjectTopLevelParentUniqueName7 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName7 = VecompSoftware.DocSuiteWeb.Entity
+		SccLocalPath7 = VecompSoftware.DocSuiteWeb.Entity
+		SccProjectUniqueName8 = VecompSoftware.DocSuiteWeb.Repository.EF.Test\\VecompSoftware.DocSuiteWeb.Repository.EF.Test.csproj
+		SccProjectTopLevelParentUniqueName8 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName8 = VecompSoftware.DocSuiteWeb.Repository.EF.Test
+		SccLocalPath8 = VecompSoftware.DocSuiteWeb.Repository.EF.Test
+		SccProjectUniqueName9 = VecompSoftware.DocSuiteWeb.Repository.EF\\VecompSoftware.DocSuiteWeb.Repository.EF.csproj
+		SccProjectTopLevelParentUniqueName9 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName9 = VecompSoftware.DocSuiteWeb.Repository.EF
+		SccLocalPath9 = VecompSoftware.DocSuiteWeb.Repository.EF
+		SccProjectUniqueName10 = VecompSoftware.DocSuiteWeb.Data.EF\\VecompSoftware.DocSuiteWeb.Data.EF.csproj
+		SccProjectTopLevelParentUniqueName10 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName10 = VecompSoftware.DocSuiteWeb.Data.EF
+		SccLocalPath10 = VecompSoftware.DocSuiteWeb.Data.EF
+		SccProjectUniqueName11 = VecompSoftware.DocSuiteWeb.Model\\VecompSoftware.DocSuiteWeb.Model.csproj
+		SccProjectTopLevelParentUniqueName11 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName11 = VecompSoftware.DocSuiteWeb.Model
+		SccLocalPath11 = VecompSoftware.DocSuiteWeb.Model
+		SccProjectUniqueName12 = VecompSoftware.DocSuiteWeb.Finder\\VecompSoftware.DocSuiteWeb.Finder.csproj
+		SccProjectTopLevelParentUniqueName12 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName12 = VecompSoftware.DocSuiteWeb.Finder
+		SccLocalPath12 = VecompSoftware.DocSuiteWeb.Finder
+		SccProjectUniqueName13 = VecompSoftware.DocSuiteWeb.Mapper\\VecompSoftware.DocSuiteWeb.Mapper.csproj
+		SccProjectTopLevelParentUniqueName13 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName13 = VecompSoftware.DocSuiteWeb.Mapper
+		SccLocalPath13 = VecompSoftware.DocSuiteWeb.Mapper
+		SccProjectUniqueName14 = VecompSoftware.DocSuiteWeb.Mapper.Entity\\VecompSoftware.DocSuiteWeb.Mapper.Entity.csproj
+		SccProjectTopLevelParentUniqueName14 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName14 = VecompSoftware.DocSuiteWeb.Mapper.Entity
+		SccLocalPath14 = VecompSoftware.DocSuiteWeb.Mapper.Entity
+		SccProjectUniqueName15 = VecompSoftware.DocSuiteWeb.Mapper.Model\\VecompSoftware.DocSuiteWeb.Mapper.Model.csproj
+		SccProjectTopLevelParentUniqueName15 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName15 = VecompSoftware.DocSuiteWeb.Mapper.Model
+		SccLocalPath15 = VecompSoftware.DocSuiteWeb.Mapper.Model
+		SccProjectUniqueName16 = VecompSoftware.DocSuiteWeb.Security\\VecompSoftware.DocSuiteWeb.Security.csproj
+		SccProjectTopLevelParentUniqueName16 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName16 = VecompSoftware.DocSuiteWeb.Security
+		SccLocalPath16 = VecompSoftware.DocSuiteWeb.Security
+		SccProjectUniqueName17 = VecompSoftware.DocSuiteWeb.Service\\VecompSoftware.DocSuiteWeb.Service.csproj
+		SccProjectTopLevelParentUniqueName17 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName17 = VecompSoftware.DocSuiteWeb.Service
+		SccLocalPath17 = VecompSoftware.DocSuiteWeb.Service
+		SccProjectUniqueName18 = VecompSoftware.DocSuiteWeb.Validation\\VecompSoftware.DocSuiteWeb.Validation.csproj
+		SccProjectTopLevelParentUniqueName18 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName18 = VecompSoftware.DocSuiteWeb.Validation
+		SccLocalPath18 = VecompSoftware.DocSuiteWeb.Validation
+		SccProjectUniqueName19 = VecompSoftware.DocSuiteWeb.Service.Entity\\VecompSoftware.DocSuiteWeb.Service.Entity.csproj
+		SccProjectTopLevelParentUniqueName19 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName19 = VecompSoftware.DocSuiteWeb.Service.Entity
+		SccLocalPath19 = VecompSoftware.DocSuiteWeb.Service.Entity
+		SccProjectUniqueName20 = VecompSoftware.DocSuiteWeb.Service.EF.Test\\VecompSoftware.DocSuiteWeb.Service.EF.Test.csproj
+		SccProjectTopLevelParentUniqueName20 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName20 = VecompSoftware.DocSuiteWeb.Service.EF.Test
+		SccLocalPath20 = VecompSoftware.DocSuiteWeb.Service.EF.Test
+		SccProjectUniqueName21 = VecompSoftware.DocSuiteWeb.Mapper.ServiceBus\\VecompSoftware.DocSuiteWeb.Mapper.ServiceBus.csproj
+		SccProjectTopLevelParentUniqueName21 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName21 = VecompSoftware.DocSuiteWeb.Mapper.ServiceBus
+		SccLocalPath21 = VecompSoftware.DocSuiteWeb.Mapper.ServiceBus
+		SccProjectUniqueName22 = VecompSoftware.DocSuiteWeb.Mapper.Workflow\\VecompSoftware.DocSuiteWeb.Mapper.Workflow.csproj
+		SccProjectTopLevelParentUniqueName22 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName22 = VecompSoftware.DocSuiteWeb.Mapper.Workflow
+		SccLocalPath22 = VecompSoftware.DocSuiteWeb.Mapper.Workflow
+		SccProjectUniqueName23 = VecompSoftware.DocSuiteWeb.Service.ServiceBus\\VecompSoftware.DocSuiteWeb.Service.ServiceBus.csproj
+		SccProjectTopLevelParentUniqueName23 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName23 = VecompSoftware.DocSuiteWeb.Service.ServiceBus
+		SccLocalPath23 = VecompSoftware.DocSuiteWeb.Service.ServiceBus
+		SccProjectUniqueName24 = VecompSoftware.DocSuite.Document\\VecompSoftware.DocSuite.Document.csproj
+		SccProjectTopLevelParentUniqueName24 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName24 = VecompSoftware.DocSuite.Document
+		SccLocalPath24 = VecompSoftware.DocSuite.Document
+		SccProjectUniqueName25 = VecompSoftware.DocSuiteWeb.Service.Workflow\\VecompSoftware.DocSuiteWeb.Service.Workflow.csproj
+		SccProjectTopLevelParentUniqueName25 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName25 = VecompSoftware.DocSuiteWeb.Service.Workflow
+		SccLocalPath25 = VecompSoftware.DocSuiteWeb.Service.Workflow
+		SccProjectUniqueName26 = VecompSoftware.DocSuite.Document.BiblosDS\\VecompSoftware.DocSuite.Document.BiblosDS.csproj
+		SccProjectTopLevelParentUniqueName26 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName26 = VecompSoftware.DocSuite.Document.BiblosDS
+		SccLocalPath26 = VecompSoftware.DocSuite.Document.BiblosDS
+		SccProjectUniqueName27 = VecompSoftware.DocSuiteWeb.CustomValidation\\VecompSoftware.DocSuiteWeb.CustomValidation.csproj
+		SccProjectTopLevelParentUniqueName27 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName27 = VecompSoftware.DocSuiteWeb.CustomValidation
+		SccLocalPath27 = VecompSoftware.DocSuiteWeb.CustomValidation
+		SccProjectUniqueName28 = VecompSoftware.DocSuite.Public.Core.Models\\VecompSoftware.DocSuite.Public.Core.Models.csproj
+		SccProjectTopLevelParentUniqueName28 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName28 = VecompSoftware.DocSuite.Public.Core.Models
+		SccLocalPath28 = VecompSoftware.DocSuite.Public.Core.Models
+		SccProjectUniqueName29 = VecompSoftware.DocSuite.Public.Core.Models.Customs\\VecompSoftware.DocSuite.Public.Core.Models.Customs.csproj
+		SccProjectTopLevelParentUniqueName29 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName29 = VecompSoftware.DocSuite.Public.Core.Models.Customs
+		SccLocalPath29 = VecompSoftware.DocSuite.Public.Core.Models.Customs
+		SccProjectUniqueName30 = VecompSoftware.DocSuite.Public.Helpers\\VecompSoftware.DocSuite.Public.Helpers.csproj
+		SccProjectTopLevelParentUniqueName30 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName30 = VecompSoftware.DocSuite.Public.Helpers
+		SccLocalPath30 = VecompSoftware.DocSuite.Public.Helpers
+		SccProjectUniqueName31 = VecompSoftware.DocSuite.Public.Tests\\VecompSoftware.DocSuite.Public.Tests.csproj
+		SccProjectTopLevelParentUniqueName31 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName31 = VecompSoftware.DocSuite.Public.Tests
+		SccLocalPath31 = VecompSoftware.DocSuite.Public.Tests
+		SccProjectUniqueName32 = VecompSoftware.DocSuite.Public.Core.Models.Helpers\\VecompSoftware.DocSuite.Public.Core.Models.Helpers.csproj
+		SccProjectTopLevelParentUniqueName32 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName32 = VecompSoftware.DocSuite.Public.Core.Models.Helpers
+		SccLocalPath32 = VecompSoftware.DocSuite.Public.Core.Models.Helpers
+		SccProjectUniqueName33 = VecompSoftware.DocSuite.Public.WebAPI\\VecompSoftware.DocSuite.Public.WebAPI.csproj
+		SccProjectName33 = VecompSoftware.DocSuite.Public.WebAPI
+		SccLocalPath33 = VecompSoftware.DocSuite.Public.WebAPI
+		SccProjectUniqueName34 = VecompSoftware.DocSuite.Private.WebAPI\\VecompSoftware.DocSuite.Private.WebAPI.csproj
+		SccProjectName34 = VecompSoftware.DocSuite.Private.WebAPI
+		SccLocalPath34 = VecompSoftware.DocSuite.Private.WebAPI
+		SccProjectUniqueName35 = VecompSoftware.DocSuite.WebAPI.Common\\VecompSoftware.DocSuite.WebAPI.Common.csproj
+		SccProjectTopLevelParentUniqueName35 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName35 = VecompSoftware.DocSuite.WebAPI.Common
+		SccLocalPath35 = VecompSoftware.DocSuite.WebAPI.Common
+		SccProjectUniqueName36 = VecompSoftware.DocSuite.Interceptions\\VecompSoftware.DocSuite.Interceptions.csproj
+		SccProjectTopLevelParentUniqueName36 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName36 = VecompSoftware.DocSuite.Interceptions
+		SccLocalPath36 = VecompSoftware.DocSuite.Interceptions
+		SccProjectUniqueName37 = VecompSoftware.DocSuite.Service.Models\\VecompSoftware.DocSuite.Service.Models.csproj
+		SccProjectTopLevelParentUniqueName37 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName37 = VecompSoftware.DocSuite.Service.Models
+		SccLocalPath37 = VecompSoftware.DocSuite.Service.Models
+		SccProjectUniqueName38 = VecompSoftware.DocSuite.Document.Generator.PDF\\VecompSoftware.DocSuite.Document.Generator.PDF.csproj
+		SccProjectTopLevelParentUniqueName38 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName38 = VecompSoftware.DocSuite.Document.Generator.PDF
+		SccLocalPath38 = VecompSoftware.DocSuite.Document.Generator.PDF
+		SccProjectUniqueName39 = VecompSoftware.DocSuite.Document.Generator.OpenXml.Word\\VecompSoftware.DocSuite.Document.Generator.OpenXml.Word.csproj
+		SccProjectTopLevelParentUniqueName39 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName39 = VecompSoftware.DocSuite.Document.Generator.OpenXml.Word
+		SccLocalPath39 = VecompSoftware.DocSuite.Document.Generator.OpenXml.Word
+		SccProjectUniqueName40 = VecompSoftware.DocSuite.Service.SignalR\\VecompSoftware.DocSuite.Service.SignalR.csproj
+		SccProjectTopLevelParentUniqueName40 = VecompSoftware.DocSuite.WebAPI.sln
+		SccProjectName40 = VecompSoftware.DocSuite.Service.SignalR
+		SccLocalPath40 = VecompSoftware.DocSuite.Service.SignalR
+	EndGlobalSection
+EndGlobal

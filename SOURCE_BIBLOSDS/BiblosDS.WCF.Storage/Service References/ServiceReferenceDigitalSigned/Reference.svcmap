@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="975f97f0-370e-4c85-ad2f-df5821cd8526" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.ComponentModel.BindingList`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.DigitalSign/ServiceDigitalSign/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="1a886d20-fd58-4f10-b64c-b96836b6f909" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.DigitalSign/ServiceDigitalSign/mex" />
+    <MetadataFile FileName="BiblosDS.wsdl" MetadataType="Wsdl" ID="33863fbb-fbf7-4ee4-bf84-ee147ff505aa" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.DigitalSign/ServiceDigitalSign/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="b945dd05-a6a4-4d95-b2df-52e7c95c68b7" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.DigitalSign/ServiceDigitalSign/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="32b644e8-e69f-466e-824e-fa0891f01532" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.DigitalSign/ServiceDigitalSign/mex" />
+    <MetadataFile FileName="Content.xsd" MetadataType="Schema" ID="c8b4f1ea-1561-49ba-8246-cf36aeed4ac3" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.DigitalSign/ServiceDigitalSign/mex" />
+    <MetadataFile FileName="BiblosDSObject.xsd" MetadataType="Schema" ID="517f9512-fc76-4844-a960-153b55b018f5" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.DigitalSign/ServiceDigitalSign/mex" />
+    <MetadataFile FileName="Certificate.xsd" MetadataType="Schema" ID="2204f6e7-a618-4825-9b49-f4702a795d7d" SourceId="1" SourceUrl="http://localhost:8731/Design_Time_Addresses/BiblosDS.WCF.DigitalSign/ServiceDigitalSign/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

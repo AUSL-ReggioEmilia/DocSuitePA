@@ -1,0 +1,327 @@
+﻿@using BiblosDS.LegalExtension.AdminPortal.ViewModel;
+@model BiblosDS.LegalExtension.AdminPortal.ViewModel.AwardBatches.AwardBatchRDVSignViewModel
+@{
+    ViewBag.Title = "Rapporti di versamento da firmare";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section featured {
+    <hgroup class="title">
+        <h1>@ViewBag.Title per archivio <b>@Model.ArchiveName</b></h1>
+    </hgroup>
+}
+    <div style="padding:10px 0px 15px 0px;">
+        
+    </div>
+    <script type="text/javascript">
+    var awardBatch = function () {
+        var activex;
+        var ctx = this;
+        var isLogged = false;
+
+        this.onComplete = function (e) {
+            if (e.operation == 'upload') {
+                var dataSource = new kendo.data.DataSource({
+                    data: JSON.parse(e.response.extraDescription)
+                });
+
+                var grid = $("#reportGrid").data("kendoGrid");
+                grid.setDataSource(dataSource);
+
+                var reportWindow = $("#reportWindow").data("kendoWindow");
+                reportWindow.center().open();
+
+                $("#Grid").data("kendoGrid").dataSource.read();
+            }
+        }
+
+        this.onDownloadClick = function (e) {
+            var selectedItems = getSelectedItems();
+            if (selectedItems == null || selectedItems.length == 0) {
+                e.preventDefault();
+                alert("Selezionare almeno un documento per il download");
+                return;
+            }
+
+            $("#export-data").val(encodeURIComponent(JSON.stringify(selectedItems)));
+        }
+
+        this.initialize = function () {
+            //if ("ActiveXObject" in window)
+            //    activex = getComped();
+
+            //if (activex) {
+            //    $("#pin").focus();
+            //    $("#pin").keyup(function (e) {
+            //        if (e.keyCode == 13) {
+            //            sign();
+            //        }
+            //    });
+            //}
+            //else {
+                //rimuove la prima tab della firma integrata
+                var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+                var tab = tabStrip.select(),
+                    otherTab = tab.next();
+                otherTab = otherTab.length ? otherTab : tab.prev();
+
+                tabStrip.remove(tab);
+                tabStrip.select(otherTab);
+            //}
+        }
+
+        var getSelectedItems = function () {
+            var selectedItems = $("#Grid").data("kendoGrid").selectedKeyNames();
+            return selectedItems;
+        }
+
+        var deferredSignAction = function (id, pin) {
+            var promise = $.Deferred();
+            $.post("@Url.Action("PrepareRDVToLocalSign", "AwardBatch")", { id: id })
+                .done(function (result) {
+                    activex.CloseDocument();
+                    executeSign(result, pin);
+                })
+                .fail(function (err) {
+                    console.error(err);
+                    promise.reject();
+                });
+            return promise.promise();
+        }
+
+        var executeSign = function (model, pin) {
+            //TODO: esecuzione firma
+        }
+
+        this.sign = function (e) {
+            e.preventDefault();
+            var selectedItems = getSelectedItems();
+            if (selectedItems == null || selectedItems.length == 0) {
+                alert("Selezionare almeno un documento per la firma");
+                return;
+            }
+
+            var pin = $("#pin").val();
+            if (!pin) {
+                alert("Inserire il PIN della smartcard per la firma");
+                return;
+            }
+
+            kendo.ui.progress($("#signTab"), true);
+            $.each(selectedItems, function (index, item) {
+                $(document).queue(function (next) {
+                    deferredSignAction(item, pin).always(next());
+                });
+            });
+        }
+
+        this.onOpenRdvWindow = function (e) {
+            kendo.ui.progress(e.sender.element, true);
+        }
+
+        this.onRefreshRdvWindow = function (e) {
+            kendo.ui.progress(e.sender.element, false);
+        }
+
+        this.openRdvWindow = function (e) {
+            var wnd = rdvWindow.data("kendoWindow");
+            var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+            wnd.refresh({
+                url: "@Url.Action("ViewAwardRDV", "AwardBatch")" + "/" + dataItem.IdAwardBatch
+            });
+            wnd.open().center();
+        }
+    }    
+
+    var instance;
+    var rdvWindow;
+    $(function () {
+        rdvWindow = $("#xmlwindow");
+        instance = new awardBatch();
+        instance.initialize();
+    })
+    </script>
+
+@(Html.Kendo().Splitter()
+        .Name("pageSplitter")
+        .HtmlAttributes(new { @style = "height: 550px;" })
+        .Orientation(SplitterOrientation.Horizontal)
+        .Panes(panes =>
+        {
+            panes.Add()
+                .Scrollable(false)
+                .Resizable(true)
+                .Collapsible(false)
+                .Size("40%")
+                .Content(@<text>@signTabstrip()</text>);
+
+            panes.Add()
+                .Scrollable(true)
+                .Resizable(true)                
+                .Collapsible(false)
+                .Size("60%")
+                .Content(@<text>@rdvGrid()</text>);
+        })
+)
+
+@helper rdvGrid() { 
+<div style="width: 100%; overflow-x: hidden;">
+    @(Html.Kendo().Grid<BiblosDS.Library.Common.Objects.AwardBatch>()
+                          .Name("Grid")
+                          .Columns(columns =>
+                          {
+                              columns.Select().Width(50).Title("");
+                              columns.Bound(o => o.IsOpen).Title("Stato").ClientTemplate("# if (IsOpen == true) { #" +
+                                  "<span class='k-icon k-i-tick'></span> <b>Aperto</b>" +
+                                  "# } else { #" +
+                                  "<span class='k-icon k-i-cancel'></span> Chiuso" +
+                                  "# } #")
+                                  .Width(120);                              
+                              columns.Bound(o => o.Name).Title("Descrizione PDV");
+                              columns.Command(command => command.Custom("Visualizza").Click("instance.openRdvWindow")).Width(100);
+                          })
+                          .PersistSelection()
+                          .Pageable(pager => pager.Refresh(true).PreviousNext(false).Numeric(false))
+                          .Resizable(a => a.Columns(true))
+                          .DataSource(dataSource => dataSource
+                                    .Ajax()
+                                    .Model(model => model.Id(p => p.IdAwardBatch))
+                                    .Read(read => read.Action("GetRDVToSign", "AwardBatch", new { id = Model.IdArchive })))
+                          .NoRecords("Nessun rapporto di versamento da firmare trovato")
+    )
+</div>
+}
+
+@helper signTabstrip() {
+@(Html.Kendo()
+      .TabStrip()
+      .Name("tabstrip")
+      .Animation(animation =>
+        animation.Open(effect =>
+        effect.Fade(FadeDirection.In)))
+      .Items(tabstrip =>
+        {
+            tabstrip.Add().Text("Firma integrata")
+            .Selected(true)
+            .Content(@<text>@signTab()</text>);
+
+            tabstrip.Add().Text("Scarica i file da firmare").Content(@<text>@downloadTab()</text>);
+         }
+        ))
+}
+
+@helper signTab()
+    {
+        <div style="min-height:300px;" id="signTab">
+            <p>
+                <b>
+                    Se disponi della smartcard, lo strumento di firma integrato ti consente di eseguire rapidamente la firma di tutti i documenti.
+                </b>
+            </p>
+            <div>
+                <p>
+                    <div>
+                        <span style="margin-right: 5px;"><i>Digita il pin della smartcard</i></span>
+                        @Html.Kendo().TextBox().Name("pin").HtmlAttributes(new { @type = "password" })
+                    </div>
+                    @Html.Kendo().Button().Name("signButton").Icon("pencil").Content("Firma").Events(events => events.Click("instance.sign"))
+                </p>
+                <div id="signResult"></div>
+            </div>
+        </div>
+}
+
+@helper downloadTab() { 
+        <div style="min-height:300px;">
+            <form action="@Url.Action("DownloadRDVToSign", "AwardBatch")" method="post">
+                <p>
+                    <b>1. Scarica l'archivio zippato con i file da firmare.</b><br />
+                    <input type="hidden" id="export-data" name="data" />
+                    @Html.Kendo().Button().Name("downloadButton").Content("Download").Events(events => events.Click("instance.onDownloadClick")).HtmlAttributes(new { @style = "margin-top: 5px;", @type = "submit" })
+                </p>
+            </form>
+            <p>
+                <b>
+                    2. Firma i file scaricati e crea un archivio zippato con i file firmati.<br />
+                    Tramite il tasto sotto è possibile inviare l'archivio zippato.
+                </b>
+            </p>
+
+            <i class="lighter">E' possibile caricare solo file <b>ZIP</b></i>
+            @(Html.Kendo().Upload()
+                          .Name("files")
+                          .HtmlAttributes("files")
+                          .Multiple(false)
+                          .Validation(validation => validation.AllowedExtensions(new string[] { ".zip" }))
+                          .Messages(messages =>
+                          {
+                              messages.ClearSelectedFiles("Cancella");
+                              messages.UploadSelectedFiles("Avvia caricamento");
+                              messages.HeaderStatusUploaded("Attività completata");
+                              messages.HeaderStatusUploading("Caricamento...");
+                              messages.InvalidFileExtension("Il tipo di file selezionato non è corretto. Sono ammessi solo file zippati (.zip).");
+                              messages.Select("Seleziona file ZIP...");
+                          })
+                          .Async(async => async
+                                    .Save("RDVUploadSignedFile", "AwardBatch", new { messageId = ViewBag.messageId, idArchive = Model.IdArchive })
+                                    .Remove("RDVRemoveUploadSignedFile", "AwardBatch", new { messageId = ViewBag.messageId })
+                                    .AutoUpload(false)
+                                    .ChunkSize(1000000)
+                                    .Concurrent(true))
+                          .Events(evt => evt.Success("instance.onComplete"))
+            )
+        </div>
+
+        @(Html.Kendo().Window()
+            .Name("reportWindow")
+            .Modal(true)
+            .Visible(false)
+            .Animation(true)
+            .Height(500)
+            .Width(700)
+            .Scrollable(true)
+            .Title("Report attività di archiviazione RDV firmati")
+            .Content(@<text>
+                @(Html.Kendo().Grid<UnZipReportViewModel>()
+                    .Name("reportGrid")
+                    .Columns(columns =>
+                    {
+                        columns.Bound(o => o.LogType).Title("").ClientTemplate("#if(LogType == 'Success'){#"+
+                            "<span class='k-icon k-i-success text-success'></span>"+
+                            "#} else if(LogType == 'Error'){#"+
+                            "<span class='k-icon k-i-error text-error'></span>" +
+                            "#} else if(LogType == 'Warn'){#" +
+                            "<span class='k-icon k-i-notification text-warning'></span>" +
+                            "#}#"
+                            );
+                        columns.Bound(o => o.Description).Title("Descrizione").ClientTemplate("#var cls; if(LogType == 'Success'){#" +
+                            "#cls = 'text-success';#" +
+                            "#} else if(LogType == 'Error'){#" +
+                            "#cls = 'text-error';#" +
+                            "#} else if(LogType == 'Warn'){#" +
+                            "#cls = 'text-warning';#" +
+                            "#}#" +
+                            "<span class='#=cls#'>#=Description#</span>");
+                    })
+                    .DataSource(datasource => datasource.Ajax())
+                )
+            </text>))
+
+        @(Html.Kendo().Window().Name("xmlwindow")
+            .Title("Visualizza rapporto di versamento")
+            .Modal(true)
+            .Visible(false)
+            .Resizable()
+            .Animation(true)
+            .Width(600)
+            .Height(500)
+            .Actions(actions => {
+                actions.Maximize();
+                actions.Close();            
+            })
+            .Events(events => {
+                events.Open("instance.onOpenRdvWindow");
+                events.Refresh("instance.onRefreshRdvWindow");
+            })
+        )
+}

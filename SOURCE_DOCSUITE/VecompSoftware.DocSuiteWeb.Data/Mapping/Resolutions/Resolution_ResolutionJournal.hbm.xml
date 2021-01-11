@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name ="ResolutionJournal" table="ResolutionJournal">
+    
+    <id name="Id" column="ID">
+      <generator class="identity"></generator>
+    </id>
+    
+    <property name="Year" column="Year" />
+    <property name="Month" column="Month" />
+    <property name="IDDocument" column="IDDocument" />
+    <property name="FirstPage" column="FirstPage" />
+    <property name="LastPage" column="LastPage" />
+    <property name="IDSignedDocument" column="IDSignedDocument" />
+    <property name="Signdate" column="Signdate" />
+    <property name="SignUser" column="SignUser" />
+    <property name="IsActive" column="IsActive" />
+    <property name="StartID" column="StartID" />
+    <property name="EndID" column="EndID" />
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
+
+    <many-to-one name="Template" column="IDTemplate" class="ResolutionJournalTemplate" />
+
+    <bag name="ResolutionJournalDetails" table="ResolutionJournalDetail" cascade="all-delete-orphan" inverse="true">
+      <key>
+        <column name="IdResolutionJournal" />
+      </key>
+      <one-to-many class="ResolutionJournalDetail" />
+    </bag>
+
+  </class>
+
+</hibernate-mapping>

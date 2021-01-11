@@ -1,0 +1,40 @@
+<div class="btn-group">
+    <button class="italia-it-button italia-it-button-size-m button-spid dropdown-toggle spid-dropdown-toggle" type="button" data-toggle="dropdown" spid-idp-button="#spid-idp-button-medium-post" aria-haspopup="true" aria-expanded="false">
+        <span class="italia-it-button-icon"><img [src]="spidImage" /></span>
+        <span class="italia-it-button-text">Entra con SPID</span>
+    </button>
+    <div id="spid-idp-button-medium-post" class="spid-idp-button spid-idp-button-tip spid-idp-button-relative dropdown-menu spid-dropdown-menu">
+        <ul id="spid-idp-list-medium-root-post" class="spid-idp-button-menu" aria-labelledby="spid-idp">
+            <li class="spid-idp-button-link" data-idp="arubaid">
+                <button class="idp-button-idp-logo" type="submit" (click)="onClick('idp_aruba')"><span class="spid-sr-only">Aruba ID</span><img class="spid-idp-button-logo" [src]="idpImageHelper.arubaImage" alt="Aruba ID" /></button>
+            </li>
+            <li class="spid-idp-button-link" data-idp="infocertid">
+                <button class="idp-button-idp-logo" type="submit" (click)="onClick('idp_infocert')"><span class="spid-sr-only">Infocert ID</span><img class="spid-idp-button-logo" [src]="idpImageHelper.infocertImage" /></button>
+            </li>
+            <li class="spid-idp-button-link" data-idp="namirialid">
+                <button class="idp-button-idp-logo" type="submit" (click)="onClick('idp_namirial')"><span class="spid-sr-only">Namirial ID</span><img class="spid-idp-button-logo" [src]="idpImageHelper.namirialImage" /></button>
+            </li>
+            <li class="spid-idp-button-link" data-idp="posteid">
+                <button class="idp-button-idp-logo" type="submit" (click)="onClick('idp_poste')"><span class="spid-sr-only">Poste ID</span><img class="spid-idp-button-logo" [src]="idpImageHelper.posteImage" /></button>
+            </li>
+            <li class="spid-idp-button-link" data-idp="sielteid">
+                <button class="idp-button-idp-logo" type="submit" (click)="onClick('idp_sielte')"><span class="spid-sr-only">Sielte ID</span><img class="spid-idp-button-logo" [src]="idpImageHelper.sielteImage" /></button>
+            </li>
+            <li class="spid-idp-button-link" data-idp="spiditalia">
+                <button class="idp-button-idp-logo" type="submit" (click)="onClick('idp_register')"><span class="spid-sr-only">SPIDItalia Register.it</span><img class="spid-idp-button-logo" [src]="idpImageHelper.registerImage" /></button>
+            </li>
+            <li class="spid-idp-button-link" data-idp="timid">
+                <button class="idp-button-idp-logo" type="submit" (click)="onClick('idp_tim')"><span class="spid-sr-only">Tim ID</span><img class="spid-idp-button-logo" [src]="idpImageHelper.timImage" /></button>
+            </li>
+            <li class="spid-idp-support-link" data-spidlink="info">
+                <a href="https://www.spid.gov.it">Maggiori informazioni</a>
+            </li>
+            <li class="spid-idp-support-link" data-spidlink="rich">
+                <a href="https://www.spid.gov.it/richiedi-spid">Non hai SPID?</a>
+            </li>
+            <li class="spid-idp-support-link" data-spidlink="help">
+                <a href="https://www.spid.gov.it/serve-aiuto">Serve aiuto?</a>
+            </li>
+        </ul>
+    </div>
+</div>

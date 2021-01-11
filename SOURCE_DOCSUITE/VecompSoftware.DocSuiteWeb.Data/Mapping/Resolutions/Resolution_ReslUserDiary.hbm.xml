@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <sql-query name="ReslUserDiary">
+    <![CDATA[
+        SELECT ISNULL(R.Year,0) AS Year, ISNULL(R.Number,0) AS Number, R.Object,
+            Convert(varchar, R.IdResolution) AS Codice,
+            RL.LogDate, Type='Resl',
+            RL.PI,RL.PS,RL.PD,RL.PZ, PM = 0, R.AdoptionDate, IsHandled = 0
+            FROM Resolution R INNER JOIN (
+              SELECT RL.IdResolution, MAX(RL.LogDate) as LogDate,
+              SUM(CASE RL.LogType WHEN 'RI' THEN 1 ELSE 0 END) AS PI,
+              SUM(CASE RL.LogType WHEN 'RS' THEN 1 ELSE 0 END) AS PS,
+              SUM(CASE RL.LogType WHEN 'RL' THEN 1 ELSE 0 END) AS PD,
+              SUM(CASE RL.LogType WHEN 'RZ' THEN 1 ELSE 0 END) AS PZ
+              FROM ResolutionLog AS RL
+              WHERE RL.SystemUser = :SystemUser
+              AND RL.LogDate >= :LogDateFrom
+              AND RL.LogDate <= :LogDateTo
+              GROUP BY RL.IdResolution )
+            AS RL ON R.IdResolution = RL.IdResolution
+            ORDER BY RL.LogDate DESC
+      ]]>
+  </sql-query>
+
+</hibernate-mapping>

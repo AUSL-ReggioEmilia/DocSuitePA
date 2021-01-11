@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="FastInvoiceProtocolService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost/DSW.API/FastInvoiceProtocolService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost/DSW.API/FastInvoiceProtocolService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IFastInvoiceProtocolService_IsAlive_InputMessage">
+    <wsdl:part name="parameters" element="tns:IsAlive" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_IsAlive_OutputMessage">
+    <wsdl:part name="parameters" element="tns:IsAliveResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetAccountingSectionals_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccountingSectionals" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetAccountingSectionals_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAccountingSectionalsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetContacts_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetContacts" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetContacts_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetContactsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetContainers_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetContainers" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetContainers_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetContainersResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetCategories_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCategories" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetCategories_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCategoriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetPECMailboxes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetPECMailboxes" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetPECMailboxes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetPECMailboxesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetProtocolsToSend_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolsToSend" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_GetProtocolsToSend_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetProtocolsToSendResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_CountProtocolReserved_InputMessage">
+    <wsdl:part name="parameters" element="tns:CountProtocolReserved" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_CountProtocolReserved_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CountProtocolReservedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_InsertProtocol_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertProtocol" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_InsertProtocol_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertProtocolResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_SendMail_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendMail" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_SendMail_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendMailResponse" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_SendProtocolMail_InputMessage">
+    <wsdl:part name="parameters" element="tns:SendProtocolMail" />
+  </wsdl:message>
+  <wsdl:message name="IFastInvoiceProtocolService_SendProtocolMail_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SendProtocolMailResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IFastInvoiceProtocolService">
+    <wsdl:operation name="IsAlive">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/IsAlive" message="tns:IFastInvoiceProtocolService_IsAlive_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/IsAliveResponse" message="tns:IFastInvoiceProtocolService_IsAlive_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAccountingSectionals">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetAccountingSectionals" message="tns:IFastInvoiceProtocolService_GetAccountingSectionals_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetAccountingSectionalsResponse" message="tns:IFastInvoiceProtocolService_GetAccountingSectionals_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetContacts">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetContacts" message="tns:IFastInvoiceProtocolService_GetContacts_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetContactsResponse" message="tns:IFastInvoiceProtocolService_GetContacts_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetContainers">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetContainers" message="tns:IFastInvoiceProtocolService_GetContainers_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetContainersResponse" message="tns:IFastInvoiceProtocolService_GetContainers_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCategories">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetCategories" message="tns:IFastInvoiceProtocolService_GetCategories_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetCategoriesResponse" message="tns:IFastInvoiceProtocolService_GetCategories_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPECMailboxes">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetPECMailboxes" message="tns:IFastInvoiceProtocolService_GetPECMailboxes_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetPECMailboxesResponse" message="tns:IFastInvoiceProtocolService_GetPECMailboxes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocolsToSend">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetProtocolsToSend" message="tns:IFastInvoiceProtocolService_GetProtocolsToSend_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/GetProtocolsToSendResponse" message="tns:IFastInvoiceProtocolService_GetProtocolsToSend_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CountProtocolReserved">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/CountProtocolReserved" message="tns:IFastInvoiceProtocolService_CountProtocolReserved_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/CountProtocolReservedResponse" message="tns:IFastInvoiceProtocolService_CountProtocolReserved_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertProtocol">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/InsertProtocol" message="tns:IFastInvoiceProtocolService_InsertProtocol_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/InsertProtocolResponse" message="tns:IFastInvoiceProtocolService_InsertProtocol_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendMail">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/SendMail" message="tns:IFastInvoiceProtocolService_SendMail_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/SendMailResponse" message="tns:IFastInvoiceProtocolService_SendMail_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SendProtocolMail">
+      <wsdl:input wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/SendProtocolMail" message="tns:IFastInvoiceProtocolService_SendProtocolMail_InputMessage" />
+      <wsdl:output wsam:Action="http://tempuri.org/IFastInvoiceProtocolService/SendProtocolMailResponse" message="tns:IFastInvoiceProtocolService_SendProtocolMail_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IFastInvoiceProtocolService" type="tns:IFastInvoiceProtocolService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="IsAlive">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/IsAlive" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAccountingSectionals">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/GetAccountingSectionals" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetContacts">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/GetContacts" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetContainers">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/GetContainers" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCategories">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/GetCategories" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPECMailboxes">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/GetPECMailboxes" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetProtocolsToSend">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/GetProtocolsToSend" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CountProtocolReserved">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/CountProtocolReserved" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertProtocol">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/InsertProtocol" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendMail">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/SendMail" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendProtocolMail">
+      <soap:operation soapAction="http://tempuri.org/IFastInvoiceProtocolService/SendProtocolMail" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="FastInvoiceProtocolService">
+    <wsdl:port name="BasicHttpBinding_IFastInvoiceProtocolService" binding="tns:BasicHttpBinding_IFastInvoiceProtocolService">
+      <soap:address location="http://localhost/DSW.API/FastInvoiceProtocolService.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Desks">
+
+  <class name="DeskRoleUser" table="DeskRoleUsers" lazy="true" >
+    
+    <id name="Id" column="IdDeskRoleUser">
+      <generator class="guid.comb" />
+    </id>
+    
+    <property name="AccountName">
+      <column name="AccountName" not-null="false" />
+    </property>
+    <property name="PermissionType">
+      <column name="PermissionType" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+
+    <many-to-one name="Desk">
+      <column name="IdDesk" not-null="true" />
+    </many-to-one>
+
+    <bag name="DeskStoryBoards">
+      <key column="IdDeskRoleUser" />
+      <one-to-many class="DeskStoryBoard" />
+    </bag>
+    <bag name="DeskDocumentEndorsements">
+      <key column="IdDeskRoleUser" />
+      <one-to-many class="DeskDocumentEndorsement" />
+    </bag>
+    
+  </class>
+  
+</hibernate-mapping>

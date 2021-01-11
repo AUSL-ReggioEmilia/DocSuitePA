@@ -1,0 +1,4 @@
+{
+	"FasciclesLinkedPanelVisibility": true,
+	"GridSearchPanelVisibility": true
+}

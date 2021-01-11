@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://BiblosDS/2009/10/FilterOperator" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/FilterOperator" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="AttributeGroupType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Undefined" />
+      <xs:enumeration value="Chain" />
+      <xs:enumeration value="Primary" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="AttributeGroupType" nillable="true" type="tns:AttributeGroupType" />
+</xs:schema>

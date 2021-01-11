@@ -1,0 +1,126 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.ViewModel.Archives.CheckPreservationArchiveConfigurationViewModel
+
+<h2>Verifica configurazione archivio <b>@Model.ArchiveName</b></h2>
+<br />
+
+@if (Model.ValidationErrors.Count > 0)
+{
+    <div class="k-block k-error-colored" style="margin-bottom: 5px;">
+        <b>Attenzione!</b> Le verifiche effettuate sull'archivio hanno dato esito negativo.
+        @foreach (string validationError in Model.ValidationErrors)
+        {
+            <br />
+            <label style="margin-left: 10px;">- @validationError</label>
+        }
+    </div>
+}
+
+
+@Html.HiddenFor(x => x.IdArchive)
+@Html.HiddenFor(x => x.IsValidated)
+@Html.HiddenFor(x => x.ActiveStep, new { Value = 1 })
+
+<table class="form-vertical-table k-block" style="width: 100%;">
+    <tr>
+        <td><b>Inserire un percorso per la conservazione raggiungibile dal server:</b></td>
+    </tr>
+    <tr>
+        <td>
+            <span class="k-textbox k-space-left" style="width: auto;">
+                @(Html.Kendo()
+                    .TextBoxFor(x => x.PathPreservation)
+                    .HtmlAttributes(new { @style = "width: 500px;" }))
+                <a href="#" class="k-icon k-i-folder">&nbsp;</a>
+            </span>
+        </td>
+    </tr>
+    <tr>
+        <td>@(Html.ValidationMessageFor(x => x.PathPreservation))</td>
+    </tr>
+
+    <tr>
+        <td><b>Selezionare un attributo di tipo MainDate:</b></td>
+    </tr>
+    <tr>
+        <td>
+            @(Html.Kendo().DropDownListFor(x => x.MainDateAttribute)
+                .DataValueField("Key")
+                .DataTextField("Value")
+                .Height(500)
+                .HtmlAttributes(new { @style = "width: 300px;" })
+                .BindTo(Model.DateAttributes.Select(s => new { Key = s.Key, Value = s.Value })))
+        </td>
+    </tr>
+    <tr>
+        <td>@(Html.ValidationMessageFor(x => x.MainDateAttribute))</td>
+    </tr>
+
+    <tr>
+        <td><b>Selezionare gli attributi che comporranno la chiave primaria dei documenti:</b></td>
+    </tr>
+    <tr>
+        <td>
+            <label for="lstSource" style="display: inline-block; width: 280px; font-style: italic;">Attributi disponibili</label>
+            <label for="SelectedPrimaryKeyAttributes" style="display: inline-block; font-style: italic;">Attributi chiave primaria (l'ordinamento verrà rispettato)</label>
+            <br />
+            @(Html.Kendo().ListBox()
+                .Name("lstSource")
+                .DataValueField("Key")
+                .DataTextField("Value")
+                .Draggable(true)
+                .DropSources("SelectedPrimaryKeyAttributes")
+                .ConnectWith("SelectedPrimaryKeyAttributes")
+                .BindTo(Model.ArchiveAttributes.Select(s => new { Key = s.Key, Value = s.Value }))
+                .Selectable(ListBoxSelectable.Single)
+                .Toolbar(toolbar =>
+                    toolbar.Tools(tools => tools
+                        .TransferTo()
+                        .TransferFrom()
+                ))
+            )
+
+            <script>
+                function onReorder(e) {
+                    e.preventDefault();
+                    var dataSource = e.sender.dataSource;
+
+                    var dataItem = e.dataItems[0]
+                    var index = dataSource.indexOf(dataItem) + e.offset;
+                    dataSource.remove(dataItem);
+                    dataSource.insert(index, dataItem);
+                    e.sender.wrapper.find("[data-uid='" + dataItem.uid + "']").addClass("k-state-selected");
+                }
+            </script>
+
+            @(Html.Kendo().ListBox()
+                .Name("SelectedPrimaryKeyAttributes")
+                .Draggable(true)
+                .DropSources("lstSource")
+                .DataValueField("Key")
+                .DataTextField("Value")
+                .ConnectWith("lstSource")
+                .BindTo(Model.PrimaryKeyAttributes.Select(s => new { Key = s.Key, Value = s.Value }))
+                .HtmlAttributes(new { required = "required", validationmessage = "E' necessario selezionare almeno un attributo per definire la chiave primaria del documento" })
+                .Selectable(ListBoxSelectable.Single)
+                .Toolbar(toolbar =>
+                    toolbar.Tools(tools => tools
+                        .MoveUp()
+                        .MoveDown()
+                ))
+                .Events(e => e.Reorder("onReorder"))
+            )
+        </td>
+    </tr>
+    <tr>
+        <td>@(Html.ValidationMessageFor(x => x.SelectedPrimaryKeyAttributes))</td>
+    </tr>
+
+    <tr>
+        <td style="text-align: right;">
+            @(Html.Kendo().Button()
+                .Name("btnConfirm")
+                .Enable(!Model.HasPreservations)
+                .Content("Conferma e prosegui"))
+        </td>
+    </tr>
+</table>

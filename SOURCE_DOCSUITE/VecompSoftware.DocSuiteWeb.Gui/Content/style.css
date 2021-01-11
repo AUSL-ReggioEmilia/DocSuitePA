@@ -1,0 +1,1614 @@
+﻿/*------------------------------------------------------------------
+    [Layout]
+
+    1. Colors
+
+    2. * body page
+        3. Layout
+        4. Content Headings
+        5. Header / #header
+        6. Content / #content
+        7. Footer / #footer
+
+    8. Forms
+    9. Telerik
+        10. RadPaneMenu
+        11. RadEditor
+        12. RadGrid
+        13. RadSplitter
+        14. RadPanelBar
+        15. RadTreeView
+        16. RadMenu
+        17. RadCalendar
+        18. RadUpload
+        19. RadDropDownList
+        20. RadDatePicker
+        21. RadToolBar
+        22. RadButton
+        23. RadComboBox
+        24. RadInput
+        25. RadWindow
+        26. RadWizard
+        27. RadFormDecorator
+        28. RadTile
+        29. RadPageLayout
+        30. RadAutoCompleteBox
+        31. RadSlidingPane  
+        32. RadForm
+        33. RadSearchBox
+    34. General
+        
+--------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------
+    [Color codes]
+
+    Background:	#ffffff (white)
+    Da estendere... (N.B utilizzabile con CSS3)
+-------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------
+    [Typography]
+
+    Body RadInput_Office2007:   11px Verdana, Geneva, Arial, Helvetica, sans-serif;
+    input:  12px "Segoe UI", Arial, Helvetica, sans-serif;
+-------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------
+    [1. Colors]
+*/
+
+/*------------------------------------------------------------------
+    [2. * body page]
+*/
+
+body, html {
+    background: #FFFFFF;
+    font-weight: normal;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    overflow: hidden;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.pageContainer {
+    min-height: 100%;
+    position: relative;
+}
+
+.allContent {
+    height: 100%;
+}
+
+.page {
+    height: 100%;
+    width: 100%;
+    text-align: left;
+    vertical-align: top;
+}
+
+/*------------------------------------------------------------------
+    [3. Layout]
+*/
+
+.col-dsw-1 {
+    width: 10%;
+}
+
+.col-dsw-2 {
+    width: 20%;
+}
+
+.col-dsw-3 {
+    width: 30%;
+}
+
+.col-dsw-4 {
+    width: 40%;
+}
+
+.col-dsw-5 {
+    width: 50%;
+}
+
+.col-dsw-6 {
+    width: 60%;
+}
+
+.col-dsw-7 {
+    width: 70%;
+}
+
+.col-dsw-8 {
+    width: 80%;
+}
+
+.col-dsw-9 {
+    width: 90%;
+}
+
+.col-dsw-10 {
+    width: 100%;
+}
+
+.col-dsw-16-important {
+    width: 16% !important;
+}
+
+.col-dsw-34-important {
+    width: 34% !important;
+}
+
+.col-dsw-84-important {
+    width: 84% !important;
+}
+
+@media only screen and (max-width:1024px) and (min-width:769px) {
+    .col-dsw-16-important {
+        width: 21% !important;
+    }
+
+    .col-dsw-34-important {
+        width: 29% !important;
+    }
+
+    .col-dsw-84-important {
+        width: 79% !important;
+    }
+}
+
+.col-dsw-offset-1 {
+    margin-left: 10%;
+}
+
+.col-dsw-offset-2 {
+    margin-left: 20%;
+}
+
+.col-dsw-offset-3 {
+    margin-left: 30%;
+}
+
+.col-dsw-offset-4 {
+    margin-left: 40%;
+}
+
+.col-dsw-offset-5 {
+    margin-left: 50%;
+}
+
+.col-dsw-offset-6 {
+    margin-left: 60%;
+}
+
+.col-dsw-offset-7 {
+    margin-left: 70%;
+}
+
+.col-dsw-offset-8 {
+    margin-left: 80%;
+}
+
+.col-dsw-offset-9 {
+    margin-left: 90%;
+}
+
+.col-dsw-offset-10 {
+    margin-left: 100%;
+}
+
+.dsw-text-left {
+    text-align: left !important;
+}
+
+.dsw-text-center {
+    text-align: center !important;
+}
+
+.dsw-text-right {
+    text-align: right !important;
+}
+
+.dsw-text-justify {
+    text-align: justify;
+}
+
+.dsw-align-right {
+    float: right;
+    text-align: right;
+}
+
+.dsw-align-left {
+    float: left;
+    text-align: left;
+}
+
+.dsw-text-nowrap {
+    white-space: nowrap;
+}
+
+.dsw-display-none {
+    display: none;
+}
+
+.dsw-display-inline {
+    display: inline;
+}
+
+.dsw-display-inline-block {
+    display: inline-block;
+}
+
+.dsw-display-block {
+    display: block;
+}
+
+.dsw-vertical-middle {
+    vertical-align: middle;
+}
+
+.dsw-vertical-top {
+    vertical-align: top;
+}
+
+.dsw-vertical-bottom {
+    vertical-align: bottom;
+}
+
+.dsw-panel {
+    color: black;
+    margin-bottom: 2px;
+    border: 1px solid #999999;
+    background: #F5F5F5;
+}
+
+    .dsw-panel .dsw-panel-title {
+        height: 20px;
+        padding-left: 3px;
+        vertical-align: middle;
+        text-align: left;
+        line-height: 20px;
+        font-weight: bold;
+    }
+
+    .dsw-panel .dsw-panel-content {
+        text-align: left;
+        vertical-align: top;
+        padding: 2px;
+        font-weight: normal;
+    }
+
+.ts-initialize {
+    display: none;
+}
+
+.btnReloadSession {
+    padding: 2px !important
+}
+
+    .btnReloadSession .rbPrimaryIcon {
+        top: 2px;
+        left: 2px;
+    }
+
+.dsw-text-bold {
+    font-weight: bold;
+}
+
+
+
+/*------------------------------------------------------------------
+    [4. Content Headings]
+*/
+
+a:link {
+    text-decoration: none;
+    color: #3333cc;
+}
+
+a:active,
+a:visited {
+    text-decoration: none;
+    color: #333399;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #3333cc;
+}
+
+b, strong {
+    font-weight: bold;
+}
+
+i, em {
+    font-style: italic;
+}
+
+/*------------------------------------------------------------------
+    [5. Header / #header]
+*/
+
+#header {
+    margin: 0;
+    padding: 0;
+}
+
+
+.header-wrapper {
+    padding-top: 1px;
+    height: 100%;
+    *min-height: 1px;
+    *height: auto !important;
+}
+
+.header-content {
+    padding: 0;
+    margin: 0 0 3px 0;
+}
+
+/*------------------------------------------------------------------
+    [6. Content / #content]
+*/
+
+#content {
+    margin: 0;
+    padding: 0;
+}
+
+.page-content-wrapper {
+    position: relative;
+}
+
+.page-content-wrapper,
+.content-wrapper {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.page-content,
+.content {
+    height: 100%;
+    overflow: auto;
+    border: solid 1px black;
+}
+
+.t-container-padding {
+    max-width: 100% !important;
+    padding-left: 3px !important;
+    padding-right: 3px !important;
+}
+
+/*------------------------------------------------------------------
+    [7. Footer / #footer]
+*/
+
+#footer {
+    margin: 0;
+    padding: 0;
+}
+
+.footer-wrapper {
+    width: 100%;
+    *min-height: 1px;
+    height: auto;
+    margin: 0;
+    padding-top: 3px;
+}
+
+.footer-buttons-wrapper {
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+/*------------------------------------------------------------------
+    [8. Forms]
+*/
+
+form {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+.form-group {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+    .form-group .form-control {
+        height: 30px;
+        padding-top: 3px;
+    }
+
+    .form-group .control-label {
+        height: 30px;
+        padding-top: 6px;
+        padding-bottom: 10px;
+        font-weight: bold;
+        font-size: 11px;
+        margin-bottom: 0;
+        text-align: right;
+    }
+
+input {
+    font-size: 11px;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    color: Black;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+select {
+    height: 19px;
+}
+
+input[type=text],
+input[type=password] { /* Stili per il campo di testo e per la textarea */
+    line-height: 19px; /* Altezza di riga */
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    vertical-align: middle;
+    margin: 0;
+    border: 1px solid #abc1de;
+    background: #fff;
+    color: #333;
+    font: normal 12px "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+    input[type=text]:hover,
+    input[type=password]:hover {
+        border: 1px solid #305090;
+    }
+
+input[type="button"]:disabled,
+input[type="submit"]:disabled,
+input[type="reset"]:disabled {
+    color: #808080;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    margin-right: 3px !important;
+}
+
+.preview-disabled-input {
+    border-color: #ccc !important;
+    border-width: 2px !important;
+    background: #eee !important;
+}
+
+/*Explorer 10 and above*/
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    input[type=checkbox],
+    input[type=radio] {
+        vertical-align: middle;
+        position: relative;
+        bottom: 1px;
+        margin-right: 3px !important;
+    }
+
+    input[type=radio] {
+        bottom: 2px;
+    }
+}
+
+/* saf3+, chrome1+ */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    input[type=checkbox],
+    input[type=radio] {
+        vertical-align: middle;
+        position: relative;
+        bottom: 1px;
+        margin-right: 3px !important;
+    }
+
+    input[type=radio] {
+        bottom: 2px;
+    }
+}
+
+/*------------------------------------------------------------------
+    [9. Telerik]
+*/
+
+.RadInput_Office2007 {
+    font: 11px Verdana, Geneva, Arial, Helvetica, sans-serif !important;
+}
+
+div.RadAjaxPanel {
+    display: inline !important;
+}
+
+.TelerikModalOverlay {
+    width: 100% !important;
+}
+
+/*------------------------------------------------------------------
+    [10. RadPaneMenu]
+*/
+
+#RadPaneMenu td.rspTabsContainer {
+    height: 100%;
+}
+
+    #RadPaneMenu td.rspTabsContainer div.rspPaneTabContainer {
+        background: transparent url(../App_Themes/DocSuite2008/images/sfondomenu.jpg) repeat;
+        height: 100% !important;
+        width: 28px !important;
+        margin: 0;
+        padding: 0;
+        border-width: 0;
+    }
+
+.rspSlideZone {
+    height: 100%;
+}
+
+/*------------------------------------------------------------------
+    [11. RadEditor]
+*/
+
+.reWrapper {
+    border-width: 0 !important;
+    background: transparent !important;
+}
+
+.reLeftVerticalSide,
+.reRightVerticalSide,
+.reToolZone,
+.reTlbVertical {
+    display: none !important;
+}
+
+.reToolCell {
+    background: transparent !important;
+}
+
+.reWrapper_corner,
+.reWrapper_center {
+    display: none !important;
+}
+
+.reContentCell {
+    background: white !important;
+}
+
+/*------------------------------------------------------------------
+    [12. RadGrid]
+*/
+
+.radGridWrapper {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+div.RadGrid_Office2007 input {
+    border: 0;
+    background-color: transparent;
+}
+
+div.RadGrid_Office2007,
+div.RadGrid_Office2007 .rgMasterTable,
+div.RadGrid_Office2007 .rgDetailTable,
+div.RadGrid_Office2007 .rgGroupPanel table,
+div.RadGrid_Office2007 .rgCommandRow table,
+div.RadGrid_Office2007 .rgEditForm table,
+div.RadGrid_Office2007 .rgPager table,
+span.GridToolTip_Office2007 {
+    line-height: normal;
+    font-size: 11px;
+}
+
+    div.RadGrid_Office2007 .rgMasterTable {
+        border-collapse: collapse;
+    }
+
+    div.RadGrid_Office2007 td.rgCommandCell {
+        background-color: #F5F5F5;
+        background-image: none;
+    }
+
+        div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable {
+            width: 100%;
+            height: 25px;
+            margin-top: 2px;
+            margin-bottom: 3px;
+        }
+
+            div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable table.commandItemPaging {
+                width: 560px;
+                height: 23px;
+                float: left;
+            }
+
+                div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable table.commandItemPaging td {
+                    text-align: center;
+                }
+
+                div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable table.commandItemPaging .firstPage {
+                    background: transparent url(../App_Themes/DocSuite2008/Images/first.gif) 0 0 no-repeat;
+                }
+
+                div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable table.commandItemPaging .prevPage {
+                    background: transparent url(../App_Themes/DocSuite2008/Images/prev.gif) 0 0 no-repeat;
+                }
+
+                div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable table.commandItemPaging .lastPage {
+                    background: transparent url(../App_Themes/DocSuite2008/Images/last.gif) 0 0 no-repeat;
+                }
+
+                div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable table.commandItemPaging .nextPage {
+                    background: transparent url(../App_Themes/DocSuite2008/Images/next.gif) 0 0 no-repeat;
+                }
+
+
+            div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable table.commandItemCount {
+                width: 250px;
+                height: 20px;
+                font-weight: bold;
+                font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+                text-align: center;
+                float: left;
+            }
+
+            div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable .commandItemButtons {
+                text-align: right;
+                white-space: nowrap;
+                float: left;
+            }
+
+    div.RadGrid_Office2007 tr.rgFilterRow {
+        height: 33px;
+    }
+
+        div.RadGrid_Office2007 tr.rgFilterRow td {
+            padding: 4px;
+            white-space: nowrap;
+        }
+
+            div.RadGrid_Office2007 tr.rgFilterRow td table.filterControlTable {
+                width: 100%;
+                border: 0;
+            }
+
+                div.RadGrid_Office2007 tr.rgFilterRow td table.filterControlTable td {
+                    border: 0;
+                    padding: 0;
+                }
+
+                    div.RadGrid_Office2007 tr.rgFilterRow td table.filterControlTable td .RadPicker .riSingle {
+                        min-width: 70px !important;
+                    }
+
+                div.RadGrid_Office2007 tr.rgFilterRow td table.filterControlTable .riSingle {
+                    width: 98px !important;
+                }
+
+                div.RadGrid_Office2007 tr.rgFilterRow td table.filterControlTable .filterBox {
+                    width: 100%;
+                    font-size: 12px;
+                    line-height: normal;
+                    border: 1px solid #9eb6ce;
+                    background: #fff;
+                    color: #333;
+                    padding-right: 0;
+                    padding-left: 0;
+                }
+
+    div.RadGrid_Office2007 tr.rgNoRecords div {
+        height: 20px;
+        font-weight: bold;
+        line-height: 20px;
+        padding-left: 5px;
+    }
+
+    /* NUOVA GRIGLIA */
+    div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable .firstPage {
+        background: transparent url(../App_Themes/DocSuite2008/Images/first.gif) 0 0 no-repeat;
+    }
+
+    div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable .prevPage {
+        background: transparent url(../App_Themes/DocSuite2008/Images/prev.gif) 0 0 no-repeat;
+    }
+
+    div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable .lastPage {
+        background: transparent url(../App_Themes/DocSuite2008/Images/last.gif) 0 0 no-repeat;
+    }
+
+    div.RadGrid_Office2007 td.rgCommandCell div.commandItemTable .nextPage {
+        background: transparent url(../App_Themes/DocSuite2008/Images/next.gif) 0 0 no-repeat;
+    }
+
+span.excelButtonExport {
+    background: transparent url(../App_Themes/DocSuite2008/imgset16/file_extension_xls.png) 0 0 no-repeat;
+}
+
+span.wordButtonExport {
+    background: transparent url(../App_Themes/DocSuite2008/imgset16/file_extension_doc.png) 0 0 no-repeat;
+}
+
+span.pulisciFiltri {
+    background: transparent url(../App_Themes/DocSuite2008/imgset16/filter_delete.png) 0 0 no-repeat;
+}
+
+/*Barra di navigazione dove sono presenti i bottoni di first, prev, next, last */
+div.navigationButtons {
+    margin-left: 5px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    display: inline;
+    float: left;
+    /*override dello stile di riga 146. commentando la riga, si hanno i bottoni sulla stessa linea se ci stanno.*/
+    width: auto !important;
+}
+
+.borderNavigationButton {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+div.panelRangeValidator {
+    display: inline;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+span.visualizzaRisultati {
+    margin-left: 15px;
+    margin-right: 15px;
+    font-family: Verdana;
+    font-weight: bold;
+}
+
+div.exportButtons {
+    margin-right: 5px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    display: inline;
+    margin-bottom: 3px;
+    float: right;
+}
+/* NUOVA GRIGLIA */
+div.RadGrid_Office2007 .rgMasterTable .rgSelectedCell,
+div.RadGrid_Office2007 .rgSelectedRow {
+    background-color: #ffcb60 !important;
+}
+
+/*------------------------------------------------------------------
+    [13. RadSplitter]
+*/
+
+.splitterWrapper {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden;
+}
+
+table.RadSplitter_Office2007 {
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+}
+
+    table.RadSplitter_Office2007 .rspSlideHeader .rspSlideTitle {
+        text-align: left;
+    }
+
+.noBorderSplitter table.RadSplitter_Office2007 {
+    border: 0 !important;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+    .noBorderSplitter table.RadSplitter_Office2007 td.rspPaneHorizontal {
+        border: 0 !important;
+    }
+
+    .noBorderSplitter table.RadSplitter_Office2007 td.rspFirstItem {
+        border: 0 !important;
+    }
+
+/* Rimozione scrollbar a tutta pagina */
+#RAD_SPLITTER_PANE_CONTENT_content {
+    overflow: hidden !important;
+}
+
+/*------------------------------------------------------------------
+    [14. RadPanelBar]
+*/
+
+div.RadPanelBar_Office2007 .rpSlide {
+    width: 100%;
+}
+
+div.RadPanelBar_Office2007 .rpExpandable span.rpExpandHandle {
+    display: none;
+}
+
+div.RadPanelBar_Office2007 .rpExpandable span.rpCollapseHandle {
+    display: none;
+}
+
+div.RadPanelBar_Office2007 .rpText {
+    line-height: 31px;
+    font-size: 11px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+/*------------------------------------------------------------------
+    [15. RadTreeView]
+*/
+
+div.RadTreeView_Office2007.DocSuiteMenu {
+    padding-top: 8px;
+}
+
+    div.RadTreeView_Office2007.DocSuiteMenu span.rtMinus {
+        display: none;
+    }
+
+    div.RadTreeView_Office2007.DocSuiteMenu span.rtPlus {
+        display: none;
+    }
+
+div.RadTreeView_Office2007,
+div.RadTreeView_Office2007 a.rtIn,
+div.RadTreeView_Office2007 .rtEdit .rtIn input {
+    font: normal 11px Verdana, Helevtica, Sans-Serif;
+    color: black;
+    text-decoration: none;
+    line-height: 1.273em;
+}
+
+    div.RadTreeView_Office2007 .rtTop,
+    div.RadTreeView_Office2007 .rtMid,
+    div.RadTreeView_Office2007 .rtBot {
+        padding: 0px 0 0 20px;
+    }
+
+    div.RadTreeView_Office2007 .rtSp {
+        height: 18px;
+    }
+
+    div.RadTreeView_Office2007 .rtChk {
+        margin: 0 2px;
+        padding: 0;
+        width: 12px;
+        height: 12px;
+    }
+
+    div.RadTreeView_Office2007 .rtIn {
+        margin-left: 3px;
+        padding: 1px;
+    }
+
+    div.RadTreeView_Office2007 .rtHover .rtIn {
+        background: #d8e4f8;
+        color: black;
+        padding: 1px;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+    div.RadTreeView_Office2007 .rtSelected .rtIn {
+        background-color: rgb(49, 106, 197);
+        color: #fff;
+        background-image: none;
+        padding: 1px;
+    }
+
+    div.RadTreeView_Office2007 .RadTreeNodeOpacity img.rtImg {
+        opacity: 0.4;
+        opacity: .4;
+        filter: alpha(opacity=40);
+    }
+
+    div.RadTreeView_Office2007 span.notActive {
+        font-weight: normal;
+        color: grey;
+    }
+
+.node-disabled {
+    color: gray;
+}
+
+.node-fascicle {
+    color: #00bb2c;
+    font-weight: bold;
+}
+
+.node-subfascicle {
+    color: #24FF58;
+    font-weight: bold;
+}
+
+.node-no-fascicle {
+    color: #7c0c19;
+    font-weight: bold;
+}
+
+.node-accepted-role {
+    color: #009933;
+}
+
+.selected-node-accepted-role {
+    background-color: #316ac5;
+    color: #fff;
+}
+
+/*------------------------------------------------------------------
+    [16. RadMenu]
+*/
+
+div.RadMenu_Office2007 .rmItem {
+    text-align: left;
+}
+
+/*------------------------------------------------------------------
+    [17. RadCalendar]
+*/
+
+.RadCalendar_Office2007 .rcRow td.rcToday /* Giorno di default */ {
+    border: solid 1px #dde1e4;
+    background-color: #F9F8E0;
+}
+
+/*------------------------------------------------------------------
+    [18. RadUpload]
+*/
+
+div.RadUpload_Office2007 input.ruBrowse {
+    height: 22px;
+}
+
+div.RadUpload_Office2007 ul.ruInputs li {
+    margin-bottom: 0;
+}
+
+div.RadUpload_Office2007 span.ruFileWrap {
+    height: 22px;
+}
+
+/*------------------------------------------------------------------
+    [19. RadDropDownList]
+*/
+
+div.rddlSlide {
+    height: 120px;
+}
+
+/*------------------------------------------------------------------
+    [20. RadDatePicker]
+*/
+
+.RadPicker {
+    display: inline-block !important;
+}
+
+div.rddlPopup_Office2007 .rddlItemText {
+    padding-left: 2px;
+}
+
+/*------------------------------------------------------------------
+    [21. RadToolBar]
+*/
+
+div.RadToolBar_Office2007 li.rtbItem {
+    vertical-align: middle;
+}
+
+div.RadToolBar_Office2007 .rtbTemplate .templateText {
+    font-style: italic;
+    cursor: default;
+}
+
+/*------------------------------------------------------------------
+    [22. RadButton]
+*/
+
+span.RadButton.RadButton_Office2007.rbToggleButton.rbDisabled {
+    border: 0 transparent none;
+    background-color: transparent;
+    filter: none;
+}
+
+/*------------------------------------------------------------------
+    [23. RadComboBox]
+*/
+
+div.RadComboBox .rcbInput:hover {
+    border: 0 !important;
+}
+
+div.RadComboBox table td.rcbArrowCell {
+    padding: 0 !important;
+}
+
+div.RadComboBox table td.rcbInputCell {
+    padding: 0 4px 0 5px !important;
+}
+
+/*------------------------------------------------------------------
+    [24. RadInput]
+*/
+
+.RadInput input.riTextBox {
+    height: 19px !important;
+}
+
+* + html .RadInput input.riTextBox {
+    height: 14px !important;
+}
+
+@media \0screen {
+    .riSingle .riTextBox {
+        width: 100% !important;
+    }
+}
+
+span.RadInput.RadInput_Office2007 a.searchButton {
+    vertical-align: top;
+    background: transparent url('../App_Themes/DocSuite2008/Images/search-transparent.png') 1px 0 no-repeat !important;
+    padding: 0 0 0 2px;
+}
+
+span.RadInput.RadInput_Office2007 textarea {
+    overflow-x: hidden;
+}
+
+/*------------------------------------------------------------------
+    [25. RadWindow]
+*/
+
+/*------------------------------------------------------------------
+    [26. RadWizard]    
+*/
+
+.RadWizard {
+    padding: 3px 5px 0 5px !important;
+}
+
+.rwzBreadCrumb {
+    margin-bottom: 3px !important;
+}
+
+/*
+    [27. RadFormDecorator] 
+*/
+
+.RadForm.rfdFieldset legend {
+    margin-left: 5px !important;
+}
+
+/*
+    [28. RadTile] 
+*/
+
+.RadTile {
+    height: 80px !important;
+    width: 150px !important;
+}
+
+    .RadTile .rtileTopContent {
+        height: auto !important;
+        font-weight: bold;
+    }
+
+    .RadTile h6.rtileTitle {
+        text-align: center;
+    }
+
+/*
+    [29. RadPageLayout] 
+*/
+
+.t-col-left-padding {
+    padding-left: 0 !important;
+}
+
+.t-col-right-padding {
+    padding-right: 0 !important;
+}
+
+/*
+    [30. RadAutoCompleteBox]
+*/
+
+.RadAutoCompleteBox {
+    display: inline-block;
+}
+
+    .RadAutoCompleteBox input:hover {
+        border: 0 !important;
+    }
+/*
+    [31. RadSlidingPane]
+*/
+
+.hideRspSlideHeader .rspSlideHeader {
+    display: none;
+}
+
+/*
+    [32. RadForm]
+*/
+
+.RadForm_Office2007.rfdFieldset fieldset {
+    background-color: #fff !important;
+}
+
+/*
+    [33. RadSearchBox]
+*/
+
+.RadSearchBox input:hover {
+    border: 0 !important;
+}
+
+/*------------------------------------------------------------------
+    [34. General]
+*/
+/* datatable */
+.datatable {
+    border-collapse: collapse;
+    color: black;
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+    .datatable th, .datatable td.head, .datatable.tHead {
+        height: 20px;
+        padding-left: 3px;
+        vertical-align: middle;
+        text-align: left;
+        line-height: 20px;
+        font-weight: bold;
+        font-size: 11px;
+    }
+
+        .datatable th input, .datatable th img, .datatable td.head input, .datatable td.head img {
+            vertical-align: middle;
+        }
+
+    .datatable td {
+        text-align: left;
+        vertical-align: top;
+        padding: 2px;
+        font-weight: normal;
+        font-size: 11px;
+        color: #000;
+    }
+
+        .datatable td input, .datatable td img {
+            vertical-align: middle;
+        }
+
+    .datatable .label {
+        font-weight: bold;
+        text-align: right;
+        vertical-align: middle;
+        font-size: 11px;
+    }
+
+/* Eliminare datataform a favore di datatable */
+.dataform {
+    border-collapse: collapse;
+    color: black;
+    width: 100%;
+}
+
+    .dataform td {
+        font-weight: normal;
+        color: #000;
+        text-align: left;
+        vertical-align: top;
+    }
+
+        .dataform td.label {
+            font-weight: bold;
+            text-align: right;
+            vertical-align: middle;
+            padding: 0 5px 0 0;
+        }
+/* Eliminare datataform a favore di datatable */
+
+span.miniLabel {
+    vertical-align: middle;
+    font-weight: bold;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.strongRiLabel {
+    font-weight: bold;
+}
+
+.Spazio {
+    height: 4px;
+    line-height: 4px;
+}
+
+div.MenuPanel img.rpImage {
+    padding: 8px 8px 4px 5px;
+}
+
+.bodyFrameFooter {
+    background-color: #5987d6;
+    color: #FFFFFF;
+    overflow: hidden;
+    text-align: left;
+    height: 31px;
+}
+
+    .bodyFrameFooter span {
+        line-height: 25px;
+    }
+
+.bodyFrameHeader {
+    background-color: #5987d6;
+    height: 31px;
+    width: 100%;
+}
+
+    .bodyFrameHeader .leftHead {
+        padding: 0;
+        padding-left: 10px;
+        text-align: left;
+        vertical-align: central;
+        font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
+        color: #ffffff;
+        letter-spacing: -1.5px;
+        font-weight: 500;
+        font-style: oblique;
+        font-size: 18px;
+        line-height: 31px;
+    }
+
+
+table.bodyFrameHeader .rightHead {
+    text-align: right;
+    vertical-align: top;
+    padding: 4px 4px 0 0;
+}
+
+table.noBorder td {
+    border: none !important;
+}
+
+.warningArea {
+    padding: 8px 14px 8px 14px;
+    border-color: #fbeed5;
+    border-width: 1px;
+    border-style: solid;
+    font-weight: bold;
+    text-shadow: 0 1px 0 #ffffff; /* fallback */
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    background-color: #fcf8e3;
+    border: 1px solid #ff0000;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+    .warningArea li {
+        list-style: circle inside;
+        padding-left: 5px;
+    }
+
+.warningAreaLow {
+    padding: 8px 14px 8px 14px;
+    border-color: #fbeed5;
+    border-width: 1px;
+    border-style: solid;
+    font-weight: bold;
+    text-shadow: 0 1px 0 #ffffff; /* fallback */
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    background-color: #fcf8e3;
+    border: 1px solid #ff0000;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.successAreaLow {
+    padding: 8px 14px 8px 14px;
+    border-color: #fbeed5;
+    border-width: 1px;
+    border-style: solid;
+    font-weight: bold;
+    text-shadow: 0 1px 0 #ffffff; /* fallback */
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    background-color: #fcf8e3;
+    border: 1px solid #61E04E;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.titolo {
+    font-weight: bold;
+    width: 100%;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    background-image: url(../App_Themes/DocSuite2008/Images/Comm/CommTitoloGrad.gif);
+    color: white;
+    text-align: left;
+    vertical-align: middle;
+}
+
+tr.titolo {
+    font-weight: bold;
+    height: 15px;
+}
+
+.elementBordered {
+    border: 1px solid black;
+    margin: 0 2px;
+}
+
+.autoHeight {
+    height: auto !important;
+}
+
+.autoWidth {
+    width: auto !important;
+}
+
+.TransparentControl {
+    opacity: 0.4;
+    opacity: .4;
+    filter: alpha(opacity=40); /* Per compatibilità con Explorer 8 e versioni precedenti. - FG */
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
+.center {
+    text-align: center;
+}
+
+.button {
+    margin: 2px 2px 2px 2px;
+}
+
+.hiddenField {
+    display: none;
+}
+
+.noPadding {
+    padding: 0 !important;
+}
+
+.searchInput {
+    width: 70%;
+}
+
+.topLogo {
+    text-align: center;
+    padding-top: 30px;
+    margin-bottom: 60px;
+}
+
+    .topLogo img {
+        width: 40%;
+        border-radius: 8px;
+        box-shadow: 0 8px 6px -6px rgba(0,0,0,.10);
+        height: auto;
+        padding-bottom: 25px;
+    }
+
+    .intro-panel {
+        margin-bottom: 20px;
+    }
+
+.intro-button {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+.notification-container {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    top: 15px;
+    left: 15px;
+}
+
+    .notification-container i {
+        color: #fff;
+    }
+
+.notification-counter {
+    position: absolute;
+    top: -2px;
+    left: 12px;
+    background-color: #d4130d; /* fallback */
+    background-color: rgba(212, 19, 13, 1);
+    color: #fff;
+    border-radius: 3px;
+    padding: 1px 3px;
+    font: 8px Verdana;
+}
+
+.messageExcpetion {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.inlineBlock {
+    white-space: nowrap;
+    display: inline;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    border-collapse: collapse;
+    overflow: hidden;
+    vertical-align: top;
+}
+
+.viewerWrapper {
+    overflow: hidden;
+    height: 100% !important;
+    width: 100% !important;
+}
+
+.contactCount {
+    margin-left: 3px;
+    white-space: nowrap;
+}
+
+.contactCheckCopia {
+    margin-left: 20px;
+    white-space: nowrap;
+}
+
+.stacked {
+    text-align: center;
+    horiz-align: center;
+}
+
+    .stacked input {
+        display: block;
+    }
+
+.wizard-wrapper {
+    margin: 0;
+}
+
+.wizard-action-wrapper {
+    padding: 7px 5px 0 5px;
+}
+
+.column-disabled {
+    border: #ccc;
+    border-width: 2px;
+}
+
+/***** Loader *****/
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden !important;
+    z-index: 99999;
+}
+
+.loading-img {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -30px 0 0 -30px;
+    width: 60px;
+    height: 60px;
+}
+
+.button-disabled[disabled="disabled"]:hover {
+    text-decoration: none;
+}
+
+/* Classi per la stampa */
+@media print {
+    .noPrint {
+        display: none;
+    }
+}
+
+.layout-row {
+    margin-top: 4px;
+}
+
+.metadata-author {
+    font-style: italic;
+    margin-right: 10px;
+}
+
+.selectedLevel .rtIn {
+    color: #ffffff !important;
+}
+
+.color-box {
+    width: 10px;
+    height: 10px;
+    border: 1px solid;
+    display: inline-block;
+}
+
+table.monitorLog td.label {
+    width: 25% !important;
+}
+
+.leftLabel {
+    width: 30%;
+    display: inline-block;
+}
+
+.rightValue {
+    float: right;
+    width: 70%;
+}
+
+.labelPadding-7 {
+    padding-left: 7%;
+}
+
+.add-icon {
+    visibility: hidden;
+    background-image: none !important;
+}
+
+    .add-icon > input {
+        background: url(../App_Themes/DocSuite2008/images/search-transparent.png) !important;
+        background-repeat: no-repeat !important;
+        margin-left: 2px !important;
+        margin-top: 2px !important;
+        padding-left: 21px !important;
+        font-size: 13px !important;
+        line-height: 8px !important;
+    }
+
+.draggable-icon {
+    margin-right: 0 !important;
+    float: right;
+    height: 3% !important;
+    width: 17px !important;
+}
+
+.error-tree-node {
+    color: red;
+}
+
+.text-black {
+    color: black !important;
+}
+
+.text-red{
+    color: red !important;
+}
+
+div.RadTreeView_Office2007 .rtIn.font_node {
+    font-weight: bold;
+}
+
+/*
+    README: Evitare di posizionare a caso o di creare stili non generici. Controllare come funziona la pagina di stile.
+*/

@@ -1,0 +1,96 @@
+﻿@using BiblosDS.LegalExtension.AdminPortal.ViewModel;
+@model BiblosDS.LegalExtension.AdminPortal.ViewModel.Archives.ExecuteArchivePreservationMigratorViewModel
+
+<script src="@Url.Content("~/Scripts/jquery.signalR-2.4.1.min.js")"></script>
+<script src="@Url.Content("~/signalr/hubs")"></script>
+<script>
+    var hub,
+        hubStart,
+        referenceId,
+        hasReport;
+
+    $(function () {
+        hub = $.connection.preservationHub;
+        hub.client.notify = function (model) {
+            hasReport = (model.HasReport || hasReport);
+            if (model.Level == 3 || model.Level == 0) {
+                $("#IsCompleted").val(true);
+                $("#IsCompleteWithErrors").val((model.Level == 0));
+                $("#btnConfirm").data("kendoButton").enable(true);
+                if (hasReport == true) {
+                    referenceId = model.TaskReferenceId;
+                    $("#btnViewActivityDetails").fadeIn();
+                }
+            }
+        }
+        hubStart = $.connection.hub.start();
+        hubStart.done(function () {
+            hub.server.executeArchivePreservationConfiguration("@Model.IdArchive","@Model.IdCompany");
+        })
+        .fail(function () {
+            alert("E' avvenuto un errore durante la connessione al server. Si prega di riprovare l'attività di configurazione");
+        });
+    });
+
+    function openDialog() {
+        var form = $('<form></form>').attr('action', "@Url.Action("DownloadJsonTempFile", "Home")").attr('method', 'post');
+        form.append($("<input></input>").attr('type', 'hidden').attr('name', 'referenceKey').attr('value', referenceId));
+        form.appendTo('body').submit().remove();
+    }
+</script>
+
+<h2>Esecuzione task di modifica configurazione archivio <b>@Model.ArchiveName</b></h2>
+<br />
+
+<span id="btnViewActivityDetails" style="display: none; margin-bottom: 5px;" class="k-button hide-on-narrow" onclick="openDialog();">Visualizza report</span>
+
+@Html.HiddenFor(x => x.IdArchive)
+@Html.HiddenFor(x => x.IsCompleted)
+@Html.HiddenFor(x => x.IsCompleteWithErrors)
+@Html.HiddenFor(x => x.ActiveStep, new { Value = 3 })
+@(Html.Kendo().Grid<ProgressMessageViewModel>()
+    .Name("Grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Level).Width(36)
+            .Template(cp =>
+                cp.Level
+            )
+            .ClientTemplate("#if(Level == '" + (int)ProgressMessageLevel.Info + "') {#" +
+            "                   <img src='" + Url.Content("~/Images/info.png") + "' />" +
+            "                #} else if (Level == '" + (int)ProgressMessageLevel.Error + "') {#" +
+            "                   <img src='" + Url.Content("~/Images/error.png") + "' />" +
+            "                #} else if (Level == '" + (int)ProgressMessageLevel.Warning + "') {#" +
+            "                   <img src='" + Url.Content("~/Images/warning.png") + "' />" +
+            "                #} else {#" +
+            "                   <img src='" + Url.Content("~/Images/succeded.png") + "' />" +
+            "                #}#")
+            .Title(" ");
+        columns.Bound(p => p.Date).Width(200).Format("{0:dd/MM/yyyy HH:mm:ss.ffff}").Title("Data");
+        columns.Bound(p => p.Message).Title("Messaggio");
+    })
+    .HtmlAttributes(new { style = "height: 550px; margin-bottom:20px;" })
+    .Sortable()
+    .Scrollable()
+    .DataSource(dataSource => dataSource
+        .SignalR()
+        .AutoSync(true)
+        .Sort(s => s.Add("Date").Descending())
+        .Transport(tr => tr
+            .Promise("hubStart")
+            .Hub("hub")
+            .Client(c => c
+                .Create("notify"))
+            .Server(s => s
+                .Read("load")
+            )
+        )
+    )
+)
+
+<div style="text-align: right;">
+    @(Html.Kendo().Button()
+        .Name("btnConfirm")
+        .Enable(false)
+        .Content("Prosegui"))
+</div>

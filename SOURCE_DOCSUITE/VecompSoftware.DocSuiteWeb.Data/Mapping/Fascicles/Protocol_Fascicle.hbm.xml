@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+  <class name="Fascicle" table="Fascicles">
+
+    <id name="Id" column="IdFascicle" >
+      <generator class="guid.comb" />
+    </id>
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>    
+    <property name="Year">
+      <column name="Year" not-null="true" />
+    </property>
+    <property name="Number">
+      <column name="Number" not-null="true" />
+    </property>
+    <property name="Conservation">
+      <column name="Conservation" not-null="false" />
+    </property>
+    <property name="StartDate">
+      <column name="StartDate" not-null="false" />
+    </property>
+    <property name="EndDate">
+      <column name="EndDate" not-null="false" />
+    </property>
+    <property name="Title">
+      <column name="Title" not-null="true" />
+    </property>
+    <property name="Name">
+      <column name="Name" not-null="false" />
+    </property>
+    <property name="FascicleObject">
+      <column name="Object" not-null="false" />
+    </property>
+    <property name="Manager">
+      <column name="Manager" not-null="false" />
+    </property>
+    <property name="IdMetadataRepository">
+      <column name="IdMetadataRepository" not-null="false" />
+    </property>
+    <property name="MetadataValues">
+      <column name="MetadataValues" not-null="false" />
+    </property>
+    <property name="Rack">
+      <column name="Rack" not-null="false" />
+    </property>
+    <property name="Note">
+      <column name="Note" not-null="false" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <property name="FascicleType">
+      <column name="FascicleType" not-null="true" />
+    </property>
+    <property name="VisibilityType">
+      <column name="VisibilityType" not-null="true" />
+    </property>
+    <property name="DSWEnvironment">
+      <column name="DSWEnvironment" not-null="false" />
+    </property>
+    <property name="CustomActions">
+      <column name="CustomActions" not-null="false" />
+    </property>
+    <many-to-one column="IdCategory" name="Category" class="Category" not-null="true" />
+    <many-to-one column="IdContainer" name="Container" class="Container" not-null="false" />
+    <bag name="FascicleDocumentUnits" table="FascicleDocumentUnits">
+      <key column ="IdFascicle" />
+      <one-to-many class="FascicleDocumentUnit" />
+    </bag>
+  </class>
+  
+</hibernate-mapping>

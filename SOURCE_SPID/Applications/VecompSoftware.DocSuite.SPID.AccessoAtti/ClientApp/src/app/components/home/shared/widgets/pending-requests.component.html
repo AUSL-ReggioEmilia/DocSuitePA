@@ -1,0 +1,20 @@
+<div class="panel panel-warning">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-xs-3">
+                <i class="fa fa-clock-o fa-5x"></i>
+            </div>
+            <div class="col-xs-9 text-right">
+                <div *ngIf="!isBusy" class="widget-counter">{{requests | pendingRequestsCount}}</div>
+                <div class="">Elementi in attesa</div>
+            </div>
+        </div>
+    </div>
+    <a routerLink="/le-mie-richieste">
+        <div class="panel-footer text-warning">
+            <span class="pull-left">Visualizza richieste</span>
+            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+            <div class="clearfix"></div>
+        </div>
+    </a>
+</div>

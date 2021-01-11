@@ -1,0 +1,81 @@
+﻿@model BiblosDS.LegalExtension.AdminPortal.Models.PreservationVerifyIndexModel
+@{
+    ViewBag.Title = "Verifica conservazioni";
+}
+
+@section featured {
+    <hgroup class="title">
+        <h1><span class="fas fa-tasks" style="font-size: 32px; margin-right: 10px;"></span>@ViewBag.Title</h1>
+    </hgroup>
+}
+
+<div style="padding:10px 0px 15px 0px;">
+    @Html.ActionLink("Elenco delle verifiche eseguite", "List", "PreservationVerify")
+</div>
+
+<div class="form-table k-block" style="padding: 20px;">
+    @if (Model.archives.Count() == 0)
+    {
+        <p>
+            <b>Nessun archivio abilitato</b>
+        </p>
+    }
+    else
+    {
+        using (Html.BeginForm("ExecuteVerify", "PreservationVerify", FormMethod.Post))
+        {
+            <div>
+                <b>Seleziona gli archivi da verificare</b>
+            </div>
+
+            <div style="margin-top: 5px; margin-bottom: 10px;">
+                @Html.Kendo().Button().Name("selectAll").Content("Seleziona tutti").HtmlAttributes(new { type = "button" }).Events((evt) =>
+                   {
+                       evt.Click("selectAllArchives");
+                   })
+                @Html.Kendo().Button().Name("deselectAll").Content("Deseleziona tutti").HtmlAttributes(new { type = "button" }).Events((evt) =>
+                   {
+                       evt.Click("deselectAllArchives");
+                   })
+            </div>
+
+            foreach (var item in Model.archives)
+            {
+                <div style="margin-bottom:10px;">
+                    <input type="checkbox" id="ck_@item.IdArchive" name="selectedArchives" value="@item.IdArchive" />
+                    <label for="ck_@item.IdArchive">@item.Name</label>
+                </div>
+            }
+            <br />
+
+            <div>
+                <b>Verifica conservazioni con 'Data chiusura'</b>
+            </div>
+            <br />
+
+            <div>
+                <div style="margin-bottom: 2px;">
+                    <span>Dal</span>
+                    @Html.Kendo().DatePickerFor(x => x.fromDate).Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 200px" })
+                </div>
+                <div>
+                    <span>Al</span>
+                    @Html.Kendo().DatePickerFor(x => x.toDate).Format("dd/MM/yyyy").HtmlAttributes(new { style = "width: 200px; left: 8px;" })
+                </div>
+            </div>
+
+            <br />
+            @Html.Kendo().Button().Name("btn").Content("Avvia la verifica").HtmlAttributes(new { type = "submit" })
+        }
+    }
+</div>
+
+<script type="text/javascript">
+    function selectAllArchives(e) {
+        $('input:checkbox').prop('checked', true);
+    }
+
+    function deselectAllArchives(e) {
+        $('input:checkbox').prop('checked', false);
+    }
+</script>

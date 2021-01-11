@@ -1,0 +1,4 @@
+﻿{
+  "ProdecureRoleName": "Responsabile di procedimento",
+  "SecretaryRoleName": "Segreteria di procedimento"
+}
