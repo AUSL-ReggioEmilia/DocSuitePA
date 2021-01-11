@@ -38,5 +38,5 @@ offre la soluzione DocSuite PA in modalità cloud utilizzando Windows Azure (IAA
 Maggiori informazioni sul sito aziendale https://www.dgroove.it/gestione-documentale/
 
 Contatto del referente in Dgroove Srl per il riuso della soluzione: 
-**REMOVE** **REMOVE**
-**REMOVE**.**REMOVE**@dgroove.it 
+Andrea Piccoli
+andrea.piccoli@dgroove.it 
