@@ -76,8 +76,8 @@ localisation:
 maintenance:
   contacts:
     - affiliation: Dgroove Srl
-      email: **REMOVE**.**REMOVE**@dgroove.it
-      name: **REMOVE** **REMOVE**
+      email: andrea.piccoli@dgroove.it
+      name: Andrea Piccoli
   contractors:
     - name: Dgroove Srl
       until: '2022-12-31'
