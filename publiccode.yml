@@ -10,7 +10,7 @@ categories:
 description:
   it:
     apiDocumentation: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/wiki/Integrazioni-applicative-con-DocSuite-PA'
-    documentation: 'https://ged.dgroove.it'
+    documentation: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/wiki'
     features:
       - Protocollo Informatico
       - Archivi (Repertori)
@@ -132,6 +132,7 @@ usedBy:
   - (eanln_rm)  ENEA
   - (enpai_)    ENPACL
   - (cnocl_rm)  Consiglio dell'ordine dei Consulenti del Lavoro 
+  - (enas)      ENAS
   -             AFOL Monza Brianza
   -             Pubblica Amministrazione e degli Enti e delle Aziende del settore pubblico
                 allargato nella Repubblica di San Marino
