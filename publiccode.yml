@@ -9,7 +9,7 @@ categories:
   - collaboration
 description:
   it:
-    apiDocumentation: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/wiki/Integrazioni-applicative-con-DocSuite-PA'
+    apiDocumentation: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/wiki/Integrazioni-applicative'
     documentation: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/wiki'
     features:
       - Protocollo Informatico
