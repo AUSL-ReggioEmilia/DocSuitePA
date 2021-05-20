@@ -22,6 +22,8 @@ description:
       - Workflow e Scrivania Attività
       - Conservazione Digitale e versamento a Conservatore Accreditato
       - Trasparenza e SPID (anche accesso pubblico e istanze digitali) (FOIA)
+    screenshots:
+      - docsuite-pa.png
     genericName: Gestione Documentale
     localisedName: DocSuite PA
     longDescription: >
@@ -119,6 +121,7 @@ name: DocSuite PA
 platforms:
   - windows
 releaseDate: '2021-04-26'
+logo: docsuite-pa.png
 roadmap: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/projects/1'
 softwareType: standalone/web
 softwareVersion: '9.17'
