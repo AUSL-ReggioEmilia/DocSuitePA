@@ -28,7 +28,7 @@ silvia.filippi@ausl.re.it
 Il referente tecnico del Servizio Tecnologie Informatiche e Telematiche (https://www.ausl.re.it/node/304003) che segue gli sviluppi e la conduzione della soluzione DocSuite PA è Roberto Ligabue.
 roberto.ligabue@ausl.re.it
 
-### Contatti di Droove Srl (Mantainer) 
+### Contatti di Dgroove Srl (Mantainer) 
 
 Dgroove Srl è il mantainer della soluzione e partecipa alla conduzione della tavolo di confronto sul riuso della soluzione,
 offre contratti di assistenza, manutenzione ed sviluppi sulla soluzione DocSuite PA, 
