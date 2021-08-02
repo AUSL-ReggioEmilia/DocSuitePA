@@ -23,7 +23,6 @@ description:
       - Conservazione Digitale e versamento a Conservatore Accreditato
       - Trasparenza e SPID (anche accesso pubblico e istanze digitali) (FOIA)
     screenshots:
-      - docsuite-pa.png
     genericName: Gestione Documentale
     localisedName: DocSuite PA
     longDescription: >
@@ -138,6 +137,7 @@ usedBy:
   - (enpai_)    ENPACL
   - (cnocl_rm)  Consiglio dell'ordine dei Consulenti del Lavoro 
   - (enas)      ENAS - Ente Acque della Sardegna
+  - (izsp_to)   Istituto Zooprofilattico Sperimentale del Piemonte, Liguria e Valle D'Aosta
   - (uirnet)    Uirnet Spa
   -             AFOL Monza Brianza
   -             Pubblica Amministrazione e degli Enti e delle Aziende del settore pubblico
