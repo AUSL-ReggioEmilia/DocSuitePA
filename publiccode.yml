@@ -76,8 +76,8 @@ localisation:
 maintenance:
   contacts:
     - affiliation: Dgroove Srl
-      email: andrea.piccoli@dgroove.it
-      name: Andrea Piccoli
+      email: simone.bonato@dgroove.it
+      name: Simone Bonato
   contractors:
     - name: Dgroove Srl
       until: '2022-12-31'
