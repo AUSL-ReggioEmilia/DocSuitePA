@@ -10,8 +10,8 @@ namespace VecompSoftware.DocSuiteWeb.DTO.UDS
         public DateTimeOffset? DateTo { get; set; }
         public string Subject { get; set; }
         public int CategoryId { get; set; }
-        public bool IsCancelledArchive { get; set; }
+        public string IsCancelledArchive { get; set; }
         public string DocumentName { get; set; }
-        public bool GenericDocument { get; set; }
+        public string GenericDocument { get; set; }
     }
 }

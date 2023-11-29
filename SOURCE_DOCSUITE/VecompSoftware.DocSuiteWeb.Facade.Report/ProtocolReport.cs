@@ -5,6 +5,10 @@ using System.Globalization;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.Formatter;
+using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations;
+using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
+using VecompSoftware.DocSuiteWeb.Entity.Conservations;
+using VecompSoftware.DocSuiteWeb.Model.Parameters;
 using VecompSoftware.DocSuiteWeb.Report;
 using VecompSoftware.DocSuiteWeb.Report.Templates.Protocol;
 using VecompSoftware.Helpers;
@@ -15,9 +19,14 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Report
 {
     public class ProtocolReport : ReportBase<Protocol>
     {
+        private ConservationFinder _conservationFinder;
+
         private FacadeFactory _factory;
 
-        public ProtocolReport() : base(ReportType.Rdlc) { }
+        public ProtocolReport(TenantModel tenantModel) : base(ReportType.Rdlc) 
+        {
+            _conservationFinder = new ConservationFinder(tenantModel);
+        }
 
         protected FacadeFactory Factory
         {
@@ -115,32 +124,22 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Report
                 if (protocol.AdvanceProtocol != null) row.Protocol_Proposer = protocol.AdvanceProtocol.Subject;
                 row.Protocol_LastChangedDate = protocol.LastChangedDate.DefaultString();
                 row.Protocol_LastChangedUser = protocol.LastChangedUser;
-                if (DocSuiteContext.Current.ProtocolEnv.ParerEnabled)
+                if (DocSuiteContext.Current.ProtocolEnv.ConservationEnabled)
                 {
-                    row.Protocol_ParerStatusCode = (int)Factory.ProtocolParerFacade.GetConservationStatus(protocol);
-                    var parerDescription = string.Empty;
-                    if (!Factory.ProtocolParerFacade.Exists(protocol))
-                        parerDescription = "Documento non ancora versato.";
-                    else
+                    WebAPIDto<Conservation> conservation = WebAPIImpersonatorFacade.ImpersonateFinder(_conservationFinder,
+                    (impersonationType, finder) =>
                     {
-                        switch (row.Protocol_ParerStatusCode)
-                        {
-                            case (int)ProtocolParerFacade.ProtocolParerConservationStatus.Correct:
-                                parerDescription = "Conservazione corretta.";
-                                break;
-                            case (int)ProtocolParerFacade.ProtocolParerConservationStatus.Warning:
-                                parerDescription = "Conservazione con avviso.";
-                                break;
-                            case (int)ProtocolParerFacade.ProtocolParerConservationStatus.Error:
-                                parerDescription = "Conservazione con errori.";
-                                break;
-                            case (int)ProtocolParerFacade.ProtocolParerConservationStatus.Undefined:
-                                parerDescription = "Stato conservazione non definito.";
-                                break;
-                            case (int)ProtocolParerFacade.ProtocolParerConservationStatus.NotNeeded:
-                                parerDescription = "Documento non soggetto a versamento.";
-                                break;
-                        }
+                        _conservationFinder.ResetDecoration();
+                        _conservationFinder.EnablePaging = false;
+                        _conservationFinder.UniqueId = protocol.UniqueId;
+                        return _conservationFinder.DoSearch().FirstOrDefault();
+                    });
+
+                    string parerDescription = "Non analizzato";
+                    if (conservation != null)
+                    {
+                        row.Protocol_ParerStatusCode = (int)conservation.Entity.Status;
+                        parerDescription = ConservationHelper.StatusDescription[conservation.Entity.Status];
                     }
                     row.Protocol_ParerStatusDescription = parerDescription;
                 }

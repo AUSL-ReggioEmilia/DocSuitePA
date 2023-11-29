@@ -50,7 +50,6 @@
                 <asp:Button ID="cmdAllegati" runat="server" Text="Allegati" Enabled="False" />
                 <asp:Button ID="cmdOrganoControllo" runat="server" Text="Organo Controllo" />
                 <asp:Button ID="Pratica" runat="server" Text="Pratica" />
-                <asp:Button ID="cmdMail" runat="server" Text="Invia" />
                 <asp:TextBox ID="SelPratica" runat="server" Width="56px" />
                 <asp:Button ID="btnSelPratica" runat="server" Text="Pratica" />
             </td>

@@ -5,6 +5,7 @@ import FascicleFolderModel = require('App/Models/Fascicles/FascicleFolderModel')
 
 abstract class FascicolableBaseModel implements IFascicolableBaseModel {
     ReferenceType: FascicleReferenceType;
+    SequenceNumber: number;
     UniqueId: string;
     FascicleFolder: FascicleFolderModel;
     Fascicle: FascicleModel;

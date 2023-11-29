@@ -5,9 +5,7 @@
 import ServiceConfiguration = require("App/Services/ServiceConfiguration");
 import ServiceConfigurationHelper = require("App/Helpers/ServiceConfigurationHelper");
 import CategoryService = require("App/Services/Commons/CategoryService");
-import CategoryTreeViewModel = require("App/ViewModels/Commons/CategoryTreeViewModel");
 import ExceptionDTO = require("App/DTOs/ExceptionDTO");
-import CategorySearchFilterDTO = require("App/DTOs/CategorySearchFilterDTO");
 import DocumentUnitService = require("App/Services/DocumentUnits/DocumentUnitService");
 import DocumentUnitModel = require("App/Models/DocumentUnits/DocumentUnitModel");
 import ProcessService = require("App/Services/Processes/ProcessService");
@@ -22,12 +20,14 @@ import DossierSummaryFolderViewModelMapper = require("App/Mappers/Dossiers/Dossi
 import FascicleFolderStatus = require("App/Models/Fascicles/FascicleFolderStatus");
 import FascicleFolderTypology = require("App/Models/Fascicles/FascicleFolderTypology");
 import Environment = require("App/Models/Environment");
-import DocumentUnitModelMapper = require("App/Mappers/DocumentUnits/DocumentUnitModelMapper");
 import UscErrorNotification = require("UserControl/uscErrorNotification");
 import TreeNodeType = require("App/Models/Commons/TreeNodeType");
 import FascicleService = require("App/Services/Fascicles/FascicleService");
 import ODATAResponseModel = require("App/Models/ODATAResponseModel");
 import FascProcessMoveResponseModelDTO = require("App/DTOs/FascProcessMoveResponseModelDTO");
+import PaginationModel = require("App/Models/Commons/PaginationModel");
+import CategoryModel = require('App/Models/Commons/CategoryModel');
+import DossierFolderModel = require("App/Models/Dossiers/DossierFolderModel");
 
 class ProcessesTreeView {
     public categoryTreeViewId: string;
@@ -36,10 +36,11 @@ class ProcessesTreeView {
     public uscNotificationId: string;
     public showOnlyMyProcesses: string;
     public actionToolbarId: string;
-    currentTenantAOOId: string;
+    public currentTenantAOOId: string;
     public windowManagerId: string;
     public windowMoveFascId: string;
     public splitterMainId: string;
+    public treeViewNodesPageSize: number;
 
     private _categoryService: CategoryService;
     private _documentUnitService: DocumentUnitService;
@@ -84,13 +85,24 @@ class ProcessesTreeView {
     private static COMMANDNAME_MOVEFASCICLE: string = "MoveFascicle";
     private static COMMANDNAME_EDITPROCESS: string = "EditProcess";
     private static CATEGORYID_ATTRNAME: string = "CategoryId";
+    private static ROOTNODE_CATEGORYID_ATTRNAME: string = "rootCategoryId";
+    private static TOTAL_CHILDREN_COUNT_ATTRNAME: string = "totalChildrenCount";
+
     private static DEFAULT_DOCUMENT_IMAGEURL: string = "../App_Themes/DocSuite2008/imgset16/document.png";
+    private static LOAD_MORE_NODE_IMAGEURL: string = "../App_Themes/DocSuite2008/imgset16/add.png";
+    private static LOADMORE_NODE_LABEL: string = "Carica più elementi";
+    private static CATEGORY_NODE_IMAGEURL: string = "../Comm/images/folderopen16.gif";
+    private static PROCESS_NODE_IMAGEURL: string = "../App_Themes/DocSuite2008/imgset16/process.png";
+
+    private get _defaultPaginationModel(): PaginationModel {
+        return new PaginationModel(0, this.treeViewNodesPageSize);
+    }
 
     private _categoryTreeViewRootNode(): Telerik.Web.UI.RadTreeNode {
         return this._categoryTreeView.get_nodes().getNode(0);
     }
 
-    private toolbarActions(): Array<[string, () => void]> {
+    private _toolbarActions(): Array<[string, () => void]> {
         let items: Array<[string, () => void]> = [
             [ProcessesTreeView.COMMANDNAME_MOVEFASCICLE, () => this._moveFascicle()],
             [ProcessesTreeView.COMMANDNAME_EDITPROCESS, () => this._redirectToProcessEditPage()]
@@ -130,15 +142,28 @@ class ProcessesTreeView {
         expandedNode.get_nodes().clear();
 
         let nodeType: TreeNodeType = expandedNode.get_attributes().getAttribute(ProcessesTreeView.NODETYPE_ATTRNAME);
-        let expandedNodeAction: (parentNode: Telerik.Web.UI.RadTreeNode) => JQueryPromise<void> = this._nodeTypeExpandingActionsDictionary[nodeType];
+        let expandedNodeAction: (parentNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel) => JQueryPromise<void> = this._nodeTypeExpandingActionsDictionary[nodeType];
 
         if (expandedNodeAction) {
             expandedNode.showLoadingStatus('', Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
-            expandedNodeAction(expandedNode)
+            expandedNodeAction(expandedNode, this._defaultPaginationModel)
                 .done(() => {
-                    expandedNode.hideLoadingStatus();
                     expandedNode.set_expanded(true);
+
+                    if (expandedNode.get_nodes().get_count() === 1 && !expandedNode.get_nodes().getNode(0).get_value()) {
+                        return;
+                    }
+
+                    const expandedNodeParentTotalChildrenCount: number | undefined =
+                        nodeType === TreeNodeType.LoadMore
+                            ? expandedNode.get_parent().get_attributes().getAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME)
+                            : expandedNode.get_attributes().getAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME);
+
+                    expandedNodeParentTotalChildrenCount
+                        ? this._appendLoadMoreNode(expandedNode, expandedNodeParentTotalChildrenCount)
+                        : this._appendEmptyNode(expandedNode);
                 })
+                .always(() => expandedNode.hideLoadingStatus())
                 .fail((exception: ExceptionDTO) => {
                     this._showNotificationException(exception);
                 });
@@ -160,6 +185,86 @@ class ProcessesTreeView {
     }
     /// endregion [ PUBLIC METHODS ]
 
+    /// region [ FINDER METHODS ]
+    private _findCategoryProcesses(categoryId: number, loadOnlyMy: boolean, paginationModel?: PaginationModel): JQueryPromise<ProcessModel[]> {
+        let defferedRequest: JQueryDeferred<ProcessModel[]> = $.Deferred<ProcessModel[]>();
+
+        this._processService.getCategoryProcesses(categoryId, loadOnlyMy, paginationModel, defferedRequest.resolve, defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _findAuthorizedCategoryFascicles(categoryId: number, paginationModel?: PaginationModel): JQueryPromise<FascicleModel[]> {
+        let defferedRequest: JQueryDeferred<FascicleModel[]> = $.Deferred<FascicleModel[]>();
+
+        this._fascicleService.getAuthorizedCategoryFascicles(categoryId, paginationModel, defferedRequest.resolve, defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _findProcessDossierFolders(processId: string, paginationModel?: PaginationModel): JQueryPromise<DossierFolderModel[] | ODATAResponseModel<DossierFolderModel>> {
+        let defferedRequest: JQueryDeferred<DossierFolderModel[] | ODATAResponseModel<DossierFolderModel>> = $.Deferred<DossierFolderModel[] | ODATAResponseModel<DossierFolderModel>>();
+
+        this._dossierFolderService.getDossierFoldersByProcessId(processId, defferedRequest.resolve, defferedRequest.reject, paginationModel);
+
+        return defferedRequest.promise();
+    }
+    private _findDossierFolderChildren(dossierFolderId: string, paginationModel?: PaginationModel): JQueryPromise<DossierSummaryFolderViewModel[]> {
+        let defferedRequest: JQueryDeferred<DossierSummaryFolderViewModel[]> = $.Deferred<DossierSummaryFolderViewModel[]>();
+
+        this._dossierFolderService.getDossierFolderChildren(dossierFolderId, paginationModel, defferedRequest.resolve, defferedRequest.reject);
+
+        return defferedRequest.promise();
+    } 
+    private _findFascicleFolderChildren(fascicleFolderId: string, paginationModel?: PaginationModel): JQueryPromise<FascicleSummaryFolderViewModel[]> {
+        let defferedRequest: JQueryDeferred<FascicleSummaryFolderViewModel[]> = $.Deferred<FascicleSummaryFolderViewModel[]>();
+
+        this._fascicleFolderService.getFascicleFolderChildren(fascicleFolderId, paginationModel, defferedRequest.resolve, defferedRequest.reject);
+
+        return defferedRequest.promise();
+    } 
+    private _findCategoryChildren(categoryId: number, paginationModel?: PaginationModel, tenantAOOId?: string): JQueryPromise<ODATAResponseModel<CategoryModel>> {
+        let defferedRequest: JQueryDeferred<ODATAResponseModel<CategoryModel>> = $.Deferred<ODATAResponseModel<CategoryModel>>();
+
+        this._categoryService.getSubCategories(categoryId, defferedRequest.resolve, defferedRequest.reject, paginationModel, tenantAOOId);
+
+        return defferedRequest.promise();
+    }
+    private _getCategoryChildrenCount = (categoryId: number): JQueryPromise<number> => {
+        let defferedRequest: JQueryDeferred<number> = $.Deferred<number>();
+
+        this._categoryService.countSubCategories(categoryId, defferedRequest.resolve, defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _getCategoryProcessesCount = (categoryId: number): JQueryPromise<number> => {
+        let defferedRequest: JQueryDeferred<number> = $.Deferred<number>();
+
+        this._processService.countCategoryProcesses(categoryId, this._showOnlyMyProcesses(), defferedRequest.resolve, defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _getCategoryFasciclesCount = (categoryId: number): JQueryPromise<number> => {
+        let defferedRequest: JQueryDeferred<number> = $.Deferred<number>();
+
+        this._fascicleService.countAuthorizedCategoryFascicles(categoryId, defferedRequest.resolve, defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _getTenantFascileDocumentUnitsCount = (tenantAOOId: string, fascicleId: string, fascicleFolderId: string): JQueryPromise<number> => {
+        let defferedRequest: JQueryDeferred<number> = $.Deferred<number>();
+
+        this._documentUnitService.countTenantFascicleDocumentUnits(tenantAOOId, fascicleId, fascicleFolderId, defferedRequest.resolve, defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _getFascicleFolderChildrenCount = (fascicleFolderId: string): JQueryPromise<number> => {
+        let defferedRequest: JQueryDeferred<number> = $.Deferred<number>();
+
+        this._fascicleFolderService.countFascicleFolderChildren(fascicleFolderId, defferedRequest.resolve, defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    /// endregion [ FINDER METHODS ]
+
     /// region [ LOAD TREE NODE ITEMS METHODS]
     private _initializeCategoryTreeView(): void {
 
@@ -172,172 +277,221 @@ class ProcessesTreeView {
         this._categoryTreeView.get_nodes().add(rootNode);
 
         rootNode.showLoadingStatus('', Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
-        this._loadCategories(TreeNodeType.Category, this._categoryTreeViewRootNode())
-            .done(() => {
+        this._categoryService.getTenantAOORootCategory(this.currentTenantAOOId, (tenantAOOCategory: CategoryModel) => {
+
+            if (!tenantAOOCategory) {
                 rootNode.hideLoadingStatus();
-                rootNode.set_expanded(true);
-            });
-    }
+                return;
+            }
 
-    private _loadCategories(nodeType: TreeNodeType, parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
-        let defferedRequest: JQueryDeferred<Telerik.Web.UI.RadTreeNode[]> = $.Deferred<Telerik.Web.UI.RadTreeNode[]>();
-        let categoryFinderModel: CategorySearchFilterDTO = {} as CategorySearchFilterDTO;
-        categoryFinderModel.IdTenantAOO = this.currentTenantAOOId;
-        if (!parentNode.get_value()) {
-            categoryFinderModel.LoadRoot = true;
-        }
-        else {
-            categoryFinderModel.ParentId = parentNode.get_value();
-        }
+            rootNode.set_value(tenantAOOCategory.EntityShortId);
 
-        this._categoryService.findTreeCategories(categoryFinderModel,
-            (categories: CategoryTreeViewModel[]) => {
-                let parentNodeIsTreeRootNode: boolean = parentNode === this._categoryTreeViewRootNode();
-                let categoryTreeNodeCollection: Telerik.Web.UI.RadTreeNode[] = categories.map((categoryModel: CategoryTreeViewModel) => {
-                    let categoryNodeDescription: string = `${categoryModel.Code}.${categoryModel.Name}`;
-                    let categoryNodeImageUrl: string = "../Comm/images/folderopen16.gif";
+            this._loadCategories(rootNode, this._defaultPaginationModel)
+                .done(() => {
+                    rootNode.hideLoadingStatus();
+                    rootNode.set_expanded(true);
 
-                    let currentCategoryTreeNode: Telerik.Web.UI.RadTreeNode
-                        = this._createTreeNode(nodeType, categoryNodeDescription, categoryModel.IdCategory, categoryNodeImageUrl, parentNodeIsTreeRootNode ? parentNode : undefined);
-
-                    this._appendEmptyNode(currentCategoryTreeNode);
-                    return currentCategoryTreeNode;
+                    rootNode.get_attributes().setAttribute(ProcessesTreeView.ROOTNODE_CATEGORYID_ATTRNAME, tenantAOOCategory.EntityShortId);
+                    const expandedNodeParentTotalChildrenCount: number = rootNode.get_attributes().getAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME);
+                    this._appendLoadMoreNode(rootNode, expandedNodeParentTotalChildrenCount);
                 });
-
-                defferedRequest.resolve(categoryTreeNodeCollection);
-            }, (exception: ExceptionDTO) => defferedRequest.reject(exception));
-
-        return defferedRequest.promise();
-    }
-    private _loadCategoryProcesses(nodeType: TreeNodeType, parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
-        let defferedRequest: JQueryDeferred<Telerik.Web.UI.RadTreeNode[]> = $.Deferred<Telerik.Web.UI.RadTreeNode[]>();
-        let categoryId: number = parentNode.get_value();
-        this._processService.getAvailableProcesses(null, this._showOnlyMyProcesses(), parentNode.get_value(), null, (categoryProcesses: ProcessModel[]) => {
-            let processTreeNodeCollection: Telerik.Web.UI.RadTreeNode[] = categoryProcesses.map((process: ProcessModel) => {
-                let currentProcessTreeNode: Telerik.Web.UI.RadTreeNode
-                    = this._createTreeNode(nodeType, process.Name, process.UniqueId, "../App_Themes/DocSuite2008/imgset16/process.png");
-                currentProcessTreeNode.get_attributes().setAttribute(ProcessesTreeView.CATEGORYID_ATTRNAME, categoryId);
-                this._appendEmptyNode(currentProcessTreeNode);
-                return currentProcessTreeNode;
-            });
-            defferedRequest.resolve(processTreeNodeCollection);
-        }, (exception: ExceptionDTO) => {
-            defferedRequest.reject(exception);
         });
-
-        return defferedRequest.promise();
     }
-    private _loadCategoryFascicles(nodeType: TreeNodeType, parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
+
+    private _loadCategories(expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel = null): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
         let defferedRequest: JQueryDeferred<Telerik.Web.UI.RadTreeNode[]> = $.Deferred<Telerik.Web.UI.RadTreeNode[]>();
-        this._fascicleService.getFascicleByCategory(parentNode.get_value(), '', false, (odataResponseModel: ODATAResponseModel<FascicleModel>) => {
-            let categoryFascicles: FascicleModel[] = odataResponseModel.value;
-            let fascicleTreeNodeCollection: Telerik.Web.UI.RadTreeNode[] = categoryFascicles.map((fasc: FascicleModel) => {
-                let fascicleImageUrl: string = this._dossierFolderStatusImageDictionary[DossierFolderStatus.Fascicle];
-                let fascicleTooltip: string = this._dossierFolderStatusTooltipDictionary[DossierFolderStatus.Fascicle];
-                let fascicleExpandedImageUrl: string = this._expandedFolderImageDictionary[DossierFolderStatus.Fascicle];
-                let nodeDescription: string = `${fasc.Title}-${fasc.FascicleObject}`;
 
-                let currentFascTreeNode: Telerik.Web.UI.RadTreeNode
-                    = this._createTreeNode(nodeType, nodeDescription, fasc.UniqueId, fascicleImageUrl, undefined, fascicleTooltip, fascicleExpandedImageUrl);
-                currentFascTreeNode.get_attributes().setAttribute(ProcessesTreeView.FASCISACTIVE_ATTRNAME, !fasc.EndDate);
-                this._appendEmptyNode(currentFascTreeNode);
-                return currentFascTreeNode;
-            });
-            defferedRequest.resolve(fascicleTreeNodeCollection);
-        }, (exception: ExceptionDTO) => defferedRequest.reject(exception));
+        this._findCategoryChildren(expandedNode.get_value(), paginationModel, this.currentTenantAOOId)
+            .then((odataResult: ODATAResponseModel<CategoryModel>) => this._createCategoryNodesFromModels(odataResult, expandedNode))
+            .done(defferedRequest.resolve)
+            .fail(defferedRequest.reject);
 
         return defferedRequest.promise();
     }
-    private _loadProcessDossierFolders(processId: string, parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
-        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
-        this._dossierFolderService.getProcessFolders(null, processId, false, false, (processDossierFolders: any[]) => {
-            if (!processDossierFolders.length) {
-                this._appendEmptyNode(parentNode);
-                defferedRequest.resolve();
-                return;
-            }
+    private _loadCategoryProcesses(expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel = null): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
+        let defferedRequest: JQueryDeferred<Telerik.Web.UI.RadTreeNode[]> = $.Deferred<Telerik.Web.UI.RadTreeNode[]>();
+        const totalChildrenCount: number | undefined = expandedNode.get_attributes().getAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME),
+              childrenAlreadyCounted: boolean = totalChildrenCount !== undefined,
+              categoryId: number = expandedNode.get_value();
 
-            let dossierSummaryFolderViewModelMapper: DossierSummaryFolderViewModelMapper = new DossierSummaryFolderViewModelMapper();
-            let processDossierFoldersViewModels: DossierSummaryFolderViewModel[] = dossierSummaryFolderViewModelMapper.MapCollection(processDossierFolders);
-            this._addDossierFolderNodesRecursive(processDossierFoldersViewModels, parentNode);
-            defferedRequest.resolve();
-        }, (exception: ExceptionDTO) => defferedRequest.reject(exception));
+        if (childrenAlreadyCounted) {
+            this._findCategoryProcesses(categoryId, this._showOnlyMyProcesses(), paginationModel)
+                .then((processes: ProcessModel[]) => this._createProcessNodesFromModels(processes, categoryId))
+                .then(defferedRequest.resolve)
+                .fail(defferedRequest.reject);
+        } else {
+            this._processService.countCategoryProcesses(categoryId, this._showOnlyMyProcesses(), (totalChildren: number) => {
 
-        return defferedRequest.promise();
-    }
-    private _loadDossierFoldersChildren(parentId: string, parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
-        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
-        this._dossierFolderService.getChildren(parentId, 0, (dossierFolders: DossierSummaryFolderViewModel[]) => {
-            if (!dossierFolders.length) {
-                this._appendEmptyNode(parentNode);
-                defferedRequest.resolve();
-                return;
-            }
-
-            dossierFolders.forEach((dossierFolder: DossierSummaryFolderViewModel) => {
-                let dossierFolderIsFascicle: boolean = !!dossierFolder.idFascicle;
-
-                let nodeType: TreeNodeType = dossierFolderIsFascicle ? TreeNodeType.Fascicle : TreeNodeType.DossierFolder;
-                let nodeValue: string = dossierFolderIsFascicle ? dossierFolder.idFascicle : dossierFolder.UniqueId;
-
-                let dossierFolderImageUrl: string = this._dossierFolderStatusImageDictionary[DossierFolderStatus[dossierFolder.Status]];
-                let dossierFolderTooltip: string = this._dossierFolderStatusTooltipDictionary[DossierFolderStatus[dossierFolder.Status]];
-                let dossierFolderExpandedImageUrl: string = this._expandedFolderImageDictionary[DossierFolderStatus[dossierFolder.Status]];
-
-                let currentDossierFolderTreeNode: Telerik.Web.UI.RadTreeNode
-                    = this._createTreeNode(nodeType, dossierFolder.Name, nodeValue, dossierFolderImageUrl, parentNode, dossierFolderTooltip, dossierFolderExpandedImageUrl);
-
-                if (dossierFolderIsFascicle) {
-                    currentDossierFolderTreeNode.get_attributes().setAttribute(ProcessesTreeView.DOSSIERFOLDERID_ATTRNAME, dossierFolder.UniqueId);
+                if (!totalChildren) {
+                    defferedRequest.resolve([]);
+                    return;
                 }
 
-                this._appendEmptyNode(currentDossierFolderTreeNode);
+                this._appendChildrenCountAttribute(expandedNode, totalChildren);
+
+                this._findCategoryProcesses(categoryId, this._showOnlyMyProcesses(), paginationModel)
+                    .then((processes: ProcessModel[]) => this._createProcessNodesFromModels(processes, categoryId))
+                    .then(defferedRequest.resolve)
+                    .fail(defferedRequest.reject);
             });
-            defferedRequest.resolve();
-        }, (exception: ExceptionDTO) => defferedRequest.reject(exception));
+        }
 
         return defferedRequest.promise();
     }
-    private _loadFascicleFolders(parentFascicleId: string, nodeType: TreeNodeType): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
+    private _loadCategoryFascicles(expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel = null): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
         let defferedRequest: JQueryDeferred<Telerik.Web.UI.RadTreeNode[]> = $.Deferred<Telerik.Web.UI.RadTreeNode[]>();
-        this._fascicleFolderService.getChildren(parentFascicleId, (fascicleFolders: FascicleSummaryFolderViewModel[]) => {
-            if (!fascicleFolders.length) {
-                defferedRequest.resolve([]);
-                return;
-            }
+        const totalChildrenCount: number | undefined = expandedNode.get_attributes().getAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME),
+            childrenAlreadyCounted: boolean = totalChildrenCount !== undefined,
+            categoryId: number = expandedNode.get_value();
 
-            let fascFoldersTreeNodeCollection: Telerik.Web.UI.RadTreeNode[] = fascicleFolders.map((fascicleFolder: FascicleSummaryFolderViewModel) => {
-                let fascicleFolderImageUrl: string = this._dossierFolderStatusImageDictionary[DossierFolderStatus.Folder];
-                let fascicleFolderTooltip: string = this._fascicleFolderStatusTooltipDictionary[FascicleFolderStatus[fascicleFolder.Status]];
-                let fascicleFolderExpandedImageUrl: string = this._expandedFolderImageDictionary[DossierFolderStatus.Folder];
+        if (childrenAlreadyCounted) {
+            this._findAuthorizedCategoryFascicles(categoryId, paginationModel)
+                .then(this._createFascicleNodesFromModels)
+                .then(defferedRequest.resolve)
+                .fail(defferedRequest.reject);
+        } else {
+            this._fascicleService.countAuthorizedCategoryFascicles(categoryId, (totalChildren: number) => {
 
-                let currentFascicleFolderTreeNode: Telerik.Web.UI.RadTreeNode
-                    = this._createTreeNode(nodeType, fascicleFolder.Name, fascicleFolder.UniqueId, fascicleFolderImageUrl, undefined, fascicleFolderTooltip, fascicleFolderExpandedImageUrl);
-                currentFascicleFolderTreeNode.get_attributes().setAttribute(ProcessesTreeView.FASCICLEID_ATTRNAME, fascicleFolder.idFascicle);
-                this._appendEmptyNode(currentFascicleFolderTreeNode);
+                if (!totalChildren) {
+                    defferedRequest.resolve([]);
+                    return;
+                }
 
-                return currentFascicleFolderTreeNode;
+                this._appendChildrenCountAttribute(expandedNode, totalChildren);
+
+                this._findAuthorizedCategoryFascicles(categoryId, paginationModel)
+                    .then(this._createFascicleNodesFromModels)
+                    .then(defferedRequest.resolve)
+                    .fail(defferedRequest.reject);
             });
-            defferedRequest.resolve(fascFoldersTreeNodeCollection);
-        }, (exception: ExceptionDTO) => defferedRequest.reject(exception));
+        }
 
         return defferedRequest.promise();
     }
-    private _loadFascicleFolderDocumentUnits(fascicleFolderFascicleId: string, fascicleFolderId: string, nodeType: TreeNodeType): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
-        let defferedRequest: JQueryDeferred<Telerik.Web.UI.RadTreeNode[]> = $.Deferred<Telerik.Web.UI.RadTreeNode[]>();
-        let fascicleModel: FascicleModel = new FascicleModel();
-        fascicleModel.UniqueId = fascicleFolderFascicleId;
+    private _loadProcessDossierFolders(processId: string, expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel = null): JQueryPromise<void> {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
 
-        this._documentUnitService.getFascicleDocumentUnits(fascicleModel, null, this.currentTenantAOOId, fascicleFolderId,
-            (fascicleFolderDocUnits: DocumentUnitModel[]) => {
-                
-                let docUnitMapper: DocumentUnitModelMapper = new DocumentUnitModelMapper();
-                fascicleFolderDocUnits = docUnitMapper.MapCollection(fascicleFolderDocUnits);
+        this._findProcessDossierFolders(processId, paginationModel)
+            .then((odataResponse: ODATAResponseModel<DossierFolderModel>) => {
+                if (!odataResponse.value.length) {
+
+                    if (!expandedNode.get_nodes().get_count()) {
+                        this._appendEmptyNode(expandedNode);
+                    }
+
+                    return defferedRequest.resolve();
+                }
+
+                this._appendDossierFolderNodesToParent(odataResponse.value, expandedNode);
+
+                if (odataResponse.count) {
+                    this._appendChildrenCountAttribute(expandedNode, odataResponse.count);
+                }
+            })
+            .done(defferedRequest.resolve)
+            .fail(defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _loadDossierFoldersChildren(expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
+        const totalChildrenCount: number = expandedNode.get_attributes().getAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME),
+            childrenAlreadyCounted: boolean = !!totalChildrenCount,
+            dossierFolderId: string = expandedNode.get_value();
+
+        if (childrenAlreadyCounted) {
+            this._findDossierFolderChildren(dossierFolderId, paginationModel)
+                .then((dossierFolderViewModels: DossierSummaryFolderViewModel[]) => {
+                    if (!dossierFolderViewModels.length) {
+
+                        if (!expandedNode.get_nodes().get_count()) {
+                            this._appendEmptyNode(expandedNode);
+                        }
+
+                        defferedRequest.resolve();
+                        return;
+                    }
+
+                    this._appendDossierFolderViewModelNodesToParent(dossierFolderViewModels, expandedNode);
+                })
+                .done(defferedRequest.resolve)
+                .fail(defferedRequest.reject);
+        } else {
+            this._dossierFolderService.countDossierFolderChildren(dossierFolderId, (totalChildren: number) => {
+
+                if (!totalChildren) {
+                    this._appendEmptyNode(expandedNode);
+                    defferedRequest.resolve();
+                    return;
+                }
+
+                this._appendChildrenCountAttribute(expandedNode, totalChildren);
+
+                this._findDossierFolderChildren(dossierFolderId, paginationModel)
+                    .then((dossierFolderViewModels: DossierSummaryFolderViewModel[]) => {
+                        if (!dossierFolderViewModels.length) {
+
+                            if (!expandedNode.get_nodes().get_count()) {
+                                this._appendEmptyNode(expandedNode);
+                            }
+
+                            defferedRequest.resolve();
+                            return;
+                        }
+
+                        this._appendDossierFolderViewModelNodesToParent(dossierFolderViewModels, expandedNode);
+                    })
+                    .done(defferedRequest.resolve)
+                    .fail(defferedRequest.reject);
+            });
+        }
+
+        return defferedRequest.promise();
+    }
+    private _loadFascicleFolders(expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
+        let defferedRequest: JQueryDeferred<Telerik.Web.UI.RadTreeNode[]> = $.Deferred<Telerik.Web.UI.RadTreeNode[]>();
+        const totalChildrenCount: number = expandedNode.get_attributes().getAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME),
+            childrenAlreadyCounted: boolean = !!totalChildrenCount,
+            fascicleFolderId: string = expandedNode.get_value();
+
+        if (childrenAlreadyCounted) {
+            this._findFascicleFolderChildren(fascicleFolderId, paginationModel)
+                .then(this._createFascicleFolderNodesFromModels)
+                .done(defferedRequest.resolve)
+                .fail(defferedRequest.reject);
+        } else {
+            this._fascicleFolderService.countFascicleFolderChildren(fascicleFolderId, (totalChildren: number) => {
+
+                if (!totalChildren) {
+                    defferedRequest.resolve([]);
+                    return;
+                }
+
+                this._appendChildrenCountAttribute(expandedNode, totalChildren);
+
+                this._findFascicleFolderChildren(fascicleFolderId, paginationModel)
+                    .then(this._createFascicleFolderNodesFromModels)
+                    .done(defferedRequest.resolve)
+                    .fail(defferedRequest.reject);
+            }, defferedRequest.reject);
+        }
+
+        return defferedRequest.promise();
+    }
+    private _loadFascicleFolderDocumentUnits(expandedNode: Telerik.Web.UI.RadTreeNode, fascicleFolderId: string, nodeType: TreeNodeType, paginationModel: PaginationModel): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
+        let defferedRequest: JQueryDeferred<Telerik.Web.UI.RadTreeNode[]> = $.Deferred<Telerik.Web.UI.RadTreeNode[]>();
+        let fascicleId: string = expandedNode.get_attributes().getAttribute(ProcessesTreeView.FASCICLEID_ATTRNAME);
+
+        this._documentUnitService.getTenantFascicleDocumentUnits(this.currentTenantAOOId, fascicleId, fascicleFolderId,
+            (fascicleFolderDocUnits: ODATAResponseModel<DocumentUnitModel>) => {
                 let fascFolderDocUnitTreeNodeCollection: Telerik.Web.UI.RadTreeNode[]
-                    = fascicleFolderDocUnits.map((fascicleFolderDocUnit: DocumentUnitModel) => this._createDocumentUnitNode(fascicleFolderDocUnit, nodeType));
+                    = fascicleFolderDocUnits.value.map((fascicleFolderDocUnit: DocumentUnitModel) => this._createDocumentUnitNode(fascicleFolderDocUnit, nodeType));
 
+                if (fascicleFolderDocUnits.count) {
+                    this._appendChildrenCountAttribute(expandedNode, fascicleFolderDocUnits.count);
+                }
                 defferedRequest.resolve(fascFolderDocUnitTreeNodeCollection);
-            }, (exception: ExceptionDTO) => defferedRequest.reject(exception));
+            }, (exception: ExceptionDTO) => defferedRequest.reject(exception), paginationModel);
 
         return defferedRequest.promise();
     }
@@ -345,77 +499,88 @@ class ProcessesTreeView {
 
     /// region [ ** HELPER METHODS ** ]
     private _registerNodeTypesExpandingActions(): void {
-        this._nodeTypeExpandingActionsDictionary[TreeNodeType.Root] = (expandedNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> => {
+        this._nodeTypeExpandingActionsDictionary[TreeNodeType.Root] = (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
             let categoryLoadingDefferedRequest: JQueryDeferred<void> = $.Deferred<void>();
 
-            this._loadCategories(TreeNodeType.Category, expandedNode)
+            this._loadCategories(expandedNode, paginationModel)
                 .done(() => categoryLoadingDefferedRequest.resolve())
                 .fail((exception: ExceptionDTO) => categoryLoadingDefferedRequest.reject(exception));
 
             return categoryLoadingDefferedRequest.promise();
         }
-        this._nodeTypeExpandingActionsDictionary[TreeNodeType.Category] = (expandedNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> => {
+        this._nodeTypeExpandingActionsDictionary[TreeNodeType.Category] = (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
             let categoryChildrenLoadingDefferedRequest: JQueryDeferred<void> = $.Deferred<void>();
 
-            let childrenLoadingPromises: JQueryPromise<Telerik.Web.UI.RadTreeNode[]>[] =
-                [
-                    this._loadCategories(TreeNodeType.Category, expandedNode),
-                    this._loadCategoryProcesses(TreeNodeType.Process, expandedNode),
-                    this._loadCategoryFascicles(TreeNodeType.Fascicle, expandedNode)
-                ];
+            const totalChildrenCount: number | undefined = expandedNode.get_attributes().getAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME),
+                childrenAlreadyCounted: boolean = totalChildrenCount !== undefined,
+                categoryId: number = expandedNode.get_value();
 
-            $.when(...childrenLoadingPromises)
-                .done((...categoryChildrenNodeGroups) => {
-                    let [subCategories, processes, fascicles] = categoryChildrenNodeGroups;
-                    
-                    if (subCategories.length === 0 && processes.length === 0 && fascicles.length === 0) {
-                        this._appendEmptyNode(expandedNode);
-                        categoryChildrenLoadingDefferedRequest.resolve();
-                        return;
-                    }
+            if (childrenAlreadyCounted) {
+                this._findCategoryChildren(categoryId, paginationModel, this.currentTenantAOOId)
+                    .then((odataResult: ODATAResponseModel<CategoryModel>) => this._createCategoryNodesFromModels(odataResult, expandedNode))
+                    .then((subCategories: Telerik.Web.UI.RadTreeNode[]) => this._appendCategoryNodeChildren(subCategories, expandedNode))
+                    .done(categoryChildrenLoadingDefferedRequest.resolve)
+                    .fail(categoryChildrenLoadingDefferedRequest.reject);
+            } else {
+                let countingRequestPromises: JQueryPromise<number>[] =
+                    [
+                        this._getCategoryChildrenCount(categoryId),
+                        this._getCategoryProcessesCount(categoryId),
+                        this._getCategoryFasciclesCount(categoryId)
+                    ];
 
-                    let currentParentNodeCollection: Telerik.Web.UI.RadTreeNodeCollection = expandedNode.get_nodes();
-                    categoryChildrenNodeGroups.forEach((childrenGroup: Telerik.Web.UI.RadTreeNode[]) => {
-                        childrenGroup.forEach((node: Telerik.Web.UI.RadTreeNode) => currentParentNodeCollection.add(node));
-                    });
-                    categoryChildrenLoadingDefferedRequest.resolve();
-                })
-                .fail((exception: ExceptionDTO) => categoryChildrenLoadingDefferedRequest.reject(exception));
+                $.when(...countingRequestPromises)
+                    .done((subCategoriesCount, processesCount, fasciclesCount) => {
+                        const categoryTotalChildrenCount: number = subCategoriesCount + processesCount + fasciclesCount;
+
+                        if (categoryTotalChildrenCount) {
+                            this._appendChildrenCountAttribute(expandedNode, categoryTotalChildrenCount);
+                        }
+
+                        this._findCategoryChildren(categoryId, paginationModel, this.currentTenantAOOId)
+                            .then((odataResult: ODATAResponseModel<CategoryModel>) => this._createCategoryNodesFromModels(odataResult, expandedNode))
+                            .then((subCategories: Telerik.Web.UI.RadTreeNode[]) => this._appendCategoryNodeChildren(subCategories, expandedNode))
+                            .done(categoryChildrenLoadingDefferedRequest.resolve)
+                            .fail(categoryChildrenLoadingDefferedRequest.reject);
+
+                    }).fail(categoryChildrenLoadingDefferedRequest.reject);
+            }
 
             return categoryChildrenLoadingDefferedRequest.promise();
         }
-        this._nodeTypeExpandingActionsDictionary[TreeNodeType.Process] = (parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> => {
+        this._nodeTypeExpandingActionsDictionary[TreeNodeType.Process] = (parentNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
             let processDossierFoldersLoadingDefferedRequest: JQueryDeferred<void> = $.Deferred<void>();
 
-            this._loadProcessDossierFolders(parentNode.get_value(), parentNode)
+            this._loadProcessDossierFolders(parentNode.get_value(), parentNode, paginationModel)
                 .done(() => processDossierFoldersLoadingDefferedRequest.resolve())
                 .fail((exception: ExceptionDTO) => processDossierFoldersLoadingDefferedRequest.reject(exception));
 
             return processDossierFoldersLoadingDefferedRequest.promise();
         };
-        this._nodeTypeExpandingActionsDictionary[TreeNodeType.DossierFolder] = (parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> => {
+        this._nodeTypeExpandingActionsDictionary[TreeNodeType.DossierFolder] = (parentNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
             let dossierFolderChildrenLoadingDefferedRequest: JQueryDeferred<void> = $.Deferred<void>();
 
-            this._loadDossierFoldersChildren(parentNode.get_value(), parentNode)
+            this._loadDossierFoldersChildren(parentNode, paginationModel)
                 .done(() => dossierFolderChildrenLoadingDefferedRequest.resolve())
                 .fail((exception: ExceptionDTO) => dossierFolderChildrenLoadingDefferedRequest.reject(exception));
 
             return dossierFolderChildrenLoadingDefferedRequest.promise();
         };
-        this._nodeTypeExpandingActionsDictionary[TreeNodeType.Fascicle] = (parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> => {
+        this._nodeTypeExpandingActionsDictionary[TreeNodeType.Fascicle] = (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
             let fascicleFoldersLoadingDefferedRequest: JQueryDeferred<void> = $.Deferred<void>();
 
-            let fascicleId: string = parentNode.get_value();
-            this._loadFascicleFolders(fascicleId, TreeNodeType.FascicleFolder)
+            this._loadFascicleFolders(expandedNode, paginationModel)
                 .done((fascFolders: Telerik.Web.UI.RadTreeNode[]) => {
                     if (fascFolders.length === 0) {
-                        this._appendEmptyNode(parentNode);
+                        if (!expandedNode.get_nodes().get_count()) {
+                            this._appendEmptyNode(expandedNode);
+                        }
                         fascicleFoldersLoadingDefferedRequest.resolve();
                         return;
                     }
 
                     fascFolders.forEach((fascFolderNode: Telerik.Web.UI.RadTreeNode) => {
-                        parentNode.get_nodes().add(fascFolderNode);
+                        expandedNode.get_nodes().add(fascFolderNode);
                     });
                     fascicleFoldersLoadingDefferedRequest.resolve();
                 })
@@ -423,39 +588,73 @@ class ProcessesTreeView {
 
             return fascicleFoldersLoadingDefferedRequest.promise();
         };
-        this._nodeTypeExpandingActionsDictionary[TreeNodeType.FascicleFolder] = (parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> => {
+        this._nodeTypeExpandingActionsDictionary[TreeNodeType.FascicleFolder] = (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
             let fascFolderChildrenLoadingDefferedRequest: JQueryDeferred<void> = $.Deferred<void>();
 
-            let parentFascicleFolderId: string = parentNode.get_value();
-            let parentFascileFolderFascicleId: string = parentNode.get_attributes().getAttribute(ProcessesTreeView.FASCICLEID_ATTRNAME);
+            const totalChildrenCount: number | undefined = expandedNode.get_attributes().getAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME),
+                childrenAlreadyCounted: boolean = totalChildrenCount !== undefined,
+                parentFascicleFolderId: string = expandedNode.get_value();
 
-            let childrenLoadingPromises: JQueryPromise<Telerik.Web.UI.RadTreeNode[]>[] =
-                [
-                    this._loadFascicleFolders(parentFascicleFolderId, TreeNodeType.FascicleFolder),
-                    this._loadFascicleFolderDocumentUnits(parentFascileFolderFascicleId, parentFascicleFolderId, TreeNodeType.DocumentUnit)
-                ];
+            if (childrenAlreadyCounted) {
+                this._findFascicleFolderChildren(parentFascicleFolderId, paginationModel)
+                    .then(this._createFascicleFolderNodesFromModels)
+                    .then((fascicleFolders: Telerik.Web.UI.RadTreeNode[]) => this._appendFascicleFolderNodeChildren(fascicleFolders, expandedNode))
+                    .done(fascFolderChildrenLoadingDefferedRequest.resolve)
+                    .fail(fascFolderChildrenLoadingDefferedRequest.reject);
+            } else {
+                let fascicleId: string = expandedNode.get_attributes().getAttribute(ProcessesTreeView.FASCICLEID_ATTRNAME);
+                let countingRequestPromises: JQueryPromise<number>[] =
+                    [
+                        this._getFascicleFolderChildrenCount(parentFascicleFolderId),
+                        this._getTenantFascileDocumentUnitsCount(this.currentTenantAOOId, fascicleId, parentFascicleFolderId)
+                    ];
 
-            $.when(...childrenLoadingPromises)
-                .done((...fascFolderChildrenNodeGroups) => {
-                    let [subFolders, docUnits] = fascFolderChildrenNodeGroups;
+                $.when(...countingRequestPromises)
+                    .done((fascicleFoldersCount, fascicleDocumentUnitsCount) => {
+                        const fascicleFolderTotalChildrenCount: number = fascicleFoldersCount + fascicleDocumentUnitsCount;
 
-                    if (subFolders.length === 0 && docUnits.length === 0) {
-                        this._appendEmptyNode(parentNode);
-                        fascFolderChildrenLoadingDefferedRequest.resolve();
-                        return;
-                    }
+                        if (fascicleFolderTotalChildrenCount) {
+                            this._appendChildrenCountAttribute(expandedNode, fascicleFolderTotalChildrenCount);
+                        }
 
-                    let currentParentNodeCollection: Telerik.Web.UI.RadTreeNodeCollection = parentNode.get_nodes();
-                    fascFolderChildrenNodeGroups.forEach((childrenGroup: Telerik.Web.UI.RadTreeNode[]) => {
-                        childrenGroup.forEach((node: Telerik.Web.UI.RadTreeNode) => currentParentNodeCollection.add(node));
-                    });
-                    fascFolderChildrenLoadingDefferedRequest.resolve();
-                })
-                .fail((exception: ExceptionDTO) => fascFolderChildrenLoadingDefferedRequest.reject(exception));
+                        this._findFascicleFolderChildren(parentFascicleFolderId, paginationModel)
+                            .then(this._createFascicleFolderNodesFromModels)
+                            .then((fascicleFolders: Telerik.Web.UI.RadTreeNode[]) => this._appendFascicleFolderNodeChildren(fascicleFolders, expandedNode))
+                            .done(fascFolderChildrenLoadingDefferedRequest.resolve)
+                            .fail(fascFolderChildrenLoadingDefferedRequest.reject);
+
+                    }).fail(fascFolderChildrenLoadingDefferedRequest.reject);
+            }
 
             return fascFolderChildrenLoadingDefferedRequest.promise();
         }
+        this._nodeTypeExpandingActionsDictionary[TreeNodeType.LoadMore] = (expandedNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> => {
+            let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
+
+            const expandedNodeParent: Telerik.Web.UI.RadTreeNode = expandedNode.get_parent();
+            const parentNodeChildrenCount: number = expandedNodeParent.get_nodes().get_count();
+            const parentNodeType: TreeNodeType = expandedNodeParent.get_attributes().getAttribute(ProcessesTreeView.NODETYPE_ATTRNAME);
+
+            const expandedNodeActionHandler: (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel) => JQueryPromise<void>
+                = this._nodeTypeExpandingActionsDictionary[parentNodeType];
+
+            if (!expandedNodeActionHandler) {
+                return;
+            }
+
+            // exclude "Load more" node from children collection count
+            const recordsToSkip: number = parentNodeChildrenCount - 1;
+            const paginationModel: PaginationModel = new PaginationModel(recordsToSkip, this.treeViewNodesPageSize);
+
+            expandedNodeActionHandler(expandedNodeParent, paginationModel)
+                .done(() => {
+                    defferedRequest.resolve();
+                }).fail((exception: ExceptionDTO) => defferedRequest.reject(exception));
+
+            return defferedRequest.promise();
+        }
     }
+
     private _registerNodeTypesClickActions(): void {
         this._nodeTypeClickActionsDictionary[TreeNodeType.Fascicle] = (clickedFascicleNode: Telerik.Web.UI.RadTreeNode): void => {
             let fascicleId: string = clickedFascicleNode.get_value();
@@ -539,10 +738,68 @@ class ProcessesTreeView {
         this._expandedFolderImageDictionary[FascicleFolderTypology.SubFascicle] = "../App_Themes/DocSuite2008/imgset16/folder_internet_open.png";
     }
     private _registerEnvironmentImages(): void {
-        this._environmentImageDictionary[Environment.Protocol] = "../Comm/Images/DocSuite/Protocollo16.gif";
-        this._environmentImageDictionary[Environment.Resolution] = "../Comm/Images/DocSuite/Atti16.gif";
+        this._environmentImageDictionary[Environment.Protocol] = "../Comm/Images/DocSuite/Protocollo16.png";
+        this._environmentImageDictionary[Environment.Resolution] = "../Comm/Images/DocSuite/Atti16.png";
         this._environmentImageDictionary[Environment.DocumentSeries] = "../App_Themes/DocSuite2008/imgset16/document_copies.png";
         this._environmentImageDictionary[Environment.UDS] = "../App_Themes/DocSuite2008/imgset16/document_copies.png";
+    }
+    private _createProcessNodesFromModels = (processModels: ProcessModel[], parentCategoryId: number): Telerik.Web.UI.RadTreeNode[] => {
+        return processModels.map((process: ProcessModel) => {
+            let currentProcessTreeNode: Telerik.Web.UI.RadTreeNode
+                = this._createTreeNode(TreeNodeType.Process, process.Name, process.UniqueId, ProcessesTreeView.PROCESS_NODE_IMAGEURL);
+            currentProcessTreeNode.get_attributes().setAttribute(ProcessesTreeView.CATEGORYID_ATTRNAME, parentCategoryId);
+
+            this._appendEmptyNode(currentProcessTreeNode);
+
+            return currentProcessTreeNode;
+        });
+    }
+    private _createFascicleNodesFromModels = (fascicleModels: FascicleModel[]): Telerik.Web.UI.RadTreeNode[] => {
+        return fascicleModels.map((fasc: FascicleModel) => {
+            let fascicleImageUrl: string = this._dossierFolderStatusImageDictionary[DossierFolderStatus.Fascicle];
+            let fascicleTooltip: string = this._dossierFolderStatusTooltipDictionary[DossierFolderStatus.Fascicle];
+            let fascicleExpandedImageUrl: string = this._expandedFolderImageDictionary[DossierFolderStatus.Fascicle];
+            let nodeDescription: string = `${fasc.Title}-${fasc.FascicleObject}`;
+
+            let currentFascTreeNode: Telerik.Web.UI.RadTreeNode
+                = this._createTreeNode(TreeNodeType.Fascicle, nodeDescription, fasc.UniqueId, fascicleImageUrl, undefined, fascicleTooltip, fascicleExpandedImageUrl);
+            currentFascTreeNode.get_attributes().setAttribute(ProcessesTreeView.FASCISACTIVE_ATTRNAME, !fasc.EndDate);
+            this._appendEmptyNode(currentFascTreeNode);
+            return currentFascTreeNode;
+        });
+    }
+    private _createFascicleFolderNodesFromModels = (fascicleFolders: FascicleSummaryFolderViewModel[]): Telerik.Web.UI.RadTreeNode[] => {
+        return fascicleFolders.map((fascicleFolder: FascicleSummaryFolderViewModel) => {
+            let fascicleFolderImageUrl: string = this._dossierFolderStatusImageDictionary[DossierFolderStatus.Folder];
+            let fascicleFolderTooltip: string = this._fascicleFolderStatusTooltipDictionary[FascicleFolderStatus[fascicleFolder.Status]];
+            let fascicleFolderExpandedImageUrl: string = this._expandedFolderImageDictionary[DossierFolderStatus.Folder];
+
+            let currentFascicleFolderTreeNode: Telerik.Web.UI.RadTreeNode
+                = this._createTreeNode(TreeNodeType.FascicleFolder, fascicleFolder.Name, fascicleFolder.UniqueId, fascicleFolderImageUrl, undefined, fascicleFolderTooltip, fascicleFolderExpandedImageUrl);
+            currentFascicleFolderTreeNode.get_attributes().setAttribute(ProcessesTreeView.FASCICLEID_ATTRNAME, fascicleFolder.idFascicle);
+            this._appendEmptyNode(currentFascicleFolderTreeNode);
+
+            return currentFascicleFolderTreeNode;
+        });
+    }
+    private _createCategoryNodesFromModels = (categoryModelsResult: ODATAResponseModel<CategoryModel>, expandedNode: Telerik.Web.UI.RadTreeNode): Telerik.Web.UI.RadTreeNode[] => {
+        let parentNodeIsTreeRootNode: boolean = expandedNode === this._categoryTreeViewRootNode();
+        let categoryTreeNodeCollection: Telerik.Web.UI.RadTreeNode[] = categoryModelsResult.value.map((categoryModel: CategoryModel) => {
+            let categoryNodeDescription: string = `${categoryModel.Code}.${categoryModel.Name}`;
+            let categoryNodeImageUrl: string = ProcessesTreeView.CATEGORY_NODE_IMAGEURL;
+
+            let currentCategoryTreeNode: Telerik.Web.UI.RadTreeNode
+                = this._createTreeNode(TreeNodeType.Category, categoryNodeDescription, categoryModel.EntityShortId, categoryNodeImageUrl, parentNodeIsTreeRootNode ? expandedNode : undefined);
+
+            this._appendEmptyNode(currentCategoryTreeNode);
+            return currentCategoryTreeNode;
+        });
+
+        if (categoryModelsResult.count) {
+            this._appendChildrenCountAttribute(expandedNode, categoryModelsResult.count);
+        }
+
+        return categoryTreeNodeCollection;
     }
 
     /**
@@ -603,7 +860,7 @@ class ProcessesTreeView {
     }
     protected actionToolbar_ButtonClicked = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
         let currentActionButtonItem: Telerik.Web.UI.RadToolBarButton = args.get_item() as Telerik.Web.UI.RadToolBarButton;
-        let currentAction: () => void = this.toolbarActions().filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
+        let currentAction: () => void = this._toolbarActions().filter((item: [string, () => void]) => item[0] == currentActionButtonItem.get_commandName())
             .map((item: [string, () => void]) => item[1])[0];
         currentAction();
     }
@@ -637,7 +894,7 @@ class ProcessesTreeView {
 
             newDossierFolderParent.get_nodes().clear();
             newDossierFolderParent.showLoadingStatus('', Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
-            this._loadDossierFoldersChildren(newDossierFolderParent.get_value(), newDossierFolderParent)
+            this._loadDossierFoldersChildren(newDossierFolderParent, this._defaultPaginationModel)
                 .done(() => {
                     newDossierFolderParent.hideLoadingStatus();
                     newDossierFolderParent.set_expanded(true);
@@ -716,30 +973,160 @@ class ProcessesTreeView {
         window.open(editPageUrl, "main");
     }
 
-    private _addDossierFolderNodesRecursive(dossierFolders: DossierSummaryFolderViewModel[], parentNode: Telerik.Web.UI.RadTreeNode) {
-        dossierFolders.forEach((dossierFolder: DossierSummaryFolderViewModel) => {
+    private _appendChildrenCountAttribute(node: Telerik.Web.UI.RadTreeNode, totalChildrenCount: number): void {
+        const currentChildrenAttributeValue: number | undefined = node.get_attributes().getAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME);
+
+        if (currentChildrenAttributeValue === undefined) {
+            node.get_attributes().setAttribute(ProcessesTreeView.TOTAL_CHILDREN_COUNT_ATTRNAME, totalChildrenCount);
+        }
+    }
+
+    private _appendEmptyNode(parentNode: Telerik.Web.UI.RadTreeNode): void {
+        let emptyNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+        emptyNode.set_text("Nessun elemento trovato");
+        parentNode.get_nodes().add(emptyNode);
+    }
+
+    private _appendLoadMoreNode(expandedNode: Telerik.Web.UI.RadTreeNode, totalChildrenCount: number) {
+        let expandedNodeType: TreeNodeType = expandedNode.get_attributes().getAttribute(ProcessesTreeView.NODETYPE_ATTRNAME);
+
+        if (expandedNodeType === TreeNodeType.LoadMore) {
+            const expandedNodeParentChildrenCollection: Telerik.Web.UI.RadTreeNodeCollection = expandedNode.get_parent().get_nodes();
+            const allChildrenLoaded: boolean = (expandedNodeParentChildrenCollection.get_count() - 1) === totalChildrenCount;
+
+            expandedNodeParentChildrenCollection.remove(expandedNode);
+            if (!allChildrenLoaded) {
+                expandedNodeParentChildrenCollection.add(this._createLoadMoreNode());
+            }
+        } else {
+            const expandedNodeChildrenCollection: Telerik.Web.UI.RadTreeNodeCollection = expandedNode.get_nodes(),
+                loadedAllChildren: boolean = expandedNodeChildrenCollection.get_count() === totalChildrenCount;
+
+            if (loadedAllChildren) {
+                return;
+            }
+
+            expandedNodeChildrenCollection.add(this._createLoadMoreNode());
+        }
+
+    }
+
+    private _appendDossierFolderViewModelNodesToParent(dossierFolderModels: DossierSummaryFolderViewModel[], parentNode: Telerik.Web.UI.RadTreeNode): void {
+        dossierFolderModels.forEach((dossierFolder: DossierSummaryFolderViewModel) => {
+            let dossierFolderIsFascicle: boolean = !!dossierFolder.idFascicle;
+
+            let nodeType: TreeNodeType = dossierFolderIsFascicle ? TreeNodeType.Fascicle : TreeNodeType.DossierFolder;
+            let nodeValue: string = dossierFolderIsFascicle ? dossierFolder.idFascicle : dossierFolder.UniqueId;
+
             let dossierFolderImageUrl: string = this._dossierFolderStatusImageDictionary[DossierFolderStatus[dossierFolder.Status]];
-            let dossierFolderExpandedImageUrl: string = this._expandedFolderImageDictionary[DossierFolderStatus.Folder];
             let dossierFolderTooltip: string = this._dossierFolderStatusTooltipDictionary[DossierFolderStatus[dossierFolder.Status]];
-            let dossierFolderNodeType: TreeNodeType = dossierFolder.idFascicle ? TreeNodeType.Fascicle : TreeNodeType.DossierFolder;
-            let dossierFolderNodeValue: string = dossierFolder.idFascicle ? dossierFolder.idFascicle : dossierFolder.UniqueId;
+            let dossierFolderExpandedImageUrl: string = this._expandedFolderImageDictionary[DossierFolderStatus[dossierFolder.Status]];
 
             let currentDossierFolderTreeNode: Telerik.Web.UI.RadTreeNode
-                = this._createTreeNode(dossierFolderNodeType, dossierFolder.Name, dossierFolderNodeValue, dossierFolderImageUrl, parentNode, dossierFolderTooltip, dossierFolderExpandedImageUrl);
+                = this._createTreeNode(nodeType, dossierFolder.Name, nodeValue, dossierFolderImageUrl, parentNode, dossierFolderTooltip, dossierFolderExpandedImageUrl);
 
-            if (dossierFolder.DossierFolders.length > 0) {
-                this._addDossierFolderNodesRecursive(dossierFolder.DossierFolders, currentDossierFolderTreeNode);
+            if (dossierFolderIsFascicle) {
+                currentDossierFolderTreeNode.get_attributes().setAttribute(ProcessesTreeView.DOSSIERFOLDERID_ATTRNAME, dossierFolder.UniqueId);
             }
-            else {
-                this._appendEmptyNode(currentDossierFolderTreeNode);
-            }
+
+            this._appendEmptyNode(currentDossierFolderTreeNode);
         });
     }
 
-    private _appendEmptyNode(treeNode: Telerik.Web.UI.RadTreeNode): void {
-        let emptyNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-        emptyNode.set_text("Nessun elemento trovato");
-        treeNode.get_nodes().add(emptyNode);
+    private _appendDossierFolderNodesToParent(dossierFolderModels: DossierFolderModel[], parentNode: Telerik.Web.UI.RadTreeNode): void {
+        dossierFolderModels.forEach((dossierFolder: DossierFolderModel) => {
+            let dossierFolderIsFascicle: boolean = !!dossierFolder.Fascicle;
+
+            let nodeType: TreeNodeType = dossierFolderIsFascicle ? TreeNodeType.Fascicle : TreeNodeType.DossierFolder;
+            let nodeValue: string = dossierFolderIsFascicle ? dossierFolder.Fascicle.UniqueId : dossierFolder.UniqueId;
+
+            let dossierFolderImageUrl: string = this._dossierFolderStatusImageDictionary[DossierFolderStatus[dossierFolder.Status]];
+            let dossierFolderTooltip: string = this._dossierFolderStatusTooltipDictionary[DossierFolderStatus[dossierFolder.Status]];
+            let dossierFolderExpandedImageUrl: string = this._expandedFolderImageDictionary[DossierFolderStatus[dossierFolder.Status]];
+
+            let currentDossierFolderTreeNode: Telerik.Web.UI.RadTreeNode
+                = this._createTreeNode(nodeType, dossierFolder.Name, nodeValue, dossierFolderImageUrl, parentNode, dossierFolderTooltip, dossierFolderExpandedImageUrl);
+
+            if (dossierFolderIsFascicle) {
+                currentDossierFolderTreeNode.get_attributes().setAttribute(ProcessesTreeView.DOSSIERFOLDERID_ATTRNAME, dossierFolder.UniqueId);
+            }
+
+            this._appendEmptyNode(currentDossierFolderTreeNode);
+        });
+    }
+
+    private _appendCategoryNodeChildren(subCategoryNodes: Telerik.Web.UI.RadTreeNode[], parentCategoryNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
+
+        const categoryProcessesToLoad: number = this.treeViewNodesPageSize - subCategoryNodes.length;
+        const currentParentNodeCollection: Telerik.Web.UI.RadTreeNodeCollection = parentCategoryNode.get_nodes();
+
+        if (!categoryProcessesToLoad) {
+            this._appendNodesToCollection(subCategoryNodes, currentParentNodeCollection);
+            defferedRequest.resolve();
+            return;
+        }
+
+        const alreadyLoadedCategoryProcessesCount: number = currentParentNodeCollection.toArray()
+            .filter(node => node.get_attributes().getAttribute(ProcessesTreeView.NODETYPE_ATTRNAME) === TreeNodeType.Process)?.length;
+        const categoryProcessesPaginationModel: PaginationModel = new PaginationModel(alreadyLoadedCategoryProcessesCount, categoryProcessesToLoad);
+        this._loadCategoryProcesses(parentCategoryNode, categoryProcessesPaginationModel)
+            .then((categoryProcesses: Telerik.Web.UI.RadTreeNode[]) => {
+                const categoryFasciclesToLoad: number = categoryProcessesToLoad - categoryProcesses.length;
+
+                if (!categoryFasciclesToLoad) {
+                    this._appendNodesToCollection(subCategoryNodes, currentParentNodeCollection);
+                    this._appendNodesToCollection(categoryProcesses, currentParentNodeCollection);
+                    defferedRequest.resolve();
+                    return;
+                }
+
+                const alreadyLoadedCategoryFasciclesCount: number = currentParentNodeCollection.toArray()
+                    .filter(node => node.get_attributes().getAttribute(ProcessesTreeView.NODETYPE_ATTRNAME) === TreeNodeType.Fascicle)?.length;
+                const categoryFasciclesPaginationModel: PaginationModel = new PaginationModel(alreadyLoadedCategoryFasciclesCount, categoryFasciclesToLoad);
+                this._loadCategoryFascicles(parentCategoryNode, categoryFasciclesPaginationModel)
+                    .then((categoryFascicles: Telerik.Web.UI.RadTreeNode[]) => {
+                        this._appendNodesToCollection(subCategoryNodes, currentParentNodeCollection);
+                        this._appendNodesToCollection(categoryProcesses, currentParentNodeCollection);
+                        this._appendNodesToCollection(categoryFascicles, currentParentNodeCollection);
+                        defferedRequest.resolve();
+                    });
+            });
+
+        return defferedRequest.promise();
+    }
+
+    private _appendFascicleFolderNodeChildren(fascicleFolders: Telerik.Web.UI.RadTreeNode[], parentFascicleFolder: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
+
+        const fascicleFolderDocumentUnitsToLoad: number = this.treeViewNodesPageSize - fascicleFolders.length;
+        const currentParentNodeCollection: Telerik.Web.UI.RadTreeNodeCollection = parentFascicleFolder.get_nodes();
+
+        if (!fascicleFolderDocumentUnitsToLoad) {
+            this._appendNodesToCollection(fascicleFolders, currentParentNodeCollection);
+            defferedRequest.resolve();
+            return;
+        }
+
+        const alreadyLoadedFascicleFoldersCount: number = currentParentNodeCollection.toArray()
+            .filter(node => node.get_attributes().getAttribute(ProcessesTreeView.NODETYPE_ATTRNAME) === TreeNodeType.DocumentUnit)?.length;
+        const fascicleFolderDocUnitsPaginationModel: PaginationModel = new PaginationModel(alreadyLoadedFascicleFoldersCount, fascicleFolderDocumentUnitsToLoad);
+        this._loadFascicleFolderDocumentUnits(parentFascicleFolder, parentFascicleFolder.get_value(), TreeNodeType.DocumentUnit, fascicleFolderDocUnitsPaginationModel)
+            .then((folderDocUnits: Telerik.Web.UI.RadTreeNode[]) => {
+                this._appendNodesToCollection(fascicleFolders, currentParentNodeCollection);
+                this._appendNodesToCollection(folderDocUnits, currentParentNodeCollection);
+
+                defferedRequest.resolve();
+            });
+
+        return defferedRequest.promise();
+    }
+
+    private _createLoadMoreNode(): Telerik.Web.UI.RadTreeNode {
+        let loadMoreNode: Telerik.Web.UI.RadTreeNode = this._createTreeNode(TreeNodeType.LoadMore, ProcessesTreeView.LOADMORE_NODE_LABEL, null, ProcessesTreeView.LOAD_MORE_NODE_IMAGEURL);
+        this._appendEmptyNode(loadMoreNode);
+
+        return loadMoreNode;
     }
 
     private _addDocumentUnitNodeAttributes(docUnitNode: Telerik.Web.UI.RadTreeNode, docUnitModel: DocumentUnitModel): void {
@@ -750,6 +1137,10 @@ class ProcessesTreeView {
         if (docUnitModel.UDSRepository) {
             docUnitNode.get_attributes().setAttribute(ProcessesTreeView.UDSREPOID_ATTRNAME, docUnitModel.UDSRepository.UniqueId);
         }
+    }
+
+    private _appendNodesToCollection(children: Telerik.Web.UI.RadTreeNode[], nodesCollection: Telerik.Web.UI.RadTreeNodeCollection): void {
+        children.forEach((childNode: Telerik.Web.UI.RadTreeNode) => nodesCollection.add(childNode));
     }
 
     private _createDocumentUnitNode(documentUnitModel: DocumentUnitModel, nodeType: TreeNodeType): Telerik.Web.UI.RadTreeNode {

@@ -19,6 +19,11 @@
                 <%= Me.ClientID %>_uscCategoryRest.windowSelCategoryId = "<%= windowSelCategory.ClientID %>";
                 <%= Me.ClientID %>_uscCategoryRest.showProcesses = <%= ShowProcesses.ToString().ToLower() %>;
                 <%= Me.ClientID %>_uscCategoryRest.currentTenantAOOId = "<%= CurrentTenant.TenantAOO.UniqueId %>";
+                <%= Me.ClientID %>_uscCategoryRest.showProcessFascicleTemplate = <%= ShowProcessFascicleTemplate.ToString().ToLower() %>;
+                <%= Me.ClientID %>_uscCategoryRest.processNodeSelectable = <%= ProcessNodeSelectable.ToString().ToLower() %>;
+                <%= Me.ClientID %>_uscCategoryRest.isProcessActive = <%= IsProcessActive.ToString().ToLower() %>;
+                <%= Me.ClientID %>_uscCategoryRest.defaultCategoryId = <%= If(DefaultCategoryId.HasValue, DefaultCategoryId.Value, Nothing) %>;
+                <%= Me.ClientID %>_uscCategoryRest.ajaxRequestEnabled = <%= AjaxRequestEnabled.ToString().ToLower() %>;
                 <%= Me.ClientID %>_uscCategoryRest.initialize();
             });
         });

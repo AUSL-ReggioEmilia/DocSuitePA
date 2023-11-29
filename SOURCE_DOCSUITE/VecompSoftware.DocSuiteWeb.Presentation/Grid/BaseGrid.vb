@@ -15,6 +15,9 @@ Public Class BaseGrid
     Private _autofitTextBoxFilter As Boolean = True
     Private _enableClearFilterButton As Boolean = True
     Private _enableScrolling As Boolean = True
+    Private _enableCustomExport As Boolean = False
+    Private _customExportText As String = String.Empty
+    Private _customExportTooltip As String = String.Empty
 #End Region
 
 #Region " Properties "
@@ -89,6 +92,33 @@ Public Class BaseGrid
         End Get
         Set(value As Boolean)
             _enableScrolling = value
+        End Set
+    End Property
+
+    Public Property EnableCustomExportButtons As Boolean
+        Get
+            Return _enableCustomExport
+        End Get
+        Set(value As Boolean)
+            _enableCustomExport = value
+        End Set
+    End Property
+
+    Public Property CustomExportButtonText As String
+        Get
+            Return _customExportText
+        End Get
+        Set(value As String)
+            _customExportText = value
+        End Set
+    End Property
+
+    Public Property CustomExportButtonTooltip As String
+        Get
+            Return _customExportTooltip
+        End Get
+        Set(value As String)
+            _customExportTooltip = value
         End Set
     End Property
 
@@ -207,7 +237,10 @@ Public Class BaseGrid
         MasterTableView.PagerStyle.Position = GridPagerPosition.Top
         AllowPaging = True
         MasterTableView.AllowCustomPaging = True
-        MasterTableView.CommandItemTemplate = New DSCommandItemTemplate(True, True, EnableClearFilterButton, Me)
+        Dim commandItemTemplate As DSCommandItemTemplate = New DSCommandItemTemplate(True, True, EnableClearFilterButton, EnableCustomExportButtons, Me)
+        commandItemTemplate.CustomExportButtonText = CustomExportButtonText
+        commandItemTemplate.CustomExportButtonTooltip = CustomExportButtonTooltip
+        MasterTableView.CommandItemTemplate = commandItemTemplate
         MasterTableView.CommandItemDisplay = GridCommandItemDisplay.Top
     End Sub
 
@@ -304,7 +337,7 @@ Public Class BaseGrid
                 DirectCast(cell.Controls(2), Button).ToolTip = "Seleziona Filtro"
 
                 Dim datePicker As New RadDatePicker()
-                datePicker.Width = Unit.Pixel(96)
+                datePicker.Width = Unit.Pixel(120)
 
                 Dim table As DSTable = FilterHelper.CreateTable(datePicker, cell.Controls(2))
                 cell.Controls.Clear()
@@ -342,6 +375,13 @@ Public Class BaseGrid
             Case "Pdf"
                 MasterTableView.ExportToPdf()
         End Select
+    End Sub
+
+    Public Sub DoCustomExport(ByVal dataSource As Table)
+        ExportSettings.ExportOnlyData = True
+        ExportSettings.OpenInNewWindow = True
+        ExportSettings.Excel.Format = GridExcelExportFormat.Html
+        ExportHelper.ExportToExcel(dataSource, Page, ExportSettings.FileName & FileHelper.XLS)
     End Sub
 
 #End Region

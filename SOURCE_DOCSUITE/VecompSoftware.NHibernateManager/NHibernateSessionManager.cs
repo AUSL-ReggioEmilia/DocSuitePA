@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Configuration;
+using System.Data;
 using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.Configuration;
@@ -233,7 +234,7 @@ namespace VecompSoftware.NHibernateManager
 
             if (transaction == null)
             {
-                transaction = GetSessionFrom(sessionFactoryName).BeginTransaction();
+                transaction = GetSessionFrom(sessionFactoryName).BeginTransaction(IsolationLevel.ReadCommitted);
                 ContextTransactions.Add(sessionFactoryName, transaction);
             }
 

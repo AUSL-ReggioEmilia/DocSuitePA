@@ -4,17 +4,19 @@ Imports Telerik.Web.UI
 Imports VecompSoftware.Helpers
 Imports System.Linq
 Imports VecompSoftware.Helpers.ExtensionMethods
+Imports System.Text
 
 Public Class ExportHelper
     Private Shared Sub ExportToContentType(ByRef control As Control, ByRef page As Page, ByVal fileName As String, ByVal contentType As String)
         page.Response.Clear()
         page.Response.Buffer = True
         page.Response.ContentType = contentType
-        page.Response.Charset = "ISO-8859-1" '"UTF-8"
+        page.Response.ContentEncoding = Encoding.UTF8 '"ISO-8859-1" '"UTF-8"
+        page.Response.BinaryWrite(Encoding.UTF8.GetPreamble())
         If fileName <> "" Then
             page.Response.AddHeader("content-disposition", String.Format("attachment;filename={0}", fileName))
         End If
-        page.Response.Charset = ""
+        page.Response.Charset = "UTF-8"
         page.EnableViewState = False
         Dim oStringWriter As New System.IO.StringWriter
         Dim oHtmlTextWriter As New System.Web.UI.HtmlTextWriter(oStringWriter)
@@ -63,6 +65,16 @@ Public Class ExportHelper
             table.CurrentRow.CurrentCell.ApplyStyle(cellHeaderStyle)
         Next
 
+        Dim cellColumnIndexMap As IDictionary(Of String, Integer) = New Dictionary(Of String, Integer)
+        Dim cellIndex As Integer = 0
+        For Each cell As GridTableCell In gridItems.Item(0).Cells
+            Dim col As GridColumn = manageableColumns.Values.FirstOrDefault(Function(k) k.UniqueName.Equals(cell.Column.UniqueName))
+            If col IsNot Nothing Then
+                cellColumnIndexMap.Add(cell.Column.UniqueName, cellIndex)
+            End If
+            cellIndex += 1
+        Next
+
         Dim cellItemStyle As DSTableCellStyle
         For Each gridDataItem As GridDataItem In gridItems
             table.CreateEmptyRow()
@@ -72,8 +84,9 @@ Public Class ExportHelper
                     cellItemStyle.LineBox = border
 
                     table.CurrentRow.CreateEmpytCell()
-                    ' Più offsetColumn per evitare le colonne inziali
-                    table.CurrentRow.CurrentCell.Text = CellToString(column.Value, gridDataItem, gridDataItem.Cells(column.Key + 2))
+
+                    table.CurrentRow.CurrentCell.Text = CellToString(column.Value, gridDataItem, gridDataItem.Cells(cellColumnIndexMap(column.Value.UniqueName)))
+
                     table.CurrentRow.CurrentCell.ApplyStyle(cellItemStyle)
                 End If
             Next
@@ -114,7 +127,7 @@ Public Class ExportHelper
         Return retval
     End Function
 
-    Private Shared Function ImageToString(ByVal path As String) As String
+    Public Shared Function ImageToString(ByVal path As String) As String
         Dim sRet As String = String.Empty
         Dim filename As String = System.IO.Path.GetFileNameWithoutExtension(path)
 
@@ -189,6 +202,8 @@ Public Class ExportHelper
                 sRet = "Word"
             Case "XML16", "XML32"
                 sRet = "XML"
+            Case "FASCICLE_PROCEDURE"
+                sRet = "Fascicolo di procedimento"
             Case Else
                 sRet = filename
         End Select

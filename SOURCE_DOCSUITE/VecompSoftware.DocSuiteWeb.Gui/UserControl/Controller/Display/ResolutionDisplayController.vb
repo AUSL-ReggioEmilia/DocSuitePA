@@ -1,5 +1,7 @@
 ﻿Imports System.Collections.Generic
 Imports System.Collections.Specialized
+Imports System.Linq
+Imports System.Web.Util
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.ExtensionMethods
@@ -58,6 +60,17 @@ Public Class ResolutionDisplayController
         Facade.ResolutionLogFacade.Log(_uscReslDisplay.CurrentResolution, ResolutionLogType.CV, message)
         _uscReslBar.ButtonConfirmView.Enabled = False
         _uscReslBar.ButtonConfirmView.Text = "Presa visione"
+        If ResolutionEnv.ResolutionAccountingEnabled AndAlso ContainerHasAccountingEnabled(_uscReslDisplay.CurrentResolution.Container) Then
+            Dim bidTypeAcronym As String = Facade.TabWorkflowFacade.GetOperationStepAccountingBidType(_uscReslDisplay.CurrentResolution)
+            If Not String.IsNullOrEmpty(bidTypeAcronym) Then
+                Dim bidType As BidType = Facade.BidTypeFacade.GetAll().FirstOrDefault(Function(x) x.Acronym.Trim.Eq(bidTypeAcronym))
+                If bidType IsNot Nothing Then
+                    _uscReslDisplay.CurrentResolution.BidType = bidType
+                    Facade.ResolutionFacade.Update(_uscReslDisplay.CurrentResolution)
+                End If
+            End If
+        End If
+        _uscReslBar.BasePage.AjaxManager.ResponseScripts.Add("endConfirmViewAction();")
     End Sub
 
 #End Region
@@ -83,7 +96,6 @@ Public Class ResolutionDisplayController
         _uscReslDisplay.VisibleComunicationDestProp = True
         _uscReslDisplay.VisibleComunicationDestPropAlternative = True
         _uscReslDisplay.VisibleRoles = True
-        _uscReslDisplay.VisibleOther = True
         InitializeNonStandardPanels()
         InitializeButtons()
     End Sub
@@ -181,7 +193,7 @@ Public Class ResolutionDisplayController
 
         _uscReslBar.ButtonChange.Visible = show
         If _uscReslBar.ButtonChange.Visible AndAlso currentResolution.EffectivenessDate.HasValue Then
-            Dim workflowType As String = Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, 2)
+            Dim workflowType As String = Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, DocSuiteContext.Current.ResolutionEnv.Configuration, 2)
             _uscReslBar.ButtonChange.Enabled = False
             If ResolutionEnv.ModifyExecutiveResolutionEnabled AndAlso Not String.IsNullOrEmpty(workflowType) Then
                 _uscReslBar.ButtonChange.Enabled = currentResolution.WorkflowType.Equals(workflowType) AndAlso CurrentResolutionRights.IsExecutive
@@ -215,9 +227,6 @@ Public Class ResolutionDisplayController
         'Pannelli Pulsanti
         _uscReslBar.PanelPreviewButtons.Visible = _uscReslDisplay.BasePage.Action.Eq("Insert")
         _uscReslBar.PanelExtraButtons.Visible = Not _uscReslDisplay.BasePage.Action.Eq("Insert")
-
-        _uscReslBar.ButtonPublishWeb.Visible = False
-        _uscReslBar.ButtonRevokeWeb.Visible = False
 
         If currentResolution.Status.Id = ResolutionStatusId.Annullato Then
             If CommonUtil.HasGroupAdministratorRight Then
@@ -318,6 +327,14 @@ Public Class ResolutionDisplayController
     Public Sub RegisterPrintScript(ByVal script As String) Implements IDisplayController.RegisterPrintScript
         _printScript = script
     End Sub
+
+    Private Function ContainerHasAccountingEnabled(container As Container) As Boolean
+        Dim accountingProperty As ContainerProperty = container.ContainerProperties.FirstOrDefault(Function(x) x.Name.Equals(ContainerPropertiesName.ResolutionAccountingEnabled))
+        If accountingProperty Is Nothing Then
+            Return False
+        End If
+        Return accountingProperty.ValueBoolean.Value
+    End Function
 
 #End Region
 

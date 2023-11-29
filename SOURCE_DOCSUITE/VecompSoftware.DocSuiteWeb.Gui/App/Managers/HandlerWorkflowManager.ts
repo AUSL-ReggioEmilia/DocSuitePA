@@ -111,7 +111,7 @@ class HandlerWorkflowManager {
                                     return;
                                 }
 
-                                if (workflowActivityData.WorkflowProperties && !this.handlingIsAutomatic(workflowActivityData.WorkflowProperties)) {
+                                if (workflowActivityData.Status === "Done" || (workflowActivityData.WorkflowProperties && !this.handlingIsAutomatic(workflowActivityData.WorkflowProperties))) {
                                     promise.resolve(activityId);
                                     return;
                                 }

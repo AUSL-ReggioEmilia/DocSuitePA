@@ -104,19 +104,11 @@ Public Class UserFascicle
     End Sub
 
     Private Sub DoSearch(finder As IFinder)
-        Dim setSortExpression As Boolean = False
-        If uscFascicleGrid.Grid.Finder Is Nothing Then
-            uscFascicleGrid.Grid.Finder = finder
-            setSortExpression = True
-        End If
-        If setSortExpression Then
-            Dim order As String = If(DocSuiteContext.Current.ProtocolEnv.ForceDescendingOrderElements, "desc", "asc")
-            uscFascicleGrid.Grid.Finder.SortExpressions("Entity.StartDate") = order
-        End If
+        uscFascicleGrid.Grid.Finder = finder
+        uscFascicleGrid.Grid.Finder.SortExpressions("Entity.StartDate") = "desc"
         uscFascicleGrid.Grid.DataBindFinder()
         uscFascicleGrid.Grid.Visible = True
     End Sub
-
 
     Private Sub ImpersonationFinderDelegate(ByVal source As Object, ByVal e As EventArgs)
         uscFascicleGrid.Grid.SetImpersonationAction(AddressOf ImpersonateGridCallback)

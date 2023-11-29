@@ -135,8 +135,7 @@ class DossierFolderInserimento extends DossierBase {
                     let roleModel: RoleModel = <RoleModel>{};
                     roleModel.EntityShortId = role.Role.EntityShortId;
                     roleModel.IdRole = role.Role.EntityShortId;
-                    roleModel.IdRoleTenant = role.Role.IdRoleTenant;
-                    roleModel.TenantId = role.Role.TenantId;
+                    roleModel.IdTenantAOO = role.Role.IdTenantAOO;
                     roleModel.Name = role.Role.Name;
                     roles.push(roleModel);
                 }
@@ -249,8 +248,7 @@ class DossierFolderInserimento extends DossierBase {
                         r.EntityShortId = role.EntityShortId;
                         r.IdRole = role.EntityShortId;
                         r.Name = role.Name;
-                        r.TenantId = role.TenantId;
-                        r.IdRoleTenant = role.IdRoleTenant;
+                        r.IdTenantAOO = role.IdTenantAOO;
 
                         dossierFolderRoleModel.Role = r;
                         dossierFolderRoleModel.AuthorizationRoleType = AuthorizationRoleType.Accounted;

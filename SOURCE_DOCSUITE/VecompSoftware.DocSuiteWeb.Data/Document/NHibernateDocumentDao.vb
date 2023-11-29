@@ -31,7 +31,6 @@ Public Class NHibernateDocumentDao
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Eq("Role", role))
         criteria.CreateAlias("Role", "R", SqlCommand.JoinType.InnerJoin)
-        criteria.Add(Restrictions.Eq("R.TenantId", DocSuiteContext.Current.CurrentTenant.TenantId))
         criteria.SetProjection(Projections.RowCountInt64())
         Return criteria.UniqueResult(Of Long)
     End Function

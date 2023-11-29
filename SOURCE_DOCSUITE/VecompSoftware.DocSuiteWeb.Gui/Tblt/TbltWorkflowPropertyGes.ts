@@ -95,10 +95,7 @@ class TbltWorkflowPropertyGes {
         const repositoryId: string = sessionStorage[TbltWorkflowPropertyGes.WORKFLOW_REPOSITORY];
         const stepPosition: string = sessionStorage[TbltWorkflowPropertyGes.WORKFLOW_STEP];
 
-        let wfProp = this._rcbName.get_value();
-        if (wfProp === "") {
-            wfProp = this._rcbName.get_text();
-        }
+        let wfProp = this._rtbPropertyName.get_value();
 
         const propertyType: ArgumentType = WorkflowEvalutionPropertyHelper[wfProp] !== undefined ? WorkflowEvalutionPropertyHelper[wfProp].Type : ArgumentType.PropertyString;
 
@@ -140,13 +137,7 @@ class TbltWorkflowPropertyGes {
                 }
                 case ArgumentType.PropertyInt: {
                     const valueInt = this._rntbValueInt.get_value();
-                    if (!valueInt) {
-                        ValidatorEnable($get(this.rfvNewValueIntId), true);
-                        isValid = false;
-                    }
-                    else {
                         workflowArgument.ValueInt = Number(valueInt);
-                    }
                     break;
                 }
                 case ArgumentType.PropertyDate: {

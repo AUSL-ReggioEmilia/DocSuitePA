@@ -1,21 +1,20 @@
 ﻿Imports System.Collections.Generic
+Imports System.Globalization
 Imports System.IO
 Imports System.Linq
-Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
-Imports VecompSoftware.Helpers.PDF
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.DocSuiteWeb.Facade
 Imports Telerik.Web.UI
+Imports VecompSoftware.Commons.Interfaces.CQRS.Events
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.Services.Sharepoint
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.DocSuiteWeb.DTO.Resolutions
-Imports System.Globalization
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
+Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.PDF
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.NHibernateManager
+Imports VecompSoftware.Services.Biblos
+Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Services.Logging
 
 Partial Public Class ReslFlusso
     Inherits ReslBasePage
@@ -40,8 +39,6 @@ Partial Public Class ReslFlusso
     Private _numeroServizio As String
     Private _currentTypeDescription As String
     Private _resolutionDocumentSeriesItemFacade As Facade.NHibernate.Resolutions.ResolutionDocumentSeriesItemFacade
-    Private _currentResolutionWPFacade As ResolutionWPFacade
-
 #End Region
 
 #Region " Properties "
@@ -200,15 +197,18 @@ Partial Public Class ReslFlusso
         End Get
     End Property
 
-    Private ReadOnly Property CurrentResolutionWPFacade As ResolutionWPFacade
+    Public ReadOnly Property CurrentResolutionHasAccoutingEnabled As Boolean
         Get
-            If _currentResolutionWPFacade Is Nothing Then
-                _currentResolutionWPFacade = New ResolutionWPFacade()
+            If Not ResolutionEnv.ResolutionAccountingEnabled OrElse CurrentResolution.Container Is Nothing Then
+                Return False
             End If
-            Return _currentResolutionWPFacade
+            Dim accountingProperty As ContainerProperty = CurrentResolution.Container.ContainerProperties.FirstOrDefault(Function(x) x.Name.Equals(ContainerPropertiesName.ResolutionAccountingEnabled))
+            If accountingProperty Is Nothing Then
+                Return False
+            End If
+            Return accountingProperty.ValueBoolean.Value
         End Get
     End Property
-
 #End Region
 
 #Region " Events "
@@ -306,7 +306,6 @@ Partial Public Class ReslFlusso
         End If
     End Sub
 
-    'todo: rivedere tutta la logica, non devono esistere metodi da 500 righe
     Private Sub BtnConfermaClick(ByVal sender As Object, ByVal e As EventArgs)
         If CurrentResolution Is Nothing Then
             Exit Sub
@@ -468,23 +467,6 @@ Partial Public Class ReslFlusso
                     End If
                 End If
 
-                If (ResolutionEnv.WebPublishEnabled AndAlso (Not ResolutionEnv.Configuration.Eq(ConfTo)) AndAlso ResolutionEnv.WebAutoPublish) OrElse
-                    (ResolutionEnv.ForceSharePointPublication AndAlso Not ResolutionEnv.PublishToOnlineRegisterEnabled) Then
-                    ' Verifico che non sia già stato pubblicato
-                    Try
-                        ' Teoricamente per ASMN, ma avendo l'esecutività automatica, sharepoint viene chiamato direttamente dalla pagina di inserimento.
-                        If workStep.Description.Eq(WorkflowStep.PUBBLICAZIONE) Then
-                            b = PublishToSharePoint()
-                        ElseIf workStep.Description.Eq(WorkflowStep.RITIRO) Then
-                            b = RetireFromSharePoint()
-                        End If
-                    Catch ex As Exception
-                        FileLogger.Error(LoggerName, "Errore Pubblicazione\Ritiro internet.", ex)
-                        AjaxAlert("Errore Pubblicazione\Ritiro internet: " + ex.Message)
-                        Exit Sub
-                    End Try
-                End If
-
                 'Pubblicazione sul nuovo albo online
                 If ResolutionEnv.PublishToOnlineRegisterEnabled AndAlso workStep.Description.Eq(WorkflowStep.PUBBLICAZIONE) Then
                     b = PublishToOnlineRegister()
@@ -580,7 +562,7 @@ Partial Public Class ReslFlusso
 
             If Action.Eq("NEXT") Then
                 'Creazione automatica del frontalino per AUSL-PC
-                If ResolutionEnv.GenerateFrontalinoInAdoptionState AndAlso ResolutionEnv.Configuration.Eq("AUSL-PC") AndAlso CurrentResolution.WorkflowType = Facade.TabMasterFacade.GetFieldValue("WorkflowType", "AUSL-PC", _reslType) AndAlso workStep.Description.Eq(WorkflowStep.ADOZIONE) Then
+                If ResolutionEnv.GenerateFrontalinoInAdoptionState AndAlso ResolutionEnv.Configuration.Eq("AUSL-PC") AndAlso CurrentResolution.WorkflowType = Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, "AUSL-PC", _reslType) AndAlso workStep.Description.Eq(WorkflowStep.ADOZIONE) Then
                     Dim number As String = String.Empty
                     If Not String.IsNullOrEmpty(txtNumeroServizio.Text) Then
                         number = txtNumeroServizio.Text
@@ -762,15 +744,6 @@ Partial Public Class ReslFlusso
             Case "Delete"
                 b = Facade.ResolutionWorkflowFacade.EnablePreviousStep(IdResolution, _step)
 
-                If ResolutionEnv.WebPublishEnabled OrElse ResolutionEnv.ForceSharePointPublication Then
-
-                    If workStep.Description.Eq(WorkflowStep.PUBBLICAZIONE) Then
-                        DeleteFromSharePoint(True)
-                    ElseIf workStep.Description.Eq(WorkflowStep.RITIRO) Then
-                        DeleteFromSharePoint(False)
-                    End If
-
-                End If
                 If (ResolutionEnv.Configuration = ConfAuslPc) Then 'EF 20120208 Nel caso di AUSL-PC salvo la motivazione di ritorno in DeclineNote Motivazione|Step
                     Dim dataFlusso As String = String.Format("{0:dd/MM/yyyy}", txtData.SelectedDate)
                     ''DeclineNote è formato da:
@@ -788,9 +761,9 @@ Partial Public Class ReslFlusso
         End If
 
         'Invio comando di creazione/aggiornamento Resolution alle WebApi
-        If Not Action.Eq("DELETE") AndAlso Not workStep.Description.Eq(WorkflowStep.PROPOSTA) Then
-            If Action.Eq("NEXT") AndAlso workStep.Description.Eq(WorkflowStep.ADOZIONE) Then
-                Facade.ResolutionFacade.SendCreateResolutionCommand(CurrentResolution)
+        If Not Action.Eq("DELETE") Then
+            If Action.Eq("NEXT") AndAlso workStep.Description.Eq(WorkflowStep.PROPOSTA) Then
+                Facade.ResolutionFacade.SendCreateResolutionCommand(CurrentResolution, New List(Of IWorkflowAction)())
             Else
                 Facade.ResolutionFacade.SendUpdateResolutionCommand(CurrentResolution)
             End If
@@ -815,7 +788,7 @@ Partial Public Class ReslFlusso
         Dim gestioneDigitale As Boolean = DocSuiteContext.Current.ResolutionEnv.GestioneDigitale(Me.CurrentResolution)
         Dim addedDocuments As IList(Of DocumentInfo) = Me.uscUploadDocumenti.DocumentInfosAdded
 
-        If gestioneDigitale AndAlso workStep.Description.Eq("ADOZIONE") _
+        If gestioneDigitale AndAlso (workStep.Description.Eq("ADOZIONE") OrElse workStep.Description.Eq(WorkflowStep.AFF_GEN_CHECK_STEP_DESCRIPTION)) _
             AndAlso Not addedDocuments.IsNullOrEmpty() _
             AndAlso _fileResolution IsNot Nothing AndAlso _fileResolution.IdFrontespizio.HasValue Then
             frontespizi = BiblosDocumentInfo.GetDocuments(Me.CurrentResolution.Location.ReslBiblosDSDB, Me._fileResolution.IdFrontespizio.Value)
@@ -870,6 +843,17 @@ Partial Public Class ReslFlusso
         End If
 
         CheckAdoptionDate(Action, workStep, txtData)
+        If ResolutionEnv.ResolutionConfirmViewingRequiredEnabled AndAlso Action.Eq("Next") Then
+            Dim currentWorkStep As TabWorkflow = Nothing
+            FacadeFactory.Instance.TabWorkflowFacade.GetByStep(CurrentResolution.WorkflowType, _step, currentWorkStep)
+            Dim confirmViewResponsabilityGroups As ICollection(Of Integer) = Facade.TabWorkflowFacade.GetOperationStepConfirmViewResponsabilityGroups(currentWorkStep)
+            Dim alreadyConfirmed As Boolean = Facade.ResolutionLogFacade.GetlastResolutionLog(CurrentResolution.Id, ResolutionLogType.CV) IsNot Nothing
+            If confirmViewResponsabilityGroups.Count > 0 AndAlso Not alreadyConfirmed Then
+                AjaxAlert("E' necessario confermare la visione dell'atto prima di poter proseguire allo step successivo")
+                Exit Sub
+            End If
+        End If
+
         If CurrentResolution.Type.Id.Equals(ResolutionType.IdentifierDetermina) Then
             If Not ValidateAdoptionDate(String.Empty, workStep.ManagedWorkflowData) Then
                 FileLogger.Error(LoggerName, String.Format("E' stata inserita una data di Adozione antecedente alla data di Adozione dell'ultima {0} presente.", CurrentTypeDescription))
@@ -888,6 +872,7 @@ Partial Public Class ReslFlusso
         Dim idAnnessi As Guid? = Nothing
         Dim idPrivacyAttachment As Integer? = Nothing
         Dim frontalini As ICollection(Of ResolutionFrontispiece) = New List(Of ResolutionFrontispiece)
+        Dim frontespiceDisabled As Boolean = TabWorkflowFacade.TestManagedWorkflowDataProperty(workStep.ManagedWorkflowData, "Frontespizio", "DISABLED", Nothing)
 
         'Resolution e ResolutionFile
         If stepExists Then
@@ -899,63 +884,66 @@ Partial Public Class ReslFlusso
                     dataFlusso = "N"
                 End If
 
-                ' Se sono in fase di adozione predispongo il frontalino
-                If ResolutionEnv.GestioneDigitale(CurrentResolution) AndAlso (workStep.Description.Eq(WorkflowStep.ADOZIONE)) Then
-                    ' Genero il frontalino e lo archivio se selezionato per l'archiviazione
-                    Dim printer As New ReslFrontalinoPrintPdfTO()
-                    Dim adoptionDate As DateTime = DateTime.ParseExact(dataFlusso, "dd/MM/yyyy", CultureInfo.CurrentCulture)
+                If Not frontespiceDisabled Then
+                    ' Se sono in fase di adozione predispongo il frontalino
+                    If ResolutionEnv.GestioneDigitale(CurrentResolution) AndAlso (workStep.Description.Eq(WorkflowStep.ADOZIONE)) Then
+                        ' Genero il frontalino e lo archivio se selezionato per l'archiviazione
+                        Dim printer As New ReslFrontalinoPrintPdfTO()
+                        Dim adoptionDate As DateTime = DateTime.ParseExact(dataFlusso, "dd/MM/yyyy", CultureInfo.CurrentCulture)
 
-                    'NB: la generazione del frontalino di adozione è stata spostata prima che avvenga l'update dell'atto con anno, numero, data adozione ecc,
-                    '    in modo che se si blocca o va in errore la generazione del frontalino, l'atto non vada in adozione.
-                    '    A questo punto anno e numero dell'atto non sono ancora stati generati, ma servono per calcolare la segnatura del frontalino.
-                    Try
-                        Dim year As Short = 0
-                        Dim number As Integer = 0
-                        If CurrentResolution.Number.HasValue AndAlso CurrentResolution.Year.HasValue Then
-                            year = CurrentResolution.Year.Value
-                            number = CurrentResolution.Number.Value
-                        Else
-                            Dim yearAndnumber As Tuple(Of Short, Integer) = Facade.ResolutionFacade.CalculateYearAndNumber(CurrentResolution.ProposeDate.Value, adoptionDate, _reslType)
-                            year = yearAndnumber.Item1
-                            number = yearAndnumber.Item2
-                        End If
+                        'NB: la generazione del frontalino di adozione è stata spostata prima che avvenga l'update dell'atto con anno, numero, data adozione ecc,
+                        '    in modo che se si blocca o va in errore la generazione del frontalino, l'atto non vada in adozione.
+                        '    A questo punto anno e numero dell'atto non sono ancora stati generati, ma servono per calcolare la segnatura del frontalino.
+                        Try
+                            Dim year As Short = 0
+                            Dim number As Integer = 0
+                            If CurrentResolution.Number.HasValue AndAlso CurrentResolution.Year.HasValue Then
+                                year = CurrentResolution.Year.Value
+                                number = CurrentResolution.Number.Value
+                            Else
+                                Dim yearAndnumber As Tuple(Of Short, Integer) = Facade.ResolutionFacade.CalculateYearAndNumber(CurrentResolution.ProposeDate.Value, adoptionDate, _reslType)
+                                year = yearAndnumber.Item1
+                                number = yearAndnumber.Item2
+                            End If
 
-                        Dim frontispieceResolution As Resolution = DirectCast(CurrentResolution.Clone(), Resolution)
-                        frontispieceResolution.Year = year
-                        frontispieceResolution.Number = number
-                        frontispieceResolution.AdoptionDate = adoptionDate
-                        frontispieceResolution.Container = DirectCast(CurrentResolution.Container.Clone(), Container)
-                        Dim reslContacts As IList(Of ResolutionContact) = New List(Of ResolutionContact)()
-                        For Each resolutionContactProposer As ResolutionContact In CurrentResolution.ResolutionContactProposers
-                            reslContacts.Add(New ResolutionContact() With {.Contact = DirectCast(resolutionContactProposer.Contact.Clone(), Contact)})
-                        Next
-                        frontispieceResolution.ResolutionContactProposers = reslContacts
-                        If Not numServ.Eq("N") AndAlso Not String.IsNullOrEmpty(numServ) Then
-                            frontispieceResolution.ServiceNumber = numServ
-                        End If
-                        Dim signature As String = GetSignature("F", workStep.Description, frontispieceResolution)
+                            Dim frontispieceResolution As Resolution = DirectCast(CurrentResolution.Clone(), Resolution)
+                            frontispieceResolution.Year = year
+                            frontispieceResolution.Number = number
+                            frontispieceResolution.AdoptionDate = adoptionDate
+                            frontispieceResolution.Container = DirectCast(CurrentResolution.Container.Clone(), Container)
+                            Dim reslContacts As IList(Of ResolutionContact) = New List(Of ResolutionContact)()
+                            For Each resolutionContactProposer As ResolutionContact In CurrentResolution.ResolutionContactProposers
+                                reslContacts.Add(New ResolutionContact() With {.Contact = DirectCast(resolutionContactProposer.Contact.Clone(), Contact)})
+                            Next
+                            frontispieceResolution.ResolutionContactProposers = reslContacts
+                            If Not numServ.Eq("N") AndAlso Not String.IsNullOrEmpty(numServ) Then
+                                frontispieceResolution.ServiceNumber = numServ
+                            End If
+                            Dim signature As String = GetSignature("F", workStep.Description, frontispieceResolution)
 
-                        frontalini = printer.GeneraFrontalini(frontispieceResolution)
-                        'Salvataggio dei frontalini in biblos e update di fileresolution
+                            frontalini = printer.GeneraFrontalini(frontispieceResolution)
+                            'Salvataggio dei frontalini in biblos e update di fileresolution
+                            If archive Then
+                                printer.SaveBiblosFrontispieces(frontalini, CurrentResolution, signature)
+                            End If
+                        Catch ex As Exception
+                            FileLogger.Error(LoggerName, String.Format("Errore nella generazione dei file di frontespizio da Sommario: {0}", ex.Message), ex)
+                            Facade.ResolutionLogFacade.Insert(CurrentResolution, ResolutionLogType.RF, "Errore nella generazione dei file di frontespizio da Sommario.")
+                            AjaxAlert(String.Format("Errore nella generazione dei file di frontespizio. L'atto è ancora in stato di proposta, riprovare l'avanzamento di step."))
+                            Exit Sub
+                        End Try
+
                         If archive Then
-                            printer.SaveBiblosFrontispieces(frontalini, CurrentResolution, signature)
+                            Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.RP, "Frontalino predisposto per gestione digitale")
+                        Else
+                            Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.RP, "Frontalino creato per stampa")
                         End If
-                    Catch ex As Exception
-                        FileLogger.Error(LoggerName, String.Format("Errore nella generazione dei file di frontespizio da Sommario: {0}", ex.Message), ex)
-                        Facade.ResolutionLogFacade.Insert(CurrentResolution, ResolutionLogType.RF, "Errore nella generazione dei file di frontespizio da Sommario.")
-                        AjaxAlert(String.Format("Errore nella generazione dei file di frontespizio. L'atto è ancora in stato di proposta, riprovare l'avanzamento di step."))
-                        Exit Sub
-                    End Try
-
-                    If archive Then
-                        Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.RP, "Frontalino predisposto per gestione digitale")
-                    Else
-                        Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.RP, "Frontalino creato per stampa")
                     End If
+
+                    ' Salvo le modifiche all'Atto, nessuna modifica ai documenti
+                    stepExists = Facade.ResolutionFacade.SqlResolutionUpdateWorkflowData(IdResolution, _reslType, Not CurrentResolution.Number.HasValue, workStep, dataFlusso, numServ, -1, -1, Guid.Empty, "N", False, DocSuiteContext.Current.User.FullUserName)
                 End If
 
-                ' Salvo le modifiche all'Atto, nessuna modifica ai documenti
-                stepExists = Facade.ResolutionFacade.SqlResolutionUpdateWorkflowData(IdResolution, _reslType, Not CurrentResolution.Number.HasValue, workStep, dataFlusso, numServ, -1, -1, Guid.Empty, "N", False, DocSuiteContext.Current.User.FullUserName)
 
                 'Se i valori sono cambiati significa che l'atto è stato appena adottato
                 Dim hadJustBeenAdopted As Boolean = _fileResolution IsNot Nothing AndAlso _fileResolution.IdFrontespizio.HasValue
@@ -1156,6 +1144,16 @@ Partial Public Class ReslFlusso
                     End If
                 End If
 
+                If CurrentResolutionHasAccoutingEnabled Then
+                    Dim bidTypeAcronym As String = TabWorkflowFacade.GetAccountingBidType(workStep.ManagedWorkflowData)
+                    If Not String.IsNullOrEmpty(bidTypeAcronym) Then
+                        Dim bidType As BidType = Facade.BidTypeFacade.GetAll().FirstOrDefault(Function(x) x.Acronym.Trim.Eq(bidTypeAcronym))
+                        If bidType IsNot Nothing Then
+                            CurrentResolution.BidType = bidType
+                        End If
+                    End If
+                End If
+
                 ' Se tutto è andato a buon fine salvo le modifiche
                 If stepExists Then
                     Facade.ResolutionFacade.Save(CurrentResolution)
@@ -1244,7 +1242,7 @@ Partial Public Class ReslFlusso
         End If
 
         ' Stampo il promemoria di stampa frontalino solo se la gestione è cartacea
-        If Not String.IsNullOrEmpty(ResolutionEnv.PromemoriaAdozione) AndAlso workStep.Description.Eq(WorkflowStep.ADOZIONE) Then
+        If Not String.IsNullOrEmpty(ResolutionEnv.PromemoriaAdozione) AndAlso workStep.Description.Eq(WorkflowStep.ADOZIONE) AndAlso Not frontespiceDisabled Then
             If ResolutionEnv.GestioneDigitale(CurrentResolution) AndAlso (Not archive) AndAlso Action.Eq("Next") Then
                 AjaxAlert(ResolutionEnv.PromemoriaAdozione)
             End If
@@ -1274,12 +1272,17 @@ Partial Public Class ReslFlusso
         End If
 
         'Invio comando di creazione/aggiornamento Resolution alle WebApi
-        If Not Action.Eq("DELETE") AndAlso Not workStep.Description.Eq(WorkflowStep.PROPOSTA) Then
-            If Action.Eq("NEXT") AndAlso workStep.Description.Eq(WorkflowStep.ADOZIONE) Then
-                Facade.ResolutionFacade.SendCreateResolutionCommand(CurrentResolution)
+        If Not Action.Eq("DELETE") Then
+            If Action.Eq("NEXT") AndAlso workStep.Description.Eq(WorkflowStep.PROPOSTA) Then
+                Facade.ResolutionFacade.SendCreateResolutionCommand(CurrentResolution, New List(Of IWorkflowAction))
             Else
                 Facade.ResolutionFacade.SendUpdateResolutionCommand(CurrentResolution)
             End If
+        End If
+
+        If TabWorkflowFacade.TestManagedWorkflowDataProperty(workStep.ManagedWorkflowData, "AutomaticNext", "AutomaticNext", Nothing) Then
+            _step = _step + 1S
+            BtnConfermaToClick(sender, e)
         End If
 
         'Se il parametro degli avanzamenti di step automatici è attivo, creo un attività del JeepService per ogni atto selezionato. 
@@ -1449,9 +1452,9 @@ Partial Public Class ReslFlusso
                 ' Se il documento dello step precedente è firmato (P7M) allora lo propongo come default nello step successivo
                 If (ResolutionEnv.Configuration.Eq(ConfTo) OrElse ResolutionEnv.CopyDocumentsToAdoption) AndAlso (Facade.TabWorkflowFacade.GetByStep(CurrentResolution.WorkflowType, _step, workflow)) Then
                     Dim fileRes As FileResolution = Facade.FileResolutionFacade.GetByResolution(CurrentResolution)(0)
-
+                    Dim affGenCheckStep As TabWorkflow = Facade.TabWorkflowFacade.GetByDescription(WorkflowStep.AFF_GEN_CHECK_STEP_DESCRIPTION, workflow.Id.WorkflowType)
                     ''Calcolo il documento effettivo solo se provengo dalla proposta
-                    If workflow.Description.Eq(WorkflowStep.PROPOSTA) OrElse workflow.Description.Eq(WorkflowStep.ATTO_CONFORME) Then
+                    If workflow.Description.Eq(WorkflowStep.PROPOSTA) OrElse workflow.Description.Eq(WorkflowStep.ATTO_CONFORME) OrElse (affGenCheckStep IsNot Nothing AndAlso workflow.Description.Eq(WorkflowStep.ADOZIONE)) Then
                         ''Documento principale
                         mainChainToDuplicate = CType(ReflectionHelper.GetPropertyCase(fileRes, workflow.FieldDocument), Integer)
                         omissisMainChainToDuplicate = CType(ReflectionHelper.GetPropertyCase(fileRes, workActive.FieldDocumentsOmissis), Guid)
@@ -1539,7 +1542,7 @@ Partial Public Class ReslFlusso
                     'Rimosso volontariamente in modo da riportare nello step successivo solamente i documenti firmati
                     'InitializeAttachment(workNext)
                     If attachmentChainToDuplicate > 0 Then
-                        DuplicaDocumento(attachmentChainToDuplicate, uscUploadAllegati, CurrentResolution, True, ResolutionEnv.Configuration.Eq(ConfTo) OrElse ResolutionEnv.CopyOnlySignedDocumentsToAdoption, GetSignature(String.Empty, workActive.Description))
+                        DuplicaDocumento(attachmentChainToDuplicate, uscUploadAllegati, CurrentResolution, True, ResolutionEnv.CopyOnlySignedDocumentsToAdoption, GetSignature(String.Empty, workActive.Description))
                     End If
                 End If
 
@@ -1548,7 +1551,7 @@ Partial Public Class ReslFlusso
                     'Rimosso volontariamente in modo da riportare nello step successivo solamente i documenti firmati
                     'InitializeAttachmentOmissis(workNext)
                     If omissisAttachmentChainToDuplicate <> Guid.Empty Then
-                        DuplicaDocumento(omissisAttachmentChainToDuplicate, uscUploadAllegatiOmissis, CurrentResolution, True, ResolutionEnv.Configuration.Eq(ConfTo) OrElse ResolutionEnv.CopyOnlySignedDocumentsToAdoption, GetSignature(String.Empty, workActive.Description))
+                        DuplicaDocumento(omissisAttachmentChainToDuplicate, uscUploadAllegatiOmissis, CurrentResolution, True, ResolutionEnv.CopyOnlySignedDocumentsToAdoption, GetSignature(String.Empty, workActive.Description))
                     End If
                 End If
 
@@ -1577,7 +1580,7 @@ Partial Public Class ReslFlusso
                         '-- Setto la data
                         Select Case workNext.Description.Trim
                             Case WorkflowStep.ADOZIONE
-                                pnlFrontalino.Visible = True
+                                pnlFrontalino.Visible = Not TabWorkflowFacade.TestManagedWorkflowDataProperty(workNext.ManagedWorkflowData, "Frontespizio", "DISABLED", Nothing)
                                 Dim isDefaultFrontalinoDigitale As Boolean = TabWorkflowFacade.TestManagedWorkflowDataProperty(workNext.ManagedWorkflowData, "Frontespizio", "SEL", "Digitale")
                                 radioFrontalino.SelectedValue = If(isDefaultFrontalinoDigitale, "frontalinodigitale", "frontalinocartaceo")
                             Case WorkflowStep.PUBBLICAZIONE
@@ -1596,10 +1599,12 @@ Partial Public Class ReslFlusso
                                         Next
                                     End If
                                 Else
-                                    'Manca la data per il calcolo
-                                    lblInfo.Text = "Manca la data di Invio al Collegio Sindacale. Impossibile Pubblicare la Delibera."
-                                    lblInfo.Visible = True
-                                    btnConferma.Enabled = False
+                                    If TabWorkflowFacade.TestManagedWorkflowDataProperty(workNext.ManagedWorkflowData, "OCData", "OBB", "") Then
+                                        'Manca la data per il calcolo
+                                        lblInfo.Text = "Manca la data di Invio al Collegio Sindacale. Impossibile Pubblicare la Delibera."
+                                        lblInfo.Visible = True
+                                        btnConferma.Enabled = False
+                                    End If
                                 End If
                             Case WorkflowStep.ESECUTIVA
                                 If CurrentResolution.OCRegion.GetValueOrDefault(False) Then 'Va in Regione
@@ -1607,14 +1612,21 @@ Partial Public Class ReslFlusso
                                     If CurrentResolution.ConfirmDate.HasValue Then
                                         txtData.SelectedDate = DateAdd(DateInterval.Day, 40, CurrentResolution.ConfirmDate.Value)
                                     Else
-                                        'Manca la data per il calcolo
-                                        lblInfo.Text = "Manca la data di Ricezione in Regione. Impossibile rendere Esecutiva la Delibera."
-                                        lblInfo.Visible = True
-                                        btnConferma.Enabled = False
+                                        If TabWorkflowFacade.TestManagedWorkflowDataProperty(workNext.ManagedWorkflowData, "OCData", "OBB", "") Then
+                                            'Manca la data per il calcolo
+                                            lblInfo.Text = "Manca la data di Ricezione in Regione. Impossibile rendere Esecutiva la Delibera."
+                                            lblInfo.Visible = True
+                                            btnConferma.Enabled = False
+                                        End If
                                     End If
                                 Else
-                                    'Pubblicazione + 10gg
+                                    'Inserimento manuale/Pubblicazione + 10gg
                                     txtData.SelectedDate = DateAdd(DateInterval.Day, 10, CurrentResolution.PublishingDate.Value)
+                                    If TabWorkflowFacade.TestManagedWorkflowDataProperty(workNext.ManagedWorkflowData, "Date", "NOPROPOSED", "") Then
+                                        txtData.Enabled = True
+                                        txtData.SelectedDate = Nothing
+                                        txtData.MinDate = CurrentResolution.PublishingDate.Value
+                                    End If
                                 End If
                         End Select
 
@@ -1762,9 +1774,9 @@ Partial Public Class ReslFlusso
         ddlServizio.Items.Clear()
 
         If Not chkTuttiICodici.Checked Then
-            _roles = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Resolution, 1, True)
+            _roles = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Resolution, 1, True, CurrentTenant.TenantAOO.UniqueId)
         Else
-            _roles = Facade.RoleFacade.GetRoles(DSWEnvironment.Resolution, 1, True, "", False, Nothing)
+            _roles = Facade.RoleFacade.GetRoles(DSWEnvironment.Resolution, 1, True, "", False, Nothing, CurrentTenant.TenantAOO.UniqueId)
         End If
 
         Dim ddlServizioDictionary As Dictionary(Of String, String) = (From role In _roles Where Not String.IsNullOrEmpty(role.ServiceCode)).ToDictionary(Function(role) String.Format("{0} ({1})", role.ServiceCode, role.Name), Function(role) role.Id.ToString())
@@ -1784,7 +1796,6 @@ Partial Public Class ReslFlusso
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlServizio, txtNumeroServizio)
         AjaxManager.AjaxSettings.AddAjaxSetting(selectPrivacy, pnlPrivacy)
         AjaxManager.AjaxSettings.AddAjaxSetting(selectPrivacy, pnlOptions, MasterDocSuite.AjaxDefaultLoadingPanel)
-        'AjaxManager.AjaxSettings.AddAjaxSetting(selectPrivacy, uscUploadDocumenti.ButtonsPanel)
 
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscUploadDocumenti)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscUploadDocumentiOmissis)
@@ -1798,10 +1809,6 @@ Partial Public Class ReslFlusso
 
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlPrivacyAttachment)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma, MasterDocSuite.AjaxFlatLoadingPanel)
-
-        If PnlPrivacyVisible Then
-            'AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlPrivacyAttachment)
-        End If
     End Sub
 
     ''' <summary>
@@ -1899,6 +1906,7 @@ Partial Public Class ReslFlusso
             uscUploadDocumenti.IsDocumentRequired = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Document", "OBB", "")
             'parametro documenti multipli
             uscUploadDocumenti.MultipleDocuments = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Document", sProp, "N")
+            uscUploadDocumenti.HideScannerMultipleDocumentButton = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Document", sProp, "N")
 
             'DOCUMENTI OMISSIS
             'parametro pannello allegati visibile
@@ -2125,7 +2133,7 @@ Partial Public Class ReslFlusso
         Dim number As String = ""
 
         '' Gestione altri clienti.. si potrebbe fare meglio...
-        If stato.Eq("Adozione") Then
+        If stato.Eq("Adozione") OrElse stato.Eq(WorkflowStep.AFF_GEN_CHECK_STEP_DESCRIPTION) OrElse stato.Eq("Controllo") Then
             If txtData.SelectedDate.HasValue Then
                 anno = Year(txtData.SelectedDate.Value).ToString
             End If
@@ -2234,6 +2242,9 @@ Partial Public Class ReslFlusso
 
         Dim savedDocument As BiblosDocumentInfo
         For Each doc As DocumentInfo In docs
+            If doc.Attributes.ContainsKey("Signature") Then
+                doc.Attributes.Remove("Signature")
+            End If
             doc.Signature = signature
             savedDocument = doc.ArchiveInBiblos(location.ReslBiblosDSDB, newCatena)
             newCatena = savedDocument.BiblosChainId
@@ -2273,6 +2284,9 @@ Partial Public Class ReslFlusso
 
         Dim savedDocument As BiblosDocumentInfo
         For Each doc As DocumentInfo In docs
+            If doc.Attributes.ContainsKey("Signature") Then
+                doc.Attributes.Remove("Signature")
+            End If
             doc.Signature = signature
             savedDocument = doc.ArchiveInBiblos(location.ReslBiblosDSDB, newCatena)
             newCatena = savedDocument.ChainId
@@ -2285,102 +2299,6 @@ Partial Public Class ReslFlusso
         Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.RF, String.Format("Catena [{0}] {1} con successo", newCatena, biblosAction))
 
         Return newCatena
-    End Function
-
-    Public Function PublishToSharePoint() As Boolean
-        If Not CurrentResolution.WebPublicationDate.HasValue Then
-            Dim signature As String = String.Format("{0} {1}: Inserimento Albo {2:dd/MM/yyyy}", ResolutionEnv.CorporateAcronym, Facade.ResolutionFacade.SqlResolutionGetNumber(IdResolution, complete:=True), txtData.SelectedDate)
-
-            Try
-                Dim tw As TabWorkflow = Facade.TabWorkflowFacade.GetByResolution(CurrentResolution.Id)
-                Dim fileRes As FileResolution = Facade.FileResolutionFacade.GetByResolution(CurrentResolution)(0)
-                Dim docChain As Integer = Convert.ToInt32(ReflectionHelper.GetPropertyCase(fileRes, tw.FieldDocument))
-                Dim description As String = Service.GetDocumentName(CurrentResolution.Location.ReslBiblosDSDB, docChain, 0)
-
-                Dim strXmlDoc As String = CurrentResolutionWPFacade.GetXMLSPFrontespizio(
-                uscUploadDocumenti.DocumentInfos.ToDictionary(Function(d) DirectCast(d, TempFileDocumentInfo).FileInfo.Name, Function(d) d.Serialized),
-                CurrentResolution,
-                tw,
-                fileRes,
-                description,
-                signature)
-
-                Dim strXmlOther As String = CurrentResolutionWPFacade.GetXmlOther(CurrentResolution)
-
-                Common.SharePointFacade.Publish(CurrentResolution, txtData.SelectedDate.Value, txtData.SelectedDate.Value.AddDays(15), signature, strXmlDoc, strXmlOther)
-            Catch ex As Exception
-                FileLogger.Warn(LoggerName, "Errore Pubblicazione internet.", ex)
-                AjaxAlert("Errore Pubblicazione internet: " + ex.Message())
-                Return False
-            End Try
-        End If
-        Return True
-    End Function
-
-    Public Function RetireFromSharePoint() As Boolean
-        If Not CurrentResolution.WebRevokeDate.HasValue Then
-            Try
-                Dim signature As String = String.Format("{0}: Ritiro Albo {1:dd/MM/yyyy}", Facade.ResolutionFacade.SqlResolutionGetNumber(IdResolution, complete:=True), txtData.SelectedDate)
-                Dim strXmlDoc As String = CurrentResolutionWPFacade.GetXmlSp(uscUploadDocumenti.DocumentInfos, signature, CurrentResolution.Id).InnerXml
-                Dim strXmlOther As String = Facade.ResolutionWPFacade.GetXmlOther(CurrentResolution)
-
-                Common.SharePointFacade.Retire(CurrentResolution, txtData.SelectedDate.Value, signature, strXmlDoc, strXmlOther)
-            Catch ex As Exception
-                FileLogger.Warn(LoggerName, "Errore Pubblicazione Ritiro internet: " & ex.Message, ex)
-                AjaxAlert("Errore Pubblicazione Ritiro internet: " & ex.Message)
-                Return False
-            End Try
-        End If
-        Return True
-    End Function
-
-    Public Sub DeleteFromSharePoint(ByVal isPublish As Boolean)
-        Try
-            If isPublish Then
-                If Not String.IsNullOrEmpty(CurrentResolution.WebSPGuid) Then
-                    ServiceSHP.DeleteFileInPubblicationArea(CurrentResolution.WebSPGuid)
-                End If
-
-                CurrentResolution.WebState = Resolution.WebStateEnum.None
-                CurrentResolution.WebRevokeDate = Nothing
-                CurrentResolution.WebPublicationDate = Nothing
-                CurrentResolution.WebSPGuid = Nothing
-            Else
-                If Not String.IsNullOrEmpty(CurrentResolution.WebSPGuid) Then
-                    ServiceSHP.DeleteFileInRetireArea(CurrentResolution.WebSPGuid)
-                End If
-
-                ' Imposto i valori della pubblicazione
-                CurrentResolution.WebState = Resolution.WebStateEnum.Published
-                CurrentResolution.WebRevokeDate = Nothing
-                CurrentResolution.WebSPGuid = Nothing
-
-            End If
-
-            Try
-                Facade.ResolutionFacade.Update(CurrentResolution)
-                Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.WP, "Ritiro Internet avvenuto correttamente")
-            Catch ex As Exception
-                FileLogger.Warn(LoggerName, ex.Message, ex)
-                AjaxAlert("Errore Pubblicazione\Ritiro internet: Impossibile aggiornare i dati sul database")
-                Exit Sub
-            End Try
-
-        Catch ex As Exception
-            FileLogger.Warn(LoggerName, ex.Message, ex)
-            AjaxAlert("Errore Pubblicazione\Ritiro internet: " + ex.Message)
-            Exit Sub
-        End Try
-    End Sub
-
-    Private Shared Function HasDocument(ByVal tvw As RadTreeView, ByVal checkOnlyDimension As Boolean) As Boolean
-        If tvw.Nodes(0).Nodes.Count <= 0 Then Return False
-
-        ' Con false il metodo di verifica è retrocompatibile.
-        ' Con il parametro a true, verifica solo l'effettiva presenza di voci.
-        If checkOnlyDimension Then Return True
-
-        Return tvw.Nodes(0).Nodes.Cast(Of RadTreeNode)().Any(Function(tn) String.IsNullOrEmpty(tn.Value))
     End Function
 
     Private Function HasOnlyRealDocuments(ByVal tvw As RadTreeView) As Boolean
@@ -2428,17 +2346,6 @@ Partial Public Class ReslFlusso
         End If
     End Sub
 
-    ''' <summary> Dizionario dei file nella collezione, in chiave il nome del file nella temp (univoco), in valore il nome del file a video. </summary>
-    ''' <returns> Dictionary dei file nella TreeView </returns>
-    Public Shared Function GetDictionaryFromTreeView(nodes As RadTreeNodeCollection) As Dictionary(Of String, String)
-        Dim items As IDictionary(Of String, String) = New Dictionary(Of String, String)
-        For Each n As RadTreeNode In nodes
-            If Not String.IsNullOrEmpty(n.Value) Then
-                items.Add(n.Value, n.Text)
-            End If
-        Next
-        Return items
-    End Function
 
     Private Sub ComposeDocument(ByVal changeFields As String, ByVal fileRes As FileResolution, ByRef idCatena As Integer)
         Dim s As String = Mid(changeFields, InStr(UCase(changeFields), UCase("ComposeDoc")))

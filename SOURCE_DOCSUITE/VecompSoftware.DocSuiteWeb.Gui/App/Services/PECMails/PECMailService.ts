@@ -7,6 +7,8 @@ import PECMailSearchFilterDTO = require('App/DTOs/PECMailSearchFilterDTO');
 import PECMailDirection = require("App/Models/PECMails/PECMailDirection");
 import InvoiceStatusEnum = require("App/Models/PECMails/InvoiceStatusEnum");
 import InvoiceTypeEnum = require("App/Models/PECMails/InvoiceTypeEnum");
+import PECMailActiveTypeEnum = require('App/Models/PECMails/PECMailActiveTypeEnum');
+import PaginationModel = require("App/Models/Commons/PaginationModel");
 
 class PECMailService extends BaseService {
     _configuration: ServiceConfiguration;
@@ -103,47 +105,86 @@ class PECMailService extends BaseService {
     }
 
     getPECMailById(pecMailId: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string =
-            `${this._configuration.ODATAUrl}?$expand=PECMailBox($expand=Location),Location&$filter=EntityId eq ${pecMailId}`;
+        const url = `${this._configuration.ODATAUrl}?$expand=PECMailBox($expand=Location),Location&$filter=EntityId eq ${pecMailId}`;
+
+        this.getRequest(url, null,
+            (response: any) => {
+                if (callback) {
+                    const modelMapper = new PECMailViewModelMapper();
+                    callback(modelMapper.Map(response.value[0]));
+                }
+            }, error);
+    }
+
+    getPECMailsByDocumentUnit(idDocumentUnit: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, excludeDisabledPECMails: boolean = true, paginationModel: PaginationModel = null): void {
+        let url = `${this._configuration.ODATAUrl}?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and IsActive ne 'Processed'`;
+        if (excludeDisabledPECMails) {
+            url = `${url} and IsActive ne '${PECMailActiveTypeEnum[PECMailActiveTypeEnum.Disabled]}'`;
+        }
+        url = `${url} &$expand=PECMailReceipts`;
+        if (paginationModel) {
+            url = `${url}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}`;
+        }
         this.getRequest(url, null, (response: any) => {
             if (callback && response) {
-                let modelMapper = new PECMailViewModelMapper();
-                let pecMailInErrore: PECMailViewModel = response.value[0];
-                modelMapper.Map(pecMailInErrore);
-                callback(pecMailInErrore);
+                const viewModelMapper = new PECMailViewModelMapper();
+                const pecMails: PECMailViewModel[] = [];
+                $.each(response.value, function (i, value) {
+                    pecMails.push(viewModelMapper.Map(value));
+                });
+                callback(pecMails);
             };
         }, error);
     }
 
-    getOutgoingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string =
-            `${this._configuration.ODATAUrl}?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection} and IsActive ne 'Processed'&$expand=PECMailReceipts`;
+    getOutgoingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, excludeDisabledPECMails: boolean = true, paginationModel?: PaginationModel): void {
+        let url: string = `${this._configuration.ODATAUrl}?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection} and IsActive ne 'Processed'`;
+        if (excludeDisabledPECMails) {
+            url = `${url} and IsActive ne '${PECMailActiveTypeEnum[PECMailActiveTypeEnum.Disabled]}'`;
+        }
+        url = `${url} &$expand=PECMailReceipts`;
+        if (paginationModel) {
+            url = `${url}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}`;
+        }
         this.getRequest(url, null, (response: any) => {
             if (callback && response) {
-                let modelMapper = new PECMailViewModelMapper();
-                let pecMailInErrore: PECMailViewModel = response.value;
-                modelMapper.Map(pecMailInErrore);
-                callback(pecMailInErrore);
+                const viewModelMapper = new PECMailViewModelMapper();
+                const pecMails: PECMailViewModel[] = [];
+                $.each(response.value, function (i, value) {
+                    pecMails.push(viewModelMapper.Map(value));
+                });
+                callback(pecMails);
             };
         }, error);
     }
 
-    getIncomingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getIncomingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, excludeDisabledPECMails: boolean = true, paginationModel?: PaginationModel): void {
         let url: string =
-            `${this._configuration.ODATAUrl}?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection}&$expand=PECMailReceipts`;
+            `${this._configuration.ODATAUrl}?$expand=PECMailReceipts&$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection}`;
+        if (excludeDisabledPECMails) {
+            url = `${url} and IsActive ne '${PECMailActiveTypeEnum[PECMailActiveTypeEnum.Disabled]}'`;
+        }
+        if (paginationModel) {
+            url = `${url}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}`;
+        }
         this.getRequest(url, null, (response: any) => {
             if (callback && response) {
-                let modelMapper = new PECMailViewModelMapper();
-                let pecMailInErrore: PECMailViewModel = response.value;
-                modelMapper.Map(pecMailInErrore);
-                callback(pecMailInErrore);
+                const viewModelMapper = new PECMailViewModelMapper();
+                const pecMails: PECMailViewModel[] = [];
+                $.each(response.value, function (i, value) {
+                    pecMails.push(viewModelMapper.Map(value));
+                });
+                callback(pecMails);
             };
         }, error);
     }
 
-    countIncomingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    countIncomingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, excludeDisabledPECMails: boolean = true): void {
         let url: string = this._configuration.ODATAUrl;
-        let data: string = `/$count?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection}&$expand=PECMailReceipts`;
+        let data: string = `/$count?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection}`;
+        if (excludeDisabledPECMails) {
+            data = `${data} and IsActive ne '${PECMailActiveTypeEnum[PECMailActiveTypeEnum.Disabled]}'`;
+        }
         url = `${url}${data}`;
         this.getRequest(url, null,
             (response: any) => {
@@ -154,9 +195,29 @@ class PECMailService extends BaseService {
         
     }
 
-    countOutgoingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    countOutgoingPECMail(idDocumentUnit: string, pecMailDirection: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, excludeDisabledPECMails: boolean = true): void {
         let url: string = this._configuration.ODATAUrl;
-        let data: string = `/$count?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection} and IsActive ne 'Processed'&$expand=PECMailReceipts`;
+        let data: string = `/$count?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and Direction eq ${pecMailDirection} and IsActive ne 'Processed'`;
+        if (excludeDisabledPECMails) {
+            data = `${data} and IsActive ne '${PECMailActiveTypeEnum[PECMailActiveTypeEnum.Disabled]}'`;
+        }
+        data = `${data} &$expand=PECMailReceipts`;
+        url = `${url}${data}`;
+        this.getRequest(url, null,
+            (response: any) => {
+                if (callback) {
+                    callback(response);
+                }
+            }, error);
+    }
+
+    countPECMail(idDocumentUnit: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, excludeDisabledPECMails: boolean = true): void {
+        let url: string = this._configuration.ODATAUrl;
+        let data: string = `/$count?$filter=DocumentUnit/UniqueId eq ${idDocumentUnit} and IsActive ne 'Processed'`;
+        if (excludeDisabledPECMails) {
+            data = `${data} and IsActive ne '${PECMailActiveTypeEnum[PECMailActiveTypeEnum.Disabled]}'`;
+        }
+        data = `${data} &$expand=PECMailReceipts`;
         url = `${url}${data}`;
         this.getRequest(url, null,
             (response: any) => {

@@ -257,7 +257,7 @@ class FascModifica extends FascicleBase {
     private loadProcesses(defaultProcessId?: string) {
         this._loadingPanel.show(this.ddlProcessId);
         let fascicleCategoryId: number = this._fascicleModel.Category.EntityShortId;
-        this._processService.getAvailableProcesses(null, true, fascicleCategoryId, null,
+        this._processService.getAvailableProcesses(null, true, fascicleCategoryId, null, false,
             (processes: ProcessModel[]) => {
                 let today = new Date();
                 processes = processes.filter(x => new Date(x.StartDate) < today && (x.EndDate === null || new Date(x.EndDate) > today));
@@ -492,7 +492,8 @@ class FascModifica extends FascicleBase {
      * Callback di modifica fascicolo
      * @param contact
      */
-    updateCallback(contact: number): void {
+    updateCallback(data: string): void {
+        let contact: number = Number(data);
         if (this._fascicleModel == null) {
             this._loadingPanel.hide(this.pageContentId);
             this._btnConfirm.set_enabled(true);
@@ -518,7 +519,7 @@ class FascModifica extends FascicleBase {
             this._fascicleModel.DossierFolders = [processDossierFolder];
         }
 
-        if (this._fascicleModel.FascicleType != FascicleType.Activity && contact != null && contact != 0) {
+        if (this._fascicleModel.FascicleType != FascicleType.Activity && contact && contact != 0) {
             let contactModel: ContactModel = <ContactModel>{};
             contactModel.EntityId = contact;
             this._fascicleModel.Contacts.splice(0, this._fascicleModel.Contacts.length);
@@ -527,7 +528,7 @@ class FascModifica extends FascicleBase {
 
         if (this.metadataRepositoryEnabled) {
             let uscDynamicMetadataRest: UscDynamicMetadataRest = <UscDynamicMetadataRest>$("#".concat(this.uscDynamicMetadataId)).data();
-            if (!jQuery.isEmptyObject(uscDynamicMetadataRest)) {
+            if (!jQuery.isEmptyObject(uscDynamicMetadataRest) && this._fascicleModel.MetadataDesigner) {
                 let metadata: MetadataDesignerViewModel = JSON.parse(this._fascicleModel.MetadataDesigner);
                 if (metadata) {
                     let setiIntegrationField = metadata.SETIFieldEnabled;

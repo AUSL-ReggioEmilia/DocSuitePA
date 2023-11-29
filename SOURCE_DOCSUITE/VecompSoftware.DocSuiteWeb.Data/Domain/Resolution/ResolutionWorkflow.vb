@@ -1,7 +1,7 @@
 <Serializable()> _
 Public Class ResolutionWorkflow
     Inherits DomainObject(Of ResolutionWorkflowCompositeKey)
-    Implements IAuditable, ISupportLogicDelete
+    Implements IAuditable, ISupportShortLogicDelete
 
 #Region "Private Fields"
     Private _parent As ResolutionWorkflow
@@ -28,7 +28,7 @@ Public Class ResolutionWorkflow
             _parent = value
         End Set
     End Property
-    Public Overridable Property IsActive() As Short Implements ISupportLogicDelete.IsActive
+    Public Overridable Property IsActive() As Short Implements ISupportShortLogicDelete.IsActive
         Get
             Return _isActive
         End Get
@@ -137,11 +137,14 @@ Public Class ResolutionWorkflow
 
     ' Guid catena allegati omissis
     Public Overridable Property AttachmentsOmissis As Guid
+
+    Public Overridable Property ResolutionWorkflowUsers As ICollection(Of ResolutionWorkflowUser)
 #End Region
 
 #Region "Ctor/init"
     Public Sub New()
         Id = New ResolutionWorkflowCompositeKey
+        ResolutionWorkflowUsers = New List(Of ResolutionWorkflowUser)()
     End Sub
 #End Region
 

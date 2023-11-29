@@ -8,4 +8,5 @@
     Public Const CONTROLLO_CONFORMITA As String = "ControlloIn"
     Public Const ATTO_CONFORME As String = "ControlloOut"
     Public Const FrontalinoEsecutiva As String = "FrontalinoEsecutività"
+    Public Const AFF_GEN_CHECK_STEP_DESCRIPTION As String = "ControlloAffariGenerali"
 End Class

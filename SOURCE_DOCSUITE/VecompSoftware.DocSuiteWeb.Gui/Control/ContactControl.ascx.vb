@@ -6,7 +6,6 @@ Imports Telerik.Web.UI
 
 Public Class ContactControl
     Inherits ItemTreeControl(Of Contact)
-    Public Property HistoricizeDate As Date?
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
 
@@ -34,9 +33,6 @@ Public Class ContactControl
     End Function
 
     Public Overrides Function GetItemDescription(ByVal item As Contact) As String
-        If (HistoricizeDate.HasValue AndAlso item.ContactNames IsNot Nothing AndAlso item.ContactNames.Any()) Then
-            item.Description = item.ContactNames.SingleOrDefault(Function(f) f.FromDate <= HistoricizeDate.Value AndAlso (Not f.ToDate.HasValue OrElse (f.ToDate.HasValue AndAlso HistoricizeDate.Value <= f.ToDate.Value))).Name
-        End If
         Return ContactFacade.FormatContact(item)
     End Function
 

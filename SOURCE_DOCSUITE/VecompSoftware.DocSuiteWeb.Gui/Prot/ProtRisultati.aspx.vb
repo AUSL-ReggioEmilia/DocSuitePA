@@ -1,15 +1,14 @@
 ﻿Imports System.Collections.Generic
 Imports System.IO
 Imports Telerik.Web.UI
-Imports VecompSoftware.DocSuiteWeb.Report
-Imports VecompSoftware.DocSuiteWeb.Facade.Report
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.Report
+Imports VecompSoftware.DocSuiteWeb.Report
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Services.Logging
 
 Partial Public Class ProtRisultati
     Inherits ProtBasePage
@@ -106,6 +105,9 @@ Partial Public Class ProtRisultati
         Dim reportName As String = senderButton.CommandArgument
 
         Dim protocols As IList(Of Protocol) = finder.DoSearch()
+        If ReportFacade.TenantModel Is Nothing Then
+            ReportFacade.TenantModel = DocSuiteContext.Current.CurrentTenant
+        End If
         Dim report As IReport(Of Protocol) = ReportFacade.GenerateReport(Of Protocol)(reportName, New Dictionary(Of String, String) From {{"Emergenza", CType(True, String)}}, protocols)
 
         Dim doc As DocumentInfo = report.ExportExcel()
@@ -189,7 +191,6 @@ Partial Public Class ProtRisultati
             FileLogger.SetLogicalThreadProperty("ProtocolSearch.RegistrationDateTo", finder.RegistrationDateTo)
             FileLogger.SetLogicalThreadProperty("ProtocolSearch.ProtocolNotReaded", finder.ProtocolNotReaded)
             FileLogger.SetLogicalThreadProperty("ProtocolSearch.IdTypes", finder.IdTypes)
-            FileLogger.SetLogicalThreadProperty("ProtocolSearch.IdLocation", finder.IdLocation)
             FileLogger.SetLogicalThreadProperty("ProtocolSearch.IdContainer", finder.IdContainer)
             FileLogger.SetLogicalThreadProperty("ProtocolSearch.DocumentDateFrom", finder.DocumentDateFrom)
             FileLogger.SetLogicalThreadProperty("ProtocolSearch.DocumentDateTo", finder.DocumentDateTo)

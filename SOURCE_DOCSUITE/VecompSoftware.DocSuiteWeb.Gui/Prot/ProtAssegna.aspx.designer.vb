@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class ProtAssegna
-    
+
     '''<summary>
     '''pnlMainContent control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class ProtAssegna
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlMainContent As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''rtvProtocol control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class ProtAssegna
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtvProtocol As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''tblEditProtocolStatus control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class ProtAssegna
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblEditProtocolStatus As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''cmbProtocolStatus control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class ProtAssegna
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmbProtocolStatus As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''tblOther control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class ProtAssegna
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblOther As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblSubject control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class ProtAssegna
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSubject As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscSubject control.
     '''</summary>
@@ -75,7 +75,34 @@ Partial Public Class ProtAssegna
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSubject As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelText
-    
+
+    '''<summary>
+    '''tblContenitori control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblContenitori As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''rcbContainer control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rcbContainer As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
+    '''cmbProtocolContenitori control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmbProtocolContenitori As Global.System.Web.UI.WebControls.DropDownList
+
     '''<summary>
     '''btnConfermaAssegna control.
     '''</summary>
@@ -83,5 +110,5 @@ Partial Public Class ProtAssegna
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnConfermaAssegna As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnConfermaAssegna As Global.Telerik.Web.UI.RadButton
 End Class

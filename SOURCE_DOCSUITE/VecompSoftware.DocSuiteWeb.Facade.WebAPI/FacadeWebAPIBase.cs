@@ -37,9 +37,9 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI
                 return _daoConfigurations.First(f => f.IsCurrent);
             }
         }
-        protected string Logger
+        protected string LogName
         {
-            get { return LogName.WebAPIClientLog; }
+            get { return Services.Logging.LogName.WebAPIClientLog; }
         }
 
         protected Tenant CurrentTenant => _currentTenant;
@@ -73,7 +73,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI
                 }
                 catch (Exception ex)
                 {
-                    FileLogger.Error(Logger, string.Format(ERROR_MESSAGE, "Count", configuration.Tenant.TenantName), ex);
+                    FileLogger.Error(LogName, string.Format(ERROR_MESSAGE, "Count", configuration.Tenant.TenantName), ex);
                     throw new WebAPIException<int>(ex.Message, ex) { Results = count };
                 }                
             }
@@ -96,7 +96,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI
                 }
                 catch (Exception ex)
                 {
-                    FileLogger.Error(Logger, string.Format(ERROR_MESSAGE, "GetAll", configuration.Tenant.TenantName), ex);
+                    FileLogger.Error(LogName, string.Format(ERROR_MESSAGE, "GetAll", configuration.Tenant.TenantName), ex);
                     throw new WebAPIException<List<WebAPIDto<T>>>(ex.Message, ex) { Results = items, TenantName = configuration.Tenant.TenantName };
                 }                
             }
@@ -118,6 +118,15 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI
             WebAPIImpersonatorFacade.ImpersonateDao<TDao, T>(currentTenant, (impersonationType, dao) =>
             {
                 dao.Save(ref entity);
+            });
+        }
+
+        public void Save(T entity, string actionType = "")
+        {
+            TDao currentTenant = _daoConfigurations.Single(s => s.IsCurrent).Dao;
+            WebAPIImpersonatorFacade.ImpersonateDao<TDao, T>(currentTenant, (impersonationType, dao) =>
+            {
+                dao.Save(ref entity, actionType);
             });
         }
 

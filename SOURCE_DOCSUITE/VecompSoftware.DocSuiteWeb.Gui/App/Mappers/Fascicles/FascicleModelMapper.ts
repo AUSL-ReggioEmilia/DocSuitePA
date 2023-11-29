@@ -65,6 +65,8 @@ class FascicleModelMapper extends BaseMapper<FascicleModel>{
         toMap.MetadataValues = source.MetadataValues;
         toMap.MetadataDesigner = source.MetadataDesigner;
         toMap.CustomActions = source.CustomActions;
+        toMap.ProcessLabel = source.ProcessLabel;
+        toMap.DossierFolderLabel = source.DossierFolderLabel;
         toMap.EndDate = source.EndDate;
         toMap.Conservation = source.Conservation;
 

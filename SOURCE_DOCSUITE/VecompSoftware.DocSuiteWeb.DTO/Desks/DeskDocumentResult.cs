@@ -24,6 +24,8 @@ namespace VecompSoftware.DocSuiteWeb.DTO.Desks
 
         public DateTimeOffset? RegistrationDate { get; set; }
 
+        public DateTimeOffset? LastChangedDate { get; set; }
+
         public decimal? LastVersion { get; set; }
 
         public short IsActive { get; set; }

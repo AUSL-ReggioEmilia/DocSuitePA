@@ -8,7 +8,7 @@ class UserLogsMapper extends BaseMapper<UserLogsModel>{
         super();
     }
 
-    public Map(source: any): UserLogsModel {
+    public Map(source: any, mapProfile: boolean = false): UserLogsModel {
         let toMap: UserLogsModel = new UserLogsModel();
 
         if (!source) {
@@ -34,7 +34,11 @@ class UserLogsMapper extends BaseMapper<UserLogsModel>{
         toMap.AdaptiveSearchEvaluated = source.AdaptiveSearchEvaluated;
         toMap.PrivacyLevel = source.PrivacyLevel;
         toMap.CurrentTenantId = source.CurrentTenantId;
-        toMap.UserProfile = source.UserProfile? _userProfileMapper.Map(JSON.parse(source.UserProfile)):null;
+        if (mapProfile) {
+            toMap.UserProfile = _userProfileMapper ? _userProfileMapper.Map(JSON.parse(source.UserProfile)) : null;
+        } else {
+            toMap.UserProfile = source.UserProfile;
+        }
         toMap.EntityId = source.EntityId;
         toMap.EntityShortId = source.EntityShortId;
         toMap.RegistrationUser = source.RegistrationUser;

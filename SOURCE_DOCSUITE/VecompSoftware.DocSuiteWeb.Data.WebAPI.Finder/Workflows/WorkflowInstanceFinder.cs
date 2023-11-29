@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
-using VecompSoftware.WebAPIManager.Finder;
-using System;
+using VecompSoftware.Helpers.Workflow;
 using VecompSoftware.WebAPIManager;
+using VecompSoftware.WebAPIManager.Finder;
 
 namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
 {
@@ -15,6 +16,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
         #region [ Properties ]
         public bool ExpandRepository { get; set; }
         public bool ExpandProperties { get; set; }
+        public Guid? InstanceId { get; set; }
+        public int? CollaborationId { get; set; }
         #endregion
 
         #region [ Constructor ]
@@ -40,6 +43,11 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
             if (ExpandProperties)
             {
                 odataQuery = odataQuery.Expand("WorkflowProperties");
+            }
+
+            if (CollaborationId.HasValue)
+            {
+                odataQuery = odataQuery.Filter($"WorkflowActivities/any(wa:wa/WorkflowProperties/any(wp:wp/ValueInt eq {CollaborationId.Value} and wp/Name eq '{WorkflowPropertyHelper.DSW_FIELD_COLLABORATION_ID}'))");
             }
             return base.DecorateFinder(odataQuery);
         }

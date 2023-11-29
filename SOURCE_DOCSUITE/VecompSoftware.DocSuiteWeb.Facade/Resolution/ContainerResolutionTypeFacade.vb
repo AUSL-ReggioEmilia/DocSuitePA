@@ -1,6 +1,4 @@
-﻿
-Imports System.Collections.Generic
-Imports System.Linq
+﻿Imports System.Linq
 Imports VecompSoftware.DocSuiteWeb.Data
 
 <ComponentModel.DataObject()>
@@ -12,7 +10,7 @@ Public Class ContainerResolutionTypeFacade
     End Sub
 
     ''' <summary> Restituisce una lista di Containers associati ad un determinato ResolutionType. </summary>
-    Function GetAllowedContainers(resolutionTypeId As Short, ByVal isActive As Short, ByVal rights As ResolutionRightPositions?) As IList(Of ContainerResolutionType)
+    Function GetAllowedContainers(resolutionTypeId As Short, ByVal isActive As Short, ByVal rights As ResolutionRightPositions?, Optional accounting As Boolean? = Nothing) As IList(Of ContainerResolutionType)
         Dim groups As String()
         Dim securityGroups As IList(Of SecurityGroups) = FacadeFactory.Instance.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName)
         If securityGroups Is Nothing Then
@@ -25,7 +23,7 @@ Public Class ContainerResolutionTypeFacade
             Return New List(Of ContainerResolutionType)
         End If
 
-        Return _dao.GetAllowedContainers(resolutionTypeId, groups, isActive, rights)
+        Return _dao.GetAllowedContainers(resolutionTypeId, groups, isActive, rights, accounting)
     End Function
 
 End Class

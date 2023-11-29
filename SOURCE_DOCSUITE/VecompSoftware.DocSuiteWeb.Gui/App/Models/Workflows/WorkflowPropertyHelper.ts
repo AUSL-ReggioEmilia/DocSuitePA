@@ -68,6 +68,21 @@
     static DSW_PROPERTY_DOSSIER_FOLDER = "_dsw_p_DossierFolder";
     static DSW_PROPERTY_BUILD_MODEL_CREATE = "_dsw_p_BuildModelCreate";
     static DSW_PROPERTY_FOLDER_SELECTED = "_dsw_p_FolderSelected";
+    static DSW_PROPERTY_DOCUMENT_FASCICLE_TO_ARCHIVE = "_dsw_p_DocumentFascicleToArchive";
+    static DSW_PROPERTY_LOAD_EXTERNAL_ROLES = "_dsw_p_LoadExternalRoles";
+    static DSW_PROPERTY_ROLE_RECIPIENT_LABEL = "_dsw_p_RoleRecipientLabel";
+    static DSW_PROPERTY_ROLE_RECIPIENT_VALIDATION_TOOLTIP = "_dsw_p_RoleRecipientValidationTooltip";
+    static DSW_PROPERTY_WORKFLOW_WAITCOMPLETION_ENABLED = "_dsw_p_WaitWorkflowCompletionEnabled";
+    static DSW_PROPERTY_WORKFLOW_STORAGELOCAION_ENABLED = "_dsw_p_WorkflowStorageLocationEnabled";
+    static DSW_PROPERTY_DOCUMENT_FILENAME = "_dsw_p_DocumentFilename";
+    static DSW_PROPERTY_REMOTE_SIGN_INFO = "_dsw_p_RemoteSignInfo";
+    static DSW_PROPERTY_REMOTE_SIGN_LOAD_CREDENTIALS = "_dsw_p_RemoteSignLoadCredentials";
+    static DSW_PROPERTY_PROVIDER_SIGN_TYPE = "_dsw_p_ProviderSignType";
+    static DSW_PROPERTY_SIGN_REQUEST_TYPE = "_dsw_p_SignRequestType";
+    static DSW_PROPERTY_SET_RECIPIENT_FROM_ROLE_USER = "_dsw_p_SetRecipientFromRoleUser";
+    static DSW_PROPERTY_MULTIPLE_RECIPIENT_FROM_ROLE_USER = "_dsw_p_MultipleRecipientFromRoleUser";
+    static DSW_PROPERTY_ROLE_USER_TYPE = "_dsw_p_RoleUserType";
+    static DSW_PROPERTY_ROLE_USER_RECIPIENT_SELECTION_AUTO_EXPAND = "_dsw_p_RoleUserRecipientSelectionAutoExpand";    
 
     static DSW_FIELD_EXTERNALVIEWER_URL = "_dsw_e_ExternalViewerUrl";
     static DSW_FIELD_COLLABORATION_ID = "_dsw_e_CollaborationId";
@@ -100,6 +115,7 @@
     static DSW_FIELD_ACTIVITY_SIGNED = "_dsw_e_ActivitySigned";
     static DSW_FIELD_ACTIVITY_APPROVED = "_dsw_e_ActivityApproved";
     static DSW_FIELD_ACTIVITY_REJECTED = "_dsw_e_ActivityRejected";
+    static DSW_FIELD_ACTIVITY_ISVISIBLE = "_dsw_e_ActivityIsVisible";
     static DSW_FIELD_REFERENCE_UNIQUEID = "_dsw_e_ReferenceId";
     static DSW_FIELD_REFERENCE_ENVIRONMENT = "_dsw_e_ReferenceEnvironment";
     static DSW_FIELD_ACCEPTANCE = "_dsw_e_Acceptance";
@@ -107,12 +123,14 @@
     static DSW_FIELD_RECIPIENT_POSITION = "_dsw_e_RecipientPosition";
     static DSW_FIELD_PRODUCT_NAME = "_dsw_e_ProductName";
     static DSW_FIELD_PRODUCT_VERSION = "_dsw_e_ProductVersion";
+    static DSW_FIELD_IDENTITY = "_dsw_e_Identity";
 
     static DSW_ACTION_SET_AUDITABLE_PROPERTIES = "_dsw_a_SetAuditableProperties";
     static DSW_ACTION_TO_FASCICLE = "_dsw_a_ToFascicle";
     static DSW_ACTION_TO_COLLABORATION = "_dsw_a_ToCollaboration";
     static DSW_ACTION_TO_PROTOCOL = "_dsw_a_ToProtocol";
     static DSW_ACTION_TO_HANDLER = "_dsw_a_ToHandler";
+    static DSW_ACTION_REDIRECT_ENABLED = "_dsw_a_RedirectEnabled";
     static DSW_ACTION_REDIRECT_TO_COLLABORATION = "_dsw_a_RedirectToCollaboration";
     static DSW_ACTION_REDIRECT_TO_PROTOCOL = "_dsw_a_RedirectToProtocol";
     static DSW_ACTION_REDIRECT_TO_FASICLE_SIGN_DOCUMENT = "_dsw_a_RedirectToFascicleSignDocument";
@@ -152,6 +170,9 @@
     static DSW_ACTION_SET_RECIPIENT_INFORMED = "_dsw_a_SetRecipientInformed";
     static DSW_ACTION_SET_RECIPIENT_CONSULTED = "_dsw_a_SetRecipientConsulted";
     static DSW_ACTION_SET_RECIPIENT_ACCOUNTED = "_dsw_a_SetRecipientAccounted";
+    static DSW_ACTION_LOAD_DOCUMENTS = "_dsw_a_LoadDocuments";
+    static DSW_ACTION_ARCHIVE_DOCUMENTS = "_dsw_a_ArchiveDocuments";
+    static DSW_ACTION_COPY_ARCHIVE_CHAIN = "_dsw_a_CopyIdArchiveChain";
 
     static DSW_VALIDATION_FASCICLE_DOCUMENT_REQUIRED = "_dsw_v_Fascicle_DocumentRequired";
     static DSW_VALIDATION_FASCICLE_DOCUMENTUNIT_REQUIRED = "_dsw_v_Fascicle_DocumentUnitRequired";

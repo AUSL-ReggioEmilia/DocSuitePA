@@ -31,21 +31,21 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.Resolutions
         public ICollection<ResolutionKind> GetActiveResolutionKind()
         {
             return NHibernateSession.QueryOver<ResolutionKind>()
-                .Where(x => x.IsActive == 1)
+                .Where(x => x.IsActive == true)
                 .List<ResolutionKind>();
         }
 
         public IList<ResolutionKind> GetNotActiveResolutionKind()
         {
             return NHibernateSession.QueryOver<ResolutionKind>()
-                .Where(x => x.IsActive == 0)
+                .Where(x => x.IsActive == false)
                 .List<ResolutionKind>();
         }
 
         public IList<ResolutionKind> GetByName(string name)
         {
             return NHibernateSession.QueryOver<ResolutionKind>()
-                .Where(x => x.IsActive == 1)
+                .Where(x => x.IsActive == true)
                 .Where(x => x.Name == name)
                 .List<ResolutionKind>();
         }

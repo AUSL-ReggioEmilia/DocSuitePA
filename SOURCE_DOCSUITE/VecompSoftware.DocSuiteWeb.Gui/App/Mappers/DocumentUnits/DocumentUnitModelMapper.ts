@@ -29,6 +29,7 @@ class DocumentUnitModelMapper extends BaseMapper<DocumentUnitModel> {
         toMap.Number = source.Number;
         toMap.Title = source.Title;
         toMap.ReferenceType = source.ReferenceType;
+        toMap.SequenceNumber = source.SequenceNumber;
         toMap.RegistrationDate = source.RegistrationDate;
         toMap.RegistrationUser = source.RegistrationUser;
         toMap.Subject = source.Subject;

@@ -22,6 +22,16 @@ Public Class ResolutionChangeController
     Protected Function ManagedDataTest(ByVal FieldName As String, Optional ByVal FieldProperty As String = "", Optional ByVal changeableData As String = "", Optional ByVal FieldTest As String = "") As Boolean
         Return Facade.ResolutionFacade.ManagedDataTest(_uscReslChange.CurrentResolution, FieldName, FieldProperty, changeableData, FieldTest)
     End Function
+    Private Function CurrentContainerHasAccountingEnabled() As Boolean
+        If Not ResolutionEnv.ResolutionAccountingEnabled Then
+            Return True
+        End If
+        Dim accountingProperty As ContainerProperty = _uscReslChange.CurrentResolution.Container.ContainerProperties.FirstOrDefault(Function(x) x.Name.Equals(ContainerPropertiesName.ResolutionAccountingEnabled))
+        If accountingProperty Is Nothing Then
+            Return False
+        End If
+        Return accountingProperty.ValueBoolean.Value
+    End Function
 #End Region
 
 #Region "Initialize"
@@ -83,7 +93,15 @@ Public Class ResolutionChangeController
                 'Category
                 _uscReslChange.VisibleCategory = ManagedDataTest("Category", , changeableData, "Category")
                 'EconomicData
-                _uscReslChange.VisibleEconomicData = ManagedDataTest("EconomicData", , changeableData, "EconomicData")
+                _uscReslChange.VisibleEconomicData = ManagedDataTest("EconomicData", , changeableData, "EconomicData") AndAlso CurrentContainerHasAccountingEnabled()
+
+                If _uscReslChange.VisibleEconomicData AndAlso ResolutionEnv.ResolutionAccountingEnabled Then
+                    _uscReslChange.VisibleEconomicDataContratto = False
+                    _uscReslChange.VisibleEconomicDataFornitore = False
+                    _uscReslChange.VisibleEconomicDataPosizione = False
+                    _uscReslChange.LabelEconomicDataBidType = "Stato contabilità:"
+                    _uscReslChange.LabelEconomicDataTitle = "Contabilità:"
+                End If
 
                 'TODO: gestione gruppi NON AD
 
@@ -189,7 +207,11 @@ Public Class ResolutionChangeController
         End If
         'economic data
         If _uscReslChange.VisibleEconomicData Then
-            _uscReslChange.BindEconomicData()
+            If ResolutionEnv.ResolutionAccountingEnabled Then
+                _uscReslChange.BindEconomicDataAccounting()
+            Else
+                _uscReslChange.BindEconomicData()
+            End If
         End If
         'note
         If _uscReslChange.VisibleNote Then

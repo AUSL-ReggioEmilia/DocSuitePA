@@ -121,7 +121,7 @@
         <usc:ViewerLight ID="uscViewerLight" runat="server" CheckBoxes="True" CollapseOnSingleDocument="False" LeftPaneStartWidth="400" />
     </div>
     <div>
-        <usc:DocumentUpload ID="uscCheckInDocuments" runat="server" Caption="Check In Nuove Versioni" IsDocumentRequired="False" MultipleDocuments="True" />
+        <usc:DocumentUpload ID="uscCheckInDocuments" runat="server" Caption="Check In Nuove Versioni" IsDocumentRequired="False" MultipleDocuments="True" HideScannerMultipleDocumentButton="true" />
     </div>
 
     <telerik:RadWindow runat="server" ID="wndMonitor" Title="Dettaglio Operazioni" Behaviors="Close" KeepInScreenBounds="true" Width="700px" Height="500px">

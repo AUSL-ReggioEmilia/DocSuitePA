@@ -20,7 +20,7 @@ Partial Public Class ProtSelezione
                 Dim containers As IList(Of Container) = Facade.ContainerFacade.GetContainers(DSWEnvironment.Protocol, ProtocolContainerRightPositions.Insert, True)
                 ddlContainer.Items.Add(New ListItem("", "")) ' Elemento vuoto
                 For Each container As Container In containers
-                    If container.IsActive = 1 AndAlso container.IsActiveRange() Then
+                    If container.IsActive AndAlso container.IsActiveRange() Then
                         ddlContainer.Items.Add(New ListItem(container.Name, container.Id.ToString()))
                     End If
                 Next

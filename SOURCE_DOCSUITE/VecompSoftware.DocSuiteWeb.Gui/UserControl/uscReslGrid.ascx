@@ -2,15 +2,6 @@
 
 <telerik:RadScriptBlock runat="server" ID="rsbContent" EnableViewState="false">
     <script type="text/javascript">
-        function OpenParerDetail(parerDetailUrl) {
-            var wnd = window.radopen(parerDetailUrl, "parerDetailWindow");
-            wnd.setSize(400, 300);
-            wnd.set_behaviors(Telerik.Web.UI.WindowBehaviors.Close);
-            wnd.set_visibleStatusbar(false);
-            wnd.set_modal(true);
-            wnd.center();
-            return false;
-        }
     </script>
 </telerik:RadScriptBlock>
 
@@ -25,21 +16,7 @@
                         <asp:CheckBox AutoPostBack="false" CommandName="Selected" ID="cbSelect" runat="server" />
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
-                <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" UniqueName="PARERIcon" Visible="false">
-                    <HeaderStyle HorizontalAlign="Center" CssClass="headerImage" />
-                    <ItemStyle HorizontalAlign="Center" CssClass="cellImage" />
-                    <ItemTemplate>
-                        <asp:Image ID="imgParer" runat="server" />
-                    </ItemTemplate>
-                </telerik:GridTemplateColumn>
-                <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderText="Stato AAchiviazione" UniqueName="PARERDescription" Visible="false">
-                    <HeaderStyle HorizontalAlign="Center" />
-                    <ItemStyle HorizontalAlign="center" />
-                    <ItemTemplate>
-                        <asp:LinkButton ID="lnkParerDetail" runat="server" />
-                    </ItemTemplate>
-                </telerik:GridTemplateColumn>
-                <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../Resl/Images/Atto.gif" HeaderText="T" UniqueName="T">
+                <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../Resl/Images/Atto.png" HeaderText="T" UniqueName="T">
                     <HeaderStyle HorizontalAlign="Center" CssClass="headerImage" />
                     <ItemStyle HorizontalAlign="Center" CssClass="cellImage" />
                     <ItemTemplate>
@@ -149,6 +126,10 @@
                     <HeaderStyle HorizontalAlign="Left" CssClass="ImportantRuleODG" />
                     <ItemStyle HorizontalAlign="Left" Wrap="true" />
                 </telerik:GridBoundColumn>
+                <telerik:GridBoundColumn CurrentFilterFunction="Contains" DataField="Note" HeaderText="Note" SortExpression="Note" UniqueName="Note">
+                    <HeaderStyle HorizontalAlign="Left" CssClass="ImportantRuleODG" />
+                    <ItemStyle HorizontalAlign="Left" Wrap="true" />
+                </telerik:GridBoundColumn>
                 <telerik:GridCheckBoxColumn AllowFiltering="false" AllowSorting="false" DataField="OCRegion" Groupable="false" HeaderText="Regione" UniqueName="Regione" Visible="false">
                     <HeaderStyle HorizontalAlign="Left" Width="1px" />
                     <ItemStyle HorizontalAlign="Left" Width="1px" />
@@ -172,6 +153,13 @@
                     <ItemStyle HorizontalAlign="Center" />
                     <ItemTemplate>
                         <asp:Image runat="server" ID="imgResolutionTaskStatus" Visible="false" />
+                    </ItemTemplate>
+                </telerik:GridTemplateColumn>
+                <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderText="In carico a" UniqueName="UserTakeCharge" Visible="false">
+                    <HeaderStyle HorizontalAlign="Left" />
+                    <ItemStyle HorizontalAlign="Left" />
+                    <ItemTemplate>
+                        <asp:Label ID="lblUserTakeCharge" runat="server" />
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
             </Columns>

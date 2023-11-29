@@ -37,6 +37,7 @@ import UscRoleRestEventType = require('App/Models/Commons/UscRoleRestEventType')
 import AuthorizationRoleType = require('App/Models/Commons/AuthorizationRoleType');
 import UscDynamicMetadataSummaryRest = require('UserControl/uscDynamicMetadataSummaryRest');
 import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
+import FascicleDocumentUnitModel = require('../App/Models/Fascicles/FascicleDocumentUnitModel');
 
 class uscFascicolo {
     clientId: string;
@@ -124,7 +125,7 @@ class uscFascicolo {
     private _rolesAddedIds: number[];
     private _rolesRemovedIds: number[] = [];
 
-  
+
     /**
      * Costruttore
      * @param webApiConfiguration
@@ -191,7 +192,6 @@ class uscFascicolo {
             PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId).done((instance) => {
                 instance.setToolbarVisibility(true);
                 instance.renderRolesTree([]);
-                instance.disableRaciRoleButton();
             });
         }
 
@@ -467,8 +467,12 @@ class uscFascicolo {
         let dataSource: any[] = [];
         dataSource.push(empty);
         dataSource.push(protocol);
-        dataSource.push(delibera);
-        dataSource.push(determina);
+        if (!String.isNullOrEmpty(this.deliberaCaption)) {
+            dataSource.push(delibera);
+        }
+        if (!String.isNullOrEmpty(this.determinaCaption)) {
+            dataSource.push(determina);
+        }
         dataSource.push(archive);
         dataSource.push(miscellanea);
 
@@ -500,7 +504,7 @@ class uscFascicolo {
      * Ritorna la query string odata per i filtri
      */
     getFilterModel(): string {
-        let filterQs: string = "";
+        let filterQs: string = '';
         this._grid = <Telerik.Web.UI.RadGrid>$find(this.grdUDId);
 
         if (!(this.fasciclesPanelVisibilities["GridSearchPanelVisibility"])) {
@@ -510,21 +514,23 @@ class uscFascicolo {
                 filterQs = "$filter=";
                 let currentIndex: number = 1;
                 filters.forEach((filter) => {
-                    let className: string = "";
                     if (filter.get_fieldValue() != "") {
                         if (filter.get_columnUniqueName() == "ReferenceType") {
-                            className = "VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles.ReferenceType";
+                            filterQs = `${filterQs}ReferenceType eq VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles.ReferenceType'${filter.get_fieldValue()}'`;
                         }
-                        if (filter.get_columnUniqueName() == "Title") {
-                            filterQs = `${filterQs}contains(tolower(Subject), '${filter.get_fieldValue().toLowerCase()}')`;
-                        }
-                        else {
-                            if (filter.get_columnUniqueName() == "DocumentUnitName" && filter.get_fieldValue() == "Archivio") {
-                                filterQs = `${filterQs}Environment ge 100`;
+
+                        if (filter.get_columnUniqueName() == "DocumentUnitName") {
+                            if (filter.get_fieldValue() == "Archivio") {
+                                filterQs = `${filterQs}DocumentUnit/Environment ge 100`;
                             } else {
-                                filterQs = `${filterQs}${filter.get_columnUniqueName()} eq ${className} '${filter.get_fieldValue()}'`;
+                                filterQs = `${filterQs}DocumentUnit/DocumentUnitName eq '${filter.get_fieldValue()}'`;
                             }
                         }
+
+                        if (filter.get_columnUniqueName() == "Title") {
+                            filterQs = `${filterQs}contains(DocumentUnit/Subject, '${filter.get_fieldValue()}')`;
+                        }
+
                         if (currentIndex < filtersCount) {
                             filterQs = `${filterQs} and `;
                         }
@@ -535,19 +541,19 @@ class uscFascicolo {
         }
         else {
             filterQs = "$filter=";
-            if (this._rcbUd.get_selectedItem() != null && this._rcbUd.get_selectedItem().get_value() != "") {
+            if (this._rcbUd.get_selectedItem() != null && !String.isNullOrEmpty(this._rcbUd.get_selectedItem().get_value())) {
                 let selectedValue: string = this._rcbUd.get_selectedItem().get_value();
                 if (selectedValue == "Archivio") {
-                    filterQs = `${filterQs}Environment ge 100 and `;
+                    filterQs = `${filterQs}DocumentUnit/Environment ge 100 and `;
                 } else {
-                    filterQs = `${filterQs}DocumentUnitName eq '${this._rcbUd.get_selectedItem().get_value()}' and `;
+                    filterQs = `${filterQs}DocumentUnit/DocumentUnitName eq '${this._rcbUd.get_selectedItem().get_value()}' and `;
                 }
             }
 
             if (this._rcbReferenceType.get_selectedItem() != null && this._rcbReferenceType.get_selectedItem().get_value() != "")
                 filterQs = `${filterQs}ReferenceType eq VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles.ReferenceType'${this._rcbReferenceType.get_selectedItem().get_value()}' and `;
 
-            filterQs = `${filterQs}contains(Subject, '${(<any>this._txtTitleUD.get_element()).value}')`;
+            filterQs = `${filterQs}contains(DocumentUnit/Subject, '${(<any>this._txtTitleUD.get_element()).value}')`;
         }
         let orders: Telerik.Web.UI.GridSortExpressions = this._grid.get_masterTableView().get_sortExpressions();
         let ordersCount: number = orders.get_count();
@@ -555,7 +561,7 @@ class uscFascicolo {
             filterQs = `${filterQs}&$orderby=`;
             let currentIndex: number = 1;
             orders.forEach((order) => {
-                filterQs = `${filterQs}${order.FieldName}`;
+                filterQs = `${filterQs}DocumentUnit/${order.FieldName}`;
                 if (order.SortOrder === 2) {
                     filterQs = `${filterQs} desc`;
                 }
@@ -661,7 +667,7 @@ class uscFascicolo {
         if (fascicle.Contacts.length > 0 && !this.isEditPage) {
             $(`#${this.rowManagerId}`).show();
         }
-        
+
         this.getCustomActionsColumn().hide();
         this._loadCustomActions(fascicle);
 
@@ -802,15 +808,13 @@ class uscFascicolo {
      * Metodo per caricare le UD in griglia
      * @param models
      */
-    refreshGridUD(models: DocumentUnitModel[], insertsArchiveChains: string[]): void {
+    refreshGridUD(models: FascicleDocumentUnitModel[], insertsArchiveChains: string[]): void {
         let filters: { [id: string]: string; } = {};
-        if (!(this.fasciclesPanelVisibilities["GridSearchPanelVisibility"])) {
-            this._grid.get_masterTableView().get_filterExpressions().forEach(
-                (item, index) => {
-                    filters[item.get_columnUniqueName()] = item.get_fieldValue();
-                }
-            );
-        }
+        this._grid.get_masterTableView().get_filterExpressions().forEach(
+            (item, index) => {
+                filters[item.get_columnUniqueName()] = item.get_fieldValue();
+            }
+        );
 
         let selectedFolder: FascicleSummaryFolderViewModel = this.getSelectedFascicleFolder();
         if (selectedFolder) {
@@ -1012,12 +1016,12 @@ class uscFascicolo {
 
     private _loadCustomActions(fascicle: FascicleModel): void {
         let currentDate: Date = new Date();
-        let autoCloseThresholdDate: Date = new Date(currentDate
+        const autoCloseThresholdDate: Date = new Date(currentDate
             .setDate(currentDate.getDate() - this.fascicleAutoCloseThresholdDays - this.fascicleAutoCloseWarningThresholdDays));
         let isAutoClosable: boolean = fascicle.CustomActions && (<FascicleCustomActionModel>JSON.parse(fascicle.CustomActions)).AutoClose &&
             fascicle.LastChangedDate && fascicle.LastChangedDate.toString() <= autoCloseThresholdDate.toString();
         if (isAutoClosable && !this.isEditPage) {
-            let customActions: FascicleCustomActionModel = fascicle.CustomActions
+            const customActions: FascicleCustomActionModel = fascicle.CustomActions
                 ? <FascicleCustomActionModel>JSON.parse(fascicle.CustomActions)
                 : <FascicleCustomActionModel>{
                     AutoClose: false,
@@ -1162,8 +1166,16 @@ class uscFascicolo {
                 instance.setRaciRoles(fascicleRaciRoles.map(x => x.Role));
             }
             instance.renderRolesTree(fascicleRoles.filter(x => x.IsMaster === false).map(x => x.Role));
-            instance.disableRaciRoleButton();
         });
+    }
+
+    getRemovedRaciRoles = (): JQueryPromise<RoleModel[]> => {
+        let promise: JQueryDeferred<RoleModel[]> = $.Deferred<RoleModel[]>();
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
+            .done((instance) => {
+                return promise.resolve(instance.getRemovedRaciRoles());
+            });
+        return promise.promise();
     }
 }
 

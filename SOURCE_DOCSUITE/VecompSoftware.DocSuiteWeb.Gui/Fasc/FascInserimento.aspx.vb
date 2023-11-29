@@ -24,7 +24,7 @@ Partial Public Class FascInserimento
     Dim _protocolYear As Short?
     Dim _protocolNumber As Integer?
     Dim _currentCategory As Category
-    Private Const FASCICLE_INSERT_CALLBACK As String = "fascInserimento.insertCallback('{0}', '{1}', '{2}');"
+    Private Const FASCICLE_INSERT_CALLBACK As String = "fascInserimento.insertCallback('{0}');"
     Private Const INITIALIZE_CALLBACK As String = "fascInserimento.initializeCallback({0});"
     Private _currentMassimarioScartoFacade As MassimarioScartoFacade
     Private _idDocumentUnit As Guid?
@@ -113,14 +113,7 @@ Partial Public Class FascInserimento
                         contactId = uscFascicleInsert.RespContactDTO.Contact.Id
                     End If
 
-                    Dim metadataModel As Tuple(Of MetadataDesignerModel, ICollection(Of MetadataValueModel)) = Nothing
-                    If ProtocolEnv.MetadataRepositoryEnabled Then
-                        metadataModel = uscFascicleInsert.GetDynamicValues()
-                    End If
-
-                    AjaxManager.ResponseScripts.Add(String.Format(FASCICLE_INSERT_CALLBACK, JsonConvert.SerializeObject(contactId),
-                                                                                            If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item1).Replace("'", "\'"), Nothing),
-                                                                                            If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item2).Replace("'", "\'"), Nothing)))
+                    AjaxManager.ResponseScripts.Add(String.Format(FASCICLE_INSERT_CALLBACK, JsonConvert.SerializeObject(contactId)))
                     Exit Select
             End Select
         Catch

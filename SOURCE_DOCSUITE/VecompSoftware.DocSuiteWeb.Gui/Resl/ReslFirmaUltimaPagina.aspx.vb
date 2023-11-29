@@ -1,13 +1,13 @@
 ﻿Imports System.Collections.Generic
 Imports System.Linq
 Imports System.Collections.ObjectModel
-Imports iTextSharp.text
 Imports Telerik.Web.UI
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.Collaborations
 Imports VecompSoftware.Services.Biblos.Models
+Imports iText.Kernel
 
 Partial Public Class ReslFirmaUltimaPagina
     Inherits ReslBasePage
@@ -338,12 +338,12 @@ Partial Public Class ReslFirmaUltimaPagina
                 Dim resolution As Resolution = Facade.ResolutionFacade.GetById(Integer.Parse(document.IdOwner))
                 Dim fileResolution As FileResolution = Facade.FileResolutionFacade.GetByResolution(resolution).FirstOrDefault()
                 If fileResolution Is Nothing Then
-                    Throw New DocumentException("Nessuna definizione dei documenti trovata")
+                    Throw New PdfException("Nessuna definizione dei documenti trovata")
                 End If
 
                 Dim file As FileDocumentInfo = DirectCast(document.DocumentInfo, FileDocumentInfo)
                 Dim signature As String = Facade.ResolutionFacade.SqlResolutionGetNumber(idResolution:=resolution.Id, complete:=True)
-                file.Name = "UltimaPagina.Pdf.P7M"
+                file.Name = "UltimaPagina.pdf.p7m"
                 file.Signature = signature
 
                 If file.Attributes.Any(Function(k) k.Key.Equals(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE)) Then

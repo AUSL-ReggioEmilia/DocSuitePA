@@ -64,7 +64,7 @@ Partial Public Class ReslAutorizza
         If Not IsPostBack Then
             Initialize()
             Dim coll As Collaboration = Facade.CollaborationFacade.GetByResolution(CurrentResolution)
-            If coll Is Nothing OrElse Facade.CollaborationFacade.GetSecretaryRoles(coll, DocSuiteContext.Current.User.FullUserName).IsNullOrEmpty() Then
+            If coll Is Nothing OrElse Facade.CollaborationFacade.GetSecretaryRoles(coll, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId).IsNullOrEmpty() Then
                 cmdAddFromCollaboration.Visible = False
             End If
 
@@ -106,6 +106,7 @@ Partial Public Class ReslAutorizza
                 rr.Id.IdResolution = CurrentResolution.Id
                 rr.Id.IdRole = idRole
                 rr.Id.IdResolutionRoleType = ResolutionRoleType.Id
+                rr.UniqueIdResolution = CurrentResolution.UniqueId
                 rr.RegistrationUser = DocSuiteContext.Current.User.FullUserName
                 rr.RegistrationDate = DateTimeOffset.UtcNow
                 rr.Role = role
@@ -156,9 +157,8 @@ Partial Public Class ReslAutorizza
 
     Private Sub CmdAddFromCollaborationClick(sender As Object, e As EventArgs) Handles cmdAddFromCollaboration.Click
         Dim coll As Collaboration = Facade.CollaborationFacade.GetByResolution(CurrentResolution)
-        AddRoles(Facade.CollaborationFacade.GetSecretaryRoles(coll, DocSuiteContext.Current.User.FullUserName))
+        AddRoles(Facade.CollaborationFacade.GetSecretaryRoles(coll, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId))
     End Sub
-
 
 #End Region
 
@@ -201,11 +201,6 @@ Partial Public Class ReslAutorizza
                 roles.AddRange(resolutionRoles)
             End If
         End If
-
-        If ProtocolEnv.MultiDomainEnabled AndAlso ProtocolEnv.TenantAuthorizationEnabled Then
-            uscAutorizza.TenantEnabled = True
-        End If
-
         lblNote.Text = ResolutionRoleTypeNotes
 
         uscAutorizza.SourceRoles = roles
@@ -229,7 +224,7 @@ Partial Public Class ReslAutorizza
                 Return Facade.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.Resolution, role)
             Case RoleRestrictions.Hierarchical
                 ' Posso rimuovere se è mio o se io sono parte di un settore superiore
-                Return Facade.RoleFacade.CurrentUserHierarchicalCheck(DSWEnvironment.Resolution, role)
+                Return Facade.RoleFacade.CurrentUserHierarchicalCheck(DSWEnvironment.Resolution, role, role.IdTenantAOO)
         End Select
         Return True
     End Function

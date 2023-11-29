@@ -23,6 +23,8 @@ Partial Public Class PECOutgoingMails
     Private _mailBoxes As List(Of PECMailBox)
     Private _integratedMail As Boolean = False
     Private _selectedMailBoxId As Nullable(Of Short)
+    Private _unmanagedMailBoxes As List(Of PECMailBox)
+    Private _managedMailBoxes As List(Of PECMailBox)
     ''' <summary> Numero di giorni da sottrarre alla data odierna nella preimpostazione del filtro. </summary>
     Private Const DaysToAddInitialized As Double = -15
     Private Const VALID_MAILBOX_IMGURL As String = "../App_Themes/DocSuite2008/images/green-dot-document.png"
@@ -34,10 +36,16 @@ Partial Public Class PECOutgoingMails
 
     Public ReadOnly Property CurrentMailBox As PECMailBox
         Get
-            If Not String.IsNullOrEmpty(ddlMailBox.SelectedValue) AndAlso Not ddlMailBox.SelectedValue.Eq("ALL") Then
-                Return Facade.PECMailboxFacade.GetById(Short.Parse(ddlMailBox.SelectedValue))
+            If Not String.IsNullOrEmpty(ddlMailbox.SelectedValue) AndAlso Not ddlMailbox.SelectedValue.Eq("ALL") Then
+                Return Facade.PECMailboxFacade.GetById(Short.Parse(ddlMailbox.SelectedValue))
             End If
             Return Nothing
+        End Get
+    End Property
+
+    Public ReadOnly Property ShowPECMailBoxIncludedFilter As Boolean
+        Get
+            Return "ALL".Eq(ddlMailbox.SelectedValue)
         End Get
     End Property
 
@@ -154,24 +162,42 @@ Partial Public Class PECOutgoingMails
         End Get
     End Property
 
+    Private ReadOnly Property UnmanagedMailBoxes As ICollection(Of PECMailBox)
+        Get
+            If _unmanagedMailBoxes Is Nothing Then
+                _unmanagedMailBoxes = MailBoxes.Where(Function(x) String.IsNullOrWhiteSpace(x.OutgoingServerName)).ToList()
+            End If
+            Return _unmanagedMailBoxes
+        End Get
+    End Property
+
+    Private ReadOnly Property ManagedMailBoxes As ICollection(Of PECMailBox)
+        Get
+            If _managedMailBoxes Is Nothing Then
+                _managedMailBoxes = MailBoxes.Where(Function(x) Not String.IsNullOrWhiteSpace(x.OutgoingServerName)).ToList()
+            End If
+            Return _managedMailBoxes
+        End Get
+    End Property
+
 #End Region
 
 #Region " Events "
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        InitializeAjax()
 
         dgMail.MasterTableView.NoMasterRecordsText = String.Format("Nessuna {0} disponibile", PecLabel)
         If Not IsPostBack Then
             ValidateFinder()
+            InitializePECMailBoxIncluded()
             Initialize()
             SetColumnVisibility("PECOutgoingMails", ProtocolEnv.PECInOutColumnsVisibility, dgMail)
-            DataBindMailBoxes(ddlMailBox)
+            DataBindMailBoxes(ddlMailbox)
             SetFinderInForm()
             InitializeCollapsedSection()
             UpdatePECMailBoxInputColor()
         End If
-
-        InitializeAjax()
 
     End Sub
 
@@ -185,6 +211,11 @@ Partial Public Class PECOutgoingMails
 
     Private Sub chkShowRecorded_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles chkShowRecorded.CheckedChanged
         ToggleShowRecorded(chkShowRecorded.Checked)
+    End Sub
+
+    Protected Sub ddlPECMailBoxIncluded_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles ddlPECMailBoxIncluded.SelectedIndexChanged
+        dgMail.DiscardFinder()
+        DataBindMailGrid()
     End Sub
 
     Private Sub dgMail_Init(sender As Object, e As EventArgs) Handles dgMail.Init
@@ -215,8 +246,12 @@ Partial Public Class PECOutgoingMails
         With DirectCast(e.Item.FindControl("cmdViewDocs"), RadButton)
             .CommandArgument = item.Id.ToString()
             If ProtocolEnv.PECGridCheckActiveDocumentsEnabled Then
-                Dim chain As BiblosChainInfo = New BiblosChainInfo(entityItem.IDAttachments)
-                .Enabled = chain.HasActiveDocuments()
+                If entityItem.ProcessStatus <> PECMailProcessStatus.StoredInDocumentManager Then
+                    Dim chain As BiblosChainInfo = New BiblosChainInfo(entityItem.IDAttachments)
+                    .Enabled = chain.HasActiveDocuments()
+                Else
+                    .Enabled = True
+                End If
             End If
             If item.HasAttachments Then
                 .Image.ImageUrl = ImagePath.SmallEmailDocumentsAttach
@@ -380,6 +415,9 @@ Partial Public Class PECOutgoingMails
             CommonShared.SelectedPecMailBoxId = Nothing
         End If
 
+        ddlPECMailBoxIncluded.Visible = ShowPECMailBoxIncludedFilter
+        ddlPECMailBoxIncluded.SelectedIndex = 1
+
         dgMail.DiscardFinder()
         DataBindMailGrid()
     End Sub
@@ -420,8 +458,8 @@ Partial Public Class PECOutgoingMails
     Private Sub CmdNewMailClick(ByVal sender As Object, ByVal e As EventArgs) Handles cmdNewMail.Click
         Dim url As New StringBuilder()
         url.AppendFormat("PECInsert.aspx?Type=Pec&SimpleMode={0}", ProtocolEnv.PECSimpleMode.ToString())
-        If (ddlMailBox IsNot Nothing) AndAlso (ddlMailBox.SelectedItem IsNot Nothing) AndAlso (Not String.IsNullOrEmpty(ddlMailBox.SelectedItem.Value)) AndAlso (Not ddlMailBox.SelectedItem.Value.Eq("ALL")) Then
-            url.AppendFormat("&SelectedMailboxId={0}", ddlMailBox.SelectedItem.Value)
+        If (ddlMailbox IsNot Nothing) AndAlso (ddlMailbox.SelectedItem IsNot Nothing) AndAlso (Not String.IsNullOrEmpty(ddlMailbox.SelectedItem.Value)) AndAlso (Not ddlMailbox.SelectedItem.Value.Eq("ALL")) Then
+            url.AppendFormat("&SelectedMailboxId={0}", ddlMailbox.SelectedItem.Value)
         End If
         Response.Redirect(url.ToString())
     End Sub
@@ -572,9 +610,20 @@ Partial Public Class PECOutgoingMails
         End If
     End Sub
 
+    Private Sub InitializePECMailBoxIncluded()
+        ddlPECMailBoxIncluded.Items.Clear()
+
+        ddlPECMailBoxIncluded.Items.Add(New RadComboBoxItem(EnumHelper.GetDescription(IncludedPECTypes.Unmanaged), CType(IncludedPECTypes.Unmanaged, Short).ToString()))
+        ddlPECMailBoxIncluded.Items.Add(New RadComboBoxItem(EnumHelper.GetDescription(IncludedPECTypes.Managed), CType(IncludedPECTypes.Managed, Short).ToString()) With {.Selected = True})
+        ddlPECMailBoxIncluded.Items.Add(New RadComboBoxItem(EnumHelper.GetDescription(IncludedPECTypes.Both), CType(IncludedPECTypes.Both, Short).ToString()))
+        ddlPECMailBoxIncluded.Visible = False
+    End Sub
+
     Private Sub InitializeAjax()
         AjaxManager.AjaxSettings.AddAjaxSetting(dgMail, dgMail, MasterDocSuite.AjaxDefaultLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(ddlMailBox, dgMail, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(ddlMailbox, dgMail, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(ddlMailbox, pnlFilterLeft)
+        AjaxManager.AjaxSettings.AddAjaxSetting(ddlPECMailBoxIncluded, dgMail, MasterDocSuite.AjaxDefaultLoadingPanel)
 
         AjaxManager.AjaxSettings.AddAjaxSetting(chkShowRecorded, dtpShowRecordedFrom)
         AjaxManager.AjaxSettings.AddAjaxSetting(chkShowRecorded, dtpShowRecordedTo)
@@ -589,7 +638,7 @@ Partial Public Class PECOutgoingMails
         AjaxManager.AjaxSettings.AddAjaxSetting(cmdResend, pnlFilterRight)
 
         AjaxManager.AjaxSettings.AddAjaxSetting(cmdClearFilters, dgMail)
-        AjaxManager.AjaxSettings.AddAjaxSetting(cmdClearFilters, ddlMailBox)
+        AjaxManager.AjaxSettings.AddAjaxSetting(cmdClearFilters, ddlMailbox)
         AjaxManager.AjaxSettings.AddAjaxSetting(cmdClearFilters, dtpShowSentFrom)
         AjaxManager.AjaxSettings.AddAjaxSetting(cmdClearFilters, dtpShowSentTo)
         AjaxManager.AjaxSettings.AddAjaxSetting(cmdClearFilters, txtFilterRecipient)
@@ -632,7 +681,7 @@ Partial Public Class PECOutgoingMails
 
             Dim defaultMailBox As PECMailBox = Facade.PECMailboxFacade.GetDefault(MailBoxes)
             If defaultMailBox IsNot Nothing Then
-                ddlMailBox.SelectedValue = defaultMailBox.Id.ToString()
+                ddlMailbox.SelectedValue = defaultMailBox.Id.ToString()
             End If
             Exit Sub
         End If
@@ -645,13 +694,17 @@ Partial Public Class PECOutgoingMails
         ' Filtro per casella di posta
         If Not finder.MailboxIds.IsNullOrEmpty() AndAlso finder.MailboxIds.Length = 1 Then
             ' una sola casella selezionata
-            ddlMailBox.SelectedValue = finder.MailboxIds(0).ToString()
+            ddlMailbox.SelectedValue = finder.MailboxIds(0).ToString()
+            ddlPECMailBoxIncluded.Visible = False
         ElseIf Not SelectedMailBoxId Is Nothing AndAlso finder.MailboxIds.Length > 1 Then
             ' Selected value Pagina Precedente
-            ddlMailBox.SelectedValue = SelectedMailBoxId
+            ddlMailbox.SelectedValue = SelectedMailBoxId
+            ddlPECMailBoxIncluded.Visible = False
         Else
             ' ALL
-            ddlMailBox.SelectedValue = "ALL"
+            ddlMailbox.SelectedValue = "ALL"
+            ddlPECMailBoxIncluded.Visible = True
+            ddlPECMailBoxIncluded.SelectedIndex = 1
         End If
 
         If CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError Then
@@ -717,11 +770,9 @@ Partial Public Class PECOutgoingMails
             End If
             ddlMailbox.Items.Add(comboboxItem)
         Next
-        ddlMBoxes.Items.Add(New RadComboBoxItem("Tutte", "ALL"))
+        ddlMBoxes.Items.Add(New RadComboBoxItem("Tutte", "ALL") With {.Selected = CommonShared.HasGroupAdministratorRight})
 
-        If CommonShared.HasGroupAdministratorRight Then
-            ddlMBoxes.SelectedIndex = ddlMBoxes.Items.Count - 1
-        End If
+        ddlPECMailBoxIncluded.Visible = CommonShared.HasGroupAdministratorRight
     End Sub
 
     Private Function GetFinderByForm() As NHibernatePECMailFinder
@@ -734,17 +785,34 @@ Partial Public Class PECOutgoingMails
         finder.Anomalies = chkAnomalies.Checked
 
         ' Filtro caselle di posta
-        Dim mailBoxeIds As New List(Of Short)
-        If Not ddlMailBox.SelectedValue.Eq("ALL") Then
-            mailBoxeIds.Add(Short.Parse(ddlMailBox.SelectedValue))
+        Dim mailBoxIds As New List(Of Short)
+        If Not ddlMailbox.SelectedValue.Eq("ALL") Then
+            mailBoxIds.Add(Short.Parse(ddlMailbox.SelectedValue))
         Else
+            Dim includedPECMailBoxes As ICollection(Of PECMailBox) = MailBoxes
+            Dim pecMailBoxIncluded As Short
+            If Not String.IsNullOrEmpty(ddlPECMailBoxIncluded.SelectedValue) AndAlso Short.TryParse(ddlPECMailBoxIncluded.SelectedValue, pecMailBoxIncluded) Then
+                FileLogger.Debug(LoggerName, $"ddlPECMailBoxIncluded has been setted with {ddlPECMailBoxIncluded.SelectedValue} and value {pecMailBoxIncluded}")
+                Select Case CType(pecMailBoxIncluded, IncludedPECTypes)
+                    Case IncludedPECTypes.Unmanaged
+                        FileLogger.Debug(LoggerName, $"ddlPECMailBoxIncluded force UnmanagedMailBoxes")
+                        includedPECMailBoxes = UnmanagedMailBoxes
+                    Case IncludedPECTypes.Managed
+                        FileLogger.Debug(LoggerName, $"ddlPECMailBoxIncluded force ManagedMailBoxes")
+                        includedPECMailBoxes = ManagedMailBoxes
+                End Select
+            End If
             For Each item As RadComboBoxItem In ddlMailbox.Items
-                If Not item.Value.Eq("ALL") Then
-                    mailBoxeIds.Add(Short.Parse(item.Value))
+                If Not item.Value.Eq("ALL") AndAlso includedPECMailBoxes.Any(Function(x) x.Id.Equals(Short.Parse(item.Value))) Then
+                    mailBoxIds.Add(Short.Parse(item.Value))
                 End If
             Next
         End If
-        finder.MailboxIds = mailBoxeIds.ToArray()
+        finder.MailboxIds = mailBoxIds.ToArray()
+        If mailBoxIds.Count > 2100 Then
+            FileLogger.Warn(LoggerName, $"mailBoxIds has been limited to 2100 elements to prevent timeout issue")
+            finder.MailboxIds = mailBoxIds.Take(2100).ToArray()
+        End If
 
         ' Filtri per data spedizione (da - a e nulla).
         finder.MailDateFrom = dtpShowSentFrom.SelectedDate
@@ -769,7 +837,7 @@ Partial Public Class PECOutgoingMails
             finder.RegistrationUser = DocSuiteContext.Current.User.FullUserName
         ElseIf rdbSenderFilter.SelectedValue = "1" Then
             finder.RegistrationUserCriteria = PECRegistrationUserCriteria.MySectors
-            Dim myRoles As ICollection(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, DossierRoleRightPositions.Enabled, True)
+            Dim myRoles As ICollection(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, DossierRoleRightPositions.Enabled, True, CurrentTenant.TenantAOO.UniqueId)
             Dim pecs As ICollection(Of PECMailBox) = MailBoxes _
                                                      .Where(Function(mb) Not String.IsNullOrEmpty(mb.IncomingServerName) AndAlso Not String.IsNullOrEmpty(mb.OutgoingServerName)) _
                                                      .ToList()

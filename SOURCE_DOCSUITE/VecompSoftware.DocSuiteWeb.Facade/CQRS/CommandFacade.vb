@@ -3,12 +3,17 @@ Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.Services.Command.CQRS.Commands
 Imports VecompSoftware.Helpers.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Model.Parameters
+Imports Newtonsoft.Json
 
 Public Class CommandFacade(Of T As ICommand)
     Implements ICommandFacade(Of T)
 
 #Region "Fields"
-
+    Private _serializerSettings As JsonSerializerSettings = New JsonSerializerSettings() With {
+            .NullValueHandling = NullValueHandling.Ignore,
+            .ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            .PreserveReferencesHandling = PreserveReferencesHandling.All,
+            .TypeNameHandling = TypeNameHandling.Objects}
 #End Region
 
 #Region "Properties"
@@ -58,13 +63,22 @@ Public Class CommandFacade(Of T As ICommand)
     ''' Invio messaggio utilizzando un controller custom
     ''' </summary>
     Public Sub Push(ByVal command As T) Implements ICommandFacade(Of T).Push
-        If WebAPIImpersonatorFacade.ImpersonateSendRequest(Of T)(WebApi, command, Tenant.WebApiClientConfig, Tenant.OriginalConfiguration) Then
-            FileLogger.Info(LoggerName, String.Format("[CommandFacade - Send] Comando {0} correttamente spedito", command.ToString()))
-        Else
-            Dim errorMessage As String = String.Format("Errore in esecuzione del comando {0}", command.ToString())
-            FileLogger.Error(LoggerName, String.Format("[CommandFacade - Send] {0}", errorMessage))
-            Throw New DocSuiteException("[CommandFacade - Send]", errorMessage)
-        End If
+        Try
+            Dim outboxMessage As New OutboxMessage With {
+                .UniqueId = command.Id,
+                .MessageBody = JsonConvert.SerializeObject(command, _serializerSettings),
+                .MessageType = MessageType.Command,
+                .MessageTypeName = command.CommandName
+            }
+
+            FileLogger.Debug(LoggerName, $"Saving '{command.CommandName}' with id '{command.Id}' as outbox message '{JsonConvert.SerializeObject(outboxMessage, Formatting.Indented)}'")
+            FacadeFactory.Instance.OutboxFacade.Save(outboxMessage)
+            FileLogger.Debug(LoggerName, $"Outbox message for '{command.CommandName}' with id '{outboxMessage.UniqueId}' saved successfully")
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, $"Error saving the outbox message for command '{command.CommandName}' with id '{command.Id}'", ex)
+
+            Throw New DocSuiteException($"Error saving the outbox message for command '{command.CommandName}' with id '{command.Id}'", ex)
+        End Try
     End Sub
 
 #End Region

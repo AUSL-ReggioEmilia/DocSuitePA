@@ -2,6 +2,7 @@
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
+Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Services.Logging
@@ -12,7 +13,9 @@ Partial Public Class uscFascInsertMiscellanea
 #Region " Fields "
     Private Const DELETE_DOCUMENT As String = "Delete_Document"
     Private Const RELOAD_CALLBACK As String = "uscFascInsertMiscellanea.refreshDocuments()"
+    Private Const DELETE_FASCICLEDOCUMENT As String = "Eliminazione inserto {0} n. {1} da fascicolo n. {2}"
     Private _fascMiscellaneaLocation As Location = Nothing
+    Private _fascicleLogFacade As Facade.WebAPI.Fascicles.FascicleLogFacade
 #End Region
 
 #Region " Properties "
@@ -43,6 +46,15 @@ Partial Public Class uscFascInsertMiscellanea
         End Get
     End Property
 
+    Public ReadOnly Property FascicleLogFacade As Facade.WebAPI.Fascicles.FascicleLogFacade
+        Get
+            If _fascicleLogFacade Is Nothing Then
+                _fascicleLogFacade = New Facade.WebAPI.Fascicles.FascicleLogFacade(DocSuiteContext.Current.Tenants, Nothing)
+            End If
+            Return _fascicleLogFacade
+        End Get
+    End Property
+
     Public Property OnlySignEnabled As Boolean
 
     Public Property FilterByArchiveDocumentId As Guid?
@@ -54,6 +66,9 @@ Partial Public Class uscFascInsertMiscellanea
         InitializeAjax()
         If Not IsPostBack Then
         End If
+
+        uscMiscellanea.DocumentUnitId = IdFascicle
+        uscMiscellanea.Environment = DSWEnvironment.Fascicle
 
         If OnlySignEnabled Then
             radPaneButton.Visible = False
@@ -86,7 +101,7 @@ Partial Public Class uscFascInsertMiscellanea
 
         If (ajaxModel IsNot Nothing AndAlso String.Equals(ajaxModel.ActionName, DELETE_DOCUMENT) AndAlso ajaxModel.Value IsNot Nothing AndAlso ajaxModel.Value.Count > 1 _
             AndAlso Not String.IsNullOrEmpty(ajaxModel.Value(0)) AndAlso Guid.TryParse(ajaxModel.Value(0), idDocument)) Then
-            If DeleteDocument(idDocument) Then
+            If DeleteDocument(idDocument, ajaxModel.Value(2), ajaxModel.Value(3)) Then
                 AjaxManager.ResponseScripts.Add(RELOAD_CALLBACK)
             Else
                 BasePage.AjaxAlert("E' avvenuta una anomalia durante la cancellazione dell'inserto. Contattare l'assistenza.")
@@ -96,9 +111,10 @@ Partial Public Class uscFascInsertMiscellanea
 
     End Sub
 
-    Private Function DeleteDocument(idDocument As Guid) As Boolean
+    Private Function DeleteDocument(idDocument As Guid, documentName As String, fascicleTitle As String) As Boolean
         FileLogger.Debug(LoggerName, String.Format("uscFascInsertMiscellanea_AjaxRequest -> IdFascicle {0} - Delete document with Id: {1}", IdFascicle, idDocument))
         Try
+            FascicleLogFacade.InsertFascicleDocumentLog(IdFascicle, FascicleLogType.DocumentDelete, String.Format(DELETE_FASCICLEDOCUMENT, documentName, idDocument, fascicleTitle))
             Service.DetachDocument(idDocument)
             Return True
         Catch ex As Exception

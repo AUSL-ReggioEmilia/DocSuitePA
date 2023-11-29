@@ -23,8 +23,6 @@ class ContainerModelMapper extends BaseMapper<ContainerModel>{
         toMap.DocumentSeriesLocation = source.DocumentSeriesLocation;
         toMap.DocumentSeriesUnpublishedAnnexedLocation = source.DocumentSeriesUnpublishedAnnexedLocation;
         toMap.ProtocolRejection = source.ProtocolRejection;
-        toMap.ActiveFrom = source.ActiveFrom;
-        toMap.ActiveTo = source.ActiveTo;
         toMap.idArchive = source.idArchive;
         toMap.Privacy = source.Privacy;
         toMap.HeadingFrontalino = source.HeadingFrontalino;

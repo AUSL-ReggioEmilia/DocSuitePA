@@ -1706,7 +1706,8 @@ set_text(value: string): void;
         /**
 The command client-side event occurs when the user clicks on a command in the RadDock title bar.
 */
-add_command(handler: (sender: Telerik.Web.UI.DockCommand, args: Sys.CancelEventArgs) => void): void;
+add_command(handler: (sender: Telerik.Web.UI.DockCommand, args: Sys.CancelEventArgs) => void): void;
+
 remove_command(handler: Function): void;
     }
 
@@ -2316,7 +2317,8 @@ setState(state: Telerik.Web.UI.Editor.CommandStates): void;
         /**
 This event is raised when a value is selected.
 */
-add_valueSelected(handler: (sender: Telerik.Web.UI.EditorButton, args: Sys.EventArgs) => void): void;
+add_valueSelected(handler: (sender: Telerik.Web.UI.EditorButton, args: Sys.EventArgs) => void): void;
+
 remove_valueSelected(handler: Function): void;
     }
 
@@ -2452,12 +2454,14 @@ show(): void;
         /**
 This event is raised when the pop-up element is hidden.
 */
-add_hide(handler: (sender: Telerik.Web.UI.EditorDropDown, args: Sys.EventArgs) => void): void;
+add_hide(handler: (sender: Telerik.Web.UI.EditorDropDown, args: Sys.EventArgs) => void): void;
+
 remove_hide(handler: Function): void;
         /**
 This event is raised when the pop-up element is shown.
 */
-add_show(handler: (sender: Telerik.Web.UI.EditorDropDown, args: Sys.EventArgs) => void): void;
+add_show(handler: (sender: Telerik.Web.UI.EditorDropDown, args: Sys.EventArgs) => void): void;
+
 remove_show(handler: Function): void;
     }
 
@@ -7083,12 +7087,14 @@ show(updatedElementID: string): void;
         /**
 Fire when the Loading element appears.
 */
-add_showing(handler: (sender: Telerik.Web.UI.RadAjaxLoadingPanel, args: Telerik.Web.UI.AjaxLoadingPanelEventArgs) => void): void;
+add_showing(handler: (sender: Telerik.Web.UI.RadAjaxLoadingPanel, args: Telerik.Web.UI.AjaxLoadingPanelEventArgs) => void): void;
+
 remove_showing(handler: Function): void;
         /**
 Fire when the loading element hides.
 */
-add_hiding(handler: (sender: Telerik.Web.UI.RadAjaxLoadingPanel, args: Telerik.Web.UI.AjaxLoadingPanelEventArgs) => void): void;
+add_hiding(handler: (sender: Telerik.Web.UI.RadAjaxLoadingPanel, args: Telerik.Web.UI.AjaxLoadingPanelEventArgs) => void): void;
+
 remove_hiding(handler: Function): void;
     }
 
@@ -7178,12 +7184,14 @@ updateElement(id: string, html: string): void;
         /**
 Fire aftre the ajax request begin.
 */
-add_RequestStart(handler: (sender: Telerik.Web.UI.RadAjaxManager, args: Telerik.Web.UI.AjaxRequestEventArgs) => void): void;
+add_RequestStart(handler: (sender: Telerik.Web.UI.RadAjaxManager, args: Telerik.Web.UI.AjaxRequestEventArgs) => void): void;
+
 remove_RequestStart(handler: Function): void;
         /**
 Fire aftre the ajax request ends.
 */
-add_ResponseEnd(handler: (sender: Telerik.Web.UI.RadAjaxManager, args: Telerik.Web.UI.AjaxRequestEventArgs) => void): void;
+add_ResponseEnd(handler: (sender: Telerik.Web.UI.RadAjaxManager, args: Telerik.Web.UI.AjaxRequestEventArgs) => void): void;
+
 remove_ResponseEnd(handler: Function): void;
     }
 
@@ -7238,12 +7246,14 @@ set_loadingPanelID(): string;
         /**
 Fire aftre the ajax request begin.
 */
-add_RequestStart(handler: (sender: Telerik.Web.UI.RadAjaxPanel, args: Telerik.Web.UI.AjaxRequestEventArgs) => void): void;
+add_RequestStart(handler: (sender: Telerik.Web.UI.RadAjaxPanel, args: Telerik.Web.UI.AjaxRequestEventArgs) => void): void;
+
 remove_RequestStart(handler: Function): void;
         /**
 Fire aftre the ajax request ends.
 */
-add_ResponseEnd(handler: (sender: Telerik.Web.UI.RadAjaxPanel, args: Telerik.Web.UI.AjaxRequestEventArgs) => void): void;
+add_ResponseEnd(handler: (sender: Telerik.Web.UI.RadAjaxPanel, args: Telerik.Web.UI.AjaxRequestEventArgs) => void): void;
+
 remove_ResponseEnd(handler: Function): void;
     }
 
@@ -7408,52 +7418,62 @@ startUpload(): void;
         /**
 The added event occurs when a new row has just been added to the RadAsyncUpload control.
 */
-add_added(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadClientAddedEventArgs) => void): void;
+add_added(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadClientAddedEventArgs) => void): void;
+
 remove_added(handler: Function): void;
         /**
 The fileDropped client-side event occurs when file(s) are dropped on some of the drop zones of RadAsyncUpload or on the control itself. If more then one file is dropped the event is fired for each one of them.
 */
-add_fileDropped(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFileDroppedEventArgs) => void): void;
+add_fileDropped(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFileDroppedEventArgs) => void): void;
+
 remove_fileDropped(handler: Function): void;
         /**
 The fileSelected client-side event occurs when a file is selected in a file input control.
 */
-add_fileSelected(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFileSelectedEventArgs) => void): void;
+add_fileSelected(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFileSelectedEventArgs) => void): void;
+
 remove_fileSelected(handler: Function): void;
         /**
 The filesSelected client-side event occurs when files(s) are selected. These event can be cancelled, which will erase the selected files collection.
 */
-add_filesSelected(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFilesSelectedEventArgs) => void): void;
+add_filesSelected(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFilesSelectedEventArgs) => void): void;
+
 remove_filesSelected(handler: Function): void;
         /**
 The fileUploaded client-side event occurs after a file has been uploaded.
 */
-add_fileUploaded(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFileUploadedEventArgs) => void): void;
+add_fileUploaded(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFileUploadedEventArgs) => void): void;
+
 remove_fileUploaded(handler: Function): void;
         /**
 The fileUploadFailed client-side event occurs when error uploading the selected files(s) has occured. Common reason for this event firing is Telerik.Web.UI.WebResource.axd handler not being registered in the web.config. Another reason might be server-side error in custom upload handler is being used.
 */
-add_fileUploadFailed(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadUploadFailedEventArgs) => void): void;
+add_fileUploadFailed(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadUploadFailedEventArgs) => void): void;
+
 remove_fileUploadFailed(handler: Function): void;
         /**
 The fileUploading client-side event occurs when a file has started uploading.
 */
-add_fileUploading(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFileUploadingEventArgs) => void): void;
+add_fileUploading(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFileUploadingEventArgs) => void): void;
+
 remove_fileUploading(handler: Function): void;
         /**
 The fileUploadRemoved occurs after the selected file has been removed from the uploaded files collection.
 */
-add_fileUploadRemoved(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFileUploadRemovedEventArgs) => void): void;
+add_fileUploadRemoved(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadFileUploadRemovedEventArgs) => void): void;
+
 remove_fileUploadRemoved(handler: Function): void;
         /**
 The progressUpdating occurs each time the inline progress indicator is being updated.
 */
-add_progressUpdating(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadProgressUpdatingEventArgs) => void): void;
+add_progressUpdating(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadProgressUpdatingEventArgs) => void): void;
+
 remove_progressUpdating(handler: Function): void;
         /**
 The validationFailed client-side event occurs after a validation for selected file has failed either due to invalid file size or invalid extension.
 */
-add_validationFailed(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadValidationFailedEventArgs) => void): void;
+add_validationFailed(handler: (sender: Telerik.Web.UI.RadAsyncUpload, args: Telerik.Web.UI.RadAsyncUploadValidationFailedEventArgs) => void): void;
+
 remove_validationFailed(handler: Function): void;
     }
 
@@ -7769,67 +7789,80 @@ trackChanges(): void;
         /**
 This event is fired  immediately after the drop-down container is closed.
 */
-add_dropDownClosed(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxDropDownClosedEventArgs) => void): void;
+add_dropDownClosed(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxDropDownClosedEventArgs) => void): void;
+
 remove_dropDownClosed(handler: Function): void;
         /**
 This event is fired before the drop-down container is closed.
 */
-add_dropDownClosing(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxDropDownClosingEventArgs) => void): void;
+add_dropDownClosing(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxDropDownClosingEventArgs) => void): void;
+
 remove_dropDownClosing(handler: Function): void;
         /**
 This event is fired for each item that is created during a request to a Web service.
 */
-add_dropDownItemDataBound(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteDropDownItemDataBoundEventArgs) => void): void;
+add_dropDownItemDataBound(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteDropDownItemDataBoundEventArgs) => void): void;
+
 remove_dropDownItemDataBound(handler: Function): void;
         /**
 This event is fired immediately after an item from the drop-down container has been removed from the Entry collection of RadAutoCompleteBox.
 */
-add_entryRemoved(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxEntryRemovedEventArgs) => void): void;
+add_entryRemoved(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxEntryRemovedEventArgs) => void): void;
+
 remove_entryRemoved(handler: Function): void;
         /**
 This event is fired immediately after an item from the drop-down container is added to the Entry collection of RadAutoCompleteBox.
 */
-add_entryAdded(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxEntryAddedEventArgs) => void): void;
+add_entryAdded(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxEntryAddedEventArgs) => void): void;
+
 remove_entryAdded(handler: Function): void;
         /**
 This event is fired immediately after the drop-down container is opened.
 */
-add_dropDownOpened(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxDropDownOpenedEventArgs) => void): void;
+add_dropDownOpened(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxDropDownOpenedEventArgs) => void): void;
+
 remove_dropDownOpened(handler: Function): void;
         /**
 This event is fired in case of error while loading the drop-down items from the data source.
 */
-add_requestFailed(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxRequestFailedEventArgs) => void): void;
+add_requestFailed(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxRequestFailedEventArgs) => void): void;
+
 remove_requestFailed(handler: Function): void;
         /**
 This event is fired right before an entry is added to the Entry collection of RadAutoCompleteBox.
 */
-add_entryAdding(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxEntryAddingEventArgs) => void): void;
+add_entryAdding(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxEntryAddingEventArgs) => void): void;
+
 remove_entryAdding(handler: Function): void;
         /**
 This event is fired right before an entry is removed from the Entry collection of RadAutoCompleteBox.
 */
-add_entryRemoving(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxEntryRemovingEventArgs) => void): void;
+add_entryRemoving(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxEntryRemovingEventArgs) => void): void;
+
 remove_entryRemoving(handler: Function): void;
         /**
 This event is fired right before RadAutoCompleteBox sends a server-side request to load items into its drop-down container.
 */
-add_requesting(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxRequestingEventArgs) => void): void;
+add_requesting(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxRequestingEventArgs) => void): void;
+
 remove_requesting(handler: Function): void;
         /**
 This event is fired right before the drop-down container of RadAutoCompleteBox is opened.
 */
-add_dropDownOpening(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxDropDownOpeningEventArgs) => void): void;
+add_dropDownOpening(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxDropDownOpeningEventArgs) => void): void;
+
 remove_dropDownOpening(handler: Function): void;
         /**
 This event is fired when the client RadAutoCompleteBox object is loaded.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 This event is fired when the text currently present in the input area is changed and RadAutoComplete has lost its focus.
 */
-add_textChanged(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxTextChangedEventArgs) => void): void;
+add_textChanged(handler: (sender: Telerik.Web.UI.RadAutoCompleteBox, args: Telerik.Web.UI.AutoCompleteBoxTextChangedEventArgs) => void): void;
+
 remove_textChanged(handler: Function): void;
     }
 
@@ -8043,27 +8076,32 @@ toggleSelection(): void;
         /**
 Raised after a Tile is selected.
 */
-add_selected(handler: (sender: Telerik.Web.UI.RadBaseTile, args: Telerik.Web.UI.TileEventArgs) => void): void;
+add_selected(handler: (sender: Telerik.Web.UI.RadBaseTile, args: Telerik.Web.UI.TileEventArgs) => void): void;
+
 remove_selected(handler: Function): void;
         /**
 Raised after a Tile is selected.
 */
-add_clicked(handler: (sender: Telerik.Web.UI.RadBaseTile, args: Telerik.Web.UI.TileEventArgs) => void): void;
+add_clicked(handler: (sender: Telerik.Web.UI.RadBaseTile, args: Telerik.Web.UI.TileEventArgs) => void): void;
+
 remove_clicked(handler: Function): void;
         /**
 Raised just before a Tile is selected. The event can be canceled.
 */
-add_selecting(handler: (sender: Telerik.Web.UI.RadBaseTile, args: Telerik.Web.UI.TileCancelEventArgs) => void): void;
+add_selecting(handler: (sender: Telerik.Web.UI.RadBaseTile, args: Telerik.Web.UI.TileCancelEventArgs) => void): void;
+
 remove_selecting(handler: Function): void;
         /**
 Raised when the client-side object of the Tile is fully loaded.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadBaseTile, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadBaseTile, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Raised when the client-side object of the Tile is initialized.
 */
-add_init(handler: (sender: Telerik.Web.UI.RadBaseTile, args: Sys.EventArgs) => void): void;
+add_init(handler: (sender: Telerik.Web.UI.RadBaseTile, args: Sys.EventArgs) => void): void;
+
 remove_init(handler: Function): void;
     }
 
@@ -8413,42 +8451,50 @@ set_visible(value: boolean): void;
         /**
 The toggleStateChanged event is fired after the SelectedToggleState and the SelectedToggleStateIndex properties of the RadButton are changed.
 */
-add_toggleStateChanged(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonToggleStateEventArgs) => void): void;
+add_toggleStateChanged(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonToggleStateEventArgs) => void): void;
+
 remove_toggleStateChanged(handler: Function): void;
         /**
 The toggleStateChanging event is fired before the SelectedToggleState and the SelectedToggleStateIndex properties of the RadButton are changed.
 */
-add_toggleStateChanging(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonToggleStateCancelEventArgs) => void): void;
+add_toggleStateChanging(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonToggleStateCancelEventArgs) => void): void;
+
 remove_toggleStateChanging(handler: Function): void;
         /**
 The checkedChanging event is fired after the Checked property of the RadButton is changed.
 */
-add_checkedChanging(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCheckedCancelEventArgs) => void): void;
+add_checkedChanging(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCheckedCancelEventArgs) => void): void;
+
 remove_checkedChanging(handler: Function): void;
         /**
 The clicked event is subsequent to the clicking event, and occurs when the RadButton control is clicked.
 */
-add_clicked(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => void): void;
+add_clicked(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => void): void;
+
 remove_clicked(handler: Function): void;
         /**
 The clicking event occurs when the RadButton control is clicked, immediately after the mouse button is released.
 */
-add_clicking(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => void): void;
+add_clicking(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => void): void;
+
 remove_clicking(handler: Function): void;
         /**
 The load event occurs when the RadButton control loaded on the page.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadButton, eventArgs: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadButton, eventArgs: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The mouseOut event is fired when the user moves the mouse pointer over the control.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 The mouseOver event is fired when the user moves the mouse pointer over the control.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
     }
 
@@ -8554,52 +8600,62 @@ set_validationGroup(value: string): void;
         /**
 The selectedIndexChanging event is fired before the selected item is changed. You can cancel it.
 */
-add_selectedIndexChanging(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListCancelEventArgs) => void): void;
+add_selectedIndexChanging(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListCancelEventArgs) => void): void;
+
 remove_selectedIndexChanging(handler: Function): void;
         /**
 The selectedIndexChanged event is fired when the selected item is changed. It is subsequent to the selectedIndexChanging event.
 */
-add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadButtonList, args: Sys.EventArgs) => void): void;
+add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadButtonList, args: Sys.EventArgs) => void): void;
+
 remove_selectedIndexChanged(handler: Function): void;
         /**
 The load event is fired when the radio button list is initialized.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadButtonList, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadButtonList, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The itemCheckedChanging event is fired before selected state of an item is changed. It is cancellable.
 */
-add_itemCheckedChanging(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListCancelEventArgs) => void): void;
+add_itemCheckedChanging(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListCancelEventArgs) => void): void;
+
 remove_itemCheckedChanging(handler: Function): void;
         /**
 The itemCheckedChanged event is fired when the selected state of an item is changed. It is subsequent to the itemCheckedChanging event.
 */
-add_itemCheckedChanged(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListEventArgs) => void): void;
+add_itemCheckedChanged(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListEventArgs) => void): void;
+
 remove_itemCheckedChanged(handler: Function): void;
         /**
 The itemClicking event is fired before an item in the list is clicked. It is cancellable.
 */
-add_itemClicking(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListCancelEventArgs) => void): void;
+add_itemClicking(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListCancelEventArgs) => void): void;
+
 remove_itemClicking(handler: Function): void;
         /**
 The itemClicked event is fired when an item in the list is clicked. It is subsequent to the itemClicking event.
 */
-add_itemClicked(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListEventArgs) => void): void;
+add_itemClicked(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListEventArgs) => void): void;
+
 remove_itemClicked(handler: Function): void;
         /**
 The itemLoad event is fired when an item in the list is initialized.
 */
-add_itemLoad(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListEventArgs) => void): void;
+add_itemLoad(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListEventArgs) => void): void;
+
 remove_itemLoad(handler: Function): void;
         /**
 The itemMouseOver event is fired when the mouse hovers over an item in the list.
 */
-add_itemMouseOver(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListEventArgs) => void): void;
+add_itemMouseOver(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListEventArgs) => void): void;
+
 remove_itemMouseOver(handler: Function): void;
         /**
 The itemMouseOut event is fired when the mouse leaves a radio button list item.
 */
-add_itemMouseOut(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListEventArgs) => void): void;
+add_itemMouseOut(handler: (sender: Telerik.Web.UI.RadButtonList, args: Telerik.Web.UI.ButtonListEventArgs) => void): void;
+
 remove_itemMouseOut(handler: Function): void;
     }
 
@@ -8775,7 +8831,7 @@ Gets the Width of the Secondary Icon.
 get_secondaryIconWidth(): number;
         /**
 Gets the URL to the image showed when the Secondary Icon is pressed.
-@method
+@methodcliente
 @returns The URL to the image showed when the Secondary Icon is pressed.
 */
 get_secondaryPressedIconUrl(): string;
@@ -8823,7 +8879,7 @@ get_autoPostBack(): boolean;
         /**
 Returns whether the month/year navigation popup is enabled.
 @method
-@returns 
+@returns cliente
 */
 get_calendarEnableMonthYearFastNavigation(): boolean;
         /**
@@ -8831,7 +8887,7 @@ Returns whether the navigation buttons appear on the title bar.
 @method
 @returns 
 */
-get_calendarEnabl**REMOVE**igation(): boolean;
+get_calendarEnableNavigation(): boolean;
         /**
 Returns the cell date format
 @method
@@ -8847,7 +8903,7 @@ get_culture(): string;
         /**
 Returns the separator string that will be put between start and end months in a multi view title.
 @method
-@returns 
+@returncliente
 */
 get_dateRangeSeparator(): string;
         /**
@@ -8879,7 +8935,7 @@ Returns true if navigation animation is enabled.
 @method
 @returns 
 */
-get_enabl**REMOVE**igationAnimation(): boolean;
+get_enableNavigationAnimation(): boolean;
         /**
 Returns true if the repeatable days are enabled
 @method
@@ -8903,7 +8959,7 @@ Returns a boolean value indicating whether the navigation controls are hidden.
 @method
 @returns 
 */
-get_hid**REMOVE**igationControls(): boolean;
+get_hideNavigationControls(): boolean;
         /**
 Returns an array with the fast navigation settings. The settings are, in order, TodayButtonCaption, OkButtonCaption, CancelButtonCaption, DateIsOutOfRangeMessage, EnableTodayButtonSelection.
 @method
@@ -9082,7 +9138,7 @@ Raises the init event.
 */
 raise_init(handler: Function): void;
         /**
-Raises the load event.
+Raises the load ecliente.
 @method
 @param handler - 
 @returns 
@@ -9132,13 +9188,13 @@ Sets whether the month/year navigation popup is enabled.
 @returns 
 */
 set_calendarEnableMonthYearFastNavigation(value: boolean): void;
-        /**
+        /cliente
 Returns whether the navigation buttons appear on the title bar. NOTE: Setting this property on the client has no effect.
 @method
 @param value - 
 @returns 
 */
-set_calendarEnabl**REMOVE**igation(value: boolean): void;
+set_calendarEnableNavigation(value: boolean): void;
         /**
 Sets the cell day format
 @method
@@ -9160,7 +9216,7 @@ Selects all dates between startDate and endDate, when RadCalendar's range select
 @param endDate - 
 @returns 
 */
-set_datesInRange(startDate: Date, endDate: Date): void;
+set_datclienteRange(startDate: Date, endDate: Date): void;
         /**
 Set the format of the date that appears when the user hovers the mouse over a cell in the calendar.
 @method
@@ -9188,7 +9244,7 @@ If set to true, this causes the RadCalendar control to display animated effects 
 @param value - 
 @returns 
 */
-set_enabl**REMOVE**igationAnimation(value: boolean): void;
+set_enableNavigationAnimation(value: boolean): void;
         /**
 Enables/disabled the repeatable days
 @method
@@ -9216,7 +9272,7 @@ Sets a value indicating whether the naviagation control should be visible
 @param value - 
 @returns 
 */
-set_hid**REMOVE**igationControls(value: boolean): void;
+set_hideNavigationControls(value: boolean): void;
         /**
 Sets the fast navigation settings. The settings are, in order, TodayButtonCaption, OkButtonCaption, CancelButtonCaption, DateIsOutOfRangeMessage, EnableTodayButtonSelection. Changes you make to these settings have an effect only if you make them before the first time the month/year navigation popup is displayed.
 @method
@@ -9353,57 +9409,68 @@ unselectDates(dates: any): void;
         /**
 The calendarViewChanged event is fired when the calendar navigates to a new view or after the calendar has been updated for the new view, but before it is rendered.
 */
-add_calendarViewChanged(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarViewChangedEventArgs) => void): void;
+add_calendarViewChanged(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarViewChangedEventArgs) => void): void;
+
 remove_calendarViewChanged(handler: Function): void;
         /**
 The calendarViewChanging event is fired when the calendar navigates to a new view, before the viewable area rendered by the calendar is changed.
 */
-add_calendarViewChanging(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarViewChangingEventArgs) => void): void;
+add_calendarViewChanging(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarViewChangingEventArgs) => void): void;
+
 remove_calendarViewChanging(handler: Function): void;
         /**
 The columnHeaderClick event is fired when the user is about to select a column of dates by clicking on a column header. The event occurs only if the ShowColumnHeaders and UseColumnHeadersAsSelectors properties are set to true.
 */
-add_columnHeaderClick(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarClickEventArgs) => void): void;
+add_columnHeaderClick(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarClickEventArgs) => void): void;
+
 remove_columnHeaderClick(handler: Function): void;
         /**
 The dateClick event is fired when the user clicks on a date in the day matrix or presses the ENTER key while a date has focus.
 */
-add_dateClick(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarDateClickEventArgs) => void): void;
+add_dateClick(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarDateClickEventArgs) => void): void;
+
 remove_dateClick(handler: Function): void;
         /**
 The dateSelected event is fired immediately after the value of the control's selection has changed.
 */
-add_dateSelected(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarDateSelectedEventArgs) => void): void;
+add_dateSelected(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarDateSelectedEventArgs) => void): void;
+
 remove_dateSelected(handler: Function): void;
         /**
 The dateSelecting event is fired immediately before the selected dates collection is updated to reflect the selection or deselection of a date.
 */
-add_dateSelecting(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarDateSelectingEventArgs) => void): void;
+add_dateSelecting(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarDateSelectingEventArgs) => void): void;
+
 remove_dateSelecting(handler: Function): void;
         /**
 The dayRender event is fired for every calendar day cell when the calendar is rendered as a result of client-side navigation.
 */
-add_dayRender(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarDayRenderEventArgs) => void): void;
+add_dayRender(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarDayRenderEventArgs) => void): void;
+
 remove_dayRender(handler: Function): void;
         /**
 The init event is fired when the calendar is first constructed.
 */
-add_init(handler: (sender: Telerik.Web.UI.RadCalendar, args: Sys.EventArgs) => void): void;
+add_init(handler: (sender: Telerik.Web.UI.RadCalendar, args: Sys.EventArgs) => void): void;
+
 remove_init(handler: Function): void;
         /**
 The load event is fired when the calendar is loaded on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadCalendar, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadCalendar, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The rowHeaderClick event is fired when the user is about to select a row of dates by clicking on a row header.
 */
-add_rowHeaderClick(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarClickEventArgs) => void): void;
+add_rowHeaderClick(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarClickEventArgs) => void): void;
+
 remove_rowHeaderClick(handler: Function): void;
         /**
 The viewSelectorClick event is fired when the user is about to select an entire view of dates by clicking on the view selector. The event occurs only if the EnableViewSelector property is set to true.
 */
-add_viewSelectorClick(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarClickEventArgs) => void): void;
+add_viewSelectorClick(handler: (sender: Telerik.Web.UI.RadCalendar, args: Telerik.Web.UI.CalendarClickEventArgs) => void): void;
+
 remove_viewSelectorClick(handler: Function): void;
     }
 
@@ -9432,7 +9499,8 @@ get_selectedItems(): Telerik.Web.UI.ButtonListItem[];
         /**
 The selectedIndexChanged event is fired when the selected item is changed. It is subsequent to the selectedIndexChanging event.
 */
-add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadCheckBoxList, args: Telerik.Web.UI.CheckBoxListSelectedIndexChangedEventArgs) => void): void;
+add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadCheckBoxList, args: Telerik.Web.UI.CheckBoxListSelectedIndexChangedEventArgs) => void): void;
+
 remove_selectedIndexChanged(handler: Function): void;
     }
 
@@ -9699,47 +9767,56 @@ view(): void;
         /**
 Raised after the data has been requested from the service.
 */
-add_dataRequested(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+add_dataRequested(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+
 remove_dataRequested(handler: Function): void;
         /**
 Raised after the data source saves data item changes. The data source saves the data item changes when the sync method is called.
 */
-add_sync(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+add_sync(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+
 remove_sync(handler: Function): void;
         /**
 Can be used to additionally parse the response before it is further processed by the control.
 */
-add_dataParse(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+add_dataParse(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+
 remove_dataParse(handler: Function): void;
         /**
 Raised when a change in the data is applied.
 */
-add_change(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+add_change(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+
 remove_change(handler: Function): void;
         /**
 Raised when a custom mapping of the request parameters can be performed.
 */
-add_customParameter(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+add_customParameter(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+
 remove_customParameter(handler: Function): void;
         /**
 Raised when a RadClientDataSource command occurs.
 */
-add_command(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.CancelEventArgs) => void): void;
+add_command(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.CancelEventArgs) => void): void;
+
 remove_command(handler: Function): void;
         /**
 Raised when a RadClientDataSource remote request finished.
 */
-add_requestEnd(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+add_requestEnd(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+
 remove_requestEnd(handler: Function): void;
         /**
 Raised when a RadClientDataSource remote service or page request is started.
 */
-add_requestStart(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+add_requestStart(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+
 remove_requestStart(handler: Function): void;
         /**
 Raised when the remote request has failed.
 */
-add_requestFailed(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+add_requestFailed(handler: (sender: Telerik.Web.UI.RadClientDataSource, args: Sys.EventArgs) => void): void;
+
 remove_requestFailed(handler: Function): void;
     }
 
@@ -9748,37 +9825,44 @@ remove_requestFailed(handler: Function): void;
         /**
 This event is fired when the RadClientExportManager client-side object is loaded.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 This event is raised when the image is already exported by RadClientExportManager.
 */
-add_imageExported(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Sys.EventArgs) => void): void;
+add_imageExported(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Sys.EventArgs) => void): void;
+
 remove_imageExported(handler: Function): void;
         /**
 This event is raised when the PDF file is already exported by RadClientExportManager.
 */
-add_pdfExported(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Sys.EventArgs) => void): void;
+add_pdfExported(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Sys.EventArgs) => void): void;
+
 remove_pdfExported(handler: Function): void;
         /**
 This event is raised when the svg is already exported by RadClientExportManager.
 */
-add_svgExported(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Sys.EventArgs) => void): void;
+add_svgExported(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Sys.EventArgs) => void): void;
+
 remove_svgExported(handler: Function): void;
         /**
 RadClientExportManager is about to export a PDF document.
 */
-add_pdfExporting(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Telerik.Web.UI.ClientExportManagerPdfExportingEventArgs) => void): void;
+add_pdfExporting(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Telerik.Web.UI.ClientExportManagerPdfExportingEventArgs) => void): void;
+
 remove_pdfExporting(handler: Function): void;
         /**
 RadClientExportManager is about to export a svg.
 */
-add_svgExporting(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Telerik.Web.UI.ClientExportManagerSvgExportingEventArgs) => void): void;
+add_svgExporting(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Telerik.Web.UI.ClientExportManagerSvgExportingEventArgs) => void): void;
+
 remove_svgExporting(handler: Function): void;
         /**
 RadClientExportManager is about to export an image.
 */
-add_imageExporting(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Telerik.Web.UI.ClientExportManagerImageExportingEventArgs) => void): void;
+add_imageExporting(handler: (sender: Telerik.Web.UI.RadClientExportManager, args: Telerik.Web.UI.ClientExportManagerImageExportingEventArgs) => void): void;
+
 remove_imageExporting(handler: Function): void;
     }
 
@@ -9917,22 +10001,26 @@ showPalette(): void;
         /**
 Occurs after the popup palette of RadColorPicker with ShowIcon set to "true" shows.
 */
-add_popUpShow(handler: (sender: Telerik.Web.UI.RadColorPicker, args: Sys.EventArgs) => void): void;
+add_popUpShow(handler: (sender: Telerik.Web.UI.RadColorPicker, args: Sys.EventArgs) => void): void;
+
 remove_popUpShow(handler: Function): void;
         /**
 Occurs after the RadColorPicker loads on the page.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadColorPicker, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadColorPicker, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Occurs just before the user selects a color from the palette. Can be cancelled.
 */
-add_colorChanging(handler: (sender: Telerik.Web.UI.RadColorPicker, args: Telerik.Web.UI.ColorPickerColorChangingEventArgs) => void): void;
+add_colorChanging(handler: (sender: Telerik.Web.UI.RadColorPicker, args: Telerik.Web.UI.ColorPickerColorChangingEventArgs) => void): void;
+
 remove_colorChanging(handler: Function): void;
         /**
 Occurs when the user selects a color from the RadColorPicker palette.
 */
-add_colorChange(handler: (sender: Telerik.Web.UI.RadColorPicker, args: Telerik.Web.UI.ColorPickerColorChangeEventArgs) => void): void;
+add_colorChange(handler: (sender: Telerik.Web.UI.RadColorPicker, args: Telerik.Web.UI.ColorPickerColorChangeEventArgs) => void): void;
+
 remove_colorChange(handler: Function): void;
     }
 
@@ -10509,87 +10597,104 @@ trackChanges(): void;
         /**
 Occurs after the "Check All" check box is checked.
 */
-add_checkAllChecked(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.ComboBoxCheckAllCheckingEventArgs) => void): void;
+add_checkAllChecked(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.ComboBoxCheckAllCheckingEventArgs) => void): void;
+
 remove_checkAllChecked(handler: Function): void;
         /**
 Occurs after the drop-down list has been opened.
 */
-add_dropDownOpened(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxEventArgs) => void): void;
+add_dropDownOpened(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxEventArgs) => void): void;
+
 remove_dropDownOpened(handler: Function): void;
         /**
 Occurs after the load-on-demand mechanism has added new items to the RadComboBox.
 */
-add_itemsRequested(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxRequestEventArgs) => void): void;
+add_itemsRequested(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxRequestEventArgs) => void): void;
+
 remove_itemsRequested(handler: Function): void;
         /**
 Occurs for each item that is created during WebService Load on Demand.
 */
-add_itemDataBound(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemDataBoundEventArgs) => void): void;
+add_itemDataBound(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemDataBoundEventArgs) => void): void;
+
 remove_itemDataBound(handler: Function): void;
         /**
 Occurs for each item that is created during WebService Load on Demand.
 */
-add_templateDataBound(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+add_templateDataBound(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+
 remove_templateDataBound(handler: Function): void;
         /**
 Occurs immediately after a particular item has been checked. (in CheckBoxes enabled scenario).
 */
-add_itemChecked(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => void): void;
+add_itemChecked(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => void): void;
+
 remove_itemChecked(handler: Function): void;
         /**
 Occurs just before the "Check All" check box is checked.
 */
-add_checkAllChecking(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.ComboBoxCheckAllCheckingEventArgs) => void): void;
+add_checkAllChecking(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.ComboBoxCheckAllCheckingEventArgs) => void): void;
+
 remove_checkAllChecking(handler: Function): void;
         /**
 Occurs just before the drop-down list closes.
 */
-add_dropDownClosing(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxCancelEventArgs) => void): void;
+add_dropDownClosing(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxCancelEventArgs) => void): void;
+
 remove_dropDownClosing(handler: Function): void;
         /**
 Occurs just before the drop-down list gets opened.
 */
-add_dropDownOpening(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxCancelEventArgs) => void): void;
+add_dropDownOpening(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxCancelEventArgs) => void): void;
+
 remove_dropDownOpening(handler: Function): void;
         /**
 Occurs just before the RadComboBox selection is about to be changed to a new item.
 */
-add_selectedIndexChanging(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemCancelEventArgs) => void): void;
+add_selectedIndexChanging(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemCancelEventArgs) => void): void;
+
 remove_selectedIndexChanging(handler: Function): void;
         /**
 Occurs when a particular item is about to be checked (in CheckBoxes enabled scenario).
 */
-add_itemChecking(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemCancelEventArgs) => void): void;
+add_itemChecking(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemCancelEventArgs) => void): void;
+
 remove_itemChecking(handler: Function): void;
         /**
 Occurs when an error has occurred while loading elements using the load-on-demand mechanism.
 */
-add_itemsRequestFailed(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemsRequestFailedEventArgs) => void): void;
+add_itemsRequestFailed(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemsRequestFailedEventArgs) => void): void;
+
 remove_itemsRequestFailed(handler: Function): void;
         /**
 Occurs when EnableLoadOnDemand is enabled and the RadComboBox is about to send a server-side request to load more items.
 */
-add_itemsRequesting(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxRequestCancelEventArgs) => void): void;
+add_itemsRequesting(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxRequestCancelEventArgs) => void): void;
+
 remove_itemsRequesting(handler: Function): void;
         /**
 Occurs when the RadComboBox receives the focus and the user presses a key.
 */
-add_keyPressing(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxEventArgs) => void): void;
+add_keyPressing(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxEventArgs) => void): void;
+
 remove_keyPressing(handler: Function): void;
         /**
 Occurs when the RadComboBox receives the input focus.
 */
-add_onClientFocus(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxEventArgs) => void): void;
+add_onClientFocus(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxEventArgs) => void): void;
+
 remove_onClientFocus(handler: Function): void;
         /**
 Occurs when the RadComboBox selection has just changed to a new item.
 */
-add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => void): void;
+add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => void): void;
+
 remove_selectedIndexChanged(handler: Function): void;
         /**
 Occurs when the user enters custom text in the input field of RadComboBox. Not triggered until the control is blurred or Enter key is pressed.
 */
-add_textChange(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxCancelEventArgs) => void): void;
+add_textChange(handler: (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxCancelEventArgs) => void): void;
+
 remove_textChange(handler: Function): void;
     }
 
@@ -11099,22 +11204,26 @@ get_domEvent(): Sys.UI.DomEvent;
         /**
 The hidden event is fired immediately before the context menu disappears.
 */
-add_hiding(handler: (sender: Telerik.Web.UI.RadContextMenu, args: Telerik.Web.UI.RadContextMenuCancelEventArgs) => void): void;
+add_hiding(handler: (sender: Telerik.Web.UI.RadContextMenu, args: Telerik.Web.UI.RadContextMenuCancelEventArgs) => void): void;
+
 remove_hiding(handler: Function): void;
         /**
 The hidden event is fired when the context menu disappears.
 */
-add_hidden(handler: (sender: Telerik.Web.UI.RadContextMenu, args: Telerik.Web.UI.RadContextMenuEventArgs) => void): void;
+add_hidden(handler: (sender: Telerik.Web.UI.RadContextMenu, args: Telerik.Web.UI.RadContextMenuEventArgs) => void): void;
+
 remove_hidden(handler: Function): void;
         /**
 The showing event is fired immediately before the context menu appears.
 */
-add_showing(handler: (sender: Telerik.Web.UI.RadContextMenu, args: Telerik.Web.UI.RadContextMenuShowingEventArgs) => void): void;
+add_showing(handler: (sender: Telerik.Web.UI.RadContextMenu, args: Telerik.Web.UI.RadContextMenuShowingEventArgs) => void): void;
+
 remove_showing(handler: Function): void;
         /**
 The shown event is fired immediately after the context menu appears.
 */
-add_shown(handler: (sender: Telerik.Web.UI.RadContextMenu, args: Telerik.Web.UI.RadContextMenuShownEventArgs) => void): void;
+add_shown(handler: (sender: Telerik.Web.UI.RadContextMenu, args: Telerik.Web.UI.RadContextMenuShownEventArgs) => void): void;
+
 remove_shown(handler: Function): void;
     }
 
@@ -11327,32 +11436,38 @@ updateItem(): void;
         /**
 Adds a handler for the command event
 */
-add_command(handler: (sender: Telerik.Web.UI.RadDataForm, args: Telerik.Web.UI.DataFormCommandEventArg) => void): void;
+add_command(handler: (sender: Telerik.Web.UI.RadDataForm, args: Telerik.Web.UI.DataFormCommandEventArg) => void): void;
+
 remove_command(handler: Function): void;
         /**
 Adds a handler for the DataFormCreated event
 */
-add_DataFormCreated(handler: (sender: Telerik.Web.UI.RadDataForm, args: Sys.EventArgs) => void): void;
+add_DataFormCreated(handler: (sender: Telerik.Web.UI.RadDataForm, args: Sys.EventArgs) => void): void;
+
 remove_DataFormCreated(handler: Function): void;
         /**
 Adds a handler for the DataFormCreating event
 */
-add_DataFormCreating(handler: (sender: Telerik.Web.UI.RadDataForm, args: Sys.EventArgs) => void): void;
+add_DataFormCreating(handler: (sender: Telerik.Web.UI.RadDataForm, args: Sys.EventArgs) => void): void;
+
 remove_DataFormCreating(handler: Function): void;
         /**
 Adds a handler for the DataFormDestroying event
 */
-add_DataFormDestroying(handler: (sender: Telerik.Web.UI.RadDataForm, args: Sys.EventArgs) => void): void;
+add_DataFormDestroying(handler: (sender: Telerik.Web.UI.RadDataForm, args: Sys.EventArgs) => void): void;
+
 remove_DataFormDestroying(handler: Function): void;
         /**
 Raised when values are retrieved from Edit/Insert template. Used with client-side binding.
 */
-add_getValues(handler: (sender: Telerik.Web.UI.RadDataForm, args: Sys.CancelEventArgs) => void): void;
+add_getValues(handler: (sender: Telerik.Web.UI.RadDataForm, args: Sys.CancelEventArgs) => void): void;
+
 remove_getValues(handler: Function): void;
         /**
 Raised when values are set in the fields in the ItemTemplate. Used with client-side binding.
 */
-add_setValues(handler: (sender: Telerik.Web.UI.RadDataForm, args: Sys.EventArgs) => void): void;
+add_setValues(handler: (sender: Telerik.Web.UI.RadDataForm, args: Sys.EventArgs) => void): void;
+
 remove_setValues(handler: Function): void;
     }
 
@@ -11422,27 +11537,32 @@ set_pageSize(size: number): void;
         /**
 The DataPagerCreated event fires after the RadDataPager is created.
 */
-add_DataPagerCreated(handler: (sender: Telerik.Web.UI.RadDataPager, args: Sys.EventArgs) => void): void;
+add_DataPagerCreated(handler: (sender: Telerik.Web.UI.RadDataPager, args: Sys.EventArgs) => void): void;
+
 remove_DataPagerCreated(handler: Function): void;
         /**
 The DataPagerCreating event fires before the RadDataPager is created.
 */
-add_DataPagerCreating(handler: (sender: Telerik.Web.UI.RadDataPager, args: Sys.EventArgs) => void): void;
+add_DataPagerCreating(handler: (sender: Telerik.Web.UI.RadDataPager, args: Sys.EventArgs) => void): void;
+
 remove_DataPagerCreating(handler: Function): void;
         /**
 The DataPagerDestroying event fires before the RadDataPager is destroyed.
 */
-add_DataPagerDestroying(handler: (sender: Telerik.Web.UI.RadDataPager, args: Sys.EventArgs) => void): void;
+add_DataPagerDestroying(handler: (sender: Telerik.Web.UI.RadDataPager, args: Sys.EventArgs) => void): void;
+
 remove_DataPagerDestroying(handler: Function): void;
         /**
 The PageSizeChanging event fires when a page index is set on the RadDataPager object.
 */
-add_PageIndexChanging(handler: (sender: Telerik.Web.UI.RadDataPager, args: Telerik.Web.UI.DataPagerPageIndexChangingEventArgs) => void): void;
+add_PageIndexChanging(handler: (sender: Telerik.Web.UI.RadDataPager, args: Telerik.Web.UI.DataPagerPageIndexChangingEventArgs) => void): void;
+
 remove_PageIndexChanging(handler: Function): void;
         /**
 The PageSizeChanging event fires when a page size is set for the RadDataPager object.
 */
-add_PageSizeChanging(handler: (sender: Telerik.Web.UI.RadDataPager, args: Telerik.Web.UI.DataPagerPageSizeChangingEventArgs) => void): void;
+add_PageSizeChanging(handler: (sender: Telerik.Web.UI.RadDataPager, args: Telerik.Web.UI.DataPagerPageSizeChangingEventArgs) => void): void;
+
 remove_PageSizeChanging(handler: Function): void;
     }
 
@@ -11934,72 +12054,86 @@ updateDisplayValue(): void;
         /**
 Raised after the control loses focus just before a new value has been assigned.
 */
-add_valueChanging(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.InputValueChangingEventArgs) => void): void;
+add_valueChanging(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.InputValueChangingEventArgs) => void): void;
+
 remove_valueChanging(handler: Function): void;
         /**
 Raised after the control loses focus when a new value has been assigned.
 */
-add_valueChanged(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.InputValueChangedEventArgs) => void): void;
+add_valueChanged(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.InputValueChangedEventArgs) => void): void;
+
 remove_valueChanged(handler: Function): void;
         /**
 Raised when the control is disabled
 */
-add_disable(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+add_disable(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+
 remove_disable(handler: Function): void;
         /**
 Raised when the control is enabled
 */
-add_enable(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+add_enable(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+
 remove_enable(handler: Function): void;
         /**
 Raised when the control is focused
 */
-add_focus(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+add_focus(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+
 remove_focus(handler: Function): void;
         /**
 Raised when the control is loaded on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Raised when the mouse enters the input area.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
         /**
 Raised when the mouse leaves the input area.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 Raised when the RadInputControl loses focus
 */
-add_blur(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+add_blur(handler: (sender: Telerik.Web.UI.RadDateInput, args: Sys.EventArgs) => void): void;
+
 remove_blur(handler: Function): void;
         /**
 Raised when the user clicks on the button that is associated with the input control
 */
-add_buttonClick(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.InputButtonClickEventArgs) => void): void;
+add_buttonClick(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.InputButtonClickEventArgs) => void): void;
+
 remove_buttonClick(handler: Function): void;
         /**
 Raised when the user decreases the value of an enumeration or numeric range mask part.
 */
-add_moveDown(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+add_moveDown(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+
 remove_moveDown(handler: Function): void;
         /**
 Raised when the user enters an invalid value
 */
-add_error(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.InputErrorEventArgs) => void): void;
+add_error(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.InputErrorEventArgs) => void): void;
+
 remove_error(handler: Function): void;
         /**
 Raised when the user increases the value of an enumeration or numeric range mask part.
 */
-add_moveUp(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+add_moveUp(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+
 remove_moveUp(handler: Function): void;
         /**
 Raised when the user presses a key to enter a value.
 */
-add_keyPress(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.InputKeyPressEventArgs) => void): void;
+add_keyPress(handler: (sender: Telerik.Web.UI.RadDateInput, args: Telerik.Web.UI.InputKeyPressEventArgs) => void): void;
+
 remove_keyPress(handler: Function): void;
     }
 
@@ -12364,12 +12498,14 @@ togglePopup(): void;
         /**
 The dateSelected event is fired immediately after the value of the control's selection has changed.
 */
-add_dateSelected(handler: (sender: Telerik.Web.UI.RadDatePicker, args: Telerik.Web.UI.DateInputValueChangedEventArgs) => void): void;
+add_dateSelected(handler: (sender: Telerik.Web.UI.RadDatePicker, args: Telerik.Web.UI.DateInputValueChangedEventArgs) => void): void;
+
 remove_dateSelected(handler: Function): void;
         /**
 The popupClosing event is fired immediately before a popup calendar or time view is closed.
 */
-add_popupClosing(handler: (sender: Telerik.Web.UI.RadDatePicker, args: Telerik.Web.UI.DatePickerPopupClosingEventArgs) => void): void;
+add_popupClosing(handler: (sender: Telerik.Web.UI.RadDatePicker, args: Telerik.Web.UI.DatePickerPopupClosingEventArgs) => void): void;
+
 remove_popupClosing(handler: Function): void;
     }
 
@@ -12454,12 +12590,14 @@ toggleTimePopup(): void;
         /**
 The dateSelected event is fired immediately after the value of the control's selection has changed.
 */
-add_dateSelected(handler: (sender: Telerik.Web.UI.RadDateTimePicker, args: Telerik.Web.UI.DateInputValueChangedEventArgs) => void): void;
+add_dateSelected(handler: (sender: Telerik.Web.UI.RadDateTimePicker, args: Telerik.Web.UI.DateInputValueChangedEventArgs) => void): void;
+
 remove_dateSelected(handler: Function): void;
         /**
 The popupClosing event is fired immediately before a popup calendar or time view is closed.
 */
-add_popupClosing(handler: (sender: Telerik.Web.UI.RadDateTimePicker, args: Telerik.Web.UI.DatePickerPopupClosingEventArgs) => void): void;
+add_popupClosing(handler: (sender: Telerik.Web.UI.RadDateTimePicker, args: Telerik.Web.UI.DatePickerPopupClosingEventArgs) => void): void;
+
 remove_popupClosing(handler: Function): void;
     }
 
@@ -12475,7 +12613,8 @@ get_kendoWidget(): any;
         /**
 Fires when the control's client-side object is created.
 */
-add_Load(handler: (sender: Telerik.Web.UI.RadDiagram, args: Sys.EventArgs) => void): void;
+add_Load(handler: (sender: Telerik.Web.UI.RadDiagram, args: Sys.EventArgs) => void): void;
+
 remove_Load(handler: Function): void;
     }
 
@@ -12520,12 +12659,14 @@ openUrl(url: string, argument: any, width: number, height: number, callbackFunct
         /**
 This event is fired when the dialog is opened.
 */
-add_open(handler: (sender: Telerik.Web.UI.RadDialogOpener, args: Telerik.Web.UI.DialogOpenEventArgs) => void): void;
+add_open(handler: (sender: Telerik.Web.UI.RadDialogOpener, args: Telerik.Web.UI.DialogOpenEventArgs) => void): void;
+
 remove_open(handler: Function): void;
         /**
 This event is fired when the dialog is opened.
 */
-add_close(handler: (sender: Telerik.Web.UI.RadDialogOpener, dialog: Telerik.Web.UI.RadWindow) => void): void;
+add_close(handler: (sender: Telerik.Web.UI.RadDialogOpener, dialog: Telerik.Web.UI.RadWindow) => void): void;
+
 remove_close(handler: Function): void;
     }
 
@@ -12880,52 +13021,62 @@ undock(): void;
         /**
 The command event occurs when the user clicks on a command in the RadDock title bar.
 */
-add_command(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.CancelEventArgs) => void): void;
+add_command(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.CancelEventArgs) => void): void;
+
 remove_command(handler: Function): void;
         /**
 The dockPositionChanged event occurs when the user has just changed the position of a RadDock control by dragging it to a new location.
 */
-add_dockPositionChanged(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+add_dockPositionChanged(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+
 remove_dockPositionChanged(handler: Function): void;
         /**
 The dockPositionChanging event occurs when the user tries to drop the RadDock control in a new location.
 */
-add_dockPositionChanging(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.CancelEventArgs) => void): void;
+add_dockPositionChanging(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.CancelEventArgs) => void): void;
+
 remove_dockPositionChanging(handler: Function): void;
         /**
 The drag event is raised when the user moves the mouse while dragging a RadDock control.
 */
-add_drag(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+add_drag(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+
 remove_drag(handler: Function): void;
         /**
 The dragEnd event occurs when the user drops a RadDock control after a drag operation.
 */
-add_dragEnd(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+add_dragEnd(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+
 remove_dragEnd(handler: Function): void;
         /**
 The dragStart event occurs when the user begins to drag the RadDock control from its current position.
 */
-add_dragStart(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+add_dragStart(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+
 remove_dragStart(handler: Function): void;
         /**
 The enterZone event is raised when a RadDock is over a RadDockZone.
 */
-add_enterZone(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+add_enterZone(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+
 remove_enterZone(handler: Function): void;
         /**
 The event raised when the RadDock is loaded.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The resizeEnd event is raised when the RadDock is resized.
 */
-add_resizeEnd(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+add_resizeEnd(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+
 remove_resizeEnd(handler: Function): void;
         /**
 The resizeStart event is raised when the resize of the dock is started.
 */
-add_resizeStart(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+add_resizeStart(handler: (sender: Telerik.Web.UI.RadDock, args: Sys.EventArgs) => void): void;
+
 remove_resizeStart(handler: Function): void;
     }
 
@@ -13142,62 +13293,74 @@ toggleDropDown(): void;
         /**
 Occurs after the drop-down list has been opened.
 */
-add_dropDownOpened(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.EventArgs) => void): void;
+add_dropDownOpened(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.EventArgs) => void): void;
+
 remove_dropDownOpened(handler: Function): void;
         /**
 Occurs after the the portion of items is added to the RadDropDownList (WebService data-binding scenario)
 */
-add_itemsRequested(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.EventArgs) => void): void;
+add_itemsRequested(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.EventArgs) => void): void;
+
 remove_itemsRequested(handler: Function): void;
         /**
 Occurs before a certain item is about to be selected.
 */
-add_itemSelecting(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListItemSelectingEventArgs) => void): void;
+add_itemSelecting(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListItemSelectingEventArgs) => void): void;
+
 remove_itemSelecting(handler: Function): void;
         /**
 Occurs before a certain item is about to be selected.
 */
-add_itemSelected(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListItemSelectedEventArgs) => void): void;
+add_itemSelected(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListItemSelectedEventArgs) => void): void;
+
 remove_itemSelected(handler: Function): void;
         /**
 Occurs for each item that is created during WebService(including if ODataSource is used).
 */
-add_templateDataBound(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+add_templateDataBound(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+
 remove_templateDataBound(handler: Function): void;
         /**
 Occurs for each item that is created during WebService(including if ODataSource is used).
 */
-add_itemDataBound(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListItemDataBoundEventArgs) => void): void;
+add_itemDataBound(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListItemDataBoundEventArgs) => void): void;
+
 remove_itemDataBound(handler: Function): void;
         /**
 Occurs immediately after the SelectedItem has been changed.
 */
-add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListIndexChangedEventArgs) => void): void;
+add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListIndexChangedEventArgs) => void): void;
+
 remove_selectedIndexChanged(handler: Function): void;
         /**
 Occurs just before the drop-down list gets closed.
 */
-add_dropDownClosing(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.EventArgs) => void): void;
+add_dropDownClosing(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.EventArgs) => void): void;
+
 remove_dropDownClosing(handler: Function): void;
         /**
 Occurs just before the drop-down list gets closed.
 */
-add_dropDownClosed(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.EventArgs) => void): void;
+add_dropDownClosed(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.EventArgs) => void): void;
+
 remove_dropDownClosed(handler: Function): void;
         /**
 Occurs just before the drop-down list gets opened.
 */
-add_dropDownOpening(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.CancelEventArgs) => void): void;
+add_dropDownOpening(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.CancelEventArgs) => void): void;
+
 remove_dropDownOpening(handler: Function): void;
         /**
 Occurs when an error has occurred while loading elements using the load-on-demand mechanism.
 */
-add_itemsRequestFailed(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.CancelEventArgs) => void): void;
+add_itemsRequestFailed(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Sys.CancelEventArgs) => void): void;
+
 remove_itemsRequestFailed(handler: Function): void;
         /**
 Occurs when the RadDropDownList is about to send a server-side request to load its items from the web service.
 */
-add_itemsRequesting(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListItemsRequestingEventArgs) => void): void;
+add_itemsRequesting(handler: (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListItemsRequestingEventArgs) => void): void;
+
 remove_itemsRequesting(handler: Function): void;
     }
 
@@ -13281,53 +13444,63 @@ toggleDropDown(): void;
         /**
 The clearButtonClicked client-side event after the Clear button in the entry area of the RadDropDownTree is clicked.
 */
-add_clearButtonClicked(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.EventArgs) => void): void;
+add_clearButtonClicked(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.EventArgs) => void): void;
+
 remove_clearButtonClicked(handler: Function): void;
         /**
 The dropDownClosed client-side event that is fired after the dropdown of the RadDropDownTree is closed. The event cannot be cancelled.
 */
-add_dropDownClosed(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.EventArgs) => void): void;
+add_dropDownClosed(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.EventArgs) => void): void;
+
 remove_dropDownClosed(handler: Function): void;
         /**
 The dropDownClosing client-side event that is fired before the dropdown of the RadDropDownTree is closed. The event can be cancelled.
 */
-add_dropDownClosing(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.CancelEventArgs) => void): void;
+add_dropDownClosing(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.CancelEventArgs) => void): void;
+
 remove_dropDownClosing(handler: Function): void;
         /**
 The dropDownOpened client-side event that is fired after the dropdown of the RadDropDownTree is opened. The event cannot be cancelled.
 */
-add_dropDownOpened(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.EventArgs) => void): void;
+add_dropDownOpened(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.EventArgs) => void): void;
+
 remove_dropDownOpened(handler: Function): void;
         /**
 The dropDownOpening client-side event that is fired before the dropdown of RadDropDownTree is opened. The event can be cancelled.
 */
-add_dropDownOpening(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.CancelEventArgs) => void): void;
+add_dropDownOpening(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.CancelEventArgs) => void): void;
+
 remove_dropDownOpening(handler: Function): void;
         /**
 The entryAdded client-side event that is fired when an entry is about to be added to the Entry area. The event cannot be cancelled.
 */
-add_entryAdded(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Telerik.Web.UI.DropDownTreeEntryAddedEventArgs) => void): void;
+add_entryAdded(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Telerik.Web.UI.DropDownTreeEntryAddedEventArgs) => void): void;
+
 remove_entryAdded(handler: Function): void;
         /**
 The entryAdding client-side event is fired when an entry is about to be added to the entry area. The event can be cancelled.
 When the CheckBoxes property of the control is set to either the TriState or the CheckChildNodes, the event will fire only for the node that is being checked.
 */
-add_entryAdding(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Telerik.Web.UI.DropDownTreeEntryAddingEventArgs) => void): void;
+add_entryAdding(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Telerik.Web.UI.DropDownTreeEntryAddingEventArgs) => void): void;
+
 remove_entryAdding(handler: Function): void;
         /**
 The entryRemoved client-side event that is fired when an entry is about to be removed from the Entry area. The event cannot be cancelled.
 */
-add_entryRemoved(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Telerik.Web.UI.DropDownTreeEntryRemovedEventArgs) => void): void;
+add_entryRemoved(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Telerik.Web.UI.DropDownTreeEntryRemovedEventArgs) => void): void;
+
 remove_entryRemoved(handler: Function): void;
         /**
 The entryRemoving client-side event is fired when an entry is about to be removed from the Entry area. The event can be cancelled.
 */
-add_entryRemoving(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Telerik.Web.UI.DropDownTreeEntryRemovingEventArgs) => void): void;
+add_entryRemoving(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Telerik.Web.UI.DropDownTreeEntryRemovingEventArgs) => void): void;
+
 remove_entryRemoving(handler: Function): void;
         /**
 The load client-side event occurs when the RadDropDownTree is first loaded and fully initialized on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadDropDownTree, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
     }
 
@@ -13941,72 +14114,86 @@ zoomContent(level: string): void;
         /**
 This event is fired after a command is executed.
 */
-add_commandExecuted(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+add_commandExecuted(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+
 remove_commandExecuted(handler: Function): void;
         /**
 This event is fired after a command that modified the DOM is executed.
 */
-add_domChange(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+add_domChange(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+
 remove_domChange(handler: Function): void;
         /**
 This event is fired after the content is set in the content area, after the init event and just before the editReady.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 This event is fired before the initialization of the editor's content area.
 */
-add_init(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+add_init(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+
 remove_init(handler: Function): void;
         /**
 This event is fired before the mode is changed.
 */
-add_modeChange(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+add_modeChange(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+
 remove_modeChange(handler: Function): void;
         /**
 This event is fired just before a command is executed.
 */
-add_commandExecuting(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+add_commandExecuting(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+
 remove_commandExecuting(handler: Function): void;
         /**
 This event is fired just before the content is submitted to the server.
 */
-add_submit(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+add_submit(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+
 remove_submit(handler: Function): void;
         /**
 This event is fired when a user has toggled the Full Screen Mode of the RadEditor.
 */
-add_toggleScreenMode(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+add_toggleScreenMode(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+
 remove_toggleScreenMode(handler: Function): void;
         /**
 This event is fired when the mobile device orientation has changed in Mobile rendering.
 */
-add_orientationChange(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.Editor.OrientationEventArgs) => void): void;
+add_orientationChange(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.Editor.OrientationEventArgs) => void): void;
+
 remove_orientationChange(handler: Function): void;
         /**
 This event is raise when the spell check is started.
 */
-add_spellCheckLoaded(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+add_spellCheckLoaded(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+
 remove_spellCheckLoaded(handler: Function): void;
         /**
 This event is raised when content is inserted either via pasting or via command.
 */
-add_pasteHtml(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+add_pasteHtml(handler: (sender: Telerik.Web.UI.RadEditor, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+
 remove_pasteHtml(handler: Function): void;
         /**
 This event is raised when editor is ready to operate with.
 */
-add_editReady(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+add_editReady(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+
 remove_editReady(handler: Function): void;
         /**
 This event is raised when the Editor is rendered on the page for first time.
 */
-add_firstShow(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+add_firstShow(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+
 remove_firstShow(handler: Function): void;
         /**
 This event is raised when the selection in the content area is changed.
 */
-add_selectionChange(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+add_selectionChange(handler: (sender: Telerik.Web.UI.RadEditor, args: Sys.EventArgs) => void): void;
+
 remove_selectionChange(handler: Function): void;
     }
 
@@ -14550,62 +14737,74 @@ sort(sortExpression: any): any;
         /**
 Occurs just after the event handlers for the dependent controls have been attached, but before the binding
 */
-add_eventHandlersAttached(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Sys.EventArgs) => void): void;
+add_eventHandlersAttached(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Sys.EventArgs) => void): void;
+
 remove_eventHandlersAttached(handler: Function): void;
         /**
 Occurs just before the control loads in the browser.
 */
-add_init(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Sys.EventArgs) => void): void;
+add_init(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Sys.EventArgs) => void): void;
+
 remove_init(handler: Function): void;
         /**
 Occurs when a folder is loaded in the grid.
 */
-add_folderLoaded(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+add_folderLoaded(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+
 remove_folderLoaded(handler: Function): void;
         /**
 Occurs when a new folder is created.
 */
-add_createNewFolder(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+add_createNewFolder(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+
 remove_createNewFolder(handler: Function): void;
         /**
 Occurs when an ajax request is initiated in RadFileExplorer.
 */
-add_ajaxRequestStart(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Sys.EventArgs) => void): void;
+add_ajaxRequestStart(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Sys.EventArgs) => void): void;
+
 remove_ajaxRequestStart(handler: Function): void;
         /**
 Occurs when an item is double clicked in the grid or in the tree.
 */
-add_fileOpen(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+add_fileOpen(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+
 remove_fileOpen(handler: Function): void;
         /**
 Occurs when the control loads in the browser.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Occurs when the user selects an item in the grid.
 */
-add_itemSelected(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+add_itemSelected(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+
 remove_itemSelected(handler: Function): void;
         /**
 Occurs when the user selects an item in the grid.
 */
-add_folderChange(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+add_folderChange(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+
 remove_folderChange(handler: Function): void;
         /**
 Occurs when the user tries to copy an item.
 */
-add_copy(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerCopyEventArgs) => void): void;
+add_copy(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerCopyEventArgs) => void): void;
+
 remove_copy(handler: Function): void;
         /**
 Occurs when the user tries to delete an item(file or folder).
 */
-add_delete(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+add_delete(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+
 remove_delete(handler: Function): void;
         /**
 Occurs when the user tries to move or rename an item.
 */
-add_move(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+add_move(handler: (sender: Telerik.Web.UI.RadFileExplorer, args: Telerik.Web.UI.FileExplorerEventArgs) => void): void;
+
 remove_move(handler: Function): void;
     }
 
@@ -14690,27 +14889,32 @@ repaint(): void;
         /**
 This client-side event is fired after the RadFilter is created.
 */
-add_FilterCreated(handler: (sender: Telerik.Web.UI.RadFilter, args: Sys.EventArgs) => void): void;
+add_FilterCreated(handler: (sender: Telerik.Web.UI.RadFilter, args: Sys.EventArgs) => void): void;
+
 remove_FilterCreated(handler: Function): void;
         /**
 This client-side event is fired before the RadFilter is created.
 */
-add_FilterCreating(handler: (sender: Telerik.Web.UI.RadFilter, args: Sys.EventArgs) => void): void;
+add_FilterCreating(handler: (sender: Telerik.Web.UI.RadFilter, args: Sys.EventArgs) => void): void;
+
 remove_FilterCreating(handler: Function): void;
         /**
 This client-side event is fired before the RadFilter.ContextMenu is shown.
 */
-add_MenuShowing(handler: (sender: Telerik.Web.UI.RadFilter, args: Telerik.Web.UI.FilterMenuShowingEventArgs) => void): void;
+add_MenuShowing(handler: (sender: Telerik.Web.UI.RadFilter, args: Telerik.Web.UI.FilterMenuShowingEventArgs) => void): void;
+
 remove_MenuShowing(handler: Function): void;
         /**
 This client-side event is fired when RadFilter object is destroyed, i.e. on each window.onunload.
 */
-add_FilterDestroying(handler: (sender: Telerik.Web.UI.RadFilter, args: Sys.EventArgs) => void): void;
+add_FilterDestroying(handler: (sender: Telerik.Web.UI.RadFilter, args: Sys.EventArgs) => void): void;
+
 remove_FilterDestroying(handler: Function): void;
         /**
 This client-side event is fired when the RadFilter.ContextMenu is shown.
 */
-add_MenuShown(handler: (sender: Telerik.Web.UI.RadFilter, args: Telerik.Web.UI.FilterMenuShownEventArgs) => void): void;
+add_MenuShown(handler: (sender: Telerik.Web.UI.RadFilter, args: Telerik.Web.UI.FilterMenuShownEventArgs) => void): void;
+
 remove_MenuShown(handler: Function): void;
     }
 
@@ -15160,32 +15364,38 @@ set_workWeekStart(value: Telerik.Web.UI.DayOfWeek): void;
         /**
 Occurs when the current View is changed.
 */
-add_clientNavigationCommand(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttNavigationCommandEventArgs) => void): void;
+add_clientNavigationCommand(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttNavigationCommandEventArgs) => void): void;
+
 remove_clientNavigationCommand(handler: Function): void;
         /**
 Occurs when the Task is just about to be resized.
 */
-add_clientTaskResizing(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttTaskResizingEventArgs) => void): void;
+add_clientTaskResizing(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttTaskResizingEventArgs) => void): void;
+
 remove_clientTaskResizing(handler: Function): void;
         /**
 Occurs when the Task moving is ended.
 */
-add_clientTaskMoveEnd(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttTaskMoveEndEventArgs) => void): void;
+add_clientTaskMoveEnd(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttTaskMoveEndEventArgs) => void): void;
+
 remove_clientTaskMoveEnd(handler: Function): void;
         /**
 Occurs when the Task moving is started.
 */
-add_clientTaskMoveStart(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttTaskMoveStartEventArgs) => void): void;
+add_clientTaskMoveStart(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttTaskMoveStartEventArgs) => void): void;
+
 remove_clientTaskMoveStart(handler: Function): void;
         /**
 Occurs when the Task resizing is ended.
 */
-add_clientTaskResizeEnd(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttTaskResizeEndEventArgs) => void): void;
+add_clientTaskResizeEnd(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttTaskResizeEndEventArgs) => void): void;
+
 remove_clientTaskResizeEnd(handler: Function): void;
         /**
 Occurs when the Task resizing is started.
 */
-add_clientTaskResizeStart(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttTaskResizeStartEventArgs) => void): void;
+add_clientTaskResizeStart(handler: (sender: Telerik.Web.UI.RadGantt, args: Telerik.Web.UI.GanttTaskResizeStartEventArgs) => void): void;
+
 remove_clientTaskResizeStart(handler: Function): void;
     }
 
@@ -15403,367 +15613,440 @@ set_visible(): void;
         /**
 
 */
-add_activeRowChanging(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+add_activeRowChanging(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+
 remove_activeRowChanging(handler: Function): void;
         /**
 
 */
-add_activeRowChanged(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_activeRowChanged(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_activeRowChanged(handler: Function): void;
         /**
 
 */
-add_cellDeselecting(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridCellSelectCancelEventArgs) => void): void;
+add_cellDeselecting(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridCellSelectCancelEventArgs) => void): void;
+
 remove_cellDeselecting(handler: Function): void;
         /**
 
 */
-add_cellDeselected(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridCellSelectEventArgs) => void): void;
+add_cellDeselected(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridCellSelectEventArgs) => void): void;
+
 remove_cellDeselected(handler: Function): void;
         /**
 
 */
-add_cellSelecting(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridCellSelectCancelEventArgs) => void): void;
+add_cellSelecting(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridCellSelectCancelEventArgs) => void): void;
+
 remove_cellSelecting(handler: Function): void;
         /**
 
 */
-add_cellSelected(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridCellSelectEventArgs) => void): void;
+add_cellSelected(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridCellSelectEventArgs) => void): void;
+
 remove_cellSelected(handler: Function): void;
         /**
 
 */
-add_columnClick(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+add_columnClick(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+
 remove_columnClick(handler: Function): void;
         /**
 
 */
-add_columnContextMenu(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+add_columnContextMenu(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+
 remove_columnContextMenu(handler: Function): void;
         /**
 
 */
-add_columnCreated(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCreatedEventArgs) => void): void;
+add_columnCreated(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCreatedEventArgs) => void): void;
+
 remove_columnCreated(handler: Function): void;
         /**
 
 */
-add_columnDblClick(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+add_columnDblClick(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+
 remove_columnDblClick(handler: Function): void;
         /**
 
 */
-add_columnHiding(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCancelEventArgs) => void): void;
+add_columnHiding(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCancelEventArgs) => void): void;
+
 remove_columnHiding(handler: Function): void;
         /**
 
 */
-add_columnHidden(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+add_columnHidden(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+
 remove_columnHidden(handler: Function): void;
         /**
 
 */
-add_columnMouseOut(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+add_columnMouseOut(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+
 remove_columnMouseOut(handler: Function): void;
         /**
 
 */
-add_columnMouseOver(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+add_columnMouseOver(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+
 remove_columnMouseOver(handler: Function): void;
         /**
 
 */
-add_columnMovingToLeft(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCancelEventArgs) => void): void;
+add_columnMovingToLeft(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCancelEventArgs) => void): void;
+
 remove_columnMovingToLeft(handler: Function): void;
         /**
 
 */
-add_columnMovedToLeft(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+add_columnMovedToLeft(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+
 remove_columnMovedToLeft(handler: Function): void;
         /**
 
 */
-add_columnMovingToRight(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCancelEventArgs) => void): void;
+add_columnMovingToRight(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCancelEventArgs) => void): void;
+
 remove_columnMovingToRight(handler: Function): void;
         /**
 
 */
-add_columnMovedToRight(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+add_columnMovedToRight(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+
 remove_columnMovedToRight(handler: Function): void;
         /**
 
 */
-add_columnResizing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCancelEventArgs) => void): void;
+add_columnResizing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCancelEventArgs) => void): void;
+
 remove_columnResizing(handler: Function): void;
         /**
 
 */
-add_columnResized(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+add_columnResized(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+
 remove_columnResized(handler: Function): void;
         /**
 
 */
-add_columnShowing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCancelEventArgs) => void): void;
+add_columnShowing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnCancelEventArgs) => void): void;
+
 remove_columnShowing(handler: Function): void;
         /**
 
 */
-add_columnShown(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+add_columnShown(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnEventArgs) => void): void;
+
 remove_columnShown(handler: Function): void;
         /**
 
 */
-add_columnSwapping(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnSwappingEventArgs) => void): void;
+add_columnSwapping(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnSwappingEventArgs) => void): void;
+
 remove_columnSwapping(handler: Function): void;
         /**
 
 */
-add_columnSwapped(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnSwappedEventArgs) => void): void;
+add_columnSwapped(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridColumnSwappedEventArgs) => void): void;
+
 remove_columnSwapped(handler: Function): void;
         /**
 
 */
-add_command(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridCommandEventArgs) => void): void;
+add_command(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridCommandEventArgs) => void): void;
+
 remove_command(handler: Function): void;
         /**
 
 */
-add_dataBinding(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataBindingEventArgs) => void): void;
+add_dataBinding(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataBindingEventArgs) => void): void;
+
 remove_dataBinding(handler: Function): void;
         /**
 
 */
-add_dataBindingFailed(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataBindingFailedEventArgs) => void): void;
+add_dataBindingFailed(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataBindingFailedEventArgs) => void): void;
+
 remove_dataBindingFailed(handler: Function): void;
         /**
 
 */
-add_dataSourceResolved(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataSourceResolvedEventArgs) => void): void;
+add_dataSourceResolved(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataSourceResolvedEventArgs) => void): void;
+
 remove_dataSourceResolved(handler: Function): void;
         /**
 
 */
-add_filterMenuShowing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridFilterMenuShowingEventArgs) => void): void;
+add_filterMenuShowing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridFilterMenuShowingEventArgs) => void): void;
+
 remove_filterMenuShowing(handler: Function): void;
         /**
 
 */
-add_groupCollapsing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridGroupCollapsingEventArgs) => void): void;
+add_groupCollapsing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridGroupCollapsingEventArgs) => void): void;
+
 remove_groupCollapsing(handler: Function): void;
         /**
 
 */
-add_groupExpanding(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridGroupExpandingEventArgs) => void): void;
+add_groupExpanding(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridGroupExpandingEventArgs) => void): void;
+
 remove_groupExpanding(handler: Function): void;
         /**
 
 */
-add_headerMenuShowing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridHeaderMenuCancelEventArgs) => void): void;
+add_headerMenuShowing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridHeaderMenuCancelEventArgs) => void): void;
+
 remove_headerMenuShowing(handler: Function): void;
         /**
 
 */
-add_hierarchyCollapsing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridHierarchyActionEventArgs) => void): void;
+add_hierarchyCollapsing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridHierarchyActionEventArgs) => void): void;
+
 remove_hierarchyCollapsing(handler: Function): void;
         /**
 
 */
-add_hierarchyCollapsed(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridHierarchyActionEventArgs) => void): void;
+add_hierarchyCollapsed(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridHierarchyActionEventArgs) => void): void;
+
 remove_hierarchyCollapsed(handler: Function): void;
         /**
 
 */
-add_hierarchyExpanding(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridHierarchyActionEventArgs) => void): void;
+add_hierarchyExpanding(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridHierarchyActionEventArgs) => void): void;
+
 remove_hierarchyExpanding(handler: Function): void;
         /**
 
 */
-add_hierarchyExpanded(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridHierarchyActionEventArgs) => void): void;
+add_hierarchyExpanded(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridHierarchyActionEventArgs) => void): void;
+
 remove_hierarchyExpanded(handler: Function): void;
         /**
 
 */
-add_keyPress(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridKeyPressEventArgs) => void): void;
+add_keyPress(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridKeyPressEventArgs) => void): void;
+
 remove_keyPress(handler: Function): void;
         /**
 
 */
-add_popUpShowing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridPopUpShowingEventArgs) => void): void;
+add_popUpShowing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridPopUpShowingEventArgs) => void): void;
+
 remove_popUpShowing(handler: Function): void;
         /**
 
 */
-add_rowClick(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowClick(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowClick(handler: Function): void;
         /**
 
 */
-add_rowContextMenu(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+add_rowContextMenu(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+
 remove_rowContextMenu(handler: Function): void;
         /**
 
 */
-add_rowCreated(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowCreated(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowCreated(handler: Function): void;
         /**
 
 */
-add_rowDataBound(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridRowDataBoundEventArgs) => void): void;
+add_rowDataBound(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridRowDataBoundEventArgs) => void): void;
+
 remove_rowDataBound(handler: Function): void;
         /**
 
 */
-add_rowDblClick(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowDblClick(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowDblClick(handler: Function): void;
         /**
 
 */
-add_rowDeleting(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+add_rowDeleting(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+
 remove_rowDeleting(handler: Function): void;
         /**
 
 */
-add_rowDeleted(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowDeleted(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowDeleted(handler: Function): void;
         /**
 
 */
-add_rowDeselecting(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+add_rowDeselecting(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+
 remove_rowDeselecting(handler: Function): void;
         /**
 
 */
-add_rowDeselected(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowDeselected(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowDeselected(handler: Function): void;
         /**
 
 */
-add_rowDragStarted(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+add_rowDragStarted(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+
 remove_rowDragStarted(handler: Function): void;
         /**
 
 */
-add_rowDropping(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDragDropCancelEventArgs) => void): void;
+add_rowDropping(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDragDropCancelEventArgs) => void): void;
+
 remove_rowDropping(handler: Function): void;
         /**
 
 */
-add_rowDropped(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDragDropCancelEventArgs) => void): void;
+add_rowDropped(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDragDropCancelEventArgs) => void): void;
+
 remove_rowDropped(handler: Function): void;
         /**
 
 */
-add_rowHiding(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+add_rowHiding(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+
 remove_rowHiding(handler: Function): void;
         /**
 
 */
-add_rowHidden(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowHidden(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowHidden(handler: Function): void;
         /**
 
 */
-add_rowMouseOver(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowMouseOver(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowMouseOver(handler: Function): void;
         /**
 
 */
-add_rowResizing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+add_rowResizing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+
 remove_rowResizing(handler: Function): void;
         /**
 
 */
-add_rowResized(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowResized(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowResized(handler: Function): void;
         /**
 
 */
-add_rowSelecting(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+add_rowSelecting(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+
 remove_rowSelecting(handler: Function): void;
         /**
 
 */
-add_rowSelected(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowSelected(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowSelected(handler: Function): void;
         /**
 
 */
-add_rowShowing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+add_rowShowing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemCancelEventArgs) => void): void;
+
 remove_rowShowing(handler: Function): void;
         /**
 
 */
-add_rowShown(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowShown(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowShown(handler: Function): void;
         /**
 
 */
-add_scroll(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridScrollEventArgs) => void): void;
+add_scroll(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridScrollEventArgs) => void): void;
+
 remove_scroll(handler: Function): void;
         /**
 
 */
-add_tableCreated(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridTableCreatedEventArgs) => void): void;
+add_tableCreated(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridTableCreatedEventArgs) => void): void;
+
 remove_tableCreated(handler: Function): void;
         /**
 
 */
-add_batchEditGetEditorValue(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditValueActionEventArgs) => void): void;
+add_batchEditGetEditorValue(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditValueActionEventArgs) => void): void;
+
 remove_batchEditGetEditorValue(handler: Function): void;
         /**
 
 */
-add_batchEditSetEditorValue(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditValueActionEventArgs) => void): void;
+add_batchEditSetEditorValue(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditValueActionEventArgs) => void): void;
+
 remove_batchEditSetEditorValue(handler: Function): void;
         /**
 
 */
-add_batchEditSetCellValue(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditValueActionEventArgs) => void): void;
+add_batchEditSetCellValue(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditValueActionEventArgs) => void): void;
+
 remove_batchEditSetCellValue(handler: Function): void;
         /**
 
 */
-add_batchEditGetCellValue(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditValueActionEventArgs) => void): void;
+add_batchEditGetCellValue(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditValueActionEventArgs) => void): void;
+
 remove_batchEditGetCellValue(handler: Function): void;
         /**
 
 */
-add_batchEditOpening(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditCancelEventArgs) => void): void;
+add_batchEditOpening(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditCancelEventArgs) => void): void;
+
 remove_batchEditOpening(handler: Function): void;
         /**
 
 */
-add_batchEditOpened(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditEventArgs) => void): void;
+add_batchEditOpened(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditEventArgs) => void): void;
+
 remove_batchEditOpened(handler: Function): void;
         /**
 
 */
-add_batchEditClosing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditCancelEventArgs) => void): void;
+add_batchEditClosing(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditCancelEventArgs) => void): void;
+
 remove_batchEditClosing(handler: Function): void;
         /**
 
 */
-add_batchEditClosed(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditEventArgs) => void): void;
+add_batchEditClosed(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditEventArgs) => void): void;
+
 remove_batchEditClosed(handler: Function): void;
         /**
 
 */
-add_batchEditCellValueChanged(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditCellValueChangedEventArgs) => void): void;
+add_batchEditCellValueChanged(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditCellValueChangedEventArgs) => void): void;
+
 remove_batchEditCellValueChanged(handler: Function): void;
         /**
 
 */
-add_batchEditCellValueChanging(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditCellValueChangingEventArgs) => void): void;
+add_batchEditCellValueChanging(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridBatchEditCellValueChangingEventArgs) => void): void;
+
 remove_batchEditCellValueChanging(handler: Function): void;
         /**
 
 */
-add_userAction(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridUserActionEventArgs) => void): void;
+add_userAction(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridUserActionEventArgs) => void): void;
+
 remove_userAction(handler: Function): void;
         /**
 
 */
-add_rowMouseOut(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+add_rowMouseOut(handler: (sender: Telerik.Web.UI.RadGrid, args: Telerik.Web.UI.GridDataItemEventArgs) => void): void;
+
 remove_rowMouseOut(handler: Function): void;
     }
 
@@ -15855,7 +16138,8 @@ set_width(value: number): void;
         /**
 Fires when the control's client-side object is created.
 */
-add_Load(handler: (sender: Telerik.Web.UI.RadHtmlChart, args: Sys.EventArgs) => void): void;
+add_Load(handler: (sender: Telerik.Web.UI.RadHtmlChart, args: Sys.EventArgs) => void): void;
+
 remove_Load(handler: Function): void;
     }
 
@@ -16420,52 +16704,62 @@ zoomOut(): void;
         /**
 Adds a handler to the resizeStart event (OnClientResizeStart server-side property). This client-side event occurs when the user starts resizing the control by the resize handle.
 */
-add_resizeStart(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Sys.EventArgs) => void): void;
+add_resizeStart(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Sys.EventArgs) => void): void;
+
 remove_resizeStart(handler: Function): void;
         /**
 Occurs after the control is initialized.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Occurs after the user has closed the dialog that loads the image editor tools.
 */
-add_toolsDialogClosed(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.EventArgs) => void): void;
+add_toolsDialogClosed(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.EventArgs) => void): void;
+
 remove_toolsDialogClosed(handler: Function): void;
         /**
 Occurs after the user has edited the image (i.e. after it has been changed).
 */
-add_imageChanged(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.ImageChangeEventArgs) => void): void;
+add_imageChanged(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.ImageChangeEventArgs) => void): void;
+
 remove_imageChanged(handler: Function): void;
         /**
 Occurs after the user has finished resizing the control by the resize handle.
 */
-add_resizeEnd(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Sys.EventArgs) => void): void;
+add_resizeEnd(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Sys.EventArgs) => void): void;
+
 remove_resizeEnd(handler: Function): void;
         /**
 Occurs after the user has saved the image.
 */
-add_saved(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.SavedEventArgs) => void): void;
+add_saved(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.SavedEventArgs) => void): void;
+
 remove_saved(handler: Function): void;
         /**
 Occurs immediately after the command has been executed.
 */
-add_commandExecuted(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.EventArgs) => void): void;
+add_commandExecuted(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.EventArgs) => void): void;
+
 remove_commandExecuted(handler: Function): void;
         /**
 Occurs immediately after the user has fired a command.
 */
-add_commandExecuting(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.CancelEventArgs) => void): void;
+add_commandExecuting(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.CancelEventArgs) => void): void;
+
 remove_commandExecuting(handler: Function): void;
         /**
 Occurs immediately before the user has edited the image on the client (i.e. before it is changed).
 */
-add_imageChanging(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.ImageChangeCancelEventArgs) => void): void;
+add_imageChanging(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.ImageChangeCancelEventArgs) => void): void;
+
 remove_imageChanging(handler: Function): void;
         /**
 Occurs when the user has pressed the shortcut combination on the keyboard. In order for the event to be fired the shortcut has to be registered with the RadImageEditor control. This event can be cancelled.
 */
-add_shortCutHit(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.ShortCutCancelEventArgs) => void): void;
+add_shortCutHit(handler: (sender: Telerik.Web.UI.RadImageEditor, args: Telerik.Web.UI.ImageEditor.ShortCutCancelEventArgs) => void): void;
+
 remove_shortCutHit(handler: Function): void;
     }
 
@@ -16844,32 +17138,38 @@ success(result: boolean): void;
         /**
 Occurs before the value being validated.
 */
-add_validating(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Telerik.Web.UI.InputManagerValidatingEventArgs) => void): void;
+add_validating(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Telerik.Web.UI.InputManagerValidatingEventArgs) => void): void;
+
 remove_validating(handler: Function): void;
         /**
 Occurs on keyUp DOM event.
 */
-add_keyUp(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Sys.EventArgs) => void): void;
+add_keyUp(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Sys.EventArgs) => void): void;
+
 remove_keyUp(handler: Function): void;
         /**
 Occurs when the element is blurred.
 */
-add_blur(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Telerik.Web.UI.InputManagerEventArgs) => void): void;
+add_blur(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Telerik.Web.UI.InputManagerEventArgs) => void): void;
+
 remove_blur(handler: Function): void;
         /**
 Occurs when the element obtain focus.
 */
-add_focus(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Telerik.Web.UI.InputManagerEventArgs) => void): void;
+add_focus(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Telerik.Web.UI.InputManagerEventArgs) => void): void;
+
 remove_focus(handler: Function): void;
         /**
 Occurs when the input control detects that the user has tried to enter an invalid value.
 */
-add_error(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Telerik.Web.UI.InputManagerErrorEventArgs) => void): void;
+add_error(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Telerik.Web.UI.InputManagerErrorEventArgs) => void): void;
+
 remove_error(handler: Function): void;
         /**
 Occurs when the values has changed.
 */
-add_valueChanged(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Telerik.Web.UI.InputManagerValueChangedEventArgs) => void): void;
+add_valueChanged(handler: (sender: Telerik.Web.UI.RadInputComponent, args: Telerik.Web.UI.InputManagerValueChangedEventArgs) => void): void;
+
 remove_valueChanged(handler: Function): void;
     }
 
@@ -17257,72 +17557,86 @@ updateDisplayValue(): void;
         /**
 Raised after the control loses focus just before a new value has been assigned.
 */
-add_valueChanging(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.InputValueChangingEventArgs) => void): void;
+add_valueChanging(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.InputValueChangingEventArgs) => void): void;
+
 remove_valueChanging(handler: Function): void;
         /**
 Raised after the control loses focus when a new value has been assigned.
 */
-add_valueChanged(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.InputValueChangedEventArgs) => void): void;
+add_valueChanged(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.InputValueChangedEventArgs) => void): void;
+
 remove_valueChanged(handler: Function): void;
         /**
 Raised when the control is disabled
 */
-add_disable(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+add_disable(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+
 remove_disable(handler: Function): void;
         /**
 Raised when the control is enabled
 */
-add_enable(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+add_enable(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+
 remove_enable(handler: Function): void;
         /**
 Raised when the control is focused
 */
-add_focus(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+add_focus(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+
 remove_focus(handler: Function): void;
         /**
 Raised when the control is loaded on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Raised when the mouse enters the input area.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
         /**
 Raised when the mouse leaves the input area.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 Raised when the RadInputControl loses focus
 */
-add_blur(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+add_blur(handler: (sender: Telerik.Web.UI.RadInputControl, args: Sys.EventArgs) => void): void;
+
 remove_blur(handler: Function): void;
         /**
 Raised when the user clicks on the button that is associated with the input control
 */
-add_buttonClick(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.InputButtonClickEventArgs) => void): void;
+add_buttonClick(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.InputButtonClickEventArgs) => void): void;
+
 remove_buttonClick(handler: Function): void;
         /**
 Raised when the user decreases the value of an enumeration or numeric range mask part.
 */
-add_moveDown(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+add_moveDown(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+
 remove_moveDown(handler: Function): void;
         /**
 Raised when the user enters an invalid value
 */
-add_error(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.InputErrorEventArgs) => void): void;
+add_error(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.InputErrorEventArgs) => void): void;
+
 remove_error(handler: Function): void;
         /**
 Raised when the user increases the value of an enumeration or numeric range mask part.
 */
-add_moveUp(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+add_moveUp(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+
 remove_moveUp(handler: Function): void;
         /**
 Raised when the user presses a key to enter a value.
 */
-add_keyPress(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.InputKeyPressEventArgs) => void): void;
+add_keyPress(handler: (sender: Telerik.Web.UI.RadInputControl, args: Telerik.Web.UI.InputKeyPressEventArgs) => void): void;
+
 remove_keyPress(handler: Function): void;
     }
 
@@ -17629,37 +17943,44 @@ showPrevButton(): void;
         /**
 Fires before closing the LightBox popup
 */
-add_closing(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+add_closing(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+
 remove_closing(handler: Function): void;
         /**
 Fires before disposing the control
 */
-add_destroying(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+add_destroying(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+
 remove_destroying(handler: Function): void;
         /**
 Fires before opening the LightBox popup
 */
-add_showing(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+add_showing(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+
 remove_showing(handler: Function): void;
         /**
 Fires when the control is loaded
 */
-add_load(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Fires when the popup is closed
 */
-add_closed(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+add_closed(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+
 remove_closed(handler: Function): void;
         /**
 Fires when the popup is opened
 */
-add_showed(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+add_showed(handler: (sender: Telerik.Web.UI.RadLightBox, args: Sys.EventArgs) => void): void;
+
 remove_showed(handler: Function): void;
         /**
 Fires when the user navigates out of the current page
 */
-add_navigating(handler: (sender: Telerik.Web.UI.RadLightBox, args: Telerik.Web.UI.LightBoxNavigatingEventArgs) => void): void;
+add_navigating(handler: (sender: Telerik.Web.UI.RadLightBox, args: Telerik.Web.UI.LightBoxNavigatingEventArgs) => void): void;
+
 remove_navigating(handler: Function): void;
     }
 
@@ -18011,132 +18332,158 @@ unselectItems(value: any): void;
         /**
 Occurs after the client template is bound and the binding expression are evaluated.
 */
-add_templateDataBound(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+add_templateDataBound(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+
 remove_templateDataBound(handler: Function): void;
         /**
 Occurs after the item/items are dropped.
 */
-add_dropped(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxDroppedEventArgs) => void): void;
+add_dropped(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxDroppedEventArgs) => void): void;
+
 remove_dropped(handler: Function): void;
         /**
 Occurs after the item/items are dropped.
 */
-add_reordering(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxReorderingEventArgs) => void): void;
+add_reordering(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxReorderingEventArgs) => void): void;
+
 remove_reordering(handler: Function): void;
         /**
 Occurs after the item/items are dropped.
 */
-add_reordered(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxReorderedEventArgs) => void): void;
+add_reordered(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxReorderedEventArgs) => void): void;
+
 remove_reordered(handler: Function): void;
         /**
 Occurs after the load-on-demand mechanism has added new items to the RadListBox.
 */
-add_itemsRequested(handler: (sender: Telerik.Web.UI.RadListBox, args: Sys.EventArgs) => void): void;
+add_itemsRequested(handler: (sender: Telerik.Web.UI.RadListBox, args: Sys.EventArgs) => void): void;
+
 remove_itemsRequested(handler: Function): void;
         /**
 Occurs after the RadListBox has been fully initialized on the client-side.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadListBox, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadListBox, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Occurs after the selected item has been changed.
 */
-add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxSelectedIndexChangedEventArgs) => void): void;
+add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxSelectedIndexChangedEventArgs) => void): void;
+
 remove_selectedIndexChanged(handler: Function): void;
         /**
 Occurs after the selected item has been transferred to the destination RadListBox.
 */
-add_transferred(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxTransferredEventArgs) => void): void;
+add_transferred(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxTransferredEventArgs) => void): void;
+
 remove_transferred(handler: Function): void;
         /**
 Occurs after the user double clicks the item.
 */
-add_itemDoubleClicked(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemDoubleClickedEventArgs) => void): void;
+add_itemDoubleClicked(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemDoubleClickedEventArgs) => void): void;
+
 remove_itemDoubleClicked(handler: Function): void;
         /**
 Occurs after user clicks on the CheckAll item.
 */
-add_checkAllChecked(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxCheckAllCheckedEventArgs) => void): void;
+add_checkAllChecked(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxCheckAllCheckedEventArgs) => void): void;
+
 remove_checkAllChecked(handler: Function): void;
         /**
 Occurs before the items are dropped.
 */
-add_dropping(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxDroppingEventArgs) => void): void;
+add_dropping(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxDroppingEventArgs) => void): void;
+
 remove_dropping(handler: Function): void;
         /**
 Occurs each time the user begins to drag an item.
 */
-add_dragStart(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxDragStartEventArgs) => void): void;
+add_dragStart(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxDragStartEventArgs) => void): void;
+
 remove_dragStart(handler: Function): void;
         /**
 Occurs each time the user moves a mouse while dragging an item.
 */
-add_dragging(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxDraggingEventArgs) => void): void;
+add_dragging(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxDraggingEventArgs) => void): void;
+
 remove_dragging(handler: Function): void;
         /**
 occurs for each item that is created during LoadOnDemand binding scenario.
 */
-add_itemDataBound(handler: (sender: Telerik.Web.UI.RadListBox, args: ListBoxItemDataBoundEventArgs) => void): void;
+add_itemDataBound(handler: (sender: Telerik.Web.UI.RadListBox, args: ListBoxItemDataBoundEventArgs) => void): void;
+
 remove_itemDataBound(handler: Function): void;
         /**
 Occurs just before the mouse passes out of an item.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxMouseOutEventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxMouseOutEventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 Occurs when a user right clicks over a RadListBoxItem.
 */
-add_contextMenu(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxContextMenuEventArgs) => void): void;
+add_contextMenu(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxContextMenuEventArgs) => void): void;
+
 remove_contextMenu(handler: Function): void;
         /**
 Occurs when an error has occurred while loading elements using the load-on-demand mechanism.
 */
-add_itemsRequestFailed(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemsRequestFailedEventArgs) => void): void;
+add_itemsRequestFailed(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemsRequestFailedEventArgs) => void): void;
+
 remove_itemsRequestFailed(handler: Function): void;
         /**
 Occurs when EnableLoadOnDemand is True and the RadListBox is about to send a server-side request to load more items.
 */
-add_itemsRequesting(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemsRequestingEventArgs) => void): void;
+add_itemsRequesting(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemsRequestingEventArgs) => void): void;
+
 remove_itemsRequesting(handler: Function): void;
         /**
 Occurs when the item or items are about to be deleted. This event can be canceled.
 */
-add_deleting(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxDeletingEventArgs) => void): void;
+add_deleting(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxDeletingEventArgs) => void): void;
+
 remove_deleting(handler: Function): void;
         /**
 Occurs when the mouse cursor passes over an item.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxMouseOverEventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxMouseOverEventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
         /**
 Occurs when the selected item is about to be changed.
 */
-add_selectedIndexChanging(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxSelectedIndexChangingEventArgs) => void): void;
+add_selectedIndexChanging(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxSelectedIndexChangingEventArgs) => void): void;
+
 remove_selectedIndexChanging(handler: Function): void;
         /**
 Occurs when the selected item is about to be transferred to the destination RadListBox
 */
-add_transferring(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxTransferringEventArgs) => void): void;
+add_transferring(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxTransferringEventArgs) => void): void;
+
 remove_transferring(handler: Function): void;
         /**
 Occurs when the user is about to click on the CheckAll item.
 */
-add_checkAllChecking(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxCheckAllCheckingEventArgs) => void): void;
+add_checkAllChecking(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxCheckAllCheckingEventArgs) => void): void;
+
 remove_checkAllChecking(handler: Function): void;
         /**
 Occurs when the user is about to double click the item using.
 */
-add_itemDoubleClicking(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemDoubleClickingEventArgs) => void): void;
+add_itemDoubleClicking(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemDoubleClickingEventArgs) => void): void;
+
 remove_itemDoubleClicking(handler: Function): void;
         /**
 Occurs when the user is just about to select a checkbox using mouse or keyboard.
 */
-add_itemChecking(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemCheckingEventArgs) => void): void;
+add_itemChecking(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemCheckingEventArgs) => void): void;
+
 remove_itemChecking(handler: Function): void;
         /**
 Occurs when the user is just about to select a checkbox using mouse or keyboard.
 */
-add_itemChecked(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemCheckedEventArgs) => void): void;
+add_itemChecked(handler: (sender: Telerik.Web.UI.RadListBox, args: Telerik.Web.UI.ListBoxItemCheckedEventArgs) => void): void;
+
 remove_itemChecked(handler: Function): void;
     }
 
@@ -18841,87 +19188,104 @@ updateItem(itemIndex: number): void;
         /**
 Fired after an item is deselected.
 */
-add_ItemDeselected(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemDeselectedEventArgs) => void): void;
+add_ItemDeselected(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemDeselectedEventArgs) => void): void;
+
 remove_ItemDeselected(handler: Function): void;
         /**
 Fired after the RadListView instance is created.
 */
-add_ListViewCreated(handler: (sender: Telerik.Web.UI.RadListView, args: Sys.EventArgs) => void): void;
+add_ListViewCreated(handler: (sender: Telerik.Web.UI.RadListView, args: Sys.EventArgs) => void): void;
+
 remove_ListViewCreated(handler: Function): void;
         /**
 Fired after the RadListView is bound on the client.
 */
-add_DataBound(handler: (sender: Telerik.Web.UI.RadListView, args: Sys.EventArgs) => void): void;
+add_DataBound(handler: (sender: Telerik.Web.UI.RadListView, args: Sys.EventArgs) => void): void;
+
 remove_DataBound(handler: Function): void;
         /**
 Fired before the RadListView instance is created.
 */
-add_ListViewCreating(handler: (sender: Telerik.Web.UI.RadListView, args: Sys.EventArgs) => void): void;
+add_ListViewCreating(handler: (sender: Telerik.Web.UI.RadListView, args: Sys.EventArgs) => void): void;
+
 remove_ListViewCreating(handler: Function): void;
         /**
 This client-side event is fired before RadListView databinds.
 */
-add_DataBinding(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewDataBindingEventArgs) => void): void;
+add_DataBinding(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewDataBindingEventArgs) => void): void;
+
 remove_DataBinding(handler: Function): void;
         /**
 This client-side event is fired when RadListView fails to databind automatically to a web service.
 */
-add_DataBindingFailed(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewDataBindingFailedEventArgs) => void): void;
+add_DataBindingFailed(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewDataBindingFailedEventArgs) => void): void;
+
 remove_DataBindingFailed(handler: Function): void;
         /**
 The event is fired when an item is about to be deselected.
 */
-add_ItemDeselecting(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemDeselectingEventArgs) => void): void;
+add_ItemDeselecting(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemDeselectingEventArgs) => void): void;
+
 remove_ItemDeselecting(handler: Function): void;
         /**
 Fired when a client-side template is databound
 */
-add_TemplateDataBound(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewTemplateDataBoundEventArgs) => void): void;
+add_TemplateDataBound(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewTemplateDataBoundEventArgs) => void): void;
+
 remove_TemplateDataBound(handler: Function): void;
         /**
 Fired when a command is about to be executed.
 */
-add_Command(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewCommandEventArgs) => void): void;
+add_Command(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewCommandEventArgs) => void): void;
+
 remove_Command(handler: Function): void;
         /**
 Fired when a template is created.
 */
-add_TemplateCreated(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewTemplateCreatedEventArgs) => void): void;
+add_TemplateCreated(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewTemplateCreatedEventArgs) => void): void;
+
 remove_TemplateCreated(handler: Function): void;
         /**
 Firen when an item is about to be selected.
 */
-add_ItemSelecting(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemSelectingEventArgs) => void): void;
+add_ItemSelecting(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemSelectingEventArgs) => void): void;
+
 remove_ItemSelecting(handler: Function): void;
         /**
 Fired when an item is dragged.
 */
-add_ItemDragging(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemDraggingEventArgs) => void): void;
+add_ItemDragging(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemDraggingEventArgs) => void): void;
+
 remove_ItemDragging(handler: Function): void;
         /**
 Firen when an item is selected.
 */
-add_ItemSelected(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemSelectedEventArgs) => void): void;
+add_ItemSelected(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemSelectedEventArgs) => void): void;
+
 remove_ItemSelected(handler: Function): void;
         /**
 Fired when automatic data-binding to a web service is used and the data source is resolved.
 */
-add_DataSourceResolved(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewDataSourceResolvedEventArgs) => void): void;
+add_DataSourceResolved(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewDataSourceResolvedEventArgs) => void): void;
+
 remove_DataSourceResolved(handler: Function): void;
         /**
 Fired when the dragged item is being dropped over an element.
 */
-add_ItemDropping(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemDroppingEventArgs) => void): void;
+add_ItemDropping(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemDroppingEventArgs) => void): void;
+
 remove_ItemDropping(handler: Function): void;
         /**
 Fired when the dragged item is dropped.
 */
-add_ItemDropped(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemDroppedEventArgs) => void): void;
+add_ItemDropped(handler: (sender: Telerik.Web.UI.RadListView, args: ListViewItemDroppedEventArgs) => void): void;
+
 remove_ItemDropped(handler: Function): void;
         /**
 Fired when the RadListView instance is about to be disposed.
 */
-add_ListViewDestroying(handler: (sender: Telerik.Web.UI.RadListView, args: Sys.EventArgs) => void): void;
+add_ListViewDestroying(handler: (sender: Telerik.Web.UI.RadListView, args: Sys.EventArgs) => void): void;
+
 remove_ListViewDestroying(handler: Function): void;
     }
 
@@ -19502,22 +19866,26 @@ set_updateInterval(value: number): void;
         /**
 The dataLoaded event occurs after the data request returns the data successfully.
 */
-add_dataLoaded(handler: (sender: Telerik.Web.UI.RadLiveTile, args: Telerik.Web.UI.LiveTileDataEventArgs) => void): void;
+add_dataLoaded(handler: (sender: Telerik.Web.UI.RadLiveTile, args: Telerik.Web.UI.LiveTileDataEventArgs) => void): void;
+
 remove_dataLoaded(handler: Function): void;
         /**
 The dataLoading client-side event occurs before the data request is executed.
 */
-add_dataLoading(handler: (sender: Telerik.Web.UI.RadLiveTile, args: Telerik.Web.UI.LiveTileCancelEventArgs) => void): void;
+add_dataLoading(handler: (sender: Telerik.Web.UI.RadLiveTile, args: Telerik.Web.UI.LiveTileCancelEventArgs) => void): void;
+
 remove_dataLoading(handler: Function): void;
         /**
 The dataLoadingError event occurs after the data request returns error.
 */
-add_dataLoadingError(handler: (sender: Telerik.Web.UI.RadLiveTile, args: Telerik.Web.UI.LiveTileErrorEventArgs) => void): void;
+add_dataLoadingError(handler: (sender: Telerik.Web.UI.RadLiveTile, args: Telerik.Web.UI.LiveTileErrorEventArgs) => void): void;
+
 remove_dataLoadingError(handler: Function): void;
         /**
 The templateDataBound client-side event occurs after the client template is data bound.
 */
-add_templateDataBound(handler: (sender: Telerik.Web.UI.RadLiveTile, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+add_templateDataBound(handler: (sender: Telerik.Web.UI.RadLiveTile, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+
 remove_templateDataBound(handler: Function): void;
     }
 
@@ -19545,12 +19913,14 @@ saveClientState(): string;
         /**
 This event is raised before the initialization of the Map.
 */
-add_initialize(handler: (sender: Telerik.Web.UI.RadMap, args: Telerik.Web.UI.RadMapInitializeEventArgs) => void): void;
+add_initialize(handler: (sender: Telerik.Web.UI.RadMap, args: Telerik.Web.UI.RadMapInitializeEventArgs) => void): void;
+
 remove_initialize(handler: Function): void;
         /**
 This event is raised when the initialization of the Map is finished and all its elements are rendered on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadMap, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadMap, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
     }
 
@@ -20109,67 +20479,80 @@ updateHiddenValue(): void;
         /**
 Raised after the control loses focus just before a new value has been assigned.
 */
-add_valueChanging(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.InputValueChangingEventArgs) => void): void;
+add_valueChanging(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.InputValueChangingEventArgs) => void): void;
+
 remove_valueChanging(handler: Function): void;
         /**
 Raised when the control is disabled
 */
-add_disable(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+add_disable(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+
 remove_disable(handler: Function): void;
         /**
 Raised when the control is enabled
 */
-add_enable(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+add_enable(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+
 remove_enable(handler: Function): void;
         /**
 Raised when the control is focused
 */
-add_focus(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+add_focus(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+
 remove_focus(handler: Function): void;
         /**
 Raised when the control is loaded on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Raised when the mouse enters the input area.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
         /**
 Raised when the mouse leaves the input area.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 Raised when the RadInputControl loses focus
 */
-add_blur(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+add_blur(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Sys.EventArgs) => void): void;
+
 remove_blur(handler: Function): void;
         /**
 Raised when the user clicks on the button that is associated with the input control
 */
-add_buttonClick(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.InputButtonClickEventArgs) => void): void;
+add_buttonClick(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.InputButtonClickEventArgs) => void): void;
+
 remove_buttonClick(handler: Function): void;
         /**
 Raised when the user decreases the value of an enumeration or numeric range mask part.
 */
-add_moveDown(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+add_moveDown(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+
 remove_moveDown(handler: Function): void;
         /**
 Raised when the user enters an invalid value
 */
-add_error(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.InputErrorEventArgs) => void): void;
+add_error(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.InputErrorEventArgs) => void): void;
+
 remove_error(handler: Function): void;
         /**
 Raised when the user increases the value of an enumeration or numeric range mask part.
 */
-add_moveUp(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+add_moveUp(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+
 remove_moveUp(handler: Function): void;
         /**
 Raised when the user presses a key to enter a value.
 */
-add_keyPress(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.InputKeyPressEventArgs) => void): void;
+add_keyPress(handler: (sender: Telerik.Web.UI.RadMaskedTextBox, args: Telerik.Web.UI.InputKeyPressEventArgs) => void): void;
+
 remove_keyPress(handler: Function): void;
     }
 
@@ -20437,32 +20820,38 @@ unmute(): void;
         /**
 This event is fired after the media begins playing.
 */
-add_Play(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Sys.EventArgs) => void): void;
+add_Play(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Sys.EventArgs) => void): void;
+
 remove_Play(handler: Function): void;
         /**
 This event is fired after the media finishes playing
 */
-add_Ended(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Sys.EventArgs) => void): void;
+add_Ended(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Sys.EventArgs) => void): void;
+
 remove_Ended(handler: Function): void;
         /**
 This event is fired after the media pauses.
 */
-add_Paused(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Sys.EventArgs) => void): void;
+add_Paused(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Sys.EventArgs) => void): void;
+
 remove_Paused(handler: Function): void;
         /**
 This event is fired upon changing the volume level.
 */
-add_VolumeChanged(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Telerik.Web.UI.MediaPlayerVolumeChangedEventArgs) => void): void;
+add_VolumeChanged(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Telerik.Web.UI.MediaPlayerVolumeChangedEventArgs) => void): void;
+
 remove_VolumeChanged(handler: Function): void;
         /**
 This event is fired when any loading is over and the player is ready to start playing the media.
 */
-add_Ready(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Sys.EventArgs) => void): void;
+add_Ready(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Sys.EventArgs) => void): void;
+
 remove_Ready(handler: Function): void;
         /**
 This event is fired when the user selects a new play time.
 */
-add_SeekStart(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Telerik.Web.UI.SliderCancelEventArgs) => void): void;
+add_SeekStart(handler: (sender: Telerik.Web.UI.RadMediaPlayer, args: Telerik.Web.UI.SliderCancelEventArgs) => void): void;
+
 remove_SeekStart(handler: Function): void;
     }
 
@@ -20722,67 +21111,80 @@ trackChanges(): void;
         /**
 The itemPopulationFailed event is fired when an attempt to populate a list of child items using a Web service fails.
 */
-add_itemPopulationFailed(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemPopulatingEventArgs) => void): void;
+add_itemPopulationFailed(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemPopulatingEventArgs) => void): void;
+
 remove_itemPopulationFailed(handler: Function): void;
         /**
 The itemClicked event is fired immediately after the menu responds to an item click.
 */
-add_itemClicked(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemClickedEventArgs) => void): void;
+add_itemClicked(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemClickedEventArgs) => void): void;
+
 remove_itemClicked(handler: Function): void;
         /**
 The ItemClicking event occurs when the user clicks on an item before the menu responds to the click.
 */
-add_itemClicking(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemClickingEventArgs) => void): void;
+add_itemClicking(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemClickingEventArgs) => void): void;
+
 remove_itemClicking(handler: Function): void;
         /**
 The itemClosed event is fired immediately after an item contracts to hide its child items.
 */
-add_itemClosed(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemClosedEventArgs) => void): void;
+add_itemClosed(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemClosedEventArgs) => void): void;
+
 remove_itemClosed(handler: Function): void;
         /**
 The itemClosing event is fired immediately before an item contracts, hiding its child items.
 */
-add_itemClosing(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemClosingEventArgs) => void): void;
+add_itemClosing(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemClosingEventArgs) => void): void;
+
 remove_itemClosing(handler: Function): void;
         /**
 The itemFocus event is fired when focus moves to an item.
 */
-add_itemFocus(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemFocusEventArgs) => void): void;
+add_itemFocus(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemFocusEventArgs) => void): void;
+
 remove_itemFocus(handler: Function): void;
         /**
 The itemOpened event is fired immediately after an item expands to show its child items.
 */
-add_itemOpened(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemOpenedEventArgs) => void): void;
+add_itemOpened(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemOpenedEventArgs) => void): void;
+
 remove_itemOpened(handler: Function): void;
         /**
 The itemOpening event is fired immediately before an item expands to show its child items.
 */
-add_itemOpening(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemOpeningEventArgs) => void): void;
+add_itemOpening(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemOpeningEventArgs) => void): void;
+
 remove_itemOpening(handler: Function): void;
         /**
 The itemPopulated event is fired immediately after the list of child items for an item with ExpandMode set to "WebService" has been populated by a Web service.
 */
-add_itemPopulated(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemPopulatedEventArgs) => void): void;
+add_itemPopulated(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemPopulatedEventArgs) => void): void;
+
 remove_itemPopulated(handler: Function): void;
         /**
 The itemPopulating event is fired when an item with ExpandMode set to "WebService" is opened, immediately before the menu calls the Web service to populate the list of child items.
 */
-add_itemPopulating(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemPopulatingEventArgs) => void): void;
+add_itemPopulating(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuItemPopulatingEventArgs) => void): void;
+
 remove_itemPopulating(handler: Function): void;
         /**
 The load event is fired when the menu is first loaded.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadMenu, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadMenu, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The mouseOut event is fired when the mouse moves off of the menu.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuMouseOutEventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuMouseOutEventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 The mouseOver event is fired when the mouse moves over the menu.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuMouseOverEventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadMenu, args: Telerik.Web.UI.RadMenuMouseOverEventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
     }
 
@@ -21699,32 +22101,38 @@ togglePopup(): void;
         /**
 The dateSelected event is fired immediately after the value of the control's selection has changed.
 */
-add_dateSelected(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.DateInputValueChangedEventArgs) => void): void;
+add_dateSelected(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.DateInputValueChangedEventArgs) => void): void;
+
 remove_dateSelected(handler: Function): void;
         /**
 The monthSelected event is fired immediately after a user select a month cell in the MonthYearView.
 */
-add_monthSelected(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.MonthYearPickerMonthSelectedEventArgs) => void): void;
+add_monthSelected(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.MonthYearPickerMonthSelectedEventArgs) => void): void;
+
 remove_monthSelected(handler: Function): void;
         /**
 The popupClosing event is fired immediately before a popup calendar or time view is closed.
 */
-add_popupClosing(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.MonthYearPickerPopupClosingEventArgs) => void): void;
+add_popupClosing(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.MonthYearPickerPopupClosingEventArgs) => void): void;
+
 remove_popupClosing(handler: Function): void;
         /**
 The popupOpening event is fired immediately before a popup calendar or time view is initialized to the current selection in the input area and then displayed.
 */
-add_popupOpening(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.MonthYearPickerPopupOpeningEventArgs) => void): void;
+add_popupOpening(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.MonthYearPickerPopupOpeningEventArgs) => void): void;
+
 remove_popupOpening(handler: Function): void;
         /**
 The viewChanged event is fired when the MonthYearView navigates to a new view, before the viewable area rendered by the MonthYearView is changed.
 */
-add_viewChanged(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.MonthYearPickerViewChangedEventArgs) => void): void;
+add_viewChanged(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.MonthYearPickerViewChangedEventArgs) => void): void;
+
 remove_viewChanged(handler: Function): void;
         /**
 The yearSelected event is fired immediately after a user select an year cell in the MonthYearView.
 */
-add_yearSelected(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.MonthYearPickerMonthSelectedEventArgs) => void): void;
+add_yearSelected(handler: (sender: Telerik.Web.UI.RadMonthYearPicker, args: Telerik.Web.UI.MonthYearPickerMonthSelectedEventArgs) => void): void;
+
 remove_yearSelected(handler: Function): void;
     }
 
@@ -21881,47 +22289,56 @@ toggle(): void;
         /**
 Fired when the value of the widget is changed via API or user interaction.
 */
-add_onCascade(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.CancelEventArgs) => void): void;
+add_onCascade(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.CancelEventArgs) => void): void;
+
 remove_onCascade(handler: Function): void;
         /**
 Fired when the value of the widget is changed by the user.
 */
-add_onChange(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.EventArgs) => void): void;
+add_onChange(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.EventArgs) => void): void;
+
 remove_onChange(handler: Function): void;
         /**
 Fired when the popup of the widget is closed.
 */
-add_onClose(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.CancelEventArgs) => void): void;
+add_onClose(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.CancelEventArgs) => void): void;
+
 remove_onClose(handler: Function): void;
         /**
 Fired when the widget is bound to data from its data source.
 */
-add_onDataBound(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.EventArgs) => void): void;
+add_onDataBound(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.EventArgs) => void): void;
+
 remove_onDataBound(handler: Function): void;
         /**
 Fired just before the RadMultiColumnComboBox client-side object and Kendo Widget is initialized.
 */
-add_onInitialize(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.EventArgs) => void): void;
+add_onInitialize(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.EventArgs) => void): void;
+
 remove_onInitialize(handler: Function): void;
         /**
 Fired when the widget is about to filter the data source.
 */
-add_onFiltering(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.CancelEventArgs) => void): void;
+add_onFiltering(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.CancelEventArgs) => void): void;
+
 remove_onFiltering(handler: Function): void;
         /**
 Fired when RadMultiColumnComboBox is initialized.
 */
-add_onLoad(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.EventArgs) => void): void;
+add_onLoad(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.EventArgs) => void): void;
+
 remove_onLoad(handler: Function): void;
         /**
 Fired when the popup of the widget is opened by the user.
 */
-add_onOpen(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.CancelEventArgs) => void): void;
+add_onOpen(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.CancelEventArgs) => void): void;
+
 remove_onOpen(handler: Function): void;
         /**
 Fired when an item from the popup is selected by the user either with mouse/tap or with keyboard navigation.
 */
-add_onSelect(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.CancelEventArgs) => void): void;
+add_onSelect(handler: (sender: Telerik.Web.UI.RadMultiColumnComboBox, args: Sys.CancelEventArgs) => void): void;
+
 remove_onSelect(handler: Function): void;
     }
 
@@ -22422,37 +22839,44 @@ verifySound(): boolean;
         /**
 The hidden event occurs just after the notification is hidden.
 */
-add_hidden(handler: (sender: Telerik.Web.UI.RadNotification, args: Sys.EventArgs) => void): void;
+add_hidden(handler: (sender: Telerik.Web.UI.RadNotification, args: Sys.EventArgs) => void): void;
+
 remove_hidden(handler: Function): void;
         /**
 The hiding event occurs just before the notification is hidden.
 */
-add_hiding(handler: (sender: Telerik.Web.UI.RadNotification, args: Sys.CancelEventArgs) => void): void;
+add_hiding(handler: (sender: Telerik.Web.UI.RadNotification, args: Sys.CancelEventArgs) => void): void;
+
 remove_hiding(handler: Function): void;
         /**
 The showing event occurs just before the notification is shown.
 */
-add_showing(handler: (sender: Telerik.Web.UI.RadNotification, args: Sys.CancelEventArgs) => void): void;
+add_showing(handler: (sender: Telerik.Web.UI.RadNotification, args: Sys.CancelEventArgs) => void): void;
+
 remove_showing(handler: Function): void;
         /**
 The shown event occurs just after the notification is shown.
 */
-add_shown(handler: (sender: Telerik.Web.UI.RadNotification, args: Sys.EventArgs) => void): void;
+add_shown(handler: (sender: Telerik.Web.UI.RadNotification, args: Sys.EventArgs) => void): void;
+
 remove_shown(handler: Function): void;
         /**
 The updating event occurs after the new content is received and just before it is updated in the control.
 */
-add_updating(handler: (sender: Telerik.Web.UI.RadNotification, args: Telerik.Web.UI.XmlHttpPanelEventArgs) => void): void;
+add_updating(handler: (sender: Telerik.Web.UI.RadNotification, args: Telerik.Web.UI.XmlHttpPanelEventArgs) => void): void;
+
 remove_updating(handler: Function): void;
         /**
 The updateError event occurs if there has been an error when the RadNotification content should be updated.
 */
-add_updateError(handler: (sender: Telerik.Web.UI.RadNotification, args: Telerik.Web.UI.XmlHttpPanelErrorEventArgs) => void): void;
+add_updateError(handler: (sender: Telerik.Web.UI.RadNotification, args: Telerik.Web.UI.XmlHttpPanelErrorEventArgs) => void): void;
+
 remove_updateError(handler: Function): void;
         /**
 The updated event occurs just after the notification content is updated.
 */
-add_updated(handler: (sender: Telerik.Web.UI.RadNotification, args: Sys.EventArgs) => void): void;
+add_updated(handler: (sender: Telerik.Web.UI.RadNotification, args: Sys.EventArgs) => void): void;
+
 remove_updated(handler: Function): void;
     }
 
@@ -22924,72 +23348,86 @@ updateDisplayValue(): void;
         /**
 Raised after the control loses focus just before a new value has been assigned.
 */
-add_valueChanging(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.InputValueChangingEventArgs) => void): void;
+add_valueChanging(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.InputValueChangingEventArgs) => void): void;
+
 remove_valueChanging(handler: Function): void;
         /**
 Raised after the control loses focus when a new value has been assigned.
 */
-add_valueChanged(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.InputValueChangedEventArgs) => void): void;
+add_valueChanged(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.InputValueChangedEventArgs) => void): void;
+
 remove_valueChanged(handler: Function): void;
         /**
 Raised when the control is disabled
 */
-add_disable(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+add_disable(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+
 remove_disable(handler: Function): void;
         /**
 Raised when the control is enabled
 */
-add_enable(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+add_enable(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+
 remove_enable(handler: Function): void;
         /**
 Raised when the control is focused
 */
-add_focus(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+add_focus(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+
 remove_focus(handler: Function): void;
         /**
 Raised when the control is loaded on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Raised when the mouse enters the input area.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
         /**
 Raised when the mouse leaves the input area.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 Raised when the RadInputControl loses focus
 */
-add_blur(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+add_blur(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Sys.EventArgs) => void): void;
+
 remove_blur(handler: Function): void;
         /**
 Raised when the user clicks on the button that is associated with the input control
 */
-add_buttonClick(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.InputButtonClickEventArgs) => void): void;
+add_buttonClick(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.InputButtonClickEventArgs) => void): void;
+
 remove_buttonClick(handler: Function): void;
         /**
 Raised when the user decreases the value of an enumeration or numeric range mask part.
 */
-add_moveDown(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+add_moveDown(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+
 remove_moveDown(handler: Function): void;
         /**
 Raised when the user enters an invalid value
 */
-add_error(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.InputErrorEventArgs) => void): void;
+add_error(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.InputErrorEventArgs) => void): void;
+
 remove_error(handler: Function): void;
         /**
 Raised when the user increases the value of an enumeration or numeric range mask part.
 */
-add_moveUp(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+add_moveUp(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+
 remove_moveUp(handler: Function): void;
         /**
 Raised when the user presses a key to enter a value.
 */
-add_keyPress(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.InputKeyPressEventArgs) => void): void;
+add_keyPress(handler: (sender: Telerik.Web.UI.RadNumericTextBox, args: Telerik.Web.UI.InputKeyPressEventArgs) => void): void;
+
 remove_keyPress(handler: Function): void;
     }
 
@@ -23138,17 +23576,20 @@ set_sortExpression(arrayofsortexpression: any): any;
         /**
 Occurs data is requested form the web service.
 */
-add_requesting(handler: (sender: Telerik.Web.UI.RadODataDataSource, args: Telerik.Web.UI.ODataDataSourceRequestingEventArgs) => void): void;
+add_requesting(handler: (sender: Telerik.Web.UI.RadODataDataSource, args: Telerik.Web.UI.ODataDataSourceRequestingEventArgs) => void): void;
+
 remove_requesting(handler: Function): void;
         /**
 Occurs when data requested is successfully received.
 */
-add_requestSucceeded(handler: (sender: Telerik.Web.UI.RadODataDataSource, args: Telerik.Web.UI.ODataDataSourceRequestSucceededEventArgs) => void): void;
+add_requestSucceeded(handler: (sender: Telerik.Web.UI.RadODataDataSource, args: Telerik.Web.UI.ODataDataSourceRequestSucceededEventArgs) => void): void;
+
 remove_requestSucceeded(handler: Function): void;
         /**
 Occurs when data requested is successfully received.
 */
-add_requestFail(handler: (sender: Telerik.Web.UI.RadODataDataSource, args: Telerik.Web.UI.ODataDataSourceRequestFailedEventArgs) => void): void;
+add_requestFail(handler: (sender: Telerik.Web.UI.RadODataDataSource, args: Telerik.Web.UI.ODataDataSourceRequestFailedEventArgs) => void): void;
+
 remove_requestFail(handler: Function): void;
     }
 
@@ -23189,30 +23630,35 @@ get_nodes(): any;
 The nodePopulating client-side event handler is called when the RadOrgChart is about to request the child nodes of the expanded node. 
 The event is raised only for a client-side data binding and can be cancelled.
 */
-add_nodePopulating(handler: (sender: Telerik.Web.UI.RadOrgChart, eventArgs: Telerik.Web.UI.RadOrgChartNodePopulatingArguments) => void): void;
+add_nodePopulating(handler: (sender: Telerik.Web.UI.RadOrgChart, eventArgs: Telerik.Web.UI.RadOrgChartNodePopulatingArguments) => void): void;
+
 remove_nodePopulating(handler: Function): void;
         /**
 The groupPopulated client-side event handler is called when the RadOrgChart has received the group items within a node from the Web Service. 
 The event is raised only for a client-side data binding and cannot be cancelled.
 */
-add_groupPopulated(handler: (sender: Telerik.Web.UI.RadOrgChart, eventArgs: Telerik.Web.UI.RadOrgChartGroupPopulatedArguments) => void): void;
+add_groupPopulated(handler: (sender: Telerik.Web.UI.RadOrgChart, eventArgs: Telerik.Web.UI.RadOrgChartGroupPopulatedArguments) => void): void;
+
 remove_groupPopulated(handler: Function): void;
         /**
 The groupPopulating client-side event handler is called when the RadOrgChart is about to request the group items within a node. 
 The event is raised only for a client-side data binding and can be cancelled.
 */
-add_groupPopulating(handler: (sender: Telerik.Web.UI.RadOrgChart, eventArgs: Telerik.Web.UI.RadOrgChartGroupPopulatingArguments) => void): void;
+add_groupPopulating(handler: (sender: Telerik.Web.UI.RadOrgChart, eventArgs: Telerik.Web.UI.RadOrgChartGroupPopulatingArguments) => void): void;
+
 remove_groupPopulating(handler: Function): void;
         /**
 The groupPopulationFailed client-side event handler is called when a request to the Web Service has failed. The event is raised only for a client-side data binding.
 */
-add_groupPopulationFailed(handler: (sender: Telerik.Web.UI.RadOrgChart, eventArgs: Telerik.Web.UI.RadOrgChartGroupPopulationFailedArguments) => void): void;
+add_groupPopulationFailed(handler: (sender: Telerik.Web.UI.RadOrgChart, eventArgs: Telerik.Web.UI.RadOrgChartGroupPopulationFailedArguments) => void): void;
+
 remove_groupPopulationFailed(handler: Function): void;
         /**
 The nodePopulationFailed client-side event handler is called when a request to the Web Service has failed. 
 The event is raised only for a client-side data binding.
 */
-add_nodePopulationFailed(handler: (sender: Telerik.Web.UI.RadOrgChart, eventArgs: Telerik.Web.UI.RadOrgChartNodePopulationFailedArguments) => void): void;
+add_nodePopulationFailed(handler: (sender: Telerik.Web.UI.RadOrgChart, eventArgs: Telerik.Web.UI.RadOrgChartNodePopulationFailedArguments) => void): void;
+
 remove_nodePopulationFailed(handler: Function): void;
     }
 
@@ -23916,52 +24362,62 @@ trackChanges(): void;
         /**
 This event is fired immediately after an item is collapsed.
 */
-add_itemCollapse(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemCollapseEventArgs) => void): void;
+add_itemCollapse(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemCollapseEventArgs) => void): void;
+
 remove_itemCollapse(handler: Function): void;
         /**
 This event is fired immediately after an item is expanded.
 */
-add_itemExpand(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemExpandEventArgs) => void): void;
+add_itemExpand(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemExpandEventArgs) => void): void;
+
 remove_itemExpand(handler: Function): void;
         /**
 This event is fired immediately after the panel bar responds to an item click.
 */
-add_itemClicked(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemClickedEventArgs) => void): void;
+add_itemClicked(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemClickedEventArgs) => void): void;
+
 remove_itemClicked(handler: Function): void;
         /**
 This event is fired when an item gets focus.
 */
-add_itemFocus(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemFocusEventArgs) => void): void;
+add_itemFocus(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemFocusEventArgs) => void): void;
+
 remove_itemFocus(handler: Function): void;
         /**
 This event is fired when an item loses focus.
 */
-add_itemBlur(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemBlurEventArgs) => void): void;
+add_itemBlur(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemBlurEventArgs) => void): void;
+
 remove_itemBlur(handler: Function): void;
         /**
 This event is fired when the mouse moves off of an item in the panel bar.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelMouseOutEventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelMouseOutEventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 This event is fired when the mouse moves over an item in the panel bar.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelMouseOverEventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelMouseOverEventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
         /**
 This event is fired when the RadPanelBar client-side object is loaded.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 This event is fired when the user clicks on an item before the panel bar responds to the click.
 */
-add_itemClicking(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemClickingEventArgs) => void): void;
+add_itemClicking(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemClickingEventArgs) => void): void;
+
 remove_itemClicking(handler: Function): void;
         /**
 This event is fired when the user right-clicks on an item in the panel bar.
 */
-add_contextMenu(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemCancelEventArgs) => void): void;
+add_contextMenu(handler: (sender: Telerik.Web.UI.RadPanelBar, args: Telerik.Web.UI.RadPanelItemCancelEventArgs) => void): void;
+
 remove_contextMenu(handler: Function): void;
     }
 
@@ -24986,57 +25442,68 @@ tryReorderField(fieldOrUniqueName: string, zoneType: Telerik.Web.UI.PivotGridFie
         /**
 This event is fired when the RadPivotGrid client component is about to be disposed.
 */
-add_pivotGridDestroying(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Sys.EventArgs) => void): void;
+add_pivotGridDestroying(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Sys.EventArgs) => void): void;
+
 remove_pivotGridDestroying(handler: Function): void;
         /**
 This event is fired when the RadPivotGrid client component is initialized.
 */
-add_pivotGridCreated(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Sys.EventArgs) => void): void;
+add_pivotGridCreated(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Sys.EventArgs) => void): void;
+
 remove_pivotGridCreated(handler: Function): void;
         /**
 This event is fired when the RadPivotGrid client component is initializing.
 */
-add_pivotGridCreating(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Sys.EventArgs) => void): void;
+add_pivotGridCreating(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Sys.EventArgs) => void): void;
+
 remove_pivotGridCreating(handler: Function): void;
         /**
 The event is raised immediately before the tooltip is shown on the client. Cannot be cancelled.
 */
-add_toolTipShow(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridToolTipShowEventArgs) => void): void;
+add_toolTipShow(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridToolTipShowEventArgs) => void): void;
+
 remove_toolTipShow(handler: Function): void;
         /**
 The event is raised when the RadContextMenu is about to be shown. The event is cancellable.
 */
-add_menuShowing(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridMenuShowingEventArgs) => void): void;
+add_menuShowing(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridMenuShowingEventArgs) => void): void;
+
 remove_menuShowing(handler: Function): void;
         /**
 The event is raised when the RadContextMenu is shown. The event is not cancellable.
 */
-add_menuShown(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridMenuShownEventArgs) => void): void;
+add_menuShown(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridMenuShownEventArgs) => void): void;
+
 remove_menuShown(handler: Function): void;
         /**
 The event is raised when the user clicks with the right mouse button on a cell from the RadPivotGrid.
 */
-add_cellContextMenu(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridCellEventArgs) => void): void;
+add_cellContextMenu(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridCellEventArgs) => void): void;
+
 remove_cellContextMenu(handler: Function): void;
         /**
 The event is raised when the user double clicks on a cell from the RadPivotGrid.
 */
-add_cellDoubleClick(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridCellEventArgs) => void): void;
+add_cellDoubleClick(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridCellEventArgs) => void): void;
+
 remove_cellDoubleClick(handler: Function): void;
         /**
 The event is raised when the user moves the mouse pointer out of a cell from the RadPivotGrid.
 */
-add_cellMouseOut(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridCellEventArgs) => void): void;
+add_cellMouseOut(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridCellEventArgs) => void): void;
+
 remove_cellMouseOut(handler: Function): void;
         /**
 The event is raised when the user moves the mouse pointer over a cell from the RadPivotGrid.
 */
-add_cellMouseOver(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridCellEventArgs) => void): void;
+add_cellMouseOver(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridCellEventArgs) => void): void;
+
 remove_cellMouseOver(handler: Function): void;
         /**
 This event will be raised when a client command is executed in RadPivotGrid. The command can be canceled.
 */
-add_command(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridCommandCancelEventArgs) => void): void;
+add_command(handler: (sender: Telerik.Web.UI.RadPivotGrid, args: Telerik.Web.UI.PivotGridCommandCancelEventArgs) => void): void;
+
 remove_command(handler: Function): void;
     }
 
@@ -25219,22 +25686,26 @@ set_value(Number: any): any;
         /**
 The client-side valueChanging event is raised just before the RadProgressBar value property is changed. You can handle this event in case you want to prevent the current value from changing.
 */
-add_valueChanging(handler: (sender: Telerik.Web.UI.RadProgressBar, args: Telerik.Web.UI.ProgressBarCancelEventArgs) => void): void;
+add_valueChanging(handler: (sender: Telerik.Web.UI.RadProgressBar, args: Telerik.Web.UI.ProgressBarCancelEventArgs) => void): void;
+
 remove_valueChanging(handler: Function): void;
         /**
 The client-side completed event is raised when the RadProgressBar reaches its max value.
 */
-add_completed(handler: (sender: Telerik.Web.UI.RadProgressBar, args: Sys.EventArgs) => void): void;
+add_completed(handler: (sender: Telerik.Web.UI.RadProgressBar, args: Sys.EventArgs) => void): void;
+
 remove_completed(handler: Function): void;
         /**
 The client-side load event is raised when the RadProgressBar client-side object is fully loaded (the full API of the control is available at this point).
 */
-add_load(handler: (sender: Telerik.Web.UI.RadProgressBar, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadProgressBar, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The client-side ValueChanged event is raised after the RadProgressBar value property has been changed.
 */
-add_valueChanged(handler: (sender: Telerik.Web.UI.RadProgressBar, args: Sys.EventArgs) => void): void;
+add_valueChanged(handler: (sender: Telerik.Web.UI.RadProgressBar, args: Sys.EventArgs) => void): void;
+
 remove_valueChanged(handler: Function): void;
     }
 
@@ -25255,12 +25726,14 @@ stopAsyncPolling(): void;
         /**
 Occurs when the RadProgressManager starts monitoring progress.
 */
-add_clientProgressStarted(handler: (sender: Telerik.Web.UI.RadProgressManager, args: Sys.EventArgs) => void): void;
+add_clientProgressStarted(handler: (sender: Telerik.Web.UI.RadProgressManager, args: Sys.EventArgs) => void): void;
+
 remove_clientProgressStarted(handler: Function): void;
         /**
 Occurs after the RadProgressManager has been fully initialized on the client-side.
 */
-add_clientSubmitting(handler: (sender: Telerik.Web.UI.RadCloudUpload, args: Sys.CancelEventArgs) => void): void;
+add_clientSubmitting(handler: (sender: Telerik.Web.UI.RadCloudUpload, args: Sys.CancelEventArgs) => void): void;
+
 remove_clientSubmitting(handler: Function): void;
     }
 
@@ -25352,7 +25825,8 @@ set_width(value: number): void;
         /**
 The selectedIndexChanged event is fired when the selected item is changed. It is subsequent to the selectedIndexChanging event.
 */
-add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadRadioButtonList, args: Telerik.Web.UI.RadioButtonListSelectedIndexChangedEventArgs) => void): void;
+add_selectedIndexChanged(handler: (sender: Telerik.Web.UI.RadRadioButtonList, args: Telerik.Web.UI.RadioButtonListSelectedIndexChangedEventArgs) => void): void;
+
 remove_selectedIndexChanged(handler: Function): void;
     }
 
@@ -25460,12 +25934,14 @@ set_value(value: number): void;
         /**
 The load event occurs when the RadRating control loaded on the page.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadRating, eventArgs: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadRating, eventArgs: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The rating event is raised just before you click an item of the RadRating control. It is cancellable and precedes the rated event.
 */
-add_rating(handler: (sender: Telerik.Web.UI.RadRating, args: Telerik.Web.UI.RatingRatingEventArgs) => void): void;
+add_rating(handler: (sender: Telerik.Web.UI.RadRating, args: Telerik.Web.UI.RatingRatingEventArgs) => void): void;
+
 remove_rating(handler: Function): void;
     }
 
@@ -25726,152 +26202,182 @@ set_selectedTabIndex(tabIndex: number): void;
         /**
 Occurs after a toggle button is clicked.
 */
-add_buttonToggled(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_buttonToggled(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_buttonToggled(handler: Function): void;
         /**
 Occurs after a toggle button is clicked.
 */
-add_toggleListToggled(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_toggleListToggled(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_toggleListToggled(handler: Function): void;
         /**
 Occurs after an ApplicationMenu items is clicked.
 */
-add_applicationMenuItemClicked(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_applicationMenuItemClicked(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_applicationMenuItemClicked(handler: Function): void;
         /**
 Occurs after an ApplicationMenu items is clicked.
 */
-add_maximized(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_maximized(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_maximized(handler: Function): void;
         /**
 Occurs after an ApplicationMenu items is clicked.
 */
-add_maximizing(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_maximizing(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_maximizing(handler: Function): void;
         /**
 Occurs after an ApplicationMenu items is clicked.
 */
-add_minimized(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Telerik.Web.UI.RibbonBarMinimizedEventArgs) => void): void;
+add_minimized(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Telerik.Web.UI.RibbonBarMinimizedEventArgs) => void): void;
+
 remove_minimized(handler: Function): void;
         /**
 Occurs after an ApplicationMenu items is clicked.
 */
-add_minimizing(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Telerik.Web.UI.RibbonBarMinimizedEventArgs) => void): void;
+add_minimizing(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Telerik.Web.UI.RibbonBarMinimizedEventArgs) => void): void;
+
 remove_minimizing(handler: Function): void;
         /**
 Occurs after the user has already changed the value in the NumericTextBox.
 */
-add_numericTextBoxValueChanged(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_numericTextBoxValueChanged(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_numericTextBoxValueChanged(handler: Function): void;
         /**
 Occurs when a non-selected tab is clicked.
 */
-add_selectedTabChanged(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_selectedTabChanged(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_selectedTabChanged(handler: Function): void;
         /**
 Occurs when the RadRibbonBar is first loaded and fully initialized on the client. The event handler receives a single parameter: the instance of the ribbonbar firing the event.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Occurs when the user clicks a GalleryItem
 */
-add_galleryCommand(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_galleryCommand(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_galleryCommand(handler: Function): void;
         /**
 Occurs when the user clicks on a ribbonbar button, after the ribbonbar responds to the mouse click.
 */
-add_buttonClicked(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_buttonClicked(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_buttonClicked(handler: Function): void;
         /**
 Occurs when the user clicks on a ribbonbar group, after the ribbonbar responds to the mouse click.
 */
-add_launcherClicked(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_launcherClicked(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_launcherClicked(handler: Function): void;
         /**
 Occurs when the user clicks on a ribbonbar group, before the ribbonbar responds to the mouse click.
 */
-add_launcherClicking(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_launcherClicking(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_launcherClicking(handler: Function): void;
         /**
 Occurs when the user clicks on a ribbonbar menu item, after the ribbonbar responds to the mouse click.
 */
-add_menuItemClicked(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_menuItemClicked(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_menuItemClicked(handler: Function): void;
         /**
 Occurs when the user clicks on a ribbonbar menu item, before the ribbonbar responds to the mouse click.
 */
-add_menuItemClicking(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_menuItemClicking(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_menuItemClicking(handler: Function): void;
         /**
 Occurs when the user clicks on a ribbonbar tab, before the ribbonbar responds to the mouse click.
 */
-add_selectedTabChanging(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_selectedTabChanging(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_selectedTabChanging(handler: Function): void;
         /**
 Occurs when the user clicks on a ribbonbar toggle button, before the ribbonbar responds to the mouse click.
 */
-add_buttonToggling(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_buttonToggling(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_buttonToggling(handler: Function): void;
         /**
 Occurs when the user clicks on a ribbonbar toggle button, before the ribbonbar responds to the mouse click.
 */
-add_toggleListToggling(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_toggleListToggling(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_toggleListToggling(handler: Function): void;
         /**
 Occurs when the user has already changed the selected item in the Combobox.
 */
-add_comboBoxSelectedIndexChanged(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_comboBoxSelectedIndexChanged(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_comboBoxSelectedIndexChanged(handler: Function): void;
         /**
 Occurs when the user has already changed the selected item in the DropDown.
 */
-add_dropDownSelectedIndexChanged(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_dropDownSelectedIndexChanged(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_dropDownSelectedIndexChanged(handler: Function): void;
         /**
 Occurs when the user has already changed the text in the Combobox.
 */
-add_comboBoxTextChanged(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_comboBoxTextChanged(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_comboBoxTextChanged(handler: Function): void;
         /**
 Occurs when the user is changing the item in the ComboBox.
 */
-add_comboBoxSelectedIndexChanging(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_comboBoxSelectedIndexChanging(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_comboBoxSelectedIndexChanging(handler: Function): void;
         /**
 Occurs when the user is changing the selected item in the DropDown.
 */
-add_dropDownSelectedIndexChanging(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_dropDownSelectedIndexChanging(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_dropDownSelectedIndexChanging(handler: Function): void;
         /**
 Occurs when the user is changing the value in the NumericTextBox.
 */
-add_numericTextBoxValueChanging(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_numericTextBoxValueChanging(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_numericTextBoxValueChanging(handler: Function): void;
         /**
 Occurs when the user moves the mouse out of a GalleryItem.
 */
-add_galleryCommandPreviewEnd(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_galleryCommandPreviewEnd(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_galleryCommandPreviewEnd(handler: Function): void;
         /**
 Occurs when the user moves the mouse over a GalleryItem.
 */
-add_galleryCommandPreview(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_galleryCommandPreview(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_galleryCommandPreview(handler: Function): void;
         /**
 Occurs when an ApplicationMenu items is clicked, before the ribbonbar responds to the mouse click.
 */
-add_applicationMenuItemClicking(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_applicationMenuItemClicking(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_applicationMenuItemClicking(handler: Function): void;
         /**
 Occurs when the user clicks on a ribbonbar button, before the ribbonbar responds to the mouse click.
 */
-add_buttonClicking(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_buttonClicking(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_buttonClicking(handler: Function): void;
         /**
 Occurs when the user is changing the color in the ColorPicker.
 */
-add_colorPickerColorChanging(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+add_colorPickerColorChanging(handler: (sender: Telerik.Web.UI.RadRibbonBar, args: Sys.EventArgs) => void): void;
+
 remove_colorPickerColorChanging(handler: Function): void;
     }
 
@@ -26319,77 +26825,92 @@ tickNextLine(): void;
         /**
 The dataBound event is fired when the client-side data binding of the RadRortator is finished.
 */
-add_dataBound(handler: (sender: Telerik.Web.UI.RadRotator, args: Sys.EventArgs) => void): void;
+add_dataBound(handler: (sender: Telerik.Web.UI.RadRotator, args: Sys.EventArgs) => void): void;
+
 remove_dataBound(handler: Function): void;
         /**
 This event is raised when the data from the request is received and the HTML of the current item in the RadRotator is properly evaluated.
 */
-add_templateDataBound(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+add_templateDataBound(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+
 remove_templateDataBound(handler: Function): void;
         /**
 This event is raised when the user moves the mouse pointer out of the rotator's button.
 */
-add_buttonOut(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorButtonEventArgs) => void): void;
+add_buttonOut(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorButtonEventArgs) => void): void;
+
 remove_buttonOut(handler: Function): void;
         /**
 This event is raised when the user moves the mouse pointer over the rotator's button.
 */
-add_buttonOver(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorButtonEventArgs) => void): void;
+add_buttonOver(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorButtonEventArgs) => void): void;
+
 remove_buttonOver(handler: Function): void;
         /**
 The event itemClicked is subsequent to the itemClicking event and occurs when an item of the RadRotator control is clicked. The event is fired after the client-side validation is completed and cannot be cancelled.
 */
-add_itemClicked(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorEventArgs) => void): void;
+add_itemClicked(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorEventArgs) => void): void;
+
 remove_itemClicked(handler: Function): void;
         /**
 The itemDataBound event is raised when an item in the RadRotator is bound to the provided data source.
 */
-add_itemDataBound(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorItemDataBoundEventArgs) => void): void;
+add_itemDataBound(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorItemDataBoundEventArgs) => void): void;
+
 remove_itemDataBound(handler: Function): void;
         /**
 The itemsRequested event is related to the Load On Demand functionality of the RadRotator. It is fired when the items are successfully loaded.
 */
-add_itemsRequested(handler: (sender: Telerik.Web.UI.RadRotator, args: Sys.EventArgs) => void): void;
+add_itemsRequested(handler: (sender: Telerik.Web.UI.RadRotator, args: Sys.EventArgs) => void): void;
+
 remove_itemsRequested(handler: Function): void;
         /**
 The itemsRequestFailed event is related to the Load On Demand functionality of the RadRotator. It is fired when the request has failed.
 */
-add_itemsRequestFailed(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorErrorEventArgs) => void): void;
+add_itemsRequestFailed(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorErrorEventArgs) => void): void;
+
 remove_itemsRequestFailed(handler: Function): void;
         /**
 The itemsRequesting event is related to the Load On Demand functionality of the RadRotator. It is fired before the items of the control are loaded, i.e. request to the server is still not sent.
 */
-add_itemsRequesting(handler: (sender: Telerik.Web.UI.RadRotator, args: Sys.CancelEventArgs) => void): void;
+add_itemsRequesting(handler: (sender: Telerik.Web.UI.RadRotator, args: Sys.CancelEventArgs) => void): void;
+
 remove_itemsRequesting(handler: Function): void;
         /**
 The load client-side event occurs after the RadRotator loads on the page.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadRotator, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadRotator, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The mouseOut event is fired when the mouse pointer leaves the control.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorEventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorEventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 The mouseOver event is fired when the user moves the mouse pointer over the control.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorEventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorEventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
         /**
 This event is raised when the user click the rotator's button.
 */
-add_buttonClick(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorButtonEventArgs) => void): void;
+add_buttonClick(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorButtonEventArgs) => void): void;
+
 remove_buttonClick(handler: Function): void;
         /**
 The itemShowing event occurs when an item of the RadRotator control is about to be shown, before the itemShown event. This event can be canceled.
 */
-add_itemShowing(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorCancelEventArgs) => void): void;
+add_itemShowing(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorCancelEventArgs) => void): void;
+
 remove_itemShowing(handler: Function): void;
         /**
 The itemShown event occurs when an item of the RadRotator control is shown. The event is subsequent to the itemShowing event and cannot be canceled.
 */
-add_itemShown(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorEventArgs) => void): void;
+add_itemShown(handler: (sender: Telerik.Web.UI.RadRotator, args: Telerik.Web.UI.RotatorEventArgs) => void): void;
+
 remove_itemShown(handler: Function): void;
     }
 
@@ -26866,182 +27387,218 @@ utcToDisplay(utcDate: Date): Date;
         /**
 This event is  fired when the scheduler is about to request appointments.
 */
-add_appointmentsPopulating(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerWebServiceEventArgs) => void): void;
+add_appointmentsPopulating(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerWebServiceEventArgs) => void): void;
+
 remove_appointmentsPopulating(handler: Function): void;
         /**
 This event is fired as the user is moving an appointment.
 */
-add_appointmentMoving(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentMovingEventArgs) => void): void;
+add_appointmentMoving(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentMovingEventArgs) => void): void;
+
 remove_appointmentMoving(handler: Function): void;
         /**
 This event is fired just before the dialog appears to ask whether the change the user just started on a recurring appointment is to affect the appointment itself or the entire series.
 */
-add_recurrenceActionDialogShowing(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerRecurrenceActionDialogShowingEventArgs) => void): void;
+add_recurrenceActionDialogShowing(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerRecurrenceActionDialogShowingEventArgs) => void): void;
+
 remove_recurrenceActionDialogShowing(handler: Function): void;
         /**
 This event is fired when a navigation command has been completed.
 */
-add_navigationComplete(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.Scheduler.NavigationCommandEventArgs) => void): void;
+add_navigationComplete(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.Scheduler.NavigationCommandEventArgs) => void): void;
+
 remove_navigationComplete(handler: Function): void;
         /**
 This event is fired when a recurrence exception is about to be created via Web Service call.
 */
-add_recurrenceExceptionCreating(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerRecurrenceExceptionCreatingEventArgs) => void): void;
+add_recurrenceExceptionCreating(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerRecurrenceExceptionCreatingEventArgs) => void): void;
+
 remove_recurrenceExceptionCreating(handler: Function): void;
         /**
 This event is fired when a request to the Web Service has failed.
 */
-add_requestFailed(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerRequestFailedEventArgs) => void): void;
+add_requestFailed(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerRequestFailedEventArgs) => void): void;
+
 remove_requestFailed(handler: Function): void;
         /**
 This event is fired when a request to the Web Service has succeeded.
 */
-add_requestSuccess(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.Scheduler.RequestSuccessEventArgs) => void): void;
+add_requestSuccess(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.Scheduler.RequestSuccessEventArgs) => void): void;
+
 remove_requestSuccess(handler: Function): void;
         /**
 This event is fired when an appointment is about to be deleted via Web Service call.
 */
-add_appointmentWebServiceDeleting(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentWebServiceDeleting) => void): void;
+add_appointmentWebServiceDeleting(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentWebServiceDeleting) => void): void;
+
 remove_appointmentWebServiceDeleting(handler: Function): void;
         /**
 This event is fired when an appointment is received and has been rendered
 */
-add_appointmentCreated(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.AppointmentEventArgs) => void): void;
+add_appointmentCreated(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.AppointmentEventArgs) => void): void;
+
 remove_appointmentCreated(handler: Function): void;
         /**
 This event is fired when an appointment is received and is about to be rendered.
 */
-add_appointmentDataBound(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.Scheduler.AppointmentDataBoundEventArgs) => void): void;
+add_appointmentDataBound(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.Scheduler.AppointmentDataBoundEventArgs) => void): void;
+
 remove_appointmentDataBound(handler: Function): void;
         /**
 This event is fired when an appointment reminder is due and is about to be dismissed.
 */
-add_reminderDismissing(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerReminderDismissingEventArgs) => void): void;
+add_reminderDismissing(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerReminderDismissingEventArgs) => void): void;
+
 remove_reminderDismissing(handler: Function): void;
         /**
 This event is fired when an appointment reminder is due and is about to be snoozed.
 */
-add_reminderSnoozing(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerReminderSnoozingEventArgs) => void): void;
+add_reminderSnoozing(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerReminderSnoozingEventArgs) => void): void;
+
 remove_reminderSnoozing(handler: Function): void;
         /**
 This event is fired when an appointment reminder is due and is about to be triggered.
 */
-add_reminderTriggering(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerReminderTriggeringEventArgs) => void): void;
+add_reminderTriggering(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerReminderTriggeringEventArgs) => void): void;
+
 remove_reminderTriggering(handler: Function): void;
         /**
 This event is fired when an in-line editor or edit form is about to appear.
 */
-add_formCreated(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerFormCreatedEventArgs) => void): void;
+add_formCreated(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerFormCreatedEventArgs) => void): void;
+
 remove_formCreated(handler: Function): void;
         /**
 This event is fired when appointment is about to be deleted.
 */
-add_appointmentDeleting(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentDeletingEventArgs) => void): void;
+add_appointmentDeleting(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentDeletingEventArgs) => void): void;
+
 remove_appointmentDeleting(handler: Function): void;
         /**
 This event is fired when appointment is about to be edited.
 */
-add_appointmentEditing(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentEditingEventArgs) => void): void;
+add_appointmentEditing(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentEditingEventArgs) => void): void;
+
 remove_appointmentEditing(handler: Function): void;
         /**
 This event is fired when appointment is about to be inserted via Web Service call.
 */
-add_appointmentWebServiceInserting(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentWebServiceInserting) => void): void;
+add_appointmentWebServiceInserting(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentWebServiceInserting) => void): void;
+
 remove_appointmentWebServiceInserting(handler: Function): void;
         /**
 This event is fired when appointment is about to be inserted.
 */
-add_appointmentInserting(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentInsertingEventArgs) => void): void;
+add_appointmentInserting(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentInsertingEventArgs) => void): void;
+
 remove_appointmentInserting(handler: Function): void;
         /**
 This event is fired when appointment is about to be updated via Web Service call.
 */
-add_appointmentWebServiceUpdating(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentWebServiceUpdating) => void): void;
+add_appointmentWebServiceUpdating(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentWebServiceUpdating) => void): void;
+
 remove_appointmentWebServiceUpdating(handler: Function): void;
         /**
 This event is fired when recurrence exceptions are about to be removed via Web Service call.
 */
-add_recurrenceExceptionsRemoving(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerRecurrenceExceptionRemovingEventArgs) => void): void;
+add_recurrenceExceptionsRemoving(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerRecurrenceExceptionRemovingEventArgs) => void): void;
+
 remove_recurrenceExceptionsRemoving(handler: Function): void;
         /**
 This event is fired when the dialog that asks whether a change affects a single occurrence or an entire series closes.
 */
-add_recurrenceActionDialogClosed(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerRecurrenceActionDialogClosedEventArgs) => void): void;
+add_recurrenceActionDialogClosed(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerRecurrenceActionDialogClosedEventArgs) => void): void;
+
 remove_recurrenceActionDialogClosed(handler: Function): void;
         /**
 This event is fired when the scheduler has been populated with data.
 */
-add_dataBound(handler: (sender: Telerik.Web.UI.RadScheduler, args: Sys.EventArgs) => void): void;
+add_dataBound(handler: (sender: Telerik.Web.UI.RadScheduler, args: Sys.EventArgs) => void): void;
+
 remove_dataBound(handler: Function): void;
         /**
 This event is fired when the scheduler has received appointments from the Web Service.
 */
-add_appointmentsPopulated(handler: (sender: Telerik.Web.UI.RadScheduler, args: Sys.EventArgs) => void): void;
+add_appointmentsPopulated(handler: (sender: Telerik.Web.UI.RadScheduler, args: Sys.EventArgs) => void): void;
+
 remove_appointmentsPopulated(handler: Function): void;
         /**
 This event is fired when the scheduler has received resources.
 */
-add_resourcesPopulated(handler: (sender: Telerik.Web.UI.RadScheduler, args: Sys.EventArgs) => void): void;
+add_resourcesPopulated(handler: (sender: Telerik.Web.UI.RadScheduler, args: Sys.EventArgs) => void): void;
+
 remove_resourcesPopulated(handler: Function): void;
         /**
 This event is fired when the scheduler is about to execute a navigation command.
 */
-add_navigationCommand(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.Scheduler.NavigationCommandEventArgs) => void): void;
+add_navigationCommand(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.Scheduler.NavigationCommandEventArgs) => void): void;
+
 remove_navigationCommand(handler: Function): void;
         /**
 This event is fired when the scheduler is about to request resources.
 */
-add_resourcesPopulating(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerWebServiceEventArgs) => void): void;
+add_resourcesPopulating(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerWebServiceEventArgs) => void): void;
+
 remove_resourcesPopulating(handler: Function): void;
         /**
 This event is fired when the user clicks an appointment.
 */
-add_appointmentClick(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentClickEventArgs) => void): void;
+add_appointmentClick(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentClickEventArgs) => void): void;
+
 remove_appointmentClick(handler: Function): void;
         /**
 This event is fired when the user clicks on a time slot in the scheduler.
 */
-add_timeSlotClick(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerTimeSlotClickEventArgs) => void): void;
+add_timeSlotClick(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerTimeSlotClickEventArgs) => void): void;
+
 remove_timeSlotClick(handler: Function): void;
         /**
 This event is fired when the user double-clicks an appointment.
 */
-add_appointmentDoubleClick(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentDoubleClickEventArgs) => void): void;
+add_appointmentDoubleClick(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentDoubleClickEventArgs) => void): void;
+
 remove_appointmentDoubleClick(handler: Function): void;
         /**
 This event is fired when the user moves the mouse while resizing an appointment.
 */
-add_appointmentResizing(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentResizingEventArgs) => void): void;
+add_appointmentResizing(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentResizingEventArgs) => void): void;
+
 remove_appointmentResizing(handler: Function): void;
         /**
 This event is fired when the user releases the mouse after resizing an appointment.
 */
-add_appointmentResizeEnd(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentResizeEndEventArgs) => void): void;
+add_appointmentResizeEnd(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentResizeEndEventArgs) => void): void;
+
 remove_appointmentResizeEnd(handler: Function): void;
         /**
 This event is fired when the user right-clicks on a time slot in the scheduler.
 */
-add_timeSlotContextMenu(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerTimeSlotContextMenuEventArgs) => void): void;
+add_timeSlotContextMenu(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerTimeSlotContextMenuEventArgs) => void): void;
+
 remove_timeSlotContextMenu(handler: Function): void;
         /**
 This event is fired when the user right-clicks on an appointment
 */
-add_appointmentContextMenu(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentContextMenuEventArgs) => void): void;
+add_appointmentContextMenu(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentContextMenuEventArgs) => void): void;
+
 remove_appointmentContextMenu(handler: Function): void;
         /**
 This event is fired when the user starts resizing an appointment.
 */
-add_appointmentResizeStart(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentResizeStartEventArgs) => void): void;
+add_appointmentResizeStart(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentResizeStartEventArgs) => void): void;
+
 remove_appointmentResizeStart(handler: Function): void;
         /**
 This event is fired when the user starts to move an appointment.
 */
-add_appointmentMoveStart(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentMoveStartEventArgs) => void): void;
+add_appointmentMoveStart(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentMoveStartEventArgs) => void): void;
+
 remove_appointmentMoveStart(handler: Function): void;
         /**
 This event is fired when the user stops moving an appointment.
 */
-add_appointmentMoveEnd(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentMoveEndEventArgs) => void): void;
+add_appointmentMoveEnd(handler: (sender: Telerik.Web.UI.RadScheduler, args: Telerik.Web.UI.SchedulerAppointmentMoveEndEventArgs) => void): void;
+
 remove_appointmentMoveEnd(handler: Function): void;
     }
 
@@ -27248,22 +27805,26 @@ set_requestDelay(value: number): void;
         /**
 Occurs after the RadSearchBox has been fully initialized on the client-side.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadSearchBox, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadSearchBox, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Occurs when a new text is entered and a request for items is about to be sent.
 */
-add_dataRequesting(handler: (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxDataRequestingEventArgs) => void): void;
+add_dataRequesting(handler: (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxDataRequestingEventArgs) => void): void;
+
 remove_dataRequesting(handler: Function): void;
         /**
 Occurs when a new text is entered and a request for items is about to be sent.
 */
-add_buttonCommand(handler: (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxButtonCommandEventArgs) => void): void;
+add_buttonCommand(handler: (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxButtonCommandEventArgs) => void): void;
+
         remove_buttonCommand(handler: Function): void;
         /**
 Occurs when the search button is clicked, Enter is pressed, or an item from the searchBox dropdown is clicked.
 */
-        add_search(handler: (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxSearchEventArgs) => void): void;
+        add_search(handler: (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxSearchEventArgs) => void): void;
+
         remove_search(handler: Function): void;
     }
 
@@ -27680,62 +28241,74 @@ setValue(): void;
         /**
 The dataBound event is fired when the data binding of RadSlider is finished.
 */
-add_dataBound(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+add_dataBound(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+
 remove_dataBound(handler: Function): void;
         /**
 The itemDataBound event is raised when an item in the RadSlider is data-bound to the provided data source.
 */
-add_itemDataBound(handler: (sender: Telerik.Web.UI.RadSlider, args: Telerik.Web.UI.SliderItemDataBoundEventArgs) => void): void;
+add_itemDataBound(handler: (sender: Telerik.Web.UI.RadSlider, args: Telerik.Web.UI.SliderItemDataBoundEventArgs) => void): void;
+
 remove_itemDataBound(handler: Function): void;
         /**
 The itemsCreated client-side event occurs when the items of the RadSlider control are created.
 */
-add_itemsCreated(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+add_itemsCreated(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+
 remove_itemsCreated(handler: Function): void;
         /**
 The load client-side event occurs after the slider loads on the page.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The slide client-side event occurs as the drag handle is moved along the track.
 */
-add_slide(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+add_slide(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+
 remove_slide(handler: Function): void;
         /**
 The slideEnd client-side event occurs as the drag handle stops moving along the track.
 */
-add_slideEnd(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+add_slideEnd(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+
 remove_slideEnd(handler: Function): void;
         /**
 The slideRange client-side event occurs as the user is sliding the selected region of RadSlider, thus changing both SelectionStart and SelectionEnd values.
 */
-add_slideRange(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+add_slideRange(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+
 remove_slideRange(handler: Function): void;
         /**
 The slideRangeEnd client-side event occurs when user releases the selected region of RadSlider after dragging it, thus changing both SelectionStart and SelectionEnd values.
 */
-add_slideRangeEnd(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+add_slideRangeEnd(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+
 remove_slideRangeEnd(handler: Function): void;
         /**
 The slideRangeStart client-side event occurs just before the user starts sliding the selected region of RadSlider, thus changing both SelectionStart and SelectionEnd values.
 */
-add_slideRangeStart(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+add_slideRangeStart(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+
 remove_slideRangeStart(handler: Function): void;
         /**
 The slideStart client-side event occurs just before the drag handle is moved along the track.
 */
-add_slideStart(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+add_slideStart(handler: (sender: Telerik.Web.UI.RadSlider, eventArgs: Sys.EventArgs) => void): void;
+
 remove_slideStart(handler: Function): void;
         /**
 The valueChanged client-side event occurs as the value property changes.
 */
-add_valueChanged(handler: (sender: Telerik.Web.UI.RadSlider, args: Telerik.Web.UI.SliderEventArgs) => void): void;
+add_valueChanged(handler: (sender: Telerik.Web.UI.RadSlider, args: Telerik.Web.UI.SliderEventArgs) => void): void;
+
 remove_valueChanged(handler: Function): void;
         /**
 The valueChanging client-side event occurs before the value property changes.
 */
-add_valueChanging(handler: (sender: Telerik.Web.UI.RadSlider, args: Telerik.Web.UI.SliderCancelEventArgs) => void): void;
+add_valueChanging(handler: (sender: Telerik.Web.UI.RadSlider, args: Telerik.Web.UI.SliderCancelEventArgs) => void): void;
+
 remove_valueChanging(handler: Function): void;
     }
 
@@ -27981,22 +28554,26 @@ showTab(): void;
         /**
 Occurs when a SlidingPane has just been docked.
 */
-add_docked(handler: (sender: Telerik.Web.UI.RadSlidingPane, args: Sys.EventArgs) => void): void;
+add_docked(handler: (sender: Telerik.Web.UI.RadSlidingPane, args: Sys.EventArgs) => void): void;
+
 remove_docked(handler: Function): void;
         /**
 Occurs when a SlidingPane has just been undocked.
 */
-add_undocked(handler: (sender: Telerik.Web.UI.RadSlidingPane, args: Sys.EventArgs) => void): void;
+add_undocked(handler: (sender: Telerik.Web.UI.RadSlidingPane, args: Sys.EventArgs) => void): void;
+
 remove_undocked(handler: Function): void;
         /**
 Occurs when a SlidingPane is just about to be docked.
 */
-add_docking(handler: (sender: Telerik.Web.UI.RadSlidingPane, args: Sys.CancelEventArgs) => void): void;
+add_docking(handler: (sender: Telerik.Web.UI.RadSlidingPane, args: Sys.CancelEventArgs) => void): void;
+
 remove_docking(handler: Function): void;
         /**
 Occurs when a SlidingPane is just about to be undocked.
 */
-add_undocking(handler: (sender: Telerik.Web.UI.RadSlidingPane, args: Sys.CancelEventArgs) => void): void;
+add_undocking(handler: (sender: Telerik.Web.UI.RadSlidingPane, args: Sys.CancelEventArgs) => void): void;
+
 remove_undocking(handler: Function): void;
     }
 
@@ -28130,7 +28707,8 @@ undockPane(paneId: string): boolean;
         /**
 Occurs when a RadSlidingZone is successfully loaded on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadSlidingZone, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadSlidingZone, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
     }
 
@@ -28246,47 +28824,56 @@ toggleEmailPopup(): void;
         /**
 The event fires when one of the RadSocialButtons is clicked. The event is raised before the clicked event and it can be canceled.
 */
-add_clicking(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialDialogCancelEventArgs) => void): void;
+add_clicking(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialDialogCancelEventArgs) => void): void;
+
 remove_clicking(handler: Function): void;
         /**
 The event fires when one of the RadSocialButtons is clicked. The event is subsequent to the clicking event and it cannot be canceled.
 */
-add_clicked(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialDialogEventArgs) => void): void;
+add_clicked(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialDialogEventArgs) => void): void;
+
 remove_clicked(handler: Function): void;
         /**
 The event fires when the Facebook Like button is clicked.
 */
-add_fbLike(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+add_fbLike(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+
 remove_fbLike(handler: Function): void;
         /**
 The event fires when the Facebook Send button is clicked.
 */
-add_fbSend(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+add_fbSend(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+
 remove_fbSend(handler: Function): void;
         /**
 The event fires when the Facebook UnLike button is clicked.
 */
-add_fbUnLike(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+add_fbUnLike(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+
 remove_fbUnLike(handler: Function): void;
         /**
 The event fires when the Tweet button is clicked in the sharing popup (i.e. after the actual tweet is posted).
 */
-add_tweet(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+add_tweet(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+
 remove_tweet(handler: Function): void;
         /**
 Fires when the GooglePlus button is clicked for approval.
 */
-add_onPlusone(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+add_onPlusone(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+
 remove_onPlusone(handler: Function): void;
         /**
 Fires when the GooglePlus button is clicked for disapproval.
 */
-add_offPlusone(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+add_offPlusone(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+
 remove_offPlusone(handler: Function): void;
         /**
 Fires when the LinkedInShare button is clicked for sharing the page in LinedIn.
 */
-add_linkedInShare(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+add_linkedInShare(handler: (sender: Telerik.Web.UI.RadSocialShare, args: Telerik.Web.UI.SocialShareEventArgs) => void): void;
+
 remove_linkedInShare(handler: Function): void;
     }
 
@@ -28380,27 +28967,32 @@ startSpellCheck(): void;
         /**
 The clientCheckCancelled client-side event occurs if the user cancels the spell check.
 */
-add_clientCheckCancelled(handler: (sender: Telerik.Web.UI.RadSpell, args: Sys.EventArgs) => void): void;
+add_clientCheckCancelled(handler: (sender: Telerik.Web.UI.RadSpell, args: Sys.EventArgs) => void): void;
+
 remove_clientCheckCancelled(handler: Function): void;
         /**
 The clientCheckFinished client-side event occurs after the spell check is complete.
 */
-add_clientCheckFinished(handler: (sender: Telerik.Web.UI.RadSpell, args: Telerik.Web.UI.SpellClientCheckFinishedEventArgs) => void): void;
+add_clientCheckFinished(handler: (sender: Telerik.Web.UI.RadSpell, args: Telerik.Web.UI.SpellClientCheckFinishedEventArgs) => void): void;
+
 remove_clientCheckFinished(handler: Function): void;
         /**
 The clientCheckStarted client-side event occurs when the spell check begins and before the spell check dialog appears.
 */
-add_clientCheckStarted(handler: (sender: Telerik.Web.UI.RadSpell, args: Sys.CancelEventArgs) => void): void;
+add_clientCheckStarted(handler: (sender: Telerik.Web.UI.RadSpell, args: Sys.CancelEventArgs) => void): void;
+
 remove_clientCheckStarted(handler: Function): void;
         /**
 The clientDialogClosing client-side event occurs just before the spell check dialog closes.
 */
-add_clientDialogClosing(handler: (sender: Telerik.Web.UI.RadSpell, args: Sys.EventArgs) => void): void;
+add_clientDialogClosing(handler: (sender: Telerik.Web.UI.RadSpell, args: Sys.EventArgs) => void): void;
+
 remove_clientDialogClosing(handler: Function): void;
         /**
 The load client-side event occurs after the RadSpell loads on the page.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadSpell, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadSpell, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
     }
 
@@ -28684,12 +29276,14 @@ set_width(value: string): void;
         /**
 Occurs when a RadSplitter is about to be resized.
 */
-add_resizing(handler: (sender: Telerik.Web.UI.RadSplitter, args: Telerik.Web.UI.SplitterResizingEventArgs) => void): void;
+add_resizing(handler: (sender: Telerik.Web.UI.RadSplitter, args: Telerik.Web.UI.SplitterResizingEventArgs) => void): void;
+
 remove_resizing(handler: Function): void;
         /**
 Occurs when a RadSplitter is successfully loaded on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadSplitter, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadSplitter, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
     }
 
@@ -29560,52 +30154,62 @@ trackChanges(): void;
         /**
 Occurs after the RadTabStrip has been fully initialized on the client-side.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Occurs after the reorder operation is completed and the dragged tab is being inserted into its new position.
 */
-add_reordered(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.TabStripReorderedEventArgs) => void): void;
+add_reordered(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.TabStripReorderedEventArgs) => void): void;
+
 remove_reordered(handler: Function): void;
         /**
 Occurs just before the drag-to-reorder operation is completed and the dragged tab is still in its initial position.
 */
-add_reordering(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.TabStripReorderingEventArgs) => void): void;
+add_reordering(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.TabStripReorderingEventArgs) => void): void;
+
 remove_reordering(handler: Function): void;
         /**
 Occurs when a drag-to-reorder operation is about to start.
 */
-add_tabDragStart(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripCancelEventArgs) => void): void;
+add_tabDragStart(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripCancelEventArgs) => void): void;
+
 remove_tabDragStart(handler: Function): void;
         /**
 Occurs when the mouse moves off a tab in the Tab Strip.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripEventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripEventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 Occurs when the mouse moves over a tab in the Tab Strip.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripEventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripEventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
         /**
 Occurs when the user double-clicks on a tab.
 */
-add_doubleClick(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripEventArgs) => void): void;
+add_doubleClick(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripEventArgs) => void): void;
+
 remove_doubleClick(handler: Function): void;
         /**
 Occurs when the user selects a new tab, after the previously selected tab has been unselected.
 */
-add_tabUnSelected(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripEventArgs) => void): void;
+add_tabUnSelected(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripEventArgs) => void): void;
+
 remove_tabUnSelected(handler: Function): void;
         /**
 Occurs when the user selects a tab, after the tab has been selected.
 */
-add_tabSelected(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripEventArgs) => void): void;
+add_tabSelected(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripEventArgs) => void): void;
+
 remove_tabSelected(handler: Function): void;
         /**
 Occurs when the user selects a tab, before the tab is selected.
 */
-add_tabSelecting(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripCancelEventArgs) => void): void;
+add_tabSelecting(handler: (sender: Telerik.Web.UI.RadTabStrip, args: Telerik.Web.UI.RadTabStripCancelEventArgs) => void): void;
+
 remove_tabSelecting(handler: Function): void;
     }
 
@@ -29788,37 +30392,44 @@ set_target(value: string): void;
         /**
 The dataBound event is raised when the RadTagCloud object is successfully bound to the requested data.
 */
-add_dataBound(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Sys.EventArgs) => void): void;
+add_dataBound(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Sys.EventArgs) => void): void;
+
 remove_dataBound(handler: Function): void;
         /**
 The itemClicking event occurs when an item of the RadTagCloud control is clicked, immediately after the mouse button is released. The event is fired before the client-side validation occurs, and can be canceled.
 */
-add_itemClicking(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Telerik.Web.UI.TagCloudCancelEventArgs) => void): void;
+add_itemClicking(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Telerik.Web.UI.TagCloudCancelEventArgs) => void): void;
+
 remove_itemClicking(handler: Function): void;
         /**
 The itemDataBound event occurs when a RadTagCloudItem is successfully bound to the requested data source item.
 */
-add_itemDataBound(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Telerik.Web.UI.TagCloudItemDataBoundEventArgs) => void): void;
+add_itemDataBound(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Telerik.Web.UI.TagCloudItemDataBoundEventArgs) => void): void;
+
 remove_itemDataBound(handler: Function): void;
         /**
 The itemsRequested event is fired when the requested items from the Web Service are successfully loaded.
 */
-add_itemsRequested(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Sys.EventArgs) => void): void;
+add_itemsRequested(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Sys.EventArgs) => void): void;
+
 remove_itemsRequested(handler: Function): void;
         /**
 The itemsRequestFailed is fired when the request to the web service is failed. The event arguments provide information about the error message and allow the developer to cancel the error alert and process the error otherwise.
 */
-add_itemsRequestFailed(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Telerik.Web.UI.TagCloudErrorEventArgs) => void): void;
+add_itemsRequestFailed(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Telerik.Web.UI.TagCloudErrorEventArgs) => void): void;
+
 remove_itemsRequestFailed(handler: Function): void;
         /**
 The itemsRequesting is fired before sending a request to a Web Service for the items to be bound.
 */
-add_itemsRequesting(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Sys.CancelEventArgs) => void): void;
+add_itemsRequesting(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Sys.CancelEventArgs) => void): void;
+
 remove_itemsRequesting(handler: Function): void;
         /**
 The load event is raised when the RadTagCloud object is loaded on the page. It can notify the developer that the control is available for further client-side programmatic interaction.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadTagCloud, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
     }
 
@@ -30386,72 +30997,86 @@ updateDisplayValue(): void;
         /**
 Raised after the control loses focus just before a new value has been assigned.
 */
-add_valueChanging(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.InputValueChangingEventArgs) => void): void;
+add_valueChanging(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.InputValueChangingEventArgs) => void): void;
+
 remove_valueChanging(handler: Function): void;
         /**
 Raised after the control loses focus when a new value has been assigned.
 */
-add_valueChanged(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.InputValueChangedEventArgs) => void): void;
+add_valueChanged(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.InputValueChangedEventArgs) => void): void;
+
 remove_valueChanged(handler: Function): void;
         /**
 Occurs when the control is disabled
 */
-add_disable(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+add_disable(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+
 remove_disable(handler: Function): void;
         /**
 Occurs when the control is enabled
 */
-add_enable(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+add_enable(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+
 remove_enable(handler: Function): void;
         /**
 Raised when the control is focused
 */
-add_focus(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+add_focus(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+
 remove_focus(handler: Function): void;
         /**
 Raised when the control is loaded on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Raised when the mouse enters the input area.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
         /**
 Raised when the mouse leaves the input area.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 Occurs when the RadInputControl loses focus
 */
-add_blur(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+add_blur(handler: (sender: Telerik.Web.UI.RadTextBox, args: Sys.EventArgs) => void): void;
+
 remove_blur(handler: Function): void;
         /**
 Occurs when the user clicks on the button that is associated with the input control
 */
-add_buttonClick(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.InputButtonClickEventArgs) => void): void;
+add_buttonClick(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.InputButtonClickEventArgs) => void): void;
+
 remove_buttonClick(handler: Function): void;
         /**
 Raised when the user decreases the value of an enumeration or numeric range mask part.
 */
-add_moveDown(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+add_moveDown(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+
 remove_moveDown(handler: Function): void;
         /**
 Raised when the user increases the value of an enumeration or numeric range mask part.
 */
-add_moveUp(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+add_moveUp(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.MaskedTextBoxEventArgs) => void): void;
+
 remove_moveUp(handler: Function): void;
         /**
 Raised when the user presses a key to enter a value.
 */
-add_keyPress(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.InputKeyPressEventArgs) => void): void;
+add_keyPress(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.InputKeyPressEventArgs) => void): void;
+
 remove_keyPress(handler: Function): void;
         /**
 Raised when using the password strength check feature and changing the text, before the indicator is updated.
 */
-add_passwordStrengthCalculating(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.PasswordStrengthCalculatingEventArgs) => void): void;
+add_passwordStrengthCalculating(handler: (sender: Telerik.Web.UI.RadTextBox, args: Telerik.Web.UI.PasswordStrengthCalculatingEventArgs) => void): void;
+
 remove_passwordStrengthCalculating(handler: Function): void;
     }
 
@@ -30707,52 +31332,62 @@ updateTileGroupsState(): void;
         /**
 Adds a handler for the load TileList client event.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadTileList, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadTileList, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Occurs after a tile in the TileList is selected.
 */
-add_tileSelected(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.TileListEventArgs) => void): void;
+add_tileSelected(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.TileListEventArgs) => void): void;
+
 remove_tileSelected(handler: Function): void;
         /**
 Occurs after a tile is clicked and therefore after the OnClientTileClicking event and before the server-side OnTileClick event. The event cannot be canceled.
 */
-add_tileClicked(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.TileListEventArgs) => void): void;
+add_tileClicked(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.TileListEventArgs) => void): void;
+
 remove_tileClicked(handler: Function): void;
         /**
 Occurs before a tile is initialized by the TileList.
 */
-add_tileCreating(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.TileListDataCancelEventArgs) => void): void;
+add_tileCreating(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.TileListDataCancelEventArgs) => void): void;
+
 remove_tileCreating(handler: Function): void;
         /**
 Raised before rendering the Peek Template in the browser.
 */
-add_clientTileContentTemplateDataBound(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+add_clientTileContentTemplateDataBound(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+
 remove_clientTileContentTemplateDataBound(handler: Function): void;
         /**
 Occurs raised before the rendering of the Peek Template in the browser.
 */
-add_clientTilePeekTemplateDataBound(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+add_clientTilePeekTemplateDataBound(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+
 remove_clientTilePeekTemplateDataBound(handler: Function): void;
         /**
 Occurs when a tile in the TileList is about to be selected. The event can be canceled.
 */
-add_tileSelecting(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.TileListCancelEventArgs) => void): void;
+add_tileSelecting(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.TileListCancelEventArgs) => void): void;
+
 remove_tileSelecting(handler: Function): void;
         /**
 Raised when the client-side object of the TileList is initialized.
 */
-add_init(handler: (sender: Telerik.Web.UI.RadTileList, args: Sys.EventArgs) => void): void;
+add_init(handler: (sender: Telerik.Web.UI.RadTileList, args: Sys.EventArgs) => void): void;
+
 remove_init(handler: Function): void;
         /**
 Occurs when the tile is bound to the fetched data.
 */
-add_tileDataBound(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.TileListDataEventArgs) => void): void;
+add_tileDataBound(handler: (sender: Telerik.Web.UI.RadTileList, args: Telerik.Web.UI.TileListDataEventArgs) => void): void;
+
 remove_tileDataBound(handler: Function): void;
         /**
 Occurs when the TileList data binding is finished.
 */
-add_tileListDataBound(handler: (sender: Telerik.Web.UI.RadTileList, args: Sys.EventArgs) => void): void;
+add_tileListDataBound(handler: (sender: Telerik.Web.UI.RadTileList, args: Sys.EventArgs) => void): void;
+
 remove_tileListDataBound(handler: Function): void;
     }
 
@@ -30926,12 +31561,14 @@ setTime(hours: number, minutes: number, seconds: number, Date: Date): void;
         /**
 The clientTimeSelected event is fired when the user selects a time cell in the time view control.
 */
-add_clientTimeSelected(handler: (sender: Telerik.Web.UI.RadTimeView, args: Telerik.Web.UI.TimeViewSelectedEventArgs) => void): void;
+add_clientTimeSelected(handler: (sender: Telerik.Web.UI.RadTimeView, args: Telerik.Web.UI.TimeViewSelectedEventArgs) => void): void;
+
 remove_clientTimeSelected(handler: Function): void;
         /**
 The clientTimeSelecting event is fired immediately before the selected time cell collection is updated to reflect the selection or deselection of a time cell.
 */
-add_clientTimeSelecting(handler: (sender: Telerik.Web.UI.RadTimeView, args: Telerik.Web.UI.TimeViewSelectingEventArgs) => void): void;
+add_clientTimeSelecting(handler: (sender: Telerik.Web.UI.RadTimeView, args: Telerik.Web.UI.TimeViewSelectingEventArgs) => void): void;
+
 remove_clientTimeSelecting(handler: Function): void;
     }
 
@@ -30971,7 +31608,8 @@ set_selectedToggleStateIndex(value: number): void;
         /**
 The toggleStateChanged event is fired after the SelectedToggleState and the SelectedToggleStateIndex properties of the RadToggleButton are changed.
 */
-add_toggleStateChanged(handler: (sender: Telerik.Web.UI.RadToggleButton, args: Telerik.Web.UI.ButtonToggleStateEventArgs) => void): void;
+add_toggleStateChanged(handler: (sender: Telerik.Web.UI.RadToggleButton, args: Telerik.Web.UI.ButtonToggleStateEventArgs) => void): void;
+
 remove_toggleStateChanged(handler: Function): void;
     }
 
@@ -31123,61 +31761,72 @@ set_slideDirection(value: Telerik.Web.UI.SlideDirection): void;
 The buttonClicked client-side event occurs when the user clicks on a toolbar button, after the toolbar responds to the mouse click.
 Event is not cancellable.
 */
-add_buttonClicked(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+add_buttonClicked(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+
 remove_buttonClicked(handler: Function): void;
         /**
 The buttonClicking client-side event occurs when the user clicks on a toolbar button, before the toolbar responds to the mouse click. 
 You can use this event to pre-process an item click or to cancel the default response.
 */
-add_buttonClicking(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => void): void;
+add_buttonClicking(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => void): void;
+
 remove_buttonClicking(handler: Function): void;
         /**
 The checkedStateChanged client-side event occurs immediately after a button has been checked.
 */
-add_checkedStateChanged(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+add_checkedStateChanged(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+
 remove_checkedStateChanged(handler: Function): void;
         /**
 The contextMenu client-side event occurs when the user right-clicks an item in the toolbar.
 */
-add_contextMenu(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+add_contextMenu(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+
 remove_contextMenu(handler: Function): void;
         /**
 The dropDownClosed client-side event occurs immediately after the drop-down has closed. The event is not cancellable
 */
-add_dropDownClosed(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+add_dropDownClosed(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+
 remove_dropDownClosed(handler: Function): void;
         /**
 The dropDownClosing client-side event occurs when the drop-down is about to close, hiding its child buttons.
 You can use this event to respond to an action before the buttons list of the drop-down closes and/or cancel the event.
 */
-add_dropDownClosing(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => void): void;
+add_dropDownClosing(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => void): void;
+
 remove_dropDownClosing(handler: Function): void;
         /**
 The dropDownOpened client-side event occurs immediately after the drop-down expands to show its child buttons.
 The event is not cancellable.
 */
-add_dropDownOpened(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+add_dropDownOpened(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+
 remove_dropDownOpened(handler: Function): void;
         /**
 The dropDownOpening client-side event occurs when the drop-down is about to expand, showing its child buttons.
 You can use this event to control when drop-down can expand, or customize the child buttons before the toolbar expands.
 */
-add_dropDownOpening(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => void): void;
+add_dropDownOpening(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => void): void;
+
 remove_dropDownOpening(handler: Function): void;
         /**
 The load client-side event occurs when the toolbar is first loaded and fully initialized on the client.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadToolBar, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadToolBar, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The mouseOut client-side event occurs when the mouse moves off an item in the toolbar.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 The mouseOver client-side event occurs when the mouse moves over an item in the toolbar.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
     }
 
@@ -33492,17 +34141,20 @@ show(): void;
         /**
 The beforeHide client-side event occurs just prior to the tool tip being hidden. The event can be canceled.
 */
-add_beforeHide(handler: (sender: Telerik.Web.UI.RadToolTip, args: Sys.CancelEventArgs) => void): void;
+add_beforeHide(handler: (sender: Telerik.Web.UI.RadToolTip, args: Sys.CancelEventArgs) => void): void;
+
 remove_beforeHide(handler: Function): void;
         /**
 The beforeShow client-side event occurs just prior to the display of the tool tip. The event can be canceled.
 */
-add_beforeShow(handler: (sender: Telerik.Web.UI.RadToolTip, args: Sys.CancelEventArgs) => void): void;
+add_beforeShow(handler: (sender: Telerik.Web.UI.RadToolTip, args: Sys.CancelEventArgs) => void): void;
+
 remove_beforeShow(handler: Function): void;
         /**
 The hide client-side event occurs as the tooltip is hidden. The event cannot be canceled.
 */
-add_hide(handler: (sender: Telerik.Web.UI.RadToolTip, eventArgs: Sys.EventArgs) => void): void;
+add_hide(handler: (sender: Telerik.Web.UI.RadToolTip, eventArgs: Sys.EventArgs) => void): void;
+
 remove_hide(handler: Function): void;
     }
 
@@ -33570,17 +34222,20 @@ set_toolTipZoneID(value: string): void;
         /**
 The requestEnd event is fired immediately after the response from a WebService or an AJAX request is received. This provides an opportunity to make changes just before the content of the tooltip is displayed.
 */
-add_requestEnd(handler: (sender: Telerik.Web.UI.RadToolTipManager, eventArgs: Sys.EventArgs) => void): void;
+add_requestEnd(handler: (sender: Telerik.Web.UI.RadToolTipManager, eventArgs: Sys.EventArgs) => void): void;
+
 remove_requestEnd(handler: Function): void;
         /**
 The requestStart event is fired when the call to the WebService or the AJAX request starts. The event is cancellable.
 */
-add_requestStart(handler: (sender: Telerik.Web.UI.RadToolTipManager, eventArgs: Sys.CancelEventArgs) => void): void;
+add_requestStart(handler: (sender: Telerik.Web.UI.RadToolTipManager, eventArgs: Sys.CancelEventArgs) => void): void;
+
 remove_requestStart(handler: Function): void;
         /**
 The responseError event is fired when a server error occurs during the request. It allows the developer to choose the behavior if this happens.
 */
-add_responseError(handler: (sender: Telerik.Web.UI.RadToolTipManager, eventArgs: Telerik.Web.UI.ToolTipManagerErrorEventArgs) => void): void;
+add_responseError(handler: (sender: Telerik.Web.UI.RadToolTipManager, eventArgs: Telerik.Web.UI.ToolTipManagerErrorEventArgs) => void): void;
+
 remove_responseError(handler: Function): void;
     }
 
@@ -33832,97 +34487,116 @@ updateClientStateIfModified(): void;
         /**
 This event is fired (only when Keyboard Navigation is enabled) when any key is pressed inside the RadTreeList and the treelist control is about to process this key.
 */
-add_keyPress(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListKeyPressEventArgs) => void): void;
+add_keyPress(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListKeyPressEventArgs) => void): void;
+
 remove_keyPress(handler: Function): void;
         /**
 This event is fired after the treelist column is resized.
 */
-add_columnResized(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListColumnResizedEventArgs) => void): void;
+add_columnResized(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListColumnResizedEventArgs) => void): void;
+
 remove_columnResized(handler: Function): void;
         /**
 This event is fired before the treelist column is resized.
 */
-add_columnResizing(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListColumnResizingEventArgs) => void): void;
+add_columnResizing(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListColumnResizingEventArgs) => void): void;
+
 remove_columnResizing(handler: Function): void;
         /**
 This event is fired when a data item is clicked in RadTreeList.
 */
-add_itemClick(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemClickEventArgs) => void): void;
+add_itemClick(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemClickEventArgs) => void): void;
+
 remove_itemClick(handler: Function): void;
         /**
 This event is fired when a data item is double-clicked in RadTreeList.
 */
-add_itemDblClick(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDblClickEventArgs) => void): void;
+add_itemDblClick(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDblClickEventArgs) => void): void;
+
 remove_itemDblClick(handler: Function): void;
         /**
 This event is fired when a drag action is started upon the TreeListDataItem.
 */
-add_itemDragStarted(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDragStartedEventArgs) => void): void;
+add_itemDragStarted(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDragStartedEventArgs) => void): void;
+
 remove_itemDragStarted(handler: Function): void;
         /**
 This event is fired when a right click on a TreeListDataItem happens.
 */
-add_itemContextMenu(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemContextMenuEventArgs) => void): void;
+add_itemContextMenu(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemContextMenuEventArgs) => void): void;
+
 remove_itemContextMenu(handler: Function): void;
         /**
 This event is fired when a TreeListDataItem has been dropped after dragging.
 */
-add_itemDropped(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDroppedEventArgs) => void): void;
+add_itemDropped(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDroppedEventArgs) => void): void;
+
 remove_itemDropped(handler: Function): void;
         /**
 This event is fired when a TreeListDataItem is about to be deselected on the client. This
 */
-add_itemDeselecting(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDeselectingEventArgs) => void): void;
+add_itemDeselecting(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDeselectingEventArgs) => void): void;
+
 remove_itemDeselecting(handler: Function): void;
         /**
 This event is fired when a TreeListDataItem is about to be selected on the client. This event
 */
-add_itemSelecting(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemSelectingEventArgs) => void): void;
+add_itemSelecting(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemSelectingEventArgs) => void): void;
+
 remove_itemSelecting(handler: Function): void;
         /**
 This event is fired when a TreeListDataItem is being dragged.
 */
-add_itemDragging(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDraggingEventArgs) => void): void;
+add_itemDragging(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDraggingEventArgs) => void): void;
+
 remove_itemDragging(handler: Function): void;
         /**
 This event is fired when a TreeListDataItem is being dropped.
 */
-add_itemDropping(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDroppingEventArgs) => void): void;
+add_itemDropping(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDroppingEventArgs) => void): void;
+
 remove_itemDropping(handler: Function): void;
         /**
 This event is fired when a TreeListDataItem is deselected on the client.
 */
-add_itemDeselected(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDeselectedEventArgs) => void): void;
+add_itemDeselected(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemDeselectedEventArgs) => void): void;
+
 remove_itemDeselected(handler: Function): void;
         /**
 This event is fired when a TreeListDataItem is selected on the client.
 */
-add_itemSelected(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemSelectedEventArgs) => void): void;
+add_itemSelected(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemSelectedEventArgs) => void): void;
+
 remove_itemSelected(handler: Function): void;
         /**
 This event is fired when each of the TreeListDataItem client components is created.
 */
-add_itemCreated(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemCreatedEventArgs) => void): void;
+add_itemCreated(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListItemCreatedEventArgs) => void): void;
+
 remove_itemCreated(handler: Function): void;
         /**
 This event is fired when the RadTreeList client component is about to be disposed.
 */
-add_treeListDestroying(handler: (sender: Telerik.Web.UI.RadTreeList, args: Sys.EventArgs) => void): void;
+add_treeListDestroying(handler: (sender: Telerik.Web.UI.RadTreeList, args: Sys.EventArgs) => void): void;
+
 remove_treeListDestroying(handler: Function): void;
         /**
 This event is fired when the RadTreeList client component is initialized.
 */
-add_treeListCreated(handler: (sender: Telerik.Web.UI.RadTreeList, args: Sys.EventArgs) => void): void;
+add_treeListCreated(handler: (sender: Telerik.Web.UI.RadTreeList, args: Sys.EventArgs) => void): void;
+
 remove_treeListCreated(handler: Function): void;
         /**
 This event is fired when the RadTreeList client component is initializing.
 */
-add_treeListCreating(handler: (sender: Telerik.Web.UI.RadTreeList, args: Sys.EventArgs) => void): void;
+add_treeListCreating(handler: (sender: Telerik.Web.UI.RadTreeList, args: Sys.EventArgs) => void): void;
+
 remove_treeListCreating(handler: Function): void;
         /**
 This event is fired when the treelist is scrolled.
 */
-add_scroll(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListScrollEventArgs) => void): void;
+add_scroll(handler: (sender: Telerik.Web.UI.RadTreeList, args: Telerik.Web.UI.TreeListScrollEventArgs) => void): void;
+
 remove_scroll(handler: Function): void;
     }
 
@@ -33942,12 +34616,14 @@ get_kendoWidget(): any;
         /**
 Occurs after the RadTreeMap has been fully initialized on the client-side.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadTreeMap, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadTreeMap, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 Occurs after the RadTreeMap has been fully initialized on the client-side.
 */
-add_itemCreated(handler: (sender: Telerik.Web.UI.RadTreeMap, args: Telerik.Web.UI.TreeMapItemCreatedEventArgs) => void): void;
+add_itemCreated(handler: (sender: Telerik.Web.UI.RadTreeMap, args: Telerik.Web.UI.TreeMapItemCreatedEventArgs) => void): void;
+
 remove_itemCreated(handler: Function): void;
     }
 
@@ -35270,142 +35946,170 @@ unselectNodes(nodes: Telerik.Web.UI.RadTreeNodeCollection): void;
         /**
 The contextMenuItemClicked client-side event occurs when the user clicks the context menu item for a node.
 */
-add_contextMenuItemClicked(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeViewContextMenuItemEventArgs) => void): void;
+add_contextMenuItemClicked(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeViewContextMenuItemEventArgs) => void): void;
+
 remove_contextMenuItemClicked(handler: Function): void;
         /**
 The contextMenuItemClicking client-side event occurs when the user clicks a menu item, but before the OnClientContextMenuItemClicked event fires. The event is called just prior to postback or url redirection and can be canceled.
 */
-add_contextMenuItemClicking(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeViewContextMenuItemCancelEventArgs) => void): void;
+add_contextMenuItemClicking(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeViewContextMenuItemCancelEventArgs) => void): void;
+
 remove_contextMenuItemClicking(handler: Function): void;
         /**
 The contextMenuShowing client-side event occurs just prior to opening a context menu. If the event is canceled, the OnClientContextMenuShown event does not fire.
 */
-add_contextMenuShowing(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeViewContextMenuCancelEventArgs) => void): void;
+add_contextMenuShowing(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeViewContextMenuCancelEventArgs) => void): void;
+
 remove_contextMenuShowing(handler: Function): void;
         /**
 The contextMenuShown client-side event occurs after opening a context menu.
 */
-add_contextMenuShown(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeViewContextMenuEventArgs) => void): void;
+add_contextMenuShown(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeViewContextMenuEventArgs) => void): void;
+
 remove_contextMenuShown(handler: Function): void;
         /**
 The doubleClick client-side event occurs when the end user double-clicks a node.
 */
-add_doubleClick(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+add_doubleClick(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+
 remove_doubleClick(handler: Function): void;
         /**
 The keyPressing client-side event occurs when any key is clicked while the treeview is having the focus.
 */
-add_keyPressing(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => void): void;
+add_keyPressing(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => void): void;
+
 remove_keyPressing(handler: Function): void;
         /**
 The load event fires after the RadTreeView client-side object has been fully initialized.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadTreeView, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadTreeView, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The mouseOut client-side event occurs just before the mouse passes out of a node.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
         /**
 The mouseOver client-side event occurs when the mouse cursor passes over a node.
 */
-add_mouseOver(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+add_mouseOver(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+
 remove_mouseOver(handler: Function): void;
         /**
 The nodeAnimationEnd event fires when the node is expanded / collapsed and after the animation has finished.
 */
-add_nodeAnimationEnd(handler: (sender: Telerik.Web.UI.RadTreeView, args: Object) => void): void;
+add_nodeAnimationEnd(handler: (sender: Telerik.Web.UI.RadTreeView, args: Object) => void): void;
+
 remove_nodeAnimationEnd(handler: Function): void;
         /**
 The nodeChecked client-side event occurs after the end user selects a checkbox using mouse or keyboard. The node checked status returned by the node get_checked() function has now changed to reflect the new value. The action can longer be canceled.
 */
-add_nodeChecked(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+add_nodeChecked(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+
 remove_nodeChecked(handler: Function): void;
         /**
 The nodeChecking client-side event occurs when the user selects a checkbox using mouse or keyboard. The checked state returned by the node get_checked() function has not changed to reflect the new value. The event is called just prior to postback or url redirection and can be canceled.
 */
-add_nodeChecking(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => void): void;
+add_nodeChecking(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => void): void;
+
 remove_nodeChecking(handler: Function): void;
         /**
 The nodeClicked client-side event occurs when the end user navigates to a node using mouse or keyboard.
 */
-add_nodeClicked(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+add_nodeClicked(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+
 remove_nodeClicked(handler: Function): void;
         /**
 The nodeClicking client-side event occurs just before the user navigates to a node using mouse or keyboard. The event is called just prior to postback or url redirection and can be canceled.
 */
-add_nodeClicking(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => void): void;
+add_nodeClicking(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => void): void;
+
 remove_nodeClicking(handler: Function): void;
         /**
 The nodeCollapsed client-side event occurs after the user clicks the collapse (minus) button.
 */
-add_nodeCollapsed(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+add_nodeCollapsed(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+
 remove_nodeCollapsed(handler: Function): void;
         /**
 The nodeCollapsing client-side event occurs when the user clicks the collapse (minus) button. The event is called just prior to postback or url redirection and can be canceled.
 */
-add_nodeCollapsing(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => void): void;
+add_nodeCollapsing(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => void): void;
+
 remove_nodeCollapsing(handler: Function): void;
         /**
 The nodeDataBound event fires when a Node is being created during Web Service Load on Demand.
 */
-add_nodeDataBound(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+add_nodeDataBound(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+
 remove_nodeDataBound(handler: Function): void;
         /**
 The nodeDragging client-side event is called each time the user moves the mouse while dragging a node. Note: You can use this event to change the mouse cursor so that user knows where they can drag a node, i.e. only over a grid, editor or another treeview, etc.
 */
-add_nodeDragging(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeDraggingEventArgs) => void): void;
+add_nodeDragging(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeDraggingEventArgs) => void): void;
+
 remove_nodeDragging(handler: Function): void;
         /**
 The nodeDragStart client-side event is called each time the user begins to drag a node.
 */
-add_nodeDragStart(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeDraggingEventArgs) => void): void;
+add_nodeDragStart(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeDraggingEventArgs) => void): void;
+
 remove_nodeDragStart(handler: Function): void;
         /**
 The nodeDropped client-side event is called after node(s) are dropped.
 */
-add_nodeDropped(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeDroppedEventArgs) => void): void;
+add_nodeDropped(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeDroppedEventArgs) => void): void;
+
 remove_nodeDropped(handler: Function): void;
         /**
 The nodeDropping client-side event is called before nodes are dropped and can be canceled.
 */
-add_nodeDropping(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeDroppingEventArgs) => void): void;
+add_nodeDropping(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeDroppingEventArgs) => void): void;
+
 remove_nodeDropping(handler: Function): void;
         /**
 The nodeEdited client-side event is called after editing is completed.
 */
-add_nodeEdited(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+add_nodeEdited(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+
 remove_nodeEdited(handler: Function): void;
         /**
 The nodeEditing client-side event is called when editing is completed and before the OnClientNodeEdit event fires. This event can be canceled.
 */
-add_nodeEditing(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEditingEventArgs) => void): void;
+add_nodeEditing(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEditingEventArgs) => void): void;
+
 remove_nodeEditing(handler: Function): void;
         /**
 The nodeEditStart client-side event is called as the edit begins. This event can not be canceled.
 */
-add_nodeEditStart(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+add_nodeEditStart(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+
 remove_nodeEditStart(handler: Function): void;
         /**
 The nodeExpanded client-side event occurs after a parent node expands to display child nodes.
 */
-add_nodeExpanded(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+add_nodeExpanded(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => void): void;
+
 remove_nodeExpanded(handler: Function): void;
         /**
 The nodeExpanding client-side event occurs when the user clicks the expand (plus) button. The event is called just prior to postback or url redirection and can be canceled.
 */
-add_nodeExpanding(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => void): void;
+add_nodeExpanding(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => void): void;
+
 remove_nodeExpanding(handler: Function): void;
         /**
 The nodePopulated client-side event occurs when child nodes are loaded on-demand. The ExpandMode property of the parent node should be ServerSideCallback or WebService for this event to fire.
 */
-add_nodePopulated(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodePopulatedEventArgs) => void): void;
+add_nodePopulated(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodePopulatedEventArgs) => void): void;
+
 remove_nodePopulated(handler: Function): void;
         /**
 The nodePopulating client-side event occurs just before child nodes are loaded on-demand. The ExpandMode property of the parent node should be ServerSideCallback or WebService for this event to fire.
 */
-add_nodePopulating(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodePopulatingEventArgs) => void): void;
+add_nodePopulating(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodePopulatingEventArgs) => void): void;
+
 remove_nodePopulating(handler: Function): void;
         /**
 The nodePopulationFailed client-side event occurs when:
@@ -35413,22 +36117,26 @@ The nodePopulationFailed client-side event occurs when:
 - The parent node ExpandMode property is ServerSideCallback or WebService.
 - An exception occurs while loading.
 */
-add_nodePopulationFailed(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodePopulationFailedEventArgs) => void): void;
+add_nodePopulationFailed(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodePopulationFailedEventArgs) => void): void;
+
 remove_nodePopulationFailed(handler: Function): void;
         /**
 The templateDataBound client-side event of the RadTreeView is fired after the client template is bound and the binding expression are evaluated.
 */
-add_templateDataBound(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+add_templateDataBound(handler: (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTemplateBoundEventArgs) => void): void;
+
 remove_templateDataBound(handler: Function): void;
         /**
 The treePopulated client-side event of the RadTreeView is fired after it is populated with data.
 */
-add_treePopulated(handler: (sender: Telerik.Web.UI.RadTreeView, args: Sys.EventArgs) => void): void;
+add_treePopulated(handler: (sender: Telerik.Web.UI.RadTreeView, args: Sys.EventArgs) => void): void;
+
 remove_treePopulated(handler: Function): void;
         /**
 The treePopulated client-side event of the RadTreeView is fired before it is populated with data.
 */
-add_treePopulating(handler: (sender: Telerik.Web.UI.RadTreeView, args: Sys.EventArgs) => void): void;
+add_treePopulating(handler: (sender: Telerik.Web.UI.RadTreeView, args: Sys.EventArgs) => void): void;
+
 remove_treePopulating(handler: Function): void;
     }
 
@@ -36229,64 +36937,75 @@ togglePin(): void;
 The activate event of the RadWindow is fired when the control becomes the active window. 
 This happens when it opens, when the user clicks or taps on it, and when its client-side API is used to activate it via the setActive() method.
 */
-add_activate(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+add_activate(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+
 remove_activate(handler: Function): void;
         /**
 The autoSizeEnd event of the RadWindow fires when its automatic size adjustment operation completes. 
 It may have been invoked automatically because it was shown and its AutoSize property is set to True, 
 or because the developer called the autoSize() method from its client-side API.
 */
-add_autoSizeEnd(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+add_autoSizeEnd(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+
 remove_autoSizeEnd(handler: Function): void;
         /**
 The beforeShow event of the RadWindow control fires when it is about to show. You can cancel the event to prevent the dialog from showing.
 */
-add_beforeShow(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.CancelEventArgs) => void): void;
+add_beforeShow(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.CancelEventArgs) => void): void;
+
 remove_beforeShow(handler: Function): void;
         /**
 The close event fires when the RadWindow closes. You can use the event to pass data from the dialog page. 
 It is subsequent to the beforeClose event. The close operation can be initiated from the user by clicking or tapping 
 on the manual close button (X) or by the developer via calling the close(optionalArguments) client-side method of the control.
 */
-add_close(handler: (sender: Telerik.Web.UI.RadWindow, args: Telerik.Web.UI.WindowCloseEventArgs) => void): void;
+add_close(handler: (sender: Telerik.Web.UI.RadWindow, args: Telerik.Web.UI.WindowCloseEventArgs) => void): void;
+
 remove_close(handler: Function): void;
         /**
 The command event fires when a command button from the RadWindow's title bar is clicked or tapped by the user. The developer can also initiate it by using the client-side API of the control. Event is cancellable.
 */
-add_command(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.CancelEventArgs) => void): void;
+add_command(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.CancelEventArgs) => void): void;
+
 remove_command(handler: Function): void;
         /**
 The dragEnd event of the RadWindow fires when the user stops dragging the popup.
 */
-add_dragEnd(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+add_dragEnd(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+
 remove_dragEnd(handler: Function): void;
         /**
 The dragStart event of the RadWindow fires when the user starts dragging the popup. This action is also initiated by a click or a tap on the title bar.
 */
-add_dragStart(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+add_dragStart(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+
 remove_dragStart(handler: Function): void;
         /**
 The pageLoad event of the RadWindow fires when the page set through its NavigateUrl property finishes loading. 
 Since this page is loaded inside an iframe, this event is fired by the iframe's onload event.
 */
-add_pageLoad(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+add_pageLoad(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+
 remove_pageLoad(handler: Function): void;
         /**
 The resizeEnd event of the RadWindow fires when the user finished resizing the popup.
 */
-add_resizeEnd(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+add_resizeEnd(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+
 remove_resizeEnd(handler: Function): void;
         /**
 The resizeStart event of the RadWindow fires when the user is about to start resizing the popup. 
 You can cancel the event to prevent the user from resizing the control. You can also entirely disable resizing through the Behaviors property of the RadWindow.
 */
-add_resizeStart(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.CancelEventArgs) => void): void;
+add_resizeStart(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.CancelEventArgs) => void): void;
+
 remove_resizeStart(handler: Function): void;
         /**
 The show event of the RadWindow fires when the popup shows. It follows the beforeShow event. 
 You can use this event to change settings of the RadWindow that will affect its behavior, e.g., making sure it is always maximized or pinned.
 */
-add_show(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+add_show(handler: (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => void): void;
+
 remove_show(handler: Function): void;
     }
 
@@ -36474,12 +37193,14 @@ tile(): void;
         /**
 This event is fired immediately after the RadWizard responds to button or step click.
 */
-add_buttonClicked(handler: (sender: Telerik.Web.UI.RadWizard, args: Telerik.Web.UI.WizardButtonClickedEventArgs) => void): void;
+add_buttonClicked(handler: (sender: Telerik.Web.UI.RadWizard, args: Telerik.Web.UI.WizardButtonClickedEventArgs) => void): void;
+
 remove_buttonClicked(handler: Function): void;
         /**
 This event is fired when user clicks on a button or step before the RadWizard responds to the click.
 */
-add_buttonClicking(handler: (sender: Telerik.Web.UI.RadWizard, args: Telerik.Web.UI.WizardButtonClickingEventArgs) => void): void;
+add_buttonClicking(handler: (sender: Telerik.Web.UI.RadWizard, args: Telerik.Web.UI.WizardButtonClickingEventArgs) => void): void;
+
 remove_buttonClicking(handler: Function): void;
     }
 
@@ -36785,19 +37506,22 @@ set_html(): void;
 The responseEnded occurs immediately after the data (content) is pasted into the RadXmlHttpPanel. 
 This client-side event is subsequent to the responseEnding event.
 */
-add_responseEnded(handler: (sender: Telerik.Web.UI.RadXmlHttpPanel, args: Sys.EventArgs) => void): void;
+add_responseEnded(handler: (sender: Telerik.Web.UI.RadXmlHttpPanel, args: Sys.EventArgs) => void): void;
+
 remove_responseEnded(handler: Function): void;
         /**
 The responseEnding occurs before the data (content) is pasted into the RadXmlHttpPanel, 
 after a partial update request has been initiated by the RadXmlHttpPanel set_value method. 
 The responseEnding event replaces the existing responseEnd client-side event
 */
-add_responseEnding(handler: (sender: Telerik.Web.UI.RadXmlHttpPanel, args: Telerik.Web.UI.XmlHttpPanelEventArgs) => void): void;
+add_responseEnding(handler: (sender: Telerik.Web.UI.RadXmlHttpPanel, args: Telerik.Web.UI.XmlHttpPanelEventArgs) => void): void;
+
 remove_responseEnding(handler: Function): void;
         /**
 The responseError occurs in the cases when an error (WebService or Callback error) occurs when the RadXmlHttpPanel tries to load certain content.
 */
-add_responseError(handler: (sender: Telerik.Web.UI.RadXmlHttpPanel, args: Telerik.Web.UI.XmlHttpPanelErrorEventArgs) => void): void;
+add_responseError(handler: (sender: Telerik.Web.UI.RadXmlHttpPanel, args: Telerik.Web.UI.XmlHttpPanelErrorEventArgs) => void): void;
+
 remove_responseError(handler: Function): void;
     }
 
@@ -39961,7 +40685,8 @@ spellCheck(text: string): void;
         /**
 This event is fired when spell checking is complete.
 */
-add_complete(handler: (sender: Telerik.Web.UI.SpellCheckService, args: Sys.EventArgs) => void): void;
+add_complete(handler: (sender: Telerik.Web.UI.SpellCheckService, args: Sys.EventArgs) => void): void;
+
 remove_complete(handler: Function): void;
     }
 
@@ -40070,32 +40795,38 @@ setScrollPos(scrollLeft: number, scrollTop: number): void;
         /**
 Occurs when a SlidingPane has just been collapsed.
 */
-add_collapsed(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Sys.EventArgs) => void): void;
+add_collapsed(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Sys.EventArgs) => void): void;
+
 remove_collapsed(handler: Function): void;
         /**
 Occurs when a SlidingPane has just been expanded.
 */
-add_expanded(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Sys.EventArgs) => void): void;
+add_expanded(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Sys.EventArgs) => void): void;
+
 remove_expanded(handler: Function): void;
         /**
 Occurs when a SlidingPane has just been resized.
 */
-add_resized(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Telerik.Web.UI.PaneResizedEventArgs) => void): void;
+add_resized(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Telerik.Web.UI.PaneResizedEventArgs) => void): void;
+
 remove_resized(handler: Function): void;
         /**
 Occurs when a SlidingPane is just about to be collapsed.
 */
-add_collapsing(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Sys.CancelEventArgs) => void): void;
+add_collapsing(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Sys.CancelEventArgs) => void): void;
+
 remove_collapsing(handler: Function): void;
         /**
 Occurs when a SlidingPane is just about to be expanded.
 */
-add_expanding(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Sys.CancelEventArgs) => void): void;
+add_expanding(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Sys.CancelEventArgs) => void): void;
+
 remove_expanding(handler: Function): void;
         /**
 Occurs when a SlidingPane is just about to be resized.
 */
-add_resizing(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Telerik.Web.UI.PaneResizingEventArgs) => void): void;
+add_resizing(handler: (sender: Telerik.Web.UI.SplitterPaneBase, args: Telerik.Web.UI.PaneResizingEventArgs) => void): void;
+
 remove_resizing(handler: Function): void;
     }
 
@@ -41323,22 +42054,26 @@ updateSize(): void;
         /**
 Occurs when the collapse animation has ended.
 */
-add_collapseAnimationEnded(handler: (sender: Telerik.Web.UI.jSlide, args: Sys.EventArgs) => void): void;
+add_collapseAnimationEnded(handler: (sender: Telerik.Web.UI.jSlide, args: Sys.EventArgs) => void): void;
+
 remove_collapseAnimationEnded(handler: Function): void;
         /**
 Occurs when the collapse animation has started.
 */
-add_collapseAnimationStarted(handler: (sender: Telerik.Web.UI.jSlide, args: Sys.EventArgs) => void): void;
+add_collapseAnimationStarted(handler: (sender: Telerik.Web.UI.jSlide, args: Sys.EventArgs) => void): void;
+
 remove_collapseAnimationStarted(handler: Function): void;
         /**
 Occurs when the expand animation has ended.
 */
-add_expandAnimationEnded(handler: (sender: Telerik.Web.UI.jSlide, args: Sys.EventArgs) => void): void;
+add_expandAnimationEnded(handler: (sender: Telerik.Web.UI.jSlide, args: Sys.EventArgs) => void): void;
+
 remove_expandAnimationEnded(handler: Function): void;
         /**
 Occurs when the expand animation has started.
 */
-add_expandAnimationStarted(handler: (sender: Telerik.Web.UI.jSlide, args: Sys.EventArgs) => void): void;
+add_expandAnimationStarted(handler: (sender: Telerik.Web.UI.jSlide, args: Sys.EventArgs) => void): void;
+
 remove_expandAnimationStarted(handler: Function): void;
     }
 
@@ -41402,7 +42137,8 @@ spellCheck(): void;
         /**
 This event is fired when the spell checking has finished.
 */
-add_spellCheckEnd(handler: (sender: Telerik.Web.UI.Editor.AjaxSpellCheck, args: Sys.EventArgs) => void): void;
+add_spellCheckEnd(handler: (sender: Telerik.Web.UI.Editor.AjaxSpellCheck, args: Sys.EventArgs) => void): void;
+
 remove_spellCheckEnd(handler: Function): void;
     }
 
@@ -42977,7 +43713,8 @@ setToolState(toolsArray: any, state?: Telerik.Web.UI.Editor.CommandStates): void
         /**
 This event is raised when a value is selected.
 */
-add_toolClick(handler: (sender: Telerik.Web.UI.EditorButton, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+add_toolClick(handler: (sender: Telerik.Web.UI.EditorButton, args: Telerik.Web.UI.EditorCommandEventArgs) => void): void;
+
 remove_toolClick(handler: Function): void;
     }
 
@@ -43564,22 +44301,26 @@ set_settingsBtn(value: HTMLElement): void;
         /**
 Fired when Find button is clicked
 */
-add_find(handler: (sender: Telerik.Web.UI.Editor.FindReplaceMobile, args: Telerik.Web.UI.Editor.FindReplaceEventArgs) => void): void;
+add_find(handler: (sender: Telerik.Web.UI.Editor.FindReplaceMobile, args: Telerik.Web.UI.Editor.FindReplaceEventArgs) => void): void;
+
 remove_find(handler: Function): void;
         /**
 Fired when Replace All is clicked
 */
-add_all(handler: (sender: Telerik.Web.UI.Editor.FindReplaceMobile, args: Telerik.Web.UI.Editor.FindReplaceEventArgs) => void): void;
+add_all(handler: (sender: Telerik.Web.UI.Editor.FindReplaceMobile, args: Telerik.Web.UI.Editor.FindReplaceEventArgs) => void): void;
+
 remove_all(handler: Function): void;
         /**
 Fired when Replace is clicked
 */
-add_replace(handler: (sender: Telerik.Web.UI.Editor.FindReplaceMobile, args: Telerik.Web.UI.Editor.FindReplaceEventArgs) => void): void;
+add_replace(handler: (sender: Telerik.Web.UI.Editor.FindReplaceMobile, args: Telerik.Web.UI.Editor.FindReplaceEventArgs) => void): void;
+
 remove_replace(handler: Function): void;
         /**
 Fired when Settings is clicked
 */
-add_settings(handler: (sender: Telerik.Web.UI.Editor.FindReplaceMobile, args: Telerik.Web.UI.Editor.FindReplaceEventArgs) => void): void;
+add_settings(handler: (sender: Telerik.Web.UI.Editor.FindReplaceMobile, args: Telerik.Web.UI.Editor.FindReplaceEventArgs) => void): void;
+
 remove_settings(handler: Function): void;
     }
 
@@ -43860,17 +44601,20 @@ showItemsList(): void;
         /**
 This event is fired after a list item is selected
 */
-add_itemSelected(handler: (sender: Telerik.Web.UI.Editor.TabChooser, args: Telerik.Web.UI.Editor.TabChooserEventArgs) => void): void;
+add_itemSelected(handler: (sender: Telerik.Web.UI.Editor.TabChooser, args: Telerik.Web.UI.Editor.TabChooserEventArgs) => void): void;
+
 remove_itemSelected(handler: Function): void;
         /**
 This event is fired after the control is initialized
 */
-add_load(handler: (sender: Telerik.Web.UI.Editor.TabChooser, args: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.Editor.TabChooser, args: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 This event is fired before the items list is shown
 */
-add_itemsListShowing(handler: (sender: Telerik.Web.UI.Editor.TabChooser, args: Telerik.Web.UI.Editor.TabChooserEventArgs) => void): void;
+add_itemsListShowing(handler: (sender: Telerik.Web.UI.Editor.TabChooser, args: Telerik.Web.UI.Editor.TabChooserEventArgs) => void): void;
+
 remove_itemsListShowing(handler: Function): void;
     }
 
@@ -45293,7 +46037,8 @@ updated(): void;
         /**
 Occurs when the interval has elapsed.
 */
-add_tick(handler: (sender: Telerik.Web.Timer, args: Sys.EventArgs) => void): void;
+add_tick(handler: (sender: Telerik.Web.Timer, args: Sys.EventArgs) => void): void;
+
 remove_tick(handler: Function): void;
     }
 
@@ -45872,7 +46617,8 @@ zoomBestFit(width: any, height: any): any;
         /**
 Occurs when the image is reloaded.
 */
-add_imageReload(handler: (sender: Telerik.Web.UI.ImageEditor.EditableImageBase, args: Sys.EventArgs) => void): void;
+add_imageReload(handler: (sender: Telerik.Web.UI.ImageEditor.EditableImageBase, args: Sys.EventArgs) => void): void;
+
 remove_imageReload(handler: Function): void;
     }
 
@@ -46316,12 +47062,14 @@ set_checked(value: boolean): void;
         /**
 The checkedChanged event is fired after the Checked property of the control is changed, and it is subsequent to the checkedChanging event.
 */
-add_checkedChanged(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCheckedEventArgs) => void): void;
+add_checkedChanged(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCheckedEventArgs) => void): void;
+
 remove_checkedChanged(handler: Function): void;
         /**
 The checkedChanging event is fired after the Checked property of the control is changed.
 */
-add_checkedChanging(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCheckedCancelEventArgs) => void): void;
+add_checkedChanging(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCheckedCancelEventArgs) => void): void;
+
 remove_checkedChanging(handler: Function): void;
     }
 
@@ -46499,22 +47247,26 @@ set_value(value: string): void;
         /**
 The clicked event is subsequent to the clicking event, and occurs when the RadButton control is clicked.
 */
-add_clicked(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => void): void;
+add_clicked(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => void): void;
+
 remove_clicked(handler: Function): void;
         /**
 The clicking event occurs when the RadButton control is clicked, immediately after the mouse button is released.
 */
-add_clicking(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => void): void;
+add_clicking(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => void): void;
+
 remove_clicking(handler: Function): void;
         /**
 The load event occurs when the RadButton control loaded on the page.
 */
-add_load(handler: (sender: Telerik.Web.UI.RadButton, eventArgs: Sys.EventArgs) => void): void;
+add_load(handler: (sender: Telerik.Web.UI.RadButton, eventArgs: Sys.EventArgs) => void): void;
+
 remove_load(handler: Function): void;
         /**
 The mouseOut event is fired when the user moves the mouse pointer over the control.
 */
-add_mouseOut(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => void): void;
+add_mouseOut(handler: (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => void): void;
+
 remove_mouseOut(handler: Function): void;
     }
 
@@ -47290,48 +48042,57 @@ set_pageSize(value: number): void;
         /**
 Occurs when an FileListView is opened.
 */
-add_open(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Telerik.Web.UI.FileExplorer.FileListPageEventArgs) => void): void;
+add_open(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Telerik.Web.UI.FileExplorer.FileListPageEventArgs) => void): void;
+
 remove_open(handler: Function): void;
         /**
 Occurs when an item from the Grid is successfully dropped on the TreeView.
 */
-add_itemDropComplete(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Sys.EventArgs) => void): void;
+add_itemDropComplete(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Sys.EventArgs) => void): void;
+
 remove_itemDropComplete(handler: Function): void;
         /**
 Occurs when an item in the Grid is selected.
 */
-add_itemSelect(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Sys.EventArgs) => void): void;
+add_itemSelect(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Sys.EventArgs) => void): void;
+
 remove_itemSelect(handler: Function): void;
         /**
 Occurs when the context item of the Grid is shown.
 */
-add_contextMenu(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Sys.EventArgs) => void): void;
+add_contextMenu(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Sys.EventArgs) => void): void;
+
 remove_contextMenu(handler: Function): void;
         /**
 Occurs when the context menu gets hidden.
 #### Event Data
 */
-add_hideContextMenu(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Sys.EventArgs) => void): void;
+add_hideContextMenu(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Sys.EventArgs) => void): void;
+
 remove_hideContextMenu(handler: Function): void;
         /**
 Occurs when the curent page index is changed.
 */
-add_page(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Telerik.Web.UI.FileExplorer.FileListPageEventArgs) => void): void;
+add_page(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Telerik.Web.UI.FileExplorer.FileListPageEventArgs) => void): void;
+
 remove_page(handler: Function): void;
         /**
 Occurs when the file items are sorted.
 */
-add_sort(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Telerik.Web.UI.FileExplorer.FileListSortEventArgs) => void): void;
+add_sort(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Telerik.Web.UI.FileExplorer.FileListSortEventArgs) => void): void;
+
 remove_sort(handler: Function): void;
         /**
 Occurs when the item is about to be dragged. The event can be cancelled.
 */
-add_itemDragStart(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Telerik.Web.UI.FileExplorer.FileListItemCancelableEventArgs) => void): void;
+add_itemDragStart(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Telerik.Web.UI.FileExplorer.FileListItemCancelableEventArgs) => void): void;
+
 remove_itemDragStart(handler: Function): void;
         /**
 Occurs when the item is being dragged.
 */
-add_itemDragging(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Telerik.Web.UI.FileExplorer.FileListItemDraggingEventArgs) => void): void;
+add_itemDragging(handler: (sender: Telerik.Web.UI.FileExplorer.IFileListView, args: Telerik.Web.UI.FileExplorer.FileListItemDraggingEventArgs) => void): void;
+
 remove_itemDragging(handler: Function): void;
     }
 
@@ -47624,22 +48385,26 @@ show(): void;
         /**
 Occurs when the hide animation has ended.
 */
-add_hideAnimationEnd(handler: (sender: Telerik.Web.UI.Tile.PeekAnimationManager, args: Sys.EventArgs) => void): void;
+add_hideAnimationEnd(handler: (sender: Telerik.Web.UI.Tile.PeekAnimationManager, args: Sys.EventArgs) => void): void;
+
 remove_hideAnimationEnd(handler: Function): void;
         /**
 Occurs when the hide animation has started.
 */
-add_hideAnimationStart(handler: (sender: Telerik.Web.UI.Tile.PeekAnimationManager, args: Sys.EventArgs) => void): void;
+add_hideAnimationStart(handler: (sender: Telerik.Web.UI.Tile.PeekAnimationManager, args: Sys.EventArgs) => void): void;
+
 remove_hideAnimationStart(handler: Function): void;
         /**
 Occurs when the show animation has ended.
 */
-add_showAnimationEnd(handler: (sender: Telerik.Web.UI.Tile.PeekAnimationManager, args: Sys.EventArgs) => void): void;
+add_showAnimationEnd(handler: (sender: Telerik.Web.UI.Tile.PeekAnimationManager, args: Sys.EventArgs) => void): void;
+
 remove_showAnimationEnd(handler: Function): void;
         /**
 Occurs when the show animation has started.
 */
-add_showAnimationStart(handler: (sender: Telerik.Web.UI.Tile.PeekAnimationManager, args: Sys.EventArgs) => void): void;
+add_showAnimationStart(handler: (sender: Telerik.Web.UI.Tile.PeekAnimationManager, args: Sys.EventArgs) => void): void;
+
 remove_showAnimationStart(handler: Function): void;
     }
 

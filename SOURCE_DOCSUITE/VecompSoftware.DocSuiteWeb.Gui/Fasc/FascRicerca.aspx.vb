@@ -39,6 +39,8 @@ Partial Public Class FascRicerca
         End Get
     End Property
 
+    Public Property DynamicMetadataEnabled() As Boolean
+
 #End Region
 
 #Region "Events"
@@ -89,7 +91,7 @@ Partial Public Class FascRicerca
         End If
         SessionSearchController.SaveSessionFinder(uscFascicleFinder.Finder, SessionSearchController.SessionFinderType.FascFinderType)
         ClearSessions(Of FascRisultati)()
-        Response.Redirect($"~/Fasc/FascRisultati.aspx?Type=Fasc&Action={Action}&ChoiseFolderEnabled={ChoiseFolderEnabled}&SelectedFascicleFolderId={SelectedFascicleFolderId}&CurrentFascicleId={CurrentFascicleId}&BackButtonEnabled={BackButtonEnabled}")
+        Response.Redirect($"~/Fasc/FascRisultati.aspx?Type=Fasc&Action={Action}&ChoiseFolderEnabled={ChoiseFolderEnabled}&SelectedFascicleFolderId={SelectedFascicleFolderId}&CurrentFascicleId={CurrentFascicleId}&BackButtonEnabled={BackButtonEnabled}&DynamicMetadataEnabled={uscFascicleFinder.DynamicMetadataEnabled}")
     End Sub
 #End Region
 

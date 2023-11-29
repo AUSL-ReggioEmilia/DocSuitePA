@@ -29,6 +29,7 @@
                     workflowActivityInsert.dataScadentaId = "<%= dataScadenza.ClientID %>"
                     workflowActivityInsert.docSuiteVersion = "<%=DSWVersion%>";
                     workflowActivityInsert.idTenantAOO = "<%= If(CurrentTenant Is Nothing, String.Empty, CurrentTenant.TenantAOO.UniqueId) %>";
+                    workflowActivityInsert.workflowArchiveName = "<%= WorkflowArchiveName %>";
 
                     workflowActivityInsert.initialize();
                 });
@@ -121,7 +122,7 @@
                     <td style="width: 20%; white-space: nowrap">&nbsp;</td>
                 </tr>
                 <tr>
-                    <td class="label" style="width: 15%">Oggetto:
+                    <td class="label" style="width: 15%">Note:
                     </td>
                     <td>
                         <telerik:RadTextBox runat="server" ID="txtNote" CausesValidation="true" EmptyMessage="Campo note" Width="100%" TextMode="MultiLine" Rows="3"></telerik:RadTextBox>

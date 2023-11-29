@@ -98,6 +98,7 @@
                                     <asp:LinkButton runat="server" ID="lbtViewMonitoringQuality" Text='<%# Eval("Series") %>' CommandName="ViewMonitoringQuality" CommandArgument='<%# Eval("Series") %>' />
                                 </ItemTemplate>
                             </telerik:GridTemplateColumn>
+                            <telerik:GridBoundColumn DataField="Series" HeaderText="Sezioni" HeaderTooltip="Sezioni" UniqueName="DocumentSeriesExport" Visible="false" />
                            <%-- <telerik:GridBoundColumn DataField="ActivePublished" HeaderText="Attive" HeaderTooltip="Numero di pubblicazioni attive" />--%>
                             <telerik:GridBoundColumn DataField="Inserted" HeaderText="Inserite" HeaderTooltip="Numero di pubblicazioni inserite" />
                             <telerik:GridBoundColumn DataField="Published" HeaderText="Pubblicate" HeaderTooltip="Numero di pubblicazioni pubblicate" />

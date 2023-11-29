@@ -33,7 +33,7 @@ Public Class NHibernateResolutionJournalFinder
 
     Protected Overrides Function CreateCriteria() As ICriteria
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of ResolutionJournal)("RJ")
-        criteria.Add(Restrictions.Eq("RJ.IsActive", 1S))
+        criteria.Add(Restrictions.Eq("RJ.IsActive", True))
 
         If Year.HasValue Then
             criteria.Add(Restrictions.Eq("RJ.Year", Year))

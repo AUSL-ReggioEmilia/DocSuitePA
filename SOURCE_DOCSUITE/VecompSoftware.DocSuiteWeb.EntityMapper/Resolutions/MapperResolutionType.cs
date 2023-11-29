@@ -26,6 +26,7 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Resolutions
             reslkindtype.Name = entity.ResolutionKind.Name;
             reslkindtype.IsRequired = entity.DocumentRequired;
             reslkindtype.ResolutionKindIsActive = entity.ResolutionKind.IsActive;
+            reslkindtype.ResolutionKindAmountEnabled = entity.ResolutionKind.AmountEnabled; 
             return reslkindtype;
         }
 
@@ -38,6 +39,7 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Resolutions
             reslkindtype.Name = entity.Name;
             reslkindtype.IsRequired = entity.ResolutionKindDocumentSeries.FirstOrDefault().DocumentRequired;
             reslkindtype.ResolutionKindIsActive = entity.IsActive;
+            reslkindtype.ResolutionKindAmountEnabled = entity.AmountEnabled;
             return reslkindtype;
         }
 
@@ -52,6 +54,7 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Resolutions
                 .Select(x => x.Name).WithAlias(() => reslKindType.Name)
                 .Select(() => resolutionKindDocumentSeries.DocumentRequired).WithAlias(() => reslKindType.IsRequired)
                 .Select(x => x.IsActive).WithAlias(() => reslKindType.ResolutionKindIsActive)
+                .Select(x => x.AmountEnabled).WithAlias(() => reslKindType.ResolutionKindAmountEnabled)
                 .Select(x => x.IsActive).WithAlias(() => reslKindType.ResolutionKindDocumentSeriesIsActive) 
                 .Select(() => documentSeries.Id).WithAlias(() => reslKindType.DocumentSeriesId)
                 .Select(() => resolutionKindDocumentSeries.Id).WithAlias(() => reslKindType.IdResolutionKindDocumentSeries)

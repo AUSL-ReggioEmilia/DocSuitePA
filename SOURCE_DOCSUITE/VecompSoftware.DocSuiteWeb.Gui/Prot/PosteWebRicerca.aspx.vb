@@ -49,7 +49,7 @@ Namespace Prot.PosteWeb
                 If CommonShared.HasGroupsWithPosteWebAccountRestrictionNoneRight Then
                     accounts = Facade.PosteOnLineAccountFacade.GetAll()
                 Else
-                    accounts = Facade.PosteOnLineAccountFacade.GetUserAccounts()
+                    accounts = Facade.PosteOnLineAccountFacade.GetUserAccounts(CurrentTenant.TenantAOO.UniqueId)
                 End If
                 ddlPolAccount.DataSource = accounts
                 ddlPolAccount.DataBind()
@@ -101,6 +101,8 @@ Namespace Prot.PosteWeb
                 .AlternateText = GetPolRequestTypeText(polRequest.RequestType)
             End With
 
+            DirectCast(e.Item, GridDataItem)("RegistrationDate").Text = polRequest.RegistrationDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")
+
             If polRequest.ProtocolId.HasValue Then
                 With DirectCast(e.Item.FindControl("imgShowProt"), LinkButton)
                     .PostBackUrl = $"ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={polRequest.ProtocolId}&Type=Prot")}"
@@ -111,6 +113,9 @@ Namespace Prot.PosteWeb
         End Sub
 
         Private Sub BtnExcel_Click(sender As Object, e As EventArgs) Handles btnExcel.Click
+            If ReportFacade.TenantModel Is Nothing Then
+                ReportFacade.TenantModel = DocSuiteContext.Current.CurrentTenant
+            End If
             Dim report As IReport(Of RadGrid) = ReportFacade.GenerateReport(Of RadGrid)(New List(Of RadGrid) From {dgPosteRequestContact}, (From column As GridColumn In dgPosteRequestContact.Columns Select New Column(column)).ToList())
             Dim doc As DocumentInfo = report.ExportExcel("Ricerca_PosteOnLine.xls")
 

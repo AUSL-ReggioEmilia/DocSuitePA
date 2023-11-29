@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using NHibernate;
 using NHibernate.Criterion;
 using VecompSoftware.Helpers.ExtensionMethods;
@@ -142,7 +143,7 @@ namespace VecompSoftware.NHibernateManager.Dao
         /// <param name="entity">Entità da salvare nel database</param>
         public virtual void Save(ref T entity)
         {
-            using (ITransaction transaction = NHibernateSession.BeginTransaction())
+            using (ITransaction transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted))
             {
                 try
                 {
@@ -159,7 +160,7 @@ namespace VecompSoftware.NHibernateManager.Dao
 
         public virtual void Update(ref T entity)
         {
-            using (ITransaction transaction = NHibernateSession.BeginTransaction())
+            using (ITransaction transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted))
             {
                 try
                 {
@@ -176,7 +177,7 @@ namespace VecompSoftware.NHibernateManager.Dao
 
         public virtual void UpdateNoLastChange(ref T entity)
         {
-            using (ITransaction transaction = NHibernateSession.BeginTransaction())
+            using (ITransaction transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted))
             {
                 try
                 {
@@ -198,7 +199,7 @@ namespace VecompSoftware.NHibernateManager.Dao
 
         public virtual void UpdateOnly(ref T entity)
         {
-            using (ITransaction transaction = NHibernateSession.BeginTransaction())
+            using (ITransaction transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted))
             {
                 try
                 {
@@ -215,7 +216,7 @@ namespace VecompSoftware.NHibernateManager.Dao
 
         public virtual void Delete(ref T entity)
         {
-            using (ITransaction transaction = NHibernateSession.BeginTransaction())
+            using (ITransaction transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted))
             {
                 try
                 {
@@ -261,7 +262,7 @@ namespace VecompSoftware.NHibernateManager.Dao
 
         public void FlushSession()
         {
-            using (ITransaction transaction = NHibernateSession.BeginTransaction())
+            using (ITransaction transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted))
             {
                 try
                 {

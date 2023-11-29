@@ -7,19 +7,9 @@ Public Class ReslDisposPrint
     Inherits BasePrint
 
 #Region "Fields"
-    Private _recipientFacade As RecipientFacade
 #End Region
 
 #Region "Properties"
-
-    Public ReadOnly Property RecipientFacade() As RecipientFacade
-        Get
-            If _recipientFacade Is Nothing Then
-                _recipientFacade = New RecipientFacade("ReslDB")
-            End If
-            Return _recipientFacade
-        End Get
-    End Property
 #End Region
 
 #Region "Create Rows"

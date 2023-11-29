@@ -1,30 +1,34 @@
-﻿Imports System.IO
-Imports System.Xml
+﻿Imports System.Collections.ObjectModel
+Imports System.IO
 Imports System.Linq
 Imports System.Text
-Imports System.Collections.ObjectModel
-Imports VecompSoftware.DocSuiteWeb.DTO.Resolutions
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.Services.WebPublication
-Imports VecompSoftware.Helpers.ExtensionMethods
 Imports System.Web
-Imports VecompSoftware.Services.Biblos.Models
+Imports System.Web.Hosting
+Imports System.Xml
+Imports VecompSoftware.Commons.Interfaces.CQRS.Events
 Imports VecompSoftware.Core.Command
+Imports VecompSoftware.Core.Command.CQRS.Commands.Entities.Resolutions
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Data.Entity.Commons
+Imports VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.Commons
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.DTO.Resolutions
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.EntityMapper.Commons
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.Resolutions
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Resolutions
-Imports VecompSoftware.Core.Command.CQRS.Commands.Models.Resolutions
-Imports VecompSoftware.Services.Command.CQRS.Commands.Models.Resolutions
-Imports System.Web.Hosting
+Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.NHibernateManager
+Imports VecompSoftware.Services.Biblos
+Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.Services.Command.CQRS.Commands
-Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.Commons
+Imports VecompSoftware.Services.Command.CQRS.Commands.Entities.Resolutions
+Imports VecompSoftware.Services.Logging
+Imports VecompSoftware.Services.WebPublication
 Imports APICommons = VecompSoftware.DocSuiteWeb.Entity.Commons
-Imports VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.Commons
-Imports VecompSoftware.DocSuiteWeb.EntityMapper.Commons
-Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
+Imports APIResolutions = VecompSoftware.DocSuiteWeb.Entity.Resolutions
 
 Public Class ResolutionFacade
     Inherits BaseResolutionFacade(Of Resolution, Integer, NHibernateResolutionDao)
@@ -48,7 +52,7 @@ Public Class ResolutionFacade
 #Region " Fields "
 
     Private _customWorkflowXml As XmlDocument
-    Private _mapperResolutionModel As MapperResolutionModel
+    Private _mapperResolution As MapperResolution
     Private _commandCreateFacade As CommandFacade(Of ICommandCreateResolution)
     Private _commandUpdateFacade As CommandFacade(Of ICommandUpdateResolution)
     Private _fullPrintPath As String
@@ -73,12 +77,12 @@ Public Class ResolutionFacade
         End Get
     End Property
 
-    Private ReadOnly Property MapperResolutionModel As MapperResolutionModel
+    Private ReadOnly Property MapperResolution As MapperResolution
         Get
-            If _mapperResolutionModel Is Nothing Then
-                _mapperResolutionModel = New MapperResolutionModel()
+            If _mapperResolution Is Nothing Then
+                _mapperResolution = New MapperResolution()
             End If
-            Return _mapperResolutionModel
+            Return _mapperResolution
         End Get
     End Property
 
@@ -588,7 +592,7 @@ Public Class ResolutionFacade
 
     Public Function GetDocuments(resolution As Resolution) As BiblosDocumentInfo()
         Dim facade As New ResolutionWorkflowFacade()
-        Return GetDocuments(resolution, facade.GetActiveIncremental(resolution.Id, 1))
+        Return GetDocuments(resolution, facade.GetActiveIncremental(resolution.Id, 1S))
     End Function
 
     Public Function GetPrivacyDocuments(resolution As Resolution) As BiblosDocumentInfo()
@@ -636,7 +640,7 @@ Public Class ResolutionFacade
 
     Public Function GetDocumentsOmissis(resolution As Resolution) As BiblosDocumentInfo()
         Dim facade As New ResolutionWorkflowFacade()
-        Return GetDocumentsOmissis(resolution, facade.GetActiveIncremental(resolution.Id, 1), False)
+        Return GetDocumentsOmissis(resolution, facade.GetActiveIncremental(resolution.Id, 1S), False)
     End Function
 
     Public Function GetAttachments(resolution As Resolution, incremental As Short, getFromStep As Boolean, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
@@ -656,7 +660,7 @@ Public Class ResolutionFacade
 
     Public Function GetAttachments(resolution As Resolution) As BiblosDocumentInfo()
         Dim facade As New ResolutionWorkflowFacade()
-        Return GetAttachments(resolution, facade.GetActiveIncremental(resolution.Id, 1), False)
+        Return GetAttachments(resolution, facade.GetActiveIncremental(resolution.Id, 1S), False)
     End Function
 
     Public Function GetAttachmentsOmissis(resolution As Resolution, incremental As Short, getFromStep As Boolean, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
@@ -676,7 +680,7 @@ Public Class ResolutionFacade
 
     Public Function GetAttachmentsOmissis(resolution As Resolution) As BiblosDocumentInfo()
         Dim facade As New ResolutionWorkflowFacade()
-        Return GetAttachmentsOmissis(resolution, facade.GetActiveIncremental(resolution.Id, 1), False)
+        Return GetAttachmentsOmissis(resolution, facade.GetActiveIncremental(resolution.Id, 1S), False)
     End Function
 
     Public Function HasAttachment(resolution As Resolution) As Boolean
@@ -700,7 +704,7 @@ Public Class ResolutionFacade
     ''' <returns>array di BiblosDocumentInfo a rappresentare la catena di annessi</returns>
     Public Function GetAnnexes(ByVal resolution As Resolution, ByVal incremental As Short, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
         Dim guid As Guid = GetAnnexesGuid(resolution, incremental)
-        If Not guid.Equals(Guid.Empty) Then
+        If Not guid.Equals(guid.Empty) Then
             Dim docs As BiblosDocumentInfo() = BiblosDocumentInfo.GetDocuments(guid).ToArray()
             If includeUniqueId Then
                 For Each doc As BiblosDocumentInfo In docs
@@ -711,6 +715,41 @@ Public Class ResolutionFacade
         Else
             Return New BiblosDocumentInfo() {}
         End If
+    End Function
+
+    Public Function GetDematerialisation(ByVal resolution As Resolution, ByVal incremental As Short, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
+        Return GetChainDocuments(resolution.UniqueId, ChainType.DematerialisationChain, includeUniqueId)
+    End Function
+
+    Public Function GetMetadata(ByVal resolution As Resolution, ByVal incremental As Short, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
+        Return GetChainDocuments(resolution.UniqueId, ChainType.MetadataChain, includeUniqueId)
+    End Function
+
+    Private Function GetChainDocuments(resolutionId As Guid, chainType As Entity.DocumentUnits.ChainType, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
+        Dim structs As BiblosDocumentInfo() = New BiblosDocumentInfo() {}
+
+        Dim result As ICollection(Of WebAPIDto(Of DocumentUnitChain)) = WebAPIImpersonatorFacade.ImpersonateFinder(New DocumentUnitChainFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.IdDocumentUnit = resolutionId
+                        finder.EnablePaging = False
+                        finder.ExpandProperties = False
+                        Return finder.DoSearch()
+                    End Function)
+        Dim documentUnitChain As WebAPIDto(Of DocumentUnitChain) = result.SingleOrDefault(Function(x) x.Entity.ChainType = chainType)
+
+        If documentUnitChain Is Nothing OrElse documentUnitChain.Entity Is Nothing Then
+            Return structs
+        End If
+
+        structs = BiblosDocumentInfo.GetDocuments(documentUnitChain.Entity.IdArchiveChain).ToArray()
+        If includeUniqueId Then
+            For Each item As BiblosDocumentInfo In structs
+                item = SetProtocolUniqueIdAttribute(item, resolutionId, DSWEnvironment.Resolution)
+            Next
+        End If
+
+        Return structs
     End Function
 
     Public Function GetDocumentsUID(resolution As Resolution, incremental As Short) As UIDChain
@@ -736,7 +775,7 @@ Public Class ResolutionFacade
     Public Function GetDocumentsOmissisGuid(resolution As Resolution, incremental As Short, getFromStep As Boolean) As Guid
         '' Se voglio il valore dallo step allora lo leggo dalla resolutionWorkflow
         If getFromStep Then
-            Return Factory.ResolutionWorkflowFacade.GetById(New ResolutionWorkflowCompositeKey() With {.IdResolution = resolution.Id, .Incremental = incremental}).DocumentsOmissis
+            Return Factory.ResolutionWorkflowFacade.GetById(New ResolutionWorkflowCompositeKey() With {.IdResolution = resolution.Id, .incremental = incremental}).DocumentsOmissis
         End If
 
         '' Altrimenti carico come prima dalla FileResolution
@@ -754,7 +793,7 @@ Public Class ResolutionFacade
         '' Se voglio il valore dallo step allora lo leggo dalla resolutionWorkflow
         If getFromStep Then
             'Volontariamente il valore nullo diventa 0, la catena con id 0 viene gestita dallo strato superiore
-            Dim idChain As Integer = CType(Factory.ResolutionWorkflowFacade.GetById(New ResolutionWorkflowCompositeKey() With {.IdResolution = resolution.Id, .Incremental = incremental}).Attachment, Integer)
+            Dim idChain As Integer = CType(Factory.ResolutionWorkflowFacade.GetById(New ResolutionWorkflowCompositeKey() With {.IdResolution = resolution.Id, .incremental = incremental}).Attachment, Integer)
             Return New UIDChain(resolution.Location.ReslBiblosDSDB, idChain)
         End If
 
@@ -773,7 +812,7 @@ Public Class ResolutionFacade
     Public Function GetAttachmentsOmissisGuid(resolution As Resolution, incremental As Short, getFromStep As Boolean) As Guid
         '' Se voglio il valore dallo step allora lo leggo dalla resolutionWorkflow
         If getFromStep Then
-            Return Factory.ResolutionWorkflowFacade.GetById(New ResolutionWorkflowCompositeKey() With {.IdResolution = resolution.Id, .Incremental = incremental}).AttachmentsOmissis
+            Return Factory.ResolutionWorkflowFacade.GetById(New ResolutionWorkflowCompositeKey() With {.IdResolution = resolution.Id, .incremental = incremental}).AttachmentsOmissis
         End If
 
         '' Altrimenti carico come prima dalla FileResolution
@@ -800,12 +839,12 @@ Public Class ResolutionFacade
     End Function
 
     Public Function GetActiveStep(resolution As Resolution) As ResolutionWorkflow
-        Dim incremental As Short = Factory.ResolutionWorkflowFacade.GetActiveIncremental(resolution.Id, 1)
+        Dim incremental As Short = Factory.ResolutionWorkflowFacade.GetActiveIncremental(resolution.Id, 1S)
         Return GetStep(resolution, incremental)
     End Function
 
     Public Function GetStep(resolution As Resolution, incremental As Short) As ResolutionWorkflow
-        Return Factory.ResolutionWorkflowFacade.GetById(New ResolutionWorkflowCompositeKey() With {.IdResolution = resolution.Id, .Incremental = incremental})
+        Return Factory.ResolutionWorkflowFacade.GetById(New ResolutionWorkflowCompositeKey() With {.IdResolution = resolution.Id, .incremental = incremental})
     End Function
 
     Public Function GetFileResolution(resolution As Resolution) As FileResolution
@@ -857,6 +896,12 @@ Public Class ResolutionFacade
             Return False ' NESSUN DIRITTO SU QUESTO TIPO DI RESOLUTION
         End If
 
+        ' Verifico se l'utente appartiene ad uno dei settori responsabili definiti da tabworkflow
+        Dim flowResponsabilityRoles As ICollection(Of Integer) = Factory.TabWorkflowFacade.GetOperationStepFlowResponsabilityRoles(resolution)
+        If flowResponsabilityRoles.Count > 0 AndAlso Factory.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.Resolution, Factory.RoleFacade.GetByIds(flowResponsabilityRoles)) Then
+            Return True
+        End If
+
         ' Diritto base da Container
         Dim containerRight As Boolean = Factory.ContainerFacade.CheckContainerRight(resolution.Container.Id, DSWEnvironment.Resolution, right, Nothing)
 
@@ -874,28 +919,6 @@ Public Class ResolutionFacade
         ' Diritto non modificato
         Return containerRight OrElse roleAddedRight
 
-    End Function
-
-    ''' <summary>
-    ''' Verifica se esistono ruoli associati all'atto su cui l'utente ha diritti
-    ''' </summary>
-    ''' <param name="resolution">Atto su cui verificare la sicurezza</param>
-    ''' <returns>True se l'utente ha diritti, false altrimenti</returns>
-    Protected Function CheckUserRole(ByVal resolution As Resolution, ByVal posRights As Integer) As Boolean
-        For Each reslRole As ResolutionRole In resolution.ResolutionRoles
-
-            If reslRole.Role.IsActive <> 1 Then
-                ' I Settori disabilitati non agiscono sui diritti
-                Continue For
-            End If
-
-            If Factory.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.Resolution, reslRole.Role) Then
-                ' Verifico i diritti sulla base del ResolutionRoleType
-                Return True
-            End If
-        Next
-
-        Return False
     End Function
 
     Public Function SqlResolutionDeleteStep(ByVal idResolution As Integer, ByVal workflow As TabWorkflow) As Boolean
@@ -964,45 +987,58 @@ Public Class ResolutionFacade
 
         Dim b As Boolean ' FIGATA! (cit.)
 
-        ' Aggiorno anno e numero dell'atto
-        If TestOperationStepProperty(workflow.OperationStep, "S", resl) Then
-            If notSegnature Then    'Se non ho già assegnato il numero
+        Dim unitOfWork As NHibernateUnitOfWork = New NHibernateUnitOfWork(ReslDB)
+        Try
+            unitOfWork.BeginTransaction()
 
-                Dim adoptionDate As DateTime = DateTime.ParseExact(data, "dd/MM/yyyy", System.Globalization.CultureInfo.CurrentCulture)
-                Dim yearAndNumber As Tuple(Of Short, Integer) = CalculateYearAndNumber(resl.ProposeDate.Value, adoptionDate, viewReslType)
-                resl.Year = yearAndNumber.Item1
-                resl.Number = yearAndNumber.Item2
+            ' Aggiorno anno e numero dell'atto
+            If TestOperationStepProperty(workflow.OperationStep, "S", resl) Then
+                If notSegnature Then    'Se non ho già assegnato il numero
 
-                Dim parameterFacade As New ParameterFacade(ReslDB)
-                Dim reslParameter As Parameter = parameterFacade.GetCurrentAndRefresh()
-                If viewReslType = ResolutionType.IdentifierDelibera Then
-                    parameterFacade.UpdateResolutionLastUsedNumber(reslParameter.LastUsedResolutionNumber + 1S)
-                Else
-                    parameterFacade.UpdateResolutionLastUsedBillNumber(reslParameter.LastUsedBillNumber + 1S)
+                    Dim adoptionDate As DateTime = DateTime.ParseExact(data, "dd/MM/yyyy", System.Globalization.CultureInfo.CurrentCulture)
+                    Dim yearAndNumber As Tuple(Of Short, Integer) = CalculateYearAndNumber(resl.ProposeDate.Value, adoptionDate, viewReslType)
+                    resl.Year = yearAndNumber.Item1
+                    resl.Number = yearAndNumber.Item2
+
+                    Dim parameterFacade As New ParameterFacade(ReslDB)
+                    Dim reslParameter As Parameter = parameterFacade.GetCurrentAndRefresh()
+                    If viewReslType = ResolutionType.IdentifierDelibera Then
+                        parameterFacade.UpdateResolutionLastUsedNumber(reslParameter.LastUsedResolutionNumber + 1S)
+                    Else
+                        parameterFacade.UpdateResolutionLastUsedBillNumber(reslParameter.LastUsedBillNumber + 1S)
+                    End If
                 End If
             End If
-        End If
 
-        ' Aggiorno data e utente dell'atto
-        If Not data.Eq("N") Then
-            If Not String.IsNullOrEmpty(data) Then
-                ReflectionHelper.SetPropertyCase(resl, workflow.FieldDate, DateTime.ParseExact(data, "dd/MM/yyyy", System.Globalization.CultureInfo.CurrentCulture))
-                ReflectionHelper.SetPropertyCase(resl, workflow.FieldUser, user)
-            Else
-                ReflectionHelper.SetPropertyCase(resl, workflow.FieldDate, Nothing)
-                ReflectionHelper.SetPropertyCase(resl, workflow.FieldUser, Nothing)
+            ' Aggiorno data e utente dell'atto
+            If Not data.Eq("N") Then
+                If Not String.IsNullOrEmpty(data) Then
+                    ReflectionHelper.SetPropertyCase(resl, workflow.FieldDate, DateTime.ParseExact(data, "dd/MM/yyyy", System.Globalization.CultureInfo.CurrentCulture))
+                    ReflectionHelper.SetPropertyCase(resl, workflow.FieldUser, user)
+                Else
+                    ReflectionHelper.SetPropertyCase(resl, workflow.FieldDate, Nothing)
+                    ReflectionHelper.SetPropertyCase(resl, workflow.FieldUser, Nothing)
+                End If
             End If
-        End If
 
-        ' Aggiorno il ServiceNumber
-        If Not serviceNumber.Eq("N") Then
-            resl.ServiceNumber = If(Not String.IsNullOrEmpty(serviceNumber), serviceNumber, Nothing)
-        End If
+            ' Aggiorno il ServiceNumber
+            If Not serviceNumber.Eq("N") Then
+                resl.ServiceNumber = If(Not String.IsNullOrEmpty(serviceNumber), serviceNumber, Nothing)
+            End If
 
-        ' Salvataggio dell'atto
-        If tosave Then
-            Save(resl)
-        End If
+            ' Salvataggio dell'atto
+            If tosave Then
+                SaveWithoutTransaction(resl)
+            End If
+
+            unitOfWork.Commit()
+
+        Catch ex As Exception
+            'if there is an error Rollback
+            unitOfWork.Rollback()
+            Throw New Exception("Resolution - Errore Inserimento: " & idResolution, ex)
+        End Try
+
         b = True
 
         ' Aggiorno allegato
@@ -1419,22 +1455,6 @@ Public Class ResolutionFacade
         Return _dao.UpdateOC(idResolutionList, dataSpedCollegio, protCollegio, dataSpedRegione, protRegione, dataSpedGestione, protGestione, userConnected)
     End Function
 
-    Public Function UpdateStatus(ByRef resolution As Resolution, ByVal newIdStatus As Short) As Boolean
-        Try
-            Dim status As ResolutionStatus = Factory.ResolutionStatusFacade.GetById(newIdStatus)
-            If status Is Nothing Then
-                Throw New DocSuiteException("Errore update status", "Id status non trovato.")
-            End If
-            resolution.Status = status
-            UpdateOnly(resolution)
-        Catch ex As Exception
-            FileLogger.Warn(LoggerName, "Errore nella modifica dello status resolution " & newIdStatus, ex)
-            Return False
-        End Try
-
-        Return True
-    End Function
-
     Public Function Duplicate(ByVal idResolution As Integer,
         Optional ByVal duplicateType As Boolean = False,
         Optional ByVal duplicateRecipients As Boolean = False,
@@ -1521,38 +1541,6 @@ Public Class ResolutionFacade
         Return reslDuplicate
     End Function
 
-    Public Function GetResolutionRoles(resl As Resolution) As IList(Of ResolutionRole)
-        Return _dao.GetResolutionRoles(resl)
-    End Function
-
-    ''' <summary> Tutte le resolution adottate senza DSI associate a AVCP. </summary>
-    ''' <remarks> Prima versione fatta di corsa. </remarks>
-    Public Function GetAdoptedResolutionNotAvcp(ByVal [from] As DateTime?, ByVal [to] As DateTime?) As IList(Of Resolution)
-        If Not DocSuiteContext.Current.ProtocolEnv.AvcpDocumentSeriesId.HasValue Then
-            Throw New DocSuiteException("Errore ricerca", String.Format("Impossibile trovare la {0} di default.", DocSuiteContext.Current.ProtocolEnv.DocumentSeriesName.ToLower()))
-        End If
-
-        ' Risoluzioni adottate
-        Dim x As New ResolutionFinder2
-        x.InStepDateRange = New Range(Of Date)([from], [to])
-        Dim adopted As IList(Of Resolution) = x.GetAdoptedResolutions()
-
-        ' ritorno solo le resolution che non sono presenti nelle DSI trovate
-        Dim toReturn As New List(Of Resolution)
-        For Each resolution As Resolution In adopted
-            Dim dsiIds As List(Of Integer) = Factory.ResolutionDocumentSeriesItemFacade.GetByResolution(resolution).Select(Function(r) r.IdDocumentSeriesItem.Value).ToList()
-            ' Passo al db di protocollo e tiro su tutte le documentseriesitem
-            Dim dSItems As IList(Of DocumentSeriesItem) = Factory.DocumentSeriesItemFacade.GetByIdentifiers(dsiIds)
-            ' Nessuna DSI dell'atto deve avere un riferimento a AVCP
-            Dim toAdd As Boolean = dSItems.All(Function(documentSeriesItem) documentSeriesItem.DocumentSeries.Id <> DocSuiteContext.Current.ProtocolEnv.AvcpDocumentSeriesId.Value)
-            If toAdd Then
-                toReturn.Add(resolution)
-            End If
-        Next
-
-        ' ritorno tutte le resolution così trovate
-        Return toReturn
-    End Function
 
     ''' <summary> Aggiorno l'elenco di atti passato dall'xml con i valori passati </summary>
     Public Sub UpdateFromXml(ByVal resolutionXml As ResolutionXML, ByVal sourceProtocol As Protocol)
@@ -1689,16 +1677,6 @@ Public Class ResolutionFacade
         End If
 
         Return resolutions
-    End Function
-
-    Public Function GeneraLetteraToDocumentInfo(ByVal typeDoc As Short, ByVal keyList As IList(Of Integer), ByVal tipoLettera As String,
-                ByRef fileTemp As String, Optional ByVal sProt As String = "", Optional ByVal fileSource As String = "",
-                Optional ByVal dataStampa As String = "", Optional ByVal ruolo As String = "", Optional ByVal firma As String = "",
-                Optional ByVal dataFine As String = "") As DocumentInfo
-
-        Dim doc As DocumentInfo = GeneraLettera(typeDoc, keyList, tipoLettera, fileTemp, sProt, fileSource, dataStampa, ruolo, firma, dataFine)
-        fileTemp = String.Empty
-        Return doc
     End Function
 
     Public Function GeneraLetteraToString(ByVal typeDoc As Short, ByVal keyList As IList(Of Integer), ByVal tipoLettera As String,
@@ -2122,17 +2100,6 @@ Public Class ResolutionFacade
         Return True
     End Function
 
-    ''' <summary>
-    ''' Verifica se la resolution passata, in stato adozione e pubblicazione, contiene serie documentali confermate
-    ''' </summary>
-    Public Function HasSeriesComplete(ByVal resolution As Resolution) As Boolean
-        If resolution Is Nothing Then
-            Exit Function
-        End If
-
-        Return GetSeriesNotComplete(resolution).Any()
-
-    End Function
 
     ''' <summary>
     ''' Verifica se la resolution passata, in stato pubblicazione, contiene serie documentali in stato bozza
@@ -2171,26 +2138,6 @@ Public Class ResolutionFacade
             .ToList()
         Return FacadeFactory.Instance.DocumentSeriesItemFacade.GetItemDraftByIdentifiers(idSeriesList)
     End Function
-
-    ''' <summary>
-    ''' Verifica se la resolution passata, in stato pubblicazione o adozione, contiene serie documentali confermate
-    ''' con richiesta documenti attiva
-    ''' </summary>
-    Public Function GetSeriesNotComplete(ByVal resolution As Resolution) As ICollection(Of DocumentSeriesItem)
-
-        If resolution Is Nothing OrElse Not resolution.PublishingDate.HasValue OrElse Not resolution.AdoptionDate.HasValue OrElse
-            resolution.ResolutionKind Is Nothing OrElse Not resolution.ResolutionKind.ResolutionKindDocumentSeries.Any() Then
-            Return New Collection(Of DocumentSeriesItem)()
-        End If
-
-        Dim reslDocSeries As IList(Of ResolutionDocumentSeriesItem) = FacadeFactory.Instance.ResolutionDocumentSeriesItemFacade.GetByResolution(resolution)
-        Dim idSeriesList As List(Of Integer) = reslDocSeries _
-            .Where(Function(x) x.IdDocumentSeriesItem.HasValue) _
-            .Select(Function(s) s.IdDocumentSeriesItem.Value) _
-            .ToList()
-        Return FacadeFactory.Instance.DocumentSeriesItemFacade.GetItemNotDraftByIdentifiers(idSeriesList)
-    End Function
-
 
     ''' <summary>
     ''' Recupera tutte le serie documentali associate all'atto, sia confermate sia in stato di bozza
@@ -2308,25 +2255,28 @@ Public Class ResolutionFacade
     Public Function GetResolutionLocation(idResolution As Integer) As Location
         Return _dao.GetResolutionLocation(idResolution)
     End Function
-
     Public Function GetByYearAndNumber(year As Short, number As Integer) As Resolution
         Return _dao.GetByYearAndNumber(year, number)
 
     End Function
-
     Public Function GetByUniqueId(uniqueId As Guid) As Resolution
         Return _dao.GetByUniqueId(uniqueId)
     End Function
-
     Public Function GetByYearNumberType(year As Short, number As Integer, type As Short) As Resolution
         Return _dao.GetByYearNumberType(year, number, type)
     End Function
-
-    Public Sub SendCreateResolutionCommand(resolution As Resolution)
+    Public Sub SendCreateResolutionCommand(resolution As Resolution, workflowActions As ICollection(Of IWorkflowAction))
         Try
-            Dim commandCreate As ICommandCreateResolution = PrepareResolutionCommand(Of ICommandCreateResolution)(resolution, Function(tenantName, tenantId, tenantAOOId, identity, resolutionModel, apiCategoryFascicle, documentUnit)
-                                                                                                                                  Return New CommandCreateResolution(tenantName, tenantId, tenantAOOId, identity, resolutionModel, apiCategoryFascicle, documentUnit)
-                                                                                                                              End Function)
+            Dim commandCreate As ICommandCreateResolution = PrepareResolutionCommand(Of ICommandCreateResolution)(resolution,
+                Function(tenantName, tenantId, tenantAOOId, identity, resolutionEntity, apiCategoryFascicle, documentUnit)
+                    Dim command As CommandCreateResolution = New CommandCreateResolution(tenantName, tenantId, tenantAOOId, identity, resolutionEntity, apiCategoryFascicle, documentUnit)
+                    If workflowActions IsNot Nothing Then
+                        For Each workflowAction As IWorkflowAction In workflowActions
+                            command.WorkflowActions.Add(workflowAction)
+                        Next
+                    End If
+                    Return command
+                End Function)
             CommandCreateFacade.Push(commandCreate)
         Catch ex As Exception
             FileLogger.Error(LoggerName, String.Concat("SendCreateResolutionCommand => ", ex.Message), ex)
@@ -2347,29 +2297,27 @@ Public Class ResolutionFacade
     End Sub
 
     Public Function PrepareResolutionCommand(Of T As {ICommand})(resolution As Resolution,
-                                                                  commandInitializeFunc As Func(Of String, Guid, Guid, IdentityContext, ResolutionModel, APICommons.CategoryFascicle, Entity.DocumentUnits.DocumentUnit, T)) As T
+                                                                 commandInitializeFunc As Func(Of String, Guid, Guid, IdentityContext, APIResolutions.Resolution, APICommons.CategoryFascicle, Entity.DocumentUnits.DocumentUnit, T)) As T
 
         Dim identity As IdentityContext = New IdentityContext(DocSuiteContext.Current.User.FullUserName)
         Dim tenantName As String = CurrentTenant.TenantName
         Dim tenantId As Guid = CurrentTenant.UniqueId
         Dim tenantAOOId As Guid = CurrentTenant.TenantAOO.UniqueId
-        Dim resolutionModel As ResolutionModel = MapperResolutionModel.MappingDTO(resolution)
+        Dim resolutionApi As APIResolutions.Resolution = MapperResolution.MappingDTO(resolution)
 
-        If resolution.Type.Id.Equals(ResolutionType.IdentifierDetermina) Then
-            resolutionModel.DocumentUnitName = Factory.ResolutionTypeFacade.DeterminaCaption
-        ElseIf resolution.Type.Id.Equals(ResolutionType.IdentifierDelibera) Then
-            resolutionModel.DocumentUnitName = Factory.ResolutionTypeFacade.DeliberaCaption
+        resolutionApi.WorkflowName = Factory.ResolutionTypeFacade.DeterminaCaption
+        If resolution.Type.Id.Equals(ResolutionType.IdentifierDelibera) Then
+            resolutionApi.WorkflowName = Factory.ResolutionTypeFacade.DeliberaCaption
         End If
 
-        Dim dswCategoryFascicle As CategoryFascicle = CategoryFascicleDao.GetByIdCategory(resolution.Category.Id, DSWEnvironment.Protocol)
+        Dim dswCategoryFascicle As CategoryFascicle = CategoryFascicleDao.GetByIdCategory(resolutionApi.Category.EntityShortId, DSWEnvironment.Protocol)
         Dim apiCategoryFascicle As APICommons.CategoryFascicle = Nothing
         If dswCategoryFascicle IsNot Nothing Then
             apiCategoryFascicle = MapperCategoryFascicle.MappingDTO(dswCategoryFascicle)
         End If
 
-        Return commandInitializeFunc(tenantName, tenantId, tenantAOOId, identity, resolutionModel, apiCategoryFascicle, Nothing)
+        Return commandInitializeFunc(tenantName, tenantId, tenantAOOId, identity, resolutionApi, apiCategoryFascicle, Nothing)
     End Function
-
     Public Function CountResolutionKind(ReslKind As ResolutionKind) As Integer
         Return _dao.CountResolutionKind(ReslKind)
     End Function
@@ -2632,13 +2580,12 @@ Public Class ResolutionFacade
     Public Function GetWorkflowString(type As String, header As ResolutionHeader) As String
         Return GetWorkflowString(type, header, False)
     End Function
-
-    Public Function StartLetterProcess(ByVal document As DocumentInfo, ByVal resolutionList As IList(Of Resolution), ByVal signers As IList(Of CollaborationContact), ByVal subject As String, ByVal Action As TOWorkflow) As Integer
+    Public Function StartLetterProcess(document As DocumentInfo, resolutionList As IList(Of Resolution), signers As IList(Of CollaborationContact), subject As String, Action As TOWorkflow, idTenantAOO As Guid) As Integer
         'Creo l'oggetto collaborazioneXML
         Dim xmlColl As New CollaborationXML()
 
         'Aggiungo il destinatario
-        xmlColl.Signers = signers.Select(Function(s) New Signer() With {.UserName = s.Account}).ToList()
+        xmlColl.Signers = signers.Select(Function(s) New Signer() With {.UserName = s.Account, .Role = s.IdRole}).ToList()
         'Definisco che è una collaborazione di protocollo
         xmlColl.Type = CollaborationDocumentType.P.ToString()
         xmlColl.Priority = "N"
@@ -2657,10 +2604,10 @@ Public Class ResolutionFacade
         )
 
         'Inserisco la collaborazione
-        Dim idCollaboration As Integer = Factory.CollaborationFacade.InsertCollaboration(xmlColl, DocSuiteContext.Current.User.FullUserName)
+        Dim idCollaboration As Integer = Factory.CollaborationFacade.InsertCollaboration(xmlColl, DocSuiteContext.Current.User.FullUserName, idTenantAOO)
         Factory.CollaborationFacade.BiblosInsert(idCollaboration, document.Stream, document.PDFName, DocSuiteContext.Current.User.FullUserName)
         'Attivo la collaborazione
-        Factory.CollaborationFacade.StartCollaboration(idCollaboration)
+        Factory.CollaborationFacade.StartCollaboration(idCollaboration, idTenantAOO)
 
         '' Aggiorno gli atti con un puntatore alla collaborazione
         For Each resolution As Resolution In resolutionList
@@ -2716,19 +2663,6 @@ Public Class ResolutionFacade
         Return wpf.GetLastRevokedNumber(resl)
     End Function
 
-    ''' <summary> Ritorna il documento da pubblicare utilizzabile per la stampa </summary>
-    ''' <param name="resl">Atto</param>
-    ''' <returns>Nome del file nella temp da pubblicare</returns>
-    ''' <remarks>Nato per stampare il documento a cui apporre gli omissis</remarks>
-    Public Function GetPublicationDocument(resl As Resolution, ByVal addSignature As Boolean) As FileInfo
-        Dim fileFacade As New FileResolutionFacade()
-        Dim fileResolution As FileResolution = fileFacade.GetByResolution(resl)(0)
-
-        Dim doc As DocumentInfo = New BiblosDocumentInfo(resl.Location.ReslBiblosDSDB, fileResolution.IdFrontespizio.Value, 0)
-        Dim frontespizioInfo As FileInfo = BiblosFacade.SaveUniquePdfToTemp(doc)
-
-        Return GetPublicationDocument(resl, New FileDocumentInfo(frontespizioInfo), addSignature)
-    End Function
 
     ''' <summary> Ritorna il documento da pubblicare utilizzabile per la stampa. </summary>
     ''' <param name="resl">Atto</param>
@@ -2832,10 +2766,6 @@ Public Class ResolutionFacade
 
     End Sub
 
-    Public Sub DoWebRevoca(resl As Resolution)
-        EndWebRevoca(resl, StartWebRevoca(resl))
-    End Sub
-
     Public Function StartWebRevoca(resl As Resolution) As Long
         'Effettuo soltanto la prenotazione di un eventuale nuovo numero di pubblicazione
         Return Long.Parse(GetLastOrNewPublicationNumber(resl, New List(Of Integer)(New Integer() {1, 2})))
@@ -2861,131 +2791,12 @@ Public Class ResolutionFacade
         Return String.Format("{0} {1} del {2}", resl.Type.Description, GetResolutionNumber(resl, False), resl.AdoptionDate.DefaultString())
     End Function
 
-    Public Sub DoGenericWebPublication(resl As Resolution, publicationNumber As String, isPrivacy As Boolean)
-        DoGenericWebPublication(resl, publicationNumber, 0, 0, isPrivacy)
-    End Sub
-
-    ''' <summary>
-    ''' Pubblicazione Web Generica, richiede la presenza della tabella WebPublication in Atti
-    ''' </summary>
-    ''' <param name="resl">Atto da pubblicare</param>
-    Public Sub DoGenericWebPublication(resl As Resolution, publicationNumber As String, idBiblos As Integer, enumBiblos As Integer, isPrivacy As Boolean)
-        ' Salvo i dati in DSW
-        Dim wpf As New WebPublicationFacade()
-        ' Creo un nuovo record
-        Dim wp As WebPublication = New WebPublication()
-        wp.Resolution = resl
-        ' Numero di pubblicazione
-        wp.ExternalKey = publicationNumber
-        wp.Status = 1 ' Pubblicato
-        wp.Location = resl.Location
-        wp.RegistrationDate = DateTimeOffset.UtcNow
-        ' Utente corrente
-        wp.RegistrationUser = DocSuiteContext.Current.User.FullUserName
-        'Registro l'idBiblos
-        wp.IDDocument = idBiblos
-        wp.EnumDocument = enumBiblos
-        wp.IsPrivacy = isPrivacy
-        wpf.Save(wp)
-    End Sub
-
     Public Function IsPublicated(resl As Resolution) As Boolean
         Dim wpf As New WebPublicationFacade()
         Dim wp As IList(Of WebPublication) = wpf.GetByResolution(resl)
         Dim retVal As Boolean = wp IsNot Nothing AndAlso wp.Count > 0
         Return retVal
     End Function
-
-    ''' <summary> Metodo che calcola la signature di un Atto. Usato soprattutto per ASMN-RE </summary>
-    Public Function ResolutionSignature(resolution As Resolution, documentType As ResolutionType.UploadDocumentType) As String
-        Dim signature As String = "*"
-        signature = Factory.ResolutionTypeFacade.GetDescription(resolution.Type)
-        If resolution.Type.Id = 1 Then
-            signature &= String.Format(" {0}/{1} del {2}", resolution.Year, Format(CLng(resolution.ServiceNumber), "0000000"), resolution.AdoptionDate.DefaultString())
-        Else
-            signature &= String.Format(" {0}/{1} del {2}", resolution.Year, Format(CLng(resolution.Number), "0000000"), resolution.AdoptionDate.DefaultString())
-        End If
-
-        Select Case documentType
-            Case ResolutionType.UploadDocumentType.Allegato
-                signature &= " (Allegato)"
-            Case ResolutionType.UploadDocumentType.AllegatoRiservato
-                signature &= " (Allegato Riservato)"
-            Case ResolutionType.UploadDocumentType.Frontespizio
-                signature &= " (Frontespizio)"
-            Case ResolutionType.UploadDocumentType.Pubblicazione
-                signature &= " " & DocSuiteContext.Current.ResolutionEnv.PubblicazioneOnLineSignature
-        End Select
-
-        Return signature
-    End Function
-
-    ''' <summary>
-    ''' Metodo per effettuare l'avanzamento automatico con generazione di frontalino di ritiro per il workflow atti ASMN-RE
-    ''' </summary>
-    ''' <param name="resl">Resolution corrente</param>
-    ''' <param name="retireDate">Data di ritiro</param>
-    ''' <param name="actualStep">Step corrente in cui si trova l'atto (ovvero quello precedente al ritiro)</param>
-    Public Function DoRetirePublicationStep(resl As Resolution, retireDate As Date, actualStep As TabWorkflow) As DocumentInfo
-        ''Genero il frontalino di ritiro
-        Dim retireStep As TabWorkflow = Nothing
-        Factory.TabWorkflowFacade.GetByStep(resl.WorkflowType, CType((actualStep.Id.ResStep + 1), Short), retireStep)
-
-        Dim fi As FileInfo = ResolutionUtil.GeneraFrontalino(retireDate, resl, retireStep.Description, actualStep.Id.ResStep, String.Empty)
-        Dim frontalinoFileDocumentInfo As New FileDocumentInfo(fi)
-
-        Dim signature As String = Factory.ResolutionTypeFacade.GetDescription(resl.Type)
-        signature &= String.Format(" {0} del {1} (Frontespizio)", resl.InclusiveNumber, resl.AdoptionDate.DefaultString())
-        frontalinoFileDocumentInfo.Signature = signature
-
-        frontalinoFileDocumentInfo.AddAttribute(BiblosFacade.PRIVACYLEVEL_ATTRIBUTE, "0")
-
-        'Aggiungo il frontalino a Biblos e aggiorno la tabella FileResolution
-        Dim frontalinoBiblos As BiblosDocumentInfo = frontalinoFileDocumentInfo.ArchiveInBiblos(resl.Location.ReslBiblosDSDB)
-        Dim idFrontalino As Integer = frontalinoBiblos.BiblosChainId
-
-        If DocSuiteContext.Current.PrivacyLevelsEnabled Then
-            FacadeFactory.Instance.ResolutionLogFacade.Insert(resl, ResolutionLogType.LP, String.Format("Associato livello privacy {0} al {1} {2} [{3}]", 0, "documento", frontalinoBiblos.Name, frontalinoBiblos.DocumentId))
-        End If
-
-        SqlResolutionDocumentUpdate(resl.Id, idFrontalino, DirectCast([Enum].Parse(GetType(DocType), retireStep.FieldFrontalinoRitiro), DocType))
-
-        'Avanzamento di step
-        SqlResolutionUpdateWorkflowData(resl.Id, resl.Type.Id, Not resl.Number.HasValue, retireStep, retireDate.ToString("dd/MM/yyyy"), "N", -1, -1, Guid.Empty, "N", True, DocSuiteContext.Current.User.FullUserName)
-        Factory.ResolutionWorkflowFacade.InsertNextStep(resl.Id, actualStep.Id.ResStep, 0, 0, 0, Guid.Empty, Guid.Empty, Guid.Empty, DocSuiteContext.Current.User.FullUserName)
-
-        'Invio comando di aggiornamento Resolution alle WebApi
-        Factory.ResolutionFacade.SendUpdateResolutionCommand(resl)
-        Return frontalinoFileDocumentInfo
-    End Function
-
-
-    Public Sub PublicateResolution(currentResl As Resolution, ByVal signedDocInfos As IList(Of DocumentInfo), ByVal NumServ As String, ByVal userAction As String, Optional tempPath As String = "")
-        ' Recupero lo step corrente
-        Dim currentStep As TabWorkflow = FacadeFactory.Instance.TabWorkflowFacade.GetByResolution(currentResl.Id)
-
-        Select Case currentStep.Description
-            Case WorkflowStep.ADOZIONE
-                Dim nextStep As TabWorkflow = Nothing
-                'Genero lo step di Pubblicazione ed Esecutività
-                Factory.TabWorkflowFacade.GetByStep(currentResl.WorkflowType, currentStep.Id.ResStep + 1S, nextStep)
-                AuslREResolutionFacade.ForwardWorkflow(currentResl, nextStep, DateTime.Now, NumServ, signedDocInfos, Nothing, Nothing, userAction, tempPath)
-
-                Dim nextStep2 As TabWorkflow = Nothing
-                Factory.TabWorkflowFacade.GetByStep(currentResl.WorkflowType, nextStep.Id.ResStep + 1S, nextStep2)
-                AuslREResolutionFacade.ForwardWorkflow(currentResl, nextStep2, DateTime.Now, NumServ, Nothing, Nothing, Nothing, userAction, tempPath)
-
-            Case WorkflowStep.PUBBLICAZIONE
-                'Genero lo step di Esecutività
-                Factory.TabWorkflowFacade.GetByStep(currentResl.WorkflowType, currentStep.Id.ResStep + 1S, currentStep)
-                AuslREResolutionFacade.ForwardWorkflow(currentResl, currentStep, DateTime.Now, NumServ, Nothing, Nothing, Nothing, userAction, tempPath)
-            Case WorkflowStep.ESECUTIVA
-                'Significa che la resolution processata è già stata pubblicata
-                Exit Sub
-            Case Else
-                Throw New Exception(String.Format("SinglePublicate - Tipologia di workflow non riconosciuta per la resolution [{0}].", currentResl.Id))
-        End Select
-    End Sub
 
     Public Function GetPresentDocumentSigners(resolution As Resolution, tabWorkflow As TabWorkflow, idDocument As Integer) As IList(Of String)
         Dim idDoc As Integer = IIf(idDocument <> -1, idDocument, CType((0 & ReflectionHelper.GetPropertyCase(resolution.File, tabWorkflow.FieldDocument)), Integer))
@@ -3050,7 +2861,8 @@ Public Class ResolutionFacade
     ''' <returns>Restituisce il Group relativao alla resolution corrente</returns>
     ''' <remarks>Se icremental è uguale o minore a zero viene preso lo step attualmente attivo.</remarks>
     Public Function GetResolutionDataSource(idResolution As Integer, resolutionIncremental As Short, showDocuments As Boolean, showDocumentsOmissis As Boolean, showDocumentsOmissisFromStep As Boolean,
-                                            showAttachments As Boolean, showAttachmentsFromStep As Boolean, showAttachmentsOmissis As Boolean, showAttachmentsOmissisFromStep As Boolean, showAnnexes As Boolean, previousIncremental As String) As DocumentInfo
+                                            showAttachments As Boolean, showAttachmentsFromStep As Boolean, showAttachmentsOmissis As Boolean, showAttachmentsOmissisFromStep As Boolean, showAnnexes As Boolean,
+                                            showDematerialisation As Boolean, showMetadata As Boolean, previousIncremental As String) As DocumentInfo
         Dim resl As Resolution = GetById(idResolution)
         Dim main As New FolderInfo() With {
             .Name = $"{FacadeFactory.Instance.ResolutionTypeFacade.GetDescription(resl.Type)} {resl.InclusiveNumber}",
@@ -3059,7 +2871,7 @@ Public Class ResolutionFacade
 
         Dim incr As Short = resolutionIncremental
         If incr <= 0 Then
-            incr = FacadeFactory.Instance.ResolutionWorkflowFacade.GetActiveIncremental(idResolution, 1)
+            incr = FacadeFactory.Instance.ResolutionWorkflowFacade.GetActiveIncremental(idResolution, 1S)
         End If
 
         If showDocuments Then
@@ -3104,6 +2916,22 @@ Public Class ResolutionFacade
         ' Annessi
         If showAnnexes Then
             Dim folder As FolderInfo = CreateAnnexesFolder(resl, incr, includeUniqueId:=True)
+            If folder IsNot Nothing Then
+                main.AddChild(folder)
+            End If
+        End If
+
+        ' Dematerializzazione
+        If showDematerialisation Then
+            Dim folder As FolderInfo = CreateDematerialisationFolder(resl, incr, includeUniqueId:=True)
+            If folder IsNot Nothing Then
+                main.AddChild(folder)
+            End If
+        End If
+
+        ' Metadata
+        If showMetadata Then
+            Dim folder As FolderInfo = CreateMetadataFolder(resl, incr, includeUniqueId:=True)
             If folder IsNot Nothing Then
                 main.AddChild(folder)
             End If
@@ -3157,18 +2985,18 @@ Public Class ResolutionFacade
     End Function
 
     Public Function CreateAttachmentsFolder(resl As Resolution, incr As Short, getFromStep As Boolean, Optional includeUniqueId As Boolean = False) As FolderInfo
-        If Not (New ResolutionRights(resl)).IsAttachmentViewable Then
+        If DocSuiteContext.Current.ResolutionEnv.ResolutionShowAlwaysAttachments OrElse (New ResolutionRights(resl)).IsAttachmentViewable Then
+            Dim docs() As BiblosDocumentInfo = GetAttachments(resl, incr, getFromStep, includeUniqueId)
+            If docs.Length <= 0 Then
+                Return Nothing
+            End If
+
+            Dim folder As New FolderInfo() With {.Name = "Allegati (parte integrante)"}
+            folder.AddChildren(docs)
+            Return folder
+        Else
             Return Nothing
         End If
-
-        Dim docs() As BiblosDocumentInfo = GetAttachments(resl, incr, getFromStep, includeUniqueId)
-        If docs.Length <= 0 Then
-            Return Nothing
-        End If
-
-        Dim folder As New FolderInfo() With {.Name = "Allegati (parte integrante)"}
-        folder.AddChildren(docs)
-        Return folder
     End Function
 
     Public Function CreateAttachmentsOmissisFolder(resl As Resolution, incr As Short, getFromStep As Boolean, Optional includeUniqueId As Boolean = False) As FolderInfo
@@ -3189,6 +3017,28 @@ Public Class ResolutionFacade
         End If
 
         Dim folder As New FolderInfo() With {.Name = "Annessi (non parte integrante)"}
+        folder.AddChildren(docs)
+        Return folder
+    End Function
+
+    Public Function CreateDematerialisationFolder(resl As Resolution, incr As Short, Optional includeUniqueId As Boolean = False) As FolderInfo
+        Dim docs() As BiblosDocumentInfo = GetDematerialisation(resl, incr, includeUniqueId)
+        If docs.Length <= 0 Then
+            Return Nothing
+        End If
+
+        Dim folder As New FolderInfo() With {.Name = "Dematerializzazione"}
+        folder.AddChildren(docs)
+        Return folder
+    End Function
+
+    Public Function CreateMetadataFolder(resl As Resolution, incr As Short, Optional includeUniqueId As Boolean = False) As FolderInfo
+        Dim docs() As BiblosDocumentInfo = GetMetadata(resl, incr, includeUniqueId)
+        If docs.Length <= 0 Then
+            Return Nothing
+        End If
+
+        Dim folder As New FolderInfo() With {.Name = "Metadata"}
         folder.AddChildren(docs)
         Return folder
     End Function
@@ -3236,7 +3086,7 @@ Public Class ResolutionFacade
     Public Function UpdateResolutionFromCollaboration(collaboration As Collaboration) As Boolean
         Dim isCollaborationeFromResolution As Boolean = False
         If DocSuiteContext.Current.ProtocolEnv.CheckResolutionCollaborationOriginEnabled Then
-            Dim draft As CollaborationXmlData = FacadeFactory.Instance.ProtocolDraftFacade.GetDataFromCollaboration(collaboration)
+            Dim draft As CollaborationXmlData = FacadeFactory.Instance.CollaborationDraftFacade.GetDataFromCollaboration(collaboration)
             If draft IsNot Nothing AndAlso draft.GetType() = GetType(ResolutionXML) Then
                 Dim resolutionXML As ResolutionXML = CType(draft, ResolutionXML)
                 Dim documentsDictionary As IDictionary(Of Guid, BiblosDocumentInfo)
@@ -3308,6 +3158,4 @@ Public Class ResolutionFacade
         End If
         Return isCollaborationeFromResolution
     End Function
-
-
 End Class

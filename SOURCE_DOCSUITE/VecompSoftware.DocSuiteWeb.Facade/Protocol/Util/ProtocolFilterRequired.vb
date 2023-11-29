@@ -33,10 +33,6 @@ Public Class ProtocolFilterRequired
         If Not _finder.IdTypes.IsNullOrEmpty() Then
             fieldsNotEmpty.Add("IdTypes")
         End If
-        'Locazione
-        If Not String.IsNullOrEmpty(_finder.IdLocation) Then
-            fieldsNotEmpty.Add("IdLocation")
-        End If
         'Contenitore
         If Not String.IsNullOrEmpty(_finder.IdContainer) Then
             fieldsNotEmpty.Add("IdContainer")

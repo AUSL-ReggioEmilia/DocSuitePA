@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class CommonUploadZIPMiscellanea
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class CommonUploadZIPMiscellanea
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
+
     '''<summary>
     '''insertsPageContent control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class CommonUploadZIPMiscellanea
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents insertsPageContent As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''tblNoteRow control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class CommonUploadZIPMiscellanea
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblNoteRow As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''txtPrefix control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class CommonUploadZIPMiscellanea
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtPrefix As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''InsertsDataRow control.
     '''</summary>
@@ -57,8 +57,8 @@ Partial Public Class CommonUploadZIPMiscellanea
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents InsertsDataRow As Global.Telerik.Web.UI.LayoutRow
-    
-    '''<summary>
+
+	'''<summary>
     '''uscDocumentUpload control.
     '''</summary>
     '''<remarks>
@@ -67,6 +67,7 @@ Partial Public Class CommonUploadZIPMiscellanea
     '''</remarks>
     Protected WithEvents uscDocumentUpload As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
     
+
     '''<summary>
     '''pnlButtons control.
     '''</summary>
@@ -75,7 +76,7 @@ Partial Public Class CommonUploadZIPMiscellanea
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnSave control.
     '''</summary>

@@ -2,6 +2,7 @@
 using DSW = VecompSoftware.DocSuiteWeb.Data;
 using APICommons = VecompSoftware.DocSuiteWeb.Entity.Commons;
 using NHibernate;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 
 namespace VecompSoftware.DocSuiteWeb.EntityMapper.Commons
 {
@@ -17,21 +18,20 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Commons
             if (entity == null)
                 throw new ArgumentException("Impossibile trasformare Role se l'entità non è inizializzata");
 
-            APICommons.Role apiRole = new APICommons.Role();
-            apiRole.EntityShortId = Convert.ToInt16(entity.Id);
-            apiRole.Name = entity.Name;
-            apiRole.IsActive = Convert.ToByte(entity.IsActive);
-            apiRole.ActiveFrom = entity.ActiveFrom;
-            apiRole.ActiveTo = entity.ActiveTo;
-            apiRole.FullIncrementalPath = entity.FullIncrementalPath;
-            apiRole.Collapsed = Convert.ToByte(entity.Collapsed);
-            apiRole.EMailAddress = entity.EMailAddress;
-            apiRole.ServiceCode = entity.ServiceCode;
-            apiRole.UniqueId = entity.UniqueId;
-            apiRole.IdRoleTenant = entity.IdRoleTenant;
-            apiRole.TenantId = entity.TenantId;
-            apiRole.RegistrationDate = entity.RegistrationDate;
-            apiRole.RegistrationUser = entity.RegistrationUser;
+            APICommons.Role apiRole = new APICommons.Role
+            {
+                EntityShortId = Convert.ToInt16(entity.Id),
+                Name = entity.Name,
+                IsActive = entity.IsActive,
+                FullIncrementalPath = entity.FullIncrementalPath,
+                Collapsed = entity.Collapsed,
+                EMailAddress = entity.EMailAddress,
+                ServiceCode = entity.ServiceCode,
+                UniqueId = entity.UniqueId,
+                TenantAOO = new TenantAOO { UniqueId = entity.IdTenantAOO },
+                RegistrationDate = entity.RegistrationDate,
+                RegistrationUser = entity.RegistrationUser
+            };
 
             return apiRole;
         }

@@ -17,6 +17,9 @@
                 uscDossierSummary.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                 uscDossierSummary.lblDossierTypeId = "<%= lblDossierType.ClientID %>";
                 uscDossierSummary.lblDossierStatusId = "<%= lblDossierStatus.ClientID %>";
+                uscDossierSummary.lcDossierStatusKeyId = "<%= lcDossierStatusKey.ClientID %>";
+                uscDossierSummary.lcDossierStatusValueId = "<%= lcDossierStatusValue.ClientID %>";
+                uscDossierSummary.dossierStatusEnabled =<%= DossierStatusEnabled.ToString().ToLower() %>;
                 uscDossierSummary.initialize();
             });
         });
@@ -56,10 +59,10 @@
                                         <telerik:LayoutColumn Span="2" CssClass="t-col-left-padding">
                                             <asp:Label ID="lblDossierType" runat="server"></asp:Label>
                                         </telerik:LayoutColumn>
-                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
+                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right" ID="lcDossierStatusKey">
                                             <b>Stato:</b>
                                         </telerik:LayoutColumn>
-                                        <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding">
+                                        <telerik:LayoutColumn Span="4" CssClass="t-col-left-padding" ID="lcDossierStatusValue">
                                             <asp:Label ID="lblDossierStatus" runat="server"></asp:Label>
                                         </telerik:LayoutColumn>
                                     </Columns>

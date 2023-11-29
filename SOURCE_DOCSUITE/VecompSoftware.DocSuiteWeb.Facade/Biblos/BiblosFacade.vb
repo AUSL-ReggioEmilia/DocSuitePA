@@ -16,14 +16,18 @@ Public Class BiblosFacade
     Public Const NOTE_ATTRIBUTE As String = "Note"
     Public Const REGISTRATION_USER_ATTRIBUTE As String = "RegistrationUser"
     Public Const SING_MODELS_ATTRIBUTE As String = "SignModels"
-    Overridable ReadOnly Property CustomPdfError As FileInfo
+    Public Const BIBLOS_ATTRIBUTE_FascicleId As String = "FascicleId"
+    Private Shared _customPdfError As FileInfo = Nothing
+
+    Public Shared ReadOnly Property CustomPdfError As FileInfo
         Get
-            Dim tor As FileInfo = Nothing
-            Dim path As String = DocSuiteContext.Current.ProtocolEnv.CustomErrorFrontPageDocument
-            If Not String.IsNullOrEmpty(path) Then
-                tor = New FileInfo(HttpContext.Current.Server.MapPath(path))
+            If _customPdfError Is Nothing Then
+                Dim path As String = DocSuiteContext.Current.ProtocolEnv.CustomErrorFrontPageDocument
+                If Not String.IsNullOrEmpty(path) Then
+                    _customPdfError = New FileInfo(HttpContext.Current.Server.MapPath(path))
+                End If
             End If
-            Return tor
+            Return _customPdfError
         End Get
     End Property
 

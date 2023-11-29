@@ -65,7 +65,7 @@ Public Class NHibernateTabWorkflowDao
                                  " AND RW.IsActive = :IsActive"
         Dim query As IQuery = NHibernateSession.CreateSQLQuery(sqlQuery).AddEntity("TabWorkflow", GetType(TabWorkflow)) _
                             .SetInt32("IdResl", idResolution) _
-                            .SetInt32("IsActive", 1)
+                            .SetBoolean("IsActive", True)
         Return query.UniqueResult(Of TabWorkflow)()
     End Function
 
@@ -76,7 +76,7 @@ Public Class NHibernateTabWorkflowDao
         criteria.Add(Restrictions.Eq("Id.WorkflowType", workflowType))
         criteria.AddOrder(Order.Asc("Id.ResStep"))
 
-        Return criteria.List(Of TabWorkflow)().First()
+        Return criteria.List(Of TabWorkflow)().FirstOrDefault()
     End Function
 
     Function GetItemsByDescription(ByVal description As String) As IList(Of TabWorkflow)

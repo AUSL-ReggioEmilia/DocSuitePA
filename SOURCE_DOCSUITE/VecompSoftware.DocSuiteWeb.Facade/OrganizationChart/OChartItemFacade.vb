@@ -183,7 +183,7 @@ Public Class OChartItemFacade
         Return oChartCurrent
     End Function
 
-    Public Function AddRole(role As Role, oChartItem As OChartItem, mailBoxes As IList(Of PECMailBox), contacts As IList(Of Contact)) As OChart
+    Public Function AddRole(role As Role, oChartItem As OChartItem, contacts As IList(Of Contact)) As OChart
         Dim step_i As String = "BeginTransaction"
         Dim ochart As OChart = Nothing
         Dim unitOfWork As NHibernateUnitOfWork = New NHibernateUnitOfWork(ProtDB)
@@ -197,12 +197,6 @@ Public Class OChartItemFacade
                                  Function(item, c) item.Roles.FirstOrDefault(Function(f) f.Role.Id = role.Id) Is Nothing,
                                  role, oChartItem, oChartItem.Code, externalTransaction:=True)
 
-            If (mailBoxes IsNot Nothing AndAlso mailBoxes.Count > 0) Then
-                step_i = "mailBoxes"
-                For Each mailbox As PECMailBox In mailBoxes
-                    AddPECMailBox(mailbox, oChartItem, True)
-                Next
-            End If
             If (contacts IsNot Nothing AndAlso contacts.Count > 0) Then
                 step_i = "contacts"
                 For Each contact As Contact In contacts
@@ -244,18 +238,6 @@ Public Class OChartItemFacade
         Return CrudManager(Sub(f, c) f.RemoveContainer(c),
                            Function(item, c) item.Containers.FirstOrDefault(Function(f) f.Container.Id = container.Id) IsNot Nothing,
                            container, oChartItem, oChartItem.Code)
-    End Function
-
-    Public Function AddPECMailBox(pecMailBox As PECMailBox, oChartItem As OChartItem, Optional externalTransaction As Boolean = False) As OChart
-        Return CrudManager(Sub(f, c) f.AddMailbox(c),
-                           Function(item, c) item.Mailboxes.FirstOrDefault(Function(f) f.Mailbox.Id = pecMailBox.Id) Is Nothing,
-                           pecMailBox, oChartItem, oChartItem.Code, externalTransaction)
-    End Function
-
-    Public Function RemovePECMailBox(pecMailBox As PECMailBox, oChartItem As OChartItem) As OChart
-        Return CrudManager(Sub(f, c) f.RemoveMailbox(c),
-                           Function(item, c) item.Mailboxes.FirstOrDefault(Function(f) f.Mailbox.Id = pecMailBox.Id) IsNot Nothing,
-                           pecMailBox, oChartItem, oChartItem.Code)
     End Function
 
     Public Function GetByRole(role As Role) As ICollection(Of OChartItem)

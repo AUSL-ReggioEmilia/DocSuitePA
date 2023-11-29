@@ -88,7 +88,7 @@ Public Class DossierMailSender
             MailSenderControl.BodyValue = MailFacade.GetDossierBody(CurrentDossier)
         End If
 
-        If ProtocolEnv.DeleteMultipleMailRecipientPages.Contains(CURRENT_PAGE_NAME) Then
+        If ProtocolEnv.DeleteMultipleMailRecipientPages.Contains(CURRENT_PAGE_NAME) OrElse SendToRoles Then
             MailSenderControl.EnableCheckBoxRecipients = True
         End If
 

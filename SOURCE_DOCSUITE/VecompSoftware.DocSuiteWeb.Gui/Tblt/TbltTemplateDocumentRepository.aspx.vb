@@ -4,6 +4,7 @@ Imports VecompSoftware.Services.Logging
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Data
 
 Partial Class TbltTemplateDocumentRepository
     Inherits CommonBasePage
@@ -43,9 +44,8 @@ Partial Class TbltTemplateDocumentRepository
     End Sub
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
-        If Not CommonShared.HasGroupAdministratorRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateDocumentGroups)) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
 
         InitializeAjax()

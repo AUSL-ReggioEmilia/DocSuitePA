@@ -23,7 +23,7 @@ class PECMailViewModelMapper implements IMapper<PECMailViewModel>{
         toMap.MailSubject = source.MailSubject;
         toMap.MailSenders = source.MailSenders;
         toMap.MailRecipients = source.MailRecipients;
-        toMap.MailDate = (source.MailDate !== null && source.MailDate !== undefined) ? moment(source.MailDate).format("DD/MM/YYYY") : "";
+        toMap.MailDate = (source.MailDate !== null && source.MailDate !== undefined) ? moment(source.MailDate).toDate() : null;
         toMap.MailType = source.MailType;
         toMap.MailError = source.MailError;
         toMap.MailPriority = source.MailPriority;
@@ -68,10 +68,10 @@ class PECMailViewModelMapper implements IMapper<PECMailViewModel>{
         toMap.InvoiceStatusDescription = source.InvoiceStatus !== null && source.InvoiceStatus !== undefined
             ? this._enumHelper.getInvoiceStatusDescription(source.InvoiceStatus)
             : "";
-        toMap.InvoiceTypeDescription = (source.PECMailBox !== null && source.PECMailBox !== undefined)
+        toMap.InvoiceTypeDescription = (source.PECMailBox !== null && source.PECMailBox !== undefined && source.PECMailBox.InvoiceType != null && source.PECMailBox.InvoiceType != undefined)
             ? this._enumHelper.getInvoiceTypeDescription(source.PECMailBox.InvoiceType, source.Direction)
             : "";
-        toMap.Direction = source.Direction;
+        toMap.Direction = this._enumHelper.getPECMailDirection(source.Direction);
         toMap.RegistrationUser = source.RegistrationUser;
         toMap.RegistrationDate = source.RegistrationDate;
         toMap.LastChangedUser = source.LastChangedUser;

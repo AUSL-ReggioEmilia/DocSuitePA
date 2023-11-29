@@ -82,6 +82,16 @@ Public Class MonitoringSeriesSection
 
     Private Sub cmdExportToExcel_Click(sender As Object, e As EventArgs) Handles cmdExportToExcel.Click
         Dim radGrid As RadGrid = monitoringSeriesSectionGrid
+        For Each dataItem As GridDataItem In radGrid.MasterTableView.Items
+            If dataItem.Expanded Then
+                Dim nestedTable As GridTableView = CType(dataItem.ChildItem.NestedTableViews(0), GridTableView)
+                nestedTable.GetColumnSafe("DocumentSeries").HeaderText = ""
+                nestedTable.GetColumnSafe("DocumentSeriesExport").Display = True
+                nestedTable.GetColumnSafe("DocumentSeriesExport").Visible = True
+                nestedTable.DataBind()
+            End If
+        Next
+
         radGrid.ExportSettings.ExportOnlyData = True
         radGrid.ExportSettings.OpenInNewWindow = True
         radGrid.ExportSettings.FileName = "registro.xls"

@@ -1,4 +1,4 @@
-﻿<%@ Page AutoEventWireup="false" CodeBehind="PECView.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.PECView" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" ValidateRequest="false" %>
+﻿<%@ Page AutoEventWireup="false" CodeBehind="PECView.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.PECView" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" %>
 <%@ Register Src="~/Viewers/ViewerLight.ascx" TagName="uscViewerLight" TagPrefix="uc1" %>
 
 <asp:Content ContentPlaceHolderID="cphHeader" runat="server">
@@ -21,7 +21,6 @@
                 //show the loading panel over the updated control
                 ajaxFlatLoadingPanel.show(pnlButtons);
             }
-
 
         </script>
     </telerik:RadCodeBlock>

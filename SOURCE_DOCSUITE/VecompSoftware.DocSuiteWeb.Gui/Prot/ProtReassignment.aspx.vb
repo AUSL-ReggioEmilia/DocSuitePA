@@ -32,10 +32,6 @@ Public Class ProtReassignment
         BindOChartForContainer()
     End Sub
 
-    Private Sub uscDestinatari_ManualContactAdded(sender As Object, e As OChartItemContactsEventArgs) Handles uscDestinatari.OChartItemContactsAdded
-        BindOChartForRecipient(e.ItemFullCode)
-    End Sub
-
     Private Sub ProtReassignmentAjaxRequest(sender As Object, e As AjaxRequestEventArgs)
         Dim args As String() = e.Argument.Split("|"c)
         If args.IsNullOrEmpty() Then
@@ -142,7 +138,7 @@ Public Class ProtReassignment
 
     Private Sub InitializePage()
         ' Varie
-        lbTitle.Text = "Protocollo Rigettato"
+        lbTitle.Text = "Protocollo rigettato"
         lblYear.Text = CurrentProtocol.Year.ToString()
         lblNumber.Text = CurrentProtocol.Number.ToString.PadLeft(7, "0"c)
         lblRegistrationDate.Text = String.Format(ProtocolEnv.ProtRegistrationDateFormat, CurrentProtocol.RegistrationDate.ToLocalTime())
@@ -175,14 +171,11 @@ Public Class ProtReassignment
 
         End Select
 
-        InitializeForOChart()
-
         uscDestinatari.ReadOnly = False
         uscDestinatari.EnableCompression = False
         uscDestinatari.MultiSelect = True
         uscDestinatari.ButtonSelectVisible = True
         uscDestinatari.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
-        uscDestinatari.ButtonSelectOChartVisible = True
         uscDestinatari.ButtonDeleteVisible = True
         uscDestinatari.ButtonManualVisible = True
         uscDestinatari.ButtonPropertiesVisible = True
@@ -196,7 +189,7 @@ Public Class ProtReassignment
         myRolecontrol.Clear()
         If Not CurrentProtocol.Roles.IsNullOrEmpty() Then
             For Each pr As ProtocolRole In CurrentProtocol.Roles
-                myRolecontrol.LoadItem(pr.Role, String.Empty, pr.Role.IsActive <> 1 OrElse Not pr.Role.IsActiveRange())
+                myRolecontrol.LoadItem(pr.Role, String.Empty, Not pr.Role.IsActive OrElse Not pr.Role.IsActiveRange())
             Next
         End If
     End Sub
@@ -225,19 +218,6 @@ Public Class ProtReassignment
 
         Return parameters.ToString()
     End Function
-
-    Private Sub InitializeForOChart()
-        If Not DocSuiteContext.Current.ProtocolEnv.OChartEnabled Then
-            Return
-        End If
-
-        Select Case CurrentProtocol.Type.Id
-            Case -1, 0
-                uscDestinatari.APIDefaultProvider = True
-            Case 1
-                uscDestinatari.APIDefaultProvider = False
-        End Select
-    End Sub
 
     Private Function GetSelectedContainer() As Container
         Dim selectedId As Integer
@@ -302,40 +282,6 @@ Public Class ProtReassignment
             Case Else
                 Return
         End Select
-    End Sub
-
-    Private Sub BindOChartForRecipient(fullCode As String)
-        If Not DocSuiteContext.Current.ProtocolEnv.OChartProtocolPreloadingEnabled Then
-            Return
-        End If
-
-        If String.IsNullOrWhiteSpace(fullCode) Then
-            Return
-        End If
-
-
-        Dim validProtocolTypes As New List(Of Integer) From {-1, 0}
-        If Not validProtocolTypes.Contains(CurrentProtocol.Type.Id) Then
-            Return
-        End If
-
-        Dim item As OChartItem = CommonShared.EffectiveOChart.Items.FindByFullCode(fullCode)
-        If item Is Nothing OrElse Not item.HasRoles Then
-            Return
-        End If
-
-        ' Recupero una distinta dei settori derivati dagli item dei contatti selezionati.
-        Dim roleIds As IEnumerable(Of Integer) = item.Roles.Select(Function(r) r.Role.Id).Distinct()
-        Dim renewed As IEnumerable(Of Role) = roleIds.Select(Function(i) FacadeFactory.Instance.RoleFacade.GetById(i))
-
-        ' Scremo quelli già autorizzati.
-        Dim missing As IEnumerable(Of Role) = renewed.Where(Function(r) Not myRolecontrol.GetItems().Any(Function(a) a.Id.Equals(r.Id)))
-        If missing.IsNullOrEmpty() Then
-            Return
-        End If
-
-        myRolecontrol.AddItems(missing.ToList(), Function(r) Not r.IsActiveRange())
-        'myRolecontrol.DataBind()
     End Sub
 
 #End Region

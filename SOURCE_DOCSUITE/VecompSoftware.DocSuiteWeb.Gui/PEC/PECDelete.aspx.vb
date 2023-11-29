@@ -6,6 +6,8 @@ Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade.PEC
 Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.PEC
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations
+Imports VecompSoftware.DocSuiteWeb.Entity.Conservations
 
 Public Class PECDelete
     Inherits PECBasePage
@@ -13,6 +15,7 @@ Public Class PECDelete
 #Region " Fields "
 
     Private _selectedMails As List(Of PECMail)
+    Private _conservationFinder As ConservationFinder
 
 #End Region
 
@@ -36,7 +39,7 @@ Public Class PECDelete
         Get
             Dim mailsDeletable As List(Of PECMail) = New List(Of PECMail)()
             For Each mail As PECMail In SelectedMails
-                Dim right As New PECMailRightsUtil(mail, DocSuiteContext.Current.User.FullUserName)
+                Dim right As New PECMailRightsUtil(mail, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId)
                 If right.IsDeletable Then
                     mailsDeletable.Add(mail)
                 End If
@@ -45,6 +48,14 @@ Public Class PECDelete
         End Get
     End Property
 
+    Public ReadOnly Property ConservationFinder As ConservationFinder
+        Get
+            If _conservationFinder Is Nothing Then
+                _conservationFinder = New ConservationFinder(DocSuiteContext.Current.CurrentTenant)
+            End If
+            Return _conservationFinder
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
@@ -68,7 +79,7 @@ Public Class PECDelete
             .DataBind()
         End With
         With DirectCast(e.Item.FindControl("imgDeletable"), Image)
-            .ImageUrl = If(New PECMailRightsUtil(mail, DocSuiteContext.Current.User.FullUserName).IsDeletable, ImagePath.SmallFlagGreen, ImagePath.SmallError)
+            .ImageUrl = If(New PECMailRightsUtil(mail, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId).IsDeletable, ImagePath.SmallFlagGreen, ImagePath.SmallError)
         End With
     End Sub
 
@@ -84,6 +95,16 @@ Public Class PECDelete
         End If
 
         For Each mail As PECMail In PECMailDeletable
+            Dim conservation As Conservation = WebAPIImpersonatorFacade.ImpersonateFinder(New ConservationFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.UniqueId = mail.UniqueId
+                        finder.EnablePaging = False
+                        Return finder.DoSearch().Select(Function(x) x.Entity).FirstOrDefault()
+                    End Function)
+            If conservation IsNot Nothing AndAlso conservation.Status = ConservationStatus.Conservated Then
+                Continue For
+            End If
+
             Facade.PECMailFacade.Delete(mail)
             Facade.PECMailLogFacade.Deleted(mail, txtDeleteNotes.Text)
         Next

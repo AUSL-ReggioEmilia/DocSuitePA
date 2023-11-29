@@ -84,6 +84,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
                     deskDocument.DocumentType = DeskDocumentType.MainDocument;
                     deskDocument.IdDocument = chain;
                     deskDocument.Desk = currentDesk;
+                    deskDocument.IsActive = true;
 
                     DeskDocumentVersion version = new DeskDocumentVersion(_userName);
                     version.DeskDocument = deskDocument;

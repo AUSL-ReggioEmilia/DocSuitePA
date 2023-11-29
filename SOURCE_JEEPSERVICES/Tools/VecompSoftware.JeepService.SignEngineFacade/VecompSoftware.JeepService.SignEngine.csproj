@@ -81,10 +81,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://srvbiblos/ESignEngine/eSignEngine.asmx">
+    <WebReferenceUrl Include="http://./ESignEngine/eSignEngine.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\SignEngineService\</RelPath>
-      <UpdateFromURL>http://srvbiblos/ESignEngine/eSignEngine.asmx</UpdateFromURL>
+      <UpdateFromURL>http://./ESignEngine/eSignEngine.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

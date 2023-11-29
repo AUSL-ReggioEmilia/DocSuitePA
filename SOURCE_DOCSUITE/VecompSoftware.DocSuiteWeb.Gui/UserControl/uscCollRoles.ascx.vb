@@ -187,7 +187,7 @@ Partial Public Class uscCollRoles
                                 wfinder.ResetDecoration()
                                 wfinder.UserName = accountStr.Last()
                                 wfinder.Domain = accountStr.First()
-                                wfinder.IdRole = roleUser.Role.IdRoleTenant
+                                wfinder.IdRole = roleUser.Role.Id
                                 Return wfinder.DoSearch()
                             End Function)
                     End If
@@ -366,7 +366,7 @@ Partial Public Class uscCollRoles
         sb.Append("Type=Comm&Action=Rename&ActionType=P")
 
         Dim account As String = rtvRoles.SelectedNode.Attributes("account")
-        Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactByRole(account, 1, parentId:=ProtocolEnv.FascicleContactId, idRole:=RoleId)
+        Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactByRole(account, True, parentId:=ProtocolEnv.FascicleContactId, idRole:=RoleId)
 
         If contacts Is Nothing OrElse contacts.Count = 0 OrElse contacts.Count > 1 Then
             BasePage.AjaxAlert("Non è stato possibile caricare l'utente. Contatto non trovato")
@@ -652,17 +652,18 @@ Partial Public Class uscCollRoles
 
             If user.Type.Eq(RoleUserType.RP.ToString()) Then
                 Dim userEmail As String = FacadeFactory.Instance.UserLogFacade.EmailOfUser(accountName, True)
-                Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactByRole(accountName, 1, parentId:=ProtocolEnv.FascicleContactId, idRole:=RoleId)
+                Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactByRole(accountName, True, parentId:=ProtocolEnv.FascicleContactId, idRole:=RoleId)
 
                 If contacts Is Nothing OrElse Not contacts.Count() > 0 Then
                     Dim adUser As AccountModel = CommonAD.GetAccount(user.Account)
-                    Dim newContact As Contact = New Contact()
-                    newContact.IsActive = Convert.ToInt16(True)
-                    newContact.Description = String.Concat(adUser.LastName, "|", adUser.FirstName)
-                    newContact.ContactType = New ContactType(ContactType.Person)
-                    newContact.EmailAddress = userEmail
-                    newContact.SearchCode = accountName
-                    newContact.Parent = Facade.ContactFacade.GetById(ProtocolEnv.FascicleContactId)
+                    Dim newContact As Contact = New Contact With {
+                        .IsActive = True,
+                        .Description = String.Concat(adUser.LastName, "|", adUser.FirstName),
+                        .ContactType = New ContactType(ContactType.Person),
+                        .EmailAddress = userEmail,
+                        .SearchCode = accountName,
+                        .Parent = Facade.ContactFacade.GetById(ProtocolEnv.FascicleContactId)
+                    }
                     Facade.ContactFacade.Save(newContact)
 
                     BasePage.AjaxAlert($"Inserito {DocSuiteContext.Current.ProtocolEnv.FascicleRoleRPLabel} [{newContact.Description}] senza codice fiscale.")
@@ -836,10 +837,10 @@ Partial Public Class uscCollRoles
             Select Case env
                 Case DSWEnvironment.Protocol
                     item.Text = "Protocollo"
-                    item.ImageUrl = "~/Comm/Images/DocSuite/Protocollo16.gif"
+                    item.ImageUrl = "~/Comm/Images/DocSuite/Protocollo16.png"
                 Case DSWEnvironment.Resolution
                     item.Text = FacadeFactory.Instance.TabMasterFacade.TreeViewCaption
-                    item.ImageUrl = "~/Comm/Images/DocSuite/Atti16.gif"
+                    item.ImageUrl = "~/Comm/Images/DocSuite/Atti16.png"
                 Case DSWEnvironment.DocumentSeries
                     item.Text = DocSuiteContext.Current.ProtocolEnv.DocumentSeriesName
                     item.ImageUrl = ImagePath.SmallDocumentSeries

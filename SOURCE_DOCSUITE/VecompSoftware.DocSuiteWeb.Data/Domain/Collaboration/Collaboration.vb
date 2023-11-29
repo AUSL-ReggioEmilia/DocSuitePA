@@ -169,7 +169,7 @@ Public Class Collaboration
 
     Public Overridable Function GetFirstCollaborationSignActive() As CollaborationSign
         For Each collSign As CollaborationSign In CollaborationSigns
-            If collSign.IsActive = 1 Then
+            If collSign.IsActive Then
                 Return collSign
             End If
         Next

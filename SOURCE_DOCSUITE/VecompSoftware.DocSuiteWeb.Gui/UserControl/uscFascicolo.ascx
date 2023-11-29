@@ -193,7 +193,7 @@
         </telerik:LayoutRow>
         <telerik:LayoutRow ID="rowDocumentUnitReference" runat="server">
             <Content>
-                <usc:uscDocumentUnitReferences Visible="true" ID="uscDocumentUnitReferences" runat="server" ShowFasciclesLinks="true" ShowDossierLinks="true" />
+                <usc:uscDocumentUnitReferences Visible="true" ID="uscDocumentUnitReferences" runat="server" ShowFasciclesLinks="true" ShowDossierLinks="true" ShowDeletedFascicleDocumentUnits="true" ShowDeletedFascicleDocuments="true"/>
             </Content>
         </telerik:LayoutRow>
         <telerik:LayoutRow ID="rowRoles" runat="server">
@@ -271,16 +271,22 @@
                                                         <GroupByExpressions>
                                                             <telerik:GridGroupByExpression>
                                                                 <SelectFields>
-                                                                    <telerik:GridGroupByField FieldAlias=":" FieldName="DocumentUnitName"></telerik:GridGroupByField>
+                                                                    <telerik:GridGroupByField FieldAlias=":" FieldName="DocumentUnit.DocumentUnitName"></telerik:GridGroupByField>
                                                                 </SelectFields>
                                                                 <GroupByFields>
-                                                                    <telerik:GridGroupByField FieldName="DocumentUnitName" FieldAlias="DocumentUnitName"></telerik:GridGroupByField>
+                                                                    <telerik:GridGroupByField FieldName="DocumentUnit.DocumentUnitName" FieldAlias="DocumentUnitName"></telerik:GridGroupByField>
                                                                 </GroupByFields>
                                                             </telerik:GridGroupByExpression>
                                                         </GroupByExpressions>
                                                         <Columns>
-                                                            <telerik:GridBoundColumn DataField="UniqueId" ReadOnly="True" UniqueName="UniqueId" Display="False"></telerik:GridBoundColumn>
-                                                            <telerik:GridBoundColumn DataField="DocumentUnitName" ReadOnly="True" UniqueName="DocumentUnitName" AllowFiltering="true" Display="False"></telerik:GridBoundColumn>
+                                                            <telerik:GridBoundColumn DataField="DocumentUnit.UniqueId" ReadOnly="True" UniqueName="UniqueId" Display="False"></telerik:GridBoundColumn>
+                                                            <telerik:GridBoundColumn DataField="DocumentUnit.DocumentUnitName" ReadOnly="True" UniqueName="DocumentUnitName" AllowFiltering="true" Display="False"></telerik:GridBoundColumn>
+                                                            <telerik:GridTemplateColumn AllowFiltering="false" ItemStyle-Width="13%" ItemStyle-HorizontalAlign="center" AutoPostBackOnFilter="false" HeaderStyle-Width="13%"
+                                                                UniqueName="UDSequenceNumber" HeaderText="Sequenza di numeri" Visible="False">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblUDSequenceNumber" runat="server"></asp:Label>
+                                                                </ItemTemplate>
+                                                            </telerik:GridTemplateColumn>
                                                             <telerik:GridClientSelectColumn UniqueName="ClientSelectColumn"></telerik:GridClientSelectColumn>
                                                             <telerik:GridTemplateColumn HeaderImageUrl="~/App_Themes/DocSuite2008/imgset16/folder_document.png" HeaderStyle-HorizontalAlign="Center" HeaderTooltip="Fascicolazione"
                                                                 ItemStyle-Width="16px" HeaderStyle-Width="16px" ItemStyle-HorizontalAlign="Center" ItemStyle-VerticalAlign="Middle"

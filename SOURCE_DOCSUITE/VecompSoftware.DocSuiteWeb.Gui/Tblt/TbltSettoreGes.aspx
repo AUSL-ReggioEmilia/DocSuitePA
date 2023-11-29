@@ -138,14 +138,6 @@
             </tr>
             <tr>
                 <td class="label" width="20%">
-                    <asp:Label runat="server" ID="Label1" Text="Data storicizzazione:" Font-Bold="true" />
-                </td>
-                <td width="80%">
-                    <telerik:RadDatePicker ID="txtHistoryDate" Width="30%" Visible="false" Enabled="false" runat="server" />
-                </td>
-            </tr>
-            <tr>
-                <td class="label" width="20%">
                     <asp:Label runat="server" ID="lblNewMail" Text="Email:" Font-Bold="true" />
                 </td>
                 <td width="80%">

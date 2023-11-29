@@ -315,7 +315,7 @@ Partial Public Class DocmAtti
 
     Private Sub RoleTvw()
         ' Controlla i diritti
-        Dim roleRightsList As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True)
+        Dim roleRightsList As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True, CurrentTenant.TenantAOO.UniqueId)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -326,7 +326,7 @@ Partial Public Class DocmAtti
             Next
         End If
         roleRightsList.Clear()
-        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True)
+        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True, CurrentTenant.TenantAOO.UniqueId)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -337,7 +337,7 @@ Partial Public Class DocmAtti
             Next
         End If
         roleRightsList.Clear()
-        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True)
+        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True, CurrentTenant.TenantAOO.UniqueId)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -353,16 +353,15 @@ Partial Public Class DocmAtti
         If documentTokenList.Count > 0 Then
 
             For Each docToken As DocumentToken In documentTokenList
-                Select Case docToken.IsActive
-                    Case 1
-                        WriteStep(docToken, txtPStep, txtPIdOwner, "")
-                    Case 2
-                        If docToken.DocumentTabToken.Id = "PT" Then
-                            WriteStep(docToken, txtRRStep, txtRRIdOwner, "")
-                        Else
-                            WriteStep(docToken, txtPRStep, txtPRIdOwner, "")
-                        End If
-                End Select
+
+                If docToken.IsActive Then
+                    WriteStep(docToken, txtPStep, txtPIdOwner, "")
+                Else
+                    Dim txtStep As TextBox = If(docToken.DocumentTabToken.Id = "PT", txtRRStep, txtPRStep)
+                    Dim txtIdOwner As TextBox = If(docToken.DocumentTabToken.Id = "PT", txtRRIdOwner, txtPRIdOwner)
+
+                    WriteStep(docToken, txtStep, txtIdOwner, "")
+                End If
 
                 Dim documentTokenUserList As IList(Of DocumentTokenUser) = Facade.DocumentTokenUserFacade.GetDocumentTokenUserList(CurrentDocumentYear, CurrentDocumentNumber, docToken, , , True, True, True, True)
 

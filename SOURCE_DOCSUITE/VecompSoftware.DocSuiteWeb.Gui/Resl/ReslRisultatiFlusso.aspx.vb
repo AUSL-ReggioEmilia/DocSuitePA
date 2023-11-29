@@ -48,7 +48,6 @@ Partial Public Class ReslRisultatiFlusso
                 DoSearch()
         End Select
     End Sub
-
 #End Region
 
 #Region " Methods "
@@ -62,6 +61,7 @@ Partial Public Class ReslRisultatiFlusso
         uscReslGrid.ColumnAttachSelectVisible = ResolutionEnv.AutomaticActivityStepEnabled AndAlso MyStep = BarWorkflowStep.Pubblicazione
         uscReslGrid.ColumnReturnFromCollaborationVisible = ProtocolEnv.CheckResolutionCollaborationOriginEnabled AndAlso MyStep = BarWorkflowStep.DaAffariGenerali
         uscReslGrid.ColumnLastLogVisible = ProtocolEnv.CheckResolutionCollaborationOriginEnabled AndAlso MyStep = BarWorkflowStep.DaAffariGenerali
+        uscReslGrid.ColumnUserTakeChargeVisibile = MyStep.Equals(BarWorkflowStep.AssegnateAffariGenerali)
         CurrentResolutionDocuments = Nothing
     End Sub
 

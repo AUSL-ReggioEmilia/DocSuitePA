@@ -1,146 +1,177 @@
 ﻿Imports System.Collections.Generic
 Imports System.Linq
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Facade
+Imports System.Threading.Tasks
+Imports System.Web
+Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports Newtonsoft.Json
+Imports VecompSoftware.DocSuiteWeb.DTO.Commons
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers
+Imports VecompSoftware.Services.IPA
+Imports VecompSoftware.Services.IPA.Models
+Imports VecompSoftware.Services.Logging
 
 Partial Class SelContattiIPA
     Inherits CommonBasePage
 
-#Region " Properties "
+#Region " Fields "
+    Private Const SEARCH_ADMINISTRATIONS_CALLBACK As String = "selContattiIPA.searchAdministrationsCallback('{0}')"
+    Private Const SEARCH_AOO_CALLBACK As String = "selContattiIPA.searchAOOCallback('{0}', '{1}')"
+    Private Const SEARCH_OU_CALLBACK As String = "selContattiIPA.searchOUCallback('{0}', '{1}')"
+    Private Const CONFIRM_CALLBACK As String = "selContattiIPA.confirmCallback('{0}', {1})"
+    Private Const SHOW_ADMINISTRATION_DETAILS_CALLBACK As String = "selContattiIPA.showAdministrationDetailsCallback('{0}')"
+    Private _ipaService As Lazy(Of IPAService) = New Lazy(Of IPAService)(InitializeIPAService)
+#End Region
 
-    Public ReadOnly Property CallerId() As String
+#Region " Properties "
+    Public ReadOnly Property CallerId As String
         Get
-            Return Request.QueryString("ParentID")
+            Return GetKeyValue(Of String, CommonSelContactRest)("ParentID")
         End Get
     End Property
 
+    Private ReadOnly Property IPAService As IPAService
+        Get
+            Return _ipaService.Value
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
 
-    Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
+    Private Sub Page_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         InitializeAjax()
         MasterDocSuite.TitleVisible = False
 
-        If String.IsNullOrEmpty(ProtocolEnv.LdapIndicePa) OrElse Not ProtocolEnv.LdapIndicePa.ContainsIgnoreCase(CommonAD.LDAPRoot) Then
-            Throw New DocSuiteException(ContactTypeFacade.LegacyDescription(ContactType.Ipa), "Controllare parametri di configurazione per ricerca IPA")
-        End If
-
         If Not IsPostBack Then
-            Title = ContactTypeFacade.LegacyDescription(ContactType.Ipa)
-            InitializeTreeView()
-            txtSearch.Focus()
+            If Not ProtocolEnv.IPAEnabled Then
+                Throw New DocSuiteException($"Ricerca IPA non abilitata, controllare che sia abilitato il parametro {NameOf(ProtocolEnv.IPAEnabled)}")
+            End If
         End If
     End Sub
 
-    Private Sub btnSearch_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSearch.Click
-        cmdDetail.Enabled = False
-        If txtSearch.Text.Length < 2 Then
-            AjaxAlert("Impossibile cercare.{0}Inserire almeno due caratteri.", Environment.NewLine)
+    Protected Sub SelContattiIPA_AjaxRequest(sender As Object, e As AjaxRequestEventArgs)
+        Dim ajaxModel As AjaxModel = Nothing
+        Try
+            ajaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument)
+            If ajaxModel Is Nothing Then
+                Return
+            End If
+            Select Case ajaxModel.ActionName
+                Case "SearchAdministrations"
+                    Dim description As String = ajaxModel.Value.First().ToString()
+                    Dim ipaAdministrations As ICollection(Of IPAAdministration) = IPAService.FindAdministrations(description).Result
+
+                    AjaxManager.ResponseScripts.Add(String.Format(SEARCH_ADMINISTRATIONS_CALLBACK, HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(ipaAdministrations))))
+                Case "SearchAOOs"
+                    Dim codAmm As String = ajaxModel.Value.First().ToString()
+                    Dim ipaAOOs As ICollection(Of IPAAOO) = IPAService.FindAOO(codAmm).Result
+
+                    AjaxManager.ResponseScripts.Add(String.Format(SEARCH_AOO_CALLBACK, HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(ipaAOOs)), codAmm))
+                Case "SearchOUs"
+                    Dim codAmm As String = ajaxModel.Value.First().ToString()
+                    Dim ipaOUs As ICollection(Of IPAOU) = IPAService.FindOU(codAmm).Result
+
+                    AjaxManager.ResponseScripts.Add(String.Format(SEARCH_OU_CALLBACK, HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(ipaOUs)), codAmm))
+                Case "Confirm"
+                    Dim ipaContactType As String = ajaxModel.Value.First().ToString()
+                    Dim ipaContact As Contact = Nothing
+                    Select Case ipaContactType
+                        Case IPAHelper.IPA_ADMINISTRATION
+                            Dim ipaAdministration As IPAAdministration = JsonConvert.DeserializeObject(Of IPAAdministration)(ajaxModel.Value(1).ToString())
+                            ipaAdministration = IPAService.GetAdministrationDetails(ipaAdministration.CodAmm).Result
+                            ipaContact = CreateAdministrationContact(ipaAdministration)
+                        Case IPAHelper.IPA_AOO
+                            Dim ipaAOO As IPAAOO = JsonConvert.DeserializeObject(Of IPAAOO)(ajaxModel.Value(1).ToString())
+                            ipaContact = CreateAOOContact(ipaAOO)
+                        Case IPAHelper.IPA_OU
+                            Dim ipaOU As IPAOU = JsonConvert.DeserializeObject(Of IPAOU)(ajaxModel.Value(1).ToString())
+                            ipaContact = CreateOUContact(ipaOU)
+                    End Select
+
+                    AjaxManager.ResponseScripts.Add(String.Format(CONFIRM_CALLBACK, HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(ipaContact)), ajaxModel.Value(2)))
+                Case "ShowAdministrationDetails"
+                    Dim ipaAdministration As IPAAdministration = JsonConvert.DeserializeObject(Of IPAAdministration)(ajaxModel.Value.First().ToString())
+                    ipaAdministration = IPAService.GetAdministrationDetails(ipaAdministration.CodAmm).Result
+
+                    AjaxManager.ResponseScripts.Add(String.Format(SHOW_ADMINISTRATION_DETAILS_CALLBACK, HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(ipaAdministration))))
+            End Select
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, ex.Message, ex)
+            AjaxAlert("E' avvenuto un errore nella ricerca delle pubbliche amministrazioni")
             Exit Sub
-        End If
-        Dim selectedValues As List(Of String) = rblFilterTypeObject.Items.Cast(Of ListItem)().Where(Function(li) li.Selected).[Select](Function(li) li.Value).ToList()
-
-
-        Dim ipaEntities As List(Of IPA) = IPARetriever.GetIpaEntities(ProtocolEnv.LdapIndicePa, txtSearch.Text, selectedValues)
-        If ipaEntities.IsNullOrEmpty() Then
-            AjaxAlert("Ricerca Nulla")
-            Exit Sub
-        End If
-
-        InitializeTreeView(ipaEntities.Count)
-
-        For Each pa As IPA In ipaEntities
-            tvwIPA.Nodes(0).Nodes.Add(AddNode(pa))
-        Next
-
-        If ipaEntities.Count = 1 Then
-            tvwIPA.Nodes(0).Nodes(0).Focus()
-        End If
-
+        End Try
     End Sub
-
-    Private Sub btnConferma_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnConferma.Click
-        Ritorna(True)
-    End Sub
-
-    Private Sub btnConfermaNuovo_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnConfermaNuovo.Click
-        Ritorna(False)
-    End Sub
-
-    Protected Sub tvwIPA_NodeClick(ByVal sender As System.Object, ByVal e As RadTreeNodeEventArgs) Handles tvwIPA.NodeClick
-        cmdDetail.Enabled = Not String.IsNullOrEmpty(e.Node.Value)
-    End Sub
-
-    Private Sub cmdDetail_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdDetail.Click
-        Dim url As String = "../Utlt/UtltIPAd.aspx?Path=" & tvwIPA.SelectedNode.Value.Replace("'", "\'")
-        AjaxManager.ResponseScripts.Add(String.Format("OpenWindow('{0}','{1}');", windowDetails.ClientID, url))
-    End Sub
-
 #End Region
 
 #Region " Methods "
 
     Private Sub InitializeAjax()
-        MasterDocSuite.AjaxManager.AjaxSettings.AddAjaxSetting(btnSearch, tvwIPA, MasterDocSuite.AjaxDefaultLoadingPanel)
-        MasterDocSuite.AjaxManager.AjaxSettings.AddAjaxSetting(tvwIPA, cmdDetail)
-        MasterDocSuite.AjaxManager.AjaxSettings.AddAjaxSetting(btnConfermaNuovo, tvwIPA, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AddHandler AjaxManager.AjaxRequest, AddressOf SelContattiIPA_AjaxRequest
     End Sub
 
-    Private Sub InitializeTreeView(Optional ByVal count As Integer = 0)
-        Dim tn As New RadTreeNode
-        tn.Text = "Pubbliche amministrazioni" + If(count > 0, String.Format(" ({0})", count.ToString()), Nothing)
-        tn.Expanded = True
-        tvwIPA.Nodes.Clear()
-        tvwIPA.Nodes.Add(tn)
-    End Sub
-
-    Private Shared Function AddNode(ByVal pa As IPA) As RadTreeNode
-        Dim tn As New RadTreeNode()
-        tn.Text = pa.Description
-        tn.Value = pa.ADSPath
-        tn.ImageUrl = ImagePath.ContactTypeIcon(ContactType.Ipa)
-        tn.Expanded = False
-        tn.ExpandMode = TreeNodeExpandMode.ServerSideCallBack
-        tn.Nodes.Add(New RadTreeNode())
-        Return tn
+    Private Function CreateAdministrationContact(ipaAdministration As IPAAdministration) As Contact
+        Dim contact As New Contact With {
+            .EmailAddress = ipaAdministration.Mail1,
+            .CertifiedMail = ipaAdministration.Mail1,
+            .Description = ipaAdministration.DesAmm,
+            .Address = New Address
+        }
+        With contact.Address
+            .ZipCode = StringHelper.Truncate(ipaAdministration.CAP, 20)
+            .CityCode = StringHelper.Truncate(ipaAdministration.Provincia, 2)
+            .Address = StringHelper.Truncate(ipaAdministration.Indirizzo, 60)
+        End With
+        contact.ContactType = New ContactType(ContactType.Ipa)
+        Return contact
     End Function
 
-    Private Sub Ritorna(ByVal closeForm As Boolean)
-        Dim tn As RadTreeNode = tvwIPA.SelectedNode
-        If (tn Is Nothing) OrElse String.IsNullOrEmpty(tn.Value) Then
-            Exit Sub
-        End If
-        Dim ipaEntity As IPA = IPARetriever.GetIpaEntitieByPath(ProtocolEnv.LdapIndicePa, tn.Value)
-        If ipaEntity Is Nothing Then
-            Exit Sub
-        End If
-        Dim contact As Contact = ContactFacade.CreateFromIpa(ipaEntity)
-        Dim [object] As String = StringHelper.EncodeJS(JsonConvert.SerializeObject(contact))
-        Dim script As String = String.Format("ReturnValuesJSon('{0}','{1}','{2}','{3}');", "Ins", tn.Value, [object], closeForm.ToString.ToLowerInvariant())
-        AjaxManager.ResponseScripts.Add(script)
-    End Sub
-    Private Sub tvwIPATreeNodeExpand(ByVal o As Object, ByVal e As RadTreeNodeEventArgs) Handles tvwIPA.NodeExpand
-        SelectedNodeChange(e.Node)
-    End Sub
-    Private Sub tvwIPATreeNodeClick(ByVal o As Object, ByVal e As RadTreeNodeEventArgs) Handles tvwIPA.NodeClick
-        SelectedNodeChange(e.Node)
-    End Sub
-    Public Sub SelectedNodeChange(ByVal selectNode As RadTreeNode)
-        Dim thispath As String = selectNode.Value.Replace("'", "\'")
-        selectNode.Nodes.Clear()
-        selectNode.Expanded = True
-        Dim ipaEntities As List(Of IPA) = IPARetriever.GetIpaChildEntities(thispath)
-        If ipaEntities.Count > 0 Then
-            For Each pa As IPA In ipaEntities
-                selectNode.Nodes.Add(AddNode(pa))
-            Next
-        End If
-    End Sub
+    Private Function CreateAOOContact(ipaAOO As IPAAOO) As Contact
+        Dim contact As New Contact With {
+            .EmailAddress = ipaAOO.Mail1,
+            .CertifiedMail = ipaAOO.Mail1,
+            .Description = ipaAOO.DesAOO,
+            .Address = New Address
+        }
+        With contact.Address
+            .ZipCode = StringHelper.Truncate(ipaAOO.CAP, 20)
+            .CityCode = StringHelper.Truncate(ipaAOO.Provincia, 2)
+            .Address = StringHelper.Truncate(ipaAOO.Indirizzo, 60)
+        End With
+        contact.TelephoneNumber = StringHelper.Truncate(ipaAOO.Telefono, 50)
+        contact.ContactType = New ContactType(ContactType.Ipa)
+        Return contact
+    End Function
+
+    Private Function CreateOUContact(ipaOU As IPAOU) As Contact
+        Dim contact As New Contact With {
+            .EmailAddress = ipaOU.Mail1,
+            .CertifiedMail = ipaOU.Mail1,
+            .Description = ipaOU.DesOU,
+            .Address = New Address
+        }
+        With contact.Address
+            .ZipCode = StringHelper.Truncate(ipaOU.CAP, 20)
+            .CityCode = StringHelper.Truncate(ipaOU.Provincia, 2)
+            .Address = StringHelper.Truncate(ipaOU.Indirizzo, 60)
+        End With
+        contact.TelephoneNumber = StringHelper.Truncate(ipaOU.Telefono, 50)
+        contact.ContactType = New ContactType(ContactType.Ipa)
+        Return contact
+    End Function
+
+    Private Function InitializeIPAService() As Func(Of IPAService)
+        Return Function()
+                   Return New IPAService(ProtocolEnv.IPAWebServiceUrl, ProtocolEnv.IPAAuthId,
+                              Sub(message)
+                                  FileLogger.Info(LoggerName, message)
+                              End Sub,
+                              Sub(errorMessage)
+                                  FileLogger.Error(LoggerName, errorMessage)
+                              End Sub)
+               End Function
+    End Function
 #End Region
 
 End Class

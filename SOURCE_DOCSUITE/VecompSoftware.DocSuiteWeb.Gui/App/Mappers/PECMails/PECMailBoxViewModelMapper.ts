@@ -2,6 +2,7 @@
 import PECMailBoxModel = require('App/Models/PECMails/PECMailBoxModel');
 import IMapper = require('App/Mappers/IMapper');
 import BaseMapper = require('App/Mappers/BaseMapper');
+import LocationViewModelMapper = require('App/Mappers/Commons/LocationViewModelMapper');
 
 class PECMailBoxViewModelMapper extends BaseMapper<PECMailBoxModel> implements IMapper<PECMailBoxViewModel>{
   constructor() {
@@ -12,7 +13,9 @@ class PECMailBoxViewModelMapper extends BaseMapper<PECMailBoxModel> implements I
 
     if (!source) {
       return null;
-    }
+      }
+
+    let locationViewModelMapper: LocationViewModelMapper = new LocationViewModelMapper();
 
     toMap.EntityShortId = source.EntityShortId;
     toMap.MailBoxRecipient = source.MailBoxRecipient;
@@ -53,7 +56,7 @@ class PECMailBoxViewModelMapper extends BaseMapper<PECMailBoxModel> implements I
     toMap.LastChangedUser = source.LastChangedUser;
     toMap.LastChangedDate = source.LastChangedDate;
     toMap.LoginError = source.LoginError;
-    toMap.Location = source.Location;
+    toMap.Location = source.Location ? locationViewModelMapper.Map(source.Location) : null;
     toMap.InvoiceType = source.InvoiceType;
 
     return toMap;

@@ -91,7 +91,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Desks
 
         private IQueryOver<DeskStoryBoard, DeskStoryBoard> SetDocumentIdFilter(IQueryOver<DeskStoryBoard, DeskStoryBoard> queryOver)
         {
-            return queryOver.Where(() => deskDocument.Id == this.DeskDocumentId && deskDocument.IsActive == 0);
+            return queryOver.Where(() => deskDocument.Id == this.DeskDocumentId && deskDocument.IsActive);
         }
 
         private IQueryOver<DeskStoryBoard, DeskStoryBoard> SetDeskIdFilter(IQueryOver<DeskStoryBoard, DeskStoryBoard> queryOver)

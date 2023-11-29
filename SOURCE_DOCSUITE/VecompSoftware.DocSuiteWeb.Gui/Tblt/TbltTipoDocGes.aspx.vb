@@ -37,9 +37,9 @@ Partial Public Class TbltTipoDocGes
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         MasterDocSuite.TitleVisible = False
         If Not CommonShared.HasGroupAdministratorRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
+
 
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma)
         If Not IsPostBack Then
@@ -56,7 +56,7 @@ Partial Public Class TbltTipoDocGes
                     .Id = Facade.DocumentTypeFacade.GetMaxId() + 1
                     .Code = txtCode.Text
                     .Description = txtObject.Text
-                    .IsActive = 1
+                    .IsActive = True
                     .RegistrationDate = DateTimeOffset.UtcNow
                     .RegistrationUser = DocSuiteContext.Current.User.FullUserName
                 End With
@@ -79,7 +79,7 @@ Partial Public Class TbltTipoDocGes
 
             Case "Recovery"
                 With ObjectInstance
-                    .IsActive = 1
+                    .IsActive = True
                     .LastChangedDate = DateTimeOffset.UtcNow
                     .LastChangedUser = DocSuiteContext.Current.User.FullUserName
                 End With

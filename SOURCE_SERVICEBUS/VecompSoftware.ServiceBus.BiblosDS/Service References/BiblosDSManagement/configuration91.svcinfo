@@ -112,10 +112,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="BasicHttpBinding_IAdministration" contract="BiblosDSManagement.IAdministration" bindingType="basicHttpBinding" address="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc" bindingConfiguration="BasicHttpBinding_IAdministration">
+    <endpoint name="BasicHttpBinding_IAdministration" contract="BiblosDSManagement.IAdministration" bindingType="basicHttpBinding" address="http://localhost/BiblosDS2010WCF/Administration.svc" bindingConfiguration="BasicHttpBinding_IAdministration">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc</serializedValue>
+          <serializedValue>http://localhost/BiblosDS2010WCF/Administration.svc</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

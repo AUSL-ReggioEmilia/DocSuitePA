@@ -32,7 +32,7 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Commons
             }
 
             APIFasc.FasciclePeriod fasciclePeriod = new APIFasc.FasciclePeriod();
-            fasciclePeriod.IsActive = entity.IsActive == 0 ? false : true;
+            fasciclePeriod.IsActive = entity.IsActive;
             fasciclePeriod.LastChangedDate = entity.LastChangedDate;
             fasciclePeriod.LastChangedUser = entity.LastChangedUser;
             fasciclePeriod.PeriodDays = entity.PeriodDays;

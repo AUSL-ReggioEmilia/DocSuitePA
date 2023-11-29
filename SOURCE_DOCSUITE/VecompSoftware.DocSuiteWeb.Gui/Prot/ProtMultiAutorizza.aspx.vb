@@ -21,7 +21,7 @@ Public Class ProtMultiAutorizza
                     End If
                 Else
                     ' Altrimenti verifico se sono manager di un singolo settore.
-                    Dim manageableRoles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Manager, True)
+                    Dim manageableRoles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Manager, True, CurrentTenant.TenantAOO.UniqueId)
 
                     If manageableRoles.Count = 1 Then
                         _currentManageableRole = manageableRoles(0).Id.ToString()
@@ -349,10 +349,6 @@ Public Class ProtMultiAutorizza
             uscAutorizza.SearchByUserEnabled = DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled AndAlso Not DocSuiteContext.Current.ProtocolEnv.DistributionHierarchicalEnabled
             ' Predispongo la nuova valorizzazione dei settori autorizzabili dai manager di distribuzione.
             uscAutorizza.ResetManageableRoles()
-            If ProtocolEnv.MultiDomainEnabled AndAlso ProtocolEnv.TenantAuthorizationEnabled Then
-                uscAutorizza.TenantEnabled = True
-            End If
-
             'BindProtocolList()
             InizializeSelRole()
         End If
@@ -409,11 +405,23 @@ Public Class ProtMultiAutorizza
                         ' Prima devono essere gestiti i CC non selezionati, poi quelli selezionati per po
                         Facade.ProtocolFacade.UpdateRoleAuthorization(protocol, uscProtocolRoleUser.GetFullIncrementalPathAttribute(False, uscSettori.NodeTypeAttributeValue.Role), False)
                         Facade.ProtocolFacade.UpdateRoleAuthorization(protocol, uscProtocolRoleUser.GetFullIncrementalPathAttribute(True, uscSettori.NodeTypeAttributeValue.Role), True)
-                    End If
 
-                    ' Solo per protocolli in entrata, aggiungo gli Users
-                    If protRights.IsProtocolTypeDistributable Then
-                        Facade.ProtocolFacade.AddRoleUserAuthorizations(protocol, uscProtocolRoleUser.GetRoleValues(True, uscSettori.NodeTypeAttributeValue.RoleUser))
+                        ' Solo per protocolli in entrata, aggiungo gli Users
+                        If protRights.IsProtocolTypeDistributable Then
+                            Dim selectedUserRoles As IList(Of String) = uscProtocolRoleUser.GetRoleValues(True, uscSettori.NodeTypeAttributeValue.RoleUser)
+                            Facade.ProtocolFacade.AddRoleUserAuthorizations(protocol, selectedUserRoles)
+                            If ProtocolEnv.DistributionRejectableEnabled AndAlso selectedUserRoles IsNot Nothing Then
+                                Dim roleUserNodeValue As String()
+                                Dim idRole As Integer
+                                Dim userRole As Role
+                                For Each selectedUserRole As String In selectedUserRoles
+                                    roleUserNodeValue = selectedUserRole.Split("|"c)
+                                    idRole = Integer.Parse(roleUserNodeValue(ProtocolRoleUserColumns.IdRole))
+                                    userRole = Facade.RoleFacade.GetById(idRole)
+                                    Facade.ProtocolFacade.UpdateRoleStatus(protocol, userRole.FullIncrementalPathArray.Select(Function(s) Integer.Parse(s)).ToList(), ProtocolRoleStatus.Accepted)
+                                Next
+                            End If
+                        End If
                     End If
 
                     Facade.ProtocolFacade.UpdateOnly(protocol)

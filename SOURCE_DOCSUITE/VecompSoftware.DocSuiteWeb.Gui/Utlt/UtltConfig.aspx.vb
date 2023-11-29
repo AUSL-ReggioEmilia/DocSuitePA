@@ -103,7 +103,6 @@ Partial Class UtltConfig
 
 
         tblConfig.Rows.AddRaw(Nothing, {2}, Nothing, {"Dominio"}, {"head"})
-        tblConfig.Rows.AddRaw(Nothing, Nothing, {20}, {"Dominio Path AD", DocSuiteContext.DomainPath}, {"label"})
         tblConfig.Rows.AddRaw(Nothing, Nothing, {20}, {"Utente Accesso Dominio", DocSuiteContext.Current.CurrentTenant.DomainUser}, {"label"})
 
         tblConfig.Rows.AddRaw(Nothing, {2}, Nothing, {"Dominio nei Moduli"}, {"head"})

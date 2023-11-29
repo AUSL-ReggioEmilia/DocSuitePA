@@ -194,11 +194,11 @@ class uscFascSummary {
             return promise.resolve();
         }
 
-        $.when(this.getFascicleUserDisplayName(fascicle.RegistrationUser), this.getFascicleUserDisplayName(fascicle.LastChangedUser), this.getFascicleSerieName(fascicle.UniqueId))
-            .done((registrationUser, lastChangedUser, serieName) => {
+        $.when(this.getFascicleUserDisplayName(fascicle.RegistrationUser), this.getFascicleUserDisplayName(fascicle.LastChangedUser))
+            .done((registrationUser, lastChangedUser) => {
                 fascicle.RegistrationUser = registrationUser;
                 fascicle.LastChangedUser = lastChangedUser;
-                this.setSummaryData(fascicle, serieName)
+                this.setSummaryData(fascicle)
                     .done(() => promise.resolve())
                     .fail((exception) => {
                         this._uscNotification = <UscErrorNotification>$("#".concat(this.uscNotificationId)).data();
@@ -236,39 +236,21 @@ class uscFascSummary {
         return promise.promise();
     }
 
-    private getFascicleSerieName(fascicleId: string): JQueryPromise<string> {
-        let promise: JQueryDeferred<string> = $.Deferred<string>();
-        
-        this._dossierFolderService.getProcessByFascicleId(fascicleId,
-            (odataResult) => {
-                if (!odataResult.length) {
-                    return promise.resolve("");
-                }
-
-                const dossierFolder = odataResult[0];
-                const serieName: string = `${dossierFolder.Dossier.Subject}/${this.buildDossierProcessFullNameRecursive(dossierFolder.Dossier.DossierFolders, dossierFolder)}`;
-                return promise.resolve(serieName);
-            },
-            (exception: ExceptionDTO) => {
-                console.warn(`E' avvenuto un errore durante la ricerca della serie per fascicolo con id ${fascicleId}.`);
-                return promise.resolve("");
-            }
-        );
-        return promise.promise();
-    }
-
     /**
      * Imposta i dati nel sommario
      * @param fascicle
      */
-    private setSummaryData(fascicle: FascicleModel, serieName: string): JQueryPromise<void> {
+    private setSummaryData(fascicle: FascicleModel): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
 
         try {
             this._lblViewFascicle.hide();
             let title: string = `${fascicle.Title} - ${fascicle.Category.Name}`;
             this._lblTitle.html(title);
-            this._lblSerieName.html(serieName);
+            this._lblSerieName.html("");
+            if (fascicle.ProcessLabel && fascicle.DossierFolderLabel) {
+                this._lblSerieName.html(`${fascicle.ProcessLabel}/${fascicle.DossierFolderLabel}`);
+            }
 
             if (this.isSummaryLink) {
                 this._lblTitle.hide();

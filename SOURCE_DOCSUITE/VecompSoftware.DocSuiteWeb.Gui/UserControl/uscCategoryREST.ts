@@ -13,6 +13,7 @@ import TreeNodeModel = require("App/ViewModels/Commons/TreeNodeModel");
 import CommonSelCategoryRest = require("./CommonSelCategoryRest");
 import ProcessNodeType = require("App/Models/Processes/ProcessNodeType");
 import CategoryFascicleViewModel = require("App/ViewModels/Commons/CategoryFascicleViewModel");
+import AjaxModel = require("App/Models/AjaxModel");
 
 declare var ValidatorEnable: any;
 interface uscCategoryRestConfiguration {
@@ -36,10 +37,20 @@ class uscCategoryRest {
     windowSelCategoryId: string;
     showProcesses: boolean;
     currentTenantAOOId: string;
+    showProcessFascicleTemplate: boolean;
+    processNodeSelectable: boolean;
+    ajaxRequestEnabled: boolean;
+    defaultCategoryId: number;
+    isProcessActive: boolean;
 
     static LOADED_EVENT: string = "onLoaded";
     static ADDED_EVENT: string = "onAdded";
     static REMOVED_EVENT: string = "onRemoved";
+
+    static SERVER_ADDED_EVENT: string = "CategoryAdded";
+    static SERVER_REMOVED_EVENT: string = "CategoryRemoved";
+
+    static NODE_TYPE: string = "NodeType";
 
     private readonly _selectedCategorySessionKey: string;
     private readonly _configurationCategorySessionKey: string;
@@ -102,7 +113,10 @@ class uscCategoryRest {
                         this._treeCategory.commitChanges();
                         this.addToSelectedSource(category);
                         $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.ADDED_EVENT, category.IdCategory);
-                        this._ajaxManager.ajaxRequest("Add");
+                        let ajaxModel: AjaxModel = <AjaxModel>{};
+                        ajaxModel.ActionName = uscCategoryRest.SERVER_ADDED_EVENT;
+                        ajaxModel.Value = [ProcessNodeType[ProcessNodeType.Category], node.get_value()];
+                        this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
                     })
                     .fail((exception: ExceptionDTO) => this.showNotificationException(exception));
             }
@@ -121,6 +135,10 @@ class uscCategoryRest {
         this._windowSelCategory = $find(this.windowSelCategoryId) as Telerik.Web.UI.RadWindow;
         this._windowSelCategory.add_close(this.windowSelCategory_onClose);
         this._actionToolbar.add_buttonClicked(this.actionToolbar_ButtonClicked);
+
+        if (this.defaultCategoryId) {
+            this.addDefaultCategory(this.defaultCategoryId, false);
+        }
 
         sessionStorage.removeItem(this._selectedCategorySessionKey);
         this.initializeSources()
@@ -152,7 +170,10 @@ class uscCategoryRest {
                         this._treeCategory.commitChanges();
                         this.addToSelectedSource(data);
                         $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.ADDED_EVENT, data.IdCategory);
-                        setTimeout(() => this._ajaxManager.ajaxRequest("Add"), 800);
+                        let ajaxModel: AjaxModel = <AjaxModel>{};
+                        ajaxModel.ActionName = uscCategoryRest.SERVER_ADDED_EVENT;
+                        ajaxModel.Value = [ProcessNodeType[ProcessNodeType.Category], node.get_value()];
+                        setTimeout(() => this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel)), 800);
                         promise.resolve();
                     })
                     .fail((exception: ExceptionDTO) => promise.reject(exception));
@@ -189,6 +210,9 @@ class uscCategoryRest {
             url = url.concat(`&Container=${configuration.showContainerFascicolable}`);
         }
         url = url.concat(`&ShowProcesses=${this.showProcesses}`);
+        url = url.concat(`&ShowProcessFascicleTemplate=${this.showProcessFascicleTemplate}`);
+        url = url.concat(`&ProcessNodeSelectable=${this.processNodeSelectable}`);
+        url = url.concat(`&IsProcessActive=${this.isProcessActive}`);
         this._windowManager.open(url, "windowSelCategory", undefined);
     }
 
@@ -204,8 +228,17 @@ class uscCategoryRest {
         this._treeCategory.get_nodes().clear();
         this._treeCategory.commitChanges();
         sessionStorage[this._selectedCategorySessionKey] = JSON.stringify([]);
-        $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.REMOVED_EVENT, idCategory);
-        this._ajaxManager.ajaxRequest("Remove");
+
+        if (this.ajaxRequestEnabled) {
+            let ajaxModel: AjaxModel = <AjaxModel>{};
+            ajaxModel.ActionName = uscCategoryRest.SERVER_REMOVED_EVENT;
+            this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+        } else {
+
+            $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.REMOVED_EVENT, idCategory);
+            this._ajaxManager.ajaxRequest(uscCategoryRest.SERVER_REMOVED_EVENT);
+        }
+
     }
 
     private createNode(category: CategoryTreeViewModel): JQueryPromise<Telerik.Web.UI.RadTreeNode> {
@@ -263,7 +296,14 @@ class uscCategoryRest {
             leafNode = currentNode;
         }
         leafNode.get_attributes().setAttribute("IsSelected", true);
-        $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.ADDED_EVENT, processFascicleTemplateParents[processFascicleTemplateParents.length - 1].value);
+        if (this.ajaxRequestEnabled) {
+            let ajaxModel: AjaxModel = <AjaxModel>{};
+            ajaxModel.ActionName = uscCategoryRest.SERVER_ADDED_EVENT;
+            ajaxModel.Value = [ProcessNodeType[leafNode.get_attributes().getAttribute(uscCategoryRest.NODE_TYPE)], leafNode.get_value(), leafNode.get_text()];
+            this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+        } else {
+            $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.ADDED_EVENT, processFascicleTemplateParents[processFascicleTemplateParents.length - 1].value);
+        }
         return promise.resolve(leafNode);
     }
 
@@ -361,7 +401,7 @@ class uscCategoryRest {
         sessionStorage[this._configurationCategorySessionKey] = JSON.stringify(configuration);
     }
 
-    addDefaultCategory(idCategory: number, onlyFascicolable: boolean = false): JQueryPromise<void> {
+    addDefaultCategory(idCategory: number, onlyFascicolable: boolean = false, triggerServerEvent: boolean = true): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
         this._treeCategory.get_nodes().clear();
         this._treeCategory.trackChanges();
@@ -383,9 +423,16 @@ class uscCategoryRest {
                         node.get_attributes().setAttribute("IsSelected", true);
                         node.get_attributes().setAttribute("NodeType", ProcessNodeType.Category);
                         this.addToSelectedSource(data);
-                        this._treeCategory.commitChanges();                        
+                        this._treeCategory.commitChanges();
                         $(`#${this.pnlMainContentId}`).triggerHandler(uscCategoryRest.ADDED_EVENT, data.IdCategory);
-                        setTimeout(() => this._ajaxManager.ajaxRequest("Add"), 800);
+
+                        if (triggerServerEvent) {
+                            let ajaxModel: AjaxModel = <AjaxModel>{};
+                            ajaxModel.ActionName = uscCategoryRest.SERVER_ADDED_EVENT;
+                            ajaxModel.Value = [ProcessNodeType[ProcessNodeType.Category], node.get_value()];
+                            setTimeout(() => this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel)), 800);
+                        }
+
                         promise.resolve();
                     })
                     .fail((exception: ExceptionDTO) => {
@@ -397,7 +444,7 @@ class uscCategoryRest {
                 this._treeCategory.commitChanges();
                 promise.reject(exception);
             }
-        );        
+        );
         return promise.promise();
     }
 

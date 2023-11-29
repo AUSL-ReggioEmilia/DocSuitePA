@@ -5,7 +5,7 @@
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <style type="text/css">
-        .reToolCell, .reLeftVerticalSide, .reRightVerticalSide {
+        .hideEditorTools .reToolCell, .hideEditorTools .reLeftVerticalSide, .hideEditorTools .reRightVerticalSide {
             display: none !important;
         }
     </style>
@@ -67,17 +67,6 @@
                 </td>
             </tr>
         </table>
-        <%--Conservazione Sostitutiva--%>
-        <table class="datatable" id="pnlConservation" runat="server">
-            <tr>
-                <th>Conservazione Sostitutiva</th>
-            </tr>
-            <tr>
-                <td>
-                    <asp:CheckBox ID="chkConservation" runat="server" Text="Abilita per conservazione sostitutiva" />
-                </td>
-            </tr>
-        </table>
           <%--Modulo Privacy--%>
         <table class="datatable" id="pnlPrivacy" runat="server">
             <tr>
@@ -96,6 +85,17 @@
             </tr>
         </table>
 
+          <%--Atti contabili--%>
+        <table class="datatable" id="pnlResolutionAccounting" runat="server">
+            <tr>
+                <th>Atti contabili</th>
+            </tr>
+            <tr>
+                <td>
+                    <asp:CheckBox ID="checkResolutionAccounting" runat="server" Text= "Abilita contenitore atti contabili" />
+                </td>
+            </tr>
+        </table>
 
         <%--Serie documentali--%>
         <table id="pnlDocumentSeries" runat="server" class="datatable">
@@ -139,6 +139,40 @@
                     <asp:DropDownList runat="server" ID="ddlDocumentSeriesFamily" DataTextField="Name" DataValueField="Id" />
                 </td>
             </tr>
+            <tr>
+                <td>
+                    <table class="datatable" width="100%">
+                        <%-- Heading Serie --%>
+                        <tr>
+                            <td class="label" style="vertical-align: middle; width: 20%;">
+                                <asp:Label runat="server" ID="labelSeriesHeader" />
+                            </td>
+                            <td style="vertical-align: middle; width: 80%;">
+                                <telerik:RadAjaxPanel runat="server">
+                                    <telerik:RadEditor ID="txtSeriesHeader" EditModes="Design" ContentFilters="RemoveScripts,FixEnclosingP,StripDomEventAttributes,StripCssExpressions" EnableViewState="false" NewLineBr="true" runat="server" Width="100%" Height="100px">
+                                        <Tools>
+                                            <telerik:EditorToolGroup>
+                                                <telerik:EditorTool Name="Bold" />
+                                                <telerik:EditorTool Name="Italic" />
+                                                <telerik:EditorTool Name="Underline" />
+                                                <telerik:EditorTool Name="Cut" />
+                                                <telerik:EditorTool Name="Copy" />
+                                                <telerik:EditorTool Name="Paste" />
+                                            </telerik:EditorToolGroup>
+                                            <telerik:EditorToolGroup>
+                                                <telerik:EditorTool Name="JustifyLeft" />
+                                                <telerik:EditorTool Name="JustifyCenter" />
+                                                <telerik:EditorTool Name="JustifyRight" />
+                                                <telerik:EditorTool Name="JustifyNone" />
+                                            </telerik:EditorToolGroup>
+                                        </Tools>
+                                    </telerik:RadEditor>
+                                </telerik:RadAjaxPanel>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
         </table>
         <%--Classificatore di default--%>
         <usc:SelCategory runat="server" ID="uscClassificatori" Type="Prot" Caption="Classificazione predefinita" Multiple="false" Required="false" Visible="False" />
@@ -150,11 +184,11 @@
                 <table class="datatable" width="100%">
                     <tr>
                         <th colspan="2">
-                            <asp:Label runat="server" ID="lblFrontaliniHeader" />
+                            <asp:Label runat="server" ID="lblFrontaliniHeader"/>
                         </th>
                     </tr>
                 </table>
-                <table class="datatable" width="100%">
+                <table class="datatable hideEditorTools" width="100%">
                     <%-- Heading Frontalino --%>
                     <tr>
                         <td class="label" style="vertical-align: middle; width: 20%;">
@@ -162,7 +196,7 @@
                         </td>
                         <td style="vertical-align: middle; width: 80%;">
                             <telerik:RadAjaxPanel runat="server">
-                                <telerik:RadEditor ID="txtHeadingFrontalino" EditModes="Html" EnableViewState="false" NewLineBr="true" runat="server" Width="100%" Height="100px">
+                                <telerik:RadEditor ID="txtHeadingFrontalino" EditModes="Html" ContentFilters="RemoveScripts,FixEnclosingP,StripDomEventAttributes,StripCssExpressions" EnableViewState="false" NewLineBr="true" runat="server" Width="100%" Height="100px">
                                     <Tools>
                                         <telerik:EditorToolGroup>
                                         </telerik:EditorToolGroup>
@@ -172,7 +206,7 @@
                         </td>
                     </tr>
                 </table>
-                <table class="datatable" width="100%">
+                <table class="datatable hideEditorTools" width="100%">
                     <%-- Heading Letter --%>
                     <tr>
                         <td class="label" style="vertical-align: middle; width: 20%;">

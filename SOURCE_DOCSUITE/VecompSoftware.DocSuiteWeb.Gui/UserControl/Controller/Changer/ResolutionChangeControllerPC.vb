@@ -24,7 +24,7 @@ Public Class ResolutionChangeControllerPC
         'Proponente di default
         _uscReslChange.ControlProposerInterop.ContactRoot = DocSuiteContext.Current.ResolutionEnv.ProposerContact
 
-        _uscReslChange.VisibleImmediatelyExecutive = False
+        _uscReslChange.VisibleImmediatelyExecutive = DocSuiteContext.Current.ResolutionEnv.ImmediatelyExecutiveEnabled
         _uscReslChange.VisibleComunication = False 'EF 20120119 Disattivazione del pannello di comunicazione
 
         Dim changeableData As String = String.Empty

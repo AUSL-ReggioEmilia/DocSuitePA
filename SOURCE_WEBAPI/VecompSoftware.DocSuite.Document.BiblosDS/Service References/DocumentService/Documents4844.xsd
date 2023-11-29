@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://BiblosDS/2009/10/PreservationScheduleTaskType" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/PreservationScheduleTaskType" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd35" namespace="http://BiblosDS/2009/10/PreservationSchedule" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd33" namespace="http://BiblosDS/2009/10/PreservationTaskType" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd35" namespace="http://BiblosDS/2009/10/PreservationSchedule" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd33" namespace="http://BiblosDS/2009/10/PreservationTaskType" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
   <xs:complexType name="ArrayOfPreservationScheduleTaskType">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="PreservationScheduleTaskType" nillable="true" type="tns:PreservationScheduleTaskType" />

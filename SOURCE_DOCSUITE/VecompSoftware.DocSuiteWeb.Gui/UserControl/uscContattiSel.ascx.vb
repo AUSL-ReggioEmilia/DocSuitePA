@@ -22,9 +22,6 @@ Partial Public Class uscContattiSel
 
     ''' <summary> Segnala l'aggiunta di nuovi Contatti da rubrica </summary>
     Public Event ItemsAdded(ByVal sender As Object, ByVal e As ContactsEventArgs)
-
-    Public Event OChartItemContactsAdded(sender As Object, e As OChartItemContactsEventArgs)
-
     Public Event ShowContactList(ByVal sender As Object, ByVal e As EventArgs)
     Public Event ContactAdded(ByVal sender As Object, ByVal e As EventArgs)
     Public Event ContactRemoved(ByVal sender As Object, ByVal e As EventArgs)
@@ -51,7 +48,6 @@ Partial Public Class uscContattiSel
     Private _action As String = String.Empty
     Private _multiple As Boolean
     Private _multiSelect As Boolean
-    Private _singleCheck As Boolean
     Private _protType As Boolean
     Private _contactList As IList(Of ContactDTO)
     Private _enableCompression As Boolean
@@ -147,10 +143,13 @@ Partial Public Class uscContattiSel
 
     Public Property SingleCheck() As Boolean
         Get
-            Return _singleCheck
+            If (ViewState("SingleCheck") Is Nothing) Then
+                ViewState("SingleCheck") = False
+            End If
+            Return DirectCast(ViewState("SingleCheck"), Boolean)
         End Get
         Set(ByVal value As Boolean)
-            _singleCheck = value
+            ViewState("SingleCheck") = value
         End Set
     End Property
 
@@ -451,15 +450,6 @@ Partial Public Class uscContattiSel
         End Set
     End Property
 
-    Public Property ButtonSelectOChartVisible As Boolean
-        Get
-            Return ButtonSelContactOChart.Visible
-        End Get
-        Set(value As Boolean)
-            ButtonSelContactOChart.Visible = value AndAlso DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaOChart
-        End Set
-    End Property
-
     ''' <summary> Visualizza/Nasconde il pulsante di eliminazione contatto. </summary>
     Public Property ButtonDeleteVisible() As Boolean
         Get
@@ -630,15 +620,6 @@ Partial Public Class uscContattiSel
 
     Public Property SearchAll As Boolean
 
-    Public Property APIDefaultProvider As Boolean?
-        Get
-            Return CType(ViewState("_apiDefaultProvider"), Boolean?)
-        End Get
-        Set(ByVal value As Boolean?)
-            ViewState("_apiDefaultProvider") = value
-        End Set
-    End Property
-
     Public Property EnvironmentType As String
         Get
             Return DirectCast(ViewState("collaborationType"), String)
@@ -651,8 +632,6 @@ Partial Public Class uscContattiSel
     Public Property CollaborationType As String
 
     Public Property TemplateName As String
-
-    Public Property HistoricizeDate As DateTime?
 
     Public ReadOnly Property TemplateModels As List(Of TemplateAuthorizationModel)
         Get
@@ -693,15 +672,13 @@ Partial Public Class uscContattiSel
             Return JsonConvert.SerializeObject(contact)
         End Get
     End Property
+    Public Property DisplayContactEmailEnabled As Boolean = True
 #End Region
 
 #Region " Events "
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         btnSelContactDomain.Visible = ButtonSelectDomainVisible
-        If Not DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaOChart Then
-            ButtonSelectOChartVisible = False
-        End If
 
         If Not IsPostBack Then
             Initialize()
@@ -722,44 +699,6 @@ Partial Public Class uscContattiSel
         End If
 
         Select Case arguments(1)
-            Case "OChartItemContact"
-                Dim serialized As String = arguments(2)
-                If String.IsNullOrWhiteSpace(serialized) Then
-                    Return
-                End If
-
-                Dim contacts As List(Of Contact) = JsonConvert.DeserializeObject(Of List(Of Contact))(serialized)
-                Dim identifiers As Integer() = contacts.Select(Function(c) c.Id).ToArray()
-                Dim renewed As IList(Of Contact) = FacadeFactory.Instance.ContactFacade.GetContactWithId(identifiers)
-                AddItems(renewed)
-
-                Dim args As New OChartItemContactsEventArgs()
-                args.Contacts = contacts
-                args.ItemFullCode = contacts.First().Note
-                RaiseEvent OChartItemContactsAdded(Me, args)
-
-            Case "OChartItemContactManual"
-                Dim serialized As String = arguments(2)
-                If String.IsNullOrWhiteSpace(serialized) Then
-                    Return
-                End If
-
-                Dim contacts As List(Of Contact) = JsonConvert.DeserializeObject(Of List(Of Contact))(serialized)
-                For Each cc As Contact In contacts
-                    cc.IsActive = 1S
-                    cc.Parent = Nothing
-                    cc.ContactType = New ContactType() With {.Id = "P"c}
-                    cc.EmailAddress = RegexHelper.MatchEmail(cc.EmailAddress)
-                    cc.CertifiedMail = RegexHelper.MatchEmail(cc.CertifiedMail)
-
-                    MultipleContactsTest()
-                    AddManualContact(cc, JsonConvert.SerializeObject(cc), ContactTypeEnum.Manual, String.Empty)
-                Next
-
-                Dim args As New OChartItemContactsEventArgs()
-                args.Contacts = contacts
-                RaiseEvent OChartItemContactsAdded(Me, args)
-
             Case "ContactAD"
                 Dim localArg As String = HttpUtility.HtmlDecode(arguments(2))
                 JsonContactAdded = localArg
@@ -787,7 +726,7 @@ Partial Public Class uscContattiSel
                     Dim c As New Contact()
                     c.Description = If(String.IsNullOrEmpty(name), String.Empty, _mailDescritionExp.Replace(name, String.Empty))
                     c.CertifiedMail = email
-                    c.IsActive = Convert.ToInt16(1)
+                    c.IsActive = True
                     c.Parent = Nothing
 
                     c.ContactType = New ContactType()
@@ -826,30 +765,33 @@ Partial Public Class uscContattiSel
                 RaiseEvent ContactRemoved(Me, New EventArgs())
 
             Case "Import"
-                Dim reader As New JsonTextReader(New StringReader(arguments(2)))
-                While (reader.Read())
-                    If (reader.TokenType = JsonToken.EndArray) Then
-                        Exit While
+                Try
+                    Dim document As KeyValuePair(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(arguments(2)).FirstOrDefault()
+                    Dim errors As New List(Of String)
+
+                    Dim filePath As String = String.Concat(CommonInstance.AppTempPath, document.Key)
+                    Dim fileContent As String = File.ReadAllText(filePath)
+                    Dim xmlDoc As New XmlDocument
+                    xmlDoc.LoadXml(fileContent)
+                    Dim listDto As IList(Of ContactDTO) = Facade.ContactFacade.ImportFromXml(xmlDoc, errors)
+
+                    If listDto.Count > 0 Then
+                        DataSource = listDto
+                        ExecuteDataBind(True, False, 0)
                     End If
-                    If (reader.TokenType <> JsonToken.StartArray) Then
-                        reader.Read()
-                        Dim info As New FileInfo(CType(reader.Value, String).Replace("\'", "'"))
-                        Dim xmlDoc As New XmlDocument
-                        If FileHelper.MatchExtension(info.Extension, FileHelper.XML) Then
-                            Try
-                                xmlDoc.Load(CommonUtil.GetInstance().AppTempPath & info.Name)
-                                Dim listDto As IList(Of ContactDTO) = Facade.ContactFacade.ImportFromXml(xmlDoc)
-                                DataSource = listDto
-                                ExecuteDataBind(True, False, 0)
-                            Catch ex As Exception
-                                FileLogger.Warn(LoggerName, ex.Message, ex)
-                                BasePage.AjaxAlert(ex.Message)
-                            End Try
-                        Else
-                            BasePage.AjaxAlert("Formato del File non corretto{0}L'estensione deve essere .XLS{0}Importazione Interrotta", Environment.NewLine)
-                        End If
+
+                    If errors.Count > 0 Then
+                        Dim importErrors As New StringBuilder()
+                        importErrors.Append("Importazione terminata con i seguenti errori:")
+                        importErrors.Append(Environment.NewLine)
+                        importErrors.Append(String.Join(Environment.NewLine, errors))
+                        BasePage.AjaxAlert(importErrors.ToString())
                     End If
-                End While
+                Catch ex As Exception
+                    FileLogger.Warn(LoggerName, ex.Message, ex)
+                    BasePage.AjaxAlert(ex.Message)
+                End Try
+                Exit Sub
             Case "ImportExcel"
                 ' Parsing dell'argomento per estrarre nome file excel
                 Dim deserialized As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(arguments(2))
@@ -922,6 +864,9 @@ Partial Public Class uscContattiSel
             RaiseEvent ContactRemoved(Me, New EventArgs())
         Next
 
+        InitializeControls()
+        SetTooltips()
+
         'Register script to remove contact from session
         If Not contactsList.Count = 0 Then
             Dim jsonContactsToRemove As String = JsonConvert.SerializeObject(contactsList)
@@ -950,9 +895,10 @@ Partial Public Class uscContattiSel
     Protected Sub cmdDetails_Click(ByVal sender As Object, ByVal e As ImageClickEventArgs) Handles cmdDetails.Click
         Dim callBackFunc As String = "_CloseFunction"
 
+        Dim currentNode As RadTreeNode = If(Me.EnableCheck, RadTreeContact.CheckedNodes.First(), RadTreeContact.SelectedNode)
         If [ReadOnly] Then
             Dim readOnlyUrl As New StringBuilder("../UserControl/CommonSelContactManual.aspx?Action=Vis")
-            readOnlyUrl.AppendFormat("&JsonContact={0}", EncodeContact(RadTreeContact.SelectedNode.Attributes(ManualContactAttribute)))
+            readOnlyUrl.AppendFormat("&JsonContact={0}", EncodeContact(currentNode.Attributes(ManualContactAttribute)))
             If SimpleMode Then
                 readOnlyUrl.Append("&SimpleMode=true")
             End If
@@ -960,33 +906,32 @@ Partial Public Class uscContattiSel
             Exit Sub
         End If
 
-        Dim node As RadTreeNode = RadTreeContact.SelectedNode
-        If (node Is Nothing) OrElse (node.Value.Eq(ROOT_DESC)) Then
+        If (currentNode Is Nothing) OrElse (currentNode.Value.Eq(ROOT_DESC)) Then
             BasePage.AjaxAlert("Nodo selezionato non valido")
             Exit Sub
         End If
 
         Dim url As New StringBuilder()
-        Select Case node.Attributes("ContactPart")
+        Select Case currentNode.Attributes("ContactPart")
             Case CONTACT_MANUAL
                 url.Append("../UserControl/CommonSelContactManual.aspx?Action=Vis")
                 If ReadOnlyProperties Then
                     url.Append("&OnlyManualDetail=true")
                 End If
-                url.AppendFormat("&JsonContact={0}", EncodeContact(node.Attributes(ManualContactAttribute)))
+                url.AppendFormat("&JsonContact={0}", EncodeContact(currentNode.Attributes(ManualContactAttribute)))
                 callBackFunc = "_CloseManualFunction"
 
             Case CONTACT_ROLEUSER
                 url.Append("../UserControl/CommonSelContactManual.aspx?Action=Vis")
-                url.AppendFormat("&JsonContact={0}", EncodeContact(node.Attributes(ManualContactAttribute)))
+                url.AppendFormat("&JsonContact={0}", EncodeContact(currentNode.Attributes(ManualContactAttribute)))
 
             Case CONTACT_IPA
                 url.Append("../UserControl/CommonSelContactManual.aspx?Action=Vis&ReadOnly=true")
-                url.AppendFormat("&JsonContact={0}", EncodeContact(node.Attributes(ManualContactAttribute)))
+                url.AppendFormat("&JsonContact={0}", EncodeContact(currentNode.Attributes(ManualContactAttribute)))
 
             Case CONTACT_ADDRESSBOOK
                 url.Append("../UserControl/CommonSelContactRubrica.aspx?Action=Vis&OnlyDetail=true")
-                url.AppendFormat("&idContact={0}", node.Value)
+                url.AppendFormat("&idContact={0}", currentNode.Value)
                 url.AppendFormat("&AVCPBusinessContactEnabled={0}", AVCPBusinessContactEnabled)
                 url.AppendFormat("&FascicleContactEnabled={0}", FascicleContactEnabled)
 
@@ -1009,7 +954,7 @@ Partial Public Class uscContattiSel
             Dim c As New Contact()
             c.Description = CommonUtil.GetInstance().UserDescription
             c.CertifiedMail = CommonUtil.GetInstance().UserMail
-            c.IsActive = 1S
+            c.IsActive = True
             c.Parent = Nothing
 
             c.ContactType = New ContactType(ContactType.Person)
@@ -1039,6 +984,41 @@ Partial Public Class uscContattiSel
         args.IsValid = RadTreeContact.Nodes(0).Nodes.Count <> 0
     End Sub
 
+    Private Sub RadTreeContact_OnNodeCheck(sender As Object, e As RadTreeNodeEventArgs) Handles RadTreeContact.NodeCheck
+        If SingleCheck AndAlso e.Node.Checked Then
+            RadTreeContact.UncheckAllNodes()
+            e.Node.Checked = True
+        End If
+
+        If EnableCheck Then
+            btnDelContact.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/delete_disabled.png"
+            cmdDetails.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/user_disabled.png"
+            Dim hasFlaggedElements As Boolean = RadTreeContact.CheckedNodes.Where(Function(x) Not x.Value.Eq(ROOT_DESC)).Any()
+            If hasFlaggedElements Then
+                btnDelContact.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/delete.png"
+                btnDelContact.Enabled = True
+                If RadTreeContact.CheckedNodes.Count = 1 Then
+                    cmdDetails.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/user_info.png"
+                    cmdDetails.Enabled = True
+                End If
+            End If
+        End If
+    End Sub
+
+    Private Sub RadTreeContact_OnNodeClick(sender As Object, e As RadTreeNodeEventArgs) Handles RadTreeContact.NodeClick
+        If (Not EnableCheck) Then
+            btnDelContact.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/delete_disabled.png"
+            cmdDetails.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/user_disabled.png"
+            Dim hasFlaggedElements As Boolean = RadTreeContact.SelectedNodes.Where(Function(x) Not x.Value.Eq(ROOT_DESC)).Any()
+            If hasFlaggedElements Then
+                btnDelContact.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/delete.png"
+                cmdDetails.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/user_info.png"
+            End If
+            btnDelContact.Enabled = hasFlaggedElements
+            cmdDetails.Enabled = hasFlaggedElements
+        End If
+    End Sub
+
 #End Region
 
 #Region " Methods "
@@ -1046,7 +1026,6 @@ Partial Public Class uscContattiSel
     Public Sub Initialize()
         ' Imposto le immgini dei pulsanti
         btnImportContact.ImageUrl = ImagePath.SmallXml
-        ButtonSelContactOChart.ImageUrl = ImagePath.SmallNetworkShare
 
         ' Inizializzo i codici JS di apertura finestra lato Client
         btnAddManual.OnClientClick = AddManualCode()
@@ -1074,12 +1053,11 @@ Partial Public Class uscContattiSel
         End If
         btnRoleUser.OnClientClick = String.Format(DefaultOpenWindowScript, ID, "../User/UserSelRoleUser.aspx?" & CommonShared.AppendSecurityCheck(params.ToString()), "windowSelRoleUser", "_CloseRole")
 
-        btnImportContact.OnClientClick = String.Format(DefaultOpenWindowScript, ID, String.Format("../UserControl/CommonUploadDocument.aspx?allowedextensions={0}", Server.UrlDecode(FileHelper.XML)), "windowImportContact", "_CloseManualFunction")
+        btnImportContact.OnClientClick = String.Format(DefaultOpenWindowScript, ID, String.Format("../UserControl/CommonUploadDocument.aspx?allowedextensions={0}", Server.UrlDecode(FileHelper.XML)), "windowImportContact", "_CloseImportFunction")
         btnAddManualMulti.OnClientClick = String.Format("{0}_ManualMulti(); return false;", ID)
         If ProtocolEnv.EnableContactAndDistributionGroup Then
             btnAddManualMulti.OnClientClick = String.Format(DefaultOpenWindowScript, ID, "../UserControl/CommonSelContactEvolution.aspx?Type=" & BasePage.Type & "&ParentID= " & ID, "windowSelContact", "_CloseManualMulti")
         End If
-        InitializeButtonSelContactOChart()
         InitializeContactRest()
 
     End Sub
@@ -1092,11 +1070,15 @@ Partial Public Class uscContattiSel
             IsRequired = False
         End If
 
-        If _singleCheck Then
-            RadTreeContact.OnClientNodeChecking = ID & "_ClientNodeChecking"
-        End If
-
         lblCount.Visible = EnableCount
+
+        If (EnableCheck AndAlso Not RadTreeContact.CheckedNodes.Where(Function(x) Not x.Value.Eq(ROOT_DESC)).Any()) _
+            OrElse (Not EnableCheck AndAlso Not RadTreeContact.SelectedNodes.Where(Function(x) Not x.Value.Eq(ROOT_DESC)).Any()) Then
+            btnDelContact.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/delete_disabled.png"
+            btnDelContact.Enabled = False
+            cmdDetails.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/user_disabled.png"
+            cmdDetails.Enabled = False
+        End If
 
         If SimpleMode AndAlso Not String.IsNullOrEmpty(DocSuiteContext.Current.ProtocolEnv.PECSimpleModeHideButtons) Then
             ' Rubrica|Adam|Elimina|Manuale|Info|Import|ImportManual|Ipa|Role
@@ -1107,9 +1089,6 @@ Partial Public Class uscContattiSel
             End If
             If parameters.Contains("domain") Then
                 ButtonSelectDomainVisible = False
-            End If
-            If parameters.Contains("ochart") Then
-                ButtonSelectOChartVisible = False
             End If
             If parameters.Contains("elimina") Then
                 ButtonDeleteVisible = False
@@ -1149,7 +1128,10 @@ Partial Public Class uscContattiSel
         End If
 
         AjaxManager.AjaxSettings.AddAjaxSetting(btnDelContact, RadTreeContact)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnDelContact, panelButtons)
         AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeContact, RadTreeContact)
+        AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeContact, btnDelContact)
+        AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeContact, cmdDetails)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, RadTreeContact)
 
         AjaxManager.AjaxSettings.AddAjaxSetting(btnContactMaxItems, RadTreeContact)
@@ -1261,11 +1243,6 @@ Partial Public Class uscContattiSel
         Return contactList
     End Function
 
-    ''' <summary> Carica eventuali contatti OChart (se presenti) </summary>
-    Public Function GetOChartContacts() As IList(Of ContactDTO)
-        Return CType(GetContacts(False), List(Of ContactDTO)).FindAll(Function(x) Not String.IsNullOrEmpty(x.Contact.Note))
-    End Function
-
     ''' <summary> Importazione da xls in annessi. </summary>
     Public Sub ImportFromExcel(ByVal contact As DocumentInfo, throwException As Boolean)
         If contact IsNot Nothing Then
@@ -1343,9 +1320,10 @@ Partial Public Class uscContattiSel
 
     Private Sub AddManualContact(ByVal contact As Contact, ByVal manualContact As String, ByVal contactType As ContactTypeEnum, ByVal jsonIdManualContact As String, ByVal isLocked As Boolean, Optional ByVal isCc As Boolean = False)
         Dim node As New RadTreeNode()
-        node.Text = contact.FullDescription(SimpleMode)
+        node.Text = If(DisplayContactEmailEnabled, $"{contact.FullDescription(SimpleMode)} - {contact.EmailAddress}", contact.FullDescription(SimpleMode))
         node.Value = String.Empty
         node.Attributes.Add("ContactType", CType(contact.ContactType.Id, String).ToUpperInvariant())
+        node.Attributes.Add("ContactID", contact.UniqueId.ToString())
         node.Attributes.Add(ManualContactAttribute, manualContact)
         node.Expanded = True
         node.Font.Bold = True
@@ -1359,7 +1337,8 @@ Partial Public Class uscContattiSel
 
         Select Case contactType
             Case ContactTypeEnum.Manual
-                node.ImageUrl = Page.ResolveClientUrl("../Comm/Images/Interop/Manuale.gif")
+                node.ImageUrl = Page.ResolveClientUrl("../App_Themes/DocSuite2008/imgset16/contactManual.png")
+                node.ToolTip = "Contatto manuale"
                 node.Attributes.Add("ContactPart", CONTACT_MANUAL)
                 node.Attributes.Add("IdManualContact", jsonIdManualContact)
             Case ContactTypeEnum.IPA
@@ -1383,11 +1362,13 @@ Partial Public Class uscContattiSel
                     position = templateNode.Index
                 End If
                 RadTreeContact.Nodes(0).Nodes.Insert(position, node)
+                RaiseEvent ManualContactAdded(Me, Nothing)
                 Exit Sub
             End If
         Else
             If (contact.FullIncrementalPath Is Nothing) OrElse Not contact.FullIncrementalPath.Contains("|") Then
                 RadTreeContact.Nodes(0).Nodes.Add(node)
+                RaiseEvent ManualContactAdded(Me, Nothing)
                 Exit Sub
             End If
         End If
@@ -1411,6 +1392,7 @@ Partial Public Class uscContattiSel
                 RadTreeContact.Nodes(0).Nodes.Insert(0, node)
             End If
         End If
+        RaiseEvent ManualContactAdded(Me, Nothing)
     End Sub
 
     Private Sub UpdateManualContact(ByVal contact As Contact, ByVal manualContact As String)
@@ -1425,7 +1407,8 @@ Partial Public Class uscContattiSel
             node.Text = Replace(contact.Description, "|", " ")
         End If
         node.Value = String.Empty
-        node.ImageUrl = Page.ResolveClientUrl("~/Comm/Images/Interop/Manuale.gif")
+        node.ImageUrl = Page.ResolveClientUrl("~/App_Themes/DocSuite2008/imgset16/contactManual.png")
+        node.ToolTip = "Contatto manuale"
         node.Attributes.Add("ContactType", CType(contact.ContactType.Id, String).ToUpperInvariant())
         node.Attributes.Add("ContactPart", CONTACT_MANUAL)
         node.Attributes.Add(ManualContactAttribute, manualContact)
@@ -1488,11 +1471,6 @@ Partial Public Class uscContattiSel
         If RadTreeContact.FindNodeByValue(contact.Id.ToString()) IsNot Nothing Then
             Return RadTreeContact.FindNodeByValue(contact.Id.ToString())
         End If
-
-        If HistoricizeDate.HasValue AndAlso contact.ContactNames IsNot Nothing AndAlso contact.ContactNames.Any() Then
-            contact.Description = contact.ContactNames.SingleOrDefault(Function(f) f.FromDate <= HistoricizeDate.Value AndAlso (Not f.ToDate.HasValue OrElse (f.ToDate.HasValue AndAlso HistoricizeDate.Value <= f.ToDate.Value))).Name
-        End If
-
         nodeToAdd.Text = ContactFacade.FormatContact(contact)
         nodeToAdd.Value = contact.Id.ToString()
         nodeToAdd.ImageUrl = ImagePath.ContactTypeIcon(contact.ContactType.Id, contact.isLocked.HasValue AndAlso contact.isLocked.Value = 1)
@@ -1528,6 +1506,7 @@ Partial Public Class uscContattiSel
         For Each childNode As RadTreeNode In nodes
             If childNode.Checkable Then
                 childNode.Checked = True
+                RadTreeContact_OnNodeCheck(RadTreeContact, New RadTreeNodeEventArgs(childNode))
             End If
             If childNode.Nodes IsNot Nothing AndAlso childNode.Nodes.Count > 0 Then
                 CheckAllRecursive(childNode.Nodes)
@@ -1612,20 +1591,24 @@ Partial Public Class uscContattiSel
                 sSingolare = lblCaption.Text
         End Select
 
-        btnSelContact.ToolTip = String.Format("Inserisci {0} da Rubrica", lblCaption.Text)
+        btnSelContact.ToolTip = String.Format("Inserisci {0} da rubrica", lblCaption.Text)
         btnAddSdiContact.ToolTip = String.Format("Inserisci {0} SDI.", lblCaption.Text)
-        btnSelContactDomain.ToolTip = String.Format("Inserisci {0} da Rubrica Aziendale", lblCaption.Text)
-        ButtonSelContactOChart.ToolTip = String.Format("Inserisci {0} da Rubrica Organigramma", lblCaption.Text)
+        btnSelContactDomain.ToolTip = String.Format("Inserisci {0} da rubrica organizzazione", lblCaption.Text)
         btnAddManual.ToolTip = String.Format("Inserisci {0} Manuale", sSingolare)
         btnAddManualMulti.ToolTip = String.Format("Inserisci {0} Multiplo", sSingolare)
         If ProtocolEnv.EnableContactAndDistributionGroup Then
             btnAddManualMulti.ToolTip = "Inserimento Contatti e Liste di Distribuzione"
         End If
 
-        btnDelContact.ToolTip = "Elimina " & sSingolare
-        cmdDetails.ToolTip = "Proprietà del " & sSingolare
-        btnImportContact.ToolTip = "Importazione Contatti nei " & lblCaption.Text
-        btnImportContactManual.ToolTip = "Importazione Contatti Manuali nei " & lblCaption.Text
+        Dim hasSelectedNodes As Boolean = (EnableCheck AndAlso RadTreeContact.CheckedNodes.Where(Function(x) Not x.Value.Eq(ROOT_DESC)).Any()) _
+            OrElse (Not EnableCheck AndAlso RadTreeContact.SelectedNodes.Where(Function(x) Not x.Value.Eq(ROOT_DESC)).Any())
+        btnDelContact.ToolTip = If(hasSelectedNodes, String.Concat("Elimina ", sSingolare), String.Concat("Selezionare un ", sSingolare))
+        cmdDetails.ToolTip = If(hasSelectedNodes, String.Concat("Proprietà del ", sSingolare), String.Concat("E' necessario selezionare un ", sSingolare))
+        If hasSelectedNodes AndAlso EnableCheck Then
+            cmdDetails.ToolTip = If(RadTreeContact.CheckedNodes.Count = 1, cmdDetails.ToolTip, String.Concat("E' necessario selezionare solo un ", sSingolare))
+        End If
+        btnImportContact.ToolTip = String.Concat("Importazione Contatti nei ", lblCaption.Text)
+        btnImportContactManual.ToolTip = String.Concat("Importazione Contatti Manuali nei ", lblCaption.Text)
         btnRoleUser.ToolTip = "Inserisci Dirigente o Vice"
         btnIPAContact.ToolTip = String.Format("Inserisci {0} da IPA", lblCaption.Text)
         If ProtocolEnv.AUSIntegrationEnabled Then
@@ -1975,20 +1958,6 @@ Partial Public Class uscContattiSel
         btnSelContact.OnClientClick = AddSelContactCode()
         btnSelContact2.OnClientClick = AddSelContactCode()
         InitializeContactRest()
-        InitializeButtonSelContactOChart()
-    End Sub
-
-    Private Sub InitializeButtonSelContactOChart()
-        If Not DocSuiteContext.Current.ProtocolEnv.OChartEnabled Then
-            Return
-        End If
-
-        Dim url As String = String.Format("../UserControl/CommonSelContactOChart.aspx?Type={0}&ParentID={1}", BasePage.Type, ID)
-        If APIDefaultProvider.HasValue Then
-            url = String.Format("{0}&APIDefaultProvider={1}", url, APIDefaultProvider.Value)
-        End If
-
-        ButtonSelContactOChart.OnClientClick = String.Format(DefaultOpenWindowScript, ID, url, "windowSelContact", "_CloseOChart")
     End Sub
 
     Public Sub UpdateRoleUserType()
@@ -2006,7 +1975,7 @@ Partial Public Class uscContattiSel
 
     Public Function EncodeContact(nodeAttributes As String) As String
         Dim contact As Contact = JsonConvert.DeserializeObject(Of Contact)(nodeAttributes)
-        contact = contact.EscapingJSON(contact, Function(f) HttpUtility.UrlEncode(f))
+        contact = Contact.EscapingJSON(contact, Function(f) HttpUtility.UrlEncode(f))
         Dim contactJSon As String = JsonConvert.SerializeObject(contact).Replace("'", "\'").Replace("\", "")
         Return HttpUtility.UrlEncode(contactJSon)
     End Function

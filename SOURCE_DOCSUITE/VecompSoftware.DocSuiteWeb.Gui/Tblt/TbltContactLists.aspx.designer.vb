@@ -68,6 +68,15 @@ Partial Public Class TbltContactLists
     Protected WithEvents widnowAddContact As Global.Telerik.Web.UI.RadWindow
 
     '''<summary>
+    '''windowSmartContact control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents windowSmartContact As Global.Telerik.Web.UI.RadWindow
+
+    '''<summary>
     '''windowDeleteContact control.
     '''</summary>
     '''<remarks>

@@ -52,9 +52,6 @@ Public Class ProtNoteGes
         Try
             ' verifico se ci sono Annessi (non parte integrante) aggiunti
             If uscAnnexes.DocumentInfosAdded.Count > 0 Then
-                If DocSuiteContext.Current.ProtocolEnv.IsConservationEnabled Then
-                    CurrentProtocol.ConservationStatus = "M"c
-                End If
                 Facade.ProtocolFacade.AddAnnexes(CurrentProtocol, uscAnnexes.DocumentInfosAdded)
             End If
 
@@ -136,6 +133,13 @@ Public Class ProtNoteGes
         cbVisibilityNoteRole.Visible = False
 
         If uscAutorizza.SelectedRole Is Nothing Then Exit Sub
+
+        Dim protocolRoleGroupIds As Integer() = uscAutorizza.SelectedRole.RoleGroups.Select(Function(s) s.SecurityGroup.Id).ToArray()
+        Dim countGroups As Integer = Facade.SecurityUsersFacade.CountGroupsByAccount(DocSuiteContext.Current.User.UserName, protocolRoleGroupIds)
+
+        If countGroups = 0 Then
+            Exit Sub
+        End If
 
         txtNote.Visible = True
         If ProtocolEnv.RefusedProtocolAuthorizationEnabled Then
@@ -221,7 +225,7 @@ Public Class ProtNoteGes
 
         'inizializza settori
         If CurrentProtocol.Roles IsNot Nothing Then
-            Dim roleRights As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 1, True)
+            Dim roleRights As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 1, True, CurrentTenant.TenantAOO.UniqueId)
 
             Dim roles As New List(Of Role)
             For Each protRole As ProtocolRole In CurrentProtocol.Roles
@@ -240,7 +244,7 @@ Public Class ProtNoteGes
         If CurrentProtocol Is Nothing Then
             Throw New DocSuiteException("Errore lettura Protocollo", String.Format("Impossibile trovare protocollo [{0}]", CurrentProtocolId))
         End If
-        If DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled AndAlso Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 2, True).Count = 0 Then
+        If DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled AndAlso Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 2, True, CurrentTenant.TenantAOO.UniqueId).Count = 0 Then
             Throw New DocSuiteException("Errore diritti Protocollo", String.Format("Mancano diritti di Autorizzazione sul protocollo [{0}]", CurrentProtocol.FullNumber))
         End If
 

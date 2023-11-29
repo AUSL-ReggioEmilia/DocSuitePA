@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/Preservation" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/Preservation" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/Archive" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Document" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd25" namespace="http://BiblosDS/2009/10/PreservationJournaling" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd30" namespace="http://BiblosDS/2009/10/PreservationTask" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd37" namespace="http://BiblosDS/2009/10/PreservationTaskGroup" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd27" namespace="http://BiblosDS/2009/10/PreservationUser" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/Archive" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd25" namespace="http://BiblosDS/2009/10/PreservationJournaling" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd30" namespace="http://BiblosDS/2009/10/PreservationTask" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd37" namespace="http://BiblosDS/2009/10/PreservationTaskGroup" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd27" namespace="http://BiblosDS/2009/10/PreservationUser" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
   <xs:complexType name="Preservation">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">

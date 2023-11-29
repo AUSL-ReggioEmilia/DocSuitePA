@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data.Entity" namespace="VecompSoftware.DocSuiteWeb.Data.Entity.Workflows">
+
+  <class name="WorkflowProperty" table="WorkflowProperties" lazy="true" >
+    <id name="Id" column="IdWorkflowProperty" >
+      <generator class="guid.comb" />
+    </id>
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    <many-to-one name="WorkflowInstance">
+      <column name="IdWorkflowInstance" not-null="false" />
+    </many-to-one>
+    <many-to-one name="WorkflowActivity">
+      <column name="IdWorkflowActivity" not-null="false" />
+    </many-to-one>
+    <property name="Name">
+      <column name="Name" not-null="true" />
+    </property>
+    <property name="ValueInt">
+      <column name="ValueInt" not-null="false" />
+    </property>
+    <property name="ValueDate">
+      <column name="ValueDate" not-null="false" />
+    </property>
+    <property name="ValueDouble">
+      <column name="ValueDouble" not-null="false" />
+    </property>
+    <property name="ValueBoolean">
+      <column name="ValueBoolean" not-null="false" />
+    </property>
+    <property name="ValueString">
+      <column name="ValueString" not-null="false" />
+    </property>
+    <property name="ValueGuid">
+      <column name="ValueGuid" not-null="false" />
+    </property>
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <property name="RegistrationUser">
+      <column name="RegistrationUser" not-null="true" />
+    </property>
+    <property name="RegistrationDate">
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+  </class>
+
+</hibernate-mapping>

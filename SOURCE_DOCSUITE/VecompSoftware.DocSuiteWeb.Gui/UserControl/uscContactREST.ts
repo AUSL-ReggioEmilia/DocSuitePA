@@ -14,6 +14,7 @@ import ContactPlaceNameService = require("../App/Services/Commons/ContactPlaceNa
 import ContactTitleModel = require("../App/Models/Commons/ContactTitleModel");
 import ContactPlaceNameModel = require("../App/Models/Commons/ContactPlaceNameModel");
 import ValidationExceptionDTO = require("../App/DTOs/ValidationExceptionDTO");
+import ContactFilterEntityType = require("App/Models/Commons/ContactFilterEntityType");
 
 class uscContactRest {
     uscContactSearchRestId: string;
@@ -206,6 +207,7 @@ class uscContactRest {
     private static PERSONA_CONTACT_TYPE: string = "P";
     private _lastSearchContactSessionKey: string = "";
     private _selectedContactsSessionKey: string = "";
+    private _selectedContactRoleIdSessionKey: string = "";
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         let contactServiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(serviceConfigurations, "Contact");
@@ -337,6 +339,7 @@ class uscContactRest {
         this._ajaxLoadingPanel = $find(this.ajaxLoadingPanelId) as Telerik.Web.UI.RadAjaxLoadingPanel;
 
         this._selectedContactsSessionKey = `${this.callerId}_selectedContactsSessionKey`;
+        this._selectedContactRoleIdSessionKey = `${this.uscContactSearchRestId}_selectedContactRoleIdSessionKey`;
         this.clearSelectedContactsSession();
         this._lastSearchContactSessionKey = `${this.clientId}_lastSearchContactSessionKey`;
         this.setLastSearchedContactModel(null);
@@ -750,7 +753,7 @@ class uscContactRest {
             }
         }
 
-        contact.isActive = 1;
+        contact.isActive = true;
         contact.BirthPlace = this._txtBirthplace.get_value();
         contact.Nationality = this._txtNationality.get_value();
         contact.CertifiedMail = this._txtCertifiedMail.get_value();
@@ -850,6 +853,18 @@ class uscContactRest {
 
     private clearSelectedContactsSession(): void {
         sessionStorage.removeItem(this._selectedContactsSessionKey);
+    }
+
+    setContactFilterFromEntity(entityType: ContactFilterEntityType, entityId: any): void {
+        switch (entityType) {
+            case ContactFilterEntityType.Role: {
+                let uscContactSearchRest: uscContactSearchRest = <uscContactSearchRest>$(`#${this.uscContactSearchRestId}`).data();
+                if (!jQuery.isEmptyObject(uscContactSearchRest)) {
+                    sessionStorage.setItem(this._selectedContactRoleIdSessionKey, entityId);
+                }
+                break;
+            }
+        }
     }
 }
 

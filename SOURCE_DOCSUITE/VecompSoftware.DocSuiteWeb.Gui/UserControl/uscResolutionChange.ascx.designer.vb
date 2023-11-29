@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscResolutionChange
-    
+
     '''<summary>
     '''RadCodeBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
-    
+
     '''<summary>
     '''RadWindowManagerProtocollo control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerProtocollo As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowSelProtocollo control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelProtocollo As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowSelContact control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelContact As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowSelDraftSeries control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelDraftSeries As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowSelRoleCollaborationProposer control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelRoleCollaborationProposer As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''rtvRoles control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtvRoles As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''btnSelectRoleProposer control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSelectRoleProposer As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''DefaultLoadingPanel control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents DefaultLoadingPanel As Global.Telerik.Web.UI.RadAjaxLoadingPanel
-    
+
     '''<summary>
     '''Container control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Container As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''tblType control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblType As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''rblType control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rblType As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''tblCategory control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblCategory As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''uscCategory control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscCategory As Global.VecompSoftware.DocSuiteWeb.Gui.uscClassificatore
-    
+
     '''<summary>
     '''trSubCategory control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trSubCategory As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''uscSubCategory control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSubCategory As Global.VecompSoftware.DocSuiteWeb.Gui.uscClassificatore
-    
+
     '''<summary>
     '''tblObjectPrivacy control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblObjectPrivacy As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblObjectPrivacy control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblObjectPrivacy As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblObjectPrivacyDetail control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblObjectPrivacyDetail As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtObjectPrivacy control.
     '''</summary>
@@ -192,7 +192,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtObjectPrivacy As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''tblObject control.
     '''</summary>
@@ -201,7 +201,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblObject As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''trObject control.
     '''</summary>
@@ -210,7 +210,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trObject As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtObject control.
     '''</summary>
@@ -219,7 +219,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtObject As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trNote control.
     '''</summary>
@@ -228,7 +228,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trNote As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtNote control.
     '''</summary>
@@ -237,7 +237,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trIE control.
     '''</summary>
@@ -246,7 +246,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trIE As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''chkExecutive control.
     '''</summary>
@@ -255,7 +255,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkExecutive As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''tblEconomicData control.
     '''</summary>
@@ -264,7 +264,25 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblEconomicData As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
+    '''<summary>
+    '''lblEconomicDataTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEconomicDataTitle As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''economicDataPosizione control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents economicDataPosizione As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
     '''<summary>
     '''txtPosition control.
     '''</summary>
@@ -273,7 +291,16 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtPosition As Global.Telerik.Web.UI.RadTextBox
-    
+
+    '''<summary>
+    '''economicDataContratto control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents economicDataContratto As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
     '''<summary>
     '''rdpValidityDateFrom control.
     '''</summary>
@@ -282,7 +309,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpValidityDateFrom As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''rdpValidityDateTo control.
     '''</summary>
@@ -291,7 +318,25 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpValidityDateTo As Global.Telerik.Web.UI.RadDatePicker
-    
+
+    '''<summary>
+    '''lblBidtype control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblBidtype As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''rlbBidTypes control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rlbBidTypes As Global.Telerik.Web.UI.RadDropDownList
+
     '''<summary>
     '''ddlBidType control.
     '''</summary>
@@ -300,7 +345,16 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlBidType As Global.System.Web.UI.WebControls.DropDownList
-    
+
+    '''<summary>
+    '''economicDataFornitore control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents economicDataFornitore As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
     '''<summary>
     '''txtSupplierCode control.
     '''</summary>
@@ -309,7 +363,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtSupplierCode As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtSupplierDescription control.
     '''</summary>
@@ -318,7 +372,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtSupplierDescription As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''tblService control.
     '''</summary>
@@ -327,7 +381,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblService As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''uscProposerProtocolLink control.
     '''</summary>
@@ -336,7 +390,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscProposerProtocolLink As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtocolSelTree
-    
+
     '''<summary>
     '''tblPublicationLetterProtocolLink control.
     '''</summary>
@@ -345,7 +399,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblPublicationLetterProtocolLink As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''uscPublicationLetterProtocolLink control.
     '''</summary>
@@ -354,7 +408,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscPublicationLetterProtocolLink As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtocolSelTree
-    
+
     '''<summary>
     '''tblOCList control.
     '''</summary>
@@ -363,7 +417,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblOCList As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''pnlOCSupervisoryBoard control.
     '''</summary>
@@ -372,7 +426,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCSupervisoryBoard As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCSupervisoryBoard control.
     '''</summary>
@@ -381,7 +435,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCSupervisoryBoard As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOCConfSindaci control.
     '''</summary>
@@ -390,7 +444,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCConfSindaci As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCConfSindaci control.
     '''</summary>
@@ -399,7 +453,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCConfSindaci As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOCRegion control.
     '''</summary>
@@ -408,7 +462,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCRegion As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCRegion control.
     '''</summary>
@@ -417,7 +471,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCRegion As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOCManagement control.
     '''</summary>
@@ -426,7 +480,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCManagement As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCManagement control.
     '''</summary>
@@ -435,7 +489,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCManagement As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOCCorteConti control.
     '''</summary>
@@ -444,7 +498,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCCorteConti As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCCorteConti control.
     '''</summary>
@@ -453,7 +507,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCCorteConti As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOCOther control.
     '''</summary>
@@ -462,7 +516,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCOther As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCOther control.
     '''</summary>
@@ -471,7 +525,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCOther As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOrganoControllo control.
     '''</summary>
@@ -480,7 +534,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOrganoControllo As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''tblOCSupervisoryBoard control.
     '''</summary>
@@ -489,7 +543,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblOCSupervisoryBoard As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''rdpSupervisoryBoardWarningDate control.
     '''</summary>
@@ -498,7 +552,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpSupervisoryBoardWarningDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''uscSupervisoryBoardProtocolLink control.
     '''</summary>
@@ -507,7 +561,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSupervisoryBoardProtocolLink As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtocolSelTree
-    
+
     '''<summary>
     '''trOCSupervisoryBoardFile control.
     '''</summary>
@@ -516,7 +570,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCSupervisoryBoardFile As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''uscOCSupervisoryBoardDocument control.
     '''</summary>
@@ -525,7 +579,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscOCSupervisoryBoardDocument As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
     '''<summary>
     '''trOCSupervisoryBoardOpinion control.
     '''</summary>
@@ -534,7 +588,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCSupervisoryBoardOpinion As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtOCSupervisoryBoardOpinion control.
     '''</summary>
@@ -543,7 +597,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOCSupervisoryBoardOpinion As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''tblCorteDeiConti control.
     '''</summary>
@@ -552,7 +606,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblCorteDeiConti As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''rdpCorteDeiContiWarningDate control.
     '''</summary>
@@ -561,7 +615,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpCorteDeiContiWarningDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''uscCorteDeiContiProtocolLink control.
     '''</summary>
@@ -570,7 +624,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscCorteDeiContiProtocolLink As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtocolSelTree
-    
+
     '''<summary>
     '''tblOCConfSindaci control.
     '''</summary>
@@ -579,7 +633,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblOCConfSindaci As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''rdpConfSindaciWarningDate control.
     '''</summary>
@@ -588,7 +642,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpConfSindaciWarningDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''uscConfSindaciProtocolLink control.
     '''</summary>
@@ -597,7 +651,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscConfSindaciProtocolLink As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtocolSelTree
-    
+
     '''<summary>
     '''tblOCRegion control.
     '''</summary>
@@ -606,7 +660,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblOCRegion As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''trOCRegionSpedizione control.
     '''</summary>
@@ -615,7 +669,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCRegionSpedizione As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''rdpRegionWarningDate control.
     '''</summary>
@@ -624,7 +678,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpRegionWarningDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''uscRegionProtocolLink control.
     '''</summary>
@@ -633,7 +687,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscRegionProtocolLink As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtocolSelTree
-    
+
     '''<summary>
     '''trOCRegionRicezioneEScadenza control.
     '''</summary>
@@ -642,7 +696,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCRegionRicezioneEScadenza As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''rdpRegionConfirmDate control.
     '''</summary>
@@ -651,7 +705,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpRegionConfirmDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''rdpRegionWaitDate control.
     '''</summary>
@@ -660,7 +714,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpRegionWaitDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''trOCRegionRispostaEDGR control.
     '''</summary>
@@ -669,7 +723,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCRegionRispostaEDGR As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''tdRegionResponseDateLabel control.
     '''</summary>
@@ -678,7 +732,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tdRegionResponseDateLabel As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''rdpRegionResponseDate control.
     '''</summary>
@@ -687,7 +741,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpRegionResponseDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''tdDGRLabel control.
     '''</summary>
@@ -696,7 +750,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tdDGRLabel As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''tdDGRtext control.
     '''</summary>
@@ -705,7 +759,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tdDGRtext As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''txtDGR control.
     '''</summary>
@@ -714,7 +768,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtDGR As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''tdResponseProtocolLabel control.
     '''</summary>
@@ -723,7 +777,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tdResponseProtocolLabel As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''tdResponseProtocolContent control.
     '''</summary>
@@ -732,7 +786,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tdResponseProtocolContent As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''uscRegionResponseProtocol control.
     '''</summary>
@@ -741,7 +795,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscRegionResponseProtocol As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtocolSelTree
-    
+
     '''<summary>
     '''trOCREgionInvioChiarimenti control.
     '''</summary>
@@ -750,7 +804,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCREgionInvioChiarimenti As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''rdpRegionInvioChiarimenti control.
     '''</summary>
@@ -759,7 +813,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpRegionInvioChiarimenti As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''uscRegionInvioChiarimentiProtocolLink control.
     '''</summary>
@@ -768,7 +822,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscRegionInvioChiarimentiProtocolLink As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtocolSelTree
-    
+
     '''<summary>
     '''trRegionComment control.
     '''</summary>
@@ -777,7 +831,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trRegionComment As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''ddlRegionComment control.
     '''</summary>
@@ -786,7 +840,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlRegionComment As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''trRegionDocument control.
     '''</summary>
@@ -795,7 +849,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trRegionDocument As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''uscOCRegionDocument control.
     '''</summary>
@@ -804,7 +858,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscOCRegionDocument As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
     '''<summary>
     '''trRegionOpinion control.
     '''</summary>
@@ -813,7 +867,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trRegionOpinion As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''tdRegionOpinionText control.
     '''</summary>
@@ -822,7 +876,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tdRegionOpinionText As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''txtRegionOpinion control.
     '''</summary>
@@ -831,7 +885,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtRegionOpinion As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trOCRegionNoteApprovazione control.
     '''</summary>
@@ -840,7 +894,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCRegionNoteApprovazione As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtApprovalNote control.
     '''</summary>
@@ -849,7 +903,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtApprovalNote As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trOCRegionNoteDecadimento control.
     '''</summary>
@@ -858,7 +912,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCRegionNoteDecadimento As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtDeclineNote control.
     '''</summary>
@@ -867,7 +921,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtDeclineNote As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''tblOCManagement control.
     '''</summary>
@@ -876,7 +930,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblOCManagement As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''rdpManagementWarningDate control.
     '''</summary>
@@ -885,7 +939,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpManagementWarningDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''uscManagementProtocolLink control.
     '''</summary>
@@ -894,7 +948,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscManagementProtocolLink As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtocolSelTree
-    
+
     '''<summary>
     '''tblOCOther control.
     '''</summary>
@@ -903,7 +957,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblOCOther As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''txtOCOtherDescription control.
     '''</summary>
@@ -912,7 +966,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOCOtherDescription As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''tblOC control.
     '''</summary>
@@ -921,7 +975,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblOC As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''rdpWarningDate control.
     '''</summary>
@@ -930,7 +984,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpWarningDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtWarningProt control.
     '''</summary>
@@ -939,7 +993,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtWarningProt As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''rdpConfirmDate control.
     '''</summary>
@@ -948,7 +1002,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpConfirmDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtConfirmProt control.
     '''</summary>
@@ -957,7 +1011,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtConfirmProt As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''rdpWaitDate control.
     '''</summary>
@@ -966,7 +1020,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpWaitDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''rdpResponseDate control.
     '''</summary>
@@ -975,7 +1029,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpResponseDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtResponseProt control.
     '''</summary>
@@ -984,7 +1038,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtResponseProt As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''trOCComment control.
     '''</summary>
@@ -993,7 +1047,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCComment As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''ddlOCComment control.
     '''</summary>
@@ -1002,7 +1056,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlOCComment As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''trOCDocument control.
     '''</summary>
@@ -1011,7 +1065,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCDocument As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''uscOCDocument control.
     '''</summary>
@@ -1020,7 +1074,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscOCDocument As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
     '''<summary>
     '''trOCOpinion control.
     '''</summary>
@@ -1029,7 +1083,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trOCOpinion As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtOCOpinion control.
     '''</summary>
@@ -1038,7 +1092,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOCOpinion As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''tblComunication control.
     '''</summary>
@@ -1047,7 +1101,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblComunication As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''trContactDest control.
     '''</summary>
@@ -1056,7 +1110,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trContactDest As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''trDest control.
     '''</summary>
@@ -1065,7 +1119,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trDest As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''uscContactDest control.
     '''</summary>
@@ -1074,7 +1128,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscContactDest As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''trAlternativeDest control.
     '''</summary>
@@ -1083,7 +1137,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trAlternativeDest As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtAlternativeDest control.
     '''</summary>
@@ -1092,7 +1146,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtAlternativeDest As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trContactProp control.
     '''</summary>
@@ -1101,7 +1155,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trContactProp As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''pnlProponente control.
     '''</summary>
@@ -1110,7 +1164,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlProponente As Global.Telerik.Web.UI.RadAjaxPanel
-    
+
     '''<summary>
     '''uscContactProp control.
     '''</summary>
@@ -1119,7 +1173,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscContactProp As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''txtAlternativeProp control.
     '''</summary>
@@ -1128,7 +1182,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtAlternativeProp As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''uscRoleProposer control.
     '''</summary>
@@ -1137,7 +1191,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscRoleProposer As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''trContactAss control.
     '''</summary>
@@ -1146,7 +1200,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trContactAss As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''trAss control.
     '''</summary>
@@ -1155,7 +1209,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trAss As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''uscContactAss control.
     '''</summary>
@@ -1164,7 +1218,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscContactAss As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''trAlternativeAss control.
     '''</summary>
@@ -1173,7 +1227,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trAlternativeAss As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtAlternativeAss control.
     '''</summary>
@@ -1182,7 +1236,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtAlternativeAss As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trContactMgr control.
     '''</summary>
@@ -1191,7 +1245,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trContactMgr As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''trMgr control.
     '''</summary>
@@ -1200,7 +1254,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trMgr As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''uscContactMgr control.
     '''</summary>
@@ -1209,7 +1263,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscContactMgr As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''trAlternativeMgr control.
     '''</summary>
@@ -1218,7 +1272,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trAlternativeMgr As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtAlternativeMgr control.
     '''</summary>
@@ -1227,7 +1281,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtAlternativeMgr As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''tblStatus control.
     '''</summary>
@@ -1236,7 +1290,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblStatus As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''ddlStatus control.
     '''</summary>
@@ -1245,7 +1299,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlStatus As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''txtChangedReason control.
     '''</summary>
@@ -1254,7 +1308,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtChangedReason As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''tblOther control.
     '''</summary>
@@ -1263,7 +1317,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblOther As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''trContainer control.
     '''</summary>
@@ -1272,7 +1326,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trContainer As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''ddlIdContainer control.
     '''</summary>
@@ -1281,7 +1335,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlIdContainer As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''trPublication control.
     '''</summary>
@@ -1290,7 +1344,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trPublication As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''ckbPublication control.
     '''</summary>
@@ -1299,7 +1353,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ckbPublication As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlResolutionKind control.
     '''</summary>
@@ -1308,7 +1362,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlResolutionKind As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''ddlResolutionKind control.
     '''</summary>
@@ -1317,7 +1371,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlResolutionKind As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''ddlResolutionKindValidator control.
     '''</summary>
@@ -1326,7 +1380,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlResolutionKindValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''pnlAmmTrasp control.
     '''</summary>
@@ -1335,7 +1389,7 @@ Partial Public Class uscResolutionChange
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAmmTrasp As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''dgvResolutionKindDocumentSeries control.
     '''</summary>

@@ -4,6 +4,7 @@ Imports System.Xml
 Imports System.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Services.Logging
 
 Public Class SegnaturaReader
 
@@ -168,7 +169,7 @@ Public Class SegnaturaReader
     ''' <returns></returns>
     ''' <remarks></remarks>
     Private Function GetContactFromAmministrazione(node As XmlNode, parent As Contact, persist As Boolean) As Contact
-        Dim contact As New Contact() With {.IsActive = 1S}
+        Dim contact As New Contact() With {.IsActive = True}
 
         contact.Description = node.SelectSingleNodeInnerTextOrDefault("Denominazione")
         contact.Code = node.SelectSingleNodeInnerTextOrDefault("CodiceAmministrazione")
@@ -210,7 +211,7 @@ Public Class SegnaturaReader
     ''' <returns></returns>
     ''' <remarks></remarks>
     Private Function GetContactFromAOO(node As XmlNode, parent As Contact, persist As Boolean) As Contact
-        Dim contact As New Contact() With {.IsActive = 1S}
+        Dim contact As New Contact() With {.IsActive = True}
 
         contact.Description = node.SelectSingleNodeInnerTextOrDefault("Denominazione")
         contact.Code = node.SelectSingleNodeInnerTextOrDefault("CodiceAOO")
@@ -249,7 +250,7 @@ Public Class SegnaturaReader
     ''' <returns></returns>
     ''' <remarks></remarks>
     Private Function GetContactFromPersona(node As XmlNode, parent As Contact, persist As Boolean) As Contact
-        Dim contact As New Contact() With {.IsActive = 1S}
+        Dim contact As New Contact() With {.IsActive = True}
 
         Dim denominazione As String = node.SelectSingleNodeInnerTextOrDefault("Denominazione")
         If denominazione IsNot Nothing Then
@@ -297,7 +298,7 @@ Public Class SegnaturaReader
     ''' <returns></returns>
     ''' <remarks></remarks>
     Private Function GetContactFromRuolo(node As XmlNode, parent As Contact, persist As Boolean) As Contact
-        Dim contact As New Contact() With {.IsActive = 1S}
+        Dim contact As New Contact() With {.IsActive = True}
 
         contact.Description = node.SelectSingleNodeInnerTextOrDefault("Denominazione")
         contact.Code = node.SelectSingleNodeInnerTextOrDefault("Identificativo")
@@ -333,7 +334,7 @@ Public Class SegnaturaReader
     ''' <returns></returns>
     ''' <remarks></remarks>
     Private Function GetContactFromUnitaOrganizzativa(node As XmlNode, parent As Contact, persist As Boolean) As Contact
-        Dim contact As New Contact() With {.IsActive = 1S}
+        Dim contact As New Contact() With {.IsActive = True}
 
         contact.Description = node.SelectSingleNodeInnerTextOrDefault("Denominazione")
         contact.Code = node.SelectSingleNodeInnerTextOrDefault("Identificativo")
@@ -412,7 +413,7 @@ Public Class SegnaturaReader
             Case 2
                 ' Ricerca per codice, qualora mancante per descrizione.
                 If Not String.IsNullOrWhiteSpace(contact.Code) Then
-                    found = FacadeFactory.Instance.ContactFacade.GetContacts(contact.Code, contact.ContactType.Id, 1S)
+                    found = FacadeFactory.Instance.ContactFacade.GetContacts(contact.Code, contact.ContactType.Id, True)
                 End If
                 If found.IsNullOrEmpty() Then
                     found = FacadeFactory.Instance.ContactFacade.GetByDescription(contact.Description, contact.ContactType.Id, parentId)
@@ -421,7 +422,7 @@ Public Class SegnaturaReader
             Case Else
                 ' Ricerca per codice.
                 If Not String.IsNullOrWhiteSpace(contact.Code) Then
-                    found = FacadeFactory.Instance.ContactFacade.GetContacts(contact.Code, contact.ContactType.Id, 1S)
+                    found = FacadeFactory.Instance.ContactFacade.GetContacts(contact.Code, contact.ContactType.Id, True)
                 End If
         End Select
 
@@ -465,7 +466,7 @@ Public Class SegnaturaReader
         End If
 
         Dim interopContacts As IList(Of Contact) = mittente.ChildNodes.Cast(Of XmlNode).Where(Function(x) Not x.Name.Eq("Amministrazione") AndAlso Not x.Name.Eq("AOO")) _
-            .Select(Function(n) Me.GetContactByXmlNode(n, BaseParentContact, persist)).ToList()
+            .Select(Function(n) Me.GetContactByXmlNode(n, BaseParentContact, persist)).Where(Function(x) x IsNot Nothing).ToList()
 
         If interopContacts.Any() Then
             For Each contact As Contact In interopContacts
@@ -486,34 +487,38 @@ Public Class SegnaturaReader
     ''' <remarks></remarks>
     Private Function GetLeafContacts(contacts As IList(Of Contact)) As List(Of Contact)
         Dim result As New List(Of Contact)
-        For Each item As Contact In contacts
-            Dim childrens As IList(Of Contact) = Nothing
-            Dim contact As Contact = Nothing
-            Try
-                childrens = item.Children
-                If (childrens IsNot Nothing) Then
-                    childrens.FirstOrDefault()
+        Try
+            For Each item As Contact In contacts.Where(Function(x) x IsNot Nothing)
+                Dim childrens As IList(Of Contact) = Nothing
+                Dim contact As Contact = Nothing
+                Try
+                    childrens = item.Children
+                    If (childrens IsNot Nothing) Then
+                        childrens.FirstOrDefault()
+                    End If
+                Catch ex As Exception
+                    contact = FacadeFactory.Instance.ContactFacade.GetById(item.Id)
+                    childrens = Nothing
+                    If (contact.Children.Any()) Then
+                        childrens = contact.Children
+                    End If
+                End Try
+
+                If childrens.IsNullOrEmpty() Then
+                    result.Add(item)
+                    Continue For
                 End If
-            Catch ex As Exception
-                contact = FacadeFactory.Instance.ContactFacade.GetById(item.Id)
-                childrens = Nothing
-                If (contact.Children.Any()) Then
-                    childrens = contact.Children
+
+                Dim recursion As List(Of Contact) = Me.GetLeafContacts(childrens)
+                If recursion.IsNullOrEmpty() Then
+                    Continue For
                 End If
-            End Try
 
-            If childrens.IsNullOrEmpty() Then
-                result.Add(item)
-                Continue For
-            End If
-
-            Dim recursion As List(Of Contact) = Me.GetLeafContacts(childrens)
-            If recursion.IsNullOrEmpty() Then
-                Continue For
-            End If
-
-            result.AddRange(recursion)
-        Next
+                result.AddRange(recursion)
+            Next
+        Catch ex As Exception
+            FileLogger.Warn(LogName.FileLog, "Segnatura non valida: errore nel recupero contatti.", ex)
+        End Try
         Return result
     End Function
 
@@ -906,7 +911,7 @@ Public Class SegnaturaReader
         Dim contacts As IList(Of Contact) = Nothing
         If DocSuiteContext.Current.ProtocolEnv.PECInteropContactSearch <> 1 AndAlso
             Not String.IsNullOrEmpty(nodeCode) Then
-            contacts = FacadeFactory.Instance.ContactFacade.GetContacts(nodeCode, contactType, 1S)
+            contacts = FacadeFactory.Instance.ContactFacade.GetContacts(nodeCode, contactType, True)
         End If
         If DocSuiteContext.Current.ProtocolEnv.PECInteropContactSearch = 1 OrElse
             (DocSuiteContext.Current.ProtocolEnv.PECInteropContactSearch = 2 AndAlso contacts.IsNullOrEmpty()) Then

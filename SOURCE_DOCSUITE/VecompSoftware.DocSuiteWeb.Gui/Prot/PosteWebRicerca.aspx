@@ -62,8 +62,8 @@
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
                 <telerik:GridBoundColumn DataField="Name" HeaderText="Nome" HeaderStyle-Width="100px" />
-                <telerik:GridBoundColumn DataField="RegistrationDate" HeaderStyle-Width="65px" HeaderText="Data Reg." HeaderTooltip="Data registrazione" ItemStyle-Width="65px" />
-                <telerik:GridBoundColumn DataField="DataSpedizione" HeaderStyle-Width="65px" HeaderText="Data Sped." HeaderTooltip="Data Spedizione" ItemStyle-Width="65px" />
+                <telerik:GridBoundColumn DataField="RegistrationDate" HeaderStyle-Width="65px" HeaderText="Data Reg." HeaderTooltip="Data registrazione" ItemStyle-Width="65px" UniqueName ="RegistrationDate" DataFormatString="{0:dd/MM/yyyy HH:mm:ss}" />
+                <telerik:GridBoundColumn DataField="DataSpedizione" HeaderStyle-Width="65px" HeaderText="Data Sped." HeaderTooltip="Data Spedizione" ItemStyle-Width="65px" DataFormatString="{0:dd/MM/yyyy HH:mm:ss}" />
                 <telerik:GridBoundColumn DataField="RequestStatusDescrition" HeaderText="Stato richiesta" />
                 <telerik:GridBoundColumn DataField="StatusDescrition" HeaderText="Stato consegna" />
                 <telerik:GridBoundColumn DataField="CostoTotale" HeaderText="Costo" />

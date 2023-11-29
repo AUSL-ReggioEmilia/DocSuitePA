@@ -107,13 +107,13 @@ Public Class UserDiarioComune
         With DirectCast(e.Item.FindControl("imgType"), Image)
             Select Case item.type
                 Case "Prot"
-                    .ImageUrl = "../Comm/Images/DocSuite/Protocollo16.gif"
+                    .ImageUrl = "../Comm/Images/DocSuite/Protocollo16.png"
                     .ToolTip = "Protocollo"
                 Case "Docm"
                     .ImageUrl = "../Comm/Images/DocSuite/Pratica16.gif"
                     .ToolTip = "Pratiche"
                 Case "Resl"
-                    .ImageUrl = "../Comm/Images/DocSuite/resolution16.gif"
+                    .ImageUrl = "../Comm/Images/DocSuite/Resolution16.png"
                     .ToolTip = Facade.TabMasterFacade.TreeViewCaption
             End Select
         End With

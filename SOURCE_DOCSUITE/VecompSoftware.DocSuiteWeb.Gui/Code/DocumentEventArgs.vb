@@ -5,5 +5,5 @@ Public Class DocumentEventArgs
     Inherits EventArgs
 
     Public Property Document As DocumentInfo
-
+    Public Property Version As Decimal
 End Class

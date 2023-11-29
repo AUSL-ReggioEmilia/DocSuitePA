@@ -50,6 +50,11 @@ Partial Public Class uscStartWorkflow
     Public Property ShowOnlyNoInstanceWorkflows As Boolean
     Public Property ControlReadOnlyEnable As Boolean
     Public Property ShowOnlyHasIsFascicleClosedRequired As Boolean
+    Protected ReadOnly Property SignalRServerAddress As String
+        Get
+            Return DocSuiteContext.SignalRServerAddress
+        End Get
+    End Property
 #End Region
 
 #Region " Events "

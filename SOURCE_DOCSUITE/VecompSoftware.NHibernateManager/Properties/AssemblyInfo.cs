@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("VecompSoftware.NHibernateManager")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyMetadata("tags", "VecompSoftware.NHibernateManager")]
@@ -17,5 +17,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("c2de9531-98e4-4c78-b403-502fbbf8a2bf")]
 
-[assembly: AssemblyVersion("9.09.0.0")]
-[assembly: AssemblyFileVersion("9.09.0.0")]
+[assembly: AssemblyVersion("9.25.0.0")]
+[assembly: AssemblyFileVersion("9.25.0.0")]

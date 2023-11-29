@@ -182,6 +182,8 @@
                             if (dsv.P7mIsModified === false) {
                                 return false;
                             }
+                            // Salvataggio stream
+                            $("#<%= endStream.ClientID%>").val(dsv.P7mBuffer);
 
                         } else if (toolBar.findItemByValue("PAdES").get_checked()) {
                             if (toolBar.findItemByValue("pdfConverted").get_enabled() && !toolBar.findItemByValue("pdfConverted").get_checked()) {
@@ -193,6 +195,8 @@
                             if (signCount === dsv.PADES_GetSignatureCount()) {
                                 return false;
                             }
+                            // Salvataggio stream
+                            $("#<%= endStream.ClientID%>").val(dsv.ContentBuffer);
                         } else {
                             throw new GenericException("Caso non previsto.");
                         }
@@ -200,8 +204,6 @@
                         // Mostro il risultato
                         dsv.UpdateListPane();
 
-                        // Salvataggio stream e postback
-                        $("#<%= endStream.ClientID%>").val(dsv.P7mBuffer);
                         log("File salvato correttamente.");
                         dsv.CloseDocument();
                         return true;
@@ -240,7 +242,7 @@
                             setTimeout('$find("' + sender.get_id() + '").set_enabled(true);', 1000);
                             // Blocco il postback se la firma non va a buon fine
                             if (!sign(sender)) {
-                                var pinInput = toolBar.findItemByValue("pinContainer").findControl("pin");
+                                var pinInput = sender.findItemByValue("pinContainer").findControl("pin");
                                 pinInput.set_value('');
                                 args.set_cancel(true);
                             }
@@ -324,6 +326,14 @@
 
             }
 
+            function signTypeDropdown_OnClientDropDownClosed(sender, args) {
+                ShowPDFActivex();
+            }
+
+            function signTypeDropdown_OnClientDropDownOpened(sender, args) {
+                HidePDFActivex();
+            }
+
             function showHideContainers(selectedValue) {
                 var toolBar = $find("<%= ToolBar.ClientID %>");
                 if (toolBar != null)
@@ -389,6 +399,17 @@
                                 toolBar.findItemByValue("CAdES").check();
                                 break;
                             }
+                        case "5": //DIKE GOSIGN
+                            {
+                                toolBar.findItemByValue("pinText").set_visible(false);
+                                toolBar.findItemByValue("pinContainer").set_visible(false);
+                                toolBar.findItemByValue("pinContainer2").set_visible(false);
+                                toolBar.findItemByValue("requestOtp").set_visible(false);
+                                toolBar.findItemByValue("otpContainer").set_visible(false);
+                                toolBar.findItemByValue("otpContainer2").set_visible(false);
+                                toolBar.findItemByValue("PAdES").set_visible(true);
+                                break;
+                            }
                     }
             }
 
@@ -402,6 +423,36 @@
                 ajaxLoadingPanel.hide(htmlElementId);
             }
 
+            /**
+             * firma dike go sign
+             * @param url
+             */
+            function signGoSign(transactionId, newName, extension) {
+                showAjaxLoadingPanel("<%= ToolBar.ClientID %>");
+                var parentPage = GetRadWindow().BrowserWindow;
+                var parentRadWindowManager = parentPage.GetRadWindowManager();
+                window.setTimeout(function () {                    
+                    var wnd = parentRadWindowManager.open("../UserControl/CommonGoSignFlow.aspx?GoSignSessionId=" + transactionId, null, null, 850, 500, 10, 10);
+                    wnd.set_destroyOnClose(true);
+                    wnd.add_close(function (sender, args) {
+                        var data = args.get_argument();
+                        if (data) {
+                            var ajaxModel = {};
+                            ajaxModel.Value = [transactionId, newName, extension];
+                            ajaxModel.ActionName = "SignGoSignCompleted";
+
+                            $find("<%= MasterDocSuite.AjaxManager.ClientID %>").ajaxRequest(JSON.stringify(ajaxModel));
+                            return;
+                        }
+                        hideAjaxLoadingPanel("<%= ToolBar.ClientID %>");
+                        alert("Attività cancellata dall'utente.");
+                    });
+                    wnd.set_behaviours(Telerik.Web.UI.WindowBehaviors.Close);
+                    wnd.center();
+                }, 0);
+                return false;
+            }
+
         </script>
     </telerik:RadScriptBlock>
 </asp:Content>
@@ -412,18 +463,21 @@
     <asp:HiddenField runat="server" ID="startStream" />
     <asp:HiddenField runat="server" ID="endStream" />
 
+    <telerik:RadWindow DestroyOnClose="True" Height="600px" ID="wndGoSignFlow" ReloadOnShow="true" runat="server" Title="Firma documento" Width="950px" />
+
     <asp:Panel ID="signContainer" runat="server">
         <telerik:RadToolBar AutoPostBack="true" CssClass="ToolBarContainer" EnableRoundedCorners="False" EnableShadows="False" ID="ToolBar" OnClientButtonClicking="toolbar_clientClicking" OnClientButtonClicked="toolbar_clientClicked" runat="server" Width="100%">
             <Items>
                 <telerik:RadToolBarButton Value="signTypeDropdown">
                     <ItemTemplate>
-                        <telerik:RadDropDownList runat="server" ID="signTypeDropdown" Width="140px" AutoPostBack="true" DropDownHeight="200px" OnClientLoad="signTypeDropdown_OnClientLoad" OnClientSelectedIndexChanged="signTypeDropdown_SelectedIndexChanged" OnSelectedIndexChanged="signTypeDropdown_SelectedIndexChanged">
+                        <telerik:RadDropDownList runat="server" ID="signTypeDropdown" Width="140px" AutoPostBack="true" DropDownHeight="200px" OnClientLoad="signTypeDropdown_OnClientLoad" OnClientSelectedIndexChanged="signTypeDropdown_SelectedIndexChanged" OnClientDropDownOpened="signTypeDropdown_OnClientDropDownOpened" OnClientDropDownClosed="signTypeDropdown_OnClientDropDownClosed" OnSelectedIndexChanged="signTypeDropdown_SelectedIndexChanged">
                             <Items>
                                 <telerik:DropDownListItem Selected="true" Text="Smartcard" Value="0" />
                                 <telerik:DropDownListItem Text="Remota Aruba" Value="1" />
                                 <telerik:DropDownListItem Text="Remota Infocert" Value="2" />
                                 <telerik:DropDownListItem Text="Automatica Aruba" Value="3" />
                                 <telerik:DropDownListItem Text="Automatica Infocert" Value="4" />
+                                <telerik:DropDownListItem Text="Dike GoSign" Value="5" />
                             </Items>
                         </telerik:RadDropDownList>
                     </ItemTemplate>

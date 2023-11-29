@@ -162,15 +162,6 @@ Public Class ProtJournalPrint
             AttachContactDescriptionToString(text, manual.ContactDescription, manual.ContactFullPath)
         Next
 
-        If protocol.Recipients.Count > 0 Then
-            For Each contatto As Recipient In protocol.Recipients
-                If text.Length <> 0 Then
-                    text.Append(WebHelper.Br)
-                End If
-                text.Append(contatto.FullName)
-            Next
-        End If
-
         If text.Length <> 0 Then
             text.Append(protocol.AlternativeRecipient)
             If text.Length <> 0 Then

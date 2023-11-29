@@ -36,7 +36,7 @@ Public Class NHibernateDocumentFolderDao
 
         criteria.Add(Restrictions.Eq("Id.Year", year))
         criteria.Add(Restrictions.Eq("Id.Number", number))
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
 
         If Not incrementalFather.HasValue Then
             criteria.Add(Restrictions.IsNull("IncrementalFather"))
@@ -55,7 +55,7 @@ Public Class NHibernateDocumentFolderDao
 
         criteria.Add(Restrictions.Eq("Id.Year", year))
         criteria.Add(Restrictions.Eq("Id.Number", number))
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
         criteria.Add(Restrictions.Eq("Role.Id", role.Id))
 
         Return criteria.List(Of DocumentFolder)()
@@ -66,7 +66,7 @@ Public Class NHibernateDocumentFolderDao
 
         criteria.Add(Restrictions.Eq("Id.Year", year))
         criteria.Add(Restrictions.Eq("Id.Number", number))
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
         If idroleincremental <> 0 Then
             criteria.Add(Restrictions.Eq("IncrementalFather", idroleincremental))
         Else

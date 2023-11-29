@@ -6,6 +6,7 @@ Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
+Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
@@ -26,8 +27,11 @@ Partial Public Class FascVisualizza
     Private Const SIGNED_DOCUMENT As String = "Signed"
     Private Const INITIALIZE_SIGN_DOCUMENT As String = "InitializeSignDocument"
     Private Const DELETE_MISCELLANEA_DOCUMENT As String = "Delete_Miscellanea_Document"
+    Private Const DELETE_FASCICLEDOCUMENT As String = "Eliminazione inserto {0} n. {1} da fascicolo n. {2}"
 
     Private _fascMiscellaneaLocation As Location = Nothing
+    Private _fascicleLogFacade As WebAPI.Fascicles.FascicleLogFacade
+
 
 #End Region
 
@@ -100,16 +104,29 @@ Partial Public Class FascVisualizza
             Return MailFacade.GetFascicleBody(CurrentFascicleWebAPI)
         End Get
     End Property
+    Public ReadOnly Property FascicleLogFacade As WebAPI.Fascicles.FascicleLogFacade
+        Get
+            If _fascicleLogFacade Is Nothing Then
+                _fascicleLogFacade = New WebAPI.Fascicles.FascicleLogFacade(DocSuiteContext.Current.Tenants, Nothing)
+            End If
+            Return _fascicleLogFacade
+        End Get
+    End Property
 
+    Public ReadOnly Property HasDgrooveSigner As Boolean
+        Get
+            Return DocSuiteContext.Current.HasDgrooveSigner
+        End Get
+    End Property
 
 #End Region
 
 #Region " Events "
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         InitializeAjaxSettings()
-        uscFascicolo.UscDocumentReference.IdDocumentUnit = IdFascicle.ToString()
+        uscFascicolo.UscDocumentReference.ReferenceUniqueId = IdFascicle.ToString()
         If btnSendToRoles.Visible Then
-            btnSendToRoles.PostBackUrl = String.Format("~/MailSenders/FascicleMailSender.aspx?Type=Fasc&IdFascicle={0}", IdFascicle)
+            btnSendToRoles.PostBackUrl = String.Format("~/MailSenders/FascicleMailSender.aspx?Type=Fasc&IdFascicle={0}&SendToRoles=true", IdFascicle)
         End If
         If Not IsPostBack Then
             If Not IdFascicle = Guid.Empty Then
@@ -135,12 +152,12 @@ Partial Public Class FascVisualizza
             Return
         End If
 
-
-
         Select Case ajaxModel.ActionName
             Case DELETE_MISCELLANEA_DOCUMENT
                 If ajaxModel.Value IsNot Nothing AndAlso ajaxModel.Value.Count > 0 Then
-                    DeleteDocument(ajaxModel.Value)
+                    'Key - value pair where the Key is the id of the document and the Value is the file name
+                    Dim documentsToDelete As IDictionary(Of Guid, String) = JsonConvert.DeserializeObject(Of IDictionary(Of Guid, String))(ajaxModel.Value(0))
+                    DeleteDocuments(documentsToDelete)
                 End If
                 AjaxManager.ResponseScripts.Add(FASCICLE_REFRESH_UD_REQUEST_NO_UPDATE)
             Case INITIALIZE_SIGN_DOCUMENT
@@ -172,22 +189,22 @@ Partial Public Class FascVisualizza
         AddHandler AjaxManager.AjaxRequest, AddressOf FascVisualizzaAjaxRequest
     End Sub
 
-    Private Sub DeleteDocument(documentIds As List(Of String))
-        Dim idDocument As Guid
-        Dim result As Boolean
+    Private Sub DeleteDocuments(documentsToDelete As IDictionary(Of Guid, String))
         Dim errorCounter As Integer = 0
-        For index As Integer = 0 To documentIds.Count - 1
-            result = Guid.TryParse(documentIds(index), idDocument)
-            If result Then
-                FileLogger.Debug(LoggerName, String.Format("FascVisualizza_AjaxRequest -> IdFascicle {0} - Delete document with Id: {1}", IdFascicle, idDocument))
-                Try
-                    Service.DetachDocument(idDocument)
-                Catch ex As Exception
-                    FileLogger.Warn(LoggerName, "Errore in eliminazione documento inserti: " & ex.Message, ex)
-                    errorCounter += 1
-                End Try
-            End If
+        For Each documentInfoPair As KeyValuePair(Of Guid, String) In documentsToDelete
+            Dim idDocument As Guid = documentInfoPair.Key
+            Dim documentName As String = documentInfoPair.Value
+
+            FileLogger.Debug(LoggerName, String.Format("FascVisualizza_AjaxRequest -> IdFascicle {0} - Delete document with Id: {1}", IdFascicle, idDocument))
+            Try
+                FascicleLogFacade.InsertFascicleDocumentLog(IdFascicle, FascicleLogType.DocumentDelete, String.Format(DELETE_FASCICLEDOCUMENT, documentName, idDocument, CurrentFascicle.Title))
+                Service.DetachDocument(idDocument)
+            Catch ex As Exception
+                FileLogger.Warn(LoggerName, "Errore in eliminazione documento inserti: " & ex.Message, ex)
+                errorCounter += 1
+            End Try
         Next
+
         If (errorCounter > 0) Then
             AjaxAlert(String.Format("Errore in eliminazione {0} documenti inserti", errorCounter))
         End If

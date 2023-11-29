@@ -21,7 +21,7 @@
                     dossierVisualizza.uscDossierId = "<%= uscDossier.PageContentDiv.ClientID %>";
                     dossierVisualizza.uscDossierFoldersId = "<%= uscDossierFolders.PageContentDiv.ClientID %>";
                     dossierVisualizza.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>";
-                    dossierVisualizza.btnDocumentiId = "<%=btnDocumenti.ClientID%>";
+                    <%--dossierVisualizza.btnDocumentiId = "<%=btnDocumenti.ClientID%>";--%>
                     dossierVisualizza.btnModificaId = "<%=btnModifica.ClientID%>";
                     dossierVisualizza.btnSendToRolesId = "<%=btnSendToRoles.ClientID%>";
                     dossierVisualizza.btnSendToSecretariesId = "<%=btnSendToSecretaries.ClientID%>";
@@ -86,22 +86,6 @@
                                 <uc:uscDossier ID="uscDossier" runat="server"/>                                
                             </Content>
                         </telerik:LayoutRow>  
-                        <telerik:LayoutRow Height="30px" Style="bottom: 0; position: absolute;">
-                            <Content>
-                                <asp:Panel runat="server" ID="footer" CssClass=".footer-buttons-wrapper">
-                                    <telerik:RadButton ID="btnDocumenti" runat="server" Width="150px" Text="Documenti" AutoPostBack="false" d></telerik:RadButton>
-                                    <telerik:RadButton ID="btnModifica" runat="server" Width="150px" Text="Modifica" AutoPostBack="false"></telerik:RadButton>
-                                    <telerik:RadButton ID="btnSendToRoles" runat="server" Width="150px" Text="Invia settori"></telerik:RadButton>
-                                    <telerik:RadButton ID="btnSendToSecretaries" runat="server" Width="150px" Text="Invia segreterie"></telerik:RadButton>
-                                    <telerik:RadButton ID="btnClose" runat="server" Width="150px" Text="Chiudi" Visible="false"></telerik:RadButton>
-                                    <telerik:RadButton ID="btnAutorizza" runat="server" Width="150px" Text="Autorizza" AutoPostBack="false" />
-                                    <telerik:RadButton ID="btnWorkflow" runat="server" Width="150px" Text="Avvia attività" AutoPostBack="false" Visible="false" />
-                                    <telerik:RadButton ID="btnCompleteWorkflow" runat="server" Width="150" Text="Stato attività" Visible="false" />
-                                    <telerik:RadButton ID="btnInserti" runat="server" Width="150px" Text="Inserti" AutoPostBack="false"></telerik:RadButton>
-                                    <telerik:RadButton ID="btnLog" runat="server" Width="150px" Text="Log"></telerik:RadButton>
-                                </asp:Panel>
-                            </Content>
-                        </telerik:LayoutRow>
                     </Rows>
                 </telerik:RadPageLayout>
             </telerik:RadPane>
@@ -109,5 +93,19 @@
             </telerik:RadPane>
         </telerik:RadSplitter>
     </div>
+</asp:Content>
+
+<asp:Content runat="server" ContentPlaceHolderID="cphFooter">
+    <asp:Panel runat="server" ID="footer" CssClass=".footer-buttons-wrapper">
+        <telerik:RadButton ID="btnModifica" runat="server" Width="150px" Text="Modifica" AutoPostBack="false"></telerik:RadButton>
+        <telerik:RadButton ID="btnSendToRoles" runat="server" Width="150px" Text="Invia settori"></telerik:RadButton>
+        <telerik:RadButton ID="btnSendToSecretaries" runat="server" Width="150px" Text="Invia segreterie"></telerik:RadButton>
+        <telerik:RadButton ID="btnClose" runat="server" Width="150px" Text="Chiudi" Visible="false"></telerik:RadButton>
+        <telerik:RadButton ID="btnAutorizza" runat="server" Width="150px" Text="Autorizza" AutoPostBack="false" />
+        <telerik:RadButton ID="btnWorkflow" runat="server" Width="150px" Text="Avvia attività" AutoPostBack="false" Visible="false" />
+        <telerik:RadButton ID="btnCompleteWorkflow" runat="server" Width="150" Text="Stato attività" Visible="false" />
+        <telerik:RadButton ID="btnInserti" runat="server" Width="150px" Text="Inserti" AutoPostBack="false"></telerik:RadButton>
+        <telerik:RadButton ID="btnLog" runat="server" Width="150px" Text="Log"></telerik:RadButton>
+    </asp:Panel>
 </asp:Content>
 

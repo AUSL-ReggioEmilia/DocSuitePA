@@ -40,8 +40,8 @@
                     return <%= Me.ID %>_OpenWindow('windowContactGes', 650, 450, button.get_commandArgument());
                 case 'addPersoneExcel':
                     return <%= Me.ID %>_OpenWindowExcelUpload('windowContactBusinessExcel', 650, 450, button.get_commandArgument());
-                case 'showHistory':
-                    return <%= Me.ID %>_OpenHistoryWindow('windowHistory', 650, 450, button.get_commandArgument());
+                case 'exportToExcel':
+                    $find("<%= btnExportToExcel.ClientID %>").click();
             }
             return false;
         }
@@ -314,39 +314,21 @@
             // sender.repaint();
         }
 
-
-
-        function <%= Me.ID %>_OpenHistoryWindow(name, width, height) {
-            var treeView = $find("<%= contactTree.ClientID %>");
-            var selectedNode = treeView.get_selectedNode();
-            var nodeType = selectedNode.get_attributes().getAttribute("NodeType");
-            var url = "../UserControl/ContactHistory.aspx?Type=ProtDB&IdContact=" + selectedNode.get_value();
-            var wnd = manager().open(url, name);
-            wnd.add_close(<%= Me.ID%>_CloseImportFromExcelFunction)
-            wnd.setSize(width, height);
-            wnd.center();
-
-            return false;
-        }
-
         $(document).ready(function () {
             $("#<%= txtCerca.ClientID%>").focus();
         });
-
-
 
     </script>
 </telerik:RadScriptBlock>
 <telerik:RadWindowManager EnableViewState="False" ID="RadWindowManagerContact" runat="server">
     <Windows>
-        <telerik:RadWindow ID="windowContactGes" ReloadOnShow="false" runat="server" Title="Gestione Contatti" />
-        <telerik:RadWindow ID="windowContactLegenda" Modal="false" ReloadOnShow="false" runat="server" Title="Rubrica Legenda" />
-        <telerik:RadWindow ID="windowContactLog" ReloadOnShow="false" runat="server" Title="Rubrica Log" />
+        <telerik:RadWindow ID="windowContactGes" ReloadOnShow="false" runat="server" Title="Gestione contatti" />
+        <telerik:RadWindow ID="windowContactLegenda" Modal="false" ReloadOnShow="false" runat="server" Title="Rubrica legenda" />
+        <telerik:RadWindow ID="windowContactLog" ReloadOnShow="false" runat="server" Title="Rubrica log" />
         <telerik:RadWindow ID="windowContactPrint" ReloadOnShow="false" runat="server" Title="Stampa dei contatti" />
-        <telerik:RadWindow ID="windowContactDettaglio" ReloadOnShow="false" runat="server" Title="Dettaglio Contatto" />
-        <telerik:RadWindow ID="windowSelSettori" ReloadOnShow="false" runat="server" Title="Selezione Settori" />
+        <telerik:RadWindow ID="windowContactDettaglio" ReloadOnShow="false" runat="server" Title="Dettaglio contatto" />
+        <telerik:RadWindow ID="windowSelSettori" ReloadOnShow="false" runat="server" Title="Selezione settori" />
         <telerik:RadWindow ID="windowUploadPeople" ReloadOnShow="false" runat="server" Title="Inserisci nuove persone tramite Excel" />
-        <telerik:RadWindow ID="windowHistory" ReloadOnShow="false" runat="server" Title="Storicizzazione Contatto" />
     </Windows>
 </telerik:RadWindowManager>
 
@@ -438,7 +420,7 @@
                                     <telerik:RadToolBarButton CommandName="addRuolo" CausesValidation="False" PostBack="False" Group="add" ToolTip="Nuovo Ruolo" />
                                     <telerik:RadToolBarButton CommandName="addPersona" CausesValidation="False" PostBack="False" Group="add" ToolTip="Nuova Persona" />
                                     <telerik:RadToolBarButton CommandName="addPersoneExcel" CausesValidation="False" PostBack="False" Group="add" ToolTip="Nuove Persone tramite excel" />
-                                    <telerik:RadToolBarButton CommandName="showHistory" CausesValidation="False" PostBack="False" Group="add" ToolTip="Visualizza Storicizzazione" />
+                                    <telerik:RadToolBarButton CommandName="exportToExcel" CausesValidation="False" PostBack="false" Visible="false" ToolTip="Esporta in excel" />
                                 </Items>
                             </telerik:RadToolBar>
                         </telerik:RadPane>
@@ -470,6 +452,7 @@
                 <telerik:RadButton ID="btnConfermaNuovo" runat="server" Text="Conferma e Nuovo" Width="130px" CausesValidation="False" AutoPostBack="false" OnClientClicked="btnConfermaNuovo_OnClick" />
                 <telerik:RadButton ID="btnGestione" runat="server" Text="Gestione contatti" Width="130px" />
                 <telerik:RadButton ID="btnSblocca" runat="server" Width="130px" Text="Sblocca" />
+                <telerik:RadButton ID="btnExportToExcel" runat="server" Style="display: none;"></telerik:RadButton>
             </div>
         </telerik:RadPane>
     </telerik:RadSplitter>

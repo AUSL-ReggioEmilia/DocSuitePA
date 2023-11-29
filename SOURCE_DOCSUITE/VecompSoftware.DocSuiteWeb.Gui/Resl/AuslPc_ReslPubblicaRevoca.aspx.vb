@@ -8,9 +8,10 @@ Imports System.Collections.Generic
 Imports System.Web.Services.Protocols
 Imports System.IO
 Imports Telerik.Web.UI
-Imports iTextSharp.text.exceptions
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Biblos.Models
+Imports iText.Kernel
+Imports VecompSoftware.Commons.Interfaces.CQRS.Events
 
 Partial Public Class AuslPc_ReslPubblicaRevoca
     Inherits ReslBasePage
@@ -159,8 +160,6 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
         WebUtils.ObjAttDisplayNone(txtLastWorkflowDate)
         WebUtils.ObjAttDisplayNone(txtIdLocation)
 
-        InitializePrivacy()
-
         PnlDocumentoVisible = Not (pnlDocumento.Attributes("style") = "display:none;")
         PnlOptionsVisible = Not (pnlOptions.Attributes("style") = "display:none;")
         PnlPrivacyVisible = Not (pnlPrivacy.Attributes("style") = "display:none;")
@@ -211,7 +210,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
                 uscUploadDocumenti.ButtonScannerEnabled = False
                 uscUploadDocumenti.ButtonLibrarySharepointEnabled = False
                 If DocSuiteContext.Current.PrivacyLevelsEnabled Then
-                    uscUploadDocumenti.ButtonPrivacyLevelVisible = false
+                    uscUploadDocumenti.ButtonPrivacyLevelVisible = False
                 End If
                 'Attivo il bottone per aprire il pannello privacy
                 If (_newPublicationNumber > 0) Then
@@ -248,19 +247,6 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
                     b = Facade.TabWorkflowFacade.GetByStep(CurrentResolution.WorkflowType, MyStep + 1S, workStep)
                     operationStep = MyStep + 1
             End Select
-
-            ''Se il documento principale non è stato caricato, allora lo carico
-            If (FileResolution.IdResolutionFile Is Nothing AndAlso DocSuiteContext.Current.ResolutionEnv.UseSharepointPublication) Then
-                Dim idResolutionFileDocumentInfo As DocumentInfo = uscUploadDocumenti.DocumentInfosAdded(0)
-                idResolutionFileDocumentInfo.Signature = String.Format(" {0} del {1}", CurrentResolution.InclusiveNumber, String.Format("{0:dd/MM/yyyy}", Now))
-                idResolutionFileDocumentInfo = idResolutionFileDocumentInfo.ArchiveInBiblos(CurrentResolution.Location.ReslBiblosDSDB)
-                Facade.ResolutionFacade.SqlResolutionDocumentUpdate(CurrentResolution.Id, CType(idResolutionFileDocumentInfo, BiblosDocumentInfo).BiblosChainId, ResolutionFacade.DocType.Disposizione)
-            End If
-
-            ''Se ci sono documenti privacy da caricare allora li carico
-            If uscPrivacyPanel.PrivacyDocumentVisible AndAlso DocSuiteContext.Current.ResolutionEnv.UseSharepointPublication Then
-                uscPrivacyPanel.SavePrivacyDocument(ResolutionFacade.DocType.PrivacyPublicationDocument)
-            End If
 
             ' Pubblicazione Piacenza
             Try
@@ -415,16 +401,6 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
                             b = Facade.TabWorkflowFacade.GetByStep(CurrentResolution.WorkflowType, nextStepId, workNextStep)
                             If b Then
                                 Dim data As DateTime = ReflectionHelper.GetProperty(CurrentResolution, lastWorkStep.FieldDate)
-
-                                '' Modifico le date per pubblicazione ed esecutività ASMN
-                                If ResolutionEnv.UseSharepointPublication Then
-                                    If workNextStep.Description.Trim() = "Pubblicazione" Then
-                                        data = data.AddDays(1)
-                                    ElseIf workNextStep.Description.Trim() = "Esecutività" Then
-                                        data = data.AddDays(15)
-                                    End If
-                                End If
-
                                 Dim temp As String = If(pnlData.Visible, String.Format("{0:dd/MM/yyyy}", data), "N")
                                 If StringHelper.InStrTest(workNextStep.ManagedWorkflowData, "ComposeDoc") And b Then
                                     Dim signature As String = Facade.ResolutionFacade.SqlResolutionGetNumber(IdResolution, , , , True)
@@ -432,13 +408,6 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
                                 End If
 
                                 b = Facade.ResolutionFacade.SqlResolutionUpdateWorkflowData(IdResolution, ViewReslType, Not CurrentResolution.Number.HasValue, workNextStep, temp, "N", -1, idDocumento, Guid.Empty, "N", True, DocSuiteContext.Current.User.FullUserName)
-
-                                If workNextStep.Description = "Pubblicazione" AndAlso ResolutionEnv.UseSharepointPublication Then
-                                    ' Pubblicazione WEB
-                                    ' Carico lo step precedente alla pubblicazione perchè contiene il template per il frontalino
-                                    Facade.TabWorkflowFacade.GetByStep(CurrentResolution.WorkflowType, CType((workNextStep.Id.ResStep - 1), Short), workStep)
-                                    PublicateOnSharePoint(CurrentResolution, workStep, True)
-                                End If
                             End If
                             lastWorkStep = workNextStep
                             nextStepId = nextStepId + 1
@@ -496,9 +465,9 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
                 End If
 
                 'Invio comando di creazione/aggiornamento Resolution alle WebApi
-                If Not Action.Eq("DELETE") AndAlso Not workStep.Description.Eq(WorkflowStep.PROPOSTA) Then
-                    If Action.Eq("NEXT") AndAlso workStep.Description.Eq(WorkflowStep.ADOZIONE) Then
-                        Facade.ResolutionFacade.SendCreateResolutionCommand(CurrentResolution)
+                If Not Action.Eq("DELETE") Then
+                    If Action.Eq("NEXT") AndAlso workStep.Description.Eq(WorkflowStep.PROPOSTA) Then
+                        Facade.ResolutionFacade.SendCreateResolutionCommand(CurrentResolution, New List(Of IWorkflowAction))
                     Else
                         Facade.ResolutionFacade.SendUpdateResolutionCommand(CurrentResolution)
                     End If
@@ -517,33 +486,6 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
     End Sub
 
     Protected Sub AuslPcReslPubblicaRevocaAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
-        Dim arguments As String() = Split(e.Argument, "|")
-        Select Case arguments(0)
-            Case "blockinsert"
-                txtData.Enabled = False
-                uscUploadDocumenti.ReadOnly = True
-                AjaxManager.ResponseScripts.Add("ExecuteAjaxRequest('privacygenerate');")
-            Case "privacygenerate"
-                ''Verifico che il documento principale sia stato caricato
-                If (FileResolution.IdResolutionFile Is Nothing) Then
-                    Dim idResolutionFileDocumentInfo As DocumentInfo = uscUploadDocumenti.DocumentInfosAdded(0)
-                    idResolutionFileDocumentInfo.Signature = String.Format(" {0} del {1}", CurrentResolution.InclusiveNumber, String.Format("{0:dd/MM/yyyy}", Now))
-                    idResolutionFileDocumentInfo = idResolutionFileDocumentInfo.ArchiveInBiblos(CurrentResolution.Location.ReslBiblosDSDB)
-                    Facade.ResolutionFacade.SqlResolutionDocumentUpdate(CurrentResolution.Id, CType(idResolutionFileDocumentInfo, BiblosDocumentInfo).BiblosChainId, ResolutionFacade.DocType.Disposizione)
-                End If
-                uscPrivacyPanel.GeneratePrivacyDocumentToPrint(CurrentResolution.WorkflowType)
-                btnConferma.Text = "COMPLETA INSERIMENTO"
-            Case "privacyreset"
-                uscPrivacyPanel.ResetSelector()
-            Case "checkdatatoinsert"
-                'Verifico prima la presenza dei dati di base dell'atto e poi di quelli specifici per la privacy
-                If uscUploadDocumenti.HasDocuments Then
-                    uscPrivacyPanel.CheckPrivacy()
-                Else
-                    AjaxAlert(String.Format("Impossibile attivare il pannello Privacy.{0}E' necessario caricare 1 documento principale.{0}", Environment.NewLine))
-                    uscPrivacyPanel.ResetSelector()
-                End If
-        End Select
     End Sub
 
 #End Region
@@ -702,7 +644,6 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
         AjaxManager.AjaxSettings.AddAjaxSetting(selectPrivacy, pnlOptions, MasterDocSuite.AjaxDefaultLoadingPanel)
 
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, txtData)
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscPrivacyPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, btnConferma)
 
@@ -724,12 +665,6 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
         End If
 
         AddHandler AjaxManager.AjaxRequest, AddressOf AuslPcReslPubblicaRevocaAjaxRequest
-    End Sub
-
-    Private Sub InitializePrivacy()
-        '' Pannello controllo privacy
-        uscPrivacyPanel.UseResolutionNumberDisplay = False
-        uscPrivacyPanel.CurrentResolution = CurrentResolution
     End Sub
 
     ''' <summary>
@@ -780,6 +715,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
             uscUploadDocumenti.IsDocumentRequired = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Document", "OBB", "")
             'parametro documenti multipli
             uscUploadDocumenti.MultipleDocuments = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Document", sProp, "N")
+            uscUploadDocumenti.HideScannerMultipleDocumentButton = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Document", sProp, "N")
 
             'parametro pannello allegati visibile
             PnlAttachVisible = StringHelper.InStrTest(workflowData, "Attachment")
@@ -811,10 +747,6 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
             uscUploadAnnexes.ButtonCopyProtocol.Visible = DocSuiteContext.Current.ProtocolEnv.CopyProtocolDocumentsEnabled
             'parametro firma allegato consentita: si abilita in TabWorkflow con INS-SIGN (per l'inserimento) o MOD-SIGN per la modifica
             uscUploadAnnexes.SignButtonEnabled = ResolutionEnv.IsFDQEnabled AndAlso TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "Annexed", sProp, "SIGN")
-
-            'Verifico se è presente il valore SharePointPrivacy in ManagedWorkflowData
-            uscPrivacyPanel.PrivacyTypeVisible = TabWorkflowFacade.TestManagedWorkflowDataProperty(workflowData, "SharePointPrivacy", sProp, "")
-            uscPrivacyPanel.ValidatorEnabled = uscPrivacyPanel.PrivacyTypeVisible
         End If
     End Sub
 
@@ -941,7 +873,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
                 End If
             End If
             success = True
-        Catch ex As InvalidPdfException
+        Catch ex As PdfException
             selectPrivacy.SelectedIndex = -1
             AjaxAlert(String.Format("Generazione del documento di pubblicazione non riuscita. {0}\n\n {1}", ProtocolEnv.DefaultErrorMessage, ex.Message))
         Catch ex As Exception
@@ -1051,16 +983,6 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
         End Try
         Return newPublicationNumber
     End Function
-
-    Private Sub PublicateOnSharePoint(resolution As Resolution, tabWorkflowPrePubblicazione As TabWorkflow, addWatermark As Boolean)
-        If FileResolution.IdFrontespizio Is Nothing Then
-            ' Genero e inserisco il frontalino
-            ResolutionWPFacade.InserisciFrontalinoPubblicazione(resolution, resolution.AdoptionDate.Value.AddDays(1), tabWorkflowPrePubblicazione.Id.ResStep)
-        End If
-
-        ' Effettuo la pubblicazione effettiva
-        PublicateResolutionOnSharePoint(resolution, resolution.AdoptionDate.Value.AddDays(1), addWatermark)
-    End Sub
 
     Private Sub VerifyFrontalino()
         '' Se si tratta di uno step frontalino 
@@ -1256,7 +1178,7 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
         Return signature
     End Function
 
-   Private Sub InitDocumentsPrivacyLevels()
+    Private Sub InitDocumentsPrivacyLevels()
         Dim minLevel As Integer = 0
         Dim visibility As Boolean = False
         If CurrentResolution IsNot Nothing AndAlso CurrentResolution.Container IsNot Nothing AndAlso CurrentResolution.Container.PrivacyEnabled Then

@@ -1,7 +1,6 @@
 ﻿Imports System.Collections.Generic
 Imports System.Collections.Specialized
 Imports System.Linq
-Imports System.Text
 Imports System.Web
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
@@ -10,16 +9,21 @@ Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
-Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.DTO.WorkflowsElsa
 Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Collaborations
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
+Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.PECMails
+Imports VecompSoftware.DocSuiteWeb.Model.Workflow
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.UDS
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Helpers.Workflow
 Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.Services.Logging
@@ -39,6 +43,7 @@ Public Class WorkflowActivityManage
     Private _allAttachmentDocuments As List(Of DocumentInfo)
     Private _fascMiscellaneaLocation As Location = Nothing
     Private _currentFascicleFolderFinder As FascicleFolderFinder
+    Private _currentWorkflowPropertyFacade As Facade.WebAPI.Workflows.WorkflowPropertyFacade
 #End Region
 
 #Region " Properties "
@@ -133,6 +138,15 @@ Public Class WorkflowActivityManage
             Return GetKeyValueOrDefault("FolderSelectionEnabled", True)
         End Get
     End Property
+
+    Public ReadOnly Property CurrentWorkflowPropertyFacade As Facade.WebAPI.Workflows.WorkflowPropertyFacade
+        Get
+            If _currentWorkflowPropertyFacade Is Nothing Then
+                _currentWorkflowPropertyFacade = New WebAPI.Workflows.WorkflowPropertyFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
+            End If
+            Return _currentWorkflowPropertyFacade
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
@@ -141,7 +155,7 @@ Public Class WorkflowActivityManage
         If Not IsPostBack Then
             uscFascicleSearch.FolderSelectionEnabled = FolderSelectionEnabled
             grdUD.DataSource = New List(Of String)
-            InitializeButton()
+            InitializeButton(True)
         End If
     End Sub
 
@@ -385,10 +399,39 @@ Public Class WorkflowActivityManage
         Return storedBiblosDocumentInfo
     End Function
 
-    Private Sub InitializeButton()
+    Private Sub InitializeButton(Optional firstLoad As Boolean = False)
         Dim url As String = Nothing
         Dim causesValidation As Boolean = False
         Dim onClickAction As String = "showLoadingPanel"
+        Dim environment As DSWEnvironmentType = DSWEnvironmentType.Any
+        Dim entityId As Integer = 0
+
+        If firstLoad Then
+            rblDocumentUnit.ClearSelection()
+            rblDocumentUnit.SelectedValue = "Collaborazione"
+        End If
+
+        Dim workflowProperty As WorkflowProperty = CurrentWorkflowPropertyFacade.FindPropertyByActivityIdAndName(CurrentWorkflowActivityId, WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL)
+        If workflowProperty IsNot Nothing AndAlso String.IsNullOrEmpty(workflowProperty.ValueString) = False Then
+            Dim workflowReferenceModel As WorkflowReferenceModel = JsonConvert.DeserializeObject(Of WorkflowReferenceModel)(workflowProperty.ValueString)
+            If workflowReferenceModel IsNot Nothing Then
+                environment = workflowReferenceModel.ReferenceType
+            End If
+            If environment = DSWEnvironmentType.PECMail Then
+                rblDocumentUnit.Items.Add(New ListItem("Protocolla PEC", "PEC"))
+                Dim pecMail As Entity.PECMails.PECMail = JsonConvert.DeserializeObject(Of Entity.PECMails.PECMail)(workflowReferenceModel.ReferenceModel)
+                entityId = pecMail.EntityId
+                If pecMail.ProcessStatus = Entity.PECMails.PECMailProcessStatus.StoredInDocumentManager AndAlso Not String.IsNullOrEmpty(pecMail.MailContent) Then
+                    Dim results As String = New FacadeElsaWebAPI(ProtocolEnv.DocSuiteNextElsaBaseURL).StartPreparePECMailDocumentsWorkflow(pecMail.UniqueId, JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(pecMail.MailContent))
+                End If
+
+                If firstLoad Then
+                    rblDocumentUnit.ClearSelection()
+                    rblDocumentUnit.SelectedValue = "PEC"
+                End If
+            End If
+        End If
+
         Select Case rblDocumentUnit.SelectedValue
             Case "Protocollo"
                 url = String.Format("~/Prot/ProtInserimento.aspx?{0}", CommonShared.AppendSecurityCheck($"Type=Prot&Action=Insert&IdWorkflowActivity={CurrentWorkflowActivityId}"))
@@ -404,6 +447,8 @@ Public Class WorkflowActivityManage
             Case "Fascicolo"
                 onClickAction = "onFascicleMiscellaneaClick"
 
+            Case "PEC"
+                url = String.Format("~/Pec/PECToDocumentUnit.aspx?{0}", CommonShared.AppendSecurityCheck($"isInWindow=true&Type=Pec&PECId={entityId}"))
         End Select
 
         btnConfirm.OnClientClicking = onClickAction
@@ -411,6 +456,10 @@ Public Class WorkflowActivityManage
         btnConfirm.AutoPostBack = Not String.IsNullOrEmpty(url)
         btnConfirm.PostBackUrl = url
     End Sub
+
+    Private Function GetIdFascicle() As Guid? Implements IUDSInitializer.GetIdFascicle
+        Return Nothing
+    End Function
 #End Region
 
 End Class

@@ -20,16 +20,19 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.Collaborations
 
         public Collaboration GetByIncremental(int incremental)
         {
-            IWebAPITenantConfiguration<Collaboration, CollaborationDao> configuration = _daoConfigurations.FirstOrDefault();
-            try
+            return WebAPIImpersonatorFacade.ImpersonateDao<CollaborationDao, Collaboration, Collaboration>(this.CurrentTenantConfiguration.Dao,
+            (impersonationType, dao) =>
             {
-                return configuration.Dao.GetByIncremental(incremental);
-            }
-            catch (Exception ex)
-            {
-                FileLogger.Error(Logger, string.Format(ERROR_MESSAGE, "Count", configuration.Tenant.TenantName), ex);
-                throw new WebAPIException<int>(ex.Message, ex);
-            }            
+                try
+                {
+                    return dao.GetByIncremental(incremental);
+                }
+                catch (Exception ex)
+                {
+                    FileLogger.Error(LogName, string.Format(ERROR_MESSAGE, "Count", CurrentTenantConfiguration.Tenant.TenantName), ex);
+                    throw new WebAPIException<int>(ex.Message, ex);
+                }
+            });        
         }
     }
 }

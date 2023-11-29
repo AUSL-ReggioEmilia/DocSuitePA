@@ -8,6 +8,7 @@ import UscErrorNotification = require('UserControl/uscErrorNotification');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import AjaxModel = require('App/Models/AjaxModel');
 import FileHelper = require('App/Helpers/FileHelper');
+import Environment = require('App/Models/Environment');
 
 class uscMiscellanea {
 
@@ -15,30 +16,31 @@ class uscMiscellanea {
     ajaxManagerId: string;
     uscNotificationId: string;
     ajaxLoadingPanelId: string;
-    miscellaneaToolBarId: string;  
+    miscellaneaToolBarId: string;
     miscellaneaGridId: string;
     managerWindowsId: string;
-    managerUploadDocumentId: string;    
+    managerUploadDocumentId: string;
     managerId: string;
     locationId: string;
     archiveChainId: string;
     type: string;
+    hasDgrooveSinger: string;
 
-    private _ajaxManager: Telerik.Web.UI.RadAjaxManager;    
+    private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
     private _uscNotification: UscErrorNotification;
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _miscellaneaToolBar: Telerik.Web.UI.RadToolBar;
     private _managerUploadDocument: Telerik.Web.UI.RadWindowManager;
-    private _manager: Telerik.Web.UI.RadWindowManager;    
+    private _manager: Telerik.Web.UI.RadWindowManager;
     private _miscellaneaGrid: Telerik.Web.UI.RadGrid;
-    private _masterTableView: Telerik.Web.UI.GridTableView;  
+    private _masterTableView: Telerik.Web.UI.GridTableView;
     private _currentDocumentToSign: string;
 
     public static ON_END_LOAD_EVENT = "onEndLoad";
-    public static LOADED_EVENT: string = "onLoaded";    
+    public static LOADED_EVENT: string = "onLoaded";
     public static LOAD_DOCUMENTS: string = "LoadDocuments";
     public static SIGNED_DOCUMENT: string = "Signed";
-    public static UPDATE_DOCUMENTS_EVENT: string = "Update_Documents";    
+    public static UPDATE_DOCUMENTS_EVENT: string = "Update_Documents";
     public static DELETE_DOCUMENT_EVENT: string = "Delete_Document";
 
     /**
@@ -66,9 +68,9 @@ class uscMiscellanea {
     initialize() {
         this._ajaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
-        this._miscellaneaToolBar = <Telerik.Web.UI.RadToolBar>$find(this.miscellaneaToolBarId);     
+        this._miscellaneaToolBar = <Telerik.Web.UI.RadToolBar>$find(this.miscellaneaToolBarId);
         this._managerUploadDocument = <Telerik.Web.UI.RadWindowManager>$find(this.managerUploadDocumentId);
-        this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.managerId);        
+        this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.managerId);
         this._managerUploadDocument.add_close(this.closeUploadDocumentWindow);
 
         this._miscellaneaGrid = <Telerik.Web.UI.RadGrid>$find(this.miscellaneaGridId);
@@ -83,14 +85,15 @@ class uscMiscellanea {
     * Carico i documenti 
     */
 
-    bindMiscellanea(documents: string): void {        
+    bindMiscellanea(documents: string): void {
         this._masterTableView.set_dataSource(documents);
         this._masterTableView.dataBind();
+        this.signBtnVisibility();
         this.initializeCallback();
-    }    
+    }
 
     loadMiscellanea(idArchiveChain: string, location: string): void {
-         this.loadDocuments(idArchiveChain, location);
+        this.loadDocuments(idArchiveChain, location);
     }
 
     loadDocuments(idArchiveChain: string, location: string): void {
@@ -120,7 +123,7 @@ class uscMiscellanea {
     closeUploadDocumentWindow = (sender: any, args: Telerik.Web.UI.WindowCloseEventArgs) => {
         if (args.get_argument) {
             let result: AjaxModel = <AjaxModel>args.get_argument();
-            if (result) {               
+            if (result) {
                 $("#".concat(this.pageId)).triggerHandler(uscMiscellanea.UPDATE_DOCUMENTS_EVENT, result.Value[0].toString());
             }
         }
@@ -134,7 +137,7 @@ class uscMiscellanea {
             }
             else {
                 row[i].addCssClass("Scuro");
-            }            
+            }
         }
     }
 
@@ -164,19 +167,21 @@ class uscMiscellanea {
         this.openWindow(url, 'windowPreviewDocument', 750, 450);
     }
 
-    openEditWindow(idDocument: string, idArchiveChain: string, locationId: string) {
+    openEditWindow(idDocument: string, idArchiveChain: string, locationId: string, documentName: string, environment: Environment, documentUnitId: string) {
         let url: string = '../UserControl/CommonSelMiscellanea.aspx?Action=Edit&IdDocument='.concat(idDocument, "&Type=", this.type);
         url = url.concat('&IdArchiveChain=').concat(idArchiveChain);
         url = url.concat('&IdLocation=').concat(locationId);
-        
+        url = url.concat('&DocumentName=').concat(documentName);
+        url = url.concat('&Environment=').concat(environment.toString());
+        url = url.concat('&DocumentUnitId=').concat(documentUnitId);
         this.openWindow(url, 'managerUploadDocument', 770, 450);
     }
 
-    openDeleteWindow(idDocument: string, idArchiveChain: string) {
+    openDeleteWindow(idDocument: string, idArchiveChain: string, documentName: string) {
         this._manager.radconfirm("Sei sicuro di voler eliminare il documento?", (arg) => {
             if (arg) {
                 this._loadingPanel.show(this.pageId);
-                $("#".concat(this.pageId)).triggerHandler(uscMiscellanea.DELETE_DOCUMENT_EVENT, idDocument, idArchiveChain);             
+                $("#".concat(this.pageId)).triggerHandler(uscMiscellanea.DELETE_DOCUMENT_EVENT, [idDocument, idArchiveChain, documentName]);
             }
         }, 300, 160);
     }
@@ -207,7 +212,7 @@ class uscMiscellanea {
     hideLoadingPanel = () => {
         this._loadingPanel.hide(this.pageId);
     }
- 
+
     private showNotification(uscNotificationId: string, message: string): void
     private showNotification(uscNotificationId: string, error: ExceptionDTO): void
     private showNotification(uscNotificationId: string, error: any): void {
@@ -223,6 +228,20 @@ class uscMiscellanea {
 
     initializeCallback = () => {
         this.hideLoadingPanel();
+    }
+
+    signBtnVisibility() {
+        let isIE = /(MSIE|Trident\/|Edge\/)/i.test(navigator.userAgent);
+        if (this.hasDgrooveSinger === "True" && isIE === false) {
+            let items = this._masterTableView.get_dataItems();
+            for (var i = 0; i < items.length; i++) {
+                let rowValues = items[i];
+                let signBtn = rowValues.findElement("btnSignSingleDocument");
+                if (signBtn) {
+                    signBtn.remove();
+                }
+            }
+        }
     }
 
     closeSignWindow(sender: any, args: any) {

@@ -15,8 +15,6 @@ class WorkflowEvalutionPropertyHelper {
     static _dsw_p_WorkflowRecipientAuthorizationReadOnly = { Name: "Destinatario in sola lettura", Type: ArgumentType.PropertyBoolean };
     static _dsw_p_WorkflowEndMotivationRequired = { Name: "Commento di conclusione obbligatorio", Type: ArgumentType.PropertyBoolean };
     static _dsw_p_ActivityAutoHandling = { Name: "Presa in carico automatica", Type: ArgumentType.PropertyBoolean };
-    static _dsw_a_SetRecipientResponsible = { Name: "Rendi i settori destinatari responsabili", Type: ArgumentType.PropertyBoolean };
-    static _dsw_a_Metadata_LabelMotivation = { Name: "Metadato da aggiornare", Type: ArgumentType.PropertyString };
     static _dsw_p_MappingTag = { Name: "TAG di mapping", Type: ArgumentType.PropertyString };
     static _dsw_p_OChartItems = { Name: "Identificativo di organigramma", Type: ArgumentType.PropertyGuid };
     static _dsw_p_Subject = { Name: "Oggetto dell'attività", Type: ArgumentType.PropertyString };
@@ -69,7 +67,23 @@ class WorkflowEvalutionPropertyHelper {
     static _dsw_p_TemplateFascicle = { Name: "Modello contenente la struttura di default di un fascicolo", Type: ArgumentType.PropertyString };
     static _dsw_p_DossierFolder = { Name: "Abilita selezione cartelle di Dossier", Type: ArgumentType.PropertyBoolean };
     static _dsw_p_BuildModelCreate = { Name: "Abilita la creazione del builder model durante l'avvio di workflow", Type: ArgumentType.PropertyBoolean };
+    static _dsw_p_DocumentFascicleToArchive = { Name: "Abilita spostamento del documento da un fascicolo nell'archivio", Type: ArgumentType.PropertyBoolean };
+    static _dsw_p_LoadExternalRoles = { Name: "Abilita la selezione dei settori esterni", Type: ArgumentType.PropertyBoolean };
+    static _dsw_p_RoleRecipientLabel = { Name: "Specifica l'etichetta del componente settore destinatario", Type: ArgumentType.PropertyString };
+    static _dsw_p_RoleRecipientValidationTooltip = { Name: "Tooltip di validazione del componente dettore destinatario", Type: ArgumentType.PropertyString };
+    static _dsw_p_WaitWorkflowCompletionEnabled = { Name: "Chiudere il pannello di caricamento al termine del flusso di lavoro", Type: ArgumentType.PropertyBoolean }
+    static _dsw_p_WorkflowStorageLocationEnabled = { Name: "Usa la posizione del flusso di lavoro per l'archiviazione", Type: ArgumentType.PropertyBoolean }
+    static _dsw_p_DocumentFilename = { Name: "Nome del documento", Type: ArgumentType.PropertyString };
+    static _dsw_p_RemoteSignInfo = { Name: "Parametro di firma remota", Type: ArgumentType.Json };
+    static _dsw_p_SetRecipientFromRoleUser = { Name: "Abilita selezione dell'utente dal disegno di funzione", Type: ArgumentType.PropertyBoolean };
+    static _dsw_p_MultipleRecipientFromRoleUser = { Name: "Abilita selezione di più utenti dal controllo di disegno di funzione. (viene applicato se _dsw_p_SetRecipientFromRoleUser è attivo)", Type: ArgumentType.PropertyBoolean };
+    static _dsw_p_RoleUserType = { Name: "Tipologia dell'utente selezionabile dal disegno di funzione [S=Segreteria, V=Vice-Direttori, D=Direttori, SP=Segreteria di procedimento, RP=Responsabile di procedimento] (viene applicato se _dsw_p_SetRecipientFromRoleUser è attivo)", Type: ArgumentType.PropertyString };
+    static _dsw_p_RoleUserRecipientSelectionAutoExpand = { Name: "Abilita l'espansione automatica degli utenti dal selettore di disegno di funzione (viene applicato se _dsw_p_SetRecipientFromRoleUser è attivo)", Type: ArgumentType.PropertyBoolean };
 
+
+    static _dsw_a_SetRecipientResponsible = { Name: "Rendi i settori destinatari responsabili", Type: ArgumentType.PropertyBoolean };
+    static _dsw_a_Activity_AutoComplete = { Name: "Permette di completare in maniera automatica l'attività aperta", Type: ArgumentType.PropertyBoolean };
+    static _dsw_a_Metadata_LabelMotivation = { Name: "Metadato da aggiornare", Type: ArgumentType.PropertyString };
     static _dsw_a_Generate_WordTemplate = { Name: "Generazione dinamica del documento di fase avvio (OpenXML)", Type: ArgumentType.PropertyBoolean };
     static _dsw_a_Generate_PDFTemplate = { Name: "Generazione dinamica del documento di fase avvio (Itext7)", Type: ArgumentType.PropertyBoolean };
     static _dsw_a_Generate_TemplateId = { Name: "Identificativo (vedi sezione deposito documentale) del documento da generare", Type: ArgumentType.PropertyGuid };
@@ -83,6 +97,7 @@ class WorkflowEvalutionPropertyHelper {
     static _dsw_a_Dossier_RemoveProposerRoles = { Name: "Rimuovi settore proponente dal dossier", Type: ArgumentType.PropertyBoolean };
     static _dsw_a_Dossier_RemoveRoles = { Name: "Rimuovi settori dal dossier ad attività conclusa", Type: ArgumentType.PropertyBoolean };
     static _dsw_a_Parallel_Activity = { Name: "Avvio attività multipla", Type: ArgumentType.PropertyBoolean };
+    static _dsw_a_RedirectEnabled = { Name: "Abilita il reindirizzamento verso un'altra pagina", Type: ArgumentType.PropertyBoolean };
     static _dsw_a_RedirectToCollaboration = { Name: "Porta nella pagina di collaborazione", Type: ArgumentType.PropertyBoolean };
     static _dsw_a_RedirectToProtocol = { Name: "Porta nella pagina di protocollazione", Type: ArgumentType.PropertyBoolean };
     static _dsw_a_RedirectToFascicleSignDocument = { Name: "Porta nella pagina di firma inserto", Type: ArgumentType.PropertyBoolean };
@@ -101,7 +116,11 @@ class WorkflowEvalutionPropertyHelper {
     static _dsw_a_Fascicle_CreateLink = { Name: "Abilita la il collegamento trai fascicoli creati dal workflow", Type: ArgumentType.PropertyBoolean };
     static _dsw_a_FascicleFolder_FilterLevel = { Name: "Imposta il filtro sul livello di gerarchia delle cartelle di fascicolo. Il filtro deve essere >= 2", Type: ArgumentType.PropertyInt };
     static _dsw_a_Metadata_HandlerDate = { Name: "Imposta la data di presa in carico nel metadato (specificare il nome del metadato)", Type: ArgumentType.PropertyString };
-    
+    static _dsw_a_Metadata_HandlerEndDate = { Name: "Imposta la data di fine presa in carico nel metadato (specificare il nome del metadato)", Type: ArgumentType.PropertyString };
+    static _dsw_a_LoadDocuments = { Name: "Aggiunge al workflow tutti i documenti della unità documentale", Type: ArgumentType.PropertyBoolean };
+    static _dsw_a_ArchiveDocuments = { Name: "Archivia una collezione di documenti nel modello di avvio del workflow", Type: ArgumentType.Json };
+    static _dsw_a_CopyIdArchiveChain = { Name: "Riporta la catena documentale specificata nel parametro", Type: ArgumentType.PropertyGuid };
+
     static _dsw_v_Fascicle_DocumentRequired = { Name: "Selezione inserto di fascicolo obbligatorio", Type: ArgumentType.PropertyBoolean };
     static _dsw_v_Fascicle_DocumentUnitRequired = { Name: "Selezione documento di fascicolo obbligatorio", Type: ArgumentType.PropertyBoolean };
     static _dsw_v_Workflow_NoInstanceRequired = { Name: "Workflow non richiede instanze persistite", Type: ArgumentType.PropertyBoolean };
@@ -117,12 +136,15 @@ class WorkflowEvalutionPropertyHelper {
     static _dsw_e_ActivityRejected = { Name: "Attività rifiutata", Type: ArgumentType.PropertyBoolean };
     static _dsw_e_ActivityApproved = { Name: "Attività approvata", Type: ArgumentType.PropertyBoolean };
     static _dsw_e_ActivitySigned = { Name: "Attività firmata", Type: ArgumentType.PropertyBoolean };
+    static _dsw_e_ActivityIsVisible = { Name: "Rendi visibile l'attività nella scrivania utente", Type: ArgumentType.PropertyBoolean };
     static _dsw_e_ActivityStartReferenceModel = { Name: "Modello di riferimento per avvio attività generica", Type: ArgumentType.Json };
     static _dsw_e_ActivityStartMotivation = { Name: "Motivazioni di avvio attività generica", Type: ArgumentType.PropertyString };
     static _dsw_e_ActivityEndReferenceModel = { Name: "Modello di riferimento per fine attività generica", Type: ArgumentType.Json };
     static _dsw_e_ActivityEndMotivation = { Name: "Motivazioni di conclusione attività generica", Type: ArgumentType.PropertyString };
     static _dsw_e_MessageLink = { Name: "Link di invio email", Type: ArgumentType.PropertyString };
-    static _dsw_e_MessageLinkType = { Name: "Tipologia di link da inserire nella email [1:FascicleLink, 2:ExternalViewerLink, 3:DocSuiteGenericActivity, 4:DocumentUnitLink]", Type: ArgumentType.PropertyInt };
+    static _dsw_e_MessageLinkType = { Name: "Tipologia di link da inserire nella email [1:FascicleLink, 2:ExternalViewerLink, 3:DocSuiteGenericActivity, 4:DocumentUnitLink, 5:CreatedFascicleLink, 6:ProtocolLink]", Type: ArgumentType.PropertyInt };
+    static _dsw_e_UDSRepositoryId = { Name: "Chiave univoca della definizione dell'UDS", Type: ArgumentType.PropertyGuid };
+    static _dsw_e_Metadata_HandlerEndDateThreshold = { Name: "Il numero di giorni assegnati per l'attività", Type: ArgumentType.PropertyInt };
 }
 
 export = WorkflowEvalutionPropertyHelper;

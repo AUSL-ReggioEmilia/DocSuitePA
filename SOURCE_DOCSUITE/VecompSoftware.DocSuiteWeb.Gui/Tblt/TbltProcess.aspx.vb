@@ -1,4 +1,5 @@
-﻿Imports VecompSoftware.DocSuiteWeb.Facade
+﻿Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class TbltProcess
@@ -22,8 +23,7 @@ Public Class TbltProcess
 #Region "Methods"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If Not ProtocolEnv.ProcessEnabled OrElse (Not CommonShared.HasGroupAdministratorRight AndAlso CommonShared.HasGroupProcessesViewsManageableRight) Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
 
     End Sub

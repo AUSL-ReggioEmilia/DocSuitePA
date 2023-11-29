@@ -3,8 +3,8 @@
     FascicleProtocol = 1,
     Dossier = 2,
     Atti = 3,
-    PECIngresso = 4,
-    PECUscita = 5,
+    PECIncoming = 4,
+    PECOutgoing = 5,
     Archive = 6,
     ArchiveProtocol = 7,
     Protocol = 8,
@@ -15,10 +15,14 @@
     MessageSeries = 13,
     SeriesProtocol = 14,
     Series = 15,
-    ActiveWorkflows = 16,
+    Workflows = 16,
     Process = 17,
     TNotice = 18,
     DoneWorkflows = 19,
+    PECUnified = 20,
+    DeletedFascicleDocumentUnit = 21,
+    DeletedFascicleDocument = 22,
+    FascicleDocumentUnitLink = 23,
 }
 
 export = DocumentUnitReferenceTypeEnum

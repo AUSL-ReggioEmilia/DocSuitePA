@@ -114,6 +114,7 @@
                 ShowLoadingPanel();
                 var workflowReferenceModel = sessionStorage.getItem("WorkflowReferenceModel");
                 var workflowStartModel = sessionStorage.getItem("WorkflowStartModel");
+                var fascicleFolderSelected = sessionStorage.getItem("SelectedFascicleFolderId");
                 if (workflowReferenceModel && workflowStartModel) {
                     var ajaxManager = $find("<%= AjaxManager.ClientID%>");
                     var ajaxModel = {};
@@ -121,6 +122,7 @@
                     ajaxModel.ActionName = "BindingFromWorkflowUI";
                     ajaxModel.Value.push(workflowReferenceModel);
                     ajaxModel.Value.push(workflowStartModel);
+                    ajaxModel.Value.push(fascicleFolderSelected);
                     ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
                 }
             }
@@ -222,8 +224,8 @@
 
         <%-- Sezione Documenti --%>
         <usc:UploadDocument runat="server" ID="uscUploadDocumenti" MultipleDocuments="false" IsDocumentRequired="true" />
-        <usc:UploadDocument runat="server" ID="uscUploadAllegati" MultipleDocuments="true" IsDocumentRequired="false" ButtonSharedFolederEnabled="false" />
-        <usc:UploadDocument runat="server" ID="uscUploadAnnexes" MultipleDocuments="true" IsDocumentRequired="false" ButtonSharedFolederEnabled="false" Prefix="" />
+        <usc:UploadDocument runat="server" ID="uscUploadAllegati" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" IsDocumentRequired="false" ButtonSharedFolederEnabled="false" />
+        <usc:UploadDocument runat="server" ID="uscUploadAnnexes" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" IsDocumentRequired="false" ButtonSharedFolederEnabled="false" Prefix="" />
         <%-- Fine Sezione Documenti --%>
 
         <%-- Sezione Tipologia Protocollo --%>
@@ -504,7 +506,8 @@
             </tr>
         </table>
           <div id="panelHiddenFileds" style="display:none" runat="server">
-            <asp:HiddenField ID="hf_workflowAction_toFascicle" runat="server" Value="" />
+              <asp:HiddenField ID="hf_workflowAction_toFascicle" runat="server" Value="" />
+              <asp:HiddenField ID="hf_workflowAction_toFascicleFolder" runat="server" Value="" />
           </div>
     </asp:Panel>
 </asp:Content>

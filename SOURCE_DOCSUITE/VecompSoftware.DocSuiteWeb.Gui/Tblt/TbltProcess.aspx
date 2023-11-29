@@ -32,6 +32,7 @@
                     tbltProcess.defaultSelectedProcessCategoryId = "<%= CategoryId %>";
                     tbltProcess.rtbCloneDossierFolderNameId = "<%= rtbCloneDossierFolderName.ClientID%>"
                     tbltProcess.currentTenantAOOId = "<%= CurrentTenant.TenantAOO.UniqueId %>";
+                    tbltProcess.treeViewNodesPageSize = <%= ProtocolEnv.TreeViewNodesPageSize %>;
                     tbltProcess.initialize();
                 });
             });
@@ -126,15 +127,11 @@
                 <Items>
                     <telerik:RadToolBarButton Value="searchInput">
                         <ItemTemplate>
-                            <telerik:RadTextBox ID="txtSearch" Placeholder="Cerca..." runat="server" AutoPostBack="False" Width="200px"></telerik:RadTextBox>
+                            <telerik:RadTextBox ID="txtSearch" Placeholder="Cerca serie..." runat="server" AutoPostBack="False" Width="200px"></telerik:RadTextBox>
                         </ItemTemplate>
                     </telerik:RadToolBarButton>
                     <telerik:RadToolBarButton IsSeparator="true" />
-                    <telerik:RadToolBarButton Text="Disattivi" CheckOnClick="true" Group="Disabled" Checked="false" Value="processDisabled" PostBack="false"
-                        AllowSelfUnCheck="true">
-                    </telerik:RadToolBarButton>
-                    <telerik:RadToolBarButton IsSeparator="true" />
-                    <telerik:RadToolBarButton Text="Attivi" CheckOnClick="true" Checked="false" Group="Active" Value="processActive" PostBack="false"
+                    <telerik:RadToolBarButton Text="Attivi" CheckOnClick="true" Checked="true" Group="Active" Value="processActive" PostBack="false"
                         AllowSelfUnCheck="true">
                     </telerik:RadToolBarButton>
                     <telerik:RadToolBarButton IsSeparator="true" />
@@ -150,8 +147,8 @@
                     <telerik:RadToolBarButton ToolTip="Modifica" CheckOnClick="false" Checked="false" Value="modify" Text="Modifica" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
                     <telerik:RadToolBarButton ToolTip="Elimina" CheckOnClick="false" Checked="false" Value="delete" Text="Elimina" ImageUrl="~/App_Themes/DocSuite2008/imgset16/DeleteFolder.png" />
                     <telerik:RadToolBarButton ToolTip="Clona" CheckOnClick="false" Checked="false" Value="clone" Text="Clona" ImageUrl="~/App_Themes/DocSuite2008/imgset16/clone.png" />
-                    <telerik:RadToolBarButton ToolTip="Copia" CheckOnClick="false" Checked="false" Value="copyPFT" Text="Copia in" ImageUrl="~/App_Themes/DocSuite2008/imgset16/document_copies.png" />
-                    <telerik:RadToolBarButton ToolTip="Incolla" CheckOnClick="false" Checked="false" Value="pastePFT" Text="Incolla" ImageUrl="~/App_Themes/DocSuite2008/imgset16/folder_add.png" />
+                    <telerik:RadToolBarButton ToolTip="Copia" CheckOnClick="false" Checked="false" Value="copyPFT" Text="Copia" ImageUrl="~/App_Themes/DocSuite2008/imgset16/copy.png" />
+                    <telerik:RadToolBarButton ToolTip="Incolla" CheckOnClick="false" Checked="false" Value="pastePFT" Text="Incolla" ImageUrl="~/App_Themes/DocSuite2008/imgset16/paste.png" />
                 </Items>
             </telerik:RadToolBar>
             <telerik:RadTreeView ID="rtvProcesses" LoadingStatusPosition="BeforeNodeText" PersistLoadOnDemandNodes="false" runat="server" Style="margin-top: 10px;" Width="100%">

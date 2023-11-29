@@ -101,6 +101,7 @@
     <Compile Include="UDS\UDSRepositoryState.cs" />
     <Compile Include="UDS\UDSRightPositions.cs" />
     <Compile Include="UDS\UDSSchemaRepository.cs" />
+    <Compile Include="Workflows\WorkflowProperty.cs" />
     <Compile Include="Workflows\WorkflowActivity.cs" />
     <Compile Include="Workflows\WorkflowAuthorization.cs" />
     <Compile Include="Workflows\WorkflowInstance.cs" />

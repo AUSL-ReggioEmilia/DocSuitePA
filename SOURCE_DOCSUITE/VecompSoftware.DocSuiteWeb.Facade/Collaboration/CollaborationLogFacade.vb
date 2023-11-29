@@ -37,7 +37,6 @@ Public Class CollaborationLogFacade
             log.SystemComputer = DocSuiteContext.Current.UserComputer
             log.SystemUser = DocSuiteContext.Current.User.FullUserName
             log.Program = DocSuiteContext.Program
-            log.SessionId = CommonUtil.UserSessionId
 
             Save(log)
         Catch ex As Exception

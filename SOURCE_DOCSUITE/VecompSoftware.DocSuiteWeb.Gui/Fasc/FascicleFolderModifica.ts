@@ -33,6 +33,7 @@ class FascicleFolderModifica extends FascBase {
     currentFascicleFolderId: string;
     nameRowId: string;
     sessionUniqueKey: string;
+    doNotUpdateDatabase: string;
     
     private _serviceConfigurations: ServiceConfiguration[];
     private _btnConferma: Telerik.Web.UI.RadButton;
@@ -132,19 +133,23 @@ class FascicleFolderModifica extends FascBase {
             fasc.UniqueId = this._currentFolder.idFascicle;
             fascicleFolder.Fascicle = fasc;
         }
-       
-        this._fascicleFolderService.updateFascicleFolder(fascicleFolder, null,
-            (data: any) => {
-                if (data == null) return;
-                this.closeFascicleFolderModifica(data, fascicleFolder);               
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.currentPageId);
-                this.showNotificationException(this.uscNotificationId, exception);
-                this._btnConferma.set_enabled(true);
-            }
-        );
 
+        if (this.doNotUpdateDatabase === "False") {
+            this._fascicleFolderService.updateFascicleFolder(fascicleFolder, null,
+                (data: any) => {
+                    if (data == null) return;
+                    this.closeFascicleFolderModifica(data, fascicleFolder);
+                },
+                (exception: ExceptionDTO) => {
+                    this._loadingPanel.hide(this.currentPageId);
+                    this.showNotificationException(this.uscNotificationId, exception);
+                    this._btnConferma.set_enabled(true);
+                }
+            );
+        }
+        else {
+            this.closeFascicleFolderModifica(fascicleFolder, fascicleFolder);
+        }
     }
 
     /**

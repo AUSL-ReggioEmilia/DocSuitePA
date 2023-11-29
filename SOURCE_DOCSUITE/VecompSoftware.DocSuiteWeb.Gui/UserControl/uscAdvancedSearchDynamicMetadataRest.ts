@@ -118,10 +118,10 @@ class uscAdvancedSearchDynamicMetadataRest extends MetadataRepositoryBase {
     }
 
     private _compareDateRange(startDateValue: string, endDateValue: string) {
-        let startDate: Date = new Date(moment(startDateValue, 'DD/MM/YYYY', 'it').format("L"));
-        let endDate: Date = new Date(moment(endDateValue, 'DD/MM/YYYY', 'it').format("L"));
+        let startDate = moment(startDateValue, 'DD/MM/YYYY', 'it');
+        let endDate = moment(endDateValue, 'DD/MM/YYYY', 'it');
 
-        return startDate < endDate;
+        return startDate <= endDate;
     }
 
     private _validateMetadataRangeDateValues(startDateValue: string, endDateValue: string): boolean {

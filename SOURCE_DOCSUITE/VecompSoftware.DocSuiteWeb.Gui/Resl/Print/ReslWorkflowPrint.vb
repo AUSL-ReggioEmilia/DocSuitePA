@@ -177,7 +177,7 @@ Public Class ReslWorkflowPrint
         End If
         If (resl.OCManagement.GetValueOrDefault(False) = True) Then
             If sControllo <> "" Then sControllo &= "<BR>"
-            sControllo &= "Controllo Gestione"
+            sControllo &= "Controllo gestione"
         End If
         If (resl.OCOther.GetValueOrDefault(False) = True) Then
             If sControllo <> "" Then sControllo &= "<BR>"
@@ -185,7 +185,7 @@ Public Class ReslWorkflowPrint
         End If
         If (resl.OCCorteConti.GetValueOrDefault(False) = True) Then
             If sControllo <> "" Then sControllo &= "<BR>"
-            sControllo &= "Corte dei Conti"
+            sControllo &= "Corte dei conti"
         End If
         Return sControllo
     End Function

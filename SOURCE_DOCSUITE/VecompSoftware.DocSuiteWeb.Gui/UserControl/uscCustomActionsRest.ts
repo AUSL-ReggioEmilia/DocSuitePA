@@ -110,7 +110,7 @@ class uscCustomActionsRest {
             switch (dataset) {
                 case "CheckBox":
                     let propertyName: string = divElement.querySelectorAll(`[${uscCustomActionsRest.ATTRIBUTE_PropertyName}]`)[0].getAttribute(uscCustomActionsRest.ATTRIBUTE_PropertyName);
-                    let propertyValue: boolean = (<HTMLInputElement>divElement.querySelectorAll("input[type=radio]")[0]).checked;
+                    let propertyValue: boolean = (<HTMLInputElement>divElement.querySelectorAll("input[type=checkbox]")[0]).checked;
                     customActions[propertyName] = propertyValue;
                     break;
                 default:

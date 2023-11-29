@@ -2,7 +2,7 @@
 
 namespace VecompSoftware.DocSuiteWeb.Data.Entity.Commons
 {
-    public class JeepServiceHost : DomainObject<Guid>, ISupportLogicDelete
+    public class JeepServiceHost : DomainObject<Guid>, ISupportBooleanLogicDelete
     {
         #region Constructors
         /// <summary>
@@ -15,7 +15,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Commons
         public JeepServiceHost(string UserName)
             : this()
         {
-            RegistrationDate = DateTime.UtcNow;
+            RegistrationDate = DateTimeOffset.UtcNow;
             RegistrationUser = UserName;
         }
         #endregion
@@ -24,14 +24,17 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Commons
 
         public virtual string Hostname { get; set; }
 
-        public virtual short IsActive { get; set; }
+        public virtual bool IsActive { get; set; }
 
         public virtual bool IsDefault { get; set; }
 
     
         public virtual string RegistrationUser { get; set; }
 
-        public virtual DateTime? RegistrationDate { get; set; }
+        public virtual DateTimeOffset RegistrationDate { get; set; }
+        public virtual string LastChangedUser {get; set;}
+
+        public virtual DateTimeOffset? LastChangedDate { get; set; }
         #endregion
     }
 }

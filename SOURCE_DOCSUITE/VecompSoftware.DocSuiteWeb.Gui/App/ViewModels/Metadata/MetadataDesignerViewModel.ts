@@ -11,6 +11,7 @@ class MetadataDesignerViewModel {
     BoolFields: BaseFieldViewModel[];
     EnumFields: EnumFieldViewModel[];
     DiscussionFields: DiscussionFieldViewModel[];
+    ContactFields: BaseFieldViewModel[];
     constructor() {
         this.TextFields = new Array<TextFieldViewModel>();
         this.NumberFields = new Array<BaseFieldViewModel>();
@@ -18,6 +19,7 @@ class MetadataDesignerViewModel {
         this.BoolFields = new Array<BaseFieldViewModel>();
         this.EnumFields = new Array<EnumFieldViewModel>();
         this.DiscussionFields = new Array<DiscussionFieldViewModel>();
+        this.ContactFields = new Array<BaseFieldViewModel>();
     }
 }
 

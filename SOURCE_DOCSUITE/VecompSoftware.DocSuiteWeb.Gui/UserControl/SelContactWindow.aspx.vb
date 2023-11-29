@@ -2,11 +2,24 @@ Imports VecompSoftware.DocSuiteWeb.Facade
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports System.Collections.Generic
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 
 Partial Public Class SelContactWindow
     Inherits Page
 
     Dim myContactFacade As ContactFacade
+
+    Public Property CurrentTenant As Tenant
+        Get
+            If Session(CommonShared.USER_CURRENT_TENANT) IsNot Nothing Then
+                Return DirectCast(Session(CommonShared.USER_CURRENT_TENANT), Tenant)
+            End If
+            Return Nothing
+        End Get
+        Set(value As Tenant)
+            Session(CommonShared.USER_CURRENT_TENANT) = value
+        End Set
+    End Property
 
 #Region "Page Load"
 
@@ -26,7 +39,7 @@ Partial Public Class SelContactWindow
         Dim _ContactsList As IList(Of Contact)
 
         If String.IsNullOrEmpty(e.Node.Value) Then
-            _ContactsList = myContactFacade.GetRootContact(False, False, False)
+            _ContactsList = myContactFacade.GetRootContact(False, False, False, CurrentTenant.TenantAOO.UniqueId)
         Else
             _ContactsList = myContactFacade.GetContactByParentId(Integer.Parse(e.Node.Value), False)
         End If

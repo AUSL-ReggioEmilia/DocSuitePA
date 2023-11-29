@@ -10,6 +10,11 @@ Public Class uscDossierGrid
         End Get
     End Property
     Public Property IsWindowPopupEnable As Boolean = False
+    Public ReadOnly Property Grid() As RadGrid
+        Get
+            Return dossierGrid
+        End Get
+    End Property
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Not IsPostBack Then

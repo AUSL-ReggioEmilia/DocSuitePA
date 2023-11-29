@@ -50,8 +50,11 @@
                     udsInvoicesUpload.ajaxManagerId = ("<%=  AjaxManager.ClientID %>");
                     udsInvoicesUpload.rgvPreviewDocumentsId = ("<%=  rgvPreviewDocuments.ClientID %>");
                     udsInvoicesUpload.currentUserTenantName = ("<%= CurrentUserTenantName %>");
+                    udsInvoicesUpload.currentUserTenantId = ("<%= CurrentUserTenantId %>");
+                    udsInvoicesUpload.currentUserTenantAOOId = ("<%= CurrentUserTenantAOOId %>");
                     udsInvoicesUpload.currentUpdatedControlId = "<%= pnlContentInvoice.ClientID%>";
                     udsInvoicesUpload.currentUpdatedToolbarId = "<%= pnlButtons.ClientID %>";
+                    udsInvoicesUpload.rdtpDataRicezioneSdiId = "<%= rdtpDataRicezioneSdi.ClientID %>";
                     //initialize
                     udsInvoicesUpload.initialize();
                 });
@@ -74,12 +77,19 @@
                                 <uc1:uscDocumentUpload ID="uscDocumentUpload" Caption="Documento" runat="server" IsDocumentRequired="true" SignButtonEnabled="false" ButtonScannerEnabled="false" ButtonLibrarySharepointEnabled="false" MultipleDocuments="false" UseSessionStorage="true" Type="Prot" AllowZipDocument="true" AllowedExtensions=".zip" />
                             </Content>
                         </telerik:LayoutRow>
+                        <telerik:LayoutRow runat="server" HtmlTag="Div">
+                            <Content>
+                                <b class="dsw-text-bold">Data Ricezione Sdi:</b>
+                                <telerik:RadDateTimePicker ID="rdtpDataRicezioneSdi" runat="server" />
+                                <asp:RequiredFieldValidator ControlToValidate="rdtpDataRicezioneSdi" Display="Dynamic" ErrorMessage="Campo Dal Giorno Obbligatorio" ID="RequiredFieldValidator1" runat="server" />
+                            </Content>
+                        </telerik:LayoutRow>
                         <telerik:LayoutRow runat="server" HtmlTag="Div" Width="100%">
                             <Content>
                                 <telerik:RadGrid runat="server" ID="rgvPreviewDocuments" AllowAutomaticUpdates="True" GridLines="None" AllowPaging="False" Skin="Office2010Blue" AllowMultiRowSelection="true" AllowFilteringByColumn="False">
                                     <ClientSettings>
-                                        <Selecting AllowRowSelect ="true" />
-                                        <ClientEvents OnRowDataBound="RowBinding"/>
+                                        <Selecting AllowRowSelect="true" />
+                                        <ClientEvents OnRowDataBound="RowBinding" />
                                     </ClientSettings>
                                     <MasterTableView CommandItemDisplay="None" AutoGenerateColumns="False" DataKeyNames="UniqueId">
                                         <Columns>
@@ -87,12 +97,12 @@
                                             </telerik:GridClientSelectColumn>
                                             <telerik:GridTemplateColumn Visible="false" DataField="InvoiceFilename">
                                                 <ItemTemplate>
-                                                    <input type="hidden" value="InvoiceFilename" id="hdnInvoiceFilename"/>                                                    
+                                                    <input type="hidden" value="InvoiceFilename" id="hdnInvoiceFilename" />
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
                                             <telerik:GridTemplateColumn Visible="false" DataField="InvoiceMetadataFilename">
                                                 <ItemTemplate>
-                                                    <input type="hidden" value="InvoiceMetadataFilename" id="hdnInvoiceMetadataFilename"/>
+                                                    <input type="hidden" value="InvoiceMetadataFilename" id="hdnInvoiceMetadataFilename" />
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
                                             <telerik:GridBoundColumn DataField="Description" HeaderStyle-Width="80%" HeaderText="Fattura" AllowFiltering="false" UniqueName="colInvoice">

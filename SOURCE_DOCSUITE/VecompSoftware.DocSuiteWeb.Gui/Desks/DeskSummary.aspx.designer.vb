@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class DeskSummary
-    
+
     '''<summary>
     '''deskContainer control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents deskContainer As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlDeskSubject control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDeskSubject As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblDeskObject control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDeskObject As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtObject control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtObject As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''deskObjectValidator control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents deskObjectValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''pnlInformations control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlInformations As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnCollapse control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnCollapse As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''pnlContents control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlContents As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlDeskInformationRestricted control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDeskInformationRestricted As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblDeskStatusRestricted control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDeskStatusRestricted As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblRegistrationUser control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRegistrationUser As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''pnlDeskInformationExtended control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDeskInformationExtended As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblDeskStatusExteded control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDeskStatusExteded As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''dtpDeskExpired control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dtpDeskExpired As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''deskDateExpiredValidator control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents deskDateExpiredValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''lblRegistrationUser2 control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRegistrationUser2 As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''pnlContainers control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlContainers As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblDeskContainer control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDeskContainer As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''pnlDeskCollaborationLink control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDeskCollaborationLink As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblCollaborationTitle control.
     '''</summary>
@@ -192,7 +192,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCollaborationTitle As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''links control.
     '''</summary>
@@ -201,7 +201,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents links As Global.System.Web.UI.WebControls.Repeater
-    
+
     '''<summary>
     '''pnlDeskData control.
     '''</summary>
@@ -210,7 +210,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDeskData As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscInvitationUser control.
     '''</summary>
@@ -219,7 +219,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscInvitationUser As Global.VecompSoftware.DocSuiteWeb.Gui.uscInvitationUser
-    
+
     '''<summary>
     '''uscDeskDocument control.
     '''</summary>
@@ -228,7 +228,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDeskDocument As Global.VecompSoftware.DocSuiteWeb.Gui.uscDeskDocument
-    
+
     '''<summary>
     '''pnlStoryBoard control.
     '''</summary>
@@ -237,7 +237,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlStoryBoard As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscDeskStoryBoard control.
     '''</summary>
@@ -246,7 +246,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDeskStoryBoard As Global.VecompSoftware.DocSuiteWeb.Gui.uscDeskStoryBoard
-    
+
     '''<summary>
     '''pnlActionButtons control.
     '''</summary>
@@ -255,7 +255,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlActionButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnSave control.
     '''</summary>
@@ -264,7 +264,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSave As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnViewDocument control.
     '''</summary>
@@ -273,7 +273,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnViewDocument As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnCancel control.
     '''</summary>
@@ -282,7 +282,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnCancel As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnModify control.
     '''</summary>
@@ -291,7 +291,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnModify As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnCloseDesk control.
     '''</summary>
@@ -300,7 +300,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnCloseDesk As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnOpenDesk control.
     '''</summary>
@@ -309,7 +309,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnOpenDesk As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnApprove control.
     '''</summary>
@@ -318,7 +318,7 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnApprove As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnApproveManager control.
     '''</summary>
@@ -327,22 +327,13 @@ Partial Public Class DeskSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnApproveManager As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
-    '''btnCollaboration control.
+    '''btnManage control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnCollaboration As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''btnProtocol control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnProtocol As Global.Telerik.Web.UI.RadButton
+    Protected WithEvents btnManage As Global.Telerik.Web.UI.RadButton
 End Class

@@ -117,7 +117,7 @@ Partial Public Class ProtRecupera
 
         'se si sceglie visualizza tutti, filtro solo quelli su cui ho diritto di lettura
         If cbShowAll.Checked Then
-            CommonInstance.ApplyProtocolFinderSecurity(finder, SecurityType.Read, True)
+            CommonInstance.ApplyProtocolFinderSecurity(finder, SecurityType.Read, CurrentTenant.TenantAOO.UniqueId, True)
         End If
 
         gvProtocols.PageSize = finder.PageSize

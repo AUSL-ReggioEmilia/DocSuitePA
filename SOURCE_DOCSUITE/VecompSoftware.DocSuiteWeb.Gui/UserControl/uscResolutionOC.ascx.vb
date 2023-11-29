@@ -1,6 +1,6 @@
-﻿Imports VecompSoftware.Helpers.ExtensionMethods
+﻿Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.Helpers.ExtensionMethods
 
 Partial Public Class uscResolutionOC
     Inherits DocSuite2008BaseControl
@@ -335,13 +335,41 @@ Partial Public Class uscResolutionOC
     End Function
 
     Public Sub LoadOCList()
-        tblODC.Visible = True
-        chkSupervisoryBoard.Checked = CurrentResolution.OCSupervisoryBoard.GetValueOrDefault(False)
-        chkRegion.Checked = CurrentResolution.OCRegion.GetValueOrDefault(False)
-        chkManagement.Checked = CurrentResolution.OCManagement.GetValueOrDefault(False)
-        chkCorteConti.Checked = CurrentResolution.OCCorteConti.GetValueOrDefault(False)
-        chkOther.Checked = CurrentResolution.OCOther.GetValueOrDefault(False)
-        chkConfSindaci.Checked = CurrentResolution.OCManagement.GetValueOrDefault(False)
+        Dim ocOptions As OCOptionsModel = DocSuiteContext.Current.ResolutionEnv.OCOptions
+        If ocOptions Is Nothing Then
+            tblODC.Visible = True
+            chkSupervisoryBoard.Checked = CurrentResolution.OCSupervisoryBoard.GetValueOrDefault(False)
+            chkRegion.Checked = CurrentResolution.OCRegion.GetValueOrDefault(False)
+            chkManagement.Checked = CurrentResolution.OCManagement.GetValueOrDefault(False)
+            chkCorteConti.Checked = CurrentResolution.OCCorteConti.GetValueOrDefault(False)
+            chkOther.Checked = CurrentResolution.OCOther.GetValueOrDefault(False)
+            chkConfSindaci.Checked = CurrentResolution.OCManagement.GetValueOrDefault(False)
+        Else
+            tblODCOptions.Visible = True
+            pnlOCSupervisoryBoard.Visible = ocOptions.SupervisoryBoard.Visible
+            chkOCSupervisoryBoard.Text = ocOptions.SupervisoryBoard.Label
+            chkOCSupervisoryBoard.Checked = CurrentResolution.OCSupervisoryBoard.GetValueOrDefault(False)
+
+            pnlOCConfSindaci.Visible = ocOptions.ConfSindaci.Visible
+            chkOCConfSindaci.Text = ocOptions.ConfSindaci.Label
+            chkOCConfSindaci.Checked = CurrentResolution.OCManagement.GetValueOrDefault(False)
+
+            pnlOCRegion.Visible = ocOptions.Region.Visible
+            chkOCRegion.Text = ocOptions.Region.Label
+            chkOCRegion.Checked = CurrentResolution.OCRegion.GetValueOrDefault(False)
+
+            pnlOCManagement.Visible = ocOptions.Management.Visible
+            chkOCManagement.Text = ocOptions.Management.Label
+            chkOCManagement.Checked = CurrentResolution.OCManagement.GetValueOrDefault(False)
+
+            pnlOCCorteConti.Visible = ocOptions.CorteConti.Visible
+            chkOCCorteConti.Text = ocOptions.CorteConti.Label
+            chkOCCorteConti.Checked = CurrentResolution.OCCorteConti.GetValueOrDefault(False)
+
+            pnlOCOther.Visible = ocOptions.Other.Visible
+            chkOCOther.Text = ocOptions.Other.Label
+            chkOCOther.Checked = CurrentResolution.OCOther.GetValueOrDefault(False)
+        End If
     End Sub
 
     Public Sub LoadOCConfSindaci()

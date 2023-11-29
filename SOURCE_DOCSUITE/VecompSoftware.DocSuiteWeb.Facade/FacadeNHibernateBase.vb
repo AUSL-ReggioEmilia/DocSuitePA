@@ -390,14 +390,13 @@ Public MustInherit Class FacadeNHibernateBase(Of T, TIdT, TDaoType As INHibernat
 
     Public Overridable Overloads Function Delete(ByRef obj As T, ByVal dbName As String, Optional needTransaction As Boolean = True) As Boolean
         _dao.ConnectionName = dbName
-        Dim deleted As Boolean = True
-        If GetType(T).GetInterface("ISupportLogicDelete") IsNot Nothing Then
-            Dim objToDel As ISupportLogicDelete = DirectCast(obj, ISupportLogicDelete)
-            objToDel.IsActive = 0
-            Update(objToDel, dbName, needTransaction)
-            deleted = False
-        Else
 
+        Dim shortLogicalDeleteType As Type = GetType(T).GetInterface("ISupportShortLogicDelete")
+        Dim booleanLogicalDeleteType As Type = GetType(T).GetInterface("ISupportBooleanLogicDelete")
+
+        Dim isLogicalDelete As Boolean = shortLogicalDeleteType IsNot Nothing OrElse booleanLogicalDeleteType IsNot Nothing
+
+        If Not isLogicalDelete Then
             If Not (_dao.ConnectionName = dbName) Then
                 _dao.ConnectionName = dbName
             End If
@@ -408,9 +407,22 @@ Public MustInherit Class FacadeNHibernateBase(Of T, TIdT, TDaoType As INHibernat
                 _dao.DeleteWithoutTransaction(obj)
             End If
 
-            deleted = True
+            Return True
         End If
-        Return deleted
+
+        If shortLogicalDeleteType IsNot Nothing Then
+            Dim objectToDelete As ISupportShortLogicDelete = DirectCast(obj, ISupportShortLogicDelete)
+            objectToDelete.IsActive = 0S
+            Update(objectToDelete, dbName, needTransaction)
+        End If
+
+        If booleanLogicalDeleteType IsNot Nothing Then
+            Dim objectToDelete As ISupportBooleanLogicDelete = DirectCast(obj, ISupportBooleanLogicDelete)
+            objectToDelete.IsActive = False
+            Update(objectToDelete, dbName, needTransaction)
+        End If
+
+        Return False
     End Function
 
     Protected Overridable Overloads Sub Evict(ByVal obj As T, ByVal dbName As String)
@@ -424,9 +436,16 @@ Public MustInherit Class FacadeNHibernateBase(Of T, TIdT, TDaoType As INHibernat
 
     Public Overridable Overloads Sub Recover(ByRef obj As T, ByVal dbName As String)
         _dao.ConnectionName = dbName
-        If GetType(T).GetInterface("ISupportLogicDelete") IsNot Nothing Then
-            Dim objToRecover As ISupportLogicDelete = DirectCast(obj, ISupportLogicDelete)
-            objToRecover.IsActive = 1
+
+        If GetType(T).GetInterface("ISupportShortLogicDelete") IsNot Nothing Then
+            Dim objToRecover As ISupportShortLogicDelete = DirectCast(obj, ISupportShortLogicDelete)
+            objToRecover.IsActive = 1S
+            Update(objToRecover)
+        End If
+
+        If GetType(T).GetInterface("ISupportBooleanLogicDelete") IsNot Nothing Then
+            Dim objToRecover As ISupportBooleanLogicDelete = DirectCast(obj, ISupportBooleanLogicDelete)
+            objToRecover.IsActive = True
             Update(objToRecover)
         End If
     End Sub

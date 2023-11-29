@@ -10,6 +10,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         public Element()
         {
             contactTypes = new List<string>();
+            customActions = new List<string>();
         }
         public string ctrlType { get; set; }
         public uint rows { get; set; }
@@ -36,6 +37,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         public bool enabledMailRoleButton { get; set; }
         public bool enabledLinkButton { get; set; }
         public bool enabledCQRSSync { get; set; }
+        public bool enabledConservation { get; set; } 
         public bool enabledCancelMotivation { get; set; }
 
         public bool hideRegistrationIdentifier { get; set; }
@@ -97,5 +99,12 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         public bool showLastChangedUser { get; set; }
         public double? minValue { get; set; }
         public double? maxValue { get; set; }
+        public bool myAuthorizedRolesEnabled { get; set; }
+        public ICollection<string> customActions { get; set; }
+        public string customActionSelected { get; set; }
+        public string customActionKey { get; set; }
+        public bool allowMultiUserAuthorization { get; set; }
+        public bool userAuthorizationEnabled { get; set; }
+        public bool documentTypeCoherencyInArchivingCollaborationDisabled { get; set; }
     }
 }

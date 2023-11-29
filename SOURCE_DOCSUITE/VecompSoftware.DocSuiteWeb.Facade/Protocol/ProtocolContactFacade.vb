@@ -62,7 +62,7 @@ Public Class ProtocolContactFacade
         End If
 
         Dim sdicontact As Contact = New Contact()
-        sdicontact.IsActive = 1
+        sdicontact.IsActive = True
         sdicontact.Parent = Nothing
         sdicontact.ContactType = New ContactType(ContactType.Administration)
         sdicontact.Description = "Sistema di Interscambio"
@@ -83,10 +83,11 @@ Public Class ProtocolContactFacade
             Return contactsByName.First()
         End If
 
-        Dim group As Contact = New Contact()
-        group.Description = groupName
-        group.ContactType = New ContactType(ContactType.Group)
-        group.IsActive = 1
+        Dim group As Contact = New Contact With {
+            .Description = groupName,
+            .ContactType = New ContactType(ContactType.Group),
+            .IsActive = True
+        }
         FacadeFactory.Instance.ContactFacade.Save(group)
         Return group
     End Function

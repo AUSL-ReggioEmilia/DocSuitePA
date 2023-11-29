@@ -6,6 +6,7 @@ Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web
@@ -132,7 +133,10 @@ Public Class AttachDocuments
     End Function
 
     Private Sub CloseWindowScript(documents As IList(Of DocumentInfo), year As Integer, number As Integer)
-        Dim list As List(Of String) = documents.Select(Function(s) HttpUtility.UrlEncode(s.ToQueryString().AsEncodedQueryString())).ToList()
+        Dim list As New Dictionary(Of String, String)
+        For Each item As BiblosDocumentInfo In documents
+            list.Add(BiblosFacade.SaveUniqueToTemp(item).Name, item.Name)
+        Next
         Dim serialized As String = JsonConvert.SerializeObject(list)
         Dim jsStringEncoded As String = HttpUtility.JavaScriptStringEncode(serialized)
         Dim closeWindow As String = String.Format(CLOSE_WINDOW_CALLBACK, jsStringEncoded)

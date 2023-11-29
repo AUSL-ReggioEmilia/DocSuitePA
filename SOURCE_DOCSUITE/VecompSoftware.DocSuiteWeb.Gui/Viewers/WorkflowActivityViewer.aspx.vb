@@ -6,7 +6,7 @@ Imports VecompSoftware.Services.Biblos.Models
 
 Public Class WorkflowActivityViewer
     Inherits CommonBasePage
-    Private Const _tollerance As Integer = 10000
+    Private Const _tollerance As Integer = 3000
     Protected ReadOnly Property CurrentIdArchiveChain As Guid
         Get
             Return Guid.Parse(Request.QueryString("IdArchiveChain"))

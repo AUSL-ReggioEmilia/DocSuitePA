@@ -14,18 +14,6 @@
                             <asp:CheckBox AutoPostBack="False" ID="cbSelect" runat="server" />
                         </ItemTemplate>
                 </telerik:GridTemplateColumn>
-                <telerik:GridTemplateColumn CurrentFilterFunction="EqualTo" UniqueName="TenantModel.TenantName" DataField="TenantModel.TenantName" Groupable="false" HeaderText="Azienda" SortExpression="TenantModel.TenantName" AllowSorting="true">
-                    <HeaderStyle HorizontalAlign="Center" Width="80px" />
-                    <ItemStyle HorizontalAlign="Center" Width="80px" />
-                     <FilterTemplate>
-                            <telerik:RadComboBox  runat="server" ID="cmbTenants" DataTextField="Text" DataValueField="Value" Width="100%" AutoPostBack="True"
-                                OnSelectedIndexChanged="cmbTenants_SelectedIndexChanged">
-                            </telerik:RadComboBox>
-                        </FilterTemplate>
-                     <ItemTemplate>
-                         <asp:Label ID="lblTenantName" runat="server" />
-                     </ItemTemplate>
-	            </telerik:GridTemplateColumn>
                 <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../Comm/Images/None16.gif" UniqueName="cDocType" >
                     <HeaderStyle HorizontalAlign="Center" Width="25px" CssClass="headerImage"/>
                     <ItemStyle HorizontalAlign="Center" />
@@ -97,19 +85,19 @@
                         <asp:LinkButton runat="server" ID="lnkNumber" />
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
-                <telerik:GridDateTimeColumn CurrentFilterFunction="EqualTo" DataField="Entity.MemorandumDate" DataFormatString="{0:dd/MM/yyyy}" HeaderText="Data Prom." SortExpression="Entity.MemorandumDate" UniqueName="Entity.MemorandumDate" AllowSorting="false">  
+                <telerik:GridDateTimeColumn CurrentFilterFunction="EqualTo" DataField="Entity.MemorandumDate" DataFormatString="{0:dd/MM/yyyy}" HeaderText="Data Prom." SortExpression="Entity.MemorandumDate" UniqueName="MemorandumDate" AllowSorting="false">  
                     <HeaderStyle HorizontalAlign="Center" Width="125px" Wrap="false" />
                     <ItemStyle HorizontalAlign="Center" />
                 </telerik:GridDateTimeColumn>
-	            <telerik:GridBoundColumn CurrentFilterFunction="Contains" DataField="Entity.Subject" HeaderText="Oggetto" SortExpression="Entity.Subject" UniqueName="Entity.Subject" AllowSorting="false">
+	            <telerik:GridBoundColumn CurrentFilterFunction="Contains" DataField="Entity.Subject" HeaderText="Oggetto" SortExpression="Entity.Subject" UniqueName="Object" AllowSorting="false">
                     <HeaderStyle HorizontalAlign="Center" Width="30%" Wrap="false" />
                     <ItemStyle HorizontalAlign="Left" />
 	            </telerik:GridBoundColumn>
-	            <telerik:GridBoundColumn CurrentFilterFunction="Contains" DataField="Entity.Note" Groupable="False" HeaderText="Note" SortExpression="Entity.Note" UniqueName="Entity.Note" AllowSorting="false">
+	            <telerik:GridBoundColumn CurrentFilterFunction="Contains" DataField="Entity.Note" Groupable="False" HeaderText="Note" SortExpression="Entity.Note" UniqueName="Note" AllowSorting="false">
                     <HeaderStyle HorizontalAlign="Center" Wrap="false" Width="150px" />
                     <ItemStyle HorizontalAlign="Left" />
 	            </telerik:GridBoundColumn>
-                <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderText="Proponente" UniqueName="Proposer" AllowSorting="false">
+                <telerik:GridTemplateColumn CurrentFilterFunction="Contains" Groupable="false" HeaderText="Proponente" UniqueName="RegistrationName" AllowSorting="false">
                     <HeaderStyle HorizontalAlign="Center" Width="10%" Wrap="False" />
                     <ItemStyle HorizontalAlign="Center" />
 		            <ItemTemplate>

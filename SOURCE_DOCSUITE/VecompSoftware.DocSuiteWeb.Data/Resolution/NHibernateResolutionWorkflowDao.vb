@@ -91,7 +91,6 @@ Public Class NHibernateResolutionWorkflowDao
         End If
 
         criteria.Add(Restrictions.Not(Restrictions.Eq("IsActive", 2S)))
-
         criteria.AddOrder(Order.Asc("ResStep"))
 
         Return criteria.List(Of ResolutionWorkflow)()

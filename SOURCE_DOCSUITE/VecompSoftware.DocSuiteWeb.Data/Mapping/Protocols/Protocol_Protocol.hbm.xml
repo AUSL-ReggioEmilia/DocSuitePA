@@ -33,9 +33,6 @@
     <property name="ObjectChangeReason" column="ObjectChangeReason" type="AnsiString" />
     <property name="JournalDate" column="JournalDate" />
     <property name="CheckDate" column="ProtocolCheckDate" />
-    <property name="ConservationStatus" column="ConservationStatus" type="AnsiChar" />
-    <property name="LastConservationDate" column="LastConservationDate" />
-    <property name="HasConservatedDocs" column="HasConservatedDocs" />
     <property name="TDIdDocument" column="TdIdDocument" />
     <property name="TDError" column="TDError" type="AnsiString" />
     <property name="HandlerDate" column="HandlerDate" />
@@ -57,8 +54,6 @@
     <many-to-one class="DocumentType" name="DocumentType" column="idDocType" />
     <many-to-one class="ProtocolType" name="Type" column="idType" />
     <many-to-one name="JournalLog" class="ProtocolJournalLog" column="IdProtocolJournalLog" />
-
-    <one-to-one name="ProtocolParer" class="ProtocolParer" cascade="none" property-ref="Protocol" />
 
     <bag name="RoleUsers" table="ProtocolRoleUser" cascade="all-delete-orphan" inverse="true">
       <key>
@@ -94,12 +89,7 @@
       </key>
       <one-to-many class="ProtocolContactIssue" />
     </bag>
-    
-    <bag name="Recipients" table="ProtocolRecipient" cascade="none" inverse="true">
-      <key column="UniqueId" />
-      <many-to-many class="Recipient" column="idRecipient" />      
-    </bag>
-    
+        
     <bag name="Contacts" table="ProtocolContact" cascade="all-delete-orphan" inverse="true">
       <key>
         <column name="UniqueIdProtocol" />

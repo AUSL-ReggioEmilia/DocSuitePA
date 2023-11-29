@@ -11,6 +11,7 @@
     public static SESSION_KEY_RECIPIENT_ROLES = "WorkflowRecipientRoles";
     public static SESSION_KEY_PROPOSER_ROLES = "ProposerRole";
     public static SESSION_KEY_REFERENCE_UNIQUEID = "ReferenceUniqueId";
+    public static SESSION_KEY_CORRELATION_ID = "CorrelationId";
 
     public static SESSION_KEY_CURRENT_METADATA_VALUES = "CurrentMetadataValues";
     public static SESSION_KEY_DOSSIERFOLDERS_SESSIONNAME: string = "dossierfoldersessionname";
@@ -38,6 +39,9 @@
     public static SESSION_KIND_KEY: string = "ResolutionKindKey";
     public static SESSION_KEY_SELECTED_FASCICLE_FOLDER_ID = "SelectedFascicleFolderId";
     public static SESSION_KEY_CURRENT_UDS_METADATAS: string = "CurrentUDSMetadata";
+    public static SESSION_KEY_UDS_FIELD_LIST_POSTBACK_STATE: string = "FieldListPostbackState";
+    public static SESSION_KEY_DOCS_TO_SIGN: string = "DocsToSign";
+    public static SESSION_KEY_SIGNED_DOC: string = "SignedDoc";
 }
 
 export = SessionStorageKeysHelper;

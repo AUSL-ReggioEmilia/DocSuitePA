@@ -4,7 +4,7 @@
 
 <asp:Content ContentPlaceHolderID="cphContent" runat="server">
     <asp:Panel runat="server" ID="MainPanel">
-        <usc:UploadDocument AllowedExtensions=".xls" ButtonPreviewEnabled="False" ButtonScannerEnabled="False" Caption="Documento da importare" ID="uscDocument" IsDocumentRequired="True" MultipleDocuments="true" runat="server" SignButtonEnabled="false" />
+        <usc:UploadDocument AllowedExtensions=".xls" ButtonPreviewEnabled="False" ButtonScannerEnabled="False" Caption="Documento da importare" ID="uscDocument" IsDocumentRequired="True" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" SignButtonEnabled="false" />
     </asp:Panel>
 </asp:Content>
 

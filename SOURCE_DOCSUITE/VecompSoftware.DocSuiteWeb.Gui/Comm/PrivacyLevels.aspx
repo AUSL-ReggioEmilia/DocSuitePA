@@ -18,7 +18,7 @@
     <asp:Panel runat="server" ID="pageContent">
 
         <div runat="server" id="mainDiv">
-            <usc:Documents runat="server" ID="uscDocument" PrivacyLevelVisible="true" ButtonFileEnabled="false" ButtonRemoveEnabled="false" DocumentDeletable="false" MultipleDocuments="true" IsDocumentRequired="false" ButtonSharedFolederEnabled="false" SignButtonEnabled="false" ButtonScannerEnabled="false" ButtonLibrarySharepointEnabled="false" ModifiyPrivacyLevelEnabled="true" />
+            <usc:Documents runat="server" ID="uscDocument" PrivacyLevelVisible="true" ButtonFileEnabled="false" ButtonRemoveEnabled="false" DocumentDeletable="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" IsDocumentRequired="false" ButtonSharedFolederEnabled="false" SignButtonEnabled="false" ButtonScannerEnabled="false" ButtonLibrarySharepointEnabled="false" ModifiyPrivacyLevelEnabled="true" />
         </div>
     </asp:Panel>
 </asp:Content>

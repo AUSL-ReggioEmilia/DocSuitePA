@@ -20,5 +20,16 @@ Namespace ExtensionMethods
             Return doc.SaveUniqueToTemp(doc.Name)
         End Function
 
+        <Extension()>
+        Public Function SaveUniquePdfToTemp(ByVal doc As DocumentInfo, ByVal customFileName As String) As FileInfo
+            Dim owner As String = DocSuiteContext.Current.User.UserName
+            Return doc.SavePdf(CommonUtil.GetInstance().TempDirectory, FileHelper.UniqueFileNameFormat(customFileName, owner), Nothing)
+        End Function
+
+        <Extension()>
+        Public Function SaveUniquePdfToTemp(ByVal doc As DocumentInfo) As FileInfo
+            Return doc.SaveUniquePdfToTemp(doc.PDFName)
+        End Function
+
     End Module
 End Namespace

@@ -2,6 +2,7 @@
 using NHibernate.Criterion;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Data.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.DTO.Workflows;
@@ -18,37 +19,84 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows
         private readonly string _currentUserName;
         private IList<WorkflowActivityResult> _userWorkflowActivity;
 
-        public string WorkflowActivityName { get; set; }
+        public string WorkflowActivityName
+        {
+            get; set;
+        }
 
-        public string WorkflowInstanceName { get; set; }
+        public string WorkflowInstanceName
+        {
+            get; set;
+        }
 
-        public String WorkflowSubject { get; set; }
-        
-        public String RequestorUser { get; set; }
+        public string WorkflowSubject
+        {
+            get; set;
+        }
 
-        public bool? ExcludeDocumentUnitReferencedId { get; set; }
+        public string RequestorUser
+        {
+            get; set;
+        }
 
-        public Guid? ExcludeWorkflowActivityId { get; set; }
+        public bool? ExcludeDocumentUnitReferencedId
+        {
+            get; set;
+        }
 
-        public Guid? WorkflowInstanceId { get; set; }
-        public DateTime? WorkflowDateFrom { get; set; }
-        public DateTime? WorkflowDateTo { get; set; }
+        public Guid? ExcludeWorkflowActivityId
+        {
+            get; set;
+        }
 
-        public ICollection<WorkflowStatus> WorkflowActivityStatus { get; set; }
+        public Guid? WorkflowInstanceId
+        {
+            get; set;
+        }
+        public DateTime? WorkflowDateFrom
+        {
+            get; set;
+        }
+        public DateTime? WorkflowDateTo
+        {
+            get; set;
+        }
+        public bool? IsVisible
+        {
+            get; set;
+        }
+
+        public ICollection<WorkflowStatus> WorkflowActivityStatus
+        {
+            get; set;
+        }
 
         //public IList<Role> UserRoles { get; set; }
-        public ICollection<ActivityType> WorkflowActivityType { get; set; }
+        public ICollection<ActivityType> WorkflowActivityType
+        {
+            get; set;
+        }
 
-        public ICollection<ActivityType> ExcludeDefaultWorkflowActivityType { get; set; }
+        public ICollection<ActivityType> ExcludeDefaultWorkflowActivityType
+        {
+            get; set;
+        }
+        public Guid? IdTenant
+        {
+            get; set;
+        }
+        public Guid? WorkflowRepositoryUniqueId
+        {
+            get; set;
+        }
 
-        public Guid? IdTenant { get; set; }
         #endregion
 
         #region [ Constructor ]  
         public WorkflowActivityFinder(IEntityMapper<WorkflowActivity, WorkflowActivityResult> mapper, string currentUserName)
             : this(System.Enum.GetName(typeof(EnvironmentDataCode), EnvironmentDataCode.ProtDB), mapper, currentUserName)
         {
-            
+
         }
         public WorkflowActivityFinder(string dbName, IEntityMapper<WorkflowActivity, WorkflowActivityResult> mapper, string currentUserName)
             : base(dbName, mapper)
@@ -68,6 +116,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows
             _userWorkflowActivity = new List<WorkflowActivityResult>();
             WorkflowActivityType = new List<ActivityType>();
             WorkflowActivityStatus = new List<WorkflowStatus>();
+
             ExcludeDefaultWorkflowActivityType = new List<ActivityType>();
             ExcludeDefaultWorkflowActivityType.Add(ActivityType.BuildAchive);
             ExcludeDefaultWorkflowActivityType.Add(ActivityType.BuildMessages);
@@ -89,9 +138,20 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows
                 .JoinQueryOver(o => o.WorkflowInstance, () => workflowInstance)
                 .JoinQueryOver(o => o.WorkflowRepository, () => workflowRepository);
 
-
-            
             queryOver.Where(q => !q.ActivityType.IsIn(ExcludeDefaultWorkflowActivityType.ToList()));
+            if (IsVisible.HasValue)
+            {
+                queryOver
+                    .And(Restrictions.Or(
+                        Restrictions.Where<WorkflowActivity>(x => x.IsVisible == IsVisible.Value),
+                        Restrictions.Conjunction()
+                        .Add<WorkflowActivity>(x => x.IsVisible == false && x.RegistrationUser == _currentUserName)
+                        .Add(Subqueries.Exists(
+                            QueryOver.Of<WorkflowProperty>()
+                            .Where(tx => tx.WorkflowActivity.Id == workflowActivityAlias.Id && tx.Name == "_dsw_e_ProductName" && tx.ValueString == "DocSuite")
+                            .Select(tx => tx.Id).DetachedCriteria))));
+            }
+
             if (WorkflowActivityType.Count > 0)
             {
                 queryOver.Where(q => q.ActivityType.IsIn(WorkflowActivityType.ToList()));
@@ -124,12 +184,17 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows
 
             if (IdTenant.HasValue)
             {
-                queryOver.Where(q => q.IdTenant == null || q.IdTenant == IdTenant.Value);
+                queryOver.Where(q => q.IdTenant == IdTenant.Value);
+            }
+
+            if (WorkflowRepositoryUniqueId != null && WorkflowRepositoryUniqueId != Guid.Empty)
+            {
+                queryOver.Where(q => workflowRepository.Id == WorkflowRepositoryUniqueId);
             }
 
             queryOver = FilterBySearchField(queryOver);
             queryOver = FilterByUserPermission(queryOver);
-            
+
 
             return queryOver;
         }
@@ -146,7 +211,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows
                     queryOver.WhereRestrictionOn(x => x.Name).IsLike(WorkflowActivityName, MatchMode.Anywhere);
                 }
                 if (!string.IsNullOrEmpty(WorkflowInstanceName))
-                {           
+                {
                     queryOver.WhereRestrictionOn(x => workflowRepository.Name).IsLike(WorkflowInstanceName, MatchMode.Anywhere);
                 }
                 if (!string.IsNullOrEmpty(WorkflowSubject))
@@ -177,7 +242,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows
                     queryOver.And(Restrictions.Or(
                         Restrictions.Where<WorkflowActivity>(wa => wa.RegistrationUser == RequestorUser),
                         Subqueries.Exists(dCriteria)));
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -196,7 +261,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows
             int counter = default(int);
             IQueryOver<WorkflowActivity, WorkflowActivity> queryOver = CreateQueryOver();
             queryOver = DecorateCriteria(queryOver);
-            using (ITransaction transaction = NHibernateSession.BeginTransaction())
+            using (ITransaction transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 try
                 {

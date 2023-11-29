@@ -59,41 +59,30 @@
                                         <telerik:RadPanelItem Text="Informazioni" Expanded="true">
                                             <ContentTemplate>
                                                 <asp:Panel runat="server" ID="pnlInformations">
-                                                    <div class="col-dsw-10">
-
-                                                        <div class="leftLabel">
-                                                            <b class="labelPadding-7">Oggetto: </b>
+                                                    <div class="col-dsw-5 dsw-align-left">
+                                                        <div class="col-dsw-10">
+                                                            <b>Oggetto:</b>
+                                                            <asp:Label runat="server" ID="lblObject"></asp:Label>
                                                         </div>
-                                                        <div class="rightValue">
-                                                            <asp:Label ID="lblObject" runat="server" />
+                                                        <div class="col-dsw-10">
+                                                            <b>Versione:</b>
+                                                            <asp:Label runat="server" ID="lblVersion"></asp:Label>
                                                         </div>
-
-                                                        <div class="leftLabel">
-                                                            <b class="labelPadding-7">Versione:</b>
+                                                    </div>
+                                                    <div class="col-dsw-5 dsw-align-left">
+                                                        <div class="col-dsw-10">
+                                                            <b>Stato:</b>
+                                                            <asp:Label runat="server" ID="lblStatus"></asp:Label>
                                                         </div>
-                                                        <div class="rightValue">
-                                                            <asp:Label ID="lblVersion" runat="server" />
+                                                        <div class="col-dsw-10">
+                                                            <b>Tag:</b>
+                                                            <asp:Label runat="server" ID="lblTags"></asp:Label>
                                                         </div>
-
-                                                        <div class="leftLabel">
-                                                            <b class="labelPadding-7">Stato:</b>
-                                                        </div>
-                                                        <div class="rightValue">
-                                                            <asp:Label ID="lblStatus" runat="server" />
-                                                        </div>
-
-                                                        <div class="leftLabel">
-                                                            <b class="labelPadding-7">Tag:</b>
-                                                        </div>
-                                                        <div class="rightValue">
-                                                            <asp:Label runat="server" ID="lblTags" />
-                                                        </div>
-
-                                                        <div class="leftLabel">
-                                                            <b class="labelPadding-7">Identificativo univoco:</b>
-                                                        </div>
-                                                        <div class="rightValue">
-                                                            <asp:Label runat="server" ID="lblIdentifier" />
+                                                    </div>
+                                                    <div class="col-dsw-10 dsw-align-left">
+                                                        <div class="col-dsw-10">
+                                                            <b>Identificativo univoco:</b>
+                                                            <asp:Label runat="server" ID="lblIdentifier"></asp:Label>
                                                         </div>
                                                     </div>
                                                 </asp:Panel>

@@ -149,6 +149,123 @@ Partial Public Class uscResolutionOC
     Protected WithEvents tdAltro As Global.System.Web.UI.HtmlControls.HtmlTableCell
 
     '''<summary>
+    '''tblODCOptions control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblODCOptions As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''pnlOCSupervisoryBoard control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlOCSupervisoryBoard As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''chkOCSupervisoryBoard control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkOCSupervisoryBoard As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''pnlOCConfSindaci control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlOCConfSindaci As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''chkOCConfSindaci control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkOCConfSindaci As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''pnlOCRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlOCRegion As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''chkOCRegion control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkOCRegion As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''pnlOCManagement control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlOCManagement As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''chkOCManagement control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkOCManagement As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''pnlOCCorteConti control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlOCCorteConti As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''chkOCCorteConti control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkOCCorteConti As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''pnlOCOther control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlOCOther As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''chkOCOther control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkOCOther As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
     '''tblOCSupervisoryBoard control.
     '''</summary>
     '''<remarks>

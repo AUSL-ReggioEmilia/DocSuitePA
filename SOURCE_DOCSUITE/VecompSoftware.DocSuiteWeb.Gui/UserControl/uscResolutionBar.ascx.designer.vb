@@ -158,33 +158,6 @@ Partial Public Class uscResolutionBar
     Protected WithEvents btnLastPageUpload As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
-    '''pnlWebPublication control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlWebPublication As Global.System.Web.UI.WebControls.Panel
-
-    '''<summary>
-    '''bntPubblicaInternet control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents bntPubblicaInternet As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
-    '''bntRitiraInternet control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents bntRitiraInternet As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
     '''pnlButtonsDefault control.
     '''</summary>
     '''<remarks>
@@ -246,6 +219,15 @@ Partial Public Class uscResolutionBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConfirmView As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''btnTakeCharge control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnTakeCharge As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''rowBtn control.
@@ -336,6 +318,15 @@ Partial Public Class uscResolutionBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnLog As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''btnWorkflow control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnWorkflow As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''pnlToolbarPreView control.

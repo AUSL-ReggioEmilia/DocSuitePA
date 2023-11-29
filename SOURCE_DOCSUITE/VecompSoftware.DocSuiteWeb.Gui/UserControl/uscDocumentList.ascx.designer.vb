@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscDocumentList
-    
+
     '''<summary>
     '''DefaultLoadingPanel control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscDocumentList
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents DefaultLoadingPanel As Global.Telerik.Web.UI.RadAjaxLoadingPanel
-    
+
     '''<summary>
     '''DocumentsPanel control.
     '''</summary>
@@ -30,7 +30,25 @@ Partial Public Class uscDocumentList
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents DocumentsPanel As Global.System.Web.UI.WebControls.Panel
-    
+
+    '''<summary>
+    '''chkSelectAllOriginals control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkSelectAllOriginals As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''chkSelectAllCertifiedCopies control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkSelectAllCertifiedCopies As Global.System.Web.UI.WebControls.CheckBox
+
     '''<summary>
     '''DocumentsCaption control.
     '''</summary>
@@ -39,7 +57,7 @@ Partial Public Class uscDocumentList
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents DocumentsCaption As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''RadAjaxDefaultLoadingPanel control.
     '''</summary>
@@ -48,7 +66,7 @@ Partial Public Class uscDocumentList
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadAjaxDefaultLoadingPanel As Global.Telerik.Web.UI.RadAjaxPanel
-    
+
     '''<summary>
     '''DocumentListGrid control.
     '''</summary>

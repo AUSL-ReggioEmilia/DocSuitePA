@@ -3,9 +3,6 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports Telerik.Web.UI
-Imports Newtonsoft.Json
-Imports System.Linq
-Imports VecompSoftware.DocSuiteWeb.Facade.ProtocolParerFacade
 
 Partial Public Class uscProtGrid
     Inherits GridControl
@@ -14,8 +11,6 @@ Partial Public Class uscProtGrid
 
     Public Const COLUMN_CLIENT_SELECT As String = "colClientSelect"
     Public Const COLUMN_SELECTION As String = "colSelection"
-    Public Const COLUMN_PARER_ICON As String = "colParerIcon"
-    Public Const COLUMN_PARER_DESCRIPTION As String = "colParerDescription"
     Public Const COLUMN_ACTIONS As String = "colActions"
     Public Const COLUMN_PARTIAL_ACTIONS As String = "colPartialActions"
     Public Const COLUMN_HAS_READ As String = "colHasRead"
@@ -63,7 +58,7 @@ Partial Public Class uscProtGrid
     Private ReadOnly Property protocolRightsDictionary As IDictionary(Of Guid, ProtocolRights)
         Get
             If _protocolRightsDictionary Is Nothing Then
-                _protocolRightsDictionary = Facade.ProtocolFacade.GetProtocolRightsDictionary(GridDataSource)
+                _protocolRightsDictionary = Facade.ProtocolFacade.GetProtocolRightsDictionary(GridDataSource, False)
             End If
             Return _protocolRightsDictionary
         End Get
@@ -98,22 +93,6 @@ Partial Public Class uscProtGrid
         End Get
         Set(ByVal value As Boolean)
             grdProtocols.Columns.FindByUniqueName(COLUMN_SELECTION).Visible = value
-        End Set
-    End Property
-    Public Property ColumnPARERIconVisible() As Boolean
-        Get
-            Return grdProtocols.Columns.FindByUniqueName(COLUMN_PARER_ICON).Visible
-        End Get
-        Set(ByVal value As Boolean)
-            grdProtocols.Columns.FindByUniqueName(COLUMN_PARER_ICON).Visible = value
-        End Set
-    End Property
-    Public Property ColumnPARERDescriptionVisible() As Boolean
-        Get
-            Return grdProtocols.Columns.FindByUniqueName(COLUMN_PARER_DESCRIPTION).Visible
-        End Get
-        Set(ByVal value As Boolean)
-            grdProtocols.Columns.FindByUniqueName(COLUMN_PARER_DESCRIPTION).Visible = value
         End Set
     End Property
     Public Property ColumnActionsVisible As Boolean
@@ -352,22 +331,6 @@ Partial Public Class uscProtGrid
 
         Dim boundHeader As ProtocolHeader = DirectCast(e.Item.DataItem, ProtocolHeader)
         Dim hiddenId As String = boundHeader.UniqueId.ToString()
-        If DocSuiteContext.Current.ProtocolEnv.ParerEnabled Then
-            If ColumnPARERIconVisible Then
-                DirectCast(e.Item.FindControl("imgParerIcon"), Image).ImageUrl = getHeaderImageUrl(boundHeader, "ParerIcon")
-            End If
-            If ColumnPARERDescriptionVisible Then
-                With DirectCast(e.Item.FindControl("lbtParerDetail"), LinkButton)
-                    .OnClientClick = getHeaderClientScript(boundHeader, .CommandName)
-                    .Text = getParerDescription(boundHeader)
-
-                    If boundHeader.HasParer Then
-                        .Attributes.Add("onmouseover", "this.style.cursor='hand';")
-                        .Attributes.Add("onmouseout", "this.style.cursor='default';")
-                    End If
-                End With
-            End If
-        End If
         If ColumnActionsVisible Then
             With DirectCast(e.Item.FindControl("lbtRepair"), LinkButton)
                 .Visible = False
@@ -419,7 +382,7 @@ Partial Public Class uscProtGrid
         If ColumnHasReadVisible Then
             With DirectCast(e.Item.FindControl("imgHasRead"), Image)
                 If DocSuiteContext.Current.ProtocolEnv.IsLogStatusEnabled AndAlso Not boundHeader.HasRead.GetValueOrDefault(False) Then
-                    .ImageUrl = "~/comm/images/file/mail16.gif"
+                    .ImageUrl = "~/App_Themes/DocSuite2008/imgset16/mail.png"
                 Else
                     .Visible = False
                 End If
@@ -655,8 +618,6 @@ Partial Public Class uscProtGrid
             ColumnHasReadVisible = False
             ColumnIngoingPecVisible = False
             ColumnViewLinksVisible = False
-            ColumnPARERIconVisible = False
-            ColumnPARERDescriptionVisible = False
         End If
 
         If DocSuiteContext.Current.ProtocolEnv.IsInvoiceDataGridResultEnabled Then
@@ -726,30 +687,8 @@ Partial Public Class uscProtGrid
         End If
     End Function
 
-    Public Shared Function GetParerStatusIcon(status As ProtocolParerConservationStatus) As String
-        Select Case status
-            Case ProtocolParerConservationStatus.Correct
-                Return "../Comm/images/parer/green.png"
-            Case ProtocolParerConservationStatus.Warning
-                Return "../Comm/images/parer/yellow.png"
-            Case ProtocolParerConservationStatus.Error
-                Return "../Comm/images/parer/red.png"
-            Case ProtocolParerConservationStatus.Undefined
-                Return "../Comm/images/parer/lightgray.png"
-            Case ProtocolParerConservationStatus.NotNeeded
-                Return "../Comm/images/parer/lightgray.png"
-        End Select
-        Return "../Comm/images/parer/lightgray.png"
-    End Function
-
     Private Function getHeaderImageUrl(header As ProtocolHeader, discriminator As String) As String
         Select Case discriminator
-            Case "ParerIcon"
-                If DocSuiteContext.Current.ProtocolEnv.ParerEnabled Then
-                    Dim status As ProtocolParerConservationStatus = GetConservationStatus(header.ProxiedProtocolParer)
-                    Return GetParerStatusIcon(status)
-                End If
-                Return String.Empty
             Case "ViewDocuments"
                 Dim icon As String
                 If header.IdStatus = ProtocolStatusId.Incompleto Then
@@ -769,11 +708,11 @@ Partial Public Class uscProtGrid
                 End If
                 Select Case header.Type.Id
                     Case -1
-                        Return "~/prot/images/mail16_i.gif"
+                        Return "~/App_Themes/DocSuite2008/imgset16/ingoing.png"
                     Case 0
-                        Return "~/prot/images/mail16_iu.gif"
+                        Return "~/App_Themes/DocSuite2008/imgset16/inout.png"
                     Case 1
-                        Return "~/prot/images/mail16_u.gif"
+                        Return "~/App_Themes/DocSuite2008/imgset16/outgoing.png"
                     Case Else
                         Return String.Empty
                 End Select
@@ -818,24 +757,8 @@ Partial Public Class uscProtGrid
                 End If
                 Return String.Empty
 
-            Case "ViewParerDetail"
-                If DocSuiteContext.Current.ProtocolEnv.ParerEnabled AndAlso header.HasParer Then
-                    Dim script As String = "return OpenParerDetail('{0}?Type=Prot&UniqueId={1}');"
-                    script = String.Format(script, ResolveUrl("~/Prot/ProtParerDetail.aspx"), header.UniqueId)
-                    Return script
-                End If
-                Return "return false;"
-
         End Select
         Return String.Empty
-    End Function
-
-    Private Function getParerDescription(header As ProtocolHeader) As String
-        Dim parerStatusDescription As String = String.Empty
-        If DocSuiteContext.Current.ProtocolEnv.ParerEnabled Then
-            parerStatusDescription = Facade.ProtocolParerFacade.GetConservationStatusDescription(header)
-        End If
-        Return parerStatusDescription
     End Function
 
     Private Function getTextByHeader(header As ProtocolHeader, discriminator As String) As String

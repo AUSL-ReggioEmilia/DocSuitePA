@@ -4,11 +4,11 @@ Public Interface IGridBar
 
     Property Grid() As RadGrid
     Property HasWorkflow() As Boolean
-    ReadOnly Property SelectButton() As Button
-    ReadOnly Property DeselectButton() As Button
-    ReadOnly Property PrintButton() As Button
-    ReadOnly Property DocumentsButton() As Button
-    ReadOnly Property SetReadButton() As Button
+    ReadOnly Property SelectButton() As RadButton
+    ReadOnly Property DeselectButton() As RadButton
+    ReadOnly Property PrintButton() As RadButton
+    ReadOnly Property DocumentsButton() As RadButton
+    ReadOnly Property SetReadButton() As RadButton
 
     ReadOnly Property LeftPanel() As Panel
     ReadOnly Property RightPanel() As Panel

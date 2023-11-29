@@ -1,8 +1,8 @@
 {
-  "apiOdataAddress": "http://srvgeddev9999.cloudapp.net/DSW.PublicWebAPI/odata/",
-  "executiveDocumentHandlerUrl": "http://srvgeddev9999.cloudapp.net/DocumentHandler/ExecutiveResolutionDocumentHandler.ashx/",
-  "publishedDocumentHandlerUrl": "http://srvgeddev9999.cloudapp.net/DocumentHandler/PublishedResolutionDocumentHandler.ashx/",
-  "alboPretorioDocumentHandlerUrl": "http://srvgeddev9999.cloudapp.net/DocumentHandler/AlboPretorioDocumentHandler.ashx/",
+  "apiOdataAddress": "http://localhost/DSW.PublicWebAPI/odata/",
+  "executiveDocumentHandlerUrl": "http://localhost/DocumentHandler/ExecutiveResolutionDocumentHandler.ashx/",
+  "publishedDocumentHandlerUrl": "http://localhost/DocumentHandler/PublishedResolutionDocumentHandler.ashx/",
+  "alboPretorioDocumentHandlerUrl": "http://localhost/DocumentHandler/AlboPretorioDocumentHandler.ashx/",
   "gridItemsNumber": 10,
   "toastLife": 5000,
   "alboPretorioProposerColumnVisibility": false,

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyMetadata("tags", "VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao")]
@@ -17,5 +17,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("cabefd4f-db49-4dc3-85dd-eef31dc32e0c")]
 
-[assembly: AssemblyVersion("9.09.0.0")]
-[assembly: AssemblyFileVersion("9.09.0.0")]
+[assembly: AssemblyVersion("9.25.0.0")]
+[assembly: AssemblyFileVersion("9.25.0.0")]

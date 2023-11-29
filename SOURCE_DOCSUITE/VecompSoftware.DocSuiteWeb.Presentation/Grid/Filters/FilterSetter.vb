@@ -69,7 +69,7 @@ Public Class FilterSetter
         'crea il filtro
         Dim textFilter As String = FilterHelper.GetFilterValue(filterItem(command.Second).Controls.Item(0), _column.UniqueName)
         Dim filter As IFilterExpression = New Data.FilterExpression(command.Second, column.DataType, textFilter, Data.FilterExpression.FilterType.SQL)
-        filter.SQLExpression = column.GetSQLExpression(textFilter, command.First)
+        filter.SQLExpression = column.GetSQLExpression(textFilter, command.First, filter.PropertyName)
         'imposta il filtro
         SetFilter(column, filter)
     End Sub

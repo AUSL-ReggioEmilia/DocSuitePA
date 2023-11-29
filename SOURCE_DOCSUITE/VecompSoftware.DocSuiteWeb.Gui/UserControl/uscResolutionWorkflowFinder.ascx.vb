@@ -3,6 +3,7 @@ Imports System.Linq
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports Telerik.Web.UI
+Imports VecompSoftware.Helpers.ExtensionMethods
 
 Partial Public Class uscResolutionWorkflowFinder
     Inherits DocSuite2008BaseControl
@@ -274,6 +275,10 @@ Partial Public Class uscResolutionWorkflowFinder
                 pnlAdottataIntervallo.Visible = True
                 cvContainer.Enabled = False
                 ClearLinkedContainers()
+            Case TOWorkflow.RicercaFlussoAssegnaAffariGenerali
+                pnlAdottataIntervallo.Visible = True
+                pnlContenitore.Visible = False
+
             Case TOWorkflow.RicercaFlussoInvioAdozioneCollegioSindacaleFirmaDigitale
                 If rblTipologia.SelectedValue = ResolutionType.IdentifierDelibera Then
                     pnlAdottata.Visible = True
@@ -391,6 +396,10 @@ Partial Public Class uscResolutionWorkflowFinder
 
         End If
 
+        If _finder.WorkflowStepTo.Equals(TOWorkflow.RicercaFlussoAssegnaAffariGenerali) AndAlso _finder.Determina Then
+            _finder.DescriptionStep = WorkflowStep.AFF_GEN_CHECK_STEP_DESCRIPTION
+        End If
+
         'Proposta da a
         If pnlProposta.Visible Then
             _finder.DateFrom = ProposeDate_From.SelectedDate
@@ -457,6 +466,14 @@ Partial Public Class uscResolutionWorkflowFinder
         'OCRegion
         If pnlOCRegion.Visible Then
             _finder.OCRegion = chbOCRegion.Checked
+        End If
+
+        Dim aggGenFlowStep As TabWorkflow = Facade.TabWorkflowFacade.GetByResolutionType(ResolutionType.IdentifierDetermina).SingleOrDefault(Function(s) s.Description.Eq(WorkflowStep.AFF_GEN_CHECK_STEP_DESCRIPTION))
+        If (rblTipologia.SelectedValue.Equals(ResolutionType.IdentifierDetermina.ToString()) AndAlso aggGenFlowStep IsNot Nothing AndAlso
+            (_finder.WorkflowStepTo.Equals(TOWorkflow.RicercaFlussoInvioAdozioneCollegioSindacaleFirmaDigitale) OrElse
+            _finder.WorkflowStepTo.Equals(TOWorkflow.RicercaFlussoPubblicazione))) Then
+
+            _finder.WorkflowResponsibleStep = New Tuple(Of String, Integer)(aggGenFlowStep.Id.WorkflowType, aggGenFlowStep.Id.ResStep)
         End If
 
     End Sub

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://Vecomp.BiblosDs.Administration" elementFormDefault="qualified" targetNamespace="http://Vecomp.BiblosDs.Administration" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/Company" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Document" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd10" namespace="http://BiblosDS/2009/10/Storage" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/StorageArea" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd20" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd40" namespace="http://BiblosDS/2009/10/StorageRule" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Archive" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd42" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd43" namespace="http://BiblosDS/2009/10/ArchiveStorage" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd13" namespace="http://BiblosDS/2009/10/Attribute" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd14" namespace="http://BiblosDS/2009/10/AttributeGroup" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/StorageType" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd16" namespace="http://BiblosDS/2009/10/AttributeMode" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd44" namespace="http://BiblosDS/2009/10/DocumentStorageAreaRule" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd41" namespace="http://BiblosDS/2009/10/RuleOperator" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Server" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/ArchiveServerConfig" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/Company" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd10" namespace="http://BiblosDS/2009/10/Storage" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/StorageArea" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd20" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd40" namespace="http://BiblosDS/2009/10/StorageRule" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Archive" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd42" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd43" namespace="http://BiblosDS/2009/10/ArchiveStorage" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd13" namespace="http://BiblosDS/2009/10/Attribute" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd14" namespace="http://BiblosDS/2009/10/AttributeGroup" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/StorageType" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd16" namespace="http://BiblosDS/2009/10/AttributeMode" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd44" namespace="http://BiblosDS/2009/10/DocumentStorageAreaRule" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd41" namespace="http://BiblosDS/2009/10/RuleOperator" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Server" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/ArchiveServerConfig" />
   <xs:element name="DoWork">
     <xs:complexType>
       <xs:sequence />

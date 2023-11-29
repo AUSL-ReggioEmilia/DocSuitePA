@@ -15,7 +15,6 @@ import CommentFieldViewModel = require('App/ViewModels/Metadata/CommentFieldView
 import SetiContactModel = require('App/Models/Commons/SetiContactModel');
 import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
-
 class uscDynamicMetadataRest extends MetadataRepositoryBase {
 
     pageContentId: string;
@@ -41,6 +40,10 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
     static REQUIRED_FIELD: string = "RequiredField";
     static DEFAULT_VALUE: string = "DefaultValue";
     static KEY_NAME: string = "KeyName";
+    static HIDDEN_FIELD: string = "HiddenField";
+    static READ_ONLY_FIELD: string = "ReadOnlyField";
+    static SHOW_IN_RESULT_FIELD: string = "ShowInResults";
+    static FORMAT_TYPE_FIELD: string = "FormatType";
 
     /**
      * Costruttore
@@ -86,14 +89,14 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
      * Carico il modello nello usercontrol
      * @param idMetadataRepository
      */
-    loadMetadataRepository(idMetadataRepository: string) {
+    loadMetadataRepository(idMetadataRepository: string, jsonValueMetadataModels: string = null) {
         sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
         this._service.getFullModelById(idMetadataRepository,
             (data: MetadataRepositoryModel) => {
                 if (data) {
                     sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY, idMetadataRepository);
                     this._currentMetadataRepositoryModel = data;
-                    this.loadPageItems(data.JsonMetadata, null);
+                    this.loadPageItems(data.JsonMetadata, jsonValueMetadataModels);
                 }
             },
             (exception: ExceptionDTO) => {
@@ -172,7 +175,7 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
         let metadataDesignerModel: MetadataDesignerViewModel = JSON.parse(jsonDesignerMetadata);
         let metadataValues: MetadataValueViewModel[] = [];
         if (jsonValueMetadataModels) {
-            metadataValues = JSON.parse(jsonValueMetadataModels);
+            metadataValues = JSON.parse(jsonValueMetadataModels.replace(/\r?\n|\r/g, ""));
         }
 
         this.clearPage();
@@ -227,7 +230,7 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
                     this.controlsCounter++;
                     break;
                 case MetadataRepositoryBase.CONTROL_NUMBER_FIELD:
-                    this.fillHTMLGenericElement(this.componentNumberId, this.controlsCounter, metadataField, currentValue, "riTextBox");
+                    this.fillHTMLNumberElement(this.componentNumberId, this.controlsCounter, metadataField, currentValue, "riTextBox");
                     this.controlsCounter++;
                     break;
                 case MetadataRepositoryBase.CONTROL_BOOL_FIELD:
@@ -260,9 +263,11 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
         clonedElement.style.display = "";
         this.prepareLabel(idCloned, 0, model.Label);
         let inputElement: HTMLInputElement = this.findGenericInputControl(idCloned, 0, cssClass)
-
         this.setDefaultValues(inputElement, model);
         this.setRequiredAttribute(inputElement, model);
+        this.setVisibility(inputElement, model);
+        this.setEnable(inputElement, model);
+        this.setShowInSearchAttribute(inputElement, model);
         inputElement.setAttribute(uscDynamicMetadataRest.KEY_NAME, model.KeyName);
 
         if (model.DefaultValue) {
@@ -273,6 +278,37 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
         if (value) {
             inputElement.value = value;
             inputElement.checked = (value.toLowerCase() == "true");
+        }
+    };
+
+    /**
+     * Clono un elemento di tipo numerico e lo completo con i vari attributi
+     * @param idComponent
+     * @param incrementalIdentifier
+     * @param model
+     * @param cssClass
+     */
+    fillHTMLNumberElement(idComponent: string, incrementalIdentifier: number, model: BaseFieldViewModel, value: string, cssClass: string) {
+        let idCloned: string = this.cloneElement(idComponent, incrementalIdentifier);
+        let clonedElement: HTMLInputElement = <HTMLInputElement>($("#".concat(idCloned))[0]);
+        clonedElement.style.display = "";
+        this.prepareLabel(idCloned, 0, model.Label);
+        let inputElement: HTMLInputElement = this.findGenericInputControl(idCloned, 0, cssClass)
+
+        this.setDefaultValues(inputElement, model);
+        this.setRequiredAttribute(inputElement, model);
+        this.setVisibility(inputElement, model);
+        this.setEnable(inputElement, model);
+        this.setShowInSearchAttribute(inputElement, model);
+        this.setFormatType(inputElement, model);
+        inputElement.setAttribute(uscDynamicMetadataRest.KEY_NAME, model.KeyName);
+        
+        if (model.DefaultValue) {
+            inputElement.value = model.DefaultValue;
+        }
+
+        if (value) {
+            inputElement.value = value;
         }
     };
 
@@ -319,7 +355,25 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
                     selected: isSelected
                 }));
             });
-        }        
+        }
+
+        ddlElement.setAttribute(uscDynamicMetadataRest.READ_ONLY_FIELD, "false");
+        if (model.ReadOnly) {
+            ddlElement.disabled = true;
+            ddlElement.setAttribute(uscDynamicMetadataRest.READ_ONLY_FIELD, "true");
+        }
+
+        ddlElement.setAttribute(uscDynamicMetadataRest.SHOW_IN_RESULT_FIELD, "false");
+        if (model.ShowInResults) {
+            ddlElement.setAttribute(uscDynamicMetadataRest.SHOW_IN_RESULT_FIELD, "true");
+        }
+
+        ddlElement.setAttribute(uscDynamicMetadataRest.HIDDEN_FIELD, "false");
+        if (model.HiddenField) {
+            ddlElement.hidden = true;
+            ddlElement.parentNode.parentElement.hidden = true;
+            ddlElement.setAttribute(uscDynamicMetadataRest.HIDDEN_FIELD, "true");
+        }
     };
 
     /**
@@ -337,9 +391,11 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
         let labelValidator: HTMLLabelElement = this.findLabelElement(idCloned, 1);
         this.prepareLabel(idCloned, 0, model.Label);
         this.setDefaultValues(inputElement, model);
-
+        this.setVisibility(inputElement, model);
+        this.setEnable(inputElement, model);
+        this.setShowInSearchAttribute(inputElement, model);
         if (value) {
-            inputElement.value = value;
+            inputElement.value = moment(value, "YYYY-MM-DD").format("YYYY-MM-DD")
         }
         this.setRequiredAttribute(inputElement, model);
         $("#".concat(idCloned, " :input.", cssClass)).on("blur", { idParent: idCloned, class: cssClass }, this.onBlurEvent);
@@ -410,6 +466,49 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
         }
     }
 
+    setShowInSearchAttribute(element: HTMLInputElement, model: BaseFieldViewModel) {
+        element.setAttribute(uscDynamicMetadataRest.SHOW_IN_RESULT_FIELD, "false");
+        if (model.ShowInResults) {
+            element.required = true;
+            element.setAttribute(uscDynamicMetadataRest.SHOW_IN_RESULT_FIELD, "true");
+        }
+    }
+
+    setVisibility(element: HTMLInputElement, model: BaseFieldViewModel) {
+        element.setAttribute(uscDynamicMetadataRest.HIDDEN_FIELD, "false");
+        if (model.HiddenField) {
+            element.hidden = true;
+            element.parentNode.parentElement.hidden = true;
+            element.setAttribute(uscDynamicMetadataRest.HIDDEN_FIELD, "true");
+        }
+    }
+
+    setEnable(element: HTMLInputElement, model: BaseFieldViewModel) {
+        element.setAttribute(uscDynamicMetadataRest.READ_ONLY_FIELD, "false");
+        if (model.ReadOnly) {
+            element.disabled = true;
+            element.setAttribute(uscDynamicMetadataRest.READ_ONLY_FIELD, "true");
+        }
+    }
+
+    setFormatType(element: HTMLInputElement, model: BaseFieldViewModel) {
+        element.setAttribute(uscDynamicMetadataRest.FORMAT_TYPE_FIELD, "0");
+        if (model.FormatType) {
+            element.setAttribute(uscDynamicMetadataRest.FORMAT_TYPE_FIELD, model.FormatType);
+            element.onchange = (event: Event) => {
+                if (model.FormatType === "0") {
+                    element.value = parseFloat(element.value).toFixed(0);
+                }
+                if (model.FormatType === "0.00") {
+                    element.value = parseFloat(element.value).toFixed(2);
+                }
+                if (model.FormatType === "0.0000") {
+                    element.value = parseFloat(element.value).toFixed(4);
+                }
+            }
+        }
+    }
+
     /**
      * Recupero i dati dalla pagina
      */
@@ -444,6 +543,7 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
 
             labelElement = this.findLabelElement(divElement.id, 0);
             let dataset: string = divElement.getAttribute("data-type");
+
             switch (dataset) {
                 case "Text":
                     inputElement = this.findGenericInputControl(divElement.id, 0, "riTextBox");
@@ -458,6 +558,9 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
                     if (textField.Required && !inputElement.value) {
                         missingRequiredFields.push(textField.Label);
                     }
+                    textField.HiddenField = inputElement.attributes[uscDynamicMetadataRest.HIDDEN_FIELD].value == "true";
+                    textField.ReadOnly = inputElement.attributes[uscDynamicMetadataRest.READ_ONLY_FIELD].value == "true";
+                    textField.ShowInResults = (inputElement.getAttribute(uscDynamicMetadataRest.SHOW_IN_RESULT_FIELD) == "true");
 
                     currentValue = new MetadataValueViewModel();
                     currentValue.KeyName = textField.KeyName;
@@ -482,6 +585,10 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
                     if (inputElement.value && isNaN(parseInt(inputElement.value))) {
                         invalidInput.push(baseField.Label);
                     }
+                    baseField.HiddenField = inputElement.attributes[uscDynamicMetadataRest.HIDDEN_FIELD].value == "true";
+                    baseField.ReadOnly = inputElement.attributes[uscDynamicMetadataRest.READ_ONLY_FIELD].value == "true";
+                    baseField.ShowInResults = (inputElement.getAttribute(uscDynamicMetadataRest.SHOW_IN_RESULT_FIELD) == "true");
+                    baseField.FormatType = inputElement.getAttribute(uscDynamicMetadataRest.FORMAT_TYPE_FIELD);
 
                     currentValue = new MetadataValueViewModel();
                     currentValue.KeyName = baseField.KeyName;
@@ -506,10 +613,19 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
                     if (inputElement.value && !moment(inputElement.value).isValid()) {
                         invalidInput.push(baseField.Label);
                     }
+                    baseField.HiddenField = inputElement.attributes[uscDynamicMetadataRest.HIDDEN_FIELD].value == "true";
+                    baseField.ReadOnly = inputElement.attributes[uscDynamicMetadataRest.READ_ONLY_FIELD].value == "true";
+                    baseField.ShowInResults = (inputElement.getAttribute(uscDynamicMetadataRest.SHOW_IN_RESULT_FIELD) == "true");
 
                     currentValue = new MetadataValueViewModel();
                     currentValue.KeyName = baseField.KeyName;
-                    currentValue.Value = inputElement.value;
+
+                    if (inputElement.value) {
+                        currentValue.Value = moment(inputElement.value, "YYYY-MM-DD").format("YYYY-MM-DD");
+                    } else {
+                        currentValue.Value = "";
+                    }
+
                     currentValues.push(currentValue);
 
                     metadataModel.DateFields.push(baseField);
@@ -527,6 +643,9 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
                     if (baseField.Required && !inputElement.checked) {
                         missingRequiredFields.push(baseField.Label);
                     }
+                    baseField.HiddenField = inputElement.attributes[uscDynamicMetadataRest.HIDDEN_FIELD].value == "true";
+                    baseField.ReadOnly = inputElement.attributes[uscDynamicMetadataRest.READ_ONLY_FIELD].value == "true";
+                    baseField.ShowInResults = (inputElement.getAttribute(uscDynamicMetadataRest.SHOW_IN_RESULT_FIELD) == "true");
 
                     currentValue = new MetadataValueViewModel();
                     currentValue.KeyName = baseField.KeyName;
@@ -540,10 +659,10 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
                     enumField = new EnumFieldViewModel();
                     enumField.KeyName = ddlElement.attributes[uscDynamicMetadataRest.KEY_NAME].value;
                     enumField.Position = index;
-                    if (inputElement.getAttribute(uscDynamicMetadataRest.DEFAULT_VALUE)) {
-                        enumField.DefaultValue = inputElement.getAttribute(uscDynamicMetadataRest.DEFAULT_VALUE);
+                    if (ddlElement.getAttribute(uscDynamicMetadataRest.DEFAULT_VALUE)) {
+                        enumField.DefaultValue = ddlElement.getAttribute(uscDynamicMetadataRest.DEFAULT_VALUE);
                     }
-                    enumField.Required = (inputElement.getAttribute(uscDynamicMetadataRest.REQUIRED_FIELD) == "true");
+                    enumField.Required = (ddlElement.getAttribute(uscDynamicMetadataRest.REQUIRED_FIELD) == "true");
                     enumField.Label = labelElement.getAttribute(uscDynamicMetadataRest.FIELD_LABEL);
                     enumField.Options = {};
                     $.each(ddlElement, (index: number, option: HTMLOptionElement) => {
@@ -555,6 +674,9 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
                     if (enumField.Required && !$("#".concat(ddlElement.id, " :selected")).text()) {
                         missingRequiredFields.push(enumField.Label);
                     }
+                    enumField.HiddenField = ddlElement.attributes[uscDynamicMetadataRest.HIDDEN_FIELD].value == "true";
+                    enumField.ReadOnly = ddlElement.attributes[uscDynamicMetadataRest.READ_ONLY_FIELD].value == "true";
+                    enumField.ShowInResults = (ddlElement.getAttribute(uscDynamicMetadataRest.SHOW_IN_RESULT_FIELD) == "true");
 
                     currentValue = new MetadataValueViewModel();
                     currentValue.KeyName = enumField.KeyName;
@@ -590,6 +712,9 @@ class uscDynamicMetadataRest extends MetadataRepositoryBase {
                     if (currentDiscussion.Required && !inputElement.value) {
                         missingRequiredFields.push(currentDiscussion.Label);
                     }
+                    currentDiscussion.HiddenField = inputElement.attributes[uscDynamicMetadataRest.HIDDEN_FIELD].value == "true";
+                    currentDiscussion.ReadOnly = inputElement.attributes[uscDynamicMetadataRest.READ_ONLY_FIELD].value == "true";
+                    currentDiscussion.ShowInResults = (inputElement.getAttribute(uscDynamicMetadataRest.SHOW_IN_RESULT_FIELD) == "true");
 
                     currentValue = new MetadataValueViewModel();
                     currentValue.KeyName = currentDiscussion.KeyName;

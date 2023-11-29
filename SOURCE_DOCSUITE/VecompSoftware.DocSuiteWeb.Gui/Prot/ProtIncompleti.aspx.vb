@@ -48,7 +48,7 @@ Partial Public Class ProtIncompleti
         Dim gvProtocols As BindGrid = uscProtocolGrid.Grid
         Dim finder As NHibernateProtocolFinder = New NHibernateProtocolFinder("ProtDB")
         finder.IdStatus = ProtocolStatusId.Incompleto
-        CommonInstance.ApplyProtocolFinderSecurity(finder, SecurityType.Read, True)
+        CommonInstance.ApplyProtocolFinderSecurity(finder, SecurityType.Read, CurrentTenant.TenantAOO.UniqueId, True)
 
         Dim year As Short
         If Short.TryParse(txtYear.Text, year) Then

@@ -23,14 +23,6 @@
             }
         }
 
-        //richiamata quando la finestra Mitt/Dest rubrica viene chiusa
-        function <%= ID%>_CloseMittDest(sender, args) {
-            sender.remove_close(<%= ID%>_CloseMittDest);
-            if (args.get_argument() !== null) {
-                document.getElementById('<%=txtContact.clientID %>').innerText = args.get_argument();
-            }
-        }
-
         //richiamata quando la finestra contatti AD viene Chiusa
         function  <%= Me.ID %>_CloseDomain(sender, args) {
             sender.remove_close(<%= Me.ID %>_CloseDomain);

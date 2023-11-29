@@ -1,34 +1,29 @@
 ﻿Imports System.Collections.Generic
-Imports System.Web
-Imports System.Web.Script.Services
-Imports System.Web.Services
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.Commons
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
+Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-
+Imports VecompSoftware.Services.Logging
 
 Public Class uscPECMailBoxSettings
     Inherits DocSuite2008BaseControl
 
 #Region "Fields"
-    
+    Private Const PEC_MAIL_BOX_SETTINGS_MODEL As String = "{0}_uscPECMailBoxSettings.pecMAilWithEncryptedPassword(`{1}`, {2});"
 #End Region
 
 #Region " Properties "
 
-    Public ReadOnly Property PageContent As RadWindow
+    Public ReadOnly Property PageContent As Panel
         Get
-            Return rwPECMailBoxSettings
+            Return pnlDetails
         End Get
     End Property
 
-    Public ReadOnly Property PECMailBoxId As HiddenField
+    Public ReadOnly Property IsValidEncryptionKey As Boolean
         Get
-            Return lblPECMailBoxId
+            Return String.IsNullOrEmpty(DocSuiteContext.PasswordEncryptionKey) AndAlso DocSuiteContext.PasswordEncryptionKey.Length <> 32
         End Get
     End Property
 
@@ -44,19 +39,82 @@ Public Class uscPECMailBoxSettings
             Return JsonConvert.SerializeObject(InvoiceTypesDictionary)
         End Get
     End Property
-
+    Public Property IsInsertAction As Boolean
+    Public Property ValidationGroupName As String
 #End Region
 
 #Region "Events"
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        InitializeAjax()
+        If Not IsPostBack Then
+            txtMailboxNameRequireValidator.ValidationGroup = ValidationGroupName
+            txtUsernameRequireValidator.ValidationGroup = ValidationGroupName
+            txtPasswordRequireValidator.ValidationGroup = ValidationGroupName
+            ddlLocationRequireValidator.ValidationGroup = ValidationGroupName
+            txtINPortRequireValidator.ValidationGroup = ValidationGroupName
+            txtOUTPortRequireValidator.ValidationGroup = ValidationGroupName
+        End If
+    End Sub
+
+    Protected Sub UscPECMailBoxSettingsAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
+        Dim ajaxModel As AjaxModel = Nothing
+        Try
+            ajaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument)
+        Catch
+            Exit Sub
+        End Try
+
+        If ajaxModel IsNot Nothing Then
+            Try
+                Select Case ajaxModel.ActionName
+                    Case "EncryptPassword"
+                        If ajaxModel.Value IsNot Nothing AndAlso ajaxModel.Value.Count > 0 Then
+                            Dim pecMailBoxSettingsModel As Entity.PECMails.PECMailBox = JsonConvert.DeserializeObject(Of Entity.PECMails.PECMailBox)(ajaxModel.Value(1))
+
+                            Dim actionType As String = ajaxModel.Value(0)
+                            Dim clientId As String = ajaxModel.Value(2)
+                            If clientId <> Me.ClientID Then
+                                Exit Sub
+                            End If
+
+                            Dim password As String = String.Empty
+                            Select Case actionType
+                                Case "Insert"
+                                    password = Helpers.Security.EncryptionHelper.EncryptString(pecMailBoxSettingsModel.Password, DocSuiteContext.PasswordEncryptionKey)
+                                    IsInsertAction = True
+                                Case "Update"
+                                    If String.IsNullOrEmpty(txtPassword.Text) Then
+                                        password = pecMailBoxSettingsModel.Password
+                                    Else
+                                        password = Helpers.Security.EncryptionHelper.EncryptString(pecMailBoxSettingsModel.Password, DocSuiteContext.PasswordEncryptionKey)
+                                    End If
+                                    IsInsertAction = False
+                            End Select
+
+                            pecMailBoxSettingsModel.Password = password
+                            If (pecMailBoxSettingsModel.RulesetDefinition IsNot Nothing) Then
+                                pecMailBoxSettingsModel.RulesetDefinition = pecMailBoxSettingsModel.RulesetDefinition.Replace("""", "\""")
+                            End If
+                            AjaxManager.ResponseScripts.Add(String.Format(PEC_MAIL_BOX_SETTINGS_MODEL, Me.ClientID, JsonConvert.SerializeObject(pecMailBoxSettingsModel), IsInsertAction.ToString().ToLower()))
+                            End If
+                End Select
+            Catch ex As Exception
+                FileLogger.Error(LoggerName, "Errore nel caricamento dei dati del pec.", ex)
+                AjaxManager.Alert("Errore nel caricamento dei dati del pec.")
+                Return
+            End Try
+
+        End If
 
     End Sub
 
 #End Region
 
 #Region "Methods"
-
+    Private Sub InitializeAjax()
+        AddHandler AjaxManager.AjaxRequest, AddressOf UscPECMailBoxSettingsAjaxRequest
+    End Sub
 #End Region
 
 End Class

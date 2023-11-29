@@ -61,6 +61,7 @@ class WorkflowActivityManage {
     ddlUDSArchivesUniqueId: string;
     panelDocumentUnitSelectId: string;
     panelManageId: string;
+    panelDocumentId: string;
 
     private static INSERT_MISCELLANEA: string = "InsertMiscellanea";
     private static WORKFLOW_ACTIVITY_EXPAND_PROPERTIES: string[] =
@@ -121,6 +122,10 @@ class WorkflowActivityManage {
         return $(`#${this.panelManageId}`);
     }
 
+    private panelDocument(): JQuery {
+        return $(`#${this.panelDocumentId}`);
+    }
+
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         this._serviceConfigurations = serviceConfigurations;
     }
@@ -136,7 +141,7 @@ class WorkflowActivityManage {
         this.pnlArchives().hide();
         this.pnlFascicleSelect().hide();
         this.panelManage().hide();
-
+        this.panelDocument().show()
         this.panelDocumentUnitSelect().addClass(" t-col-12");
         this.panelDocumentUnitSelect().removeClass(" t-col-4");
 
@@ -168,6 +173,9 @@ class WorkflowActivityManage {
 
                 this._gridUD.get_masterTableView().hideColumn(3);
                 break;
+            }
+            case "PEC": {
+                this.panelDocument().hide()
             }
         }
 
@@ -218,9 +226,15 @@ class WorkflowActivityManage {
         this._btnConfirm = $find(this.btnConfirmId) as Telerik.Web.UI.RadButton;
         this._gridUD = $find(this.grdUDId) as Telerik.Web.UI.RadGrid;
 
-        this.rblDocumentUnit().find("input:first").prop("checked", true);
         this.rblDocumentUnit().on('change', this.radioListButtonChanged);
 
+        let checkedChoice: string = this.rblDocumentUnit().find('input:checked').val();
+        if (checkedChoice === "PEC") {
+            this.panelDocument().hide();
+        }
+        else {
+            this.panelDocument().show();
+        }
 
         this._loadingPanel.show(this.currentPageId);
         this.checkUserRights()

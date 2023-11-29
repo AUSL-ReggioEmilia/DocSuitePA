@@ -48,14 +48,12 @@ Public Class NHibernateParameterDao
     End Sub
 
     Sub UpdateResolutionLastUsedNumber(lastUsedNumber As Integer)
-        Dim currentParameter As Parameter = GetCurrent()
         Dim session As ISession = NHibernateSessionManager.Instance.GetSessionFrom(System.Enum.GetName(GetType(EnvironmentDataCode), EnvironmentDataCode.ReslDB))
         Dim sqlQuery As ISQLQuery = session.CreateSQLQuery($"UPDATE Parameter SET LastUsedResolutionNumber={lastUsedNumber}, Locked=0")
         sqlQuery.ExecuteUpdate()
     End Sub
 
     Sub UpdateResolutionLastUsedBillNumber(lastUsedBillNumber As Integer)
-        Dim currentParameter As Parameter = GetCurrent()
         Dim session As ISession = NHibernateSessionManager.Instance.GetSessionFrom(System.Enum.GetName(GetType(EnvironmentDataCode), EnvironmentDataCode.ReslDB))
         Dim sqlQuery As ISQLQuery = session.CreateSQLQuery($"UPDATE Parameter SET LastUsedBillNumber={lastUsedBillNumber}, Locked=0")
         sqlQuery.ExecuteUpdate()
@@ -73,7 +71,6 @@ Public Class NHibernateParameterDao
     End Sub
 
     Sub UpdateLastIdRoleUser(idRoleUser As Integer, oldIdRoleUser As Integer)
-        Dim currentParameter As Parameter = GetCurrentAndRefresh()
         Dim sqlQuery As ISQLQuery = NHibernateSession.CreateSQLQuery($"UPDATE Parameter SET LastUsedIdRoleUser = {idRoleUser} WHERE LastUsedIdRoleUser = {oldIdRoleUser}")
         sqlQuery.ExecuteUpdate()
     End Sub

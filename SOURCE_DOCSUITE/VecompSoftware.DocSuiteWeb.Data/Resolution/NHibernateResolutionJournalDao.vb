@@ -17,7 +17,7 @@ Public Class NHibernateResolutionJournalDao
 
     Public Function GetByYear(year As Integer) As IList(Of ResolutionJournal)
         Dim criteria As ICriteria = ActiveCriteria()
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
         criteria.Add(Restrictions.Eq("Year", year))
         Return criteria.List(Of ResolutionJournal)()
     End Function
@@ -28,7 +28,7 @@ Public Class NHibernateResolutionJournalDao
     ''' <returns></returns>
     Public Function GetActive() As IList(Of ResolutionJournal)
         Dim criteria As ICriteria = ActiveCriteria()
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
         Return criteria.List(Of ResolutionJournal)()
     End Function
 
@@ -38,7 +38,7 @@ Public Class NHibernateResolutionJournalDao
 
         Dim criteria As ICriteria = ActiveCriteria()
         criteria.SetMaxResults(1) ' Solo il primo
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
         criteria.Add(Restrictions.Eq("Template.Id", template.Id))
         criteria.AddOrder(Order.Desc("Year")).AddOrder(Order.Desc("Month"))
 
@@ -49,7 +49,7 @@ Public Class NHibernateResolutionJournalDao
 
         Dim criteria As ICriteria = ActiveCriteria()
         criteria.SetMaxResults(1) ' Solo il primo
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
         criteria.Add(Restrictions.Eq("Template.Id", template.Id))
         criteria.Add(Restrictions.Le("Year", year))
         criteria.Add(Restrictions.Le("Month", month))
@@ -63,7 +63,7 @@ Public Class NHibernateResolutionJournalDao
     ''' </summary>
     Public Function BuildNext(template As ResolutionJournalTemplate) As ResolutionJournal
         Dim resolutionJournal As New ResolutionJournal()
-        resolutionJournal.IsActive = 1
+        resolutionJournal.IsActive = True
         ' prendo l'ultimo registro
         Dim lastJournal As ResolutionJournal = Nothing
         If template IsNot Nothing Then

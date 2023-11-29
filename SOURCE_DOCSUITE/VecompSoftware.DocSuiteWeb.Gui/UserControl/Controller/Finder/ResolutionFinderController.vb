@@ -34,6 +34,8 @@ Public Class ResolutionFinderController
         _uscFinder.VisibleStatusCancel = False
         _uscFinder.VisibleOnlytatusCancel = False
 
+        _uscFinder.VisibleStatoContabilita = DocSuiteContext.Current.ResolutionEnv.ResolutionAccountingEnabled
+
         _uscFinder.VisibilePrivacyPublication = DocSuiteContext.Current.ResolutionEnv.WebPublicationPrint
     End Sub
 #End Region

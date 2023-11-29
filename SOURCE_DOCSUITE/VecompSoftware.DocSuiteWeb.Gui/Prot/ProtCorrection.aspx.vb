@@ -9,6 +9,9 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 Public Class ProtCorrection
     Inherits ProtBasePage
 
+#Region " Fields "
+#End Region
+
 #Region "Properties"
     Public ReadOnly Property CurrentAddedRoleList() As ArrayList
         Get
@@ -39,6 +42,10 @@ Public Class ProtCorrection
 
         If CurrentProtocol.JournalLog IsNot Nothing AndAlso CurrentProtocol.JournalLog.LogDate.HasValue Then
             Throw New DocSuiteException("Impossibile correggere il protocollo.", $"Protocollo {CurrentProtocol.FullNumber} è già stato inserito in un registro di protocollo {CurrentProtocol.JournalLog.LogDate.Value.ToShortDateString()}")
+        End If
+
+        If CurrentProtocolRights.IsConservated Then
+            Throw New DocSuiteException($"Protocollo n. {CurrentProtocol.FullNumber}", "Il protocollo è conservato e non può essere correggato")
         End If
 
         AddHandler uscMittenti.ItemsAdded, AddressOf uscContact_ContactAdded
@@ -176,7 +183,7 @@ Public Class ProtCorrection
 
         ' Contenitori
         BindContainers(String.Empty)
-        rcbContainer.Enabled = ProtocolEnv.ProtocolContainerEditable AndAlso Not (CurrentProtocol.Container.IsInvoiceEnable OrElse CurrentProtocolRights.IsRejected OrElse ProtocolEnv.ProtocolRejectionEnabled)
+        rcbContainer.Enabled = ProtocolEnv.ProtocolContainerEditable AndAlso Not (CurrentProtocolRights.IsRejected OrElse ProtocolEnv.ProtocolRejectionEnabled)
         rcbContainer.SelectedValue = CurrentProtocol.Container.Id.ToString()
 
         ' Contatti
@@ -216,7 +223,6 @@ Public Class ProtCorrection
         uscMittenti.MultiSelect = True
         uscMittenti.ButtonSelectVisible = True
         uscMittenti.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
-        uscMittenti.ButtonSelectOChartVisible = True
         uscMittenti.ButtonDeleteVisible = True
         uscMittenti.ButtonManualVisible = True
         uscMittenti.ButtonPropertiesVisible = True
@@ -233,7 +239,6 @@ Public Class ProtCorrection
         uscDestinatari.MultiSelect = True
         uscDestinatari.ButtonSelectVisible = True
         uscDestinatari.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
-        uscDestinatari.ButtonSelectOChartVisible = True
         uscDestinatari.ButtonDeleteVisible = True
         uscDestinatari.ButtonManualVisible = True
         uscDestinatari.ButtonPropertiesVisible = True

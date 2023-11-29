@@ -29,6 +29,24 @@ Public Class UDSInvoicesUpload
         End Get
     End Property
 
+    Public ReadOnly Property CurrentUserTenantId As Guid
+        Get
+            If CurrentTenant IsNot Nothing Then
+                Return CurrentTenant.UniqueId
+            End If
+            Return Guid.Empty
+        End Get
+    End Property
+
+    Public ReadOnly Property CurrentUserTenantAOOId As Guid
+        Get
+            If CurrentTenant IsNot Nothing Then
+                Return CurrentTenant.TenantAOO.UniqueId
+            End If
+            Return Guid.Empty
+        End Get
+    End Property
+
     Private currentDocumentValue As DocumentInfo
     Public Property CurrentDocument() As DocumentInfo
         Get
@@ -46,6 +64,7 @@ Public Class UDSInvoicesUpload
         If Not IsPostBack() Then
             rgvPreviewDocuments.Style.Add(HtmlTextWriterStyle.Display, "none")
             rgvPreviewDocuments.DataSource = New List(Of String)()
+            rdtpDataRicezioneSdi.SelectedDate = Date.UtcNow
         End If
     End Sub
 

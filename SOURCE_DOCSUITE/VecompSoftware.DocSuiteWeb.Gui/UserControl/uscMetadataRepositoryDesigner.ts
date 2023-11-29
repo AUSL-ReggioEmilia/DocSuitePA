@@ -237,6 +237,10 @@ class uscMetadataRepositoryDesigner extends MetadataRepositoryBase {
         let inputElement: HTMLInputElement;
         let inputKeyNameElement: HTMLInputElement;
         let requiredElement: HTMLInputElement;
+        let showInResultsElement: HTMLInputElement;
+        let hiddenField: HTMLInputElement;
+        let readOnly: HTMLInputElement;
+        let formatType: HTMLInputElement;
 
         if (!this.validFields()) {
             return null;
@@ -248,6 +252,10 @@ class uscMetadataRepositoryDesigner extends MetadataRepositoryBase {
             inputElement = <HTMLInputElement>($("#".concat(divElement.id, " :input.form-control"))[0]);
             inputKeyNameElement = <HTMLInputElement>($("#".concat(divElement.id, " :input.form-control"))[1]);
             requiredElement = <HTMLInputElement>($("#".concat(divElement.id, " :input.checkBox"))[0]);
+            showInResultsElement = <HTMLInputElement>($("#".concat(divElement.id, " :input.checkBox"))[1]);
+            hiddenField = <HTMLInputElement>($("#".concat(divElement.id, " :input.checkBox"))[2]);
+            readOnly = <HTMLInputElement>($("#".concat(divElement.id, " :input.checkBox"))[3]);
+            formatType = <HTMLInputElement>($("#".concat(divElement.id, " option:selected"))[0]);
             let dataset: string = divElement.getAttribute("data-type");
             switch (dataset) {
                 case "Title":
@@ -261,6 +269,9 @@ class uscMetadataRepositoryDesigner extends MetadataRepositoryBase {
                     textField.KeyName = inputKeyNameElement.value ? inputKeyNameElement.value : inputElement.value;
                     textField.Label = inputElement.value;
                     textField.Required = requiredElement.checked;
+                    textField.ShowInResults = showInResultsElement.checked;
+                    textField.HiddenField = hiddenField.checked;
+                    textField.ReadOnly = readOnly.checked;
                     textField.Position = index;
                     metadataModel.TextFields.push(textField);
                     break;
@@ -269,6 +280,10 @@ class uscMetadataRepositoryDesigner extends MetadataRepositoryBase {
                     baseField.KeyName = inputKeyNameElement.value ? inputKeyNameElement.value : inputElement.value;
                     baseField.Label = inputElement.value;
                     baseField.Required = requiredElement.checked;
+                    baseField.ShowInResults = showInResultsElement.checked;
+                    baseField.HiddenField = hiddenField.checked;
+                    baseField.ReadOnly = readOnly.checked;
+                    baseField.FormatType = formatType.value;
                     baseField.Position = index;
                     metadataModel.NumberFields.push(baseField);
                     break;
@@ -277,6 +292,9 @@ class uscMetadataRepositoryDesigner extends MetadataRepositoryBase {
                     baseField.KeyName = inputKeyNameElement.value ? inputKeyNameElement.value : inputElement.value;
                     baseField.Label = inputElement.value;
                     baseField.Required = requiredElement.checked;
+                    baseField.ShowInResults = showInResultsElement.checked;
+                    baseField.HiddenField = hiddenField.checked;
+                    baseField.ReadOnly = readOnly.checked;
                     baseField.Position = index;
                     metadataModel.DateFields.push(baseField);
                     break;
@@ -285,6 +303,9 @@ class uscMetadataRepositoryDesigner extends MetadataRepositoryBase {
                     baseField.KeyName = inputKeyNameElement.value ? inputKeyNameElement.value : inputElement.value;
                     baseField.Label = inputElement.value;
                     baseField.Required = requiredElement.checked;
+                    baseField.ShowInResults = showInResultsElement.checked;
+                    baseField.HiddenField = hiddenField.checked;
+                    baseField.ReadOnly = readOnly.checked;
                     baseField.Position = index;
                     metadataModel.BoolFields.push(baseField);
                     break;
@@ -293,6 +314,9 @@ class uscMetadataRepositoryDesigner extends MetadataRepositoryBase {
                     enumField.KeyName = inputKeyNameElement.value ? inputKeyNameElement.value : inputElement.value;
                     enumField.Label = inputElement.value;
                     enumField.Required = requiredElement.checked;
+                    enumField.ShowInResults = showInResultsElement.checked;
+                    enumField.HiddenField = hiddenField.checked;
+                    enumField.ReadOnly = readOnly.checked;
                     enumField.Position = index;
                     enumField.Options = {};
                     $.each($("#" + divElement.id).find('li'), (index: number, listElement: HTMLOListElement) => {
@@ -305,6 +329,9 @@ class uscMetadataRepositoryDesigner extends MetadataRepositoryBase {
                     discussionField.KeyName = inputKeyNameElement.value ? inputKeyNameElement.value : inputElement.value;
                     discussionField.Label = inputElement.value;
                     discussionField.Required = requiredElement.checked;
+                    discussionField.ShowInResults = showInResultsElement.checked;
+                    discussionField.HiddenField = hiddenField.checked;
+                    discussionField.ReadOnly = readOnly.checked;
                     discussionField.Position = index;
                     metadataModel.DiscussionFields.push(discussionField);
                     break;
@@ -464,14 +491,27 @@ class uscMetadataRepositoryDesigner extends MetadataRepositoryBase {
      * @param model
      */
     fillHTMLElement(idComponent: string, incrementalInteger: number, model: BaseFieldViewModel, currentType: string): string {
-
         let idCloned: string = this.cloneElement(idComponent, incrementalInteger);
         let inputElement: HTMLInputElement = this.findStandardInputElement(idCloned, 0);
         let inputKeyNameElement: HTMLInputElement = this.findStandardInputElement(idCloned, 1);
         let requiredElement: HTMLInputElement = this.findInputCheckBoxElement(idCloned, 0);
+        let showInResultsElement: HTMLInputElement = this.findInputCheckBoxElement(idCloned, 1);
+        let hiddenField: HTMLInputElement = this.findInputCheckBoxElement(idCloned, 2);
+        let readOnly: HTMLInputElement = this.findInputCheckBoxElement(idCloned, 3);
+        let formatType: HTMLSelectElement = this.findSelectControl(idCloned, 0);
+
         inputElement.value = model.Label;
         requiredElement.checked = model.Required;
+        showInResultsElement.checked = model.ShowInResults;
+        hiddenField.checked = model.HiddenField;
+        readOnly.checked = model.ReadOnly;
         inputKeyNameElement.value = model.KeyName ? model.KeyName : "";
+
+        if (formatType) {
+            formatType.value = model.FormatType;
+            formatType.disabled = true;
+            formatType.title = "Il formato non è modificabile dopo l'inserimento.";
+        }
 
         this.setDeleteComponentId(currentType, incrementalInteger);
         this.registerFocusBlurEvents([inputElement, inputKeyNameElement, requiredElement]);

@@ -7,9 +7,11 @@ Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.PEC
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
+Imports VecompSoftware.DocSuiteWeb.DTO.WorkflowsElsa
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
+Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Model.Parameters
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
@@ -121,7 +123,7 @@ Public Class PECBasePage
     Public ReadOnly Property CurrentPecMailRights As PECMailRightsUtil
         Get
             If _currentPecMailRights Is Nothing AndAlso CurrentPecMail IsNot Nothing Then
-                _currentPecMailRights = New PECMailRightsUtil(CurrentPecMail, DocSuiteContext.Current.User.FullUserName)
+                _currentPecMailRights = New PECMailRightsUtil(CurrentPecMail, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId)
             End If
             Return _currentPecMailRights
         End Get
@@ -227,7 +229,7 @@ Public Class PECBasePage
 
     Protected Function CheckAllSelectedPecMailIsActive(ByRef pecMails As IList(Of PECMail)) As Boolean
         For Each pec As PECMail In pecMails
-            If Not New PECMailRightsUtil(pec, DocSuiteContext.Current.User.FullUserName).IsActive Then
+            If Not New PECMailRightsUtil(pec, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId).IsActive Then
                 AjaxAlert("Selezionare solo PEC valide.")
                 Return False
             End If
@@ -312,7 +314,7 @@ Public Class PECBasePage
             Throw New DocSuiteException("Si possono reinviare solo PEC gestite.")
         End If
 
-        If Not New PECMailRightsUtil(pec, DocSuiteContext.Current.User.FullUserName).IsResendable Then
+        If Not New PECMailRightsUtil(pec, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId).IsResendable Then
             Dim message As String = String.Format("La PEC ""{0}"" [{1}] non risulta essere reinviabile.", pec.MailSubject, pec.Id)
             Throw New DocSuiteException(message)
         End If
@@ -323,7 +325,7 @@ Public Class PECBasePage
         Dim primaryIconUrl As String = String.Empty
         Select Case DocumentUnitType
             Case DSWEnvironment.Protocol
-                primaryIconUrl = "../Comm/Images/DocSuite/Protocollo16.gif"
+                primaryIconUrl = "../Comm/Images/DocSuite/Protocollo16.png"
             Case Else
                 primaryIconUrl = ImagePath.SmallDocumentSeries
         End Select
@@ -374,6 +376,13 @@ Public Class PECBasePage
     Protected Sub CleanCurrentPecMailRights()
         _currentPecMailRights = Nothing
     End Sub
+
+    Protected Sub DelegateElsaInitialize(pec As PECMail)
+        If pec.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager AndAlso Not String.IsNullOrEmpty(pec.MailContent) Then
+            Dim str As String = New FacadeElsaWebAPI(ProtocolEnv.DocSuiteNextElsaBaseURL).StartPreparePECMailDocumentsWorkflow(pec.UniqueId, JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(pec.MailContent))
+        End If
+    End Sub
+
 #End Region
 
 End Class

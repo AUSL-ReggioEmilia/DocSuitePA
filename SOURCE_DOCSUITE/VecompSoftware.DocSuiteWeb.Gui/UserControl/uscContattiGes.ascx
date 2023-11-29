@@ -17,25 +17,7 @@
             }
         }
 
-        /*Se l'utente seleziona una data pregressa, non permetto di salvare! */
-        function dateSelected(sender, eventArgs) {
-            var datePicker = $find("<%= txtHistoryDate.ClientID %>");
-            var dateTimePicker = datePicker.get_dateInput().get_selectedDate();
-            var dateTimeNow = new Date();
-            dateTimePicker.setHours(0, 0, 0, 0);
-            dateTimeNow.setHours(0, 0, 0, 0);
-
-            if (dateTimePicker >= dateTimeNow) {
-                $("#<%= btnConferma.ClientID %>").attr('disabled', 'disabled');
-                $("#<%= lbErrorHistoryDate.ClientID %>").show();
-            }
-            else {
-                $("#<%= btnConferma.ClientID %>").removeAttr('disabled');
-                $("#<%= lbErrorHistoryDate.ClientID %>").hide();
-            }
-
-        }
-
+      
         function OnClientClicking(sender, args) {
                 var windowManager = $find("<%= RadWindowManagerContattiGes.ClientID %>");
                 var actionName = "<%= BasePage.Action.ToLower() %>";
@@ -148,17 +130,6 @@
                             <td>
                                 <telerik:RadTextBox ID="txtDescription" MaxLength="250" runat="server" Width="100%" />
                                 <asp:RequiredFieldValidator ControlToValidate="txtDescription" Display="Dynamic" ErrorMessage="Campo Descrizione Obbligatorio" ID="rfvDescription" runat="server" />
-                            </td>
-                        </tr>
-                    </asp:Panel>
-                    <asp:Panel ID="pnlHistory" runat="server" Visible="false">
-                        <tr>
-                            <td class="label" style="width: 30%;">Data storicizzazione:</td>
-                            <td>
-                                <telerik:RadDatePicker ID="txtHistoryDate" Width="30%" runat="server" enable="false" Visible="false">
-                                    <ClientEvents OnDateSelected="dateSelected" />
-                                </telerik:RadDatePicker>
-                                <asp:Label runat="server" CssClass="hiddenField" Font-Bold="True" ForeColor="Red" Text="Data di storicizzazione posteriore a oggi" ID="lbErrorHistoryDate" />
                             </td>
                         </tr>
                     </asp:Panel>

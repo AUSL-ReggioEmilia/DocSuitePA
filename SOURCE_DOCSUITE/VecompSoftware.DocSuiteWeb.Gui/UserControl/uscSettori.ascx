@@ -12,7 +12,6 @@
                 <%= Me.ClientID %>_uscSettoriTS.ajaxLoadingPanelId = "<%= BasePage.MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                 <%= Me.ClientID %>_uscSettoriTS.ajaxManagerId = "<%= AjaxManager.ClientID %>";
                 <%= Me.ClientID %>_uscSettoriTS.multiSelect = "<%= MultiSelect%>";
-                <%= Me.ClientID %>_uscSettoriTS.currentTenantId = "<%= CurrentTenantId.ToString()%>";
                 <%= Me.ClientID %>_uscSettoriTS.toolBarId = "<%= ToolBar.ClientID%>";
                 <%= Me.ClientID %>_uscSettoriTS.validatorAnyNodeId = "<%= AnyNodeCheck.ClientID%>";
                 <%= Me.ClientID %>_uscSettoriTS.btnExpandRolesId = "<%= btnExpandRoles.ClientID%>";
@@ -104,7 +103,6 @@
             switch (btn.get_commandName()) {
                 case "add":
                     var selected = '';
-                    var tenantNodeSelected = '';
                     var tree = $find("<%= RadTreeSettori.ClientID%>");
                     if (tree != undefined) {
                         var nodes = tree.get_allNodes();
@@ -115,26 +113,11 @@
                             }
                         }
                     }
-                    var tenantTree = $find("<%= RadTreeRoleTenant.ClientID%>");
-                    if (tenantTree != undefined) {
-                        var tenantNodes = tenantTree.get_allNodes();
-                        for (var i = 0; i < tenantNodes.length; i++) {
-                            var tenantNode = tenantNodes[i];
-                            if (tenantNode.get_attributes().getAttribute("SELECTED") == 'TRUE') {
-                                tenantNodeSelected = tenantNodeSelected + "|" + tenantNode.get_value();
-                            }
-                        }
-                    }
 
                     var param = '<%= GetWindowParameters()%>';
                     if (selected != '') {
 
                         param = param + "&Selected=" + selected;
-                    }
-
-                    if (tenantNodeSelected != '') {
-
-                        param = param + "&TenantSelected=" + tenantNodeSelected;
                     }
 
                     <%= ClientID%>_OpenWindowFullSize(param);
@@ -194,16 +177,7 @@
             </telerik:RadToolBar>
             <div id="decorationZone">
                 <fieldset id="fldCurrentTenant" style="display: none;" runat="server">
-                    <legend>
-                        <asp:Label ID="lblCurrentTenant" CssClass="strongRiLabel" runat="server" />
-                    </legend>
                     <telerik:RadTreeView ID="RadTreeSettori" runat="server" Width="100%" CausesValidation="False" OnClientNodeClicked="OnClientNodeClickedExpand" />
-                </fieldset>
-                <fieldset id="fldOtherTenant" style="display: none;" runat="server">
-                    <legend>
-                        <asp:Label ID="lblOtherTenant" CssClass="strongRiLabel" runat="server" />
-                    </legend>
-                    <telerik:RadTreeView ID="RadTreeRoleTenant" runat="server" Width="100%" CausesValidation="False" OnClientNodeClicked="OnClientNodeClickedExpand" />
                 </fieldset>
             </div>
         </td>

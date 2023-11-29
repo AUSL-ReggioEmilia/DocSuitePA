@@ -68,7 +68,7 @@ Public Class NHibernatePackageDao
     End Function
 
     Public Sub ChangePackage(ByVal actualPackage As Integer, ByVal nextPackage As Integer, ByVal origin As Char)
-        Using transaction As ITransaction = NHibernateSession.BeginTransaction()
+        Using transaction As ITransaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted)
             Try
                 Dim actualItem As Package = GetById(New PackageCompositeKey(origin, actualPackage), True)
                 actualItem.State = "C"c

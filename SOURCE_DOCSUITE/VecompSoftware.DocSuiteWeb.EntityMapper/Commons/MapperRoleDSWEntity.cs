@@ -19,12 +19,12 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Commons
                 throw new ArgumentException("Impossibile trasformare Role se l'entità non è inizializzata");
             }
 
-            DSW.Role dswRole = new DSW.Role();
-
-            dswRole.Id = entity.EntityShortId;
-            dswRole.Name = entity.Name;
-            dswRole.TenantId = entity.TenantId;
-            dswRole.IdRoleTenant = entity.IdRoleTenant;
+            DSW.Role dswRole = new DSW.Role
+            {
+                Id = entity.EntityShortId,
+                Name = entity.Name,
+                //IdTenantAOO = entity.IdTenantAOO
+            };
 
             return dswRole;
         }

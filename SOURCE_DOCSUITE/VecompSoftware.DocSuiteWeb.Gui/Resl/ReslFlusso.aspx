@@ -198,7 +198,7 @@
                 <tr class="Chiaro">
 
                     <td colspan="2">
-                        <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadDocumentiOmissis" IsDocumentRequired="false" MultipleDocuments="true" runat="server" TreeViewCaption="Documenti Omissis" Type="Resl" WindowWidth="620" />
+                        <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadDocumentiOmissis" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" TreeViewCaption="Documenti Omissis" Type="Resl" WindowWidth="620" />
                     </td>
                 </tr>
                 <tr class="Spazio">
@@ -216,7 +216,7 @@
                 </tr>
                 <tr class="Chiaro">
                     <td colspan="2">
-                        <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAllegati" IsDocumentRequired="false" MultipleDocuments="true" runat="server" TreeViewCaption="Allegati (parte integrante)" Type="Resl" WindowWidth="620" />
+                        <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAllegati" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" TreeViewCaption="Allegati (parte integrante)" Type="Resl" WindowWidth="620" />
                     </td>
                 </tr>
                 <tr class="Spazio">
@@ -235,7 +235,7 @@
                 <tr class="Chiaro">
  
                     <td colspan="2">
-                        <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAllegatiOmissis" IsDocumentRequired="false" MultipleDocuments="true" runat="server" TreeViewCaption="Allegati Omissis (parte integrante)" Type="Resl" WindowWidth="620" />
+                        <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAllegatiOmissis" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" TreeViewCaption="Allegati Omissis (parte integrante)" Type="Resl" WindowWidth="620" />
                     </td>
                 </tr>
                 <tr class="Spazio">
@@ -254,7 +254,7 @@
                 <tr class="Chiaro">
               
                     <td colspan="2">
-                        <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadPrivacyAttachment" IsDocumentRequired="false" MultipleDocuments="true" runat="server" TreeViewCaption="Allegati Riservati" Type="Resl" WindowWidth="620" />
+                        <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadPrivacyAttachment" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" TreeViewCaption="Allegati Riservati" Type="Resl" WindowWidth="620" />
                     </td>
                 </tr>
                 <tr class="Spazio">
@@ -272,7 +272,7 @@
                 </tr>
                 <tr class="Chiaro">
                     <td colspan="2">
-                        <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAnnexes" IsDocumentRequired="false" MultipleDocuments="true" runat="server" TreeViewCaption="Annessi (non parte integrante)" Type="Resl" WindowWidth="620" />
+                        <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAnnexes" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" TreeViewCaption="Annessi (non parte integrante)" Type="Resl" WindowWidth="620" />
                     </td>
                 </tr>
                 <tr class="Spazio">

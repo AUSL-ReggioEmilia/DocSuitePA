@@ -4,7 +4,9 @@
     Process,
     DossierFolder,
     ProcessFascicleTemplate,
-    TreeRootNode
+    TreeRootNode,
+    LoadMore,
+    LoadProcessesAndFolders
 }
 
 export = ProcessNodeType;

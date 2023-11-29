@@ -34,7 +34,7 @@ Partial Public Class ReslRisultati
         AddHandler uscReslGrid.Grid.DataBound, AddressOf DataSourceChanged
         uscReslGrid.DisableColumn(uscReslGrid.COLUMN_DOCUMENT_SIGN)
         uscReslGrid.ColumnAttachSelectVisible = False 'Colonna dei documenti allegati
-        uscReslGrid.ColumnOcVisible = False
+        uscReslGrid.ColumnOcVisible = DocSuiteContext.Current.ResolutionEnv.ResolutionSearchableSteps IsNot Nothing AndAlso DocSuiteContext.Current.ResolutionEnv.ResolutionSearchableSteps.Count > 0
 
         InitializeAjaxSettings()
 

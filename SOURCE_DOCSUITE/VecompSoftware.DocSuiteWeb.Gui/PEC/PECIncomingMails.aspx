@@ -3,13 +3,13 @@
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadCodeBlock ID="RadCodeBlock1" runat="server">
         <script type="text/javascript">
-            
-           function pageLoad(sender, eventArgs) {
+
+            function pageLoad(sender, eventArgs) {
                 if (!eventArgs.get_isPartialLoad()) {
                     $find("<%= AjaxManager.ClientID %>").ajaxRequest("InitialPageLoad");
                 }
             }
-            
+
             //<![CDATA[
 
             function OpenWindow(mailId) {
@@ -48,19 +48,19 @@
                 }
                 sender.remove_close(OnClientClose);
             }
-          
+
             function UpdateGrid() {
                 document.getElementById("<%= cmdAggiornaDgMail.ClientID %>").click();
-        }
+            }
 
 
-        function RefreshNode() {
-            var ajaxManager = $find("<%= AjaxManager.ClientID %>");
+            function RefreshNode() {
+                var ajaxManager = $find("<%= AjaxManager.ClientID %>");
                 ajaxManager.ajaxRequest('Refresh');
-        }
+            }
 
-       
-        
+
+
             function ShowLoadingPanel() {
                 var currentLoadingPanel = $find("<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>");
                 var currentUpdatedControl = "<%= dgMail.ClientID%>";
@@ -96,7 +96,6 @@
 
             function showImageOnSelectedItemChanging(sender, eventArgs) {
                 var input = sender.get_inputDomElement();
-
                 input.style.background = "url(" + eventArgs.get_item().get_imageUrl() + ") no-repeat";
                 input.style.paddingLeft = "17px";
                 input.style.backgroundPositionY = "bottom";
@@ -109,7 +108,19 @@
                 input.style.paddingLeft = "17px";
                 input.style.backgroundPositionY = "bottom";
             }
-            //]]> 
+
+            function RowSelectedChanged(sender, eventArgs) {
+                var grid = $find("<%=dgMail.ClientID %>");
+
+                var attachBtn = document.getElementById("<%=cmdAttach.ClientID %>");
+                attachBtn.disabled = true;
+                var masterTable = grid.get_masterTableView();
+                var selectedRows = masterTable.get_selectedItems();
+
+                if (selectedRows.length === 1)
+                    attachBtn.disabled = false;
+            }
+            //]]>
         </script>
     </telerik:RadCodeBlock>
     <%--Header--%>
@@ -132,6 +143,16 @@
                                     DataValueField="Id" 
                                     AutoPostBack="true" 
                                     Width="350px" 
+                                    OnClientSelectedIndexChanging="showImageOnSelectedItemChanging" 
+                                    OnClientLoad="OnClientLoad" />
+                                <telerik:RadComboBox runat="server"
+                                    RenderMode="Lightweight" 
+                                    ID="ddlPECMailBoxIncluded" 
+                                    visible="true"
+                                    DataTextField="MailBoxName" 
+                                    DataValueField="Id" 
+                                    AutoPostBack="true" 
+                                    Width="200px" 
                                     OnClientSelectedIndexChanging="showImageOnSelectedItemChanging" 
                                     OnClientLoad="OnClientLoad" />
                             </td>
@@ -313,7 +334,7 @@
                         <ItemStyle HorizontalAlign="Center" Width="30" />
                     </telerik:GridBoundColumn>
                     <%-- ImgDirection --%>
-                    <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../Prot/Images/Mail16_IU.gif" HeaderText="Direzione" UniqueName="cDirection">
+                    <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../App_Themes/DocSuite2008/imgset16/inout.png" HeaderText="Direzione" UniqueName="cDirection">
                         <HeaderStyle HorizontalAlign="Center" CssClass="headerImage" />
                         <ItemStyle HorizontalAlign="Center" CssClass="cellImage" />
                         <ItemTemplate>
@@ -448,6 +469,7 @@
             </MasterTableView>
             <ClientSettings>
                 <Selecting AllowRowSelect="True" CellSelectionMode="None" UseClientSelectColumnOnly="True" EnableDragToSelectRows="False" />                
+                <ClientEvents OnRowSelected="RowSelectedChanged" OnRowDeselected="RowSelectedChanged" />
             </ClientSettings>
             <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente" SortToolTip="Ordina" />
         </DocSuite:BindGrid>
@@ -466,7 +488,7 @@
             <asp:Button ID="cmdClonePec" runat="server" Width="150" OnClientClick="ShowLoadingPanel();" />
             <asp:Button ID="cmdForward" runat="server" Width="150" OnClientClick="ShowLoadingPanel();" />
             <asp:Button ID="cmdViewLog" runat="server" Text="Visualizza log" Width="150" OnClientClick="ShowLoadingPanel();" />
-            <asp:Button ID="cmdAttach" runat="server" Text="Allega" Width="150" OnClientClick="ShowLoadingPanel();" PostBackUrl="../PEC/PECAttachToDocumentUnit.aspx?Type=PEC" />
+            <asp:Button ID="cmdAttach" runat="server" Text="Allega" Width="150" OnClientClick="ShowLoadingPanel();" PostBackUrl="../PEC/PECAttachToDocumentUnit.aspx?Type=PEC" disabled="disabled" />
             <asp:Button ID="cmdHandle" runat="server" Style="display: none" Text="Gestita" OnClientClick="ShowLoadingPanel();" Width="150" />
         </div>
         </asp:Panel>

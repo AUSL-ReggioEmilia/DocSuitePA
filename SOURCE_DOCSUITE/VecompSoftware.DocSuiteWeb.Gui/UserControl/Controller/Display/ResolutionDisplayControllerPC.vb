@@ -50,7 +50,7 @@ Public Class ResolutionDisplayControllerPC
 
     Public Overrides Sub Initialize()
         MyBase.Initialize()
-        _uscReslDisplay.VisibleImmediatelyExecutive = False 'EF 20120111 Rimuove la tabella "immediatamente esecutiva"
+        _uscReslDisplay.VisibleImmediatelyExecutive = DocSuiteContext.Current.ResolutionEnv.ImmediatelyExecutiveEnabled 'EF 20120111 Rimuove la tabella "immediatamente esecutiva"
         _uscReslDisplay.VisibleProposerProtocolLink = False 'EF 20120117 Rimuove la scritta di invio ai servizi di protocollo dalla visualizzazione della scheda
         _uscReslDisplay.ResolutionOC.Visible = True
         _uscReslDisplay.VisibleCheckWebPublish = DocSuiteContext.Current.ResolutionEnv.WebPublishEnabled
@@ -115,7 +115,7 @@ Public Class ResolutionDisplayControllerPC
 
         'Visualizzazione del bottone per la visualizzazione del frontalino di adozione generato automaticamente
         _uscReslBar.ButtonFrontespizio.Visible = False
-        If (currentResolution.WorkflowType = Facade.TabMasterFacade.GetFieldValue("WorkflowType", "AUSL-PC", currentResolution.Type.Id) AndAlso
+        If (currentResolution.WorkflowType = Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, "AUSL-PC", currentResolution.Type.Id) AndAlso
             currentResolution.AdoptionDate.HasValue And Not currentResolution.EffectivenessDate.HasValue) Then
 
             Dim files As FileResolution = Facade.FileResolutionFacade.GetByResolution(currentResolution)(0)
@@ -265,8 +265,6 @@ Public Class ResolutionDisplayControllerPC
         'Carica Autorizzazioni
         _uscReslDisplay.LoadRoles()
 
-        _uscReslBar.ButtonPublishWeb.Visible = False
-        _uscReslBar.ButtonRevokeWeb.Visible = False
     End Sub
 
 #End Region

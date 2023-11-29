@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://BiblosDS/2009/10/DocumentAttach" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/DocumentAttach" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Document" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Administration.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:complexType name="DocumentAttach">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q1="http://BiblosDS/2009/10/Document" base="q1:Document">

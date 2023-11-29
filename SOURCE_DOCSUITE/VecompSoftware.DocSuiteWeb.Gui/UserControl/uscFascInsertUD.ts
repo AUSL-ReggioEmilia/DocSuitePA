@@ -237,6 +237,7 @@ class uscFascInsertUD extends FascicleBase {
     onPageChanged() {
         let masterTable: Telerik.Web.UI.GridTableView = this._grdUdDocSelected.get_masterTableView();
         let skip = masterTable.get_currentPageIndex() * masterTable.get_pageSize();
+        masterTable.clearSelectedItems();
         this.findDocumentUnits(skip);
     }
 
@@ -276,47 +277,67 @@ class uscFascInsertUD extends FascicleBase {
 
         let deferredActions: JQueryPromise<void>[] = [];
         let errorMessages: string[] = [];
-        for (let documentUnit of selectedDocumentUnits) {
-            const deferredInsertAction = () => {
-                let promise = $.Deferred<void>();
-                this.insertFascicleDocumentUnit(documentUnit)
-                    .fail((exception: ExceptionDTO) => {
-                        if (exception) {
-                            if (exception instanceof ValidationExceptionDTO) {
-                                for (let validationMessage of exception.validationMessages) {
-                                    errorMessages.push(`Il documento ${documentUnit.Title} ha restituito il seguente errore: ${validationMessage.message}`);
-                                }
-                            } else {
-                                errorMessages.push(`Il documento ${documentUnit.Title} ha restituito il seguente errore: ${exception.statusText}`);
+
+        const insertDocumentSynchronously = (currentDocumentIndex) => {
+            let asyncAction = $.Deferred<void>();
+            let currentDocument: DocumentUnitModel = selectedDocumentUnits[currentDocumentIndex];
+            this.insertFascicleDocumentUnit(currentDocument)
+                .done(x => {
+                    this.prepareNextSynchronouslyDocumentInsert(currentDocumentIndex, deferredActions, asyncAction, selectedDocumentUnits, insertDocumentSynchronously, errorMessages);
+                })
+                .fail((exception: ExceptionDTO) => {
+                    if (exception) {
+                        if (exception instanceof ValidationExceptionDTO) {
+                            for (let validationMessage of exception.validationMessages) {
+                                errorMessages.push(`Il documento ${currentDocument.Title} ha restituito il seguente errore: ${validationMessage.message}`);
                             }
+                        } else {
+                            errorMessages.push(`Il documento ${currentDocument.Title} ha restituito il seguente errore: ${exception.statusText}`);
                         }
-                    })
-                    .always(() => promise.resolve());
-                return promise.promise();
-            };
-            deferredActions.push(deferredInsertAction());
+                    }
+                    this.prepareNextSynchronouslyDocumentInsert(currentDocumentIndex, deferredActions, asyncAction, selectedDocumentUnits, insertDocumentSynchronously, errorMessages);
+                })
+                .always(() => {
+                    asyncAction.resolve()
+                });
+            return asyncAction.promise();
         }
 
+        let currentDocumentIndex: number = 0;
         this._loadingPanel.show(this.pageContentId);
-        $.when.apply(null, deferredActions)
-            .then(() => {
-                if (errorMessages && errorMessages.length > 0) {
-                    this.enableButtons(true);
-                    let validationException: ValidationExceptionDTO = new ValidationExceptionDTO();
-                    validationException.statusText = `Non tutti i documenti selezionati sono stati inseriti correttamente. Per maggiori informazioni verificare i messaggi di errore ottenuti ed eventualmente conttattare l'assistenza.`;
-                    validationException.validationMessages = [];
-                    let validationMessage: ValidationMessageDTO;
-                    for (let errorMessage of errorMessages) {
-                        validationMessage = new ValidationMessageDTO();
-                        validationMessage.message = errorMessage;
-                        validationException.validationMessages.push(validationMessage);
-                    }
-                    this.showNotificationException(this.uscNotificationId, validationException);
-                } else {
-                    this.closeWindow();
-                }
-            })
-            .always(() => this._loadingPanel.hide(this.pageContentId));
+        insertDocumentSynchronously(currentDocumentIndex);
+
+    }
+
+    private prepareNextSynchronouslyDocumentInsert(currentDocumentIndex: number, deferredActions: JQueryPromise<void>[], asyncAction: JQueryDeferred<void>, selectedDocumentUnits: DocumentUnitModel[], insertDocumentSynchronously: (currentDocumentIndex: number) => JQueryPromise<void>, errorMessages: string[]) : void {
+        currentDocumentIndex++;
+        deferredActions.push(asyncAction);
+        if (currentDocumentIndex < selectedDocumentUnits.length) {
+            insertDocumentSynchronously(currentDocumentIndex);
+        }
+        else {
+            if (errorMessages && errorMessages.length > 0) {
+                this.enableButtons(true);
+                let validationException: ValidationExceptionDTO = this.buildDocumentInsertErrorMessages(errorMessages);
+                this.showNotificationException(this.uscNotificationId, validationException);
+            } else {
+                this.closeWindow();
+            }
+            this._loadingPanel.hide(this.pageContentId);
+        }
+    }
+
+    private buildDocumentInsertErrorMessages(errorMessages: string[]) {
+        let validationException: ValidationExceptionDTO = new ValidationExceptionDTO();
+        validationException.statusText = `Non tutti i documenti selezionati sono stati inseriti correttamente. Per maggiori informazioni verificare i messaggi di errore ottenuti ed eventualmente conttattare l'assistenza.`;
+        validationException.validationMessages = [];
+        let validationMessage: ValidationMessageDTO;
+        for (let errorMessage of errorMessages) {
+            validationMessage = new ValidationMessageDTO();
+            validationMessage.message = errorMessage;
+            validationException.validationMessages.push(validationMessage);
+        }
+        return validationException;
     }
 
     getSelectedDocumentUnits(): DocumentUnitModel[] {

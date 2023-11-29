@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace VecompSoftware.DocSuiteWeb.Data.Entity.Desks
 {
-    public class DeskDocument : DomainObject<Guid>, IAuditable, ISupportLogicDelete
+    public class DeskDocument : DomainObject<Guid>, IAuditable, ISupportBooleanLogicDelete
     {
         #region Constructors
         /// <summary>
@@ -31,7 +31,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Desks
         /// <summary>
         /// Identificativo del documento derivante da Biblos
         /// </summary>
-        public virtual Nullable<Guid> IdDocument { get; set; }
+        public virtual Guid? IdDocument { get; set; }
         /// <summary>
         /// Tipologia di documento memorizzato
         /// 1) Documento
@@ -58,7 +58,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Desks
         /// <summary>
         /// Cancellazione logica documento
         /// </summary>
-        public virtual short IsActive { get; set; } 
+        public virtual bool IsActive { get; set; } 
         /// <summary>
         /// Collezione di versioni del documento
         /// </summary>

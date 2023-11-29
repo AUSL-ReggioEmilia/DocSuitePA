@@ -103,7 +103,7 @@ Public Class CommonSelContactOmniBus
         contact.BirthDate = model.DataDiNascita
         contact.EmailAddress = model.EmailUfficio
         contact.FiscalCode = model.CodiceFiscale
-        contact.IsActive = 1
+        contact.IsActive = True
         contact.TelephoneNumber = If(String.IsNullOrEmpty(model.Telefono1), model.Telefono2, model.Telefono1)
         contact.Address = New Address() With
         {

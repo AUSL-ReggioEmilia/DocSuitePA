@@ -26,19 +26,19 @@ Public Class DocumentSeriesItemFinder
 
 #Region " Constructors "
 
-    Public Sub New()
-        Me.New(True, Nothing)
+    Public Sub New(idTenantAOO As Guid)
+        Me.New(True, Nothing, idTenantAOO)
     End Sub
-    Public Sub New(impersonating As String)
-        Me.New(True, impersonating)
+    Public Sub New(impersonating As String, idTenantAOO As Guid)
+        Me.New(True, impersonating, idTenantAOO)
     End Sub
-    Public Sub New(security As Boolean, impersonating As String)
+    Public Sub New(security As Boolean, impersonating As String, idTenantAOO As Guid)
         MyBase.New()
 
         EnableSecurity = security
         ImpersonatingUser = impersonating
         If EnableSecurity Then
-            ApplySecurity()
+            ApplySecurity(idTenantAOO)
         End If
     End Sub
 
@@ -145,7 +145,7 @@ Public Class DocumentSeriesItemFinder
     Public Property Constraint As String
 #End Region
 
-    Private Sub ApplySecurity()
+    Private Sub ApplySecurity(idTenantAOO As Guid)
         Dim roles As IList(Of Role)
         Dim series As IList(Of DocumentSeries)
 
@@ -156,7 +156,7 @@ Public Class DocumentSeriesItemFinder
             FileLogger.Debug(FacadeFactory.Instance.DocumentSeriesFacade.LoggerName, String.Format("Trovati {0} serie", If(series Is Nothing, 0, series.Count)))
 
             FileLogger.Debug(FacadeFactory.Instance.DocumentSeriesFacade.LoggerName, String.Format("Inizio Caricamento Settori utente impersonificato: {0}", ImpersonatingUser))
-            roles = FacadeFactory.Instance.RoleFacade.GetUserRoles(DocSuiteContext.Current.CurrentDomainName, ImpersonatingUser, DSWEnvironment.DocumentSeries, 1, Nothing)
+            roles = FacadeFactory.Instance.RoleFacade.GetUserRoles(DocSuiteContext.Current.CurrentDomainName, ImpersonatingUser, DSWEnvironment.DocumentSeries, 1, Nothing, idTenantAOO)
             FileLogger.Debug(FacadeFactory.Instance.DocumentSeriesFacade.LoggerName, String.Format("Trovati {0} settori", If(roles Is Nothing, 0, roles.Count)))
         Else
             FileLogger.Debug(FacadeFactory.Instance.DocumentSeriesFacade.LoggerName, String.Format("Inizio Caricamento Serie utente corrente"))
@@ -164,7 +164,7 @@ Public Class DocumentSeriesItemFinder
             FileLogger.Debug(FacadeFactory.Instance.DocumentSeriesFacade.LoggerName, String.Format("Trovati {0} serie", If(series Is Nothing, 0, series.Count)))
 
             FileLogger.Debug(FacadeFactory.Instance.DocumentSeriesFacade.LoggerName, String.Format("Inizio Caricamento Settori utente corrente"))
-            roles = FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.DocumentSeries, 1, Nothing)
+            roles = FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.DocumentSeries, 1, Nothing, idTenantAOO)
             FileLogger.Debug(FacadeFactory.Instance.DocumentSeriesFacade.LoggerName, String.Format("Trovati {0} settori", If(roles Is Nothing, 0, roles.Count)))
         End If
 

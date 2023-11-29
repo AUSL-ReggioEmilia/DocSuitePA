@@ -6,7 +6,6 @@
             function <%= Me.ID %>_OpenWindow(url, name, parameters) {
                 var wnd = $find(name);
                 wnd.setUrl(url + "?" + parameters);
-                wnd.set_destroyOnClose(true);
                 wnd.show();
                 wnd.center();
                 return false;
@@ -16,7 +15,7 @@
 
     <telerik:RadWindowManager DestroyOnClose="True" ReloadOnShow="True" ID="RadWindowManagerDocument" runat="server">
         <Windows>
-            <telerik:RadWindow Behaviors="Maximize,Close,Resize,Reload" DestroyOnClose="True" ID="windowPreviewDocument" ReloadOnShow="false" runat="server" Title="Anteprima documento" />
+            <telerik:RadWindow Behaviors="Maximize,Close,Resize,Reload" DestroyOnClose="false" ID="windowPreviewDocument" ReloadOnShow="true" runat="server" Title="Anteprima documento" />
         </Windows>
     </telerik:RadWindowManager>
 </asp:Content>
@@ -101,7 +100,7 @@
                                 <HeaderStyle Width="60%"></HeaderStyle>
                                 <ItemTemplate>
                                     <asp:Label runat="server" ID="lblDocumentTypeNotFound"></asp:Label>
-                                    <telerik:RadDropDownList runat="server" ID="ddlDocumentType" AutoPostBack="False" />
+                                    <telerik:RadDropDownList runat="server" ID="ddlDocumentType" AutoPostBack="False" OnSelectedIndexChanged="DdlDocumentType_SelectedIndexChanged" />
                                 </ItemTemplate>
                             </telerik:GridTemplateColumn>
                         </Columns>

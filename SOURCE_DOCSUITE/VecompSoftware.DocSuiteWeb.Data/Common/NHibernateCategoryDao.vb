@@ -109,7 +109,7 @@ Public Class NHibernateCategoryDao
         criteria.Add(Restrictions.IsNull("Parent"))
         criteria.Add(Restrictions.Eq("Code", 0))
         criteria.AddOrder(Order.Asc("Code"))
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
         criteria.Add(Restrictions.Eq("IdTenantAOO", idtenantAOO))
 
         Return criteria.UniqueResult(Of Category)()
@@ -121,7 +121,7 @@ Public Class NHibernateCategoryDao
         criteria.Add(Restrictions.IsNull("Parent"))
         criteria.AddOrder(Order.Asc("Code"))
         If IsActive Then
-            criteria.Add(Restrictions.Eq("IsActive", 1S))
+            criteria.Add(Restrictions.Eq("IsActive", True))
         End If
 
         criteria.SetResultTransformer(Transformers.DistinctRootEntity)
@@ -134,7 +134,7 @@ Public Class NHibernateCategoryDao
         criteria.CreateAlias("Parent", "Parent", SqlCommand.JoinType.LeftOuterJoin)
         criteria.Add(Restrictions.Eq("Parent.Id", ParentId))
         If IsActive Then
-            criteria.Add(Restrictions.Eq("IsActive", 1S))
+            criteria.Add(Restrictions.Eq("IsActive", True))
         End If
         criteria.AddOrder(Order.Asc("Code"))
 
@@ -142,7 +142,7 @@ Public Class NHibernateCategoryDao
         Return criteria.List(Of Category)()
     End Function
 
-    Public Function GetCategoryByDescription(ByVal description As String, ByVal isActive As Short, Optional ByVal idCategory As Integer = 0) As IList(Of Category)
+    Public Function GetCategoryByDescription(ByVal description As String, ByVal isActive As Boolean, Optional ByVal idCategory As Integer = 0) As IList(Of Category)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         'descrizione da cercare
@@ -152,11 +152,7 @@ Public Class NHibernateCategoryDao
             disju.Add(Expression.Like("Name", word, MatchMode.Anywhere))
         Next
         criteria.Add(disju)
-
-        'IsActive
-        If isActive <> -1 Then
-            criteria.Add(Restrictions.Eq("IsActive", isActive))
-        End If
+        criteria.Add(Restrictions.Eq("IsActive", isActive))
 
         'Contenitore di default
         If idCategory <> 0 Then
@@ -168,30 +164,26 @@ Public Class NHibernateCategoryDao
         Return criteria.List(Of Category)()
     End Function
 
-    Function GetCategoryByFullCode(ByVal FullCode As String, ByVal IsActive As Short) As IList(Of Category)
+    Function GetCategoryByFullCode(ByVal FullCode As String, ByVal IsActive As Boolean?) As IList(Of Category)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         'FullCode
         criteria.Add(Restrictions.Eq("FullCode", FullCode))
 
         'IsActive
-        If IsActive <> -1 Then
+        If IsActive IsNot Nothing Then
             criteria.Add(Restrictions.Eq("IsActive", IsActive))
         End If
 
         Return criteria.List(Of Category)()
     End Function
 
-    Function GetCategoryByFullIncrementalPath(ByVal fullIncrementalPath As String, ByVal isActive As Short) As Category
+    Function GetCategoryByFullIncrementalPath(ByVal fullIncrementalPath As String, ByVal isActive As Boolean) As Category
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         'FullIncrementalpath
         criteria.Add(Restrictions.Eq("FullIncrementalPath", fullIncrementalPath))
-
-        'IsActive
-        If isActive <> -1 Then
-            criteria.Add(Restrictions.Eq("IsActive", isActive))
-        End If
+        criteria.Add(Restrictions.Eq("IsActive", isActive))
 
         Return criteria.UniqueResult(Of Category)()
     End Function
@@ -411,7 +403,7 @@ Public Class NHibernateCategoryDao
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Eq("FullCode", fullCode))
         criteria.Add(Restrictions.Not(Restrictions.Eq("Id", category.Id)))
-        criteria.Add(Restrictions.Eq("IsActive", Convert.ToInt16(True)))
+        criteria.Add(Restrictions.Eq("IsActive", True))
         criteria.SetProjection(Projections.RowCountInt64())
         Return criteria.UniqueResult(Of Long)() > 0
     End Function

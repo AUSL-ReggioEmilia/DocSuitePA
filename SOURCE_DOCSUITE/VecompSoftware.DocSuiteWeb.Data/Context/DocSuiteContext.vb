@@ -166,6 +166,12 @@ Public Class DocSuiteContext
         End Get
     End Property
 
+    Public Shared ReadOnly Property PasswordEncryptionKey() As String
+        Get
+            Return ConfigurationManager.AppSettings.Item("PasswordEncryptionKey")
+        End Get
+    End Property
+
     Public ReadOnly Property IsLogEnable() As Boolean
         Get
             Return IsProtocolEnabled _
@@ -218,12 +224,6 @@ Public Class DocSuiteContext
     Public Shared ReadOnly Property PecSegnature() As String
         Get
             Return ConfigurationManager.AppSettings("DocSuite.PEC.Segnature")
-        End Get
-    End Property
-
-    Public Shared ReadOnly Property LocalServerWorkgroup() As String
-        Get
-            Return ConfigurationManager.AppSettings.Item("LocalServerWorkgroup")
         End Get
     End Property
 
@@ -328,17 +328,17 @@ Public Class DocSuiteContext
         End Get
     End Property
 
-    Public Shared ReadOnly Property DomainPath() As String
-        Get
-            Dim sTest As String = ConfigurationManager.AppSettings.Item("DomainPath")
-            Return If(String.IsNullOrEmpty(sTest), "LDAP", sTest)
-        End Get
-    End Property
-
     Public ReadOnly Property HasInfocertProxySign As Boolean
         Get
 
             Return Not String.IsNullOrEmpty(InfocertProxySignUrl)
+        End Get
+    End Property
+
+    Public ReadOnly Property HasInfocertProxySignLocal As Boolean
+        Get
+
+            Return ProtocolEnv.ShibbolethEnabled
         End Get
     End Property
 
@@ -350,6 +350,7 @@ Public Class DocSuiteContext
             Return String.Empty
         End Get
     End Property
+
     Public ReadOnly Property HasArubaActalisSign As Boolean
         Get
 
@@ -366,6 +367,20 @@ Public Class DocSuiteContext
         End Get
     End Property
 
+    Public ReadOnly Property HasDgrooveSigner As Boolean
+        Get
+            Return Not String.IsNullOrEmpty(DgrooveSignerUrl)
+        End Get
+    End Property
+
+    Public ReadOnly Property DgrooveSignerUrl As String
+        Get
+            If ConfigurationManager.AppSettings.Item("Signer.Dgroove.DgrooveSigner") IsNot Nothing Then
+                Return ConfigurationManager.AppSettings.Item("Signer.Dgroove.DgrooveSigner")
+            End If
+            Return String.Empty
+        End Get
+    End Property
 
     Public ReadOnly Property DefaultODataTopQuery As Integer
         Get

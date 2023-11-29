@@ -362,8 +362,8 @@ Partial Public Class uscClassificatore
         ' MUST -> Il cliente non può avere più di 3 livelli nelle categorie
         ' Se il nodo ha un fascicolo ed è di 3 livello (ultimo livello da gestire per i fascicoli)
         ' Oppure se il nodo non ha figli ed ha un fascicolo (livelli < 3)
-        If (hasFascicle AndAlso node.Parent IsNot Nothing AndAlso node.Level = 3 AndAlso category.IsActive = 1) Or
-           (hasFascicle AndAlso Not category.HasChildren AndAlso category.IsActive = 1) Then
+        If (hasFascicle AndAlso node.Parent IsNot Nothing AndAlso node.Level = 3 AndAlso category.IsActive) Or
+           (hasFascicle AndAlso Not category.HasChildren AndAlso category.IsActive) Then
 
             'node.BackColor = Color.FromArgb(150, 151, 230, 154)
             node.BorderStyle = BorderStyle.None
@@ -372,7 +372,7 @@ Partial Public Class uscClassificatore
         Else
             ' Nodo con altri figli. Non è richiesto un fascicolo su questo nodo.
             ' Oppure se la categoria non è piu attiva
-            If category.HasChildren OrElse category.IsActive = 0 Then
+            If category.HasChildren OrElse Not category.IsActive Then
                 SetCurrentNodeHasFascicle(node, False)
                 SetCurrentNodeMustHaveFascicle(node, False)
             Else

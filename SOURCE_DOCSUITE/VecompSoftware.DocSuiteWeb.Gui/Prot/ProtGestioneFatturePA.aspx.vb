@@ -96,7 +96,7 @@ Public Class ProtGestioneFatturePA
                 Throw New Exception("Tipologia di ricerca non riconosciuta.")
         End Select
 
-        CommonInstance.ApplyProtocolFinderSecurity(finder, SecurityType.Read, True)
+        CommonInstance.ApplyProtocolFinderSecurity(finder, SecurityType.Read, CurrentTenant.TenantAOO.UniqueId, True)
 
         uscProtocolGrid.Grid.PageSize = finder.PageSize
         uscProtocolGrid.Grid.MasterTableView.SortExpressions.Clear()

@@ -27,6 +27,7 @@
         function toggleSignBoxes(selectedValue) {
             switch (selectedValue) {
                 case "0":
+                case "5":
                     $('#<%= ClientID %>_aliasContainer').hide();
                     $('#<%= ClientID %>_pinContainer').hide();
                     $('#<%= ClientID %>_passwordContainer').hide();
@@ -150,6 +151,7 @@
                                             <telerik:DropDownListItem Text="Firma remota di Infocert" Value="2" />
                                             <telerik:DropDownListItem Text="Firma automatica di Aruba" Value="3" />
                                             <telerik:DropDownListItem Text="Firma automatica di Infocert" Value="4" />
+                                            <telerik:DropDownListItem Text="Dike GoSign" Value="5" />
                                         </Items>
                                     </telerik:RadDropDownList>
                                 </td>
@@ -159,22 +161,20 @@
                                 </td>
                                 <td>
                                     <asp:TextBox runat="server" ID="txtSignAlias" Width="300px" />
-
                                 </td>
                             </tr>
                             <tr id="passwordContainer">
                                 <td class="label" style="width: 30%;">Pin
                                 </td>
                                 <td>
-                                    <asp:TextBox runat="server" ID="txtSignPassword" Width="300px" TextMode="Password"  />
-
+                                    <asp:TextBox runat="server" ID="txtSignPassword" Width="300px" TextMode="Password" />
                                 </td>
                             </tr>
                             <tr id="pinContainer">
                                 <td class="label" style="width: 30%;">Pin
                                 </td>
                                 <td>
-                                    <asp:TextBox runat="server" ID="txtSignPin" Width="100px"  />
+                                    <asp:TextBox runat="server" ID="txtSignPin" Width="100px" TextMode="Password" />
                                 </td>
                             </tr>
                             <tr id="saveTypeContainer">
@@ -227,7 +227,7 @@
                                             <td class="label" style="width: 11%;">OTP Password:
                                             </td>
                                             <td>
-                                                <asp:TextBox runat="server" ID="txtArubaOTPPassword" Width="172px" />
+                                                <asp:TextBox runat="server" ID="txtArubaOTPPassword" Width="172px" TextMode="Password" />
 
                                             </td>
                                         </tr>
@@ -332,66 +332,6 @@
                                 </tr>
                             </table>
                         </telerik:RadAjaxPanel>
-
-                        <asp:Panel runat="server" ID="pnlPasswordChange" Visible="false">
-                            <table class="datatable">
-                                <tr>
-                                    <th colspan="2">Modifica Password utenza di dominio</th>
-                                </tr>
-                                <tr>
-                                    <td class="label" style="width: 30%;">Password Attuale</td>
-                                    <td>
-                                        <asp:TextBox runat="server" TextMode="Password" ID="txtOldPassword" />
-                                        <p>
-                                            <asp:RequiredFieldValidator runat="server" ID="txtOldPasswordValidator" Display="Dynamic" ValidationGroup="changePassordValidatorGroup"
-                                                ErrorMessage="Campo Password Attuale obbligatorio."
-                                                ControlToValidate="txtOldPassword" />
-                                        </p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="label" style="width: 30%;">Nuova Password</td>
-                                    <td>
-                                        <asp:TextBox runat="server" TextMode="Password" ID="txtNewPassword" />
-                                        <p>
-                                            <asp:RequiredFieldValidator runat="server" ID="txtNewPasswordValidator" Display="Dynamic" ValidationGroup="changePassordValidatorGroup"
-                                                ErrorMessage="Campo Nuova Password obbligatorio."
-                                                ControlToValidate="txtNewPassword" />
-                                        </p>
-                                        <p>
-                                            <asp:CompareValidator runat="server" ID="txtPasswordCompareValidator" Display="Dynamic" ValidationGroup="changePassordValidatorGroup"
-                                                ErrorMessage="La Password Attuale e la Nuova Password non devono coincidere"
-                                                ControlToCompare="txtOldPassword" ControlToValidate="txtNewPassword" Operator="NotEqual" />
-                                        </p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="label" style="width: 30%;">Conferma Nuova Password</td>
-                                    <td>
-                                        <asp:TextBox runat="server" TextMode="Password" ID="txtConfirmNewPassword" />
-                                        <p>
-                                            <asp:RequiredFieldValidator runat="server" ID="txtConfirmNewPasswordValidator" Display="Dynamic" ValidationGroup="changePassordValidatorGroup"
-                                                ErrorMessage="Campo Conferma Nuova Password obbligatorio."
-                                                ControlToValidate="txtConfirmNewPassword" />
-                                        </p>
-                                        <p>
-                                            <asp:CompareValidator runat="server" ID="txtNewPasswordCompareValidator" Display="Dynamic" ValidationGroup="changePassordValidatorGroup"
-                                                ErrorMessage="La Nuova Password e la Conferma Nuova Password devono coincidere"
-                                                ControlToCompare="txtNewPassword" ControlToValidate="txtConfirmNewPassword" />
-                                        </p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="label" style="width: 30%;"></td>
-                                    <td>Attenzione! Una volta modificata la password è necessario eseguire nuovamente l'accesso al PC.</td>
-                                </tr>
-                                <tr>
-                                    <td class="label" style="width: 30%;"></td>
-                                    <td>
-                                        <asp:Button runat="server" ID="btnChangePassword" Text="Conferma" ValidationGroup="changePassordValidatorGroup" /></td>
-                                </tr>
-                            </table>
-                        </asp:Panel>
                     </asp:Panel>
                 </telerik:RadPageView>
                 <telerik:RadPageView runat="server" ID="viewAdaptiveSearchConfiguration" Width="100%" Height="100%">

@@ -1,4 +1,5 @@
-﻿Imports VecompSoftware.DocSuiteWeb.Facade
+﻿Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Partial Class TbltTenant
     Inherits CommonBasePage
@@ -14,8 +15,7 @@ Partial Class TbltTenant
 #Region " Events "
     Private Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not CommonShared.HasGroupAdministratorRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
 
     End Sub

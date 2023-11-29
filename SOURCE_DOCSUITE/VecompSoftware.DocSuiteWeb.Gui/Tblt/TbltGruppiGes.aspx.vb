@@ -4,6 +4,7 @@ Imports Telerik.Web.UI
 Imports Newtonsoft.Json
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.Helpers.NHibernate.Resolvers.ContractResolver
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Partial Public Class TbltGruppiGes
     Inherits CommonBasePage
@@ -39,6 +40,10 @@ Partial Public Class TbltGruppiGes
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma)
 
         If Not IsPostBack Then
@@ -53,8 +58,6 @@ Partial Public Class TbltGruppiGes
                 Case "Add"
                     Dim group As SecurityGroups = New SecurityGroups()
                     group.GroupName = txtName.Text
-                    group.Parent = GroupInstance
-                    group.IdSecurityGroupTenant = group.Id
                     group.HasAllUsers = cbxAllUsers.Checked
                     Facade.SecurityGroupsFacade.Save(group)
                     GroupInstance = group

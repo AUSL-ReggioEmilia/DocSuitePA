@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using VecompSoftware.Core.Command;
 using VecompSoftware.Core.Command.CQRS.Commands.Models.UDS;
@@ -14,39 +15,63 @@ using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
 using VecompSoftware.Helpers.UDS;
 using VecompSoftware.Services.Command.CQRS.Commands.Models.UDS;
+using VecompSoftware.Services.Logging;
 
 namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
 {
     public class UDSRepositoryFacade : FacadeWebAPIBase<UDSRepository, UDSRepositoryDao>
     {
         #region [ Fields ]
-        private UDSRepositoryFinder _currentFinder;
+        private UDSRepositoryFinder _currentRepositoryFinder;
+        private UDSFieldListFinder _currentFieldListFinder;
+        private UDSFieldListFacade _currentFieldListFacade;
         #endregion [ Fields ]
 
         #region [ Properties ]
-        private UDSRepositoryFinder Currentfinder
+        private UDSRepositoryFinder CurrentRepositoryFinder
         {
             get
             {
-                if (_currentFinder == null)
+                if (_currentRepositoryFinder == null)
                 {
-                    _currentFinder = new UDSRepositoryFinder(DocSuiteContext.Current.Tenants);
+                    _currentRepositoryFinder = new UDSRepositoryFinder(DocSuiteContext.Current.Tenants);
                 }
-                return _currentFinder;
+                return _currentRepositoryFinder;
             }
         }
+
+        private UDSFieldListFinder CurrentFieldListFinder
+        {
+            get
+            {
+                if (_currentFieldListFinder == null)
+                {
+                    _currentFieldListFinder = new UDSFieldListFinder(DocSuiteContext.Current.Tenants);
+                }
+                return _currentFieldListFinder;
+            }
+        }
+
+        private UDSFieldListFacade CurrentFieldListFacade
+        {
+            get
+            {
+                return _currentFieldListFacade;
+            }
+        }
+
         #endregion [ Properties ]
 
         #region [ Constructor ]
         public UDSRepositoryFacade(ICollection<TenantModel> model, Tenant currentTenant)
-            :base(model.Select(s => new WebAPITenantConfiguration<UDSRepository, UDSRepositoryDao>(s)).ToList(), currentTenant)
+            : base(model.Select(s => new WebAPITenantConfiguration<UDSRepository, UDSRepositoryDao>(s)).ToList(), currentTenant)
         {
-
+            _currentFieldListFacade = new UDSFieldListFacade(model, currentTenant);
         }
         #endregion [ Constructor ]
 
         #region [ Methods ]
-        public void SaveRepository(UDSModel model, DateTimeOffset activeDate, Guid idRepository, bool publish)
+        public Guid SaveRepository(UDSModel model, DateTimeOffset activeDate, Guid idRepository, bool publish)
         {
             Guid draftIdSaved = SaveDraftRepository(model, idRepository);
             if (publish)
@@ -54,6 +79,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
                 //Se l'ID della bozza salvata è uguale all'idRepository in ingresso significa che lo schema deve essere modificato
                 ConfirmRepository(model, activeDate, draftIdSaved);
             }
+            return draftIdSaved;
         }
 
         private void ConfirmRepository(UDSModel model, DateTimeOffset activeDate, Guid idRepository)
@@ -61,7 +87,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
             if (idRepository.Equals(Guid.Empty))
             {
                 throw new ArgumentNullException("idRepository");
-            }                
+            }
 
             UDSSchemaRepositoryModelMapper repositoryschemaModelMapper = new UDSSchemaRepositoryModelMapper();
             UDSRepositoryModelMapper repositoryModelMapper = new UDSRepositoryModelMapper(repositoryschemaModelMapper);
@@ -71,7 +97,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
             Guid tenantId = DocSuiteContext.Current.CurrentTenant.TenantId;
 
             WebAPIDto<UDSRepository> resultDto = null;
-            WebAPIImpersonatorFacade.ImpersonateFinder(Currentfinder, (impersonationType, finder) =>
+            WebAPIImpersonatorFacade.ImpersonateFinder(CurrentRepositoryFinder, (impersonationType, finder) =>
             {
                 finder.UniqueId = idRepository;
                 finder.EnablePaging = false;
@@ -111,7 +137,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
             UDSRepository savedRepository = null;
             if (!idRepository.Equals(Guid.Empty))
             {
-                WebAPIImpersonatorFacade.ImpersonateFinder(Currentfinder, (impersonationType, finder) =>
+                WebAPIImpersonatorFacade.ImpersonateFinder(CurrentRepositoryFinder, (impersonationType, finder) =>
                 {
                     //Se il repository recuperato è in stato Bozza allora procedo alla modifica del medesimo oggetto,
                     //viceversa creo sempre una nuova Bozza.
@@ -126,7 +152,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
                         savedRepository = resultDto.Entity;
                         repository = (savedRepository.Status.Equals(Entity.UDS.UDSRepositoryStatus.Draft)) ? savedRepository : null;
                     }
-                });                               
+                });
             }
 
             short idContainer = -1;
@@ -156,7 +182,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
                     {
                         model.Model.Documents.DocumentDematerialisation.CreateBiblosArchive = false;
                     }
-
+                    repository.DSWEnvironment = savedRepository.DSWEnvironment;
                     repository.Name = savedRepository.Name;
                     repository.Alias = savedRepository.Alias;
                     repository.Container = savedRepository.Container;
@@ -186,7 +212,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
                     {
                         model.Model.Documents.DocumentDematerialisation.CreateBiblosArchive = false;
                     }
-
+                    repository.DSWEnvironment = savedRepository.DSWEnvironment;
                     repository.Name = savedRepository.Name;
                     repository.Alias = savedRepository.Alias;
                     repository.Container = savedRepository.Container;
@@ -203,7 +229,118 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
                 Update(repository);
             }
 
+            UDSRepository lastConfirmRepository = null;
+            WebAPIImpersonatorFacade.ImpersonateFinder(CurrentRepositoryFinder, (impersonationType, finder) =>
+            {
+                finder.ResetDecoration();
+                finder.Environment = repository.DSWEnvironment;
+                finder.EnablePaging = false;
+                finder.ActionType = UDSRepositoryFinderActionType.FindCurrentRepository;
+                lastConfirmRepository = finder.DoSearch().SingleOrDefault()?.Entity;
+            });
+            if (lastConfirmRepository == null)
+            {
+                lastConfirmRepository = repository;
+            }
+            WebAPIDto<UDSFieldList> resultFieldsDto = null;
+            WebAPIImpersonatorFacade.ImpersonateFinder(CurrentFieldListFinder, (impersonationType, finder) =>
+            {
+                finder.ResetDecoration();
+                FileLogger.Debug(LogName, $"Checking UDS root TreeList of {lastConfirmRepository.Name}");
+                finder.IdUDSRepository = lastConfirmRepository.UniqueId;
+                finder.FieldUDSRootName = lastConfirmRepository.Name;
+                finder.EnablePaging = false;
+                resultFieldsDto = finder.DoSearch().SingleOrDefault();
+            });
+
+            UDSFieldList udsRootField = resultFieldsDto?.Entity;
+            if (udsRootField == null)
+            {
+                udsRootField = new UDSFieldList()
+                {
+                    Environment = lastConfirmRepository.DSWEnvironment,
+                    FieldName = lastConfirmRepository.Name,
+                    ParentInsertId = null,
+                    Repository = lastConfirmRepository,
+                    Status = Entity.UDS.UDSFieldListStatus.Active,
+                    Name = lastConfirmRepository.Name,
+                    UniqueId = lastConfirmRepository.UniqueId
+                };
+                FileLogger.Debug(LogName, $"creating UDS root TreeList of {lastConfirmRepository.Name}");
+                CurrentFieldListFacade.Save(udsRootField);
+            }
+
+            foreach (TreeListField item in model.Model.Metadata.SelectMany(f => f.Items.OfType<TreeListField>()))
+            {
+                WebAPIImpersonatorFacade.ImpersonateFinder(CurrentFieldListFinder, (impersonationType, finder) =>
+                {
+                    finder.ResetDecoration();
+                    FileLogger.Debug(LogName, $"Checking FieldTree {item.ColumnName} of {lastConfirmRepository.Name}");
+                    finder.IdUDSRepository = lastConfirmRepository.UniqueId;
+                    finder.RootName = item.Label;
+                    finder.EnablePaging = false;
+                    resultFieldsDto = finder.DoSearch().SingleOrDefault();
+                });
+                if (resultFieldsDto?.Entity != null)
+                {
+                    resultFieldsDto.Entity.FieldName = item.ColumnName;
+                    resultFieldsDto.Entity.Repository = lastConfirmRepository;
+                    resultFieldsDto.Entity.Environment = lastConfirmRepository.DSWEnvironment;
+                    resultFieldsDto.Entity.Status = Entity.UDS.UDSFieldListStatus.Active;
+
+                    FileLogger.Debug(LogName, $"updating TreeList {item.ColumnName} of {lastConfirmRepository.Name}");
+                    CurrentFieldListFacade.Update(resultFieldsDto.Entity);
+                }
+            }
             return repository.UniqueId;
+        }
+
+        public UDSFieldList AddUDSFieldListCtrlNode(Guid idUDSRepository, string name)
+        {
+            UDSRepository udsRepository = null;
+
+            WebAPIImpersonatorFacade.ImpersonateFinder(CurrentRepositoryFinder, (impersonationType, finder) =>
+            {
+                finder.UniqueId = idUDSRepository;
+                finder.EnablePaging = false;
+                finder.ActionType = UDSRepositoryFinderActionType.FindElement;
+                udsRepository = finder.DoSearch().FirstOrDefault().Entity;
+                finder.ResetDecoration();
+            });
+            UDSFieldList udsFieldList = new UDSFieldList
+            {
+                UniqueId = Guid.NewGuid(),
+                ParentInsertId = udsRepository.UniqueId,
+                Repository = new UDSRepository()
+                {
+                    UniqueId = udsRepository.UniqueId
+                },
+                FieldName = name,
+                Name = name,
+                Environment = udsRepository.DSWEnvironment
+            };
+            FileLogger.Debug(LogName, $"creating TreeList '{udsFieldList.Name}' of {udsRepository.Name}");
+            CurrentFieldListFacade.Save(udsFieldList);
+            return udsFieldList;
+        }
+
+        public UDSFieldList UpdateUDSFieldListRootNode(Guid idUDSFieldList, string name)
+        {
+            UDSFieldList udsFieldList = null;
+            WebAPIImpersonatorFacade.ImpersonateFinder(CurrentFieldListFinder, (impersonateType, finder) => {
+                finder.ResetDecoration();
+                finder.UniqueId = idUDSFieldList;
+                finder.EnablePaging = false;
+                udsFieldList = finder.DoSearch().FirstOrDefault()?.Entity;
+                finder.ResetDecoration();
+            });
+            if (udsFieldList != null)
+            {
+                udsFieldList.Name = name;
+                FileLogger.Debug(LogName, $"updating TreeList '{udsFieldList.Name}' of {udsFieldList.Repository.Name}");
+                CurrentFieldListFacade.Update(udsFieldList);
+            }
+            return udsFieldList;
         }
         #endregion
     }

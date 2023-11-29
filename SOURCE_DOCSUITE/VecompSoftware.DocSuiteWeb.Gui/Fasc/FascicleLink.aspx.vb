@@ -16,6 +16,7 @@ Public Class FascicleLink
         If Not IsPostBack Then
             rgvLinkedFascicles.DataSource = New List(Of String)()
             rgvLinkedDossiers.DataSource = New List(Of String)()
+            uscDossierSummary.DossierStatusEnabled = False
         End If
     End Sub
 #End Region

@@ -4,6 +4,7 @@
     {
         Insert = 0,
         Search = 1,
-        FindElement = Search * 2
+        FindElement = Search * 2,
+        FindCurrentRepository = FindElement * 2
     }
 }

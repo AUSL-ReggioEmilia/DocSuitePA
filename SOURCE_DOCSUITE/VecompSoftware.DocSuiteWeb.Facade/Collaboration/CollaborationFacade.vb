@@ -1,28 +1,28 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Text
+﻿Imports System.Globalization
+Imports System.IO
 Imports System.Linq
 Imports System.Net.Mail
-Imports System.IO
+Imports System.Text
 Imports System.Web.UI
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.NHibernateManager
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports System.Globalization
-Imports VecompSoftware.Helpers.Web
-Imports VecompSoftware.DocSuiteWeb.API
-Imports VecompSoftware.Services.Biblos.Models
-Imports VecompSoftware.DocSuiteWeb.DTO.Collaborations
 Imports Newtonsoft.Json
+Imports VecompSoftware.Core.Command
+Imports VecompSoftware.Core.Command.CQRS.Commands.Entities.Collaborations
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.DTO.Collaborations
+Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.NHibernateManager
+Imports VecompSoftware.Services.Biblos
+Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Services.Command.CQRS.Commands.Entities.Collaborations
+Imports VecompSoftware.Services.Logging
 
 <ComponentModel.DataObject()>
 Public Class CollaborationFacade
     Inherits BaseProtocolFacade(Of Collaboration, Integer, NHibernateCollaborationDao)
 
 #Region " Fields "
+    Private _commandUpdateFacade As CommandFacade(Of ICommandDeleteCollaboration)
 #End Region
 
 #Region " Properties "
@@ -33,6 +33,14 @@ Public Class CollaborationFacade
         End Get
     End Property
 
+    Private ReadOnly Property CommandUpdateFacade As CommandFacade(Of ICommandDeleteCollaboration)
+        Get
+            If _commandUpdateFacade Is Nothing Then
+                _commandUpdateFacade = New CommandFacade(Of ICommandDeleteCollaboration)
+            End If
+            Return _commandUpdateFacade
+        End Get
+    End Property
 #End Region
 
 #Region " Constructor "
@@ -43,8 +51,8 @@ Public Class CollaborationFacade
 
 #End Region
 
-#Region " WSColl - AUSL-RE/ASMN-RE "
 
+#Region " Insert/Update/Delete Collaboration "
     ''' <summary> Inserisce un documento principale in biblos SSE la collaborazione è in stato Bozza. </summary>
     Public Sub BiblosInsert(ByVal collNumber As Integer, ByVal stream As Byte(), ByVal documentName As String, ByVal username As String)
         Dim coll As Collaboration = _dao.GetById(collNumber, False)
@@ -74,114 +82,9 @@ Public Class CollaborationFacade
         Factory.CollaborationVersioningFacade.InsertDocument(collNumber, archivedBiblosChainId, documentName, username, username)
     End Sub
 
-    ''' <summary> Inserisce un documento come allegato in biblos SSE la collaborazione è in stato Bozza. </summary>
-    Public Sub BiblosInsertAllegati(ByVal collNumber As Integer, ByVal stream As Byte(), ByVal documentName As String, ByVal username As String)
-        Dim coll As Collaboration = _dao.GetById(collNumber, False)
-        ' Validazione
-        If Not coll.IdStatus.Eq(CollaborationStatusType.BZ.ToString()) Then
-            Throw New InvalidOperationException("Attenzione il documento può essere inserito solo se la collaborazione è in stato Bozza")
-        End If
-
-        ' Verifico che il primo documento aggiunto sia il Documento Principale altrimenti errore
-        Dim lstCollVersioning As IList(Of CollaborationVersioning) = Factory.CollaborationVersioningFacade.GetLastVersionings(coll)
-        If lstCollVersioning Is Nothing OrElse lstCollVersioning.Count = 0 Then
-            Throw New InvalidOperationException("Inserire il documento principale prima degli allegati")
-        End If
-
-        ' Ottengo la signature
-        Dim signature As String = GetSignature(collNumber, DateTime.Now, Nothing)
-
-        ' Posizione del ultimo documento
-        Dim index As Short = Factory.CollaborationVersioningFacade.GetLastCollaborationIncremental(collNumber).GetValueOrDefault(0)
-
-        ' Ottengo la location dove inserire il documento
-        Dim doc As New MemoryDocumentInfo(stream, documentName)
-        doc.Signature = signature
-        Dim location As Location = Factory.LocationFacade.GetById(DocSuiteContext.Current.ProtocolEnv.CollaborationLocation)
-        Dim chainId As Integer = doc.ArchiveInBiblos(location.ProtBiblosDSDB).BiblosChainId
-        Factory.CollaborationVersioningFacade.InsertDocument(collNumber, chainId, documentName, username, username, index + 1S)
-    End Sub
-
-    '''<summary> Restituisce lo status della collaborazione numero collNumber.</summary>
-    '''<param name="collNumber">Identificativo della collaborazione</param>
-    '''<returns>Restituisce xml dello status</returns>
-    Public Function GetStatus(ByVal collNumber As Integer) As String
-        Dim coll As Collaboration = _dao.GetById(collNumber, False)
-
-        If coll Is Nothing Then
-            Dim missing As New CollaborationStatusXML()
-            missing.CollNumber = collNumber
-            missing.Stato = New Status()
-            missing.Stato.Id = CollaborationStatusType.NT
-            missing.Stato.Valore = "non trovata"
-            missing.Signers = New List(Of Signatory)
-
-            Return SerializationHelper.SerializeToStringWithoutNamespace(missing)
-        End If
-
-        Dim collStatus As New CollaborationStatusXML
-
-        collStatus.Type = coll.DocumentType
-        collStatus.CollNumber = collNumber
-
-        collStatus.Stato = New Status()
-
-        Select Case coll.IdStatus
-            Case CollaborationStatusType.BZ.ToString()
-                collStatus.Stato.Id = CollaborationStatusType.BZ
-                collStatus.Stato.Valore = "inattivo"
-            Case CollaborationStatusType.IN.ToString()
-                collStatus.Stato.Id = CollaborationStatusType.IN
-                collStatus.Stato.Valore = "firma"
-            Case CollaborationStatusType.DP.ToString()
-                collStatus.Stato.Id = CollaborationStatusType.DP
-                collStatus.Stato.Valore = "gestione"
-            Case CollaborationStatusType.PT.ToString()
-                collStatus.Stato.Id = CollaborationStatusType.PT
-                collStatus.Stato.Valore = "gestito"
-            Case CollaborationStatusType.DL.ToString()
-                collStatus.Stato.Id = CollaborationStatusType.DL
-                collStatus.Stato.Valore = "attivo"
-
-            Case Else
-                collStatus.Stato.Id = CollaborationStatusType.NP
-                collStatus.Stato.Valore = "non previsto"
-        End Select
-
-        collStatus.Signers = New List(Of Signatory)()
-        For Each item As CollaborationSign In coll.CollaborationSigns
-            Dim signer As New Signatory()
-            signer.Incremental = item.Incremental
-            signer.UserName = item.SignUser
-            signer.SignDate = item.SignDate.ToString()
-            signer.IsActive = Convert.ToBoolean(item.IsActive)
-            collStatus.Signers.Add(signer)
-        Next
-
-        If coll.Year.HasValue And coll.Number.HasValue Then
-            Dim ref As New Ref()
-            ref.Type = coll.DocumentType
-            ref.Id = String.Format("{0}/{1}", coll.Year, coll.Number)
-
-            collStatus.Refs = New List(Of Ref)()
-            collStatus.Refs.Add(ref)
-
-        ElseIf coll.Resolution IsNot Nothing Then
-            Dim ref As New Ref()
-            ref.Type = coll.DocumentType
-            ref.Id = coll.Resolution.Id.ToString()
-
-            collStatus.Refs = New List(Of Ref)()
-            collStatus.Refs.Add(ref)
-
-        End If
-
-        Return SerializationHelper.SerializeToStringWithoutNamespace(collStatus)
-    End Function
-
     ''' <summary> Se la collaborazione e in stato Bozza (BZ) la mette in stato IN per renderla utilizzabile dai firmatari. </summary>
     ''' <param name="collNumber">Identificativo della collaborazione</param>
-    Public Sub StartCollaboration(ByVal collNumber As Integer)
+    Public Sub StartCollaboration(collNumber As Integer, idTenantAOO As Guid)
         Dim coll As Collaboration = GetById(collNumber)
 
         If coll Is Nothing Then
@@ -201,26 +104,8 @@ Public Class CollaborationFacade
         UpdateOnly(coll)
 
         'Mando la mail
-        SendMail(coll, coll.IdStatus)
+        SendMail(coll, coll.IdStatus, idTenantAOO)
     End Sub
-
-    Public Function InsertCollaboration(xmlColl As String, username As String) As Integer
-        Return InsertCollaboration(xmlColl, username, String.Empty)
-    End Function
-
-    Public Function InsertCollaboration(xmlColl As String, username As String, templateName As String) As Int32
-        Dim collaborazioneXml As CollaborationXML = Nothing
-        Try
-            collaborazioneXml = SerializationHelper.SerializeFromString(Of CollaborationXML)(xmlColl)
-        Catch ex As Exception
-            Throw New ArgumentException("Errore in lettura XML.", "xmlColl", ex)
-        End Try
-
-        If Not String.IsNullOrEmpty(templateName) Then
-            collaborazioneXml.TemplateName = templateName
-        End If
-        Return InsertCollaboration(collaborazioneXml, username)
-    End Function
 
     Private Function GetCollaborationContactFromAD(account As String, errorMessage As String) As CollaborationContact
         Dim user As AccountModel = CommonAD.GetAccount(account)
@@ -230,10 +115,9 @@ Public Class CollaborationFacade
         Return New CollaborationContact(user.GetFullUserName(), Nothing, user.Name, user.Email, True)
     End Function
 
-
     ''' <summary> Inserisce i metadati di una nuova collaborazione ed eventualmente dati aggiuntivi per la successiva gestione. </summary>
     ''' <returns> Restituisce il numero della collaborazione come intero. </returns>
-    Public Function InsertCollaboration(ByVal collaborazioneXml As CollaborationXML, ByVal username As String) As Int32
+    Public Function InsertCollaboration(collaborazioneXml As CollaborationXML, username As String, idTenantAOO As Guid) As Int32
         ' Verifico la modalità di inserimento almeno un firmatario deve sempre essere presente
         If collaborazioneXml.Signers.Count = 0 Then
             Throw New ArgumentException("Attenzione inserire almeno un firmatario", "collaborazioneXml")
@@ -373,7 +257,7 @@ Public Class CollaborationFacade
 
                     '' Ho l'utente firmatario ma non ho il suo settore di riferimento
                     '' Carico tutte le segreterie dell'utente dove questo è impostato come principale
-                    collaborationUsers.AddRange(Factory.RoleUserFacade.GetSecretaryRoles(item.UserName, True).Select(Function(role) New CollaborationContact(Nothing, Convert.ToInt16(role.Id), role.Name, role.EMailAddress, True)))
+                    collaborationUsers.AddRange(Factory.RoleUserFacade.GetSecretaryRoles(item.UserName, True, idTenantAOO).Select(Function(role) New CollaborationContact(Nothing, Convert.ToInt16(role.Id), role.Name, role.EMailAddress, True)))
                 End If
 
                 If collaborationSign Is Nothing Then
@@ -414,14 +298,14 @@ Public Class CollaborationFacade
 
             ' Salva bozza di protocollo
             If collaborazioneXml.Attributes IsNot Nothing AndAlso collaborazioneXml.Attributes.Count > 0 Then
-                Factory.ProtocolDraftFacade.AddProtocolDraft(coll, "Bozza di Protocollo da Collaborazione", collaborazioneXml.Attributes(0))
+                Factory.CollaborationDraftFacade.AddCollaborationDraft(coll, "Bozza di Collaborazione", collaborazioneXml.Attributes(0))
             End If
 
             'Commit Transaction
             unitOfWork.Commit()
 
             'Mando la mail
-            SendMail(coll, coll.IdStatus)
+            SendMail(coll, coll.IdStatus, idTenantAOO)
 
             Return coll.Id
         Catch ex As Exception
@@ -430,10 +314,6 @@ Public Class CollaborationFacade
             Throw New Exception("WSColl - Errore Inserimento nuova Collaborazione: " & progressivo, ex)
         End Try
     End Function
-
-#End Region
-
-#Region " Insert/Update/Delete Collaboration "
 
     Public Function CreateCollaboration() As Collaboration
         Dim result As New Collaboration()
@@ -522,25 +402,6 @@ Public Class CollaborationFacade
         Return collaboration
     End Function
 
-
-    ''' <summary> Permette l'inserimento di una collaborazione </summary>
-    ''' <remarks>in caso di errore effetua un rollback per evitare dati sporchi o inconsistenza nei dati. A livello dell'utente, comparta il reinserimento dei dati a seguito di un messagio di errore</remarks>
-    Public Function Insert(ByVal idCollaboration As Integer, ByVal documentType As String, ByVal idPriority As String,
-                                     ByVal idStatus As CollaborationStatusType, ByVal location As Location, ByVal cMemorandumDate As DateTime?,
-                                     ByVal cObject As String, ByVal cNote As String, ByVal distributionUsers As List(Of CollaborationContact),
-                                     ByVal restitutionUsers As List(Of CollaborationContact), ByVal restitutionRoles As List(Of CollaborationUser),
-                                     ByVal registrationDate As Date) As Collaboration
-
-        Dim collaboration As Collaboration = Me.CreateCollaboration()
-        collaboration.DocumentType = documentType
-        collaboration.IdPriority = idPriority
-        collaboration.IdStatus = idStatus.ToString()
-        collaboration.MemorandumDate = cMemorandumDate
-        collaboration.CollaborationObject = cObject
-        collaboration.Note = cNote
-
-        Return Me.Insert(collaboration, distributionUsers, restitutionUsers, restitutionRoles)
-    End Function
 
     Public Overloads Sub Update(ByRef collaboration As Collaboration, ByVal idPriority As String,
                                 ByVal memorandumDate As DateTime?, ByVal [object] As String,
@@ -664,21 +525,25 @@ Public Class CollaborationFacade
     ''' <summary> Passa la palla al firmatario successivo alias setta isActive = 0 al vecchio firmatario e aggiunge quello nuovo </summary>
     Private Sub UpdateForward(ByRef contactForward As List(Of CollaborationContact), ByRef incremental As Short, ByVal respChange As Boolean, ByVal signUser As String, ByVal idCollaboration As Integer)
         'isactive visione/firma
+        Dim isRequired As Boolean = False
         For Each item As CollaborationSign In Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, signUser, 1S)
-            item.IsActive = 0
+            item.IsActive = False
+            If item.IsRequired.HasValue Then
+                isRequired = item.IsRequired.Value
+            End If
             If respChange Then
                 item.SignName &= " (D)"
             End If
             Factory.CollaborationSignsFacade.UpdateOnly(item)
         Next
         'Inserimento firmatari
-        InsertCollaborationSigns(contactForward(0), incremental, idCollaboration, False)
+        InsertCollaborationSigns(contactForward(0), incremental, idCollaboration, isRequired)
     End Sub
 
     Private Sub UpdateDistribution(ByRef contactDistribution As List(Of CollaborationContact), ByVal idCollaboration As Integer)
         'isActive visione/firma
-        For Each item As CollaborationSign In Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, 1S)
-            item.IsActive = 0
+        For Each item As CollaborationSign In Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, True)
+            item.IsActive = False
             Factory.CollaborationSignsFacade.UpdateOnly(item)
         Next
         'Inserimento firmatari
@@ -693,8 +558,8 @@ Public Class CollaborationFacade
         Dim collSign As New CollaborationSign()
         collSign.IdCollaboration = idCollaboration
         collSign.Incremental = If(incremental > 0, incremental, sqlIncremental)
-        collSign.IsActive = 1S
-        collSign.IdStatus = ""
+        collSign.IsActive = True
+        collSign.IdStatus = String.Empty
         collSign.SignUser = signer.Account
         collSign.SignName = signer.DestinationName
         collSign.SignEMail = signer.DestinationEMail
@@ -706,7 +571,7 @@ Public Class CollaborationFacade
 
     ''' <summary> Aggiorna CollaborationSigns SSE(se solo se) sono il Dirigente del settore </summary>
     Private Sub UpdateCollaborationSignsDl(ByVal lastChangedDate As DateTime, ByVal idCollaboration As Integer, ByVal signUser As String)
-        For Each colSign As CollaborationSign In Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, signUser, 1S)
+        For Each colSign As CollaborationSign In Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, signUser, True)
             colSign.LastChangedDate = lastChangedDate
             colSign.LastChangedUser = signUser
             colSign.IdStatus = CollaborationStatusType.DL.ToString()
@@ -734,9 +599,9 @@ Public Class CollaborationFacade
             Dim collSign As New CollaborationSign()
             collSign.IdCollaboration = idCollaboration
             collSign.Incremental = index + 1S
-            collSign.IsActive = If(index = 0, 1S, 0S)
+            collSign.IsActive = If(index = 0, True, False)
             collSign.IsRequired = IsManagerContact(item)
-            collSign.IdStatus = ""
+            collSign.IdStatus = String.Empty
             collSign.SignUser = item.Account
             collSign.SignName = item.DestinationName
             collSign.SignEMail = item.DestinationEMail
@@ -803,21 +668,6 @@ Public Class CollaborationFacade
         End Try
     End Function
 
-    ''' <summary> Elimina le versioni del documento create su biblos, dato l'id della collaborazione </summary>
-    Public Sub DeleteVersionings(ByVal idCollaboration As Integer)
-        Dim unitOfWork As NHibernateUnitOfWork = New NHibernateUnitOfWork(ProtDB)
-        Try
-            unitOfWork.BeginTransaction()
-            For Each item As CollaborationVersioning In Factory.CollaborationVersioningFacade.GetByCollaboration(idCollaboration)
-                Factory.CollaborationVersioningFacade.Delete(item)
-            Next
-            unitOfWork.Commit()
-        Catch ex As Exception
-            unitOfWork.Rollback()
-            FileLogger.Warn(LoggerName, "Errore su CollaborationFacade.DeleteVersionings : " & idCollaboration, ex)
-            Throw New Exception("Errore nell'eliminazione Record CollaborationVersioning", ex)
-        End Try
-    End Sub
 
 #End Region
 
@@ -826,7 +676,7 @@ Public Class CollaborationFacade
     ''' <summary> Invia una mail inerente l'azione compiuta sulla collaborazione. </summary>
     ''' <param name="collaboration">Collaborazione</param>
     ''' <param name="action">Azione compiuta sulla collaborazione</param>
-    Public Sub SendMail(ByVal collaboration As Collaboration, ByVal action As String)
+    Public Sub SendMail(collaboration As Collaboration, action As String, idTenantAOO As Guid)
         Try
             'Carico la descrizione dell'azione
             Dim currentCollaborationStatus As CollaborationStatus = Factory.CollaborationStatusFacade.GetById(action)
@@ -839,7 +689,7 @@ Public Class CollaborationFacade
             FileLogger.Info(LoggerName, String.Format("{0}: CollaborationFacade.SendMail - Collaborazione [{1}] per {2}-{3} : Preparazione invio", DocSuiteContext.Current.User.FullUserName, collaboration.Id, currentCollaborationStatus.Id, currentCollaborationStatus.Description))
 
             NHibernateSessionManager.Instance.GetSessionFrom(ProtDB).Refresh(collaboration)
-            Dim idMessage As Integer = Factory.MessageEmailFacade.SendEmailMessage(CreateMailMessage(collaboration, currentCollaborationStatus, False))
+            Dim idMessage As Integer = Factory.MessageEmailFacade.SendEmailMessage(CreateMailMessage(collaboration, currentCollaborationStatus, False, idTenantAOO))
 
             FileLogger.Info(LoggerName, String.Format("{0}: CollaborationFacade.SendMail - Collaborazione [{1}] per {2}-{3} : Mail inserita in coda di invio [id {4}]", DocSuiteContext.Current.User.FullUserName, collaboration.Id, currentCollaborationStatus.Id, currentCollaborationStatus.Description, idMessage))
 
@@ -899,15 +749,15 @@ Public Class CollaborationFacade
 
     ''' <summary> Genera la mail da spedire </summary>
     ''' <param name="currentCollaborationStatus">Azione compiuta sulla collaborazione</param>
-    Private Function CreateMailMessage(ByRef collaboration As Collaboration, ByVal currentCollaborationStatus As CollaborationStatus, isDispositionNotification As Boolean) As MessageEmail
+    Private Function CreateMailMessage(collaboration As Collaboration, currentCollaborationStatus As CollaborationStatus, isDispositionNotification As Boolean, idTenantAOO As Guid) As MessageEmail
         Dim signature As String = GetSignature(collaboration.Id, collaboration.RegistrationDate.DateTime, DirectCast([Enum].Parse(GetType(CollaborationDocumentType), collaboration.DocumentType), CollaborationDocumentType))
-        Dim contacts As IList(Of MessageContactEmail) = GetContacts(collaboration, currentCollaborationStatus)
+        Dim contacts As IList(Of MessageContactEmail) = GetContacts(collaboration, currentCollaborationStatus, idTenantAOO)
         If contacts.Count < 2 Then
             Throw New Exception("Contatti insufficienti per spedire la notifica.")
         End If
 
-        Dim mailSubject As String = GetSubject(collaboration, currentCollaborationStatus, signature)
-        Dim mailBody As String = GetBody(collaboration, currentCollaborationStatus, signature, contacts)
+        Dim mailSubject As String = GetSubject(collaboration, currentCollaborationStatus, signature, idTenantAOO)
+        Dim mailBody As String = GetBody(collaboration, currentCollaborationStatus, signature, contacts, idTenantAOO)
         Dim email As MessageEmail = FacadeFactory.Instance.MessageEmailFacade.CreateEmailMessage(contacts, mailSubject, mailBody, isDispositionNotification)
 
         ''Imposto la priorità
@@ -923,29 +773,29 @@ Public Class CollaborationFacade
     End Function
 
     ''' <summary> Genera e restituisce l'oggetto della mail </summary>
-    Private Function GetSubject(ByVal collaboration As Collaboration, ByVal currentCollaborationStatus As CollaborationStatus, ByVal signature As String) As String
-        Dim subject As String = GetCurrentCollaborationStatusSubject(currentCollaborationStatus, collaboration.Id)
+    Private Function GetSubject(collaboration As Collaboration, currentCollaborationStatus As CollaborationStatus, signature As String, idTenantAOO As Guid) As String
+        Dim subject As String = GetCurrentCollaborationStatusSubject(currentCollaborationStatus, collaboration.Id, idTenantAOO)
         ' Dicitura Oggetto Mail
         subject = String.Format("{0} {1} - {2} - {3}", DocSuiteContext.ProductName, signature, GetModuleName(collaboration.DocumentType, "1"), subject)
         Return subject
     End Function
 
-    Private Function GetCurrentCollaborationStatusSubject(ByVal currentCollaborationStatus As CollaborationStatus, ByVal idCollaboration As Integer) As String
+    Private Function GetCurrentCollaborationStatusSubject(currentCollaborationStatus As CollaborationStatus, idCollaboration As Integer, idTenantAOO As Guid) As String
         '' Gestione Oggetto
         Dim subject As String = currentCollaborationStatus.MailSubject
         ''Sostituzione variabili Subject
         If Not String.IsNullOrEmpty(currentCollaborationStatus.MailSubjectVars) Then
-            subject = String.Format(subject, (From var In currentCollaborationStatus.MailSubjectVars.Split("|"c) Select Factory.CollaborationStatusRecipientFacade.ResolveAddresses(var, idCollaboration, False)(0).Description).ToArray)
+            subject = String.Format(subject, (From var In currentCollaborationStatus.MailSubjectVars.Split("|"c) Select Factory.CollaborationStatusRecipientFacade.ResolveAddresses(var, idCollaboration, False, idTenantAOO)(0).Description).ToArray)
         End If
         Return subject
     End Function
 
     ''' <summary> Calcola e restituisce i contatti della mail da spedire </summary>
-    Private Function GetContacts(ByRef collaboration As Collaboration, ByVal currentCollaborationStatus As CollaborationStatus) As IList(Of MessageContactEmail)
+    Private Function GetContacts(ByRef collaboration As Collaboration, currentCollaborationStatus As CollaborationStatus, idTenantAOO As Guid) As IList(Of MessageContactEmail)
         Dim contacts As New List(Of MessageContactEmail)
 
         '' Aggiungo il mittente
-        Dim sender As MessageContactEmail = Factory.CollaborationStatusFacade.GetSender(currentCollaborationStatus, collaboration.Id)
+        Dim sender As MessageContactEmail = Factory.CollaborationStatusFacade.GetSender(currentCollaborationStatus, collaboration.Id, idTenantAOO)
         If sender IsNot Nothing Then
             contacts.Add(sender)
         Else
@@ -953,7 +803,7 @@ Public Class CollaborationFacade
         End If
 
         '' Aggiungo i destinatari
-        contacts.AddRange(Factory.CollaborationStatusFacade.GetRecipients(currentCollaborationStatus, collaboration.Id))
+        contacts.AddRange(Factory.CollaborationStatusFacade.GetRecipients(currentCollaborationStatus, collaboration.Id, idTenantAOO))
 
         Return contacts
     End Function
@@ -982,7 +832,8 @@ Public Class CollaborationFacade
 
     ''' <summary> Calcola il contenuto della mail </summary>
     ''' TODO: potrebbe essere il caso di dare la possibilità di gestire il contenuto del testo tramite un template per gestioni future
-    Private Function GetBody(ByRef collaboration As Collaboration, ByVal currentCollaborationStatus As CollaborationStatus, ByVal signature As String, ByVal contacts As IList(Of MessageContactEmail)) As String
+    Private Function GetBody(collaboration As Collaboration, currentCollaborationStatus As CollaborationStatus, signature As String,
+                             contacts As IList(Of MessageContactEmail), idTenantAOO As Guid) As String
         'Genero il link corretto
         Dim url As String = GetUrlNotificationMessage(collaboration, currentCollaborationStatus)
 
@@ -991,7 +842,7 @@ Public Class CollaborationFacade
 
         Dim moduleName As String = GetModuleName(collaboration.DocumentType, "1")
         'Tipologia richiesta
-        Dim statusSbj As String = GetCurrentCollaborationStatusSubject(currentCollaborationStatus, collaboration.Id)
+        Dim statusSbj As String = GetCurrentCollaborationStatusSubject(currentCollaborationStatus, collaboration.Id, idTenantAOO)
         body.Write("Tipologia Richiesta:&nbsp;")
         body.RenderBeginTag("b")
         body.WriteEncodedText(String.Format("{0} - {1}", moduleName, statusSbj))
@@ -1072,7 +923,7 @@ Public Class CollaborationFacade
 
 #End Region
 
-    Public Sub ChangeSigner(ByVal coll As Collaboration, ByVal changeSigner As ChangeSignerDTO, ByRef countChanged As Integer, ByRef countTotal As Integer, ByRef pushNotify As Boolean)
+    Public Sub ChangeSigner(coll As Collaboration, changeSigner As ChangeSignerDTO, ByRef countChanged As Integer, ByRef countTotal As Integer, ByRef pushNotify As Boolean, idTenantAOO As Guid)
         Dim roleUserFacade As New RoleUserFacade(ProtDB)
         Dim roleFacade As New RoleFacade(ProtDB)
         pushNotify = False
@@ -1080,7 +931,7 @@ Public Class CollaborationFacade
         Dim collSign As CollaborationSign = coll.GetFirstCollaborationSignActive()
 
         If DocSuiteContext.Current.ProtocolEnv.StrictManagerChange Then
-            Dim roleIds As List(Of Integer) = roleUserFacade.GetManagersByCollaboration(coll.Id, collSign.SignUser).Select(Function(x) x.Role.Id).ToList()
+            Dim roleIds As List(Of Integer) = roleUserFacade.GetManagersByCollaboration(coll.Id, collSign.SignUser, idTenantAOO).Select(Function(x) x.Role.Id).ToList()
             Dim collSecretary As IList(Of RoleUser) = roleUserFacade.GetByRoleIdsAndAccount(roleIds, DocSuiteContext.Current.User.FullUserName, RoleUserType.S.ToString())
             If Not collSign.SignUser.Eq(DocSuiteContext.Current.User.FullUserName) AndAlso (collSecretary Is Nothing OrElse (collSecretary IsNot Nothing AndAlso collSecretary.Count = 0)) Then
                 Exit Sub
@@ -1095,7 +946,7 @@ Public Class CollaborationFacade
 
         Dim contactForward As New List(Of CollaborationContact)
         Dim accountFw As CollaborationContact = Nothing
-        Dim account As IList(Of RoleUser) = roleUserFacade.GetByRoleIdAndAccount(changeSigner.RoleId, changeSigner.Destination, "")
+        Dim account As IList(Of RoleUser) = roleUserFacade.GetByRoleIdAndAccount(changeSigner.RoleId, changeSigner.Destination, String.Empty)
         If account.Count > 0 Then
             Dim description As String = GetSignerDescription(account(0).Description, changeSigner.Destination, coll.DocumentType)
             accountFw = New CollaborationContact(changeSigner.Destination, Nothing, description, account(0).Email, False)
@@ -1111,15 +962,15 @@ Public Class CollaborationFacade
         If coll.SignCount.HasValue AndAlso (coll.SignCount.Value > 1) Then
             Factory.CollaborationSignsFacade.ShiftUsers(coll.Id, accountFw, changeSigner.Destination, DocSuiteContext.Current.User.FullUserName)
         Else
-            Update(coll, "", Nothing, "", Nothing, Nothing, Nothing, Nothing, Nothing, contactForward, Nothing, Nothing, Nothing, collSign.SignUser, 0, True)
+            Update(coll, String.Empty, Nothing, String.Empty, Nothing, Nothing, Nothing, Nothing, Nothing, contactForward, Nothing, Nothing, Nothing, collSign.SignUser, 0, True)
         End If
 
-        SendMail(coll, CollaborationMainAction.CambioResponsabile)
+        SendMail(coll, CollaborationMainAction.CambioResponsabile, idTenantAOO)
         countChanged += 1
         pushNotify = True
     End Sub
 
-    Public Sub NextStep(ByVal idList As IList(Of Integer), Optional managersAccounts As AbsentManager() = Nothing)
+    Public Sub NextStep(idList As IList(Of Integer), idTenantAOO As Guid, Optional managersAccounts As AbsentManager() = Nothing)
         If idList Is Nothing Then
             Exit Sub
         End If
@@ -1145,7 +996,7 @@ Public Class CollaborationFacade
                 If coll.SignCount.GetValueOrDefault(0) > 1 AndAlso Factory.CollaborationSignsFacade.HasNext(coll.Id) Then
                     ' Non è ultima firma, eseguo un Forward al destinatario successivo
                     Factory.CollaborationSignsFacade.UpdateForward(coll)
-                    SendMail(coll, CollaborationMainAction.DaVisionareFirmare)
+                    SendMail(coll, CollaborationMainAction.DaVisionareFirmare, idTenantAOO)
                     Factory.CollaborationLogFacade.Insert(coll, "Prosegui al destinatario successivo")
                 Else
                     'Aggiorno
@@ -1162,7 +1013,7 @@ Public Class CollaborationFacade
                         Factory.CollaborationLogFacade.Insert(coll, "Collaborazione automaticamente gestita da attività di workflow")
                     Else
                         Update(coll, String.Empty, Nothing, String.Empty, Nothing, CollaborationStatusType.DP, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, String.Empty, 0, False)
-                        SendMail(coll, CollaborationMainAction.DaProtocollareGestire)
+                        SendMail(coll, CollaborationMainAction.DaProtocollareGestire, idTenantAOO)
                         Factory.CollaborationLogFacade.Insert(coll, "Avanzamento al protocollo/segreteria")
                     End If
                 End If
@@ -1175,10 +1026,19 @@ Public Class CollaborationFacade
             End Try
         Next
     End Sub
+
     Public Sub UpdateBiblosSignsModel(ByRef coll As Collaboration)
         If DocSuiteContext.Current.ProtocolEnv.ForceCollaborationSignDateEnabled Then
-            Dim signerModels As List(Of CollaborationSignModel) = Factory.CollaborationSignsFacade.GetCollaborationSignModel(coll.Id)
             Dim documentsDictionary As IDictionary(Of Guid, BiblosDocumentInfo)
+            Dim collVersiongs As IList(Of CollaborationVersioning) = Factory.CollaborationVersioningFacade.GetLastVersionings(coll)
+            Dim documentDateDictionary As New List(Of CollaborationVersioningModel)
+            Dim collaborationVersioningDate As DateTimeOffset
+            For Each collvers As CollaborationVersioning In collVersiongs
+                collaborationVersioningDate = New DateTime(collvers.RegistrationDate.Year, collvers.RegistrationDate.Month, collvers.RegistrationDate.Day, collvers.RegistrationDate.Hour, collvers.RegistrationDate.Minute, collvers.RegistrationDate.Second)
+                documentDateDictionary.Add(New CollaborationVersioningModel() With {.IdDocument = collvers.IdDocument, .RegistrationDate = collaborationVersioningDate})
+            Next
+
+            Dim signerModels As List(Of CollaborationSignModel) = Factory.CollaborationSignsFacade.GetCollaborationSignModel(coll.Id, documentDateDictionary)
             documentsDictionary = Factory.CollaborationVersioningFacade.GetLastVersionDocuments(coll, VersioningDocumentGroup.MainDocument)
             StoreDocumentMetadatas(documentsDictionary, signerModels)
             'documento omissis
@@ -1199,29 +1059,34 @@ Public Class CollaborationFacade
     Private Sub StoreDocumentMetadatas(ByVal documentsDictionary As IDictionary(Of Guid, BiblosDocumentInfo), ByVal signerModels As List(Of CollaborationSignModel))
         If Not documentsDictionary.IsNullOrEmpty() Then
             Dim documents As IList(Of BiblosDocumentInfo) = New List(Of BiblosDocumentInfo)(documentsDictionary.Values)
+            Dim collaborationVersioningDate As New DateTimeOffset
+            Dim signerModelstorig As List(Of CollaborationSignModel)
             If Not documents.IsNullOrEmpty() Then
                 For Each document As BiblosDocumentInfo In documents
-                    document.AddAttribute(BiblosFacade.SING_MODELS_ATTRIBUTE, JsonConvert.SerializeObject(signerModels))
+                    signerModelstorig = New List(Of CollaborationSignModel)
+                    For Each dbl As CollaborationSignModel In signerModels.ToList()
+                        Dim collSignModel As CollaborationSignModel = New CollaborationSignModel() With {
+                            .Incremental = dbl.Incremental,
+                            .IsRequired = dbl.IsRequired,
+                            .SignDate = dbl.SignDate,
+                            .SignEmail = dbl.SignEmail,
+                            .SignName = dbl.SignName,
+                            .SignUser = dbl.SignUser
+                        }
+                        collSignModel.CollaborationVersioningModels.AddRange(dbl.CollaborationVersioningModels.Where(Function(cv) cv.IdDocument = document.BiblosChainId).ToList())
+                        signerModelstorig.Add(collSignModel)
+                    Next
+                    collaborationVersioningDate = signerModelstorig(0).CollaborationVersioningModels.Where(Function(cv) cv.IdDocument = document.BiblosChainId).FirstOrDefault().RegistrationDate
+                    signerModelstorig = signerModelstorig.Where(Function(cs) cs.SignDate.HasValue AndAlso cs.SignDate.Value >= collaborationVersioningDate AndAlso cs.IsRequired.Value = False).ToList
+                    document.AddAttribute(BiblosFacade.SING_MODELS_ATTRIBUTE, JsonConvert.SerializeObject(signerModelstorig))
                     Service.UpdateDocument(document, DocSuiteContext.Current.User.FullUserName)
                 Next
             End If
         End If
     End Sub
-    Public Function GetFdqDocuments(ByVal idCollList As List(Of Integer)) As IList(Of DocumentFDQDTO)
-        Return _dao.GetFDQDocuments(idCollList)
-    End Function
 
     Public Function GetFdqAttachments(ByVal idCollList As List(Of Integer)) As IList(Of DocumentFDQDTO)
         Return _dao.GetFDQAttachments(idCollList)
-    End Function
-
-    Public Function GetDocumentsToSign(ByVal idCollList As List(Of Integer), ByVal attachments As Boolean) As List(Of DocumentFDQDTO)
-        Dim docs As List(Of DocumentFDQDTO) = _dao.GetFDQDocuments(idCollList).ToList()
-        If attachments Then
-            docs.AddRange(_dao.GetFDQAttachments(idCollList))
-        End If
-
-        Return docs
     End Function
 
     Public Function GetSortedDocumentsToSign(ByVal selectedCollaborationIds As List(Of Integer), ByVal retrieveAttachments As Boolean) As IList(Of DocumentFDQDTO)
@@ -1368,9 +1233,9 @@ Public Class CollaborationFacade
         Return String.Format("Collaborazione {0} del {1:dd/MM/yyyy}", collaboration.Id, collaboration.RegistrationDate)
     End Function
 
-    Public Sub FinalizeToProtocol(collaboration As Collaboration)
-        Update(collaboration, "", Nothing, "", Nothing, CollaborationStatusType.PT, Nothing, Nothing, Nothing, Nothing, collaboration.Year, collaboration.Number, Nothing, "", 0, False)
-        SendMail(collaboration, CollaborationMainAction.ProtocollatiGestiti)
+    Public Sub FinalizeToProtocol(collaboration As Collaboration, idTenantAOO As Guid)
+        Update(collaboration, String.Empty, Nothing, String.Empty, Nothing, CollaborationStatusType.PT, Nothing, Nothing, Nothing, Nothing, collaboration.Year, collaboration.Number, Nothing, String.Empty, 0, False)
+        SendMail(collaboration, CollaborationMainAction.ProtocollatiGestiti, idTenantAOO)
     End Sub
 
     ''' <summary>
@@ -1425,7 +1290,7 @@ Public Class CollaborationFacade
     End Function
 
     ''' <summary> Estrae tutti i settori associabili automaticamente a partire da una collaborazione. </summary>
-    Public Function GetSecretaryRoles(collaboration As Collaboration, userName As String) As IList(Of Role)
+    Public Function GetSecretaryRoles(collaboration As Collaboration, userName As String, idTenantAOO As Guid) As IList(Of Role)
         Dim roles As IList(Of Role)
         ' TODO: Finire assolutamente
         Select Case DocSuiteContext.Current.ProtocolEnv.CollSecretaryRoleAllowance()
@@ -1451,7 +1316,7 @@ Public Class CollaborationFacade
                 For Each collaborationUser As CollaborationUser In collaborationUsers
                     roleIdList.Add(collaborationUser.IdRole.Value)
                 Next
-                Dim userRoles As IList(Of RoleUser) = Factory.RoleUserFacade.GetByUserType(Nothing, userName, True, roleIdList)
+                Dim userRoles As IList(Of RoleUser) = Factory.RoleUserFacade.GetByUserType(Nothing, userName, True, roleIdList, idTenantAOO)
 
                 roles = New List(Of Role)()
                 For Each userRole As RoleUser In userRoles
@@ -1464,7 +1329,7 @@ Public Class CollaborationFacade
                 For Each collaborationUser As CollaborationUser In collaborationUsers
                     roleIdList.Add(collaborationUser.IdRole.Value)
                 Next
-                Dim userRoles As IList(Of RoleUser) = Factory.RoleUserFacade.GetByUserType(RoleUserType.S, userName, True, roleIdList)
+                Dim userRoles As IList(Of RoleUser) = Factory.RoleUserFacade.GetByUserType(RoleUserType.S, userName, True, roleIdList, idTenantAOO)
 
                 roles = New List(Of Role)()
                 For Each userRole As RoleUser In userRoles
@@ -1487,89 +1352,17 @@ Public Class CollaborationFacade
         Return Me.GetByProtocol(protocol.Year, protocol.Number)
     End Function
 
-    Private Function GetCollaborationsToWarn(checkExpiredCollaborations As Boolean) As IList(Of Collaboration)
-        Return _dao.GetCollaborationsToWarn(checkExpiredCollaborations)
-    End Function
-
-    Public Function GetCollaborationsExpired(checkExpiredCollaborations As Boolean) As IList(Of CollaborationDTO)
-        If Not DocSuiteContext.Current.ProtocolEnv.CollaborationManagementExpired Then
-            Return New CollaborationDTO() {}
-        End If
-
-        Dim list As IList(Of Collaboration) = GetCollaborationsToWarn(checkExpiredCollaborations)
-        If Not list.Any() Then
-            Return New CollaborationDTO() {}
-        End If
-
-        Dim listDto As New List(Of CollaborationDTO)
-
-        For Each item As Collaboration In list
-            Dim dto As New CollaborationDTO(item.Id)
-
-            dto.AddProposer(item.RegistrationEMail)
-
-            Dim activeSignerMail As String = item.GetFirstCollaborationSignActive().SignEMail
-            dto.AddSigner(activeSignerMail)
-
-            Dim listSecretaries As List(Of IContactDTO) = GetSecretaryMailBoxes(item.CollaborationUsers)
-            For Each contactDto As IContactDTO In listSecretaries
-                dto.AddSecretaries(contactDto)
-            Next
-
-            dto.IdStatus = item.IdStatus
-            dto.DocumentType = item.DocumentType
-            dto.IdPriority = item.IdPriority
-            dto.SignCount = item.SignCount
-            dto.MemorandumDate = item.MemorandumDate
-            dto.AlertDate = item.AlertDate
-            dto.CollaborationObject = item.CollaborationObject
-            dto.Note = item.Note
-            dto.PublicationDate = item.PublicationDate
-            dto.PublicationUser = item.PublicationUser
-            dto.RegistrationDate = item.RegistrationDate.DateTime
-
-            If item.Year.HasValue Then
-                dto.Year = item.Year
-            End If
-
-            If item.Number.HasValue Then
-                dto.Number = item.Number
-            End If
-
-            listDto.Add(dto)
-        Next
-
-        Return listDto
-    End Function
-
-    Private Function GetSecretaryMailBoxes(ByVal listUserOfCollaboration As IList(Of CollaborationUser)) As List(Of IContactDTO)
-        Dim secretaryList As IEnumerable(Of CollaborationUser) = listUserOfCollaboration.Where(Function(x) x.DestinationType = DestinatonType.S.ToString())
-        Dim result As New List(Of IContactDTO)
-
-        If Not secretaryList.Any() Then
-            Return New List(Of IContactDTO)()
-        End If
-
-        For Each item As CollaborationUser In secretaryList
-            If Not String.IsNullOrEmpty(item.DestinationEMail) Then
-                result.Add(New API.ContactDTO(item.DestinationEMail))
-            End If
-        Next
-
-        Return result
-    End Function
-
     Public Function GetAvailableDocumentTypes() As List(Of CollaborationDocumentType)
         Dim documentTypes As New List(Of CollaborationDocumentType)
-        If CollaborationRights.GetCollaborationProtocolEnabled() OrElse DocSuiteContext.Current.ProtocolEnv.CollaborationMenuAlwaysVisible Then
+        If CollaborationRights.GetCollaborationProtocolEnabled(CurrentTenant.TenantAOO.UniqueId) OrElse DocSuiteContext.Current.ProtocolEnv.CollaborationMenuAlwaysVisible Then
             documentTypes.Add(CollaborationDocumentType.P)
         End If
 
-        If CollaborationRights.GetCollaborationResolutionEnabled() OrElse (DocSuiteContext.Current.ProtocolEnv.CollaborationMenuAlwaysVisible AndAlso DocSuiteContext.Current.IsResolutionEnabled) Then
+        If CollaborationRights.GetCollaborationResolutionEnabled(CurrentTenant.TenantAOO.UniqueId) OrElse (DocSuiteContext.Current.ProtocolEnv.CollaborationMenuAlwaysVisible AndAlso DocSuiteContext.Current.IsResolutionEnabled) Then
             documentTypes.AddRange({CollaborationDocumentType.D, CollaborationDocumentType.A})
         End If
 
-        If CollaborationRights.GetCollaborationSeriesEnabled() OrElse (DocSuiteContext.Current.ProtocolEnv.CollaborationMenuAlwaysVisible AndAlso DocSuiteContext.Current.ProtocolEnv.DocumentSeriesEnabled) Then
+        If CollaborationRights.GetCollaborationSeriesEnabled(CurrentTenant.TenantAOO.UniqueId) OrElse (DocSuiteContext.Current.ProtocolEnv.CollaborationMenuAlwaysVisible AndAlso DocSuiteContext.Current.ProtocolEnv.DocumentSeriesEnabled) Then
             documentTypes.Add(CollaborationDocumentType.S)
         End If
 
@@ -1588,25 +1381,12 @@ Public Class CollaborationFacade
         Return documentTypes
     End Function
 
-    Public Function GetDocumentType(documentType As String) As CollaborationDocumentType
-        Dim result As CollaborationDocumentType = Nothing
-        If [Enum].TryParse(documentType, result) Then
-            Return result
-        End If
-
-        Dim message As String = "Nessun CollaborationDocumentType associato al valore ""{0}""."
-        message = String.Format(message, documentType)
-        Throw New ArgumentException(message)
-    End Function
-
-    Public Function GetDocumentType(collaboration As Collaboration) As CollaborationDocumentType
-        Return Me.GetDocumentType(collaboration.DocumentType)
-    End Function
-
     Public Function GetByIdDocumentSeriesItem(idDocumentSeriesItem As Integer) As Collaboration
         Return _dao.GetByDocumentSeriesItem(idDocumentSeriesItem)
     End Function
-
+    Public Function GetByIdDocumentUnit(idDocumentUnit As Guid) As Collaboration
+        Return _dao.GetByIdDocumentUnit(idDocumentUnit)
+    End Function
 
     Public Function IsManagerContact(contact As CollaborationContact) As Boolean
         If DocSuiteContext.Current.ProtocolEnv.AbsentManagersCertificates IsNot Nothing AndAlso DocSuiteContext.Current.ProtocolEnv.AbsentManagersCertificates.Managers IsNot Nothing AndAlso
@@ -1634,4 +1414,16 @@ Public Class CollaborationFacade
         Return description
     End Function
 
+    Public Sub SendDeleteCollaborationCommand(collaboration As Entity.Collaborations.Collaboration)
+        Try
+            Dim identity As IdentityContext = New IdentityContext(DocSuiteContext.Current.User.FullUserName)
+            Dim tenantName As String = CurrentTenant.TenantName
+            Dim tenantId As Guid = CurrentTenant.UniqueId
+            Dim tenantAOOId As Guid = CurrentTenant.TenantAOO.UniqueId
+            Dim commandUpdate As ICommandDeleteCollaboration = New CommandDeleteCollaboration(tenantName, tenantId, tenantAOOId, identity, collaboration)
+            CommandUpdateFacade.Push(commandUpdate)
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, String.Concat("SendDeleteCollaborationCommand => ", ex.Message), ex)
+        End Try
+    End Sub
 End Class

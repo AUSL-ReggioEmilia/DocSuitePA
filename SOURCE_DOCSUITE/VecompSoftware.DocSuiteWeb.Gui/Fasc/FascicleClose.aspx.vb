@@ -66,8 +66,7 @@ Public Class FascicleClose
             setSortExpression = True
         End If
         If setSortExpression Then
-            Dim order As String = If(DocSuiteContext.Current.ProtocolEnv.ForceDescendingOrderElements, "desc", "asc")
-            uscFascicleGrid.Grid.Finder.SortExpressions.Add("Entity.StartDate", order)
+            uscFascicleGrid.Grid.Finder.SortExpressions.Add("Entity.StartDate", "desc")
         End If
         uscFascicleGrid.ColumnLastChangedDateVisible = True
         uscFascicleGrid.Grid.DataBindFinder()

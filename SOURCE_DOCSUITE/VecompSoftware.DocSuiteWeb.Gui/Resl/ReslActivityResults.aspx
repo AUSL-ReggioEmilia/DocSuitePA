@@ -116,7 +116,7 @@
                 <ItemStyle CssClass="Scuro" />
                 <AlternatingItemStyle CssClass="Chiaro" />
                 <Columns>
-                    <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../Resl/Images/Atto.gif" HeaderText="Tipologia" UniqueName="Tipologia">
+                    <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../Resl/Images/Atto.png" HeaderText="Tipologia" UniqueName="Tipologia">
                         <HeaderStyle HorizontalAlign="Center" CssClass="headerImage" />
                         <ItemStyle HorizontalAlign="Center" CssClass="cellImage" />
                         <ItemTemplate>

@@ -210,7 +210,7 @@ Partial Public Class ReslPrint
         BindRuolo()
 
         Dim reslContainers As New List(Of ListItem)
-        Dim activeContainers As IList(Of ContainerRightsDto) = Facade.ContainerFacade.GetAllRights("Resl", 1)
+        Dim activeContainers As IList(Of ContainerRightsDto) = Facade.ContainerFacade.GetAllRights("Resl", True)
 
         For Each container As ContainerRightsDto In activeContainers
             Dim containerName As String = container.Name
@@ -905,7 +905,7 @@ Partial Public Class ReslPrint
         Dim _allPdfs As New List(Of String)
         For Each resl As Resolution In resolutions
             Dim ultimaPaginaPrintPdf As New ReslUltimaPaginaPrintPdf(chbOmissis.Checked)
-            Dim path As String = ultimaPaginaPrintPdf.GeneraUltimaPagina(resl, False)
+            Dim path As String = ultimaPaginaPrintPdf.GeneraUltimaPagina(resl, False, CurrentTenant.TenantAOO.UniqueId)
             _allPdfs.Add(path)
             ' LOG
             Facade.ResolutionLogFacade.Log(resl, ResolutionLogType.RP, "Ultima pagina creata per stampa")

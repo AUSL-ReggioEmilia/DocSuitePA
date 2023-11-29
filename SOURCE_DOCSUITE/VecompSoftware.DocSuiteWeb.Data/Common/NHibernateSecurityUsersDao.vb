@@ -1,9 +1,8 @@
-﻿Imports System.Collections.Generic
-Imports NHibernate.Criterion
-Imports VecompSoftware.NHibernateManager.Dao
-Imports System.Linq
+﻿Imports System.Linq
 Imports NHibernate
+Imports NHibernate.Criterion
 Imports NHibernate.Transform
+Imports VecompSoftware.NHibernateManager.Dao
 
 Public Class NHibernateSecurityUsersDao
     Inherits BaseNHibernateDao(Of SecurityUsers)
@@ -25,31 +24,16 @@ Public Class NHibernateSecurityUsersDao
     End Function
 
     ''' <summary> Elenco di SecurityGroups abbinati ad un SecurityUsers. </summary>
-    Public Function GetGroupsByAccount(userDomain As String, defaultDomain As String, account As String) As IList(Of SecurityGroups)
-        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of SecurityGroups)("SG")
-
-        Dim groupConj As Conjunction = New Conjunction()
-        groupConj.Add(Restrictions.Eq("SG.HasAllUsers", True))
-
-        Dim userDetachCriteria As DetachedCriteria = DetachedCriteria.For(GetType(SecurityUsers), "SU")
-        'userDetachCriteria.CreateAlias("SU.Group", "G", SqlCommand.JoinType.InnerJoin)
-        userDetachCriteria.Add(Restrictions.EqProperty("SG.Id", "SU.Group.Id"))
-        userDetachCriteria.Add(Restrictions.Eq("SU.Account", account))
-
-        If String.IsNullOrEmpty(userDomain) OrElse userDomain.Equals(defaultDomain, StringComparison.InvariantCultureIgnoreCase) Then
-            ' Qualora non venga specificato un dominio per retrocompatibilità considero nullo o il dominio di default.
-            Dim userDisj As Disjunction = New Disjunction()
-            userDisj.Add(Restrictions.Eq("SU.UserDomain", defaultDomain))
-            userDisj.Add(Restrictions.IsNull("SU.UserDomain"))
-            userDisj.Add(Expression.Sql("1=0"))
-            userDetachCriteria.Add(userDisj)
-        Else
-            userDetachCriteria.Add(Restrictions.Eq("SU.UserDomain", userDomain))
-        End If
-        userDetachCriteria.SetProjection(Projections.Id())
-
-        criteria.Add(Restrictions.Or(groupConj, Subqueries.Exists(userDetachCriteria)))
+    Public Function GetGroupsByAccount(userDomain As String, defaultDomain As String, account As String, Optional groups As Integer() = Nothing) As IList(Of SecurityGroups)
+        Dim criteria As ICriteria = CreateGroupsByAccountCriteria(userDomain, defaultDomain, account, groups)
         Return criteria.List(Of SecurityGroups)()
+    End Function
+
+    ''' <summary> Count di SecurityGroups abbinati ad un SecurityUsers. </summary>
+    Public Function CountGroupsByAccount(userDomain As String, defaultDomain As String, account As String, Optional groups As Integer() = Nothing) As Integer
+        Dim criteria As ICriteria = CreateGroupsByAccountCriteria(userDomain, defaultDomain, account, groups)
+        criteria.SetProjection(Projections.RowCount())
+        Return criteria.UniqueResult(Of Integer)()
     End Function
 
     ''' <summary> Elenco di SecurityUsers di uno SecurityGroup. </summary>
@@ -181,5 +165,37 @@ Public Class NHibernateSecurityUsersDao
         criteria.SetProjection(Projections.Distinct(Projections.RowCountInt64()))
         Return criteria.UniqueResult(Of Long)() > 0
 
+    End Function
+
+    ''' <summary> Restituisce i criteri nhibernate per la ricerca dei SecurityGroups abbinati ad un SecurityUsers. </summary>
+    Private Function CreateGroupsByAccountCriteria(userDomain As String, defaultDomain As String, account As String, groups() As Integer) As ICriteria
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of SecurityGroups)("SG")
+
+        Dim groupConj As Conjunction = New Conjunction()
+        groupConj.Add(Restrictions.Eq("SG.HasAllUsers", True))
+
+        Dim userDetachCriteria As DetachedCriteria = DetachedCriteria.For(GetType(SecurityUsers), "SU")
+        'userDetachCriteria.CreateAlias("SU.Group", "G", SqlCommand.JoinType.InnerJoin)
+        userDetachCriteria.Add(Restrictions.EqProperty("SG.Id", "SU.Group.Id"))
+        userDetachCriteria.Add(Restrictions.Eq("SU.Account", account))
+
+        If groups IsNot Nothing Then
+            criteria.Add(Restrictions.In("SG.Id", groups))
+        End If
+
+        If String.IsNullOrEmpty(userDomain) OrElse userDomain.Equals(defaultDomain, StringComparison.InvariantCultureIgnoreCase) Then
+            ' Qualora non venga specificato un dominio per retrocompatibilità considero nullo o il dominio di default.
+            Dim userDisj As Disjunction = New Disjunction()
+            userDisj.Add(Restrictions.Eq("SU.UserDomain", defaultDomain))
+            userDisj.Add(Restrictions.IsNull("SU.UserDomain"))
+            userDisj.Add(Expression.Sql("1=0"))
+            userDetachCriteria.Add(userDisj)
+        Else
+            userDetachCriteria.Add(Restrictions.Eq("SU.UserDomain", userDomain))
+        End If
+        userDetachCriteria.SetProjection(Projections.Id())
+
+        criteria.Add(Restrictions.Or(groupConj, Subqueries.Exists(userDetachCriteria)))
+        Return criteria
     End Function
 End Class

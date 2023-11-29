@@ -37,6 +37,7 @@ Public MustInherit Class BaseResolutionFinderController
         If _uscFinder IsNot Nothing Then
             _uscFinder.BindContainersDelegate = AddressOf BindContainers
             _uscFinder.BindControllerStatusDelegate = AddressOf BindControllerStatus
+            _uscFinder.BindBidTypeDelagate = AddressOf BindBidType
             _uscFinder.BindControls()
         End If
     End Sub
@@ -51,7 +52,7 @@ Public MustInherit Class BaseResolutionFinderController
             Dim disabledContainers As New List(Of ListItem)
             For Each container As Container In containers
                 Dim li As New ListItem(container.Name, container.Id.ToString())
-                If container.IsActive = 1 AndAlso container.IsActiveRange() Then
+                If container.IsActive AndAlso container.IsActiveRange() Then
                     '' Se è attivo e valido lo aggiungo direttamente al controllo
                     comboBox.Items.Add(li)
                 Else
@@ -77,6 +78,14 @@ Public MustInherit Class BaseResolutionFinderController
                 WebUtils.ObjDropDownListAdd(comboBox, controller.Acronym & " - " & controller.Description, controller.Id)
             Next
         End If
+    End Sub
+
+    Protected Overridable Sub BindBidType(ByRef ddlBidType As DropDownList)
+        Dim bidTypeList As IList(Of BidType) = Facade.BidTypeFacade.GetAll()
+        WebUtils.ObjDropDownListAdd(ddlBidType, "", "")
+        For Each bidType As BidType In bidTypeList
+            ddlBidType.Items.Add(New ListItem(bidType.Description, bidType.Id.ToString()))
+        Next
     End Sub
 #End Region
 

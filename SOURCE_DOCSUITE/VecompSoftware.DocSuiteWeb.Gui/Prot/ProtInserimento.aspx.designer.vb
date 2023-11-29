@@ -842,6 +842,15 @@ Partial Public Class ProtInserimento
     Protected WithEvents hf_workflowAction_toFascicle As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
+    '''hf_workflowAction_toFascicleFolder control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hf_workflowAction_toFascicleFolder As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
     '''hfNeedClone control.
     '''</summary>
     '''<remarks>

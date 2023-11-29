@@ -729,7 +729,6 @@ class TbltClassificatore {
                         let customActions: FascicleCustomActionModel = customActionsJson
                             ? <FascicleCustomActionModel>JSON.parse(customActionsJson)
                             : <FascicleCustomActionModel>{
-                                AutoClose: false,
                                 AutoCloseAndClone: false
                             };
                         instance.loadItems(customActions);

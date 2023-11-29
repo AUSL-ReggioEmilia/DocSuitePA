@@ -30,6 +30,10 @@ Public Class UscMiscellanea
 
     Public Property OnlySignEnabled As Boolean
 
+    Public Property Environment As DSWEnvironment
+
+    Public Property DocumentUnitId As Guid?
+
     Public Property FilterByArchiveDocumentId As Guid?
 
     Public ReadOnly Property PageContentDiv As Control
@@ -38,6 +42,11 @@ Public Class UscMiscellanea
         End Get
     End Property
 
+    Public ReadOnly Property HasDgrooveSigner As Boolean
+        Get
+            Return DocSuiteContext.Current.HasDgrooveSigner
+        End Get
+    End Property
 #End Region
 
 #Region " Events"
@@ -157,9 +166,7 @@ Public Class UscMiscellanea
                 End If
                 documentModels.Add(mappedDoc)
             Next
-
             AjaxManager.ResponseScripts.Add(String.Format(BIND_MISCELLANEA, JsonConvert.SerializeObject(documentModels)))
-
         End If
     End Sub
 

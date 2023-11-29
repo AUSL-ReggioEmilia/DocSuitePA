@@ -51,9 +51,8 @@ Public Class TbltSecurityGroupWizard
 
 #Region "Events"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-        If Not CommonShared.HasGroupAdministratorRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
 
         InitializeAjax()
@@ -205,7 +204,7 @@ Public Class TbltSecurityGroupWizard
         Next
     End Sub
     Private Function FindRoles(Optional parentRole As Role = Nothing, Optional loadOnlyRoots As Boolean = False, Optional roleNameFilter As String = Nothing) As IList(Of Role)
-        Dim roles As IList(Of Role) = Facade.RoleFacade.GetRoles(DSWEnvironment.Any, Nothing, True, roleNameFilter, loadOnlyRoots, parentRole, TenantId)
+        Dim roles As IList(Of Role) = Facade.RoleFacade.GetRoles(DSWEnvironment.Any, Nothing, True, roleNameFilter, loadOnlyRoots, parentRole, CurrentTenant.TenantAOO.UniqueId)
         Return roles
     End Function
     Private Sub btnSave_Click(ByVal sender As Object, ByVal e As ButtonClickEventArgs) Handles btnSave.Click

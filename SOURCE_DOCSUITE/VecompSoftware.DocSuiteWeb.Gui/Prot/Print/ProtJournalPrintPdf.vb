@@ -86,13 +86,6 @@ Public Class ProtJournalPrintPdf
         If mcontacts.Count > 0 Then
             ContactFacade.FormatContacts(mcontacts, text)
         End If
-        'Recipient
-        If protocol.Recipients.Count > 0 Then
-            For Each contatto As Recipient In protocol.Recipients
-                If text <> "" Then text &= vbCrLf
-                text &= StringHelper.ReplaceCrLf(contatto.FullName)
-            Next
-        End If
         If text <> "" Then
             text &= StringHelper.ReplaceCrLf(protocol.AlternativeRecipient)
             If text <> "" Then text = vbCrLf & text

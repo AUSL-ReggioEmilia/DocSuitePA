@@ -2,7 +2,6 @@
 
 <%@ Register TagPrefix="usc" TagName="RoleControl" Src="~/Control/RoleControl.ascx" %>
 <%@ Register TagPrefix="usc" TagName="ContainersControl" Src="~/Control/ContainersControl.ascx" %>
-<%@ Register TagPrefix="usc" TagName="PECMailBoxControl" Src="~/Control/PECMailBoxControl.ascx" %>
 <%@ Register TagPrefix="usc" TagName="ContactControl" Src="~/Control/ContactControl.ascx" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="cphHeader" runat="server">
@@ -68,15 +67,6 @@
                         break;
                     case "ADDNEW":
                         OpenNewRole();
-                        args.set_cancel(true);
-                        break;
-                }
-            }
-            function tbPECMailBoxControlButtonClicking(sender, args) {
-                var btn = args.get_item();
-                switch (btn.get_commandName()) {
-                    case "ADD":
-                        OpenWindow('<%= rwPECMailBoxSelector.ClientID%>');
                         args.set_cancel(true);
                         break;
                 }
@@ -207,33 +197,6 @@
                             <td class="buttons" colspan="2">
                                 <asp:Button runat="server" ID="cmdContainerSelectorOk" Text="Conferma" Width="100px" />
                                 <asp:Button runat="server" ID="cmdContainerSelectorCancel" Text="Annulla" Width="100px" />
-                            </td>
-                        </tr>
-                    </table>
-                </ContentTemplate>
-            </asp:UpdatePanel>
-        </ContentTemplate>
-    </telerik:RadWindow>
-
-    <telerik:RadWindow runat="server" ID="rwPECMailBoxSelector" Title="Seleziona Casella PEC" Width="480" Height="95" Behaviors="Close"
-        IconUrl="../App_Themes/DocSuite2008/imgset16/mail_box.png">
-        <ContentTemplate>
-            <asp:UpdatePanel runat="server" ID="PECMailBoxSelectorUpdatePanel" UpdateMode="Conditional">
-                <ContentTemplate>
-                    <table class="datatable" id="PECMailBoxSelectorWindowTable">
-                        <tr>
-                            <td class="label">Casella PEC</td>
-                            <td>
-                                <telerik:RadComboBox runat="server" CausesValidation="false"
-                                    ID="cbPECMailBoxSelector" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true"
-                                    ItemRequestTimeout="500" Width="300px">
-                                </telerik:RadComboBox>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="buttons" colspan="2">
-                                <asp:Button runat="server" ID="cmdPECMailBoxSelectorOk" Text="Conferma" Width="100px" />
-                                <asp:Button runat="server" ID="cmdPECMailBoxSelectorCancel" Text="Annulla" Width="100px" />
                             </td>
                         </tr>
                     </table>
@@ -482,7 +445,7 @@
 
                     <table class="datatable" id="ItemDetailTable">
                         <tr>
-                            <th colspan="2">Dettaglio Unità Organizzativa</th>
+                            <th colspan="2">Dettaglio unità organizzativa</th>
                         </tr>
                         <tr>
                             <td class="label">Nome
@@ -513,7 +476,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">Codice Padre
+                            <td class="label">Codice padre
                             </td>
                             <td>
                                 <asp:Label runat="server" ID="lblItemParentCode"></asp:Label>
@@ -530,8 +493,8 @@
                                 <telerik:RadToolBar runat="server" ID="tbContactControl" CssClass="ToolBarContainer"
                                     EnableRoundedCorners="False" EnableShadows="False" Width="100%" OnClientButtonClicking="tbContactControlButtonClicking">
                                     <Items>
-                                        <telerik:RadToolBarButton runat="server" CommandName="ADD" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_add.png" ToolTip="Aggiungi Settore Esistente"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton runat="server" CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_delete.png" ToolTip="Elimina Settore Selezionato"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton runat="server" CommandName="ADD" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_add.png" ToolTip="Aggiungi settore esistente"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton runat="server" CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_delete.png" ToolTip="Elimina settore selezionato"></telerik:RadToolBarButton>
                                     </Items>
                                 </telerik:RadToolBar>
                             </td>
@@ -552,9 +515,9 @@
                                 <telerik:RadToolBar runat="server" ID="tbRoleControl" CssClass="ToolBarContainer"
                                     EnableRoundedCorners="False" EnableShadows="False" Width="100%" OnClientButtonClicking="tbRoleControlButtonClicking">
                                     <Items>
-                                        <telerik:RadToolBarButton runat="server" CommandName="ADD" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_add.png" ToolTip="Aggiungi Settore Esistente"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton runat="server" CommandName="ADDNEW" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_edit.png" ToolTip="Aggiungi Nuovo Settore"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton runat="server" CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_delete.png" ToolTip="Elimina Settore Selezionato"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton runat="server" CommandName="ADD" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_add.png" ToolTip="Aggiungi settore esistente"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton runat="server" CommandName="ADDNEW" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_edit.png" ToolTip="Aggiungi nuovo settore"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton runat="server" CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_delete.png" ToolTip="Elimina settore selezionato"></telerik:RadToolBarButton>
                                     </Items>
                                 </telerik:RadToolBar>
                             </td>
@@ -577,11 +540,11 @@
                                 <telerik:RadToolBar runat="server" ID="tbContainersControl" CssClass="ToolBarContainer"
                                     EnableRoundedCorners="False" EnableShadows="False" Width="100%" OnClientButtonClicking="tbContainersControlButtonClicking">
                                     <Items>
-                                        <telerik:RadToolBarButton runat="server" CommandName="ADD" ImageUrl="~/App_Themes/DocSuite2008/imgset16/box_open_add.png" ToolTip="Aggiungi Contenitore Esistente"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton runat="server" CommandName="ADDNEW" ImageUrl="~/App_Themes/DocSuite2008/imgset16/box_open_edit.png" ToolTip="Aggiungi Nuovo Contenitore"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton runat="server" CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/box_open_remove.png" ToolTip="Elimina Contenitore Selezionato"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton runat="server" CommandName="MASTER" ImageUrl="~/App_Themes/DocSuite2008/imgset16/user.png" ToolTip="Gestione Proprietario"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton runat="server" CommandName="REJECTION" ImageUrl="~/App_Themes/DocSuite2008/imgset16/copyleft.png" ToolTip="Punto di Distribuzione"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton runat="server" CommandName="ADD" ImageUrl="~/App_Themes/DocSuite2008/imgset16/box_open_add.png" ToolTip="Aggiungi contenitore esistente"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton runat="server" CommandName="ADDNEW" ImageUrl="~/App_Themes/DocSuite2008/imgset16/box_open_edit.png" ToolTip="Aggiungi nuovo contenitore"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton runat="server" CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/box_open_remove.png" ToolTip="Elimina contenitore selezionato"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton runat="server" CommandName="MASTER" ImageUrl="~/App_Themes/DocSuite2008/imgset16/user.png" ToolTip="Gestione proprietario"></telerik:RadToolBarButton>
+                                        <telerik:RadToolBarButton runat="server" CommandName="REJECTION" ImageUrl="~/App_Themes/DocSuite2008/imgset16/copyleft.png" ToolTip="Punto di distribuzione"></telerik:RadToolBarButton>
                                     </Items>
                                 </telerik:RadToolBar>
                             </td>
@@ -593,29 +556,6 @@
                         </tr>
                     </table>
 
-                    <table class="datatable">
-                        <thead>
-                            <tr>
-                                <th>Caselle PEC</th>
-                            </tr>
-                        </thead>
-                        <tr>
-                            <td>
-                                <telerik:RadToolBar runat="server" ID="tbPECMailBoxControl" CssClass="ToolBarContainer"
-                                    EnableRoundedCorners="False" EnableShadows="False" Width="100%" OnClientButtonClicking="tbPECMailBoxControlButtonClicking">
-                                    <Items>
-                                        <telerik:RadToolBarButton runat="server" CommandName="ADD" ImageUrl="~/App_Themes/DocSuite2008/imgset16/mail_box_add.png" ToolTip="Aggiungi Casella PEC"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton runat="server" CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/mail_box_remove.png" ToolTip="Elimina Casella PEC Selezionato"></telerik:RadToolBarButton>
-                                    </Items>
-                                </telerik:RadToolBar>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <usc:PECMailBoxControl runat="server" ID="myPECMailBoxControl" DefaultGroup=""></usc:PECMailBoxControl>
-                            </td>
-                        </tr>
-                    </table>
                 </asp:Panel>
             </telerik:RadPane>
         </telerik:RadSplitter>

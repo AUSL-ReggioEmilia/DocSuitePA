@@ -50,15 +50,15 @@
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.9.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.9\lib\net45\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ReportViewer.WebForms, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ReportViewer.WebForms.11.0.2802.16\lib\net20\Microsoft.ReportViewer.WebForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=5.1.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\NHibernate.5.1.3\lib\net461\NHibernate.dll</HintPath>
@@ -70,6 +70,7 @@
       <HintPath>..\packages\Remotion.Linq.EagerFetching.2.2.0\lib\net45\Remotion.Linq.EagerFetching.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -84,17 +85,29 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Telerik.Web.UI, Version=2020.1.114.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.Web.UI.2020.1.114.45\lib\net45\Telerik.Web.UI.dll</HintPath>
+    <Reference Include="Telerik.Web.UI, Version=2021.1.119.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Web.UI.2021.1.119.45\lib\net45\Telerik.Web.UI.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.9.9.20267.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.22.23089.1\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Web, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Web.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Web.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.22.23089.1\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Logging, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Logging.9.9.20267.1\lib\net48\VecompSoftware.Services.Logging.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.22.23089.1\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.22.23089.1\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers, Version=9.22.23292.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.9.22.23292.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Helpers.Web, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Web.9.22.23292.1\lib\net48\VecompSoftware.Helpers.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Logging, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Logging.9.22.23292.1\lib\net48\VecompSoftware.Services.Logging.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -108,12 +121,20 @@
     <Compile Include="ResolutionReport.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder\VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.csproj">
+      <Project>{d6c8f945-56c2-4187-b06a-14c89301db62}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Data\VecompSoftware.DocSuiteWeb.Data.vbproj">
-      <Project>{26FC3668-B677-40A7-ABBB-512736E7A815}</Project>
+      <Project>{26fc3668-b677-40a7-abbb-512736e7a815}</Project>
       <Name>VecompSoftware.DocSuiteWeb.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.DTO\VecompSoftware.DocSuiteWeb.DTO.csproj">
+      <Project>{d1157a6b-b6dd-4103-aed4-80a5b8ed881d}</Project>
+      <Name>VecompSoftware.DocSuiteWeb.DTO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Facade\VecompSoftware.DocSuiteWeb.Facade.vbproj">
-      <Project>{87D67466-2048-40F7-9F4B-AA424500EA2D}</Project>
+      <Project>{87d67466-2048-40f7-9f4b-aa424500ea2d}</Project>
       <Name>VecompSoftware.DocSuiteWeb.Facade</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Presentation\VecompSoftware.DocSuiteWeb.Presentation.vbproj">
@@ -127,6 +148,10 @@
     <ProjectReference Include="..\VecompSoftware.NHibernateManager\VecompSoftware.NHibernateManager.csproj">
       <Project>{531372fd-aa62-4cd8-8d94-b5f3f835b185}</Project>
       <Name>VecompSoftware.NHibernateManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.WebAPIManager\VecompSoftware.WebAPIManager.csproj">
+      <Project>{41cad351-d8e5-4ebf-b7a9-3eda0c92ce69}</Project>
+      <Name>VecompSoftware.WebAPIManager</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

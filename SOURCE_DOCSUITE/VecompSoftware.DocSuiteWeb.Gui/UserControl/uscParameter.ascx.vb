@@ -308,6 +308,8 @@ Partial Public Class uscParameter
             environmentsRadioButtonList.SelectedIndex = 0
         End If
 
+        txtEditValue.DisableFilter(EditorFilters.ConvertCharactersToEntities)
+
         LoadGroupsAndVersion()
         BindParameters()
     End Sub
@@ -351,7 +353,7 @@ Partial Public Class uscParameter
                 If propValue Is Nothing Then
                     param.AppValue = param.Value
                 Else
-                    param.AppValue = propValue.ToString()
+                    param.AppValue = BaseEnvironment.DecryptParameterToken(propValue.ToString())
                 End If
             Else
                 param.AppValue = Facade.ParameterEnvFacade.GetContext(SelectedEnvironment).GetParameter(param.Key)

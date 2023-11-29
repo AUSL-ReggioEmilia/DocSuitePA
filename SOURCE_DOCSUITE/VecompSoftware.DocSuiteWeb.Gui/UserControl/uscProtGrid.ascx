@@ -2,27 +2,6 @@
 
 <telerik:RadScriptBlock runat="server" ID="rsbContent" EnableViewState="false">
     <script type="text/javascript">
-        function OpenParerDetail(path) {
-            var wnd = window.radopen(path, "parerDetailWindow");
-            wnd.setSize(400, 300);
-            wnd.set_behaviors(Telerik.Web.UI.WindowBehaviors.Close);
-            wnd.set_visibleStatusbar(false);
-            wnd.set_modal(true);
-            wnd.center();
-            return false;
-        }
-
-       <%-- function OpenToEvaluateRoles(width, height, uniqueId) {
-            var url = "../UserControl/CommonViewSettori.aspx?UniqueId=" + uniqueId;
-
-             var manager = $find("<%=rwmRoles.ClientID %>");
-            var wnd = manager.open(url, "windowToEvaluateRoles");
-                wnd.setSize(width, height);
-                wnd.center();
-
-            return false;
-         }--%>
-
     </script>
 </telerik:RadScriptBlock>
 
@@ -36,20 +15,6 @@
                     <ItemStyle HorizontalAlign="Center"/>
                     <ItemTemplate>
                         <asp:CheckBox AutoPostBack="False" ID="cbSelect" runat="server" />
-                    </ItemTemplate>
-                </telerik:GridTemplateColumn>
-                <telerik:GridTemplateColumn UniqueName="colParerIcon" AllowFiltering="false" Groupable="false" Visible="false">
-                    <HeaderStyle HorizontalAlign="Center" CssClass="headerImage"/>
-                    <ItemStyle HorizontalAlign="Center" />
-                    <ItemTemplate>
-                        <asp:Image ID="imgParerIcon" runat="server" />
-                    </ItemTemplate>
-                </telerik:GridTemplateColumn>
-                <telerik:GridTemplateColumn UniqueName="colParerDescription" HeaderText="Stato archiviazione" Groupable="false" AllowFiltering="false" Visible="false">
-                    <HeaderStyle HorizontalAlign="Center"/>
-                    <ItemStyle HorizontalAlign="center"/>
-                    <ItemTemplate>
-                        <asp:LinkButton ID="lbtParerDetail" runat="server" CommandName="ViewParerDetail" Width="250px" />
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
                 <telerik:GridTemplateColumn UniqueName="colActions" HeaderText="Azioni" AllowFiltering="false" Groupable="false" Visible="False">
@@ -70,14 +35,14 @@
                         <asp:LinkButton runat="server" ID="lbtAnnulla" Text="Annulla" CommandName="Cancel" />
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
-                <telerik:GridTemplateColumn UniqueName="colHasRead" HeaderText="Da leggere" HeaderImageUrl="../Comm/Images/File/Mail16.gif" AllowFiltering="false" Groupable="false">
+                <telerik:GridTemplateColumn UniqueName="colHasRead" HeaderText="Da leggere" HeaderImageUrl="../App_Themes/DocSuite2008/imgset16/mail.png" AllowFiltering="false" Groupable="false">
                     <HeaderStyle HorizontalAlign="Center" CssClass="headerImage"/>
                     <ItemStyle HorizontalAlign="Center" />
                     <ItemTemplate>
                         <asp:Image ID="imgHasRead" runat="server" />
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
-                <telerik:GridTemplateColumn UniqueName="colProtocolType" HeaderText="Tipo" HeaderImageUrl="../Prot/Images/Mail16.gif" AllowFiltering="false" Groupable="false">
+                <telerik:GridTemplateColumn UniqueName="colProtocolType" HeaderText="Tipo" HeaderImageUrl="../App_Themes/DocSuite2008/imgset16/contentType.png" AllowFiltering="false" Groupable="false">
                     <HeaderStyle HorizontalAlign="Center" CssClass="headerImage"/>
                     <ItemStyle HorizontalAlign="Center"/>
                     <ItemTemplate>
@@ -120,10 +85,10 @@
                         <asp:Label ID="lblFullProtocolNumber" runat="server" />
                     </ItemTemplate>
                 </DocSuite:YearNumberBoundColumn>
-                <telerik:GridDateTimeColumn UniqueName="RegistrationDate" HeaderText="Data registrazione" DataField="RegistrationDate" DataFormatString="{0:dd/MM/yyyy}" CurrentFilterFunction="EqualTo" SortExpression="RegistrationDate" Groupable="false" >
-                    <HeaderStyle HorizontalAlign="Center" Wrap="false" Width="125px" />
+                <DocSuite:GridDateTimeColumnEx UniqueName="RegistrationDate" HeaderText="Data registrazione" DataField="RegistrationDate" DataFormatString="{0:dd/MM/yyyy}" CurrentFilterFunction="EqualTo" SortExpression="RegistrationDate" Groupable="false" >
+                    <HeaderStyle HorizontalAlign="Center" Wrap="false" Width="150px" />
                     <ItemStyle HorizontalAlign="Center"/>
-                </telerik:GridDateTimeColumn>
+                </DocSuite:GridDateTimeColumnEx>
                 <DocSuite:SuggestFilteringColumn UniqueName="Type.Id" HeaderText="I/U" DataField="Type.ShortDescription" CurrentFilterFunction="EqualTo" SortExpression="Type.Description" DataType="System.Int32" Groupable="false" >
                     <HeaderStyle HorizontalAlign="Center" Width="40" />
                     <ItemStyle HorizontalAlign="Center"/>

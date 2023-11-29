@@ -68,6 +68,15 @@ Partial Public Class uscMiscellanea
     Protected WithEvents miscellaneaGrid As Global.Telerik.Web.UI.RadGrid
 
     '''<summary>
+    '''isIE control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents isIE As Global.System.Web.UI.WebControls.HiddenField
+
+    '''<summary>
     '''uscNotification control.
     '''</summary>
     '''<remarks>

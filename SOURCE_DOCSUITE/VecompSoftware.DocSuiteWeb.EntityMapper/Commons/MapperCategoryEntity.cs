@@ -7,14 +7,14 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Commons
 {
     public class MapperCategoryEntity : BaseEntityMapper<DSW.Category, APICommon.Category>
     {
-        #region
+        #region " Constructor "
         public MapperCategoryEntity()
         {
 
         }
         #endregion
 
-        #region
+        #region " Methods "
         protected override IQueryOver<DSW.Category, DSW.Category> MappingProjection(IQueryOver<DSW.Category, DSW.Category> queryOver)
         {
             throw new NotImplementedException();
@@ -29,7 +29,7 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Commons
             apiCategory.UniqueId = entity.UniqueId;
             apiCategory.EntityShortId = Convert.ToInt16(entity.Id);
             apiCategory.Name = entity.Name;
-            apiCategory.IsActive = (APICommon.ActiveType?)entity.IsActive;
+            apiCategory.IsActive = entity.IsActive;
             apiCategory.Code = Convert.ToInt16(entity.Code);
             apiCategory.FullCode = entity.FullCode;
             apiCategory.FullIncrementalPath = entity.FullIncrementalPath;

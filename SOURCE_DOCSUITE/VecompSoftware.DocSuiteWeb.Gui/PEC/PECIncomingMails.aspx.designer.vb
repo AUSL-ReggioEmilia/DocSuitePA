@@ -50,6 +50,15 @@ Partial Public Class PECIncomingMails
     Protected WithEvents ddlMailbox As Global.Telerik.Web.UI.RadComboBox
 
     '''<summary>
+    '''ddlPECMailBoxIncluded control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlPECMailBoxIncluded As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
     '''trFilterSender control.
     '''</summary>
     '''<remarks>

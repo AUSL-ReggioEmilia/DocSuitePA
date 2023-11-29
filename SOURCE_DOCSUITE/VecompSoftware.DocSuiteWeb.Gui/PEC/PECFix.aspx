@@ -1,4 +1,4 @@
-﻿<%@ Page AutoEventWireup="false" CodeBehind="PECFix.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.PECFix" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="PEC - Correzione" ValidateRequest="false" %>
+﻿<%@ Page AutoEventWireup="false" CodeBehind="PECFix.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.PECFix" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="PEC - Correzione" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadScriptBlock runat="server">

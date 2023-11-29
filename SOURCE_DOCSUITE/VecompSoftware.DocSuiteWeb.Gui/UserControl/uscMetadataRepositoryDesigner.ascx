@@ -113,7 +113,7 @@
             <td>
                 <div class="menuContent" ondrop="drop(event)" ondragover="allowDrop(event)">
 
-                    <div class="menuContent" id="menuContent"> </div>
+                    <div class="menuContent" id="menuContent"></div>
                 </div>
             </td>
         </tr>
@@ -126,18 +126,18 @@
         <label class="control-label">Titolo</label>
         <div class="controls" style="display: flex;">
             <input type="text" name="" id="Name_input" class="form-control" style="width: 320px;" placeholder="Scegliere il titolo del deposito di metadati">
-             <span runat="server" id="seti_field_check" style="margin-left: 5px; display:none;">
+            <span runat="server" id="seti_field_check" style="margin-left: 5px; display: none;">
                 <b>Abilita integrazione SETI </b>
                 <input type="checkbox" style="margin: 0;" id="seti_input_check" name="setiField" value="false" />
             </span>
         </div>
     </div>
     <div>
-       
     </div>
     <div id="componentText" data-type="Text" style="padding: 6px;" runat="server" class="element">
         <div><span aria-hidden="true"><big><b>Ab</b></big></span></div>
-        <div class="close" onclick="remove(event)" id="closeText">&times;</div> <span class="draggable-icon">&#8597;</span>
+        <div class="close" onclick="remove(event)" id="closeText">&times;</div>
+        <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -162,13 +162,32 @@
                         <input type="checkbox" name="required" id="requiredText" class="checkBox" style="margin-left: 50px;" />
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchText" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" name="showInResults" id="visibleInSearchText" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelShowHiddenFieldText" style="margin-top: 5px; align-items: center">Campo nascosto: </label>
+                        <input type="checkbox" name="showHiddenField" id="showHiddenFieldText" class="checkBox" style="margin-left: 72px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyText" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" name="readOnly" id="readOnlyText" class="checkBox" style="margin-left: 103px;" />
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
 
     <div id="componentComment" data-type="Comment" style="padding: 6px;" runat="server" class="element">
         <div><span class="fa fa-comments fa-lg"></span></div>
-        <div class="close" onclick="remove(event)" id="closeComment">&times;</div> <span class="draggable-icon">&#8597;</span>
+        <div class="close" onclick="remove(event)" id="closeComment">&times;</div>
+        <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -193,13 +212,32 @@
                         <input type="checkbox" name="required" id="requiredComment" class="checkBox" style="margin-left: 50px;" />
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchComment" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" name="showInResults" id="visibleInSearchComment" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelShowHiddenFieldComment" style="margin-top: 5px; align-items: center">Campo nascosto: </label>
+                        <input type="checkbox" name="showHiddenField" id="showHiddenFieldComment" class="checkBox" style="margin-left: 72px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyComment" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" name="readOnly" id="readOnlyComment" class="checkBox" style="margin-left: 103px;" />
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
 
     <div id="componentDate" data-type="Date" style="padding: 5px;" runat="server" class="element">
         <div><span class="fa fa-calendar fa-lg" aria-hidden="true"></span></div>
-        <div class="close" onclick="remove(event)" id="closeDate">&times;</div> <span class="draggable-icon">&#8597;</span>
+        <div class="close" onclick="remove(event)" id="closeDate">&times;</div>
+        <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -224,13 +262,32 @@
                         <input type="checkbox" name="required" id="requiredDate" class="checkBox" style="margin-left: 50px;" />
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchDate" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" name="showInResults" id="visibleInSearchDate" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelShowHiddenFieldDate" style="margin-top: 5px; align-items: center">Campo nascosto: </label>
+                        <input type="checkbox" name="showHiddenField" id="showHiddenFieldDate" class="checkBox" style="margin-left: 72px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyDate" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" name="readOnly" id="readOnlyDate" class="checkBox" style="margin-left: 103px;" />
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
 
     <div id="componentNumber" data-type="Number" style="padding: 5px;" runat="server" class="element">
         <div><span aria-hidden="true"><big><b>1.</b></big></span></div>
-        <div class="close" onclick="remove(event)" id="closeNumber">&times;</div> <span class="draggable-icon">&#8597;</span>
+        <div class="close" onclick="remove(event)" id="closeNumber">&times;</div>
+        <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -255,13 +312,44 @@
                         <input type="checkbox" name="required" id="requiredNumber" class="checkBox" style="margin-left: 50px;" />
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchNumber" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" name="showInResults" id="visibleInSearchNumber" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelShowHiddenFieldNumber" style="margin-top: 5px; align-items: center">Campo nascosto: </label>
+                        <input type="checkbox" name="showHiddenField" id="showHiddenFieldNumber" class="checkBox" style="margin-left: 72px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyNumber" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" name="readOnly" id="readOnlyNumber" class="checkBox" style="margin-left: 103px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelFormatNumber" style="margin-top: 5px; align-items: center;">Formato: </label>
+                    </td>
+                    <td>
+                        <select id="formatType" aria-readonly="true" name="format" style="margin-left: -18px;">
+                            <option value="0" selected="selected">Intero</option>
+                            <option value="0.00">Numero con due decimali</option>
+                            <option value="0.0000">Numero con quattro decimali</option>
+                        </select>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
 
     <div id="componentCheckbox" data-type="CheckBox" style="padding: 5px;" runat="server" class="element">
         <div><span class="fa fa-check-square-o fa-lg" aria-hidden="true"></span></div>
-        <div class="close" onclick="remove(event)" id="closeCheckBox">&times;</div> <span class="draggable-icon">&#8597;</span>
+        <div class="close" onclick="remove(event)" id="closeCheckBox">&times;</div>
+        <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -286,13 +374,32 @@
                         <input type="checkbox" name="required" id="requiredCheckbox" class="checkBox" style="margin-left: 50px;" />
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchCheckbox" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" name="showInResults" id="visibleInSearchCheckBox" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelShowHiddenFieldCheckbox" style="margin-top: 5px; align-items: center">Campo nascosto: </label>
+                        <input type="checkbox" name="showHiddenField" id="showHiddenFieldCheckbox" class="checkBox" style="margin-left: 72px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyCheckbox" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" name="readOnly" id="readOnlyCheckbox" class="checkBox" style="margin-left: 103px;" />
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
 
     <div id="componentEnum" data-type="Enum" style="padding: 5px;" runat="server" class="element">
         <div><span class="fa fa-list fa-lg" aria-hidden="true"></span></div>
-        <div class="close" onclick="remove(event)" id="closeEnum">&times;</div> <span class="draggable-icon">&#8597;</span>
+        <div class="close" onclick="remove(event)" id="closeEnum">&times;</div>
+        <span class="draggable-icon">&#8597;</span>
         <div class="controls">
             <table>
                 <tr>
@@ -315,6 +422,24 @@
                     <td>
                         <label class="control-label" id="labelRequiredEnum">Campo obbligatorio: </label>
                         <input type="checkbox" name="required" id="requiredEnum" class="checkBox" style="margin-left: 50px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchEnum" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" name="showInResults" id="visibleInSearchEnum" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelShowHiddenFieldEnum" style="margin-top: 5px; align-items: center">Campo nascosto: </label>
+                        <input type="checkbox" name="showHiddenField" id="showHiddenFieldEnum" class="checkBox" style="margin-left: 72px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyEnum" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" name="readOnly" id="readOnlyEnum" class="checkBox" style="margin-left: 103px;" />
                     </td>
                 </tr>
             </table>

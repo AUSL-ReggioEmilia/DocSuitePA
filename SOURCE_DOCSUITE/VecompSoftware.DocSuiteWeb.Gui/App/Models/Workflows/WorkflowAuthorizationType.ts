@@ -10,7 +10,10 @@
     UserName = AllOChartHierarchyManager * 2,
     ADGroup = UserName * 2,
     MappingTags = ADGroup * 2,
-    AllDematerialisationManager = MappingTags * 2
+    AllDematerialisationManager = MappingTags * 2,
+    AllProtocolSecurityUsers = AllDematerialisationManager * 2,
+    AllUDSSecurityUsers = AllProtocolSecurityUsers * 2,
+    AllPECMailBoxRoleUser = AllUDSSecurityUsers * 2
 }
 
 export = WorkflowAuthorizationType;

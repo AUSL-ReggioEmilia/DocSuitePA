@@ -14,6 +14,9 @@ Public Class DSCommandItemTemplate
     Private _enableExport As Boolean = True
     Private _enableFilter As Boolean = True
     Private _enablePaging As Boolean = True
+    Private _enableCustomExport As Boolean = False
+    Private _customExportText As String = String.Empty
+    Private _customExportTooltip As String = String.Empty
 
     Protected firstImage As RadButton
 
@@ -34,6 +37,7 @@ Public Class DSCommandItemTemplate
     Protected wordButton As RadButton
     Protected wordFButton As RadButton
     Protected pdfButton As RadButton
+    Protected excelCButton As RadButton
 
     Dim _grid As BaseGrid
 
@@ -68,14 +72,42 @@ Public Class DSCommandItemTemplate
         End Set
     End Property
 
+    Public Property EnableCustomExportButtons() As Boolean
+        Get
+            Return _enableCustomExport
+        End Get
+        Set(ByVal value As Boolean)
+            _enableCustomExport = value
+        End Set
+    End Property
+
+    Public Property CustomExportButtonText() As String
+        Get
+            Return _customExportText
+        End Get
+        Set(ByVal value As String)
+            _customExportText = value
+        End Set
+    End Property
+
+    Public Property CustomExportButtonTooltip() As String
+        Get
+            Return _customExportTooltip
+        End Get
+        Set(ByVal value As String)
+            _customExportTooltip = value
+        End Set
+    End Property
+
 #End Region
 
 #Region " Constructors "
 
-    Public Sub New(ByVal enablePaging As Boolean, ByVal enableExport As Boolean, ByVal enableFilter As Boolean, ByRef grid As BaseGrid)
+    Public Sub New(ByVal enablePaging As Boolean, ByVal enableExport As Boolean, ByVal enableFilter As Boolean, ByVal enableCustomExport As Boolean, ByRef grid As BaseGrid)
         EnablePagingButtons = enablePaging
         EnableExportButtons = enableExport
         EnableFilterButtons = enableFilter
+        EnableCustomExportButtons = enableCustomExport
         _grid = grid
     End Sub
 
@@ -194,8 +226,25 @@ Public Class DSCommandItemTemplate
             wordFButton.Text = "Esporta tutto"
             wordFButton.ToolTip = "Esporta tutto il risultato della ricerca in Word"
             wordFButton.CausesValidation = False
+
+            If EnableCustomExportButtons Then
+                excelCButton = New RadButton()
+                excelCButton.ID = "excelCButton"
+                excelCButton.ButtonType = RadButtonType.LinkButton
+                excelCButton.Icon.SecondaryIconUrl = "~/App_Themes/DocSuite2008/imgset16/file_extension_xls.png"
+                excelCButton.CommandName = "CustomExport"
+                excelCButton.CommandArgument = "Excel"
+                excelCButton.Text = CustomExportButtonText
+                excelCButton.ToolTip = CustomExportButtonTooltip
+                excelCButton.CausesValidation = False
+                excelCButton.Style("margin-left") = "10px"
+            End If
+
             If clearFilterButton IsNot Nothing Then
                 rightButtons.Controls.Add(clearFilterButton)
+            End If
+            If excelCButton IsNot Nothing Then
+                rightButtons.Controls.Add(excelCButton)
             End If
             rightButtons.Controls.Add(excelButton)
             rightButtons.Controls.Add(excelFButton)

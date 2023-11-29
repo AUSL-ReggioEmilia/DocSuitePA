@@ -1,6 +1,7 @@
 ﻿using NHibernate;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using VecompSoftware.DocSuiteWeb.Data.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.Commons;
 using VecompSoftware.NHibernateManager;
@@ -65,7 +66,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
         public override void Save(ref CategoryFascicleRight model)
         {
             using (IStatelessSession session = NHibernateSessionManager.Instance.OpenStatelessSession("ProtDB"))
-            using (ITransaction tx = session.BeginTransaction())
+            using (ITransaction tx = session.BeginTransaction(IsolationLevel.ReadCommitted))
             {
                 try
                 {

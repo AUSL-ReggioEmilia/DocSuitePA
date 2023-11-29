@@ -95,7 +95,9 @@ Public Class FascMoveItems
     Private Function MoveMiscellaneaDocument(idDocument As Guid, idFascicleFolderChain As Guid?) As Guid
         Dim document As BiblosDocumentInfo = New BiblosDocumentInfo(idDocument)
         idFascicleFolderChain = AddMiscellaneaDocumentToFolder(document, idFascicleFolderChain)
-        RemoveMiscellaneaDocumentFromFolder(idDocument)
+        If Not MoveToFascicle.HasValue OrElse Not MoveToFascicle.Value Then
+            RemoveMiscellaneaDocumentFromFolder(idDocument)
+        End If
         Return idFascicleFolderChain.Value
     End Function
 

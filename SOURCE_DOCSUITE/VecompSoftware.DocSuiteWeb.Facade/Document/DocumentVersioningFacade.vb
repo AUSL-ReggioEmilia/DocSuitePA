@@ -48,7 +48,7 @@ Public Class DocumentVersioningFacade
 #Region "Update CheckIn"
     Function UpdateCheckIn(ByVal Year As Short, ByVal Number As Integer, ByVal IncObjectCheckOut As Integer, ByVal IncrObjectCheckIn As Integer) As Boolean
         Dim session As NHibernate.ISession = NHibernateSessionManager.Instance.GetSessionFrom("DocmDB")
-        Dim transaction As NHibernate.ITransaction = session.BeginTransaction()
+        Dim transaction As NHibernate.ITransaction = session.BeginTransaction(IsolationLevel.ReadCommitted)
         Try
             Dim sqlCommand As String = "UPDATE DocumentVersioning SET CheckinUser=@CheckinUser, CheckInDate=@CheckInDate, CheckStatus=@CheckStatus " & _
                                         "WHERE Year=@Year AND Number=@Number " & _

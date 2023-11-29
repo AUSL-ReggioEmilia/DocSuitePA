@@ -104,12 +104,12 @@ Public Class DocmTokenRestituzione
             Exit Sub
         End If
 
-        Facade.DocumentTokenFacade.UpdateIsActive(_currentDocumentToken, 0)
+        Facade.DocumentTokenFacade.UpdateIsActive(_currentDocumentToken, False)
 
         Dim newDocumentToken As DocumentToken = Facade.DocumentTokenFacade.CreateDocumentToken(CurrentDocumentYear, CurrentDocumentNumber)
         With newDocumentToken
             .IncrementalOrigin = _currentDocumentToken.Incremental
-            .IsActive = 1
+            .IsActive = True
             .DocStep = _currentDocumentToken.DocStep + 1S
             .SubStep = _currentDocumentToken.SubStep
             .Response = String.Empty

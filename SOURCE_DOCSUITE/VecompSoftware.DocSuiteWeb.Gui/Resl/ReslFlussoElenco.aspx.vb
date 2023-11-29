@@ -25,6 +25,7 @@ Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.Templates
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Templates
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
+Imports VecompSoftware.Commons.Interfaces.CQRS.Events
 
 Partial Public Class ReslFlussoElenco
     Inherits ReslBasePage
@@ -268,9 +269,19 @@ Partial Public Class ReslFlussoElenco
                 '-- Esecutività le delibere
                 confirmSuccess = Facade.ResolutionFacade.UpdateEffectivenessDate(Selezione, rdpData.SelectedDate, DocSuiteContext.Current.User.FullUserName)
 
-                Dim resolutions As IList(Of Resolution) = Facade.ResolutionFacade.GetResolutions(SelezioneLista)
-                For Each item As Resolution In resolutions
-                    Facade.ResolutionFacade.SendUpdateResolutionCommand(item)
+                If Not confirmSuccess Then
+                    AjaxAlert("Errore in aggiornamento data di esecutività")
+                    Return
+                End If
+
+                'Gestisco la cache
+                'todo: trovare una maniera migliore per gestire le casisteche di cache NH
+                Dim resl As Resolution
+                For Each resolutionId As Integer In SelezioneLista
+                    resl = Facade.ResolutionFacade.GetById(resolutionId)
+                    Facade.ResolutionFacade.Evict(resl)
+                    resl = Facade.ResolutionFacade.GetById(resolutionId)
+                    Facade.ResolutionFacade.SendUpdateResolutionCommand(resl)
                 Next
 
                 If Tipologia = ResolutionType.IdentifierDelibera Then
@@ -401,7 +412,7 @@ Partial Public Class ReslFlussoElenco
                     pnlFrontalino.Visible = True
                 End If
                 '--
-                Dim codeWorkflow As String = Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia)
+                Dim codeWorkflow As String = Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia)
                 _myStep = Facade.TabWorkflowFacade.GetByDescription(Action, codeWorkflow).Id.ResStep
 
                 If Facade.TabWorkflowFacade.SqlTabWorkflowManagedWData(0, codeWorkflow, _myStep, s) Then
@@ -507,7 +518,7 @@ Partial Public Class ReslFlussoElenco
                 If Not String.IsNullOrEmpty(ss) Then ss = DateTime.ParseExact(ss, "yyyyMMdd", Nothing)
                 rdpData.SelectedDate = DateAdd(DateInterval.Day, 10, CommonUtil.ConvData(ss))
                 '--
-                Dim codeWorkflow As String = Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia)
+                Dim codeWorkflow As String = Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia)
                 _myStep = Facade.TabWorkflowFacade.GetByDescription("Esecutività", codeWorkflow).Id.ResStep
 
                 If Facade.TabWorkflowFacade.SqlTabWorkflowManagedWData(0, codeWorkflow, _myStep, s) Then
@@ -594,13 +605,16 @@ Partial Public Class ReslFlussoElenco
 
         'Genero effettivamente il report
         Dim filename As String = String.Format("Trasmissione elenco {0} adottate.pdf", If(Tipologia = ResolutionType.IdentifierDelibera, "deliberazioni", "determinazioni"))
+        If ReportFacade.TenantModel Is Nothing Then
+            ReportFacade.TenantModel = DocSuiteContext.Current.CurrentTenant
+        End If
         Dim doc As DocumentInfo = ReportFacade.GenerateReport(Of Resolution)(rdlcPath, parameters, resolutions).DoPrint(filename)
 
         ' Utenti firmatari
-        Dim signers As New List(Of CollaborationContact)
+        Dim signers As IList(Of CollaborationContact) = New List(Of CollaborationContact)()
         SetContactM(uscVisioneFirma.TreeViewControl.Nodes(0), signers)
         Try
-            Return Facade.ResolutionFacade.StartLetterProcess(doc, resolutions, signers, collaborationTitle, toWorkflowStep)
+            Return Facade.ResolutionFacade.StartLetterProcess(doc, resolutions, signers, collaborationTitle, toWorkflowStep, CurrentTenant.TenantAOO.UniqueId)
         Catch ex As Exception
             FileLogger.Warn(LoggerName, "Problema inserimento da collaborazione", ex)
             If container IsNot Nothing Then
@@ -798,7 +812,9 @@ Partial Public Class ReslFlussoElenco
 
         Dim contact As Contact = JsonConvert.DeserializeObject(Of Contact)(nodo.Attributes(uscContattiSel.ManualContactAttribute))
         Dim checked As Boolean = nodo.Checkable AndAlso nodo.Checked
-        lista.Add(New CollaborationContact(contact, checked))
+        Dim ret As CollaborationContact = New CollaborationContact(contact, checked)
+        Short.TryParse(contact.RoleUserIdRole, ret.IdRole)
+        lista.Add(ret)
 
     End Sub
 
@@ -956,13 +972,13 @@ Partial Public Class ReslFlussoElenco
     End Function
 
     Private Sub ToAdoption(ByRef gestioneDigitale As Boolean, ByRef fileTemp As String, ByRef confirmSuccess As Boolean, ByRef workStep As TabWorkflow)
-        Dim codeWorkflow As String = Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia)
+        Dim codeWorkflow As String = Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia)
         _myStep = Facade.TabWorkflowFacade.GetByDescription(Action, codeWorkflow).Id.ResStep
 
         '-- Ordinare le proposte per ufficio proponente e numero provvisorio
         Dim proposte As IList(Of Resolution) = Facade.ResolutionFacade.GetResolutionsOrderProposerCode(SelezioneLista)
         If proposte IsNot Nothing Then
-            If Facade.TabWorkflowFacade.GetByStep(Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia), _myStep, workStep) Then
+            If Facade.TabWorkflowFacade.GetByStep(Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia), _myStep, workStep) Then
                 If gestioneDigitale Then
                     'nuova gestione: i frontalini entrano nella catena dei documenti della delibera
                     fileTemp = String.Empty
@@ -1002,33 +1018,34 @@ Partial Public Class ReslFlussoElenco
                         frontispieceResolution.ResolutionContactProposers = reslContacts
 
                         Try
-                            Dim digitale As Boolean = (radioFrontalino.SelectedValue = "1")
-                            Dim frontaliniSignature As String = GetSignature(prop, String.Empty, workStep.Description, "*", adoptionDate, String.Empty, frontispieceResolution)
-                            Dim frontalini As ICollection(Of ResolutionFrontispiece) = printer.GeneraFrontalini(frontispieceResolution)
-                            allPdfs.AddRange(frontalini)
-
-                            'Salvataggio dei frontalini in biblos e update di fileresolution
-                            If digitale Then
-                                printer.SaveBiblosFrontispieces(frontalini, prop, frontaliniSignature)
-                            End If
-
-
                             Dim frontalinoStandard As New List(Of DocumentInfo)
                             Dim frontalinoPrivacy As New List(Of DocumentInfo)
-                            ' In posizione 0 si trova il frontalino standard
-                            ' In posizione 1 si trova quello privacy (se previsto dal contenitore)
-                            If digitale Then
-                                'Copia e incolla del codice della ReslFlusso
-                                Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(prop.Location.ReslBiblosDSDB, prop.File.IdFrontespizio.Value)
-                                'Dim chainenum As Integer = If(prop.Container.Privacy.GetValueOrDefault(0) = 1, 1, 0)
-                                'Dim document As New TempFileDocumentInfo(BiblosFacade.SaveUniquePdfToTempNoSignature(docs(chainenum)))
-                                'document.Name = "Frontalino.pdf"
-                                'document.Signature = frontaliniSignature
-                                frontalinoStandard.Add(docs(0))
-                                If docs.Count > 1 Then
-                                    frontalinoPrivacy.Add(docs(1))
+                            Dim frontaliniSignature As String = GetSignature(prop, String.Empty, workStep.Description, "*", adoptionDate, String.Empty, frontispieceResolution)
+                            If Not TabWorkflowFacade.TestManagedWorkflowDataProperty(workStep.ManagedWorkflowData, "Frontespizio", "DISABLED", Nothing) Then
+                                Dim digitale As Boolean = (radioFrontalino.SelectedValue = "1")
+                                Dim frontalini As ICollection(Of ResolutionFrontispiece) = printer.GeneraFrontalini(frontispieceResolution)
+                                allPdfs.AddRange(frontalini)
+
+                                'Salvataggio dei frontalini in biblos e update di fileresolution
+                                If digitale Then
+                                    printer.SaveBiblosFrontispieces(frontalini, prop, frontaliniSignature)
                                 End If
-                                'frontalini.Add(document)
+
+                                ' In posizione 0 si trova il frontalino standard
+                                ' In posizione 1 si trova quello privacy (se previsto dal contenitore)
+                                If digitale Then
+                                    'Copia e incolla del codice della ReslFlusso
+                                    Dim docs As List(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(prop.Location.ReslBiblosDSDB, prop.File.IdFrontespizio.Value)
+                                    'Dim chainenum As Integer = If(prop.Container.Privacy.GetValueOrDefault(0) = 1, 1, 0)
+                                    'Dim document As New TempFileDocumentInfo(BiblosFacade.SaveUniquePdfToTempNoSignature(docs(chainenum)))
+                                    'document.Name = "Frontalino.pdf"
+                                    'document.Signature = frontaliniSignature
+                                    frontalinoStandard.Add(docs(0))
+                                    If docs.Count > 1 Then
+                                        frontalinoPrivacy.Add(docs(1))
+                                    End If
+                                    'frontalini.Add(document)
+                                End If
                             End If
 
                             '-- Adottare le proposte ordinate
@@ -1093,7 +1110,7 @@ Partial Public Class ReslFlussoElenco
 
                         Facade.ResolutionLogFacade.Log(prop, ResolutionLogType.RW, "Adozione Atto da Ricerca Flusso")
                         'Invio comando di creazione Resolution alle WebApi
-                        Facade.ResolutionFacade.SendCreateResolutionCommand(prop)
+                        Facade.ResolutionFacade.SendUpdateResolutionCommand(prop)
                     Next
 
                     ' Creo il pdf Finale
@@ -1114,15 +1131,20 @@ Partial Public Class ReslFlussoElenco
                 Else
                     'vecchia gestione: i frontalini non entrano nella catena dei documenti della delibera ma vanno stampati ed importati a mano
                     Dim isFirst As Boolean = True
-                    fileTemp = String.Concat(CommonUtil.UserDocumentName, "-Print-", String.Format("{0:HHmmss}", Now()), ".htm")
-                    Dim fSource As String = String.Concat(CommonInstance.AppPath & ResolutionFacade.PathStampeTo, "Frontalino.htm")
-                    Dim fDestination As String = String.Concat(CommonInstance.AppTempPath, fileTemp)
-                    'read
-                    Dim sr As StreamReader = New StreamReader(fSource)
-                    Dim fText As String = sr.ReadToEnd
-                    sr.Close()
-                    'For write
-                    Dim sw As StreamWriter = New StreamWriter(fDestination)
+                    Dim fText As String
+                    Dim sw As StreamWriter
+                    Dim frontespiceDisabled As Boolean = TabWorkflowFacade.TestManagedWorkflowDataProperty(workStep.ManagedWorkflowData, "Frontespizio", "DISABLED", Nothing)
+                    If Not frontespiceDisabled Then
+                        fileTemp = String.Concat(CommonUtil.UserDocumentName, "-Print-", String.Format("{0:HHmmss}", Now()), ".htm")
+                        Dim fSource As String = String.Concat(CommonInstance.AppPath & ResolutionFacade.PathStampeTo, "Frontalino.htm")
+                        Dim fDestination As String = String.Concat(CommonInstance.AppTempPath, fileTemp)
+                        'read
+                        Dim sr As StreamReader = New StreamReader(fSource)
+                        fText = sr.ReadToEnd
+                        sr.Close()
+                        'For write
+                        sw = New StreamWriter(fDestination)
+                    End If
 
                     For Each prop As Resolution In proposte
                         '-- Adottare le proposte ordinate
@@ -1132,9 +1154,9 @@ Partial Public Class ReslFlussoElenco
                         End If
                         Facade.ResolutionLogFacade.Log(prop, ResolutionLogType.RW, "Adozione Atto da Ricerca Flusso")
                         'Invio comando di creazione Resolution alle WebApi
-                        Facade.ResolutionFacade.SendCreateResolutionCommand(prop)
+                        Facade.ResolutionFacade.SendUpdateResolutionCommand(prop)
                         '-- Genera il frontalino
-                        If confirmSuccess Then
+                        If confirmSuccess AndAlso Not frontespiceDisabled Then
                             confirmSuccess = GeneraFrontalino(prop.Id, fText, sw, isFirst)
                         End If
                         isFirst = False
@@ -1230,7 +1252,7 @@ Partial Public Class ReslFlussoElenco
                 }
 
                 Facade.ResolutionLogFacade.Log(prop, ResolutionLogType.CC, "Collaborazione generata da 'Raccolta firme per adozione'")
-                Facade.ProtocolDraftFacade.AddProtocolDraft(collaborationFromAffariGenerali, String.Format("Collaborazione da Proposta n.{0} in affari generali", prop.Id), resolutionXml)
+                Facade.CollaborationDraftFacade.AddCollaborationDraft(collaborationFromAffariGenerali, String.Format("Collaborazione da Proposta n.{0} in affari generali", prop.Id), resolutionXml, prop.UniqueId)
 
                 'documenti
                 Dim fileMain As IList(Of DocumentInfo) = New List(Of DocumentInfo)()
@@ -1347,7 +1369,7 @@ Partial Public Class ReslFlussoElenco
 
 
     Private Sub PcAdoption(ByRef confirmSuccess As Boolean, ByRef workStep As TabWorkflow)
-        Dim codeWorkflow As String = Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia)
+        Dim codeWorkflow As String = Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, DocSuiteContext.Current.ResolutionEnv.Configuration, Tipologia)
         _myStep = Facade.TabWorkflowFacade.GetByDescription(Action, codeWorkflow).Id.ResStep
 
         Dim proposte As IList(Of Resolution) = Facade.ResolutionFacade.GetResolutionOrderProposeDate(SelezioneLista)
@@ -1412,7 +1434,7 @@ Partial Public Class ReslFlussoElenco
                         'Duplica allegati omissis
                         idAllegatiOmissis = DuplicaDocumento(Nothing, CType(ReflectionHelper.GetPropertyCase(prop.File, precedingWorkstep.FieldAttachmentsOmissis), Guid), prop, False, True, frontaliniSignature)
 
-                        If ResolutionEnv.GenerateFrontalinoInAdoptionState AndAlso prop.WorkflowType = Facade.TabMasterFacade.GetFieldValue("WorkflowType", "AUSL-PC", Tipologia) AndAlso workStep.Description.Eq(WorkflowStep.ADOZIONE) Then
+                        If ResolutionEnv.GenerateFrontalinoInAdoptionState AndAlso prop.WorkflowType = Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, "AUSL-PC", Tipologia) AndAlso workStep.Description.Eq(WorkflowStep.ADOZIONE) Then
                             Dim num As String = String.Empty
                             If Not numServ.Eq("N") Then
                                 num = number
@@ -1482,7 +1504,8 @@ Partial Public Class ReslFlussoElenco
 
                     Facade.ResolutionLogFacade.Log(prop, ResolutionLogType.RW, "Adozione Atto da Ricerca Flusso")
                     'Invio comando di creazione Resolution alle WebApi
-                    Facade.ResolutionFacade.SendCreateResolutionCommand(prop)
+                    ' Facade.ResolutionFacade.SendCreateResolutionCommand(prop, New List(Of IWorkflowAction))
+                    Facade.ResolutionFacade.SendUpdateResolutionCommand(prop)
                 Next
             End If
         End If
@@ -1491,7 +1514,7 @@ Partial Public Class ReslFlussoElenco
     Private Sub DoDataBindDdlServizio()
         ddlServizio.Items.Clear()
 
-        _roles = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Resolution, 1, True)
+        _roles = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Resolution, 1, True, CurrentTenant.TenantAOO.UniqueId)
 
         Dim ddlServizioDictionary As Dictionary(Of String, String) = (From role In _roles Where Not String.IsNullOrEmpty(role.ServiceCode)).ToDictionary(Function(role) String.Format("{0} ({1})", role.ServiceCode, role.Name), Function(role) role.Id.ToString())
         ddlServizio.DataSource = From item In ddlServizioDictionary Order By item.Key

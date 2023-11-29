@@ -16,7 +16,6 @@ Public MustInherit Class DocSuiteBaseListener(Of T)
 #Region " Fields "
     Private _tenantLock As Object = New Object
     Private _currentTenantFacade As TenantFacade
-    Private Const CURRENT_TENANT_SESSION_KEY As String = "CurrentTenant"
 #End Region
 
 #Region " Properties "
@@ -36,11 +35,11 @@ Public MustInherit Class DocSuiteBaseListener(Of T)
                 Return Nothing
             End If
 
-            If httpSession(CURRENT_TENANT_SESSION_KEY) Is Nothing Then
-                httpSession.Add(CURRENT_TENANT_SESSION_KEY, CurrentTenantFacade.GetCurrentTenant())
+            If httpSession(CommonShared.USER_CURRENT_TENANT) Is Nothing Then
+                httpSession.Add(CommonShared.USER_CURRENT_TENANT, CurrentTenantFacade.GetCurrentTenant())
             End If
 
-            Return DirectCast(httpSession(CURRENT_TENANT_SESSION_KEY), Tenant)
+            Return DirectCast(httpSession(CommonShared.USER_CURRENT_TENANT), Tenant)
         End Get
     End Property
 #End Region

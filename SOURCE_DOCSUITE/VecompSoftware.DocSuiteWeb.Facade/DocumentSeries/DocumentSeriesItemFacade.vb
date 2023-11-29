@@ -1,22 +1,24 @@
 ﻿Imports System.Linq
+Imports VecompSoftware.Commons.Interfaces.CQRS.Events
 Imports VecompSoftware.Core.Command
 Imports VecompSoftware.Core.Command.CQRS.Commands.Entities.DocumentArchives
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.Commons
 Imports VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.Commons
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.Commons
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.DocumentSeries
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.Model.Workflow.Actions
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.Services.Command.CQRS.Commands
 Imports VecompSoftware.Services.Command.CQRS.Commands.Entities.DocumentArchives
 Imports VecompSoftware.Services.Logging
-Imports APISeriesItem = VecompSoftware.DocSuiteWeb.Entity.DocumentArchives
 Imports APICommons = VecompSoftware.DocSuiteWeb.Entity.Commons
 Imports APIDocUnit = VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
-Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
+Imports APISeriesItem = VecompSoftware.DocSuiteWeb.Entity.DocumentArchives
 
 <Serializable>
 Public Class DocumentSeriesItemFacade
@@ -97,18 +99,18 @@ Public Class DocumentSeriesItemFacade
     End Function
 
     Public Function SaveDocumentSeriesItem(item As DocumentSeriesItem, chain As BiblosChainInfo, annexed As IList(Of DocumentInfo), unpublishedAnnexed As IList(Of DocumentInfo), registrationUser As String) As DocumentSeriesItem
-        Return SaveDocumentSeriesItem(item, Nothing, chain, annexed, unpublishedAnnexed, registrationUser, DocumentSeriesItemStatus.Active, "")
+        Return SaveDocumentSeriesItem(item, Nothing, chain, annexed, unpublishedAnnexed, registrationUser, DocumentSeriesItemStatus.Active, "", Nothing)
     End Function
 
-    Public Function SaveDocumentSeriesItem(item As DocumentSeriesItem, year As Integer, chain As BiblosChainInfo, annexed As IList(Of DocumentInfo), unpublishedAnnexed As IList(Of DocumentInfo), status As DocumentSeriesItemStatus, logMessage As String) As DocumentSeriesItem
-        Return SaveDocumentSeriesItem(item, year, chain, annexed, unpublishedAnnexed, Nothing, status, logMessage)
+    Public Function SaveDocumentSeriesItem(item As DocumentSeriesItem, year As Integer, chain As BiblosChainInfo, annexed As IList(Of DocumentInfo), unpublishedAnnexed As IList(Of DocumentInfo), status As DocumentSeriesItemStatus, logMessage As String, collaboration As Collaboration) As DocumentSeriesItem
+        Return SaveDocumentSeriesItem(item, year, chain, annexed, unpublishedAnnexed, Nothing, status, logMessage, collaboration)
     End Function
 
     Public Function SaveDocumentSeriesItem(item As DocumentSeriesItem, chain As BiblosChainInfo, annexed As IList(Of DocumentInfo), unpublishedAnnexed As IList(Of DocumentInfo), status As DocumentSeriesItemStatus, logMessage As String) As DocumentSeriesItem
-        Return SaveDocumentSeriesItem(item, Nothing, chain, annexed, unpublishedAnnexed, Nothing, status, logMessage)
+        Return SaveDocumentSeriesItem(item, Nothing, chain, annexed, unpublishedAnnexed, Nothing, status, logMessage, Nothing)
     End Function
 
-    Public Function SaveDocumentSeriesItem(item As DocumentSeriesItem, year As Integer, chain As BiblosChainInfo, annexed As IList(Of DocumentInfo), unpublishedAnnexed As IList(Of DocumentInfo), registrationUser As String, status As DocumentSeriesItemStatus, logMessage As String, Optional needTransaction As Boolean = True) As DocumentSeriesItem
+    Public Function SaveDocumentSeriesItem(item As DocumentSeriesItem, year As Integer, chain As BiblosChainInfo, annexed As IList(Of DocumentInfo), unpublishedAnnexed As IList(Of DocumentInfo), registrationUser As String, status As DocumentSeriesItemStatus, logMessage As String, collaboration As Collaboration, Optional needTransaction As Boolean = True) As DocumentSeriesItem
 
         Dim archiviedDocs As New List(Of BiblosDocumentInfo)()
         Dim archiviedAnnexed As New List(Of BiblosDocumentInfo)()
@@ -146,7 +148,7 @@ Public Class DocumentSeriesItemFacade
         If status <> DocumentSeriesItemStatus.Draft Then
             Dim inc As DocumentSeriesIncremental
             If year.Equals(Nothing) Then
-                year = DateTime.Today.Year
+                year = Date.Today.Year
             End If
             inc = Factory.DocumentSeriesIncrementalFacade.GetNewIncremental(item.DocumentSeries, year)
             item.Year = inc.Year
@@ -181,7 +183,12 @@ Public Class DocumentSeriesItemFacade
         End If
 
         If status = DocumentSeriesItemStatus.Active Then
-            SendInsertDocumentSeriesItemCommand(item)
+            Dim workflowActions As List(Of IWorkflowAction) = New List(Of IWorkflowAction)
+            If collaboration IsNot Nothing Then
+                workflowActions.Add(New WorkflowActionDocumentUnitLinkModel(New DocumentUnitModel() With {.UniqueId = item.UniqueId, .Year = CType(item.Year.Value, Short), .Number = item.Number.Value.ToString(), .Environment = Model.Entities.Commons.DSWEnvironmentType.DocumentSeries},
+                                                                            New DocumentUnitModel() With {.UniqueId = collaboration.UniqueId, .EntityId = collaboration.Id, .Environment = Model.Entities.Commons.DSWEnvironmentType.Collaboration}))
+            End If
+            SendInsertDocumentSeriesItemCommand(item, workflowActions)
         End If
 
         Return item
@@ -590,11 +597,18 @@ Public Class DocumentSeriesItemFacade
     ''' </summary>
     ''' <param name="item"></param>
     ''' <returns>Command ID</returns>
-    Public Function SendInsertDocumentSeriesItemCommand(item As DocumentSeriesItem) As Guid
+    Public Function SendInsertDocumentSeriesItemCommand(item As DocumentSeriesItem, workflowActions As ICollection(Of IWorkflowAction)) As Guid
         Try
-            Dim commandInsert As ICommandCreateDocumentSeriesItem = GetDocumentSeriesItemCommand(Of ICommandCreateDocumentSeriesItem)(item, Function(tenantName, tenantId, tenantAOOId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
-                                                                                                                                                Return New CommandCreateDocumentSeriesItem(tenantName, tenantId, tenantAOOId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
-                                                                                                                                            End Function)
+            Dim commandInsert As ICommandCreateDocumentSeriesItem = GetDocumentSeriesItemCommand(Of ICommandCreateDocumentSeriesItem)(item,
+                Function(tenantName, tenantId, tenantAOOId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
+                    Dim command As CommandCreateDocumentSeriesItem = New CommandCreateDocumentSeriesItem(tenantName, tenantId, tenantAOOId, attributes, identity, apiDocumentSeries, apiCategoryFascicle, documentUnit)
+                    If workflowActions IsNot Nothing Then
+                        For Each workflowAction As IWorkflowAction In workflowActions
+                            command.WorkflowActions.Add(workflowAction)
+                        Next
+                    End If
+                    Return command
+                End Function)
             CommandInsertFacade.Push(commandInsert)
             Return commandInsert.Id
         Catch ex As Exception

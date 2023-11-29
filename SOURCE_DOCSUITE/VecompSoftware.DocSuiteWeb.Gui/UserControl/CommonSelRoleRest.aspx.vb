@@ -25,9 +25,9 @@ Public Class CommonSelRoleRest
             Return Request.QueryString.GetValueOrDefault(Of String)("EntityId", String.Empty)
         End Get
     End Property
-    Protected ReadOnly Property LoadAllRoles As Boolean
+    Protected ReadOnly Property IdTenantAOO As String
         Get
-            Return Request.QueryString.GetValueOrDefault(Of Boolean)("LoadAllRoles", False)
+            Return Request.QueryString.GetValueOrDefault(Of String)("IdTenantAOO", CurrentTenant.TenantAOO.UniqueId.ToString())
         End Get
     End Property
 #End Region

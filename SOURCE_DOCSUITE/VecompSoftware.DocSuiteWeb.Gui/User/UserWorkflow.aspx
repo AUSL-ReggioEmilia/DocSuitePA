@@ -20,8 +20,8 @@
                             <td class="label">Tipo attività:
                             </td>
                             <td>
-                                <asp:DropDownList ID="ddlType" AppendDataBoundItems="True" runat="server">
-                                </asp:DropDownList>
+                                <telerik:RadComboBox runat="server" ID="ddlType" Width="400px" Filter="Contains" EmptyMessage="Cerca attività">
+                                </telerik:RadComboBox>
                             </td>
                         </tr>
                         <tr runat="server" id="trEnvironment" visible="false">
@@ -47,7 +47,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="label">Oggetto:
+                            <td class="label">Note:
                             </td>
                             <td>
                                 <asp:TextBox ID="txtWfSubject" MaxLength="255" Width="300px" runat="server" />
@@ -79,7 +79,7 @@
                                 </table>
                             </td>
                         </tr>
-                        <tr>
+                        <%--<tr>
                             <td class="label">Modalità visualizzazione:
                             </td>
                             <td>
@@ -94,7 +94,7 @@
                                     </tr>
                                 </table>
                             </td>
-                        </tr>
+                        </tr>--%>
                         <tr>
                             <td colspan="2">
                                 <div>
@@ -137,7 +137,7 @@
                             <asp:HyperLink ID="lnkWorkflowActivityName" onclick="return ShowLoadingPanel();" runat="server" />
                         </ItemTemplate>
                     </telerik:GridTemplateColumn>
-                    <telerik:GridTemplateColumn HeaderText="Richiedente/Mittente" FooterStyle-HorizontalAlign="Left" UniqueName="WorkflowProposerRoleName" AllowSorting="False" Groupable="false">
+                    <telerik:GridTemplateColumn HeaderText="Mittente" FooterStyle-HorizontalAlign="Left" UniqueName="WorkflowProposerRoleName" AllowSorting="False" Groupable="false">
                         <HeaderStyle HorizontalAlign="Center" VerticalAlign="Middle" />
                         <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle" Width="15%" />
                         <ItemTemplate>

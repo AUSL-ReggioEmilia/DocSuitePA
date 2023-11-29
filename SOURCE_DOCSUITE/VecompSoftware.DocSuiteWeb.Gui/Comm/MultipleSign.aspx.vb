@@ -6,6 +6,7 @@ Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.Collaborations
+Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Model.Documents
 Imports VecompSoftware.DocSuiteWeb.Model.Documents.Signs
@@ -29,6 +30,7 @@ Public Class MultipleSign
     Public Const MultiSignUndoQuerystring As String = "msu"
     Private _currentUserLog As UserLog
     Private _currentUserProfile As Model.Documents.Signs.UserProfile = Nothing
+    Private _signFlowService As SignFlowService = Nothing
 
 #End Region
 
@@ -91,6 +93,15 @@ Public Class MultipleSign
     End Property
 
     Private Property OriginalDocumentInfos As List(Of DocumentInfo)
+
+    Private ReadOnly Property SignFlowService As SignFlowService
+        Get
+            If (_signFlowService Is Nothing) Then
+                _signFlowService = New SignFlowService(Sub(f) FileLogger.Info(LoggerName, f), Sub(f) FileLogger.Error(LoggerName, f))
+            End If
+            Return _signFlowService
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
@@ -108,9 +119,15 @@ Public Class MultipleSign
                 PopulateBySelectedSignOption(SetDefaultSignOption())
                 If Not DocSuiteContext.Current.HasInfocertProxySign Then
                     signTypeDropdown.FindItemByValue("4").Remove()
+                    signTypeDropdown.FindItemByValue("5").Remove()
                 End If
                 If Not DocSuiteContext.Current.HasArubaActalisSign Then
                     signTypeDropdown.FindItemByValue("3").Remove()
+                End If
+                If Not DocSuiteContext.Current.HasInfocertProxySignLocal Then
+                    If (Not signTypeDropdown.FindItemByValue("5") Is Nothing) Then
+                        signTypeDropdown.FindItemByValue("5").Remove()
+                    End If
                 End If
             End If
         End If
@@ -203,6 +220,10 @@ Public Class MultipleSign
         Dim sourceControl As RadToolBarButton = DirectCast(e.Item, RadToolBarButton)
         Select Case sourceControl.CommandName.ToLower()
             Case "sign"
+                If (DocumentListGrid.SelectedItems.Count = 0) Then
+                    AjaxAlert("Nessun documento selezionato per la firma")
+                    Return
+                End If
 
                 Dim selectedProvider As Signs.ProviderSignType = Signs.ProviderSignType.Smartcard
                 If ProtocolEnv.RemoteSignEnabled Then
@@ -288,6 +309,12 @@ Public Class MultipleSign
                 If selectedProvider = ProviderSignType.Smartcard Then
                     'Use ActiveX for smartcard sign
                     AjaxManager.ResponseScripts.Add(String.Format("riseSign('{0}','{1}','{2}','{3}')", inDir.FullName.Replace("\", "\\"), outDir.FullName.Replace("\", "\\"), String.Join(",", signTypes), comment))
+                ElseIf selectedProvider = ProviderSignType.GoSign Then
+                    Dim requestType As SignRequestType = SignRequestType.Cades
+                    If (ToolBar.FindItemByValue("padesSign").Visible AndAlso DirectCast(ToolBar.FindItemByValue("padesSign"), RadToolBarButton).Checked) Then
+                        requestType = SignRequestType.Pades
+                    End If
+                    SignGoSign(requestType, documentTosigns.SelectMany(Function(s) s.Value).ToList())
                 Else
                     Dim defaultRemoteSignProperty As RemoteSignProperty = GetSelectedUserProfile(selectedProvider).Value.Value
                     Dim selectRemoteSignProperty As RemoteSignProperty
@@ -298,7 +325,7 @@ Public Class MultipleSign
                             selectRemoteSignProperty = GetSpecificUserProfile(listdocuments.Key)
                             pinPassword = selectRemoteSignProperty.Password
                         End If
-                        Sign(selectedProvider, selectRemoteSignProperty, signTypes, listdocuments.Value, outDir, pinPassword)
+                        Sign(selectedProvider, selectRemoteSignProperty, signTypes, listdocuments.Value, listdocuments.Key, outDir, pinPassword)
                     Next
                 End If
 
@@ -321,32 +348,45 @@ Public Class MultipleSign
     End Sub
 
     Protected Sub Page_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
-
-        If Not e.Argument.Eq("Signed") Then
+        Dim ajaxModel As AjaxModel = Nothing
+        Try
+            ajaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument)
+        Catch
             Exit Sub
+        End Try
+
+        If ajaxModel Is Nothing Then
+            Return
         End If
 
-        If Integer.Parse(hdnHasError.Value) > 0 Then
-            hdnHasError.Value = "0"
-            AjaxAlert("Sono presenti errori")
-            Exit Sub
-        End If
+        Select Case ajaxModel.ActionName
+            Case "SignGoSignCompleted"
+                Dim transactionId As String = ajaxModel.Value(0)
+                Dim fileNames As ICollection(Of String) = JsonConvert.DeserializeObject(Of ICollection(Of String))(ajaxModel.Value(1))
+                CompleteGoSign(transactionId, fileNames)
 
-        Dim outputDirectory As New DirectoryInfo(Path.Combine(TempDirectoryName, "Out"))
-        Dim documents As New List(Of MultiSignDocumentInfo)
-        For Each fileInfo As FileInfo In outputDirectory.GetFiles()
-            documents.Add(New MultiSignDocumentInfo(fileInfo))
-        Next
+            Case "Signed"
+                If Integer.Parse(hdnHasError.Value) > 0 Then
+                    hdnHasError.Value = "0"
+                    AjaxAlert("Sono presenti errori")
+                    Exit Sub
+                End If
 
-        SignedDocuments = documents
-        MyBase.SignedComplete = False
-        If MyBase.SaveResponseToSession Then
-            MyBase.SignedComplete = True
-        End If
+                Dim outputDirectory As New DirectoryInfo(Path.Combine(TempDirectoryName, "Out"))
+                Dim documents As New List(Of MultiSignDocumentInfo)
+                For Each fileInfo As FileInfo In outputDirectory.GetFiles()
+                    documents.Add(New MultiSignDocumentInfo(fileInfo))
+                Next
 
-        ' Trasferisco la response sulla pagina che dovrà occuparsi di processare i documenti firmati
-        Server.Transfer(PostBackUrl, False)
+                SignedDocuments = documents
+                MyBase.SignedComplete = False
+                If MyBase.SaveResponseToSession Then
+                    MyBase.SignedComplete = True
+                End If
 
+                ' Trasferisco la response sulla pagina che dovrà occuparsi di processare i documenti firmati
+                Server.Transfer(PostBackUrl, False)
+        End Select
     End Sub
 
     Protected Sub signTypeDropdown_SelectedIndexChanged(sender As Object, e As DropDownListEventArgs)
@@ -361,6 +401,8 @@ Public Class MultipleSign
         End If
 
         signTypeDropdown.SelectedValue = e.Value
+
+        ToggleSignTypeVisibility((selectedProvider <> ProviderSignType.GoSign AndAlso ProtocolEnv.EnableMultiPades))
 
         Dim ss As String = String.Format("hideAjaxLoadingPanel('{0}');", ToolBar.ClientID)
         AjaxManager.ResponseScripts.Add(ss)
@@ -393,7 +435,7 @@ Public Class MultipleSign
         If ProtocolEnv.DefaultFVicario.IsNullOrEmpty() Then
             ChkAddComment.Visible = False
         Else
-            ChkAddComment.Checked = Facade.RoleUserFacade.GetHighestUserType() = RoleUserType.V
+            ChkAddComment.Checked = Facade.RoleUserFacade.GetHighestUserType(CurrentTenant.TenantAOO.UniqueId) = RoleUserType.V
         End If
 
         Dim documentsToSign As ICollection(Of MultiSignDocumentInfo) = sourcePage.DocumentsToSign
@@ -453,6 +495,13 @@ Public Class MultipleSign
         Next
     End Sub
 
+    Private Sub ToggleSignTypeVisibility(visible As Boolean)
+        For Each dataGridItem As GridDataItem In DocumentListGrid.Items
+            DirectCast(dataGridItem.FindControl("cadesToggle"), RadButton).Visible = visible
+            DirectCast(dataGridItem.FindControl("padesToggle"), RadButton).Visible = visible
+        Next
+    End Sub
+
     Function SetDefaultSignOption() As Nullable(Of KeyValuePair(Of Signs.ProviderSignType, Signs.RemoteSignProperty))
         Dim defaultSignOption As KeyValuePair(Of Signs.ProviderSignType, Signs.RemoteSignProperty)? = Nothing
         If CurrentUserProfile IsNot Nothing Then
@@ -492,6 +541,10 @@ Public Class MultipleSign
                         End If
                 End Select
             End If
+
+            If selectedSignOption.Value.Key = ProviderSignType.GoSign Then
+                ToggleSignTypeVisibility(False)
+            End If
         End If
 
         If SignAction.Eq(CollaborationMainAction.DaFirmareInDelega) OrElse SignAction.Eq(CollaborationSubAction.DaFirmareInDelega) Then
@@ -527,6 +580,10 @@ Public Class MultipleSign
 
         Dim selectedSignOption As KeyValuePair(Of Signs.ProviderSignType, Signs.RemoteSignProperty)? = GetSelectedUserProfile(selectedProvider)
 
+        If selectedProvider = ProviderSignType.GoSign Then
+            Return True
+        End If
+
         If selectedProvider = Signs.ProviderSignType.ArubaRemote OrElse selectedProvider = Signs.ProviderSignType.ArubaAutomatic Then
             If Not selectedSignOption.HasValue OrElse (selectedSignOption.HasValue AndAlso String.IsNullOrEmpty(selectedSignOption.Value.Value.Alias)) Then
                 AjaxAlert("Profilo di firma non configurato correttamente. Verificare di aver impostato l'Alias del certificato mediante la pagina configurazione utente.")
@@ -554,7 +611,7 @@ Public Class MultipleSign
         Return True
     End Function
 
-    Private Sub Sign(selectedSignType As ProviderSignType, remoteSignProperty As RemoteSignProperty, signTypes As List(Of String), inDocuments As List(Of FileInfo), outDir As DirectoryInfo, pinPassword As String)
+    Private Sub Sign(selectedSignType As ProviderSignType, remoteSignProperty As RemoteSignProperty, signTypes As List(Of String), inDocuments As List(Of FileInfo), effectiveSignerKey As String, outDir As DirectoryInfo, pinPassword As String)
         Dim documents As New List(Of MultiSignDocumentInfo)
         Dim newFilename As String
         Dim pathFilename As String
@@ -594,8 +651,11 @@ Public Class MultipleSign
                 newFilename = $"{document.Name}{FileHelper.P7M}"
                 pathFilename = Path.Combine(outDir.FullName, newFilename)
                 extension = document.Extension
+
                 File.WriteAllBytes(pathFilename, signService.SignDocument(signParameter, File.ReadAllBytes(document.FullName), newFilename, signatureType))
-                documents.Add(New MultiSignDocumentInfo(New FileInfo(pathFilename)))
+                Dim newDocument As New MultiSignDocumentInfo(New FileInfo(pathFilename))
+                newDocument.EffectiveSigner = effectiveSignerKey
+                documents.Add(newDocument)
 
             Catch ex As PathTooLongException
                 FileLogger.Warn(LoggerName, "Nome documento da firmare troppo lungo", ex)
@@ -619,6 +679,67 @@ Public Class MultipleSign
         ' Trasferisco la response sulla pagina che dovrà occuparsi di processare i documenti firmati
         Server.Transfer(PostBackUrl, False)
 
+    End Sub
+
+    Private Sub SignGoSign(selectedRequestType As SignRequestType, inDocuments As List(Of FileInfo))
+        Dim signParameter As ProxySignModel = New ProxySignModel With {
+                    .SignType = SignType.Remote,
+                    .RequestType = selectedRequestType
+            }
+        Dim extension As String = String.Empty
+        If selectedRequestType = SignRequestType.Cades Then
+            extension = FileHelper.P7M
+        End If
+        Dim documents As IList(Of FileModel) = New List(Of FileModel)
+        For Each inDocument As FileInfo In inDocuments
+            documents.Add(New FileModel() With {.Document = File.ReadAllBytes(inDocument.FullName), .Filename = inDocument.Name})
+        Next
+        Dim sessionId As String = SignFlowService.StartSignFlowSession(signParameter, documents).SessionId
+        AjaxManager.ResponseScripts.Add($"signGoSign('{sessionId}', '{JsonConvert.SerializeObject(documents.Select(Function(s) $"{s.Filename}{extension}"))}');")
+    End Sub
+
+    Private Sub CompleteGoSign(transactionId As String, fileNames As ICollection(Of String))
+        Try
+            Dim signedDocs As ICollection(Of FileModel) = SignFlowService.GetSignedDocuments(transactionId)
+            If signedDocs.Count = 0 Then
+                Throw New Exception($"Nessun documento firmato trovato")
+            End If
+
+            Dim outputDirectory As New DirectoryInfo(Path.Combine(TempDirectoryName, "Out"))
+            Dim documents As List(Of MultiSignDocumentInfo) = New List(Of MultiSignDocumentInfo)
+            Dim pathFilename As String
+            Dim identifier As String
+            Dim originalFileName As String
+            If (signedDocs.Count = 1) Then
+                originalFileName = fileNames.Single()
+                pathFilename = Path.Combine(outputDirectory.FullName, originalFileName)
+                File.WriteAllBytes(pathFilename, signedDocs.Single().Document)
+                documents.Add(New MultiSignDocumentInfo(New FileInfo(pathFilename)))
+            Else
+                For Each signedDocument As FileModel In signedDocs
+                    identifier = signedDocument.Filename.Split("§"c)(0)
+                    originalFileName = fileNames.SingleOrDefault(Function(x) x.Split("§"c)(0).Eq(identifier))
+                    If (Not String.IsNullOrEmpty(originalFileName)) Then
+                        pathFilename = Path.Combine(outputDirectory.FullName, originalFileName)
+                        File.WriteAllBytes(pathFilename, signedDocument.Document)
+                        documents.Add(New MultiSignDocumentInfo(New FileInfo(pathFilename)))
+                    End If
+                Next
+            End If
+
+            SignedDocuments = documents
+            MyBase.SignedComplete = False
+            If MyBase.SaveResponseToSession Then
+                MyBase.SignedComplete = True
+            End If
+
+            ' Trasferisco la response sulla pagina che dovrà occuparsi di processare i documenti firmati
+            Server.Transfer(PostBackUrl, False)
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, "Errore nel recupero dei documenti firmati da GoSign", ex)
+            AjaxAlert("Errore generico nella firma del documento, contattare l'assistenza.")
+            AjaxManager.ResponseScripts.Add($"hideAjaxLoadingPanel('{ToolBar.ClientID}');")
+        End Try
     End Sub
 
     Private Sub ShowPinToolbarControls()

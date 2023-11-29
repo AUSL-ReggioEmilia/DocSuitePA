@@ -1,215 +1,215 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Cache;
+using System.Net;
 using System.Text;
+using System;
 using VecompSoftware.DocSuiteWeb.Data;
-using VecompSoftware.DocSuiteWeb.Facade;
 using VecompSoftware.Services.Biblos.Models;
 using VecompSoftware.Services.Logging;
+using Newtonsoft.Json;
+using VecompSoftware.DocSuiteWeb.Facade;
+using System.Linq;
+using VecompSoftware.DocSuiteWeb.Services.CMVGroup.Models;
 
 namespace VecompSoftware.DocSuiteWeb.Services.CMVGroup
 {
-    public class CmvGroup
+    public class CMVGroup
     {
-
-        #region [ Constants ]
-
-        private const string LoggerName = "CMVGroup";
-
-        #endregion
-
         #region [ Fields ]
-
         private string _boundary;
+        private const string LoggerName = "CMVGroup";
+        private CMVGroupParameters _parameters;
         private ResolutionFacade _reslFacade;
-
         #endregion
 
         #region [ Properties ]
-
         private string Boundary
         {
             get
             {
                 if (string.IsNullOrEmpty(_boundary))
+                {
                     _boundary = "--" + Guid.NewGuid().ToString("N");
+                }
                 return _boundary;
             }
         }
-        private ResolutionFacade ReslFacade
+
+        private CMVGroupParameters Parameters
         {
-            get { return _reslFacade ?? (_reslFacade = new ResolutionFacade()); }
+            get
+            {
+                if (_parameters == null)
+                {
+                    if (string.IsNullOrEmpty(DocSuiteContext.Current.ResolutionEnv.CmvGroupParameters))
+                    {
+                        throw new Exception($"CMVGroup -> configuration missing: {DocSuiteContext.Current.ResolutionEnv.CmvGroupParameters}");
+                    }
+                    _parameters = JsonConvert.DeserializeObject<CMVGroupParameters>(DocSuiteContext.Current.ResolutionEnv.CmvGroupParameters);
+                }
+                return _parameters;
+            }
         }
 
+        private ResolutionFacade ReslFacade
+        {
+            get
+            {
+                return _reslFacade ?? (_reslFacade = new ResolutionFacade());
+            }
+        }
         #endregion
 
         #region [ Methods ]
-
-        private void NewBoundary()
+        public bool Publish(Resolution resolution, DocumentInfo document, out string message)
         {
-            _boundary = null;
+            try
+            {
+                NewBoundary();
+                FileLogger.Info(LoggerName, $"CMVGroup.Publish -> New boundary: {Boundary}");
+
+                if (IsAlreadyPublished(resolution, out message))
+                {
+                    return false;
+                }
+
+                FileLogger.Info(LoggerName, $"CMVGroup.Publish -> Publication test result: {message}");
+                string content = GetLegacyContent(resolution, document);
+                FileLogger.Debug(LoggerName, content);
+                byte[] encoded = Encoding.UTF8.GetBytes(content);
+                FileLogger.Info(LoggerName, $"CMVGroup.Publish -> Publication test url: {Parameters.PostToRemoteUrl}");
+                Uri uri = CreateUri(Parameters.PostToRemoteUrl);
+                HttpWebRequest request = WebRequest.Create(uri) as HttpWebRequest;
+                request.Method = WebRequestMethods.Http.Post;
+                request.ProtocolVersion = HttpVersion.Version11;
+                request.ContentType = $"multipart/form-data; boundary={Boundary}";
+                request.ContentLength = encoded.Length;
+                request.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
+                request.KeepAlive = true;
+
+                using (Stream stream = request.GetRequestStream())
+                {
+                    stream.Write(encoded, 0, encoded.Length);
+                }
+
+                using (WebResponse response = request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    message = sr.ReadToEnd();
+                }
+
+                FileLogger.Info(LoggerName, $"CMVGroup.Publish -> Publish response: {message}");
+                return message.StartsWith("OK", StringComparison.InvariantCultureIgnoreCase);
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                FileLogger.Error(LoggerName, ex.Message, ex);
+                throw;
+            }
         }
 
-        private string FormatMetadata(string name, string value, bool base64)
+        private string GetLegacyContent(Resolution resolution, DocumentInfo document)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
+            AppendFormattedMetadata(sb, "OGGETTO", resolution.ResolutionObject, true);
+            AppendFormattedMetadata(sb, "TITOLO", resolution.Note);
+            AppendFormattedMetadata(sb, "NUMERO", resolution.Number.ToString());
+            AppendFormattedMetadata(sb, "ANNO", resolution.Year.ToString());
+            string codiceDelibera = ReslFacade.GetResolutionNumber(resolution);
+            AppendFormattedMetadata(sb, "CODICE_DELIBERA", codiceDelibera);
+            AppendFormattedMetadata(sb, "DATA_INSERIMENTO", resolution.ProposeDate);
+            AppendFormattedMetadata(sb, "DATA_ADOZIONE", resolution.AdoptionDate);
+            AppendFormattedMetadata(sb, "DATA_PUBBLICAZIONE", resolution.PublishingDate);
+            DateTime dataEsecutivita = resolution.EffectivenessDate ?? resolution.PublishingDate.Value.AddDays(10);
+            AppendFormattedMetadata(sb, "DATA_ESECUTIVITA", dataEsecutivita);
+            DateTime dataScadenza = resolution.PublishingDate.Value.AddDays(DocSuiteContext.Current.ResolutionEnv.PublicationEndDays - 5);
+            AppendFormattedMetadata(sb, "DATA_SCADENZA", dataScadenza);
+            string decodedType = resolution.Type.Id == 0 ? "Determina" : "Delibera";
+            AppendFormattedMetadata(sb, "TIPO", decodedType);
+            AppendDocumentMetadata(sb, "DOCUMENTO", document);
+            sb.Append("--" + Boundary);
+            return sb.ToString();
+        }
+
+        private void AppendFormattedMetadata(StringBuilder sb, string name, string value, bool base64 = false)
+        {
             sb.AppendLine("--" + Boundary);
             sb.AppendFormat("Content-Disposition: form-data; name='{0}'{1}", name, Environment.NewLine);
 
-            var content = value;
             if (base64)
             {
                 sb.AppendLine("Content-Transfer-Encoding: base64;");
-                content = Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
+                value = Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
             }
             sb.AppendLine();
-            sb.AppendLine(content);
+            sb.AppendLine(value);
+        }
 
-            return sb.ToString();
-        }
-        private string FormatMetadata(string name, string value)
+        private void AppendFormattedMetadata(StringBuilder sb, string name, DateTime? value)
         {
-            return FormatMetadata(name, value, false);
+            string formattedValue = value.HasValue ? value.Value.ToString("dd/MM/yyyy") : string.Empty;
+            AppendFormattedMetadata(sb, name, formattedValue);
         }
-        private string FormatMetadata(string name, DateTime? value)
+
+        private void AppendDocumentMetadata(StringBuilder sb, string name, DocumentInfo document)
         {
-            return FormatMetadata(name, value.HasValue ? value.Value.ToString("dd/MM/yyyy") : string.Empty, false);
-        }
-        private string FormatMetadata(string name, DocumentInfo document)
-        {
-            var sb = new StringBuilder();
             sb.AppendLine("--" + Boundary);
             sb.AppendFormat("Content-Disposition: form-data; name='{0}'; filename='{1}';{2}", name, document.Name, Environment.NewLine);
             sb.AppendLine("Content-Type: application/pdf;");
             sb.AppendLine("Content-Transfer-Encoding: base64;");
             sb.AppendLine();
             sb.AppendLine(Convert.ToBase64String(document.Stream));
-
-            return sb.ToString();
         }
 
-        private Uri createUri(string uriString)
+        private void NewBoundary()
         {
-            var uri = new Uri(uriString);
-            var valid = new List<string> { Uri.UriSchemeHttp, Uri.UriSchemeHttps };
-            if (!valid.Any(s => s == uri.Scheme))
-                throw new InvalidCastException("Uri non valido per il percorso: " + uriString);
-            return uri;
+            _boundary = null;
         }
+
         private bool IsAlreadyPublished(Resolution resolution, out string message)
         {
-            if (DocSuiteContext.Current.ResolutionEnv.PostToRemoteDisablePublicationTester)
+            if (Parameters.PostToRemoteDisablePublicationTester)
             {
                 message = "SKIPPED";
                 return false;
             }
 
-            var uriString = "{0}?ANNO={1}&NUMERO={2}&TIPO={3}&DATA_ADOZIONE={4:dd/MM/yyyy}";
-            var decodedType = resolution.Type.Id == 0 ? "Determina" : "Delibera";
-            uriString = string.Format(uriString, DocSuiteContext.Current.ResolutionEnv.PostToRemotePublicationTesterUrl,
+            string uriString = "{0}?ANNO={1}&NUMERO={2}&TIPO={3}&DATA_ADOZIONE={4:dd/MM/yyyy}";
+            string decodedType = resolution.Type.Id == 0 ? "Determina" : "Delibera";
+            uriString = string.Format(uriString, Parameters.PostToRemotePublicationTesterUrl,
                 resolution.Year, resolution.Number, decodedType, resolution.AdoptionDate);
-            FileLogger.Info("Url test pubblicazione: ", uriString);
-            var uri = createUri(uriString);
+            FileLogger.Info(LoggerName, $"CMVGroup.Publish -> Publication test url: {uriString}");
+            Uri uri = CreateUri(uriString);
 
             try
             {
-                var request = HttpWebRequest.Create(uri) as HttpWebRequest;
+                HttpWebRequest request = WebRequest.Create(uri) as HttpWebRequest;
                 request.Method = WebRequestMethods.Http.Get;
                 request.ProtocolVersion = HttpVersion.Version11;
                 request.Proxy = WebRequest.DefaultWebProxy;
                 request.Credentials = CredentialCache.DefaultCredentials;
                 request.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
-                using (var sr = new StreamReader(stream))
+                using (WebResponse response = request.GetResponse())
+                using (Stream stream = response.GetResponseStream())
+                using (StreamReader sr = new StreamReader(stream))
+                {
                     message = sr.ReadToEnd();
-                FileLogger.Info(LoggerName, "isAlreadyPublished response: " + message);
+                }
+
+                FileLogger.Info(LoggerName, $"CMVGroup.Publish -> isAlreadyPublished response: {message}");
 
                 if (message == "KO: dati mancanti")
-                    throw new InvalidOperationException("Parametri insufficienti per effettuare la richiesta: " + message);
+                {
+                    throw new InvalidOperationException($"CMVGroup.Publish -> Insufficient parameters to make the request: " + message);
+                }
                 else if (message.StartsWith("OK", StringComparison.InvariantCultureIgnoreCase))
+                {
                     return true;
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-                FileLogger.Error(LoggerName, ex.Message, ex);
-                throw;
-            }
-            return false;
-        }
-        private string GetContent(Resolution resolution, DocumentInfo document)
-        {
-            var sb = new StringBuilder();
-            sb.Append(FormatMetadata("OGGETTO", resolution.ResolutionObject, true));
-            sb.Append(FormatMetadata("TITOLO", resolution.Note));
-            sb.Append(FormatMetadata("NUMERO", resolution.Number.ToString()));
-            sb.Append(FormatMetadata("ANNO", resolution.Year.ToString()));
-
-            var codiceDelibera = ReslFacade.GetResolutionNumber(resolution);
-            sb.Append(FormatMetadata("CODICE_DELIBERA", codiceDelibera));
-
-            sb.Append(FormatMetadata("DATA_INSERIMENTO", resolution.ProposeDate));
-            sb.Append(FormatMetadata("DATA_ADOZIONE", resolution.AdoptionDate));
-            sb.Append(FormatMetadata("DATA_PUBBLICAZIONE", resolution.PublishingDate));
-
-            var dataEsecutivita = resolution.EffectivenessDate
-                .GetValueOrDefault(resolution.PublishingDate.Value.AddDays(10));
-            sb.Append(FormatMetadata("DATA_ESECUTIVITA", dataEsecutivita));
-            var dataScadenza = resolution.PublishingDate.Value.AddDays(DocSuiteContext.Current.ResolutionEnv.PublicationEndDays - 5);
-            sb.Append(FormatMetadata("DATA_SCADENZA", dataScadenza));
-
-            var decodedType = resolution.Type.Id == 0 ? "Determina" : "Delibera";
-            sb.Append(FormatMetadata("TIPO", decodedType));
-
-            sb.Append(FormatMetadata("DOCUMENTO", document));
-
-            sb.Append("--" + Boundary);
-            return sb.ToString();
-        }
-
-        public bool Publish(Resolution resolution, DocumentInfo document, out string message)
-        {
-            FileLogger.Info(LoggerName, "Inizio pubblicazione IdResolution: " + resolution.Id.ToString(CultureInfo.InvariantCulture));
-            NewBoundary();
-            FileLogger.Info(LoggerName, "Nuovo boundary: " + Boundary);
-            if (IsAlreadyPublished(resolution, out message))
-                return false;
-
-            FileLogger.Info(LoggerName, "Esito test pubblicazione: " + message);
-            try
-            {
-                var content = GetContent(resolution, document);
-                FileLogger.Debug(LoggerName, content);
-                var encoded = Encoding.UTF8.GetBytes(content);
-
-                FileLogger.Info("Url test pubblicazione: ", DocSuiteContext.Current.ResolutionEnv.PostToRemoteUrl);
-                var uri = createUri(DocSuiteContext.Current.ResolutionEnv.PostToRemoteUrl);
-                var request = HttpWebRequest.Create(uri) as HttpWebRequest;
-
-                request.Method = WebRequestMethods.Http.Post;
-                request.ProtocolVersion = HttpVersion.Version11;
-                request.ContentType = "multipart/form-data; boundary=" + Boundary;
-                request.ContentLength = encoded.Length;
-                request.CachePolicy = new HttpRequestCachePolicy(HttpRequestCacheLevel.NoCacheNoStore);
-                request.KeepAlive = true;
-
-                using (var stream = request.GetRequestStream())
-                    stream.Write(encoded, 0, encoded.Length);
-
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
-                using (var sr = new StreamReader(stream))
-                    message = sr.ReadToEnd();
-                FileLogger.Info(LoggerName, "Publish response: " + message);
-
-                if (message.StartsWith("OK"))
-                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -220,8 +220,12 @@ namespace VecompSoftware.DocSuiteWeb.Services.CMVGroup
             return false;
         }
 
+        private Uri CreateUri(string uriString)
+        {
+            Uri uri = new Uri(uriString);
+            List<string> valid = new List<string> { Uri.UriSchemeHttp, Uri.UriSchemeHttps };
+            return valid.Any(s => s == uri.Scheme) ? uri : throw new InvalidCastException($"CMVGroup.Publish -> Invalid uri for path: " + uriString);
+        }
         #endregion
-
     }
-
 }

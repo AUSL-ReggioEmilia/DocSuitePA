@@ -10,10 +10,14 @@ Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.DTO.WorkflowsElsa
+Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
+Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Workflow
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Compress
@@ -55,8 +59,6 @@ Public Class PECInsert
     Public Const NOTIFICATION_SUCCESS_ICON As String = "ok"
     Private Const ON_ERROR_FUNCTION As String = "onError('{0}')"
     Public Const COMMAND_SUCCESS As String = "Attendere il termine dell'attività di {0}."
-    Public Const COMMAND_ERROR As String = "Errore nella fase di aggiornamento archivio, la PEC è stata comunque spedita correttamente: {0}"
-    Public Const CALLBACK As String = "udsEditCallback"
     Private Const VALID_MAILBOX_IMGURL As String = "../App_Themes/DocSuite2008/images/green-dot-document.png"
     Private Const INTEROP_IMGURL As String = "../App_Themes/DocSuite2008/imgset16/user.png"
     Private _passwordGenerator As PasswordGenerator
@@ -296,7 +298,8 @@ Public Class PECInsert
             Return (CurrentProtocol IsNot Nothing AndAlso ProtocolEnv.EnablePecAttachmentListFromProtocol) _
                         OrElse (CurrentUDS IsNot Nothing) _
                         OrElse (CurrentPecMailList IsNot Nothing AndAlso ForwardPecMode AndAlso ProtocolEnv.EnablePecAttachmentListFromPec) _
-                        OrElse (SendFromViewer AndAlso ProtocolEnv.EnablePecAttachmentListFromProtocol)
+                        OrElse (SendFromViewer AndAlso ProtocolEnv.EnablePecAttachmentListFromProtocol) _
+                        OrElse (OriginalMailToReply IsNot Nothing AndAlso Not ForwardPecMode AndAlso chkAddOriginalAttachments.Checked)
         End Get
     End Property
 
@@ -335,7 +338,6 @@ Public Class PECInsert
 #Region " Events "
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
-
         If ddlMailFrom.SelectedItem IsNot Nothing AndAlso Not String.IsNullOrEmpty(ddlMailFrom.SelectedItem.Value) Then
             SelectedMailboxId = Short.Parse(ddlMailFrom.SelectedItem.Value)
         End If
@@ -353,7 +355,6 @@ Public Class PECInsert
             cmdInsertSign.Visible = True
         End If
 
-
         If Not ProtocolEnv.EnableCc Then
             tblCc.Visible = False
             uscDestinatariCc.Visible = False
@@ -361,6 +362,8 @@ Public Class PECInsert
             uscDestinatariCc.SimpleMode = SimpleMode
             uscDestinatariCc.ButtonIPAVisible = ProtocolEnv.IsIPAAUSEnabled
         End If
+
+        uscAttachmentList.DocumentSelectionEnabled = ProtocolEnv.SendPECDocumentEnabled
 
         If Not IsPostBack Then
             SetResponseNoCache()
@@ -384,14 +387,6 @@ Public Class PECInsert
                 previous = TryCast(PreviousPage, ISendMail)
                 If previous IsNot Nothing Then
                     uscAttachmentList.Caption = "Documenti del protocollo"
-                    'TODO: rivedere con privacy di tipo 4
-                    If DocSuiteContext.Current.PrivacyEnabled AndAlso previous.Documents.Count = 0 Then
-                        Dim fullMessage As String = String.Concat("Attenzione: solo i documenti con un livello di ", PRIVACY_LABEL, " adeguato vengono allegati alla PEC.\r\nL'utente non risulta avere un livello di ", PRIVACY_LABEL, " coerente con alcun documento.")
-                        If DocSuiteContext.Current.SimplifiedPrivacyEnabled Then
-                            fullMessage = String.Concat("Attenzione: solo i documenti al quale l'utente è autorizzato vengono allegati alla PEC.\r\nL'utente non risulta essere autorizzato al trattamento privacy per alcun documento.")
-                        End If
-                        AjaxManager.Alert(fullMessage)
-                    End If
                     uscAttachmentList.LoadDocumentInfos(previous.Documents)
                     txtMailSubject.Text = previous.Subject
                     txtMailBody.Content = previous.Body
@@ -412,8 +407,6 @@ Public Class PECInsert
                         ' Se presente un protocollo
                         Title = String.Format("{0} - Invia {1} {2}/{3:0000000}", PecLabel, CurrentUDS.UDSModel.Model.Title, CurrentUDS.Year, CurrentUDS.Number)
                         chkSetPecInteroperable.Visible = False
-                        cmdSend.OnClientClicked = "confirmUds"
-                        cmdSend.AutoPostBack = False
                         InitializeFromUDS(CurrentUDS.UDSModel)
                     Case OriginalMailToReply IsNot Nothing AndAlso Not ForwardPecMode
                         ' Se voglio fare una risposta
@@ -460,6 +453,13 @@ Public Class PECInsert
                 End If
                 uscAttachmentList.SetDocument(String.Concat("La dimensione del messaggio (massima di ", pecSize.ToByteFormattedString(0), ") può essere influenzata dalla generazione delle copie pdf."))
             End If
+
+            If ProtocolEnv.PECMailInsertAuthorizationEnabled AndAlso (Not Facade.DomainUserFacade.HasCurrentRight(CurrentDomainUser, DSWEnvironmentType.Protocol, DomainUserFacade.HasPECSendableRight) OrElse ddlMailFrom.Items.Count() = 0) Then
+                cmdSend.Enabled = False
+                cmdSend.ToolTip = "Non autorizzato a eseguire questa azione"
+                cmdInsertSign.Enabled = False
+                cmdInsertSign.ToolTip = "Non autorizzato a eseguire questa azione"
+            End If
         End If
     End Sub
 
@@ -494,19 +494,8 @@ Public Class PECInsert
                         End If
                     Catch ex As Exception
                         FileLogger.Error(LoggerName, ex.Message, ex)
-                        If CurrentUDS IsNot Nothing Then
-                            AjaxManager.ResponseScripts.Add(String.Format(ON_ERROR_FUNCTION, HttpUtility.JavaScriptStringEncode(ex.Message)))
-                        Else
-                            Throw ex
-                        End If
+                        Throw ex
                     End Try
-                End If
-            Case CALLBACK
-                Dim udsId As Guid = Guid.Parse(arguments(1).ToString())
-                Dim udsRepositoryId As Guid = Guid.Parse(arguments(2).ToString())
-                If Not udsId.Equals(Guid.Empty) AndAlso Not udsRepositoryId.Equals(Guid.Empty) Then
-                    Dim url As String = UDS_SUMMARY_PATH
-                    Response.Redirect(String.Format(url, udsId, udsRepositoryId))
                 End If
         End Select
     End Sub
@@ -520,7 +509,7 @@ Public Class PECInsert
     End Sub
 
     Private Sub uscDestinari_contactsAdded(ByVal sender As Object, ByVal e As EventArgs) Handles uscDestinatari.ContactAdded, uscDestinatari.ContactRemoved, uscDestinatari.ManualContactAdded, uscDestinatari.ImportExcelContactAdded
-        Dim contacts As IList(Of ContactDTO) = uscDestinatari.GetContacts(False)
+        Dim contacts As IList(Of ContactDTO) = uscDestinatari.GetContacts(True)
         chkMultiPec.Enabled = contacts.Count > 1
     End Sub
 
@@ -556,13 +545,13 @@ Public Class PECInsert
             If chkAddOriginalAttachments.Checked AndAlso OriginalMailToReply IsNot Nothing Then
                 uscAttachmentList.Caption = "Allegati della PEC di origine"
                 uscAttachmentList.UncheckAll = True
-                uscAttachmentList.LoadDocumentInfos(OriginalMailToReply.Attachments.ToDocumentInfoList())
+                uscAttachmentList.LoadDocumentInfos(OriginalMailToReply.Attachments.ToDocumentInfoList(AddressOf DelegateElsaInitialize))
                 ' Carico i documenti
                 uscAttachmentList.DataBind()
             End If
         Else
             ' Documenti in ORIGINALE
-            Dim docs As IList(Of DocumentInfo) = OriginalMailToReply.Attachments.ToDocumentInfoList()
+            Dim docs As IList(Of DocumentInfo) = OriginalMailToReply.Attachments.ToDocumentInfoList(AddressOf DelegateElsaInitialize)
             uscAttachment.LoadDocumentInfo(docs, False, True, True, True, True)
             ' Documenti in Copia conforme
             Dim attachsPdf As List(Of BiblosPdfDocumentInfo) = (From att In docs Select New BiblosPdfDocumentInfo(CType(att, BiblosDocumentInfo))).ToList()
@@ -848,7 +837,7 @@ Public Class PECInsert
 
     Private Function GetAnswerTextContent(pecToAnswer As PECMail) As String
         Dim pecWrapper As BiblosPecMailWrapper = New BiblosPecMailWrapper(pecToAnswer, False)
-        Dim mailContent As BiblosDocumentInfo = pecWrapper.PostaCert
+        Dim mailContent As DocumentInfo = pecWrapper.PostaCert
         If mailContent Is Nothing Then
             mailContent = pecWrapper.MailContent
         End If
@@ -881,7 +870,7 @@ Public Class PECInsert
         Try
             For Each pec As PECMail In pecsToForward
                 ' Aggiungo la mail originale come allegato.
-                Dim original As DocumentInfo = FacadeFactory.Instance.PECMailFacade.GetOriginalEml(pec)
+                Dim original As DocumentInfo = FacadeFactory.Instance.PECMailFacade.GetOriginalEml(pec, New Action(Sub() DelegateElsaInitialize(pec)))
                 If original IsNot Nothing Then
                     original.Name = EmlFileNameFormat(pec.MailSubject)
                     uscAttachment.LoadDocumentInfo(original, False, True, True, True, True)
@@ -890,7 +879,7 @@ Public Class PECInsert
                 If ProtocolEnv.EnablePecAttachmentListFromPec Then
                     '' Aggiungo gli allegati della PEC originaria
                     uscAttachmentList.UncheckAll = True
-                    uscAttachmentList.LoadDocumentInfos(pec.Attachments.ToDocumentInfoList())
+                    uscAttachmentList.LoadDocumentInfos(pec.Attachments.ToDocumentInfoList(AddressOf DelegateElsaInitialize))
                     ' Carico i documenti
                     uscAttachmentList.DataBind()
                 End If
@@ -997,11 +986,20 @@ Public Class PECInsert
         If ProtocolEnv.EnablePecAttachmentListFromProtocol Then
             '' Se utilizzo il pannello, ci carico i documenti in alternativa al modulo di upload standard
             ' Documento principale
-            uscAttachmentList.LoadDocumentInfo(doc)
+            uscAttachmentList.LoadDocumentInfo(doc,
+                                                Sub(options)
+                                                    options.Selected = Not ProtocolEnv.ProtocolSendPecChainTypesExcluded.Any(Function(x) x = ChainType.MainChain)
+                                                End Sub)
             ' Allegati
-            uscAttachmentList.LoadDocumentInfos(CType(attachs, IList(Of DocumentInfo)))
+            uscAttachmentList.LoadDocumentInfos(CType(attachs, IList(Of DocumentInfo)),
+                                                Sub(options)
+                                                    options.Selected = Not ProtocolEnv.ProtocolSendPecChainTypesExcluded.Any(Function(x) x = ChainType.AttachmentsChain)
+                                                End Sub)
             ' Annessi
-            uscAttachmentList.LoadDocumentInfos(CType(annexes, IList(Of DocumentInfo)))
+            uscAttachmentList.LoadDocumentInfos(CType(annexes, IList(Of DocumentInfo)),
+                                                Sub(options)
+                                                    options.Selected = Not ProtocolEnv.ProtocolSendPecChainTypesExcluded.Any(Function(x) x = ChainType.AnnexedChain)
+                                                End Sub)
             ' Carico i documenti
             uscAttachmentList.DataBind()
         Else
@@ -1112,14 +1110,10 @@ Public Class PECInsert
     End Sub
 
     ''' <summary>Crea una stringa di indirizzi email a partire dai contatti selezionati nell'usercontrol.</summary>
-    Private Function GetSelectedRecipients(controlToCheck As uscContattiSel, Optional allSelected As Boolean = False) As String
+    Private Function GetSelectedRecipients(controlToCheck As uscContattiSel) As String
         Dim temp As New List(Of String)()
 
-        If controlToCheck.GetSelectedContacts().Count > 0 Then
-            allSelected = True
-        End If
-
-        For Each c As ContactDTO In controlToCheck.GetContacts(allSelected)
+        For Each c As ContactDTO In controlToCheck.GetContacts(True)
             If String.IsNullOrEmpty(c.Contact.CertifiedMail) AndAlso String.IsNullOrEmpty(c.Contact.EmailAddress) Then
                 Throw New DocSuiteException(String.Format("{0} non ha un indirizzo email valido.", c.Contact.Description))
             End If
@@ -1170,6 +1164,7 @@ Public Class PECInsert
         pec.Segnatura = String.Empty
         pec.MailPriority = Convert.ToInt16(ddlPriority.SelectedValue)
         pec.MailBody = Helpers.StringHelper.EncodingAccentChar(txtMailBody.Text)
+        'pec.MailBody = txtMailBody.GetHtml(EditorStripHtmlOptions.None)
         ' Genero la PEC come nascosta per evitare che venga vista dagli utenti e che venga gestita dal JeepService
         pec.IsActive = ActiveType.Cast(ActiveType.PECMailActiveType.Disabled)
         pec.IsValidForInterop = False
@@ -1208,20 +1203,6 @@ Public Class PECInsert
     Private Function StoreAttachments(ByRef pec As PECMail) As Boolean
         'Gestione Errori
         Dim errors As New List(Of String)
-
-        'Gestione OrganizationChart
-        Dim useOChartDocs As Boolean = False
-        If ProtocolEnv.OChartEnabled Then
-            Dim oChartContacts As IList(Of ContactDTO) = uscDestinatari.GetOChartContacts()
-            If oChartContacts IsNot Nothing AndAlso oChartContacts.Count > 0 Then
-                Dim ochartDoc As DocumentInfo = GenerateOChartCommunicationDataXml(oChartContacts, uscAttachment.DocumentInfos)
-                If ochartDoc IsNot Nothing Then
-                    Facade.PECMailFacade.ArchiveAttachment(pec, ochartDoc, DocSuiteContext.Current.ProtocolEnv.OChartCommunicationDataName, False)
-                    useOChartDocs = True
-                End If
-            End If
-        End If
-
         Dim pecDocuments As List(Of DocumentInfo) = New List(Of DocumentInfo)()
 
         If Not chkZip.Checked AndAlso Not chkZipPassword.Checked Then
@@ -1232,13 +1213,6 @@ Public Class PECInsert
 
             'Gestione allegati PEC standard
             Dim standardAttachments As IList(Of DocumentInfo) = uscAttachment.DocumentInfos
-            If useOChartDocs Then
-                For Each standardAttachment As DocumentInfo In standardAttachments
-                    If Not String.IsNullOrEmpty(standardAttachment.ExternalKey) Then
-                        standardAttachment.Name = String.Format("{0}#{1}", standardAttachment.ExternalKey, standardAttachment.Name)
-                    End If
-                Next
-            End If
             pecDocuments.AddRange(standardAttachments)
         End If
 
@@ -1282,7 +1256,12 @@ Public Class PECInsert
     Private Sub ArchiveAttachments(ByRef pec As PECMail, ByRef docs As List(Of DocumentInfo), ByRef errors As List(Of String))
         For Each attachment As DocumentInfo In docs
             Try
-                Facade.PECMailFacade.ArchiveAttachment(pec, attachment, False)
+                If TypeOf attachment Is DocumentProxyDocumentInfo Then
+                    Dim newTempDoc As FileInfo = attachment.SaveUniqueToTemp()
+                    Facade.PECMailFacade.ArchiveAttachment(pec, New TempFileDocumentInfo(attachment.Name, newTempDoc), False)
+                Else
+                    Facade.PECMailFacade.ArchiveAttachment(pec, attachment, False)
+                End If
             Catch ex As Exception
                 errors.Add(String.Format("{0} -> [{1}]", attachment.Name, ex.Message))
                 FileLogger.Error(LoggerName, ex.Message, ex)
@@ -1326,26 +1305,6 @@ Public Class PECInsert
             End If
         Catch ex As Exception
             FileLogger.Warn(LoggerName, ex.Message, ex)
-        End Try
-
-        Try
-            If CurrentUDS IsNot Nothing Then
-                Dim relations As PECMails = CurrentUDS.UDSModel.Model.PECMails
-                If relations Is Nothing Then
-                    CurrentUDS.UDSModel.FillPECMails(New List(Of ReferenceModel) From {New ReferenceModel() With {.EntityId = pecMail.Id, .UniqueId = pecMail.UniqueId}})
-                Else
-                    Dim newPecMail As PECInstance = New PECInstance() With {.IdPECMail = pecMail.Id, .UniqueId = pecMail.UniqueId.ToString()}
-                    relations.Instances = If(relations.Instances, Enumerable.Empty(Of PECInstance)).Concat(New PECInstance() {newPecMail}).ToArray()
-                End If
-
-                Dim correlationId As Guid = Guid.Parse(HFcorrelatedCommandId.Value)
-                Dim sendedCommandId As Guid = CurrentUDSRepositoryFacade.SendCommandUpdateData(IdUDSRepository.Value, IdUDS.Value, correlationId, CurrentUDS.UDSModel)
-                FileLogger.Info(LoggerName, String.Format("Command sended with Id {0} and CorrelationId {0}", sendedCommandId, correlationId))
-            End If
-        Catch ex As Exception
-            FileLogger.Error(LoggerName, ex.Message, ex)
-            Dim exceptionMessage As String = String.Format(COMMAND_ERROR, ProtocolEnv.DefaultErrorMessage)
-            AjaxManager.ResponseScripts.Add(String.Format(ON_ERROR_FUNCTION, exceptionMessage))
         End Try
     End Sub
 
@@ -1494,14 +1453,6 @@ Public Class PECInsert
         Return False
     End Function
 
-    Public Function GenerateOChartCommunicationDataXml(ByVal oChartContacts As IList(Of ContactDTO), ByVal pecAttachments As IList(Of DocumentInfo)) As DocumentInfo
-        Dim oChartItemContact As ContactDTO = oChartContacts.FirstOrDefault()
-        If oChartItemContact IsNot Nothing Then
-            Return Facade.OChartFacade.GenerateSegnatura(oChartItemContact, CurrentProtocol, pecAttachments)
-        End If
-        Return Nothing
-    End Function
-
     Private Function CheckPecSize() As Boolean
         '' Verifico la grandezza complessiva
         Dim pecSize As Long = uscAttachment.TotalSize
@@ -1593,19 +1544,13 @@ Public Class PECInsert
                 Exit Sub
             End If
 
+            'txtMailBody.EditModes = EditModes.Html
+
             '' Istanzio multipleType a "NoSplit: casistica standard" oppure a "SplitByRecipients: se il checkbox è selezionato"
             '' ManageAttachments si occupa di definire se sia necessario uno split specifico per allegati e/o contatti
             Dim multipleType As PecMailMultipleTypeEnum = If(chkMultiPec.Checked, PecMailMultipleTypeEnum.SplitByRecipients, PecMailMultipleTypeEnum.NoSplit)
             If Not ManageAttachments(ajaxRequestCommand, multipleType) Then
                 Exit Sub
-            End If
-
-            If CurrentUDS IsNot Nothing Then
-                Dim correlationId As Guid = Guid.Empty
-                If (Not Guid.TryParse(HFcorrelatedCommandId.Value, correlationId)) Then
-                    AjaxManager.ResponseScripts.Add(String.Format(ON_ERROR_FUNCTION, "Errore generale, contattare assistenza : CorrelationId is not Valid."))
-                    Return
-                End If
             End If
 
             '' Genero e invio la PEC
@@ -1614,10 +1559,7 @@ Public Class PECInsert
             End If
 
             '' Ritorno la grafica
-            If CurrentUDS Is Nothing Then
-                RedirectToSource()
-            End If
-
+            RedirectToSource()
         Catch ex As Exception
             FileLogger.Warn(LoggerName, "Errore invio PEC", ex)
             If CurrentUDS IsNot Nothing Then
@@ -1635,6 +1577,10 @@ Public Class PECInsert
 
         If IsWorkflowOperation Then
             Response.Redirect(String.Format("~/Prot/ProtVisualizza.aspx?UniqueId={0}&Type=Prot&Action=FromPEC&IsWorkflowOperation=True&IdWorkflowActivity={1}", CurrentProtocol.Id, CurrentIdWorkflowActivity))
+        End If
+
+        If CurrentUDS IsNot Nothing Then
+            Response.Redirect(String.Format(UDS_SUMMARY_PATH, CurrentUDS.Id, CurrentUDS.UDSRepository.UniqueId))
         End If
 
         If OriginalMailToReply IsNot Nothing Then
@@ -1708,11 +1654,11 @@ Public Class PECInsert
 
     Private Function ElaboratePec(multipleType As PecMailMultipleTypeEnum) As Boolean
         Try
-            Dim IsMultipleType As Boolean = chkMultiPec.Checked
+
             'Carico tutti i destinatari e i documenti una volta sola.
             'In caso di PEC multipla sarà cura del JeepService DSWPec effettuare la duplicazione
-            Dim pecRecipients As String = GetSelectedRecipients(uscDestinatari, IsMultipleType)
-            Dim pecRecipientsCc As String = GetSelectedRecipients(uscDestinatariCc, IsMultipleType)
+            Dim pecRecipients As String = GetSelectedRecipients(uscDestinatari)
+            Dim pecRecipientsCc As String = GetSelectedRecipients(uscDestinatariCc)
             Dim pec As PECMail = CreatePec(pecRecipients, pecRecipientsCc, multipleType)
             If pec Is Nothing Then
                 Return False
@@ -1720,12 +1666,7 @@ Public Class PECInsert
             SendPec(pec)
             Return True
         Catch ex As Exception
-            If CurrentUDS IsNot Nothing Then
-                AjaxManager.ResponseScripts.Add(String.Format(ON_ERROR_FUNCTION, HttpUtility.JavaScriptStringEncode(ex.Message)))
-                Return False
-            Else
-                Throw ex
-            End If
+            Throw ex
         End Try
     End Function
 
@@ -1798,6 +1739,11 @@ Public Class PECInsert
         protectedPec.MultipleType = pecMail.MultipleType
         protectedPec.RegistrationUser = DocSuiteContext.Current.User.FullUserName
         protectedPec.RegistrationDate = DateTimeOffset.UtcNow
+
+        If ProtocolEnv.SendPecWithPasswordToMailRecipientsCCEnabled Then
+            protectedPec.MailRecipientsCc = pecMail.MailRecipientsCc
+        End If
+
         Facade.PECMailFacade.Save(protectedPec)
         Facade.PECMailFacade.SendInsertPECMailCommand(protectedPec)
         FileLogger.Info(LoggerName, String.Concat("PECInsert - SendPECWithPassword - PEC con password inserita in coda di invio"))

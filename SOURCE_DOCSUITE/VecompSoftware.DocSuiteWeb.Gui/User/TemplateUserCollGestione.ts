@@ -11,6 +11,9 @@ import JsonParameter = require('App/Models/Commons/JsonParameter');
 import AjaxModel = require('App/Models/AjaxModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
+import TemplateCollaborationRepresentationType = require('App/Models/Templates/TemplateCollaborationRepresentationType');
+import CrossWindowMessagingSender = require('App/Core/Messaging/CrossWindowMessagingSender');
+import TemplatesConstants = require('App/Core/Templates/TemplatesConstants');
 
 declare var Page_IsValid: any;
 class TemplateUserCollGestione {
@@ -29,6 +32,7 @@ class TemplateUserCollGestione {
     rblPriorityId: string;
     action: string;
     templateId: string;
+    parentId: string;
     btnPublishId: string;
     btnPublishUniqueId: string;
     ajaxFlatLoadingPanelId: string;
@@ -56,8 +60,18 @@ class TemplateUserCollGestione {
     private _ddlSpecificDocumentType: Telerik.Web.UI.RadDropDownList;
     private _rblPriority: JQuery;
     private _currentTemplateIsLocked: boolean;
+    private _currentTemplateRepresentationType: TemplateCollaborationRepresentationType;
     private _manager: Telerik.Web.UI.RadWindowManager;
     private _chkDocumentUnitDraftEnabled: JQuery;
+    private _messageSender: CrossWindowMessagingSender;
+    // model loaded when Action=Edit
+    private _editingModel: TemplateCollaborationModel;
+
+    // model loaded when Action=Insert
+    // the parent can be a folder or the fixed template
+    private _parentModel: TemplateCollaborationModel;
+    // the fixed template is a top level template which provides the document type for the current new template
+    private _parentTopLevel: TemplateCollaborationModel;
 
     private _chkSecretaryViewRightEnabled(): JQuery {
         return $(`#${this.chkSecretaryViewRightEnabledId}`);
@@ -88,6 +102,7 @@ class TemplateUserCollGestione {
         }
 
         this._service = new TemplateCollaborationService(serviceConfiguration);
+        this._messageSender = new CrossWindowMessagingSender(window.parent);
     }
 
     /**
@@ -119,22 +134,6 @@ class TemplateUserCollGestione {
     }
 
     /**
-     * Evento scatenato al cambio di selezione della tipologia documento
-     * @param sender
-     * @param args
-     */
-    ddlDocumentType_selectedIndexChanged = (sender: Telerik.Web.UI.RadDropDownList, args: Telerik.Web.UI.DropDownListIndexChangedEventArgs) => {
-        let documentType: string = this.getPageTypeFromDocumentType(sender.get_selectedItem().get_value());
-        this.changeBodyClass(documentType);
-        $("#specificTypeRow").hide();
-        if (sender.get_selectedItem().get_value() == CollaborationDocumentType[CollaborationDocumentType.UDS]) {
-            $("#specificTypeRow").show();
-        }
-        var ajaxmodel: AjaxModel = { ActionName: 'DocumentTypeChanged', Value: [documentType] };
-        (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxmodel));
-    }
-
-    /**
      * Evento scatenato all'uscita del focus di una RadTextbox per validare i caratteri inseriti
      * @param sender
      * @param args
@@ -157,7 +156,7 @@ class TemplateUserCollGestione {
                         (data: any) => {
                             this._service.deleteTemplateCollaboration(data,
                                 (data: any) => {
-                                    window.location.href = "../Tblt/TbltTemplateCollaborationManager.aspx?Type=Comm";
+                                    this._messageSender.SendMessage(TemplatesConstants.Events.EventTemplateDeleted, this.templateId);
                                 },
                                 (exception: ExceptionDTO) => {
                                     this.hideLoadingPanels();
@@ -201,8 +200,9 @@ class TemplateUserCollGestione {
         this._txtName = <Telerik.Web.UI.RadTextBox>$find(this.txtNameId);
         this._txtObject = <Telerik.Web.UI.RadTextBox>$find(this.txtObjectId);
         this._txtNote = <Telerik.Web.UI.RadTextBox>$find(this.txtNoteId);
+        // document type drop down values are binded in the aspx vb code of the current page
         this._ddlDocumentType = <Telerik.Web.UI.RadDropDownList>$find(this.ddlDocumentTypeId);
-        this._ddlDocumentType.add_selectedIndexChanged(this.ddlDocumentType_selectedIndexChanged);
+        this._ddlDocumentType.set_enabled(false);
         this._ddlDocumentType.findItemByValue('P').select();
         this._ddlSpecificDocumentType = <Telerik.Web.UI.RadDropDownList>$find(this.ddlSpecificDocumentTypeId);
         this._manager = <Telerik.Web.UI.RadWindowManager>$find(this.radWindowManagerId);
@@ -212,43 +212,163 @@ class TemplateUserCollGestione {
         $("#".concat(this.rowDocumentUnitDraftId)).hide();
         $("#specificTypeRow").hide();
 
-        if (this.action == TemplateUserCollGestione.EDIT_ACTION) {
-            this.showLoadingPanels();
-            try {
-                this._service.getById(this.templateId,
-                    (data: any) => {
-                        try {
-                            if (data == undefined) {
+        try {
+            if (this.TemplateIsBeingEdited()) {
+                this.LoadEditingTemplate()
+                    .then(() => {
+                        this.EvaluatePageStyleBasedOnDocumentType();
+                        this.EvaluateDropdownBasedOnDocumentType();
+                    });
+            }
+            else if (this.TemplateIsBeingCreated()) {
+                this.LoadParentOfNewTemplate()
+                    .then(() => {
+                        this.EvaluatePageStyleBasedOnDocumentType();
+                        this.EvaluateDropdownBasedOnDocumentType();
+                    });
+            }
+
+        } catch (err) {
+            this.showNotificationMessage(this.uscNotificationId, 'Errore in caricamento dati del Template');
+            console.error(JSON.stringify(err));
+        }
+
+    }
+
+    private LoadParentOfNewTemplate(): JQueryDeferred<void> {
+        let deferred: JQueryDeferred<void> = $.Deferred();
+        this.showLoadingPanels();
+
+        try {
+            //parentId is available only when creating a new element
+            this._service.getById(this.parentId,
+                model => {
+                    this._parentModel = model;
+                    if (this._parentModel === null || this._parentModel === undefined) {
+                        this._btnConfirm.set_enabled(false);
+                        this._btnPublish.set_enabled(false);
+                        this._btnDelete.set_enabled(false);
+                        throw 'Nessun template trovato';
+                    }
+
+                    // the hierarchic structure allows us to place a template under a folder under a fixed template
+                    // the folder can be the parent but it's not aware of the document type of the parent (which needs
+                    // to be passed to the new child)
+
+                    // we get the parent because we need to validate he exists to insert a new node
+                    // we get the top level parent (under the root) to get the document type and pass it on
+                    let fixedTemplatePath = this._parentModel.TemplateCollaborationPath.substr(0, 3);
+                    this._service.getByTemplateCollaborationPath(fixedTemplatePath,
+                        model => {
+                            this._parentTopLevel = model;
+
+                            if (this._parentTopLevel === null || this._parentTopLevel === undefined) {
                                 this._btnConfirm.set_enabled(false);
                                 this._btnPublish.set_enabled(false);
                                 this._btnDelete.set_enabled(false);
                                 throw 'Nessun template trovato';
                             }
-
-                            this._currentTemplateIsLocked = data.IsLocked;
-                            this._btnPublish.set_enabled(<any>TemplateCollaborationStatus[data.Status] != TemplateCollaborationStatus.Active);
-                            this._btnDelete.set_enabled(!data.IsLocked);
-                            this.fillPageFromEntity(data);
-                            var ajaxmodel: AjaxModel = { ActionName: 'LoadFromEntity', Value: [JSON.stringify(data)] };
-                            (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxmodel));
-                        } catch (error) {
                             this.hideLoadingPanels();
-                            this.showNotificationMessage(this.uscNotificationId, 'Errore in caricamento dati del Template');
-                            console.log(JSON.stringify(error));
-                        }
-                    },
-                    (exception: ExceptionDTO) => {
-                        this.hideLoadingPanels();
-                        this.showNotificationException(this.uscNotificationId, exception);
+
+                            deferred.resolve();
+                        },
+                        err => {
+                            this.hideLoadingPanels();
+                            this.showNotificationException(this.uscNotificationId, err);
+                            deferred.reject(err);
+                        });
+
+                }, err => {
+                    this.hideLoadingPanels();
+                    this.showNotificationException(this.uscNotificationId, err);
+                    deferred.reject(err);
+                });
+
+        } catch (err) {
+            this.hideLoadingPanels();
+            this.showNotificationMessage(this.uscNotificationId, 'Errore in caricamento dati del Template');
+            deferred.reject(err);
+        }
+
+        return deferred;
+    }
+
+    private LoadEditingTemplate(): JQueryDeferred<void> {
+        let deferred: JQueryDeferred<void> = $.Deferred()
+        this.showLoadingPanels();
+        try {
+            this._service.getById(this.templateId,
+                model => {
+                    this._editingModel = model;
+                    if (this._editingModel == undefined) {
+                        this._btnConfirm.set_enabled(false);
+                        this._btnPublish.set_enabled(false);
+                        this._btnDelete.set_enabled(false);
+                        throw 'Nessun template trovato';
                     }
-                );
-            } catch (error) {
-                this.hideLoadingPanels();
-                this.showNotificationMessage(this.uscNotificationId, 'Errore in caricamento dati del Template');
-                console.log(JSON.stringify(error));
+
+                    this._currentTemplateIsLocked = this._editingModel.IsLocked;
+                    this._currentTemplateRepresentationType = this._editingModel.RepresentationType;
+                    this._btnPublish.set_enabled(<any>TemplateCollaborationStatus[this._editingModel.Status] != TemplateCollaborationStatus.Active);
+                    this._btnDelete.set_enabled(!this._editingModel.IsLocked);
+                    this.fillPageFromEntity(this._editingModel);
+                    var ajaxmodel: AjaxModel = { ActionName: 'LoadFromEntity', Value: [JSON.stringify(this._editingModel)] };
+                    (<Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId)).ajaxRequest(JSON.stringify(ajaxmodel));
+                    this.hideLoadingPanels();
+
+                    deferred.resolve();
+                }, err => {
+                    this.hideLoadingPanels();
+                    this.showNotificationException(this.uscNotificationId, err);
+                    deferred.reject(err);
+                });
+
+        } catch (error) {
+            this.hideLoadingPanels();
+            this.showNotificationMessage(this.uscNotificationId, 'Errore in caricamento dati del Template');
+            deferred.reject(error);
+        }
+        return deferred;
+    }
+
+    private EvaluatePageStyleBasedOnDocumentType(): void {
+        if (this.TemplateIsBeingCreated()) {
+            let documentType = this._parentTopLevel.DocumentType;
+            let pageType = this.getPageTypeFromDocumentType(documentType);
+            this.changeBodyClass(pageType);
+            $("#specificTypeRow").hide();
+
+            if (documentType === CollaborationDocumentType[CollaborationDocumentType.UDS]) {
+                $("#specificTypeRow").show();
             }
-        } else {
-            this.ddlDocumentType_selectedIndexChanged(this._ddlDocumentType, undefined);
+        }
+
+        if (this.TemplateIsBeingEdited()) {
+            let documentType: string = this._editingModel.DocumentType;
+            let pageType = this.getPageTypeFromDocumentType(documentType);
+            this.changeBodyClass(pageType);
+            $("#specificTypeRow").hide();
+
+            if (documentType === CollaborationDocumentType[CollaborationDocumentType.UDS] || +documentType >= 100) {
+                $("#specificTypeRow").show();
+            }
+        }
+    }
+
+    private EvaluateDropdownBasedOnDocumentType(): void {
+        let documentType = '';
+        if (this.TemplateIsBeingCreated()) {
+            documentType = this._parentTopLevel.DocumentType;
+        }
+
+        if (this.TemplateIsBeingEdited()) {
+            documentType = this._editingModel.DocumentType;
+
+        }
+        for (let node of this._ddlDocumentType.get_items().toArray()) {
+            if (node.get_value() === documentType) {
+                node.set_selected(true);
+            }
         }
     }
 
@@ -260,11 +380,13 @@ class TemplateUserCollGestione {
         entity.Name = this._txtName.get_value();
         entity.Object = this._txtObject.get_value();
         entity.Note = this._txtNote.get_value();
-        if (this._ddlDocumentType.get_selectedItem().get_value() == CollaborationDocumentType[CollaborationDocumentType.UDS]) {
+        let documentType = this._ddlDocumentType.get_selectedItem().get_value();
+
+        if (documentType == CollaborationDocumentType[CollaborationDocumentType.UDS]) {
             if (this._ddlSpecificDocumentType.get_selectedItem().get_value() != '') {
                 entity.DocumentType = this._ddlSpecificDocumentType.get_selectedItem().get_value();
             } else {
-                entity.DocumentType = this._ddlDocumentType.get_selectedItem().get_value();
+                entity.DocumentType = documentType;
             }
         } else {
             entity.DocumentType = this._ddlDocumentType.get_selectedItem().get_value();
@@ -272,8 +394,11 @@ class TemplateUserCollGestione {
         entity.IdPriority = this._rblPriority.find(":checked").val();
         if (this.action == TemplateUserCollGestione.EDIT_ACTION) {
             entity.IsLocked = this._currentTemplateIsLocked;
+            entity.RepresentationType = this._currentTemplateRepresentationType;
         } else {
             entity.IsLocked = false;
+            entity.ParentInsertId = this._parentModel.UniqueId;
+            entity.RepresentationType = TemplateCollaborationRepresentationType.Template;
         }
         entity.Status = TemplateCollaborationStatus.Draft;
 
@@ -298,13 +423,13 @@ class TemplateUserCollGestione {
         btncheckoutParam.PropertyType = 16;
         btncheckoutParam.ValueBoolean = this._chkBtnCheckoutEnabled().is(":checked");
 
-
         jpars.push(documentUnitDraftParam);
         jpars.push(secretaryRightParam);
         jpars.push(popupDocumentNotSignedAlertParam);
         jpars.push(btncheckoutParam);
 
         entity.JsonParameters = JSON.stringify(jpars);
+
         return entity;
     }
 
@@ -316,7 +441,6 @@ class TemplateUserCollGestione {
         this._txtObject = <Telerik.Web.UI.RadTextBox>$find(this.txtObjectId);
         this._txtNote = <Telerik.Web.UI.RadTextBox>$find(this.txtNoteId);
     }
-
     /**
      * Callback per l'inserimento/aggiornamento di un TemplateCollaborationModel
      * @param entity
@@ -324,7 +448,9 @@ class TemplateUserCollGestione {
     confirmCallback(entity: TemplateCollaborationModel, publishing: boolean) {
         try {
             entity = this.fillEntity(entity);
-            let apiAction: any = this.action == TemplateUserCollGestione.INSERT_ACTION ? (m, c, e) => this._service.insertTemplateCollaboration(m, c, e) : (m, c, e) => this._service.updateTemplateCollaboration(m, c, e);
+            let apiAction: any = this.TemplateIsBeingCreated() ?
+                (m, c, e) => this._service.insertTemplateCollaboration(m, c, e)
+                : (m, c, e) => this._service.updateTemplateCollaboration(m, c, e);
 
             apiAction(entity,
                 (data: any) => {
@@ -335,6 +461,7 @@ class TemplateUserCollGestione {
                                 this._btnPublish.set_enabled(false);
                                 this.hideLoadingPanels();
                                 alert("Template pubblicato correttamente");
+                                this._messageSender.SendMessage(TemplatesConstants.Events.EventTemplateCreated, data);
                             },
                             (exception: ExceptionDTO) => {
                                 this.resetControlState();
@@ -344,12 +471,16 @@ class TemplateUserCollGestione {
                         );
                     } else {
                         alert("Template salvato correttamente");
-                        if (this.action == 'Insert') {
-                            window.location.href = "../User/TemplateUserCollGestione.aspx?Action=Edit&Type=".concat(this.getPageTypeFromDocumentType(data.Environment), "&TemplateId=", data.UniqueId);
+                        if (this.TemplateIsBeingCreated()) {
+                            // ParentId is a fake field instructing WebApi where to insert the element. It's not saved in the database(TODO: why is it not saved?)
+                            // We need this id when we send the message because in TemplateCollaboration the tree must know what to refresh
+                            data.ParentInsertId = entity.ParentInsertId;
+
                         }
                         this.resetControlState();
                         this._btnPublish.set_enabled(true);
                         this.hideLoadingPanels();
+                        this._messageSender.SendMessage(TemplatesConstants.Events.EventTemplateCreated, data);
                     }
                 },
                 (exception: ExceptionDTO) => {
@@ -407,7 +538,7 @@ class TemplateUserCollGestione {
     private fillPageFromEntity(entity: TemplateCollaborationModel): void {
         this._txtName.set_value(entity.Name);
         this._txtNote.set_value(entity.Note);
-        this._txtObject.set_value(entity.Object);        
+        this._txtObject.set_value(entity.Object);
         if (entity.JsonParameters) {
             let jsonParms: JsonParameter[] = JSON.parse(entity.JsonParameters);
             let draftParm: JsonParameter[] = jsonParms.filter(f => f.Name == TemplateUserCollGestione.PRECOMPILE_PARAM);
@@ -469,6 +600,14 @@ class TemplateUserCollGestione {
         this._loadingPanel.hide(this.pnlMainPanelId);
         this._flatLoadingPanel.hide(this.pnlHeaderId);
         this._flatLoadingPanel.hide(this.pnlButtonsId);
+    }
+
+    private TemplateIsBeingEdited(): boolean {
+        return this.action == TemplateUserCollGestione.EDIT_ACTION;
+    }
+
+    private TemplateIsBeingCreated(): boolean {
+        return this.action == TemplateUserCollGestione.INSERT_ACTION;
     }
 
     protected showNotificationException(uscNotificationId: string, exception: ExceptionDTO, customMessage?: string) {

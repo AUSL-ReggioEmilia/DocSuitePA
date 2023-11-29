@@ -3,7 +3,7 @@
 <Serializable()>
 Public Class PECMail
     Inherits DomainObject(Of Int32)
-    Implements ISupportLogicDelete, IAuditable
+    Implements ISupportShortLogicDelete, IAuditable
 
 #Region " Fields "
 
@@ -76,7 +76,7 @@ Public Class PECMail
     ''' 1 : Attiva
     ''' 2 : Cancellata e non visibile
     ''' </summary>
-    Public Overridable Property IsActive As Short Implements ISupportLogicDelete.IsActive
+    Public Overridable Property IsActive As Short Implements ISupportShortLogicDelete.IsActive
 
     Public Overridable Property MailStatus As Byte?
 

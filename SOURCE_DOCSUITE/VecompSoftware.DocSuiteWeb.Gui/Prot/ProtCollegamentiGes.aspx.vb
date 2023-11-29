@@ -9,8 +9,9 @@ Public Class ProtCollegamentiGes
     Inherits ProtBasePage
 
 #Region " Fields "
-    Const iconMailI As String = "~/Prot/images/mail16_i.gif"
-    Const iconMailU As String = "~/Prot/images/mail16_u.gif"
+    Private Const iconMailI As String = "~/App_Themes/DocSuite2008/imgset16/ingoing.png"
+    Private Const iconMailU As String = "~/App_Themes/DocSuite2008/imgset16/outgoing.png"
+    Private Const iconMailIU As String = "~/App_Themes/DocSuite2008/imgset16/inout.png"
     Const iconRemove As String = "~/comm/images/remove16.gif"
 
     Dim yearSon As String = String.Empty
@@ -157,6 +158,7 @@ Public Class ProtCollegamentiGes
         Dim childNode As New RadTreeNode()
         childNode.Text = $"{protocol.FullNumber} del {protocol.RegistrationDate:dd/MM/yyyy}"
         ' protocollo in entrata
+        childNode.ImageUrl = iconMailIU
         If protocol.Type.Id = 1 Then
             childNode.ImageUrl = iconMailU
             ' Protocollo in uscita

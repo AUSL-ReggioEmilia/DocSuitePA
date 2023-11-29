@@ -50,6 +50,15 @@ Partial Public Class MessageEmailList
     Protected WithEvents chkUnsent As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
+    '''inputSender control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents inputSender As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
     '''txtSender control.
     '''</summary>
     '''<remarks>
@@ -59,6 +68,24 @@ Partial Public Class MessageEmailList
     Protected WithEvents txtSender As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
+    '''dropdownSender control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents dropdownSender As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
+    '''ddlSender control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlSender As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
     '''txtRecipient control.
     '''</summary>
     '''<remarks>
@@ -66,6 +93,15 @@ Partial Public Class MessageEmailList
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtRecipient As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''errorDDLSender control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents errorDDLSender As Global.Telerik.Web.UI.RadLabel
 
     '''<summary>
     '''cmdRefreshGrid control.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://BiblosDS/2009/10/Permission" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/Permission" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd23" namespace="http://BiblosDS/2009/10/PermissionMode" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Administration.svc?xsd=xsd23" namespace="http://BiblosDS/2009/10/PermissionMode" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Administration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
   <xs:complexType name="ArrayOfPermission">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="Permission" nillable="true" type="tns:Permission" />

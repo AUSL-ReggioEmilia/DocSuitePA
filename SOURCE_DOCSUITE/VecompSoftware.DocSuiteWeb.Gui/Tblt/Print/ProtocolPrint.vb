@@ -124,7 +124,7 @@ Public Class ProtocolPrint
             Dim protocol As Protocol = Facade.ProtocolFacade.GetById(id)
 
             row = New ArrayList()
-            row.Add(protocol.Id.ToString() & WebHelper.Br & String.Format("{0:dd/MM/yyyy}", protocol.RegistrationDate.ToLocalTime()))
+            row.Add(String.Format("{0}/{1:0000000}", protocol.Year, protocol.Number) & WebHelper.Br & String.Format("{0:dd/MM/yyyy}", protocol.RegistrationDate.ToLocalTime()))
             row.Add(ProtocolTypeFacade.CalcolaTipoProtocollo(protocol.Type.Id))
             row.Add(If(Not String.IsNullOrEmpty(protocol.DocumentProtocol), Replace(protocol.DocumentProtocol, "|", "!"), WebHelper.Space))
             row.Add(protocol.DocumentDate)
@@ -151,17 +151,6 @@ Public Class ProtocolPrint
             'manuali
             If protocol.ManualContacts.Count > 0 Then
                 Contatti(protocol.ManualContacts, s)
-            End If
-
-            'Recipient
-            If protocol.Recipients.Count > 0 Then
-
-                For Each contatto As Recipient In protocol.Recipients
-                    If Not String.IsNullOrEmpty(s) Then
-                        s &= "<BR>"
-                    End If
-                    s &= StringHelper.ReplaceCrLf(contatto.FullName)
-                Next
             End If
 
             If Not String.IsNullOrEmpty(s) Then

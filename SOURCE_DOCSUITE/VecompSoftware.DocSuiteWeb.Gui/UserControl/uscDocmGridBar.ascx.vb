@@ -7,29 +7,29 @@ Partial Public Class uscDocmGridBar
 
 #Region " Properties "
 
-    Public Overrides ReadOnly Property DeselectButton() As Button
+    Public Overrides ReadOnly Property DeselectButton() As RadButton
         Get
             Return btnDeselectAll
         End Get
     End Property
-    Public Overrides ReadOnly Property DocumentsButton() As Button
+    Public Overrides ReadOnly Property DocumentsButton() As RadButton
         Get
             Return btnDocuments
         End Get
     End Property
-    Public Overrides ReadOnly Property PrintButton() As Button
+    Public Overrides ReadOnly Property PrintButton() As RadButton
         Get
             Return btnStampa
         End Get
     End Property
 
-    Public Overrides ReadOnly Property SelectButton() As Button
+    Public Overrides ReadOnly Property SelectButton() As RadButton
         Get
             Return btnSelectAll
         End Get
     End Property
 
-    Public Overrides ReadOnly Property SetReadButton() As Button
+    Public Overrides ReadOnly Property SetReadButton() As RadButton
         Get
             Return btnSetRead
         End Get

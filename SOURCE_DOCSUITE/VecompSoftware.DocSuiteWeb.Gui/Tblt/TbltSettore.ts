@@ -21,7 +21,6 @@ class TbltSettore {
     private static CLONE_OPTION: string = "clone"
     private static PRINT_OPTION: string = "print"
     private static GROUPS_OPTION: string = "groups"
-    private static HISTORY_OPTION: string = "history"
     private static LOG_OPTION: string = "log"
     private static FUNCTION_OPTION: string = "function"
     private static PROPAGATION_OPTION: string = "propagation"
@@ -344,17 +343,6 @@ class TbltSettore {
     openPropagationWindow(name: string): boolean {
         let url: string = "../Tblt/TbltSettorePropagation.aspx?Type=ProtDB";
         return this.openWindow(url, name, WindowHelper.WIDTH_PRINT_WINDOW, WindowHelper.HEIGHT_PRINT_WINDOW);
-    }
-
-    /**
-     * Metodo di apertura finestra di visualizzazione history settore
-     */
-    openHistoryWindow(): boolean {
-        let treeView: Telerik.Web.UI.RadTreeView = <Telerik.Web.UI.RadTreeView>$find(this.radTreeViewRolesId);
-        let selectedNode: Telerik.Web.UI.RadTreeNode = treeView.get_selectedNode();
-        let nodeType: string = selectedNode.get_attributes().getAttribute("NodeType");
-        let url: string = "../Tblt/TbltRoleHistory.aspx?Type=ProtDB&IdRole=".concat(selectedNode.get_value());
-        return this.openWindow(url, "windowHistory", WindowHelper.WIDTH_GROUP_WINDOW, WindowHelper.HEIGHT_GROUP_WINDOW);
     }
 
     /**

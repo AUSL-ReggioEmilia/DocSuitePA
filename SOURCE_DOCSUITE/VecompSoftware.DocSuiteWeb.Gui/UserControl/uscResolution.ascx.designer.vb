@@ -68,6 +68,303 @@ Partial Public Class uscResolution
     Protected WithEvents trResolutionProposerProtocolLink As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
+    '''tblAmount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblAmount As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblAmount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblAmount As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblAmountValue control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblAmountValue As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tdStatusDescription control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdStatusDescription As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''tdStatusDescriptionValue control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdStatusDescriptionValue As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''tdAccountingSectional control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdAccountingSectional As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''tdConservationDescription control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdConservationDescription As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''collaborationLink control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents collaborationLink As Global.System.Web.UI.WebControls.HyperLink
+
+    '''<summary>
+    '''tdLastConfirmView control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdLastConfirmView As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''tdLastConfirmViewValue control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdLastConfirmViewValue As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''tdTakeCharge control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdTakeCharge As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''lblUserTakeCharge control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblUserTakeCharge As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tdPubblication control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdPubblication As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''chkPublication control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkPublication As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''tblWebPubblicationState control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblWebPubblicationState As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lbStatoWeb control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lbStatoWeb As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''WebStateTD control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents WebStateTD As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''_webStateLabel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents _webStateLabel As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tblWebPublicationData control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblWebPublicationData As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lbDataPubbWeb control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lbDataPubbWeb As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''_webPublicationDateLabel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents _webPublicationDateLabel As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tblWebRetireData control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tblWebRetireData As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lbDataRetireWeb control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lbDataRetireWeb As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''_webRevokeDateLabel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents _webRevokeDateLabel As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''tdCollaboration control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tdCollaboration As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''cmdCollaboration control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdCollaboration As Global.System.Web.UI.WebControls.HyperLink
+
+    '''<summary>
+    '''trConservationStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trConservationStatus As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''imgConservationIcon control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgConservationIcon As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblConservationStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConservationStatus As Global.System.Web.UI.WebControls.HyperLink
+
+    '''<summary>
+    '''conservationUriLabel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents conservationUriLabel As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConservationUri control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConservationUri As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trUltimaPagina control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trUltimaPagina As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lbDataDematerializzazione control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lbDataDematerializzazione As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
     '''uscWorkflow control.
     '''</summary>
     '''<remarks>
@@ -147,69 +444,6 @@ Partial Public Class uscResolution
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents imgDocumento As Global.System.Web.UI.WebControls.ImageButton
-
-    '''<summary>
-    '''tblStatus control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tblStatus As Global.System.Web.UI.HtmlControls.HtmlTable
-
-    '''<summary>
-    '''trStatusTitle control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents trStatusTitle As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''trStatusDescrition control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents trStatusDescrition As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''tdStatusDescription control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tdStatusDescription As Global.System.Web.UI.HtmlControls.HtmlTableCell
-
-    '''<summary>
-    '''trLastChangedReason control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents trLastChangedReason As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''tdAccountingSectional control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tdAccountingSectional As Global.System.Web.UI.HtmlControls.HtmlTableCell
-
-    '''<summary>
-    '''trLastConfrimView control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents trLastConfrimView As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
     '''tblObjectPrivacy control.
@@ -309,6 +543,42 @@ Partial Public Class uscResolution
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblEconomicData As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''lblEconomicDataTitle control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblEconomicDataTitle As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''rowEconomicDataContratto control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowEconomicDataContratto As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''lblBidType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblBidType As Global.System.Web.UI.HtmlControls.HtmlTableCell
+
+    '''<summary>
+    '''rowEconomicDataFornitore control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rowEconomicDataFornitore As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
     '''tblComunication control.
@@ -426,231 +696,6 @@ Partial Public Class uscResolution
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscMulticlassificationRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscMulticlassificationRest
-
-    '''<summary>
-    '''tblParer control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tblParer As Global.System.Web.UI.HtmlControls.HtmlTable
-
-    '''<summary>
-    '''parerInfo control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents parerInfo As Global.System.Web.UI.WebControls.ImageButton
-
-    '''<summary>
-    '''parerIcon control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents parerIcon As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
-    '''parerLabel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents parerLabel As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lbDataDematerializzazione control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lbDataDematerializzazione As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lbDataVersamento control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lbDataVersamento As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''linkUriVersamento control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents linkUriVersamento As Global.System.Web.UI.WebControls.HyperLink
-
-    '''<summary>
-    '''tblOther control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tblOther As Global.System.Web.UI.HtmlControls.HtmlTable
-
-    '''<summary>
-    '''tbPublicationLabel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tbPublicationLabel As Global.System.Web.UI.HtmlControls.HtmlTableCell
-
-    '''<summary>
-    '''lblPubblication control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblPubblication As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''tbPublication control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tbPublication As Global.System.Web.UI.HtmlControls.HtmlTableCell
-
-    '''<summary>
-    '''chkPublication control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents chkPublication As Global.System.Web.UI.WebControls.CheckBox
-
-    '''<summary>
-    '''tblWebPubblicationState control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tblWebPubblicationState As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''lbStatoWeb control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lbStatoWeb As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''WebStateTD control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents WebStateTD As Global.System.Web.UI.HtmlControls.HtmlTableCell
-
-    '''<summary>
-    '''_webStateLabel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents _webStateLabel As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''tblWebPublicationData control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tblWebPublicationData As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''lbDataPubbWeb control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lbDataPubbWeb As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''_webPublicationDateLabel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents _webPublicationDateLabel As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''tblWebRetireData control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tblWebRetireData As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''lbDataRetireWeb control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lbDataRetireWeb As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''_webRevokeDateLabel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents _webRevokeDateLabel As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''tblSettoriAutoriz control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tblSettoriAutoriz As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''collaborationPanel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents collaborationPanel As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''cmdCollaboration control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cmdCollaboration As Global.System.Web.UI.WebControls.HyperLink
 
     '''<summary>
     '''AuslPcWebPublication control.

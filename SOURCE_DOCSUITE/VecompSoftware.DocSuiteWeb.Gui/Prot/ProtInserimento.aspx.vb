@@ -16,14 +16,14 @@ Imports VecompSoftware.DocSuiteWeb.Data.Formatter
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.DTO.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
 Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Protocols
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
-Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
+Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
-Imports VecompSoftware.DocSuiteWeb.Model.Integrations.GenericProcesses
 Imports VecompSoftware.DocSuiteWeb.Model.Workflow
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
@@ -76,6 +76,7 @@ Partial Public Class ProtInserimento
     Private _protocolsKeys As IList(Of Guid)
     Private _currentWorkflowActivityLogFacade As WebAPIFacade.Workflows.WorkflowActivityLogFacade
     Private _duplicateCheckedFields As String
+    Private _workflowInstanceApiFacade As WorkflowInstanceFacade
 
 #End Region
 
@@ -368,6 +369,15 @@ Partial Public Class ProtInserimento
         End Get
     End Property
 
+    Public ReadOnly Property WorkflowInstanceApiFacade As WorkflowInstanceFacade
+        Get
+            If _workflowInstanceApiFacade Is Nothing Then
+                _workflowInstanceApiFacade = New WorkflowInstanceFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
+            End If
+            Return _workflowInstanceApiFacade
+        End Get
+    End Property
+
 #End Region
 
 #Region " Events "
@@ -383,6 +393,9 @@ Partial Public Class ProtInserimento
         If Action.Eq("Insert") Then
             uscMittenti.EnableFlagGroupChild = True
             uscDestinatari.EnableFlagGroupChild = True
+            uscUploadDocumenti.DocumentsRenameEnabled = ProtocolEnv.ProtocolRenameDocumentEnabled
+            uscUploadAllegati.DocumentsRenameEnabled = ProtocolEnv.ProtocolRenameDocumentEnabled
+            uscUploadAnnexes.DocumentsRenameEnabled = ProtocolEnv.ProtocolRenameDocumentEnabled
         End If
 
         InitializeAjax()
@@ -410,9 +423,6 @@ Partial Public Class ProtInserimento
             uscAutorizzazioni.Required = ProtocolEnv.IsAuthorizeInsertRequired
             uscAutorizzazioniCc.Required = False
             uscAutorizzazioni.SearchByUserEnabled = DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled AndAlso Not DocSuiteContext.Current.ProtocolEnv.DistributionHierarchicalEnabled
-            If ProtocolEnv.MultiDomainEnabled AndAlso ProtocolEnv.TenantAuthorizationEnabled Then
-                uscAutorizzazioni.TenantEnabled = True
-            End If
             If ProtocolEnv.IsAuthorizInsertRolesEnabled Then
                 AddHandler uscMittenti.ContactRemoved, AddressOf uscContact_RoleUpdate
                 AddHandler uscMittenti.ContactAdded, AddressOf uscContact_RoleUpdate
@@ -457,10 +467,14 @@ Partial Public Class ProtInserimento
             ajaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument)
             Select Case ajaxModel.ActionName
                 Case "BindingFromWorkflowUI"
-                    If ajaxModel.Value IsNot Nothing AndAlso ajaxModel.Value.Count = 2 Then
+                    If ajaxModel.Value IsNot Nothing AndAlso ajaxModel.Value.Count >= 2 Then
                         Dim workflowReferenceModel As WorkflowReferenceModel = JsonConvert.DeserializeObject(Of WorkflowReferenceModel)(ajaxModel.Value(0))
                         Dim workflowStartModel As WorkflowStart = JsonConvert.DeserializeObject(Of WorkflowStart)(ajaxModel.Value(1))
-                        InitializePageFromWorkflowUI(workflowReferenceModel, workflowStartModel)
+                        Dim fascicleFolder As FascicleFolder = Nothing
+                        If ajaxModel.Value.Count > 2 AndAlso Not String.IsNullOrEmpty(ajaxModel.Value(2)) Then
+                            fascicleFolder = JsonConvert.DeserializeObject(Of FascicleFolder)(ajaxModel.Value(2))
+                        End If
+                        InitializePageFromWorkflowUI(workflowReferenceModel, workflowStartModel, fascicleFolder)
                     End If
             End Select
             AjaxManager.ResponseScripts.Add("HideLoadingPanel();")
@@ -782,6 +796,7 @@ Partial Public Class ProtInserimento
 
         Dim toFinalizeCollaborations As ICollection(Of Collaboration) = New List(Of Collaboration)
         Dim toFinalizePec As PECMail = Nothing
+        Dim workflowName As String = Nothing
         'Collaborazione 
         Select Case True
             Case Action.Eq("Redo")
@@ -810,6 +825,10 @@ Partial Public Class ProtInserimento
                     FacadeFactory.Instance.ProtocolFacade.AddProtocolLink(protocol, CurrentCollaboration.SourceProtocol, ProtocolFacade.ProtocolLinkType.Normale, fascicleReference)
                 End If
 
+                Dim workflowInstance As WorkflowInstance = WorkflowInstanceApiFacade.GetByCollaborationReferenceId(CurrentCollaboration.Id)
+                If workflowInstance IsNot Nothing AndAlso workflowInstance.WorkflowRepository IsNot Nothing Then
+                    workflowName = workflowInstance.WorkflowRepository.Name
+                End If
             Case Action.Eq("interop") AndAlso CurrentMail IsNot Nothing
                 Try
                     toFinalizePec = CurrentMail
@@ -837,15 +856,38 @@ Partial Public Class ProtInserimento
 
                 Facade.ProtocolTransfertFacade.Save(pt)
         End Select
-        Dim toFascicle As Guid? = Nothing
+        Dim toIdFascicle As Guid? = Nothing
+        Dim toIdfascicleFolder As Guid? = Nothing
         If Not String.IsNullOrEmpty(hf_workflowAction_toFascicle.Value) Then
             Dim tmp As Guid
             If Guid.TryParse(hf_workflowAction_toFascicle.Value, tmp) Then
-                toFascicle = tmp
+                toIdFascicle = tmp
             End If
         End If
+        If Not String.IsNullOrEmpty(hf_workflowAction_toFascicleFolder.Value) Then
+            Dim tmp As Guid
+            If Guid.TryParse(hf_workflowAction_toFascicleFolder.Value, tmp) Then
+                toIdfascicleFolder = tmp
+            End If
+        End If
+
         'Invio un comando di inserimento protocollo alle web api
-        Facade.ProtocolFacade.SendInsertProtocolCommand(protocol, CurrentCollaboration, toFascicle, toFinalizeCollaborations, toFinalizePec, Nothing)
+        Facade.ProtocolFacade.SendInsertProtocolCommand(protocol, CurrentCollaboration, toIdFascicle, toIdfascicleFolder, toFinalizeCollaborations, toFinalizePec, Nothing, workflowName)
+
+        If ProtocolEnv.SendAutomaticAnswerBackPECFromProtocolCreatedEnabled AndAlso protocol.Type.Id = ProtocolType.INCOMING _
+            AndAlso Not ProtocolEnv.ExcludePECAnswerBackProtocolContainerIds.Contains(protocol.Container.Id) Then
+
+            Dim pecBody As String = String.Format(New AutomaticPECFromProtocolBodyFormatter(), ProtocolEnv.BodyTemplateOfAnswerBackPECFromProtocolCreated, New Tuple(Of Protocol, PECMail)(protocol, CurrentMail))
+            Dim pecRecipients As ICollection(Of String) = Facade.ProtocolFacade.GetContacts(protocol, ProtocolContactCommunicationType.Sender) _
+                .Where(Function(x) (Not String.IsNullOrWhiteSpace(x.Contact.CertifiedMail) AndAlso RegexHelper.IsValidEmail(x.Contact.CertifiedMail) OrElse (Not String.IsNullOrWhiteSpace(x.Contact.EmailAddress) AndAlso RegexHelper.IsValidEmail(x.Contact.EmailAddress)))) _
+                .Select(Function(s) String.Format("{0} <{1}>", s.Contact.DescriptionFormatByContactType, If(RegexHelper.IsValidEmail(s.Contact.CertifiedMail), s.Contact.CertifiedMail, s.Contact.EmailAddress))).ToList()
+            Dim pecMailBox As PECMailBox = Facade.PECMailboxFacade.GetById(ProtocolEnv.AnswerBackPECMailBoxId)
+
+            If pecRecipients.Count > 0 AndAlso pecMailBox IsNot Nothing Then
+                FileLogger.Info(LoggerName, String.Format("Procedura di invio automatico PEC ai seguenti mittenti del protocollo: {0}", String.Join(";", pecRecipients)))
+                Facade.PECMailFacade.SendAutomaticPECFromProtocolCommand(protocol, pecBody, ProtocolEnv.SubjectOfAnswerBackPECFromProtocolCreated, pecRecipients, pecMailBox)
+            End If
+        End If
 
         Dim impersonator As Impersonator = CommonAD.ImpersonateSuperUser()
         Dim sharedFile As FileInfo = CommonShared.SelectedSharedFile
@@ -905,8 +947,8 @@ Partial Public Class ProtInserimento
     Private Sub FinalizeCollaboration(ByVal protocol As Protocol, ByVal collaboration As Collaboration)
         collaboration.Year = protocol.Year
         collaboration.Number = protocol.Number
-        FacadeFactory.Instance.CollaborationFacade.FinalizeToProtocol(collaboration)
-        Dim draft As CollaborationXmlData = FacadeFactory.Instance.ProtocolDraftFacade.GetDataFromCollaboration(collaboration)
+        FacadeFactory.Instance.CollaborationFacade.FinalizeToProtocol(collaboration, CurrentTenant.TenantAOO.UniqueId)
+        Dim draft As CollaborationXmlData = FacadeFactory.Instance.CollaborationDraftFacade.GetDataFromCollaboration(collaboration)
         If draft IsNot Nothing AndAlso draft.GetType() = GetType(ResolutionXML) Then
             Dim resolutionXml As ResolutionXML = CType(draft, ResolutionXML)
             UpdateResolutions(resolutionXml, protocol)
@@ -917,9 +959,6 @@ Partial Public Class ProtInserimento
             Next
         End If
 
-    End Sub
-    Private Sub uscDestinatari_OChartItemContactsAdded(sender As Object, e As OChartItemContactsEventArgs) Handles uscDestinatari.OChartItemContactsAdded
-        BindOChartForRecipient(e.ItemFullCode)
     End Sub
 
     Private Sub uscAutorizzazioniCc_OnRoleUserViewModeChanged(ByVal sender As Object, ByVal e As EventArgs) Handles uscAutorizzazioniCc.OnRoleUserViewModeChanged
@@ -1040,7 +1079,7 @@ Partial Public Class ProtInserimento
     Private Function IsPECSourceProtocolAvailable() As Boolean
         Return DocSuiteContext.Current.ProtocolEnv.PECSourceProtocolEnabled _
             AndAlso CurrentPECMail IsNot Nothing _
-            AndAlso New PECMailRightsUtil(Me.CurrentPECMail, DocSuiteContext.Current.User.FullUserName).IsProtocollable _
+            AndAlso New PECMailRightsUtil(Me.CurrentPECMail, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId).IsProtocollable _
             AndAlso Regex.IsMatch(Me.CurrentPECMail.MailSubject, DocSuiteContext.Current.ProtocolEnv.PECSourceProtocolPattern)
     End Function
 
@@ -1337,7 +1376,7 @@ Partial Public Class ProtInserimento
                 Case "RispondiDaPEC"
                     RispondiDaPEC()
                 Case Else
-                    If (Not String.IsNullOrEmpty(PrevSelectedIdContainer) AndAlso CurrentContainerControl.HasItemWithValue(PrevSelectedIdContainer)) AndAlso Not Action.Eq("FromUDS") Then
+                    If (String.IsNullOrEmpty(CurrentContainerControl.SelectedValue) AndAlso Not String.IsNullOrEmpty(PrevSelectedIdContainer) AndAlso CurrentContainerControl.HasItemWithValue(PrevSelectedIdContainer)) AndAlso Not Action.Eq("FromUDS") Then
                         CurrentContainerControl.SelectedValue = PrevSelectedIdContainer
                         ContainerControlSelectionChanged()
                         UpdateTipoProtocollo(needSwap:=Not CurrentIdWorkflowActivity.HasValue)
@@ -1442,13 +1481,8 @@ Partial Public Class ProtInserimento
         End If
     End Sub
 
-    Private Overloads Sub BindDocType(idContainer As Integer?)
-        Dim availableDocTypes As IList(Of DocumentType)
-        If idContainer.HasValue Then
-            availableDocTypes = Facade.ContainerDocTypeFacade.ContainerDocTypeSearch(idContainer.Value, True)
-        Else
-            availableDocTypes = Facade.DocumentTypeFacade.DocTypeSearch(0, True, ProtocolEnv.IsPackageEnabled, String.Empty)
-        End If
+    Private Overloads Sub BindDocType()
+        Dim availableDocTypes As IList(Of DocumentType) = Facade.DocumentTypeFacade.DocTypeSearch(0, True, ProtocolEnv.IsPackageEnabled, String.Empty)
         cboIdDocType.Items.Clear()
         For Each dt As DocumentType In availableDocTypes
             Dim currentItem As New ListItem(dt.Description, dt.Id.ToString())
@@ -1856,7 +1890,7 @@ Partial Public Class ProtInserimento
                 Else
                     ' inserisco come contatto manuale
                     Dim manualContact As Contact = New Contact()
-                    manualContact.IsActive = 1
+                    manualContact.IsActive = True
                     manualContact.Parent = Nothing
                     manualContact.ContactType = New Data.ContactType(Data.ContactType.Person)
                     manualContact.Description = String.Format("{0}|", email)
@@ -1878,7 +1912,7 @@ Partial Public Class ProtInserimento
                     uscDestinatari.DataSource.Add(New ContactDTO(contacts(0), ContactDTO.ContactType.Address))
                 Else ' inserisco come contatto manuale
                     Dim manualContact As Contact = New Contact()
-                    manualContact.IsActive = 1
+                    manualContact.IsActive = True
                     manualContact.Parent = Nothing
                     manualContact.ContactType = New Data.ContactType(Data.ContactType.Person)
                     manualContact.Description = String.Format("{0}|", email)
@@ -1896,7 +1930,7 @@ Partial Public Class ProtInserimento
         If Not String.IsNullOrEmpty(senderCode) Then
             Dim vCodSenders As String() = senderCode.Split(","c)
             For Each senderCode In vCodSenders
-                Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(senderCode, -1)
+                Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(senderCode, False)
                 If contacts.Count > 0 Then
                     If contacts.Count = 1 Then
                         uscMittenti.DataSource.Add(New ContactDTO(contacts(0), ContactDTO.ContactType.Address))
@@ -1913,7 +1947,7 @@ Partial Public Class ProtInserimento
         If Not String.IsNullOrEmpty(recipientCode) Then
             Dim vCodRecipients As String() = recipientCode.Split(","c)
             For Each recipientCode In vCodRecipients
-                Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(recipientCode, -1)
+                Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(recipientCode, False)
                 If contacts.Count > 0 Then
                     If contacts.Count = 1 Then
                         uscDestinatari.DataSource.Add(New ContactDTO(contacts(0), ContactDTO.ContactType.Address))
@@ -1938,7 +1972,7 @@ Partial Public Class ProtInserimento
 
             fullCode = fullCode.Substring(0, fullCode.Length - 1)
 
-            Dim cList As IList(Of Category) = Facade.CategoryFacade.GetCategoryByFullCode(fullCode, -1)
+            Dim cList As IList(Of Category) = Facade.CategoryFacade.GetCategoryByFullCode(fullCode, Nothing)
             If cList.Count > 0 Then
                 uscClassificatori.DataSource.Add(cList(0))
                 uscClassificatori.DataBind()
@@ -2159,7 +2193,7 @@ Partial Public Class ProtInserimento
         End If
 
         ' Inserimento da DRAFT
-        Dim draft As CollaborationXmlData = Facade.ProtocolDraftFacade.GetDataFromCollaboration(collaboration)
+        Dim draft As CollaborationXmlData = Facade.CollaborationDraftFacade.GetDataFromCollaboration(collaboration)
         If draft IsNot Nothing Then
             ' Inizializzo il protocollo da bozza
             BindDraft(draft)
@@ -2232,7 +2266,7 @@ Partial Public Class ProtInserimento
         End If
     End Sub
 
-    Private Sub InitializePageFromWorkflowUI(workflowReferenceModel As WorkflowReferenceModel, workflowStartModel As WorkflowStart)
+    Private Sub InitializePageFromWorkflowUI(workflowReferenceModel As WorkflowReferenceModel, workflowStartModel As WorkflowStart, fascicleFolder As FascicleFolder)
         If workflowReferenceModel Is Nothing OrElse workflowStartModel Is Nothing Then
             Exit Sub
         End If
@@ -2245,6 +2279,9 @@ Partial Public Class ProtInserimento
             Dim fascicle As Entity.Fascicles.Fascicle = JsonConvert.DeserializeObject(Of Entity.Fascicles.Fascicle)(workflowReferenceModel.ReferenceModel)
             txtNote.Text = $"Protocollo originato dal fascicolo {fascicle.Title} - {fascicle.FascicleObject}"
             hf_workflowAction_toFascicle.Value = fascicle.UniqueId.ToString()
+            If fascicleFolder IsNot Nothing AndAlso fascicleFolder.UniqueId <> Guid.Empty Then
+                hf_workflowAction_toFascicleFolder.Value = fascicleFolder.UniqueId.ToString()
+            End If
             If fascicle.Container IsNot Nothing Then
                 CurrentContainerControl.SelectedValue = fascicle.Container.EntityShortId.ToString()
                 ContainerControlSelectionChanged()
@@ -2282,6 +2319,15 @@ Partial Public Class ProtInserimento
             If results.Any() Then
                 uscUploadAnnexes.LoadDocumentInfo(results, False, True, False, True)
                 uscUploadAnnexes.InitializeNodesAsAdded(True)
+            End If
+
+            If Not String.IsNullOrEmpty(workflowReferenceModel.ReferenceModel) AndAlso workflowReferenceModel.ReferenceType = Model.Entities.Commons.DSWEnvironmentType.Fascicle Then
+                Dim fascicle As Entity.Fascicles.Fascicle = JsonConvert.DeserializeObject(Of Entity.Fascicles.Fascicle)(workflowReferenceModel.ReferenceModel)
+                If fascicle.Category IsNot Nothing Then
+                    Dim category As Category = Facade.CategoryFacade.GetById(fascicle.Category.EntityShortId)
+                    uscClassificatori.DataSource.Add(category)
+                    uscClassificatori.DataBind()
+                End If
             End If
         End If
 
@@ -2380,20 +2426,14 @@ Partial Public Class ProtInserimento
                     End If
                 End If
             End If
-            Dim intValue As Integer = 0
-            If Not String.IsNullOrEmpty(CurrentContainerControl.SelectedValue) AndAlso Integer.TryParse(CurrentContainerControl.SelectedValue, intValue) Then
-                BindDocType(intValue)
-            Else
-                BindDocType(Nothing)
-            End If
-
+            BindDocType()
             If Not String.IsNullOrEmpty(prevSelectedDocType) Then
                 If cboIdDocType.Items.FindByValue(prevSelectedDocType) IsNot Nothing Then
                     cboIdDocType.ClearSelection()
                     cboIdDocType.Items.FindByValue(prevSelectedDocType).Selected = True
                 End If
             End If
-            intValue = 0
+            Dim intValue As Int32 = 0
             If Not String.IsNullOrEmpty(cboIdDocType.SelectedValue) AndAlso Integer.TryParse(cboIdDocType.SelectedValue, intValue) Then
                 DocTypeHiddenFields(intValue)
             End If
@@ -3319,11 +3359,9 @@ Partial Public Class ProtInserimento
                 rblTipoProtocollo.Width = Unit.Pixel(5)
 
                 uscMittenti.IsRequired = True
-                uscMittenti.APIDefaultProvider = False
                 uscMittenti.Enable()
 
                 uscDestinatari.IsRequired = False
-                uscDestinatari.APIDefaultProvider = True
                 uscDestinatari.Disable()
 
                 If ProtocolEnv.InnerContactRoot.HasValue Then
@@ -3348,11 +3386,9 @@ Partial Public Class ProtInserimento
                 PanelProtocollo.Visible = False
 
                 uscMittenti.IsRequired = ProtocolEnv.IsProtSenderRequired
-                uscMittenti.APIDefaultProvider = True
                 uscMittenti.Disable()
 
                 uscDestinatari.IsRequired = True
-                uscDestinatari.APIDefaultProvider = False
                 uscDestinatari.Enable()
 
                 If ProtocolEnv.InnerContactRoot.HasValue Then
@@ -3381,11 +3417,9 @@ Partial Public Class ProtInserimento
                 PanelProtocollo.Visible = False
 
                 uscMittenti.IsRequired = True
-                uscMittenti.APIDefaultProvider = True
                 uscMittenti.Enable()
 
                 uscDestinatari.IsRequired = True
-                uscDestinatari.APIDefaultProvider = True
                 uscDestinatari.Enable()
 
                 If ProtocolEnv.InnerContactRoot.HasValue Then
@@ -3401,6 +3435,9 @@ Partial Public Class ProtInserimento
                 uscDestinatari.Enable()
 
         End Select
+
+        uscAutorizzazioni.Required = ProtocolEnv.IsAuthorizInsertEnabled AndAlso ProtocolEnv.IsAuthorizeInsertRequired AndAlso ProtocolEnv.AuthorizeInsertProtocolTypes.Contains(Integer.Parse(rblTipoProtocollo.SelectedValue))
+
         RefreshPackage()
 
         If (needBindContainer) Then
@@ -3554,44 +3591,6 @@ Partial Public Class ProtInserimento
             uscMittenti.DataSource = dtos.ToList()
             uscMittenti.DataBind()
         End If
-    End Sub
-
-    Private Sub BindOChartForRecipient(fullCode As String)
-        If Not DocSuiteContext.Current.ProtocolEnv.OChartProtocolPreloadingEnabled Then
-            Return
-        End If
-
-        If String.IsNullOrWhiteSpace(fullCode) Then
-            Return
-        End If
-
-        Dim selectedProtocolTypeId As Integer? = GetSelectedProtocolTypeId()
-        If Not selectedProtocolTypeId.HasValue Then
-            Return
-        End If
-
-        Dim validProtocolTypes As New List(Of Integer) From {-1, 0}
-        If Not validProtocolTypes.Contains(selectedProtocolTypeId.Value) Then
-            Return
-        End If
-
-        Dim item As OChartItem = CommonShared.EffectiveOChart.Items.FindByFullCode(fullCode)
-        If item Is Nothing OrElse Not item.HasRoles Then
-            Return
-        End If
-
-        ' Recupero una distinta dei settori derivati dagli item dei contatti selezionati.
-        Dim roleIds As IEnumerable(Of Integer) = item.Roles.Select(Function(r) r.Role.Id).Distinct()
-        Dim renewed As IEnumerable(Of Role) = roleIds.Select(Function(i) FacadeFactory.Instance.RoleFacade.GetById(i))
-
-        ' Scremo quelli già autorizzati.
-        Dim missing As IEnumerable(Of Role) = renewed.Where(Function(r) Not uscAutorizzazioni.SourceRoles.Any(Function(a) a.Id.Equals(r.Id)))
-        If missing.IsNullOrEmpty() Then
-            Return
-        End If
-
-        uscAutorizzazioni.SourceRoles.AddRange(missing)
-        uscAutorizzazioni.DataBind()
     End Sub
 
     Private Sub BindOChartResources()

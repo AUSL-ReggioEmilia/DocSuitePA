@@ -1,6 +1,4 @@
-﻿
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.Facade
+﻿Imports VecompSoftware.DocSuiteWeb.Data
 
 <Serializable()>
 Public Class FacadeFactory
@@ -14,10 +12,7 @@ Public Class FacadeFactory
     Private _oChartItemFacade As OChartItemFacade
     Private _oChartItemContactFacade As OChartItemContactFacade
     Private _oChartItemContainerFacade As OChartItemContainerFacade
-    Private _oChartItemMailboxFacade As OChartItemMailboxFacade
     Private _oChartItemRoleFacade As OChartItemRoleFacade
-    Private _oChartItemWorkflowFacade As OChartItemWorkflowFacade
-    Private _apiProviderFacade As APIProviderFacade
     Private _incrementalFacade As IncrementalFacade
 
 #End Region
@@ -78,15 +73,6 @@ Public Class FacadeFactory
         End Get
     End Property
 
-    Public ReadOnly Property OChartItemMailboxFacade As OChartItemMailboxFacade
-        Get
-            If _oChartItemMailboxFacade Is Nothing Then
-                _oChartItemMailboxFacade = New OChartItemMailboxFacade(DocSuiteContext.Current.User.FullUserName)
-            End If
-            Return _oChartItemMailboxFacade
-        End Get
-    End Property
-
     Public ReadOnly Property OChartItemRoleFacade As OChartItemRoleFacade
         Get
             If _oChartItemRoleFacade Is Nothing Then
@@ -96,23 +82,6 @@ Public Class FacadeFactory
         End Get
     End Property
 
-    Public ReadOnly Property OChartItemWorkflowFacade As OChartItemWorkflowFacade
-        Get
-            If _oChartItemWorkflowFacade Is Nothing Then
-                _oChartItemWorkflowFacade = New OChartItemWorkflowFacade(DocSuiteContext.Current.User.FullUserName)
-            End If
-            Return _oChartItemWorkflowFacade
-        End Get
-    End Property
-
-    Public ReadOnly Property APIProviderFacade As APIProviderFacade
-        Get
-            If _apiProviderFacade Is Nothing Then
-                _apiProviderFacade = New APIProviderFacade()
-            End If
-            Return _apiProviderFacade
-        End Get
-    End Property
 
 #End Region
 
@@ -120,20 +89,16 @@ Public Class FacadeFactory
     Private _roleUserFacade As RoleUserFacade
     Private _containerFacade As ContainerFacade
     Private _containerGroupFacade As ContainerGroupFacade
-    Private _containerDocTypeFacade As ContainerDocTypeFacade
     Private _contactFacade As ContactFacade
     Private _containerPropertyFacade As ContainerPropertyFacade
-    Private _contactNameFacade As ContactNameFacade
     Private _contactTypeFacade As ContactTypeFacade
     Private _roleFacade As RoleFacade
-    Private _roleNameFacade As RoleNameFacade
     Private _roleGroupFacade As RoleGroupFacade
     Private _contactplacename As ContactPlaceNameFacade
     Private _categoryFacade As CategoryFacade
     Private _documentTypeFacade As TableDocTypeFacade
     Private _parameterFacade As ParameterFacade
     Private _contacttitlefacade As ContactTitleFacade
-    Private _recipientFacade As RecipientFacade
     Private _securityGroupsFacade As SecurityGroupsFacade
     Private _securityUsersFacade As SecurityUsersFacade
     Private _userErrorFacade As UserErrorFacade
@@ -183,7 +148,7 @@ Public Class FacadeFactory
     Private _zebraPrinterFacade As ZebraPrinterFacade
     Private _scannerConfigurationFacade As ScannerConfigurationFacade
     Private _scannerParameterFacade As ScannerParameterFacade
-    Private _protocolDraftFacade As ProtocolDraftFacade
+    Private _collaborationDraftFacade As CollaborationDraftFacade
     Private _containerBehaviourFacade As ContainerBehaviourFacade
     Private _containerArchiveFacade As ContainerArchiveFacade
     Private _templateProtocolFacade As TemplateProtocolFacade
@@ -222,7 +187,6 @@ Public Class FacadeFactory
     Private _documentObjectFinder As NHibernateDocumentObjectFinder
     Private _documentTokenFinder As NHibernateDocumentTokenFinder
     Private _documentVersioningFinder As NHibernateDocumentVersioningFinder
-    Private _serviceLogFinder As NHibernateServiceLogFinder
     Private _userErrorFinder As NHibernateUserErrorFinder
     Private _userLogFinder As NHibernateUserLogFinder
     Private _pecMailFinder As NHibernatePECMailFinder
@@ -255,7 +219,6 @@ Public Class FacadeFactory
     Private _tabledoctypefacade As TableDocTypeFacade
     Private _resolutionLogFinder As NHibernateResolutionLogFinder
     Private _resolutionLogFacade As ResolutionLogFacade
-    Private _resolutionRecipientFacade As ResolutionRecipientFacade
     Private _resolutionWorkflowFacade As ResolutionWorkflowFacade
     Private _tabWorkflowFacade As TabWorkflowFacade
     Private _fileResolutionFacade As FileResolutionFacade
@@ -271,7 +234,6 @@ Public Class FacadeFactory
     Private _PECOCFacade As PECOCFacade
     Private _PECOCLogFacade As PECOCLogFacade
     Private _webPublicationFacade As WebPublicationFacade
-    Private _resolutionWpFacade As ResolutionWPFacade
     Private _documentSeriesFacade As DocumentSeriesFacade
     Private _documentSeriesFamilyFacade As DocumentSeriesFamilyFacade
     Private _documentSeriesItemFacade As DocumentSeriesItemFacade
@@ -298,11 +260,6 @@ Public Class FacadeFactory
     Private _polAccountFacade As PosteOnLineAccountFacade
 #End Region
 
-#Region " Parer facade members "
-    Private _protocolParerFacade As ProtocolParerFacade
-    Private _resolutionParerFacade As ResolutionParerFacade
-#End Region
-
 #Region " Series facade members "
     Private _documentSeriesAttributeBehaviourFacade As DocumentSeriesAttributeBehaviourFacade
     Private _resolutionDocumentSeriesItemFacade As ResolutionDocumentSeriesItemFacade
@@ -310,9 +267,14 @@ Public Class FacadeFactory
     Private _protocolDocumentSeriesItemFacade As ProtocolDocumentSeriesItemFacade
 #End Region
 
+#Region "Outbox facade members"
+    Private _outboxFacade As OutboxFacade
+#End Region
+
     Private _tenderHeaderFacade As TenderHeaderFacade
     Private _tenderLotFacade As TenderLotFacade
     Private _documentUnitFacade As DocumentUnitFacade
+    Private _resolutionWorkflowUserFacade As ResolutionWorkflowUserFacade
 
 #Region " Constructors"
 
@@ -363,29 +325,12 @@ Public Class FacadeFactory
         End Get
     End Property
 
-    Public ReadOnly Property ContainerDocTypeFacade() As ContainerDocTypeFacade
-        Get
-            If _containerDocTypeFacade Is Nothing Then
-                _containerDocTypeFacade = New ContainerDocTypeFacade(_dbName)
-            End If
-            Return _containerDocTypeFacade
-        End Get
-    End Property
-
     Public ReadOnly Property ContactTitleFacade() As ContactTitleFacade
         Get
             If _contacttitlefacade Is Nothing Then
                 _contacttitlefacade = New ContactTitleFacade(_dbName)
             End If
             Return _contacttitlefacade
-        End Get
-    End Property
-    Public ReadOnly Property ContactNameFacade() As ContactNameFacade
-        Get
-            If _contactNameFacade Is Nothing Then
-                _contactNameFacade = New ContactNameFacade(_dbName)
-            End If
-            Return _contactNameFacade
         End Get
     End Property
     Public ReadOnly Property ContactFacade() As ContactFacade
@@ -412,15 +357,6 @@ Public Class FacadeFactory
                 _roleFacade = New RoleFacade(_dbName)
             End If
             Return _roleFacade
-        End Get
-    End Property
-
-    Public ReadOnly Property RoleNameFacade() As RoleNameFacade
-        Get
-            If _roleNameFacade Is Nothing Then
-                _roleNameFacade = New RoleNameFacade(_dbName)
-            End If
-            Return _roleNameFacade
         End Get
     End Property
 
@@ -484,15 +420,6 @@ Public Class FacadeFactory
                 _locationFacade = New LocationFacade(_dbName)
             End If
             Return _locationFacade
-        End Get
-    End Property
-
-    Public ReadOnly Property RecipientFacade() As RecipientFacade
-        Get
-            If _recipientFacade Is Nothing Then
-                _recipientFacade = New RecipientFacade(_dbName)
-            End If
-            Return _recipientFacade
         End Get
     End Property
 
@@ -823,12 +750,12 @@ Public Class FacadeFactory
         End Get
     End Property
 
-    Public ReadOnly Property ProtocolDraftFacade() As ProtocolDraftFacade
+    Public ReadOnly Property CollaborationDraftFacade() As CollaborationDraftFacade
         Get
-            If _protocolDraftFacade Is Nothing Then
-                _protocolDraftFacade = New ProtocolDraftFacade
+            If _collaborationDraftFacade Is Nothing Then
+                _collaborationDraftFacade = New CollaborationDraftFacade
             End If
-            Return _protocolDraftFacade
+            Return _collaborationDraftFacade
         End Get
     End Property
 
@@ -874,6 +801,15 @@ Public Class FacadeFactory
                 _domainUserFacade = New DomainUserFacade
             End If
             Return _domainUserFacade
+        End Get
+    End Property
+
+    Public ReadOnly Property OutboxFacade() As OutboxFacade
+        Get
+            If _outboxFacade Is Nothing Then
+                _outboxFacade = New OutboxFacade()
+            End If
+            Return _outboxFacade
         End Get
     End Property
 #End Region
@@ -1197,15 +1133,6 @@ Public Class FacadeFactory
         End Get
     End Property
 
-    Public ReadOnly Property ServiceLogFinder() As NHibernateServiceLogFinder
-        Get
-            If _serviceLogFinder Is Nothing Then
-                _serviceLogFinder = New NHibernateServiceLogFinder()
-            End If
-            Return _serviceLogFinder
-        End Get
-    End Property
-
     Public ReadOnly Property UserLogFinder() As NHibernateUserLogFinder
         Get
             If _userLogFinder Is Nothing Then
@@ -1295,15 +1222,6 @@ Public Class FacadeFactory
                 _resolutionRoleTypeFacade = New ResolutionRoleTypeFacade()
             End If
             Return _resolutionRoleTypeFacade
-        End Get
-    End Property
-
-    Public ReadOnly Property ResolutionRecipientFacade() As ResolutionRecipientFacade
-        Get
-            If _resolutionRecipientFacade Is Nothing Then
-                _resolutionRecipientFacade = New ResolutionRecipientFacade()
-            End If
-            Return _resolutionRecipientFacade
         End Get
     End Property
 
@@ -1441,15 +1359,6 @@ Public Class FacadeFactory
         End Get
     End Property
 
-    Public ReadOnly Property ResolutionWPFacade As ResolutionWPFacade
-        Get
-            If _resolutionWpFacade Is Nothing Then
-                _resolutionWpFacade = New ResolutionWPFacade()
-            End If
-            Return _resolutionWpFacade
-        End Get
-    End Property
-
     Public ReadOnly Property PrintLetterRoleFacade As PrintLetterRoleFacade
         Get
             If _printLetterRoleFacade Is Nothing Then
@@ -1496,28 +1405,6 @@ Public Class FacadeFactory
                 _polAccountFacade = New PosteOnLineAccountFacade()
             End If
             Return _polAccountFacade
-        End Get
-    End Property
-
-#End Region
-
-#Region " Parer facade properties "
-
-    Public ReadOnly Property ProtocolParerFacade() As ProtocolParerFacade
-        Get
-            If _protocolParerFacade Is Nothing Then
-                _protocolParerFacade = New ProtocolParerFacade()
-            End If
-            Return _protocolParerFacade
-        End Get
-    End Property
-
-    Public ReadOnly Property ResolutionParerFacade() As ResolutionParerFacade
-        Get
-            If _resolutionParerFacade Is Nothing Then
-                _resolutionParerFacade = New ResolutionParerFacade()
-            End If
-            Return _resolutionParerFacade
         End Get
     End Property
 
@@ -1759,6 +1646,15 @@ Public Class FacadeFactory
                 _documentUnitFacade = New DocumentUnitFacade()
             End If
             Return _documentUnitFacade
+        End Get
+    End Property
+
+    Public ReadOnly Property ResolutionWorkflowUserFacade As ResolutionWorkflowUserFacade
+        Get
+            If _resolutionWorkflowUserFacade Is Nothing Then
+                _resolutionWorkflowUserFacade = New ResolutionWorkflowUserFacade
+            End If
+            Return _resolutionWorkflowUserFacade
         End Get
     End Property
 End Class

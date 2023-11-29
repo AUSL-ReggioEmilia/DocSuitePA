@@ -57,7 +57,7 @@ Public Class NHibernatePECOCFinder
             criteria.Add(Restrictions.Eq("P.Status", Status.Value))
         End If
 
-        criteria.Add(Restrictions.Eq("P.IsActive", Convert.ToInt16(1)))
+        criteria.Add(Restrictions.Eq("P.IsActive", True))
 
         Return criteria
     End Function

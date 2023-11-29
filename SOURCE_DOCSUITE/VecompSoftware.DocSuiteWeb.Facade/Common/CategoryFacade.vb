@@ -59,15 +59,15 @@ Public Class CategoryFacade
         Return _dao.GetCategoryByParentId(ParentId, IsActive)
     End Function
 
-    Public Function GetCategoryByDescription(ByVal description As String, ByVal isActive As Short, Optional ByVal idCategory As Integer = 0) As IList(Of Category)
+    Public Function GetCategoryByDescription(ByVal description As String, ByVal isActive As Boolean, Optional ByVal idCategory As Integer = 0) As IList(Of Category)
         Return _dao.GetCategoryByDescription(description, isActive, idCategory)
     End Function
 
-    Public Function GetCategoryByFullCode(ByVal fullCode As String, ByVal isActive As Short) As IList(Of Category)
+    Public Function GetCategoryByFullCode(ByVal fullCode As String, ByVal isActive As Boolean?) As IList(Of Category)
         Return _dao.GetCategoryByFullCode(fullCode, isActive)
     End Function
 
-    Public Function GetCategoryByFullIncrementalPath(ByVal fullIncrementalPath As String, isActive As Short) As Category
+    Public Function GetCategoryByFullIncrementalPath(ByVal fullIncrementalPath As String, isActive As Boolean) As Category
         Return _dao.GetCategoryByFullIncrementalPath(fullIncrementalPath, isActive)
     End Function
 
@@ -123,71 +123,7 @@ Public Class CategoryFacade
         Return False
     End Function
 
-    ''' <summary> Verifica l'esatezza e correge i FullIncrementalPath di tutti i classificatori. </summary>
-    ''' <param name="errDescription">Descrizione eventuale errore</param>
-    ''' <param name="report">Rapporto dell'esecuzione</param>
-    Public Function FullIncrementalUtility(ByRef errDescription As String, ByRef report As String) As Boolean
-        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction()
-        Try
-            Dim categories As IList(Of Category) = Me.GetAll()
-            For Each category As Category In categories
-                Dim sFullPath As String = ""
-                _dao.GetFullIncrementalPath(category.Parent, sFullPath)
-                If Not String.IsNullOrEmpty(sFullPath) Then
-                    sFullPath = sFullPath & "|"
-                End If
-                sFullPath = sFullPath & category.Id.ToString()
-                If Not category.FullIncrementalPath.Eq(sFullPath) Then
-                    category.FullIncrementalPath = sFullPath
-                    Update(category)
-                    If Not String.IsNullOrEmpty(report) Then
-                        report &= WebHelper.Br
-                    End If
-                    report &= String.Format("{0} ({1})", category.GetFullName(), category.Id)
-                End If
-            Next
-            transaction.Commit()
-        Catch ex As Exception
-            transaction.Rollback()
-            errDescription = ex.Message
-            Return False
-        End Try
 
-        Return True
-    End Function
-
-    ''' <summary> Verifica l'esatezza e correge i FullCode di tutti i classificatori. </summary>
-    ''' <param name="errDescription">Descrizione eventuale errore</param>
-    ''' <param name="report">Rapporto dell'esecuzione</param>
-    Function FullCodeUtility(ByRef errDescription As String, ByRef report As String) As Boolean
-        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction()
-        Try
-            Dim categories As IList(Of Category) = Me.GetAll()
-            For Each category As Category In categories
-                Dim sFullCode As String = String.Empty
-                _dao.GetFullCode(category.Parent, sFullCode)
-                If Not String.IsNullOrEmpty(sFullCode) Then
-                    sFullCode = sFullCode & "|"
-                End If
-                sFullCode &= Format(category.Code, "0000")
-                If Not category.FullCode.Eq(sFullCode) Then
-                    category.FullCode = sFullCode
-                    Me.Update(category)
-                    If Not String.IsNullOrEmpty(report) Then
-                        report &= WebHelper.Br
-                    End If
-                    report &= String.Format("{0} ({1})", category.GetFullName(), category.Id)
-                End If
-            Next
-            transaction.Commit()
-        Catch ex As Exception
-            transaction.Rollback()
-            errDescription = ex.Message
-            Return False
-        End Try
-
-        Return True
-    End Function
     Public Function CategoryNameFullCodeFilter(ByVal sqlParam As String) As Object
         Return _dao.CategoryNameFullCodeFilter(sqlParam)
     End Function

@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscContatti
-    
+
     '''<summary>
     '''RadScriptBlockTRV control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlockTRV As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''RadWindowManagerContact control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerContact As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowContactGes control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowContactGes As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowContactLegenda control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowContactLegenda As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowContactLog control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowContactLog As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowContactPrint control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowContactPrint As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowContactDettaglio control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowContactDettaglio As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowSelSettori control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelSettori As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowUploadPeople control.
     '''</summary>
@@ -93,16 +93,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowUploadPeople As Global.Telerik.Web.UI.RadWindow
-    
-    '''<summary>
-    '''windowHistory control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents windowHistory As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''mainSplitter control.
     '''</summary>
@@ -111,7 +102,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents mainSplitter As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''headerPane control.
     '''</summary>
@@ -120,7 +111,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents headerPane As Global.Telerik.Web.UI.RadPane
-    
+
     '''<summary>
     '''pnlSearch control.
     '''</summary>
@@ -129,7 +120,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlSearch As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtCerca control.
     '''</summary>
@@ -138,7 +129,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtCerca As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''btnSearch control.
     '''</summary>
@@ -147,7 +138,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSearch As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''chbContiene control.
     '''</summary>
@@ -156,7 +147,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chbContiene As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlSearchCode control.
     '''</summary>
@@ -165,7 +156,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlSearchCode As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtSearchCode control.
     '''</summary>
@@ -174,7 +165,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtSearchCode As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''btnSearchCode control.
     '''</summary>
@@ -183,7 +174,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSearchCode As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''pnlContactListFilter control.
     '''</summary>
@@ -192,7 +183,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlContactListFilter As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''pnlSearchList control.
     '''</summary>
@@ -201,7 +192,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlSearchList As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''ddlContactLists control.
     '''</summary>
@@ -210,7 +201,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlContactLists As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''mainPane control.
     '''</summary>
@@ -219,7 +210,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents mainPane As Global.Telerik.Web.UI.RadPane
-    
+
     '''<summary>
     '''contactSplitter control.
     '''</summary>
@@ -228,7 +219,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents contactSplitter As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''contactTreePane control.
     '''</summary>
@@ -237,7 +228,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents contactTreePane As Global.Telerik.Web.UI.RadPane
-    
+
     '''<summary>
     '''treeSplitter control.
     '''</summary>
@@ -246,7 +237,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents treeSplitter As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''contactTopPane control.
     '''</summary>
@@ -255,7 +246,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents contactTopPane As Global.Telerik.Web.UI.RadPane
-    
+
     '''<summary>
     '''pnlSearchDescription control.
     '''</summary>
@@ -264,7 +255,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlSearchDescription As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlSearchTbltRubrica control.
     '''</summary>
@@ -273,7 +264,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlSearchTbltRubrica As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtCercaTbltRubrica control.
     '''</summary>
@@ -282,7 +273,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtCercaTbltRubrica As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''btnSearchTbltRubrica control.
     '''</summary>
@@ -291,7 +282,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSearchTbltRubrica As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''chbContieneTbltRubrica control.
     '''</summary>
@@ -300,7 +291,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chbContieneTbltRubrica As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''ToolBar control.
     '''</summary>
@@ -309,7 +300,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ToolBar As Global.Telerik.Web.UI.RadToolBar
-    
+
     '''<summary>
     '''contactInnerTreePane control.
     '''</summary>
@@ -318,7 +309,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents contactInnerTreePane As Global.Telerik.Web.UI.RadPane
-    
+
     '''<summary>
     '''contactTree control.
     '''</summary>
@@ -327,7 +318,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents contactTree As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''contactSplitBar control.
     '''</summary>
@@ -336,7 +327,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents contactSplitBar As Global.Telerik.Web.UI.RadSplitBar
-    
+
     '''<summary>
     '''contactDetailPane control.
     '''</summary>
@@ -345,7 +336,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents contactDetailPane As Global.Telerik.Web.UI.RadPane
-    
+
     '''<summary>
     '''contactDetailAjaxPanel control.
     '''</summary>
@@ -354,7 +345,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents contactDetailAjaxPanel As Global.Telerik.Web.UI.RadAjaxPanel
-    
+
     '''<summary>
     '''contactDetailTable control.
     '''</summary>
@@ -363,7 +354,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents contactDetailTable As Global.System.Web.UI.WebControls.Table
-    
+
     '''<summary>
     '''footerPane control.
     '''</summary>
@@ -372,7 +363,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents footerPane As Global.Telerik.Web.UI.RadPane
-    
+
     '''<summary>
     '''btnConferma control.
     '''</summary>
@@ -381,7 +372,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConferma As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnConfermaNuovo control.
     '''</summary>
@@ -390,7 +381,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConfermaNuovo As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnGestione control.
     '''</summary>
@@ -399,7 +390,7 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnGestione As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnSblocca control.
     '''</summary>
@@ -408,4 +399,13 @@ Partial Public Class uscContatti
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSblocca As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''btnExportToExcel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnExportToExcel As Global.Telerik.Web.UI.RadButton
 End Class

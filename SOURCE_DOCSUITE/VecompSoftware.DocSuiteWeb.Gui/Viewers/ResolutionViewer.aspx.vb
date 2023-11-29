@@ -30,6 +30,8 @@ Namespace Viewers
         Private _documentsomissisfromstep As Boolean?
         Private _attachmentsomissis As Boolean?
         Private _attachmentsomissisfromstep As Boolean?
+        Private _dematerialisation As Boolean?
+        Private _metadata As Boolean?
 #End Region
 
 #Region " Properties "
@@ -213,6 +215,34 @@ Namespace Viewers
             End Get
         End Property
 
+        Private ReadOnly Property ShowDematerialisation As Boolean
+            Get
+                If Not _dematerialisation.HasValue Then
+                    If ViewState("dematerialisation") Is Nothing Then
+                        _dematerialisation = HttpContext.Current.Request.QueryString.GetValueOrDefault(Of Boolean)("dematerialisation", False)
+                        ViewState("dematerialisation") = _dematerialisation.Value
+                    Else
+                        _dematerialisation = DirectCast(ViewState("dematerialisation"), Boolean)
+                    End If
+                End If
+                Return _dematerialisation.Value
+            End Get
+        End Property
+
+        Private ReadOnly Property ShowMetadata As Boolean
+            Get
+                If Not _metadata.HasValue Then
+                    If ViewState("metadata") Is Nothing Then
+                        _metadata = HttpContext.Current.Request.QueryString.GetValueOrDefault(Of Boolean)("metadata", False)
+                        ViewState("metadata") = _metadata.Value
+                    Else
+                        _metadata = DirectCast(ViewState("metadata"), Boolean)
+                    End If
+                End If
+                Return _metadata.Value
+            End Get
+        End Property
+
         Public ReadOnly Property SenderDescription() As String Implements ISendMail.SenderDescription
             Get
                 Return CommonInstance.UserDescription
@@ -289,15 +319,16 @@ Namespace Viewers
 #End Region
 
 #Region " Methods "
-
         Private Function GetResolutionDocuments() As List(Of DocumentInfo)
             Dim datasource As List(Of DocumentInfo)
             If MultipleResolutions Then
                 datasource = ResolutionKeys.Select(Function(f) Facade.ResolutionFacade.GetResolutionDataSource(f, Incremental, ShowDocuments, ShowDocumentsOmissis, ShowDocumentsOmissisFromStep, ShowAttachments,
-                                                                                                             ShowAttachmentsFromStep, ShowAttachmentsOmissis, ShowAttachmentsOmissisFromStep, ShowAnnexes, PreviousIncremental)).ToList()
+                                                                                                             ShowAttachmentsFromStep, ShowAttachmentsOmissis, ShowAttachmentsOmissisFromStep, ShowAnnexes,
+                                                                                                             ShowDematerialisation, ShowMetadata, PreviousIncremental)).ToList()
             Else
                 datasource = New List(Of DocumentInfo) From {Facade.ResolutionFacade.GetResolutionDataSource(IdResolution, Incremental, ShowDocuments, ShowDocumentsOmissis, ShowDocumentsOmissisFromStep, ShowAttachments,
-                                                                                                             ShowAttachmentsFromStep, ShowAttachmentsOmissis, ShowAttachmentsOmissisFromStep, ShowAnnexes, PreviousIncremental)}
+                                                                                                             ShowAttachmentsFromStep, ShowAttachmentsOmissis, ShowAttachmentsOmissisFromStep, ShowAnnexes,
+                                                                                                             ShowDematerialisation, ShowMetadata, PreviousIncremental)}
             End If
             Return datasource
         End Function
@@ -305,7 +336,7 @@ Namespace Viewers
         Private Function GetFlatDocumentList() As IList(Of DocumentInfo)
             Dim incr As Short = Incremental
             If incr <= 0 Then
-                incr = Facade.ResolutionWorkflowFacade.GetActiveIncremental(IdResolution, 1)
+                incr = Facade.ResolutionWorkflowFacade.GetActiveIncremental(IdResolution, 1S)
             End If
 
             Dim list As New List(Of DocumentInfo)

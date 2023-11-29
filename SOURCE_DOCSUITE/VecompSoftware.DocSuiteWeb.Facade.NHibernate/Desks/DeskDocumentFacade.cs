@@ -65,18 +65,18 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
 
         #region [ Methods ]
 
-        public ICollection<DeskDocument> AddNewDeskDocuments(Desk desk, ICollection<DocumentInfo> documents, Location biblosLocation)
+        public ICollection<DeskDocument> AddNewDeskDocuments(Desk desk, ICollection<DocumentInfo> documents, Location biblosLocation, decimal version = 1)
         {
             ICollection<DeskDocument> deskDocuments = new Collection<DeskDocument>();
             foreach (DocumentInfo document in documents)
             {
-                DeskDocument deskDocument = AddNewDeskDocument(desk, document, biblosLocation);
+                DeskDocument deskDocument = AddNewDeskDocument(desk, document, biblosLocation, version);
                 deskDocuments.Add(deskDocument);
             }
             return deskDocuments;
         }
 
-        public DeskDocument AddNewDeskDocument(Desk desk, DocumentInfo document, Location biblosLocation)
+        public DeskDocument AddNewDeskDocument(Desk desk, DocumentInfo document, Location biblosLocation, decimal documentVersion = 1)
         {
             DeskDocument deskDocument = new DeskDocument(_userName);
             Guid chain = Guid.Empty;
@@ -85,12 +85,13 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
             deskDocument.DocumentType = DeskDocumentType.MainDocument;
             deskDocument.IdDocument = chain;
             deskDocument.Desk = desk;
+            deskDocument.IsActive = true;
 
             //Aggiungo il versioning
             DeskDocumentVersion version = new DeskDocumentVersion(_userName)
             {
                 DeskDocument = deskDocument,
-                Version = 1
+                Version = documentVersion
             };
 
             deskDocument.DeskDocumentVersions.Add(version);
@@ -173,6 +174,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         {
             string docName = document.Name;
             DeskDocument deskDocument = GetById(document.IdDeskDocument.Value, false);
+            UpdateDocumentLastChages(document.IdDeskDocument.Value);
             return CheckIn(desk, roleUser, document.IdDeskDocument, document.IdDocumentBiblos.Value, docName, content, userId, contentFormat, version);
         }
 
@@ -185,17 +187,39 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         /// <param name="userId"></param>
         /// <param name="contentFormat"></param>
         /// <param name="version">Ritorna la versione corrente del documento appena inserito</param>
-        /// <returns></returns>
+
         public BiblosDocumentInfo CheckIn(Desk desk, DeskRoleUser roleUser, Guid? idDeskDocument, Guid idDocument, string docName, byte[] content, string userId, ContentFormat contentFormat, decimal? version)
         {
             DeskDocument deskDocument = GetById(idDeskDocument.Value, false);
             BiblosDocumentInfo newDoc = BiblosDocumentInfo.CheckInDocument(idDocument, docName, content, userId, contentFormat, version);
+            
             UpdateDocumentCheckIn(idDeskDocument, newDoc.DocumentId);
-            decimal newversion = version ?? newDoc.Version;
-            DeskDocumentVersion docVersion = DeskDocumentVersionFacade.InsertDocumentVersion(newDoc.DocumentId, newversion, deskDocument);
+            DeskDocumentVersion docVersion = DeskDocumentVersionFacade.InsertDocumentVersion(newDoc.DocumentId, version ?? newDoc.Version, deskDocument);
+            
             AddCommentStoryBoard(newDoc, desk, roleUser, docVersion, DeskStoryBoardType.CheckInComment);
             return newDoc;
         }
+
+        /// <summary>
+        /// Aggiornamento di una versione specifica del documento.
+        /// </summary>
+        /// <param name="desk"></param>
+        /// <param name="roleUser"></param>
+        /// <param name="document"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        public BiblosDocumentInfo UpdateDeskDocumentNewVersion(Desk desk, DeskRoleUser roleUser, DeskDocumentResult document, decimal? version)
+        {
+            DeskDocument deskDocument = GetById(document.IdDeskDocument.Value, false);
+            BiblosDocumentInfo newDoc = BiblosDocumentInfo.GetDocumentByVersion(document.IdDocumentBiblos.Value, null, true);
+            
+            UpdateDocumentCheckIn(document.IdDeskDocument.Value, document.IdDocumentBiblos.Value);
+            DeskDocumentVersion docVersion = DeskDocumentVersionFacade.InsertDocumentVersion(newDoc.DocumentId, version ?? newDoc.Version, deskDocument);
+           
+            AddCommentStoryBoard(newDoc, desk, roleUser, docVersion, DeskStoryBoardType.CheckInComment);
+            return newDoc;
+        }
+
 
         /// <summary>
         /// 1) Annulla estrazione del file da parte dell'utente.
@@ -216,6 +240,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
         public void RenameDoc(Desk desk, DeskRoleUser roleUser, DeskDocumentVersion docVersion, BiblosDocumentInfo document, string userId)
         {
             Service.UpdateDocument(document, DocSuiteContext.Current.User.FullUserName);
+            UpdateDocumentLastChages(docVersion.DeskDocument.Id);
             AddCommentStoryBoard(document, desk, roleUser, docVersion, DeskStoryBoardType.RenameDocument);
         }
 
@@ -403,7 +428,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
                     break;
             }
 
-            string comment = string.Format(commentStringType, _userName, biblosDoc.Name, biblosDoc.Version);
+            string comment = string.Format(commentStringType, _userName, biblosDoc.Name, docVersion.Version);
             CurrentDeskStoryBoardFacade.AddCommentToStoryBoard(comment, desk, roleUser, docVersion, boardType);
         }
 
@@ -417,7 +442,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Desks
             if (IdDeskDocument.HasValue)
             {
                 DeskDocument deskDoc = base.GetById(IdDeskDocument.Value);
-                deskDoc.IsActive = 1;
+                deskDoc.IsActive = false;
                 UpdateOnly(ref deskDoc);
             }
             else

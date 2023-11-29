@@ -11,9 +11,9 @@ Option Strict On
 Option Explicit On
 
 Namespace Series
-    
+
     Partial Public Class Search
-        
+
         '''<summary>
         '''RadCodeBlock1 control.
         '''</summary>
@@ -22,7 +22,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
-        
+
         '''<summary>
         '''MainContentWrapper control.
         '''</summary>
@@ -31,7 +31,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents MainContentWrapper As Global.System.Web.UI.WebControls.Panel
-        
+
         '''<summary>
         '''ddlContainerArchive control.
         '''</summary>
@@ -40,7 +40,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents ddlContainerArchive As Global.System.Web.UI.WebControls.DropDownList
-        
+
         '''<summary>
         '''ContentWrapper control.
         '''</summary>
@@ -49,7 +49,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents ContentWrapper As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-        
+
         '''<summary>
         '''DocumentSeries control.
         '''</summary>
@@ -58,7 +58,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents DocumentSeries As Global.System.Web.UI.WebControls.Label
-        
+
         '''<summary>
         '''ddlDocumentSeries control.
         '''</summary>
@@ -67,142 +67,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents ddlDocumentSeries As Global.System.Web.UI.WebControls.DropDownList
-        
-        '''<summary>
-        '''txtYear control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents txtYear As Global.Telerik.Web.UI.RadNumericTextBox
-        
-        '''<summary>
-        '''txtNumberFrom control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents txtNumberFrom As Global.Telerik.Web.UI.RadNumericTextBox
-        
-        '''<summary>
-        '''txtNumberTo control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents txtNumberTo As Global.Telerik.Web.UI.RadNumericTextBox
-        
-        '''<summary>
-        '''rdpRegistrationFrom control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents rdpRegistrationFrom As Global.Telerik.Web.UI.RadDatePicker
-        
-        '''<summary>
-        '''rdpRegistrationTo control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents rdpRegistrationTo As Global.Telerik.Web.UI.RadDatePicker
-        
-        '''<summary>
-        '''txtSubject control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents txtSubject As Global.Telerik.Web.UI.RadTextBox
-        
-        '''<summary>
-        '''chkSubjectContains control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents chkSubjectContains As Global.System.Web.UI.WebControls.CheckBox
-        
-        '''<summary>
-        '''uscRoleOwner control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents uscRoleOwner As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-        
-        '''<summary>
-        '''uscCategory control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents uscCategory As Global.VecompSoftware.DocSuiteWeb.Gui.uscClassificatore
-        
-        '''<summary>
-        '''trIncludeCancelled control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents trIncludeCancelled As Global.System.Web.UI.HtmlControls.HtmlTableRow
-        
-        '''<summary>
-        '''chkIncludeCancelled control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents chkIncludeCancelled As Global.System.Web.UI.WebControls.CheckBox
-        
-        '''<summary>
-        '''trIncludeDraft control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents trIncludeDraft As Global.System.Web.UI.HtmlControls.HtmlTableRow
-        
-        '''<summary>
-        '''chkIncludeDraft control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents chkIncludeDraft As Global.System.Web.UI.WebControls.CheckBox
-        
-        '''<summary>
-        '''chkPriority control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents chkPriority As Global.System.Web.UI.WebControls.CheckBox
-        
-        '''<summary>
-        '''pnlSubsectionArea control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents pnlSubsectionArea As Global.System.Web.UI.WebControls.Panel
-        
+
         '''<summary>
         '''tblSubsection control.
         '''</summary>
@@ -210,8 +75,8 @@ Namespace Series
         '''Auto-generated field.
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
-        Protected WithEvents tblSubsection As Global.System.Web.UI.HtmlControls.HtmlTable
-        
+        Protected WithEvents tblSubsection As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
         '''<summary>
         '''ddlSubsection control.
         '''</summary>
@@ -220,7 +85,133 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents ddlSubsection As Global.System.Web.UI.WebControls.DropDownList
-        
+
+        '''<summary>
+        '''txtYear control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents txtYear As Global.Telerik.Web.UI.RadNumericTextBox
+
+        '''<summary>
+        '''txtNumberFrom control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents txtNumberFrom As Global.Telerik.Web.UI.RadNumericTextBox
+
+        '''<summary>
+        '''txtNumberTo control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents txtNumberTo As Global.Telerik.Web.UI.RadNumericTextBox
+
+        '''<summary>
+        '''rdpRegistrationFrom control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents rdpRegistrationFrom As Global.Telerik.Web.UI.RadDatePicker
+
+        '''<summary>
+        '''rdpRegistrationTo control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents rdpRegistrationTo As Global.Telerik.Web.UI.RadDatePicker
+
+        '''<summary>
+        '''txtSubject control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents txtSubject As Global.Telerik.Web.UI.RadTextBox
+
+        '''<summary>
+        '''chkSubjectContains control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents chkSubjectContains As Global.System.Web.UI.WebControls.CheckBox
+
+        '''<summary>
+        '''uscRoleOwner control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents uscRoleOwner As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
+
+        '''<summary>
+        '''uscCategory control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents uscCategory As Global.VecompSoftware.DocSuiteWeb.Gui.uscClassificatore
+
+        '''<summary>
+        '''trIncludeCancelled control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trIncludeCancelled As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''chkIncludeCancelled control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents chkIncludeCancelled As Global.System.Web.UI.WebControls.CheckBox
+
+        '''<summary>
+        '''trIncludeDraft control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents trIncludeDraft As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+        '''<summary>
+        '''chkIncludeDraft control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents chkIncludeDraft As Global.System.Web.UI.WebControls.CheckBox
+
+        '''<summary>
+        '''chkPriority control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents chkPriority As Global.System.Web.UI.WebControls.CheckBox
+
         '''<summary>
         '''pnlPublicationArea control.
         '''</summary>
@@ -229,7 +220,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents pnlPublicationArea As Global.System.Web.UI.WebControls.Panel
-        
+
         '''<summary>
         '''tblPublication control.
         '''</summary>
@@ -238,7 +229,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents tblPublication As Global.System.Web.UI.HtmlControls.HtmlTable
-        
+
         '''<summary>
         '''cblPublicationStatus control.
         '''</summary>
@@ -247,7 +238,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents cblPublicationStatus As Global.System.Web.UI.WebControls.CheckBoxList
-        
+
         '''<summary>
         '''txtPublishingDateFrom control.
         '''</summary>
@@ -256,7 +247,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents txtPublishingDateFrom As Global.Telerik.Web.UI.RadDatePicker
-        
+
         '''<summary>
         '''txtPublishingDateTo control.
         '''</summary>
@@ -265,7 +256,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents txtPublishingDateTo As Global.Telerik.Web.UI.RadDatePicker
-        
+
         '''<summary>
         '''txtRetireDateFrom control.
         '''</summary>
@@ -274,7 +265,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents txtRetireDateFrom As Global.Telerik.Web.UI.RadDatePicker
-        
+
         '''<summary>
         '''txtRetireDateTo control.
         '''</summary>
@@ -283,7 +274,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents txtRetireDateTo As Global.Telerik.Web.UI.RadDatePicker
-        
+
         '''<summary>
         '''clbOriginType control.
         '''</summary>
@@ -292,7 +283,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents clbOriginType As Global.System.Web.UI.WebControls.CheckBoxList
-        
+
         '''<summary>
         '''txtOrginText control.
         '''</summary>
@@ -301,7 +292,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents txtOrginText As Global.Telerik.Web.UI.RadTextBox
-        
+
         '''<summary>
         '''DynamicControls control.
         '''</summary>
@@ -310,7 +301,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents DynamicControls As Global.System.Web.UI.WebControls.PlaceHolder
-        
+
         '''<summary>
         '''ButtonsPanel control.
         '''</summary>
@@ -319,7 +310,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents ButtonsPanel As Global.System.Web.UI.WebControls.Panel
-        
+
         '''<summary>
         '''btnSearch control.
         '''</summary>
@@ -328,7 +319,7 @@ Namespace Series
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents btnSearch As Global.System.Web.UI.WebControls.Button
-        
+
         '''<summary>
         '''btnClear control.
         '''</summary>

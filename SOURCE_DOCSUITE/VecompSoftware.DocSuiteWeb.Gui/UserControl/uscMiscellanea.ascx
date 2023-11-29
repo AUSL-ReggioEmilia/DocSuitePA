@@ -10,12 +10,13 @@
                 uscMiscellanea.pageId = "<%= pageContent.ClientID%>";
                 uscMiscellanea.ajaxManagerId = "<%= AjaxManager.ClientID%>";
                 uscMiscellanea.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
-                uscMiscellanea.ajaxLoadingPanelId = "<%= BasePage.MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";                
+                uscMiscellanea.ajaxLoadingPanelId = "<%= BasePage.MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                 uscMiscellanea.managerWindowsId = "<%= manager.ClientID %>";
                 uscMiscellanea.managerUploadDocumentId = "<%= managerUploadDocument.ClientID %>";
                 uscMiscellanea.managerId = "<%= BasePage.MasterDocSuite.DefaultWindowManager.ClientID %>";
                 uscMiscellanea.miscellaneaGridId = "<%= miscellaneaGrid.ClientID %>"; 
-                uscMiscellanea.type = "<%= Type %>"; 
+                uscMiscellanea.type = "<%= Type %>";
+                uscMiscellanea.hasDgrooveSinger = "<%= HasDgrooveSigner %>";
                 uscMiscellanea.initialize();
             });
         });
@@ -40,12 +41,12 @@
             uscMiscellanea.openPreviewWindow(serializedDoc);
         }
 
-        function openEditWindow(idDocument, idArchiveChain, locationId) {
-            uscMiscellanea.openEditWindow(idDocument, idArchiveChain, locationId);
+        function openEditWindow(idDocument, idArchiveChain, locationId, documentName) {
+            uscMiscellanea.openEditWindow(idDocument, idArchiveChain, locationId, documentName, "<%= Environment %>", "<%= DocumentUnitId %>");
         }
 
-        function openDeleteWindow(idDocument, idArchiveChain) {
-            uscMiscellanea.openDeleteWindow(idDocument, idArchiveChain);
+        function openDeleteWindow(idDocument, idArchiveChain, documentName) {
+            uscMiscellanea.openDeleteWindow(idDocument, idArchiveChain, documentName);
         }
 
         function initializeSign(idDocument) {
@@ -53,7 +54,7 @@
         }
 
         function closeSignWindow(sender, args) {
-            uscMiscellanea.closeSignWindow(sender, args);            
+            uscMiscellanea.closeSignWindow(sender, args);
         }
 
     </script>
@@ -92,11 +93,11 @@
                     <telerik:GridTemplateColumn UniqueName="Actions" AllowFiltering="false" HeaderText="Azioni" HeaderStyle-Width="10%" >
                         <ClientItemTemplate>
                             # if(EditEnabled){ #                          
-                                <img src="../App_Themes/DocSuite2008/imgset16/pencil.png" style="cursor:pointer" title="Modifica" alt="Modifica" onclick="openEditWindow('#=IdDocument#', '#=IdChain#', '#=LocationId#')" />
-                                <img src="../App_Themes/DocSuite2008/imgset16/delete.png" title="Elimina" alt="Elimina" style="cursor:pointer" onclick="openDeleteWindow('#=IdDocument#', '#=IdChain#')" />
+                                <img src="../App_Themes/DocSuite2008/imgset16/pencil.png" style="cursor:pointer" title="Modifica" alt="Modifica" onclick="openEditWindow('#=IdDocument#', '#=IdChain#', '#=LocationId#', '#=Name#')" />
+                                <img src="../App_Themes/DocSuite2008/imgset16/delete.png" title="Elimina" alt="Elimina" style="cursor:pointer" onclick="openDeleteWindow('#=IdDocument#', '#=IdChain#', '#=Name#')" />
                             # }#                            
                             # if(!IsSigned){ #
-                                <img src="../App_Themes/DocSuite2008/imgset16/card_chip_gold.png" title="Firma documento" style="cursor:pointer" onclick="initializeSign('#=IdDocument#')" />
+                                <img src="../App_Themes/DocSuite2008/imgset16/card_chip_gold.png" title="Firma documento" ID="btnSignSingleDocument" style="cursor:pointer" onclick="initializeSign('#=IdDocument#')" />
                             # }#                            
                         </ClientItemTemplate>
                     </telerik:GridTemplateColumn>
@@ -106,5 +107,5 @@
     </div>
 
 </asp:Panel>
-
+<asp:HiddenField ID="isIE" runat="server" value="" />
 <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>

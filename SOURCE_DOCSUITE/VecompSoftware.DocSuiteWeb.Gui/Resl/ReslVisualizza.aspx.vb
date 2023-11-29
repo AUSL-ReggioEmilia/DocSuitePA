@@ -1,13 +1,13 @@
 Imports System.Collections.Generic
-Imports System.Text
-Imports Limilabs.Mail.Appointments
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.DocSuiteWeb.Facade
+Imports System.Web
+Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Services.Sharepoint
-Imports VecompSoftware.Services.Logging
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Model.DocumentGenerator
+Imports VecompSoftware.DocSuiteWeb.Model.DocumentGenerator.Parameters
+Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web
 Imports VecompSoftware.Services.Biblos.Models
 
@@ -101,6 +101,8 @@ Partial Public Class ReslVisualizza
             If Not String.IsNullOrEmpty(Session("DocumentToOpen").ToString()) Then AjaxManager.ResponseScripts.Add(String.Format("window.open('{0}');", Session("DocumentToOpen")))
             Session.Remove("DocumentToOpen")
         End If
+
+        SetResolutionGeneratorMetadata()
     End Sub
 
     Private Sub ReslVisualizza_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
@@ -138,17 +140,8 @@ Partial Public Class ReslVisualizza
         AddHandler AjaxManager.AjaxRequest, AddressOf ReslVisualizza_AjaxRequest
         AddHandler uscResolution.ResolutionWorkflow.AjaxRefresh, AddressOf Workflow_Refresh
 
-        AjaxManager.AjaxSettings.AddAjaxSetting(resolutionBottomBar.ButtonPublishWeb, uscResolution.WebStateLabel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(resolutionBottomBar.ButtonPublishWeb, uscResolution.WebPublicationDateLabel)
-
-        AjaxManager.AjaxSettings.AddAjaxSetting(resolutionBottomBar.ButtonRevokeWeb, uscResolution.WebStateLabel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(resolutionBottomBar.ButtonRevokeWeb, uscResolution.WebRevokeDateLabel)
-
         AjaxManager.AjaxSettings.AddAjaxSetting(uscResolution.ResolutionWorkflow, resolutionBottomBar.TableDocuments)
-
         AjaxManager.AjaxSettings.AddAjaxSetting(uscResolution.ResolutionWorkflow, uscResolution.AuslPcWebPublicationPanel)
-
-        ' AjaxManager.AjaxSettings.AddAjaxSetting(resolutionBottomBar, resolutionBottomBar)
 
         If ResolutionEnv.EnableFlushAnnexed Then
             AjaxManager.AjaxSettings.AddAjaxSetting(resolutionBottomBar.ButtonFlushAnnexed, uscResolution.ResolutionWorkflow, MasterDocSuite.AjaxDefaultLoadingPanel)
@@ -224,31 +217,28 @@ Partial Public Class ReslVisualizza
         resolutionBottomBar.CurrentResolution = CurrentResolution
         Controller = ControllerFactory.CreateResolutionDisplayController(uscResolution, resolutionBottomBar)
 
+        If ProtocolEnv.ConservationEnabled AndAlso uscResolution.CurrentConservation IsNot Nothing Then
+            AddIcon(cell, ConservationHelper.StatusBigIcon(uscResolution.CurrentConservation.Status), ConservationHelper.StatusDescription(uscResolution.CurrentConservation.Status))
+        End If
+
         'Inizializza il controllo
         Controller.Initialize()
 
         'Registro script di stampa
-        Const script As String = "var hgt=document.all('divContent').style.height;" & _
-                                 "document.all('divContent').style.height='100%';" & _
-                                 "var wdt=document.all('divContent').style.width;" & _
-                                 "document.all('divContent').style.width='100%';" & _
-                                 "window.print();" & _
-                                 "document.all('divContent').style.height=hgt;" & _
-                                 "document.all('divContent').style.width=wdt;" & _
+        Const script As String = "var hgt=document.all('divContent').style.height;" &
+                                 "document.all('divContent').style.height='100%';" &
+                                 "var wdt=document.all('divContent').style.width;" &
+                                 "document.all('divContent').style.width='100%';" &
+                                 "window.print();" &
+                                 "document.all('divContent').style.height=hgt;" &
+                                 "document.all('divContent').style.width=wdt;" &
                                  "return false;"
         Controller.RegisterPrintScript(script)
 
         'Mostra i pulsanti
         Controller.ShowButtons()
-
         'Mostro le informazioni
         Controller.Show()
-
-        'Associo il click ai pulsanti di Pubblicazione
-        If ResolutionEnv.WebPublishEnabled Then
-            AddHandler resolutionBottomBar.ButtonPublishWeb.Click, AddressOf ButtonPublishWebClickDelegate
-            AddHandler resolutionBottomBar.ButtonRevokeWeb.Click, AddressOf ButtonRevokeWebClickDelegate
-        End If
 
         If ResolutionEnv.EnableFlushAnnexed AndAlso resolutionBottomBar.ButtonFlushAnnexed.Visible Then
             AddHandler resolutionBottomBar.ButtonFlushAnnexed.Click, AddressOf ButtonFlushAnnexed_ClickDelegate
@@ -262,7 +252,12 @@ Partial Public Class ReslVisualizza
             Throw New DocSuiteException("Errore verifica registrazione", String.Format("Registrazione [{0:0000000}] inesistente.", IdResolution))
         End If
 
-        If CurrentResolutionRight.IsResolutionExecutive Then
+        If Not CurrentResolutionRight.HasCurrentStepVisibilityRights Then
+            Throw New DocSuiteException("Errore verifica registrazione",
+                String.Format("Non è possibile visualizzare la registrazione [{0:0000000}]. Verificare se si dispone di sufficienti autorizzazioni.", IdResolution))
+        End If
+
+        If CurrentResolutionRight.IsExecutiveViewable Then
             Return True
         End If
 
@@ -328,83 +323,6 @@ Partial Public Class ReslVisualizza
         Return String.Format("../Docm/DocmSelezione.aspx?Type=LR&Link={0}|", IdResolution)
     End Function
 
-    ''' <summary> Metodo per la pubblicazione del frontespizio. </summary>
-    Protected Overridable Sub ButtonPublishWebClickDelegate(ByVal sender As Object, ByVal e As EventArgs)
-        Try
-            Dim strXmlDoc As String = String.Empty
-            Dim ResWPFacade As ResolutionWPFacade = New ResolutionWPFacade()
-            Dim WebPublDate As DateTime = DateTime.Today
-
-            'Allo stato attuale questo bottone può essere richiamato solo in configurazione ASMN
-            'quindi non ha senso passare l'XML del documento
-            'strXmlDoc = ResWPFacade.GetXMLSPFrontespizio(byteData, sign, CurrentResolution.Id)
-
-            Dim retVal As ReturnValue
-            Try
-                retVal = ServiceSHP.InsertInPublicationArea(CurrentResolution.Container.Name, CurrentResolution.Year, CurrentResolution.Number.Value.ToString(), CurrentResolution.AdoptionDate.Value, CurrentResolution.ResolutionObject, WebPublDate, WebPublDate, WebPublDate.AddDays(15), CurrentResolution.Type.Description, ResWPFacade.GetXmlOther(CurrentResolution), strXmlDoc)
-            Catch ex As Exception
-                Throw New DocSuiteException("Errore pubblicazione", "Impossibile pubblicare con Sharepoint.", ex)
-            End Try
-
-            ' Imposto i valori della pubblicazione
-            CurrentResolution.WebSPGuid = retVal.Guid
-            CurrentResolution.WebState = Resolution.WebStateEnum.Published
-            CurrentResolution.WebPublicationDate = WebPublDate
-            Facade.ResolutionFacade.Save(CurrentResolution)
-            Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.WP, "File pubblicato correttamente")
-
-            'Mostra i pulsanti
-            Controller.ShowButtons()
-            uscResolution.Show()
-
-            AjaxAlert(CurrentResolution.Type.Description + " pubblicato")
-
-        Catch ex As Exception
-            FileLogger.Error(LoggerName, "Errore pubblicazione Web.", ex)
-            AjaxAlert(ex.Message)
-            Controller.ShowButtons()
-            uscResolution.Show()
-        End Try
-
-    End Sub
-
-    Protected Overridable Sub ButtonRevokeWebClickDelegate(ByVal sender As System.Object, ByVal e As EventArgs)
-        Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.WP, "Inizio Pubblicazione Internet")
-        Try
-            Dim intestazione As New StringBuilder("<Label>")
-            intestazione.Append("<Text>")
-            intestazione.AppendFormat("{0}: Ritiro Albo {1:dd/MM/yyyy}", Facade.ResolutionFacade.SqlResolutionGetNumber(CurrentResolution.Id, , , , True), CurrentResolution.PublishingDate)
-            intestazione.Append("</Text>")
-            intestazione.Append("<Footer></Footer>")
-            intestazione.Append("<Font Face=""Arial"" Size=""12"" Style=""Bold,Italic"" />")
-            intestazione.Append("</Label>")
-
-            Dim strXmlDoc As String = String.Empty
-            Dim resWpFacade As ResolutionWPFacade = New ResolutionWPFacade()
-            Dim webRewkDate As DateTime = DateTime.Now
-
-            Try
-                ServiceSHP.InsertInRetireArea(CurrentResolution.Container.Name, CurrentResolution.Year, CurrentResolution.Number.Value.ToString(), CurrentResolution.AdoptionDate.Value, CurrentResolution.ResolutionObject, DateTime.Now, CurrentResolution.WebPublicationDate.Value, webRewkDate, CurrentResolution.Type.Description, resWpFacade.GetXmlOther(CurrentResolution), strXmlDoc, CurrentResolution.WebSPGuid)
-            Catch ex As Exception
-                Throw New DocSuiteException("Errore revoca", "Impossibile inserire su Sharepoint.", ex)
-            End Try
-
-            ' Imposto i valori della pubblicazione
-            CurrentResolution.WebState = Resolution.WebStateEnum.Revoked
-            CurrentResolution.WebRevokeDate = webRewkDate
-
-            Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.WR, "File ritirato correttamente")
-
-            AjaxAlert(CurrentResolution.Type.Description & " ritirato")
-        Catch ex As Exception
-            FileLogger.Error(LoggerName, "Errore revoca web.", ex)
-            AjaxAlert(ex.Message)
-        End Try
-
-        Controller.ShowButtons()
-        uscResolution.Show()
-    End Sub
-
     Public Shared Sub AddIcon(ByVal c As TableCell, ByVal imageUrl As String, ByVal toolTip As String)
         Dim a As New Image
         a.ImageUrl = imageUrl
@@ -413,6 +331,51 @@ Partial Public Class ReslVisualizza
         c.Controls.Add(WebHelper.BrControl)
     End Sub
 
+    Private Sub SetResolutionGeneratorMetadata()
+        Dim metadata As List(Of BaseDocumentGeneratorParameter) = New List(Of BaseDocumentGeneratorParameter)()
+        AddDocumentGeneratorParameters(metadata, CurrentResolution)
+        Dim script As String = String.Format("SetMetadataSessionStorage('{0}');", HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(metadata, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)))
+        AjaxManager.ResponseScripts.Add(script)
+    End Sub
+
+    Private Sub AddDocumentGeneratorParameters(metadata As List(Of BaseDocumentGeneratorParameter), resolution As Resolution)
+        If resolution.Year.HasValue Then
+            metadata.Add(New IntParameter("Year", resolution.Year.Value))
+            metadata.Add(New StringParameter("Number", resolution.InclusiveNumber))
+        End If
+
+        If resolution.AdoptionDate.HasValue Then
+            metadata.Add(New DateTimeParameter("AdoptionDate", resolution.AdoptionDate.Value))
+        End If
+
+        If resolution.ConfirmDate.HasValue Then
+            metadata.Add(New DateTimeParameter("ConfirmDate", resolution.ConfirmDate.Value))
+        End If
+
+        If resolution.EffectivenessDate.HasValue Then
+            metadata.Add(New DateTimeParameter("EffectivenessDate", resolution.EffectivenessDate.Value))
+        End If
+
+        If resolution.ProposeDate.HasValue Then
+            metadata.Add(New DateTimeParameter("ProposeDate", resolution.ProposeDate.Value))
+        End If
+
+        If resolution.PublishingDate.HasValue Then
+            metadata.Add(New DateTimeParameter("PublishingDate", resolution.PublishingDate.Value))
+        End If
+
+        If resolution.UltimaPaginaDate.HasValue Then
+            metadata.Add(New DateTimeParameter("UltimaPaginaDate", resolution.UltimaPaginaDate.Value.DateTime))
+        End If
+
+        If resolution.WebPublicationDate.HasValue Then
+            metadata.Add(New DateTimeParameter("WebPublicationDate", resolution.WebPublicationDate.Value))
+        End If
+
+        metadata.Add(New StringParameter("Object", Server.HtmlEncode(resolution.ResolutionObject)))
+        metadata.Add(New StringParameter("Note", Server.HtmlEncode(resolution.Note)))
+        metadata.Add(New BooleanParameter("Documents", True))
+    End Sub
 #End Region
 
 End Class

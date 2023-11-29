@@ -38,6 +38,8 @@
                     dossierRicerca.rblDossierStatusId = "<%= rblDossierStatus.ClientID %>";
                     dossierRicerca.dossierStatusEnabled = <%= DossierStatusEnabled.ToString().ToLower() %>;
                     dossierRicerca.dossierStatusRowId = "<%= dossierStatusRow.ClientID %>";
+                    dossierRicerca.dossierTypologyEnabled =<%= ProtocolEnv.DossierTypologyEnabled.ToString().ToLower() %>;
+                    dossierRicerca.trDossierTypeId = "<%= trDossierType.ClientID %>";
                     dossierRicerca.initialize();
                 });
             });
@@ -71,7 +73,7 @@
             </td>
         </tr>
 
-        <tr>
+        <tr runat="server" id="trDossierType">
             <td class="label col-dsw-3">Tipologia:</td>
             <td class="col-dsw-7">
                 <telerik:RadComboBox ID="rcbDossierType" runat="server" />

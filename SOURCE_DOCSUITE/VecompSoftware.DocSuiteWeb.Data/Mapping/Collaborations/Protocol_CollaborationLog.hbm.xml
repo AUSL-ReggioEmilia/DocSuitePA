@@ -14,7 +14,6 @@
     <property name="LogDate" column="LogDate" />
     <property name="SystemComputer" column="SystemComputer" type="AnsiString" />
     <property name="SystemUser" column="SystemUser" type="AnsiString" />
-    <property name="SessionId" column="SessionId" type="AnsiString" />
     <property name="Program" column="Program" type="AnsiString" />
     <property name="LogType" column="LogType" type="AnsiString" />
     <property name="LogDescription" column="LogDescription" type="AnsiString" />

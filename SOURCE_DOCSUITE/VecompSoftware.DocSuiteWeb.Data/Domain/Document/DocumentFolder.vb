@@ -1,7 +1,7 @@
 ﻿<Serializable()> _
 Public Class DocumentFolder
     Inherits DomainObject(Of YearNumberIncrCompositeKey)
-    Implements IAuditable, ISupportLogicDelete
+    Implements IAuditable, ISupportBooleanLogicDelete
 
 #Region " Fields "
 
@@ -16,7 +16,7 @@ Public Class DocumentFolder
     Private _documentObjects As IList(Of DocumentObject)
     Private _expiryDate As Date?
     Private _description As String
-    Private _isActive As Short
+    Private _isActive As Boolean
 
 #End Region
 
@@ -165,11 +165,11 @@ Public Class DocumentFolder
         End Set
     End Property
 
-    Public Overridable Property IsActive() As Short Implements ISupportLogicDelete.IsActive
+    Public Overridable Property IsActive() As Boolean Implements ISupportBooleanLogicDelete.IsActive
         Get
             Return _isActive
         End Get
-        Set(ByVal value As Short)
+        Set(ByVal value As Boolean)
             _isActive = value
         End Set
     End Property

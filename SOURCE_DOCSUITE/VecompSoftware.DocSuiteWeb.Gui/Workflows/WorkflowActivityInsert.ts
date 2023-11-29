@@ -15,14 +15,19 @@ import UscStartWorkflow = require("UserControl/uscStartWorkflow");
 import ArgumentType = require('App/Models/Workflows/ArgumentType');
 import ContactModel = require('App/Models/Commons/ContactModel');
 import WorkflowReferenceModel = require('App/Models/Workflows/WorkflowReferenceModel');
-import DSWEnvironment = require('App/Models/Environment');
 import WorkflowReferenceType = require('App/Models/Workflows/WorkflowReferenceType');
 import DocumentModel = require('App/Models/Commons/DocumentModel');
 import UscUploadDocumentRest = require('UserControl/uscUploadDocumentRest');
 import ChainType = require('App/Models/DocumentUnits/ChainType');
-import WorkflowDocumentModel = require('App/Models/Commons/WorkflowDocumentModel');
 import WorkflowAccountModel = require('App/Models/Workflows/WorkflowAccountModel');
 import UscContattiSel = require('UserControl/uscContattiSel');
+import WorkflowReferenceBiblosModel = require('App/Models/Workflows/WorkflowReferenceBiblosModel');
+import BuildActionModel = require('App/Models/Commons/BuildActionModel');
+import BuildActionType = require('App/Models/Commons/BuildActionType');
+import ReferenceBuildModelType = require('App/Models/Commons/ReferenceBuildModelType');
+import BuilderService = require("App/Services/Builders/BuilderService");
+import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
+import BuildArchiveDocumentModel = require('App/Models/Commons/BuildArchiveDocumentModel');
 declare var Page_IsValid: any;
 
 class WorkflowActivityInsert extends WorkflowActivityInsertBase {
@@ -46,6 +51,7 @@ class WorkflowActivityInsert extends WorkflowActivityInsertBase {
     destinatariName: string;
     dataScadentaId: string
     workflowRepositoriesResult: WorkflowRepositoryModel[];
+    workflowArchiveName: string;
 
     docSuiteVersion: string;
     idTenantAOO: string;
@@ -58,6 +64,7 @@ class WorkflowActivityInsert extends WorkflowActivityInsertBase {
     private _txtNote: Telerik.Web.UI.RadTextBox;
     private _uscStartWorkflow: UscStartWorkflow;
     private _manager: Telerik.Web.UI.RadWindowManager;
+    private _builderService: BuilderService;
 
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
@@ -71,6 +78,10 @@ class WorkflowActivityInsert extends WorkflowActivityInsertBase {
     initialize() {
         sessionStorage.clear(); //clear session of contacts
         super.initialize();
+
+        let builderServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "BuildActionModel");
+        this._builderService = new BuilderService(builderServiceConfiguration);
+
         this._manager = $find(this.radWindowManagerId) as Telerik.Web.UI.RadWindowManager;
         this._ddlWorkflowActivity = <Telerik.Web.UI.RadDropDownList>$find(this.ddlWorkflowActivityId);
         this._btnConfirm = <Telerik.Web.UI.RadButton>$find(this.btnConfirmId);
@@ -93,56 +104,66 @@ class WorkflowActivityInsert extends WorkflowActivityInsertBase {
         this._btnConfirm.set_enabled(false);
         this._loadingPanel.show(this.pnlWorkflowActivityInsertId);
 
-        let selectedWorkflowRepository: Telerik.Web.UI.DropDownListItem = this._ddlWorkflowActivity.get_selectedItem();
-        this._workflowStartModel.WorkflowName = selectedWorkflowRepository.get_text();
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, ArgumentType.PropertyString, this.tenantName);
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, ArgumentType.PropertyGuid, this.tenantId);
+        this.addDocuments()
+            .done((documents: WorkflowReferenceBiblosModel[]) => {
+                let selectedWorkflowRepository: Telerik.Web.UI.DropDownListItem = this._ddlWorkflowActivity.get_selectedItem();
+                this._workflowStartModel.WorkflowName = selectedWorkflowRepository.get_text();
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, ArgumentType.PropertyString, this.tenantName);
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, ArgumentType.PropertyGuid, this.tenantId);
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, ArgumentType.PropertyGuid, this.idTenantAOO);
 
-        //Documents
-        this.addDocuments();
+                const workflowReferenceModel: WorkflowReferenceModel = {} as WorkflowReferenceModel;
+                workflowReferenceModel.WorkflowReferenceType = WorkflowReferenceType.Json;
+                workflowReferenceModel.ReferenceModel = JSON.stringify({});
+                workflowReferenceModel.Documents = documents;
+                workflowReferenceModel.DocumentUnits = []
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL, ArgumentType.Json, JSON.stringify(workflowReferenceModel));
 
-        //Contacts
-        this.addContact();
+                //Contacts
+                this.addContact();
 
-        //Priority
-        this.rblPriorityVal = $("#".concat(this.rblPriorityId).concat(" input:checked")).val();
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PRIORITY] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PRIORITY, ArgumentType.PropertyInt, this.rblPriorityVal);
+                //Priority
+                this.rblPriorityVal = $("#".concat(this.rblPriorityId).concat(" input:checked")).val();
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PRIORITY] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PRIORITY, ArgumentType.PropertyInt, this.rblPriorityVal);
 
-        //Date
-        let dataScadentaVal: string = $("#".concat(this.dataScadentaId)).val();
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_DUEDATE] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_DUEDATE, ArgumentType.PropertyDate, dataScadentaVal);
+                //Date
+                let dataScadentaVal: string = $("#".concat(this.dataScadentaId)).val();
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_DUEDATE] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_DUEDATE, ArgumentType.PropertyDate, dataScadentaVal);
 
-        //Motivation
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION, ArgumentType.PropertyString, this._txtNote.get_textBoxValue());
+                //Motivation
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION, ArgumentType.PropertyString, this._txtNote.get_textBoxValue());
 
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT, ArgumentType.PropertyString, this._txtNote.get_textBoxValue());
-        //Proposer User
-        let workflowAccountModel: WorkflowAccountModel = {
-            AccountName: this.fullUserName,
-            DisplayName: this.fullName,
-            EmailAddress: this.email,
-            Required: false
-        };
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT, ArgumentType.PropertyString, this._txtNote.get_textBoxValue());
+                //Proposer User
+                let workflowAccountModel: WorkflowAccountModel = {
+                    AccountName: this.fullUserName,
+                    DisplayName: this.fullName,
+                    EmailAddress: this.email,
+                    Required: false
+                };
 
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER, ArgumentType.Json, JSON.stringify(workflowAccountModel));
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER, ArgumentType.Json, JSON.stringify(workflowAccountModel));
 
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME, ArgumentType.PropertyString, "DocSuite");
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION, ArgumentType.PropertyString, this.docSuiteVersion);
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_NAME, ArgumentType.PropertyString, "DocSuite");
+                this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_PRODUCT_VERSION, ArgumentType.PropertyString, this.docSuiteVersion);
 
-        //TenantAOO
-        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, ArgumentType.PropertyGuid, this.idTenantAOO);
-
-        (<WorkflowStartService>this.workflowStartService).startWorkflow(this._workflowStartModel,
-            (data: any) => {
-                this._btnConfirm.set_enabled(true);
-                window.location.href = "../User/UserWorkflow.aspx?Type=Comm";
-            },
-            (exception: ExceptionDTO) => {
-                this._btnConfirm.set_enabled(true);
+                (<WorkflowStartService>this.workflowStartService).startWorkflow(this._workflowStartModel,
+                    (data: any) => {
+                        this._btnConfirm.set_enabled(true);
+                        window.location.href = "../User/UserWorkflow.aspx?Type=Comm";
+                    },
+                    (exception: ExceptionDTO) => {
+                        this._btnConfirm.set_enabled(true);
+                        alert("Anomalia nel avvio dell'attività. Contattare l'assistenza");
+                        location.reload();
+                    }
+                );
+            })
+            .fail((exception: ExceptionDTO) => {
+                console.error(exception);
                 alert("Anomalia nel avvio dell'attività. Contattare l'assistenza");
                 location.reload();
-            }
-        );
+            });
     }
 
     addComboboxValues(): void {
@@ -173,31 +194,65 @@ class WorkflowActivityInsert extends WorkflowActivityInsertBase {
             });
     }
 
-    addDocuments(): void {
-        let referenceModel: WorkflowReferenceModel = <WorkflowReferenceModel>{};
-        referenceModel.ReferenceType = DSWEnvironment.Desk;
-        referenceModel.WorkflowReferenceType = WorkflowReferenceType.Json;
-
+    private addDocuments(): JQueryPromise<WorkflowReferenceBiblosModel[]> {
+        let promise: JQueryDeferred<WorkflowReferenceBiblosModel[]> = $.Deferred<WorkflowReferenceBiblosModel[]>();
+        let results: WorkflowReferenceBiblosModel[] = [];
         let sessionDocuments: Array<DocumentModel> = this.getUscDocument();
-        let workflowDocumentModel: WorkflowDocumentModel = <WorkflowDocumentModel>{};
-        workflowDocumentModel.Documents = [];
-
-        //iterate through session documents to assign the key value of type Miscellanea
-        for (let doc of sessionDocuments) {
-            let obj: object = {
-                Key: ChainType[ChainType.Miscellanea],
-                Value: doc
-            };
-            workflowDocumentModel.Documents.push(obj);
+        if (sessionDocuments && sessionDocuments.length == 0) {
+            promise.resolve(results);
+            return promise.promise();
         }
 
-        referenceModel.ReferenceModel = JSON.stringify(workflowDocumentModel);
+        let buildModel: BuildActionModel;
+        let documentModel: BuildArchiveDocumentModel;
+        let buildModels: Array<BuildActionModel> = [];
+        for (let document of sessionDocuments) {
+            buildModel = {} as BuildActionModel;
+            buildModel.BuildType = BuildActionType.Build;
+            buildModel.ReferenceType = ReferenceBuildModelType.Document;
 
-        let document: any = JSON.parse(referenceModel.ReferenceModel);
-
-        if (document.Documents.length != 0) {
-            this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL] = this._uscStartWorkflow.buildWorkflowArgument(WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_REFERENCE_MODEL, ArgumentType.Json, JSON.stringify(referenceModel));
+            documentModel = {
+                Name: document.FileName,
+                Archive: this.workflowArchiveName,
+                ContentStream: document.ContentStream
+            } as BuildArchiveDocumentModel;
+            buildModel.Model = JSON.stringify(documentModel);
+            buildModels.push(buildModel);
         }
+
+        const iterator = () => {
+            this.buildDocument(buildModels.shift())
+                .done((model: WorkflowReferenceBiblosModel) => {
+                    results.push(model);
+                    if (buildModels.length > 0) {
+                        return iterator();
+                    }
+                    promise.resolve(results);
+                })
+                .fail((exception: ExceptionDTO) => promise.reject(exception));
+        }
+        iterator();
+
+        return promise.promise();
+    }
+
+    private buildDocument(model: BuildActionModel): JQueryPromise<WorkflowReferenceBiblosModel> {
+        let promise: JQueryDeferred<WorkflowReferenceBiblosModel> = $.Deferred<WorkflowReferenceBiblosModel>();
+        this._builderService.sendBuild(model,
+            (data: any) => {
+                let buildedItem: BuildActionModel = data as BuildActionModel;
+                let buildedDocument: any = JSON.parse(buildedItem.Model);
+                promise.resolve({
+                    ArchiveChainId: buildedDocument.IdChain,
+                    ArchiveDocumentId: buildedDocument.IdDocument,
+                    ArchiveName: buildedDocument.Archive,
+                    ChainType: ChainType.Miscellanea,
+                    DocumentName: buildedDocument.Name
+                } as WorkflowReferenceBiblosModel)
+            },
+            (exception: ExceptionDTO) => promise.reject(exception));
+
+        return promise.promise();
     }
 
     addContact(): void {

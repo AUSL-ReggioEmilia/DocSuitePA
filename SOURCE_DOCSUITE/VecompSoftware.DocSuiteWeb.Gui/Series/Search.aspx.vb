@@ -617,7 +617,7 @@ Namespace Series
         ''' <summary> Istanza il finder per la ricerca </summary>
         ''' <returns>Restituisce il Finder popolato con i valori inseriti dall'operatore</returns>
         Private Function GetFinder() As DocumentSeriesItemFinder
-            Dim finder As New DocumentSeriesItemFinder()
+            Dim finder As New DocumentSeriesItemFinder(CurrentTenant.TenantAOO.UniqueId)
 
             If ProtocolEnv.DocumentSeriesPageSize > 0 Then
                 finder.EnablePaging = True

@@ -38,7 +38,7 @@ Partial Public Class UserWorkflow
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ddlType As Global.System.Web.UI.WebControls.DropDownList
+    Protected WithEvents ddlType As Global.Telerik.Web.UI.RadComboBox
 
     '''<summary>
     '''trEnvironment control.
@@ -120,24 +120,6 @@ Partial Public Class UserWorkflow
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdbWfStatus As Global.System.Web.UI.WebControls.RadioButtonList
-
-    '''<summary>
-    '''Table1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents Table1 As Global.System.Web.UI.HtmlControls.HtmlTable
-
-    '''<summary>
-    '''rdbViewer control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rdbViewer As Global.System.Web.UI.WebControls.RadioButtonList
 
     '''<summary>
     '''btnSearch control.

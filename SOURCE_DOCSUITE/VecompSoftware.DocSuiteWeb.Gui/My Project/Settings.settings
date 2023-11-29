@@ -6,7 +6,7 @@
       <Value Profile="(Default)">http://192.168.200.143/BiblosDSWeb.20/BiblosDS.asmx</Value>
     </Setting>
     <Setting Name="DocSuiteWeb_Gui_SP_PublishToSharepoint" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">http://win2003hv:99/PublishToSharepoint.asmx</Value>
+      <Value Profile="(Default)">http://.:99/PublishToSharepoint.asmx</Value>
     </Setting>
     <Setting Name="DocSuiteWeb_Gui_BiblosDSConv_BiblosDSConv" Type="System.String" Scope="Application">
       <Value Profile="(Default)">http://biblosstampaconforme.cloudapp.net:8080/BiblosDSconv.asmx</Value>

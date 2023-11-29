@@ -27,7 +27,9 @@
 
     CloneProcessFolder = ProtocolShared * 2,
 
-    InsertProcedureFascicle = CloneProcessFolder * 2
+    InsertProcedureFascicle = CloneProcessFolder * 2,
+
+    CreateDocumentSeriesItem = InsertProcedureFascicle * 2,
 }
 
 export = InsertActionType;

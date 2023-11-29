@@ -12,7 +12,6 @@ Public Class CommonAD
 
 #Region " Fields "
 
-    Private Const WinNtRoot As String = "WinNT://"
     Public Const LDAPRoot As String = "LDAP://"
 
     ''' <summary>
@@ -37,20 +36,16 @@ Public Class CommonAD
 
 #Region " Methods "
 
-    Public Shared Function GetTenantModelFromUserName(ByRef userName As String) As TenantModel
+    Public Shared Function GetTenantModelFromUserName(userName As String) As TenantModel
         Dim tenantModels As IReadOnlyCollection(Of TenantModel) = DocSuiteContext.Current.Tenants
         Dim domainFromUserName As String = DocSuiteContext.Current.CurrentTenant.DomainName
         Dim values As String() = userName.Split("\"c)
         If values.Length > 1 Then
             domainFromUserName = values.First()
-            userName = values.Last()
         End If
         Dim domain As TenantModel = tenantModels.FirstOrDefault(Function(f) f.DomainName.Eq(domainFromUserName))
-        If (domain Is Nothing AndAlso Not DocSuiteContext.Current.ProtocolEnv.EnableFederationAD) Then
+        If domain Is Nothing Then
             Throw New DocSuiteException(String.Concat("Dominio ", domainFromUserName, " non configurato. Contattare Assistenza"))
-        End If
-        If (domain Is Nothing AndAlso DocSuiteContext.Current.ProtocolEnv.EnableFederationAD) Then
-            domain = DocSuiteContext.Current.CurrentTenant
         End If
         Return domain
     End Function
@@ -75,9 +70,9 @@ Public Class CommonAD
             Dim tenantModel As TenantModel = GetTenantModelFromUserName(userName)
 
             Using context As PrincipalContext = New PrincipalContext(CType(tenantModel.SecurityContext, ContextType), tenantModel.DomainAddress, tenantModel.DomainUser, tenantModel.DomainPassword)
-                Using user As UserPrincipal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, userName)
+                Using user As UserPrincipal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, account)
                     If user Is Nothing Then
-                        Throw New Exception($"Account {userName} not found in domain controller {domain}")
+                        Throw New Exception($"Account {account} not found in domain controller {domain}")
                     End If
                     result = New AccountModel(user, domain)
                     _cache_getCurrentUser.TryAdd(userName, result)
@@ -195,7 +190,7 @@ Public Class CommonAD
 
         Try
             For Each configuration As TenantModel In tenantModels
-                Using entry As New DirectoryEntry($"{GetQueryADFormat(configuration)}{configuration.DomainAddress}", configuration.DomainUser, configuration.DomainPassword)
+                Using entry As New DirectoryEntry($"{LDAPRoot}{configuration.DomainAddress}", configuration.DomainUser, configuration.DomainPassword)
                     If configuration.SecurityContext = SecurityContextType.Machine Then
                         For Each found As DirectoryEntry In entry.Children.OfType(Of DirectoryEntry)
                             If found.SchemaClassName = "User" AndAlso (found.Name.ContainsIgnoreCase(filter) OrElse GetSafeProperty("Fullname", found).ContainsIgnoreCase(filter)) Then
@@ -250,44 +245,21 @@ Public Class CommonAD
         searchFilter = String.Format("(&{0}(|{1}))", searchFilter, String.Join("", groups.Select(Function(f) String.Concat("(memberOf=", f, ")")).ToArray()))
 
         Try
-            If DocSuiteContext.DomainPath.Eq("WINNT") Then
-                Dim username As String = DocSuiteContext.Current.CurrentTenant.DomainUser
-                Dim password As String = DocSuiteContext.Current.CurrentTenant.DomainPassword
-                Dim currentDomainName As String = DocSuiteContext.Current.CurrentTenant.DomainName
-                Using entry As New DirectoryEntry(String.Concat(WinNtRoot, currentDomainName), username, password)
-                    entry.Children.SchemaFilter.Add("user")
-                    For Each item As DirectoryEntry In entry.Children
-                        Dim accountName As String = item.Name
-                        If Not accountName.ContainsIgnoreCase(filter) Then
-                            Continue For
-                        End If
-
-                        user = New AccountModel(accountName, String.Empty)
-                        user.Domain = currentDomainName
-                        Dim fullName As String = If(item.Properties("Fullname").Count = 1 AndAlso item.Properties("Fullname")(0) IsNot Nothing, item.Properties("Fullname")(0).ToString(), String.Empty)
-                        If Not String.IsNullOrEmpty(fullName) Then
-                            user.Name = fullName
-                        End If
-                        users.Add(user.GetFullUserName(), user)
-                    Next
-                End Using
-            Else
-                For Each configuration As TenantModel In tenantModels
-                    Using entry As New DirectoryEntry(String.Concat(LDAPRoot, configuration.DomainAddress), configuration.DomainUser, configuration.DomainPassword)
-                        Using searcher As New DirectorySearcher(entry, String.Format(searchFilter, filter))
-                            Using results As SearchResultCollection = searcher.FindAll()
-                                For Each searchResult As SearchResult In results
-                                    user = New AccountModel(searchResult.Properties, configuration.DomainName)
-                                    If Not users.ContainsKey(user.GetFullUserName()) Then
-                                        users.Add(user.GetFullUserName(), user)
-                                    End If
-                                Next
-                            End Using
-
+            For Each configuration As TenantModel In tenantModels
+                Using entry As New DirectoryEntry(String.Concat(LDAPRoot, configuration.DomainAddress), configuration.DomainUser, configuration.DomainPassword)
+                    Using searcher As New DirectorySearcher(entry, String.Format(searchFilter, filter))
+                        Using results As SearchResultCollection = searcher.FindAll()
+                            For Each searchResult As SearchResult In results
+                                user = New AccountModel(searchResult.Properties, configuration.DomainName)
+                                If Not users.ContainsKey(user.GetFullUserName()) Then
+                                    users.Add(user.GetFullUserName(), user)
+                                End If
+                            Next
                         End Using
+
                     End Using
-                Next
-            End If
+                End Using
+            Next
         Catch ex As Exception
             FileLogger.Error(LogName.DirectoryServiceLog, "Errore ricerca utenti", ex)
             Throw New DocSuiteException("Problema nell'accesso al dominio utenti", ex)
@@ -333,73 +305,31 @@ Public Class CommonAD
         Return users.Values
     End Function
 
-    ''' <summary>
-    ''' Metodo che permette la modifica della password di un utente di dominio
-    ''' </summary>
-    ''' <param name="accountName">account da modificare</param>
-    ''' <param name="domain">dominio di riferimento dell'utente</param>
-    ''' <param name="oldPassword">password attuale dell'utente da modificare</param>
-    ''' <param name="newPassword">nuova password da impostare</param>
-    ''' <remarks>Usare con cautela, è necessario logOff successivo per apportare le modifiche</remarks>
-    Public Shared Function ChangeAdUserPassword(accountName As String, domain As String, oldPassword As String, newPassword As String) As Boolean
-        Dim domainConfiguration As TenantModel = DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) x.DomainName.Eq(domain))
-        If domainConfiguration Is Nothing Then
-            Return False
+    Public Shared Function GetUserADValueByKey(fullUserName As String) As ResultPropertyCollection
+        FileLogger.Debug(LogName.DirectoryServiceLog, String.Format($"GetUserADValueByKey [{fullUserName}]"))
+        Dim tenantModel As TenantModel = GetTenantModelFromUserName(fullUserName)
+        Dim account As String = fullUserName
+        Dim domain As String = DocSuiteContext.Current.CurrentTenant.DomainName
+        If fullUserName.Contains("\") Then
+            Dim splited As String() = fullUserName.Split("\"c)
+            account = splited.Last()
+            domain = splited.First()
         End If
-
-        'Verifico se la vecchia password è corretta
-        If Not CheckAdUserPassword(accountName, domainConfiguration.DomainAddress, oldPassword) Then
-            FileLogger.Warn(LogName.DirectoryServiceLog, "Nome utente o password non validi")
-            Return False
-        End If
-
-        Dim userDirToUpdate As DirectoryEntry = Nothing
+        Dim searchFilter As String = String.Format(DocSuiteContext.Current.ProtocolEnv.GetPersonByAccount, account)
         Try
-            If DocSuiteContext.DomainPath.Eq("WINNT") Then
-                Dim username As String = DocSuiteContext.Current.CurrentTenant.DomainUser
-                Dim password As String = DocSuiteContext.Current.CurrentTenant.DomainPassword
-                Dim directoryEntry As DirectoryEntry = New DirectoryEntry(String.Concat(WinNtRoot, domainConfiguration.DomainAddress, "/", accountName, ",user"), username, password, AuthenticationTypes.Secure)
-                userDirToUpdate = directoryEntry
-                If userDirToUpdate.NativeObject Is Nothing Then
-                    Return False
-                End If
-            Else
-                Dim directoryEntry As DirectoryEntry = New DirectoryEntry(domainConfiguration.DomainAddress, DocSuiteContext.Current.CurrentTenant.DomainUser, DocSuiteContext.Current.CurrentTenant.DomainPassword, AuthenticationTypes.Secure)
-                Dim searchFilter As String = DocSuiteContext.Current.ProtocolEnv.BasicPersonSearcherKey
-                searchFilter = String.Format(searchFilter, String.Format(SearcherOrCommand, String.Format(CommonNameSearcherKey, accountName), String.Format(AccountNameSearcherkey, accountName)))
-
-                Dim directorySearcher As DirectorySearcher = New DirectorySearcher(directoryEntry) With {.SearchRoot = directoryEntry, .Filter = searchFilter}
-                Dim searchResult As SearchResult = directorySearcher.FindOne()
-                If searchResult Is Nothing Then Return False
-
-                userDirToUpdate = searchResult.GetDirectoryEntry()
-            End If
-
-            userDirToUpdate.Invoke("SetPassword", New Object() {newPassword})
-            userDirToUpdate.CommitChanges()
-            Return True
-        Finally
-            If userDirToUpdate IsNot Nothing Then
-                userDirToUpdate.Close()
-            End If
-        End Try
-    End Function
-
-    Public Shared Function CheckAdUserPassword(accountName As String, domainAddress As String, password As String) As Boolean
-        Try
-            Dim directoryEntryPath As String = domainAddress
-            If DocSuiteContext.DomainPath.Eq("WINNT") Then
-                directoryEntryPath = String.Concat(WinNtRoot, domainAddress, "/", accountName, ",user")
-            End If
-
-            Using directoryEntry As DirectoryEntry = New DirectoryEntry(directoryEntryPath, accountName, password, AuthenticationTypes.Secure)
-                Dim nativeObject As Object = directoryEntry.NativeObject
-                Return nativeObject IsNot Nothing
+            Using entry As New DirectoryEntry($"{LDAPRoot}{tenantModel.DomainAddress}", tenantModel.DomainUser, tenantModel.DomainPassword)
+                Using searcher As New DirectorySearcher(entry, searchFilter)
+                    Using results As SearchResultCollection = searcher.FindAll()
+                        Return results(0).Properties
+                    End Using
+                End Using
             End Using
         Catch ex As Exception
-            Return False
+            FileLogger.Error(LogName.DirectoryServiceLog, "Errore ricerca utenti - GetUserADValueByKey", ex)
         End Try
+        Return Nothing
     End Function
+
 
     Public Shared Function ImpersonateSuperUser() As Impersonator
         Dim impersonator As Impersonator = New Impersonator()
@@ -408,13 +338,6 @@ Public Class CommonAD
 
         impersonator.ImpersonateValidUser(domainUserName, domainPassword)
         Return impersonator
-    End Function
-
-    Public Shared Function GetQueryADFormat(configuration As TenantModel) As String
-        If configuration.SecurityContext = SecurityContextType.Domain Then
-            Return LDAPRoot
-        End If
-        Return WinNtRoot
     End Function
 #End Region
 

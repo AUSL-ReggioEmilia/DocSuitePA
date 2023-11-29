@@ -137,7 +137,7 @@ Public Class ReslJournalSummary
     ''' <summary> Cancellazione </summary>
     Public Sub DeleteResolutionJournal()
         Try
-            CurrentResolutionJournal.IsActive = 0
+            CurrentResolutionJournal.IsActive = False
             Facade.ResolutionJournalFacade.DetachDocuments(CurrentResolutionJournal)
             Facade.ResolutionJournalFacade.Update(CurrentResolutionJournal)
             AjaxManager.ResponseScripts.Add(String.Format("location.href = '{0}/Resl/ReslJournal.aspx?Type=Resl&Group={1}&TitleString={2}'", DocSuiteContext.Current.CurrentTenant.DSWUrl, CurrentResolutionJournal.Template.TemplateGroup, Server.HtmlEncode(TitleString)))

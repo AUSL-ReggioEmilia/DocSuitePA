@@ -62,7 +62,7 @@ Public Class NHibernateContactFinder
             Dim recipientMatchMode As MatchMode = If(DescriptionContain, MatchMode.Anywhere, MatchMode.Start)
 
             If Not String.IsNullOrEmpty(Description) Then
-                criteria.Add(Expression.Like("Description", Description, recipientMatchMode))
+                criteria.Add(Restrictions.Like("Description", Description, recipientMatchMode))
             End If
 
         End If
@@ -77,10 +77,10 @@ Public Class NHibernateContactFinder
             ' Se il criterio di ricerca dei contatti prevedere la ricerca anche nei contatti figli il filtro corretto viene eseguito nella DoSearch()
             ' Vado a individuare l'attuale FullIncrementalPath e in seguito ricerco all'interno dei figli (oggetti che hanno la stesso FullIncrementalPath iniziale)
             Dim sql As String = "select {c.*} " _
-            & "FROM Contact {c} " _
+            & "FROM Contact {c} WITH (NOLOCK) " _
             & "inner join ( " _
                             & "SELECT CAST(FullIncrementalPath + '%' AS VARCHAR(512)) As FullIncrementalPath, Incremental " _
-                            & "FROM Contact " _
+                            & "FROM Contact WITH (NOLOCK) " _
                             & "WHERE Description like '%" + Description + "%') " _
             & "Search ON c.FullIncrementalPath like Search.FullIncrementalPath"
 

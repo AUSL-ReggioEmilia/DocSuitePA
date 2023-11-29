@@ -12,7 +12,7 @@
                 uscDossierFolders.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                 uscDossierFolders.treeDossierFoldersId = "<%= rtvDossierFolders.ClientID%>";
                 uscDossierFolders.ajaxLoadingPanelId = "<%= BasePage.MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
-                uscDossierFolders.statusToolBarId = "<%= StatusToolBar.ClientID%>";
+                <%--uscDossierFolders.statusToolBarId = "<%= StatusToolBar.ClientID%>";--%>
                 uscDossierFolders.folderToolBarId = "<%= FolderToolBar.ClientID%>";
                 uscDossierFolders.managerWindowsId = "<%= manager.ClientID %>";
                 uscDossierFolders.managerCreateFolderId = "<%= managerCreateFolder.ClientID %>";
@@ -69,7 +69,7 @@
                         <telerik:RadToolBarButton ToolTip="Crea fascicolo da template" style="display:none;" CheckOnClick="false" Checked="false" Value="createFascicleFromTemplate" ImageUrl="../App_Themes/DocSuite2008/imgset16/clone.png" />
                     </Items>
                 </telerik:RadToolBar>
-                <telerik:RadToolBar CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="StatusToolBar" runat="server" Width="100%">
+                <%--<telerik:RadToolBar CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="StatusToolBar" runat="server" Width="100%">
                     <Items>
                         <telerik:RadToolBarButton>
                             <ItemTemplate>
@@ -82,7 +82,7 @@
                         <telerik:RadToolBarButton IsSeparator="true" />
                         <telerik:RadToolBarButton Text="Fascicoli chiusi" CheckOnClick="true" Group="folder" Checked="false" Value="FascicleClose" AllowSelfUnCheck="true" />
                     </Items>
-                </telerik:RadToolBar>
+                </telerik:RadToolBar>--%>
             </Content>
         </telerik:LayoutRow>
     </Rows>

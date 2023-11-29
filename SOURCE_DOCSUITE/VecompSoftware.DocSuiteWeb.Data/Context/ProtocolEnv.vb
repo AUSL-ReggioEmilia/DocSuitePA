@@ -3,6 +3,7 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.DocSuiteWeb.Model.Parameters
 Imports System.Xml
+Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 
 Public Class ProtocolEnv
     Inherits BaseEnvironment
@@ -12,8 +13,8 @@ Public Class ProtocolEnv
     Private _conservationExtensions() As String
     Private Const DefaultConnectionStringName As String = "ProtConnection"
 
-    Private Const DefaultProtocolMailData As String = "<b>DocSuite - Gestione Documentale</b><br /><br />Allego il {0}<br />Oggetto: {1}<br /><br /><a href='{2}?Tipo=Prot&Azione=Apri&Anno={3}&Numero={4}'>{0}</a><br />"
-    Private Const DefaultProtocolMailDataWithBody As String = "<b>DocSuite - Gestione Documentale</b><br /><br /><a href='{0}?Tipo=Prot&Azione=Apri&Anno={1}&Numero={2}'>{3}</a><br />"
+    Private Const DefaultProtocolMailData As String = "<b>DocSuite - Gestione documentale</b><br /><br />Allego il {0}<br />Oggetto: {1}<br /><br /><a href='{2}?Tipo=Prot&Azione=Apri&Anno={3}&Numero={4}'>{0}</a><br />"
+    Private Const DefaultProtocolMailDataWithBody As String = "<b>DocSuite - Gestione documentale</b><br /><br /><a href='{0}?Tipo=Prot&Azione=Apri&Anno={1}&Numero={2}'>{3}</a><br />"
 
 #End Region
 
@@ -46,12 +47,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property SignaturePrintExt() As String
         Get
             Return GetString("SignaturePrintExt", String.Empty)
-        End Get
-    End Property
-
-    Public ReadOnly Property EnableFederationAD() As Boolean
-        Get
-            Return GetBoolean("EnableFederationAD", False)
         End Get
     End Property
 
@@ -94,12 +89,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property ProtRegistrationDateFormat() As String
         Get
             Return GetString("ProtRegistrationDateFormat", "{0:dd/MM/yyyy}")
-        End Get
-    End Property
-
-    Public ReadOnly Property EnvServiceLogEnabled() As Boolean
-        Get
-            Return GetBoolean("ServiceLogEnabled")
         End Get
     End Property
 
@@ -346,7 +335,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-
     Public ReadOnly Property IsInvoiceEnabled() As Boolean
         Get
             Return GetBoolean("InvoiceEnabled", False)
@@ -427,9 +415,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property FDQMultipleShare() As String
         Get
             Dim fdqShare As String = GetString("FDQMultipleShare")
-#If DEBUG Then
-            'fdqShare = "C:/temp"
-#End If
             If Not String.IsNullOrEmpty(fdqShare) AndAlso (fdqShare.Chars(fdqShare.Length - 1) <> "\") Then
                 fdqShare += "\"
             End If
@@ -465,12 +450,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property CollaborationMail() As Boolean
         Get
             Return GetBoolean("CollaborationMail")
-        End Get
-    End Property
-
-    Public ReadOnly Property CollaborationMultiDocument() As Boolean
-        Get
-            Return GetBoolean("CollaborationMultiDocument")
         End Get
     End Property
 
@@ -616,12 +595,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property IsSecurityGroupEnabled() As Boolean
-        Get
-            Return GetBoolean("SecurityGroupEnabled", False)
-        End Get
-    End Property
-
     Public ReadOnly Property IsPackageEnabled() As Boolean
         Get
             Return GetBoolean("PackageEnabled")
@@ -679,12 +652,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property HasImportPregresso() As Boolean
         Get
             Return GetBoolean("ImportPregresso")
-        End Get
-    End Property
-
-    Public ReadOnly Property IsUserCollOfflineEnabled() As Boolean
-        Get
-            Return GetBoolean("UserCollOfflineEnabled")
         End Get
     End Property
 
@@ -796,13 +763,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    ''' <summary> Abilita l'importazione protocollo per i gruppi. </summary>
-    Public ReadOnly Property InvoiceGroupImport() As String
-        Get
-            Return GetString("InvoiceGroupImport", String.Empty)
-        End Get
-    End Property
-
     Public ReadOnly Property EnvAuthorizFullEnabled() As Boolean
         Get
             Return GetBoolean("AuthorizFullEnabled")
@@ -876,55 +836,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    ''' <summary> Per accedere all'indice della pubblica amministrazione (ldap internet) </summary>
-    Public ReadOnly Property LdapIndicePa() As String
-        Get
-            Return GetString("LDAPIndicePA", String.Empty)
-        End Get
-    End Property
-
-    Public ReadOnly Property IsConservationEnabled() As Boolean
-        Get
-            Return GetBoolean("ConservationEnabled")
-        End Get
-    End Property
-
-    Public ReadOnly Property ConservationMaxItems() As Integer
-        Get
-            Return GetInteger("ConservationMaxItems")
-        End Get
-    End Property
-
-    Public ReadOnly Property EnvConservationDateFormat() As String
-        Get
-            Return GetString("ConservationDateFormat", "{0:dd/MM/yyyy}")
-        End Get
-    End Property
-
-    Public ReadOnly Property ConservationExtensions() As String()
-        Get
-            Dim tmp As String = GetString("ConservationExtensions")
-            If _conservationExtensions Is Nothing AndAlso Not String.IsNullOrEmpty(tmp) Then
-                _conservationExtensions = tmp.Split("|".ToCharArray())
-            Else
-                _conservationExtensions = New String() {FileHelper.P7M, FileHelper.M7M}
-            End If
-            Return _conservationExtensions
-        End Get
-    End Property
-
-    Public ReadOnly Property ConservationMaxResults As Integer
-        Get
-            Return GetInteger("ConservationMaxResults")
-        End Get
-    End Property
-
-    Public ReadOnly Property ConservationFieldsMaxLength() As Integer
-        Get
-            Return GetInteger("ConservationFieldsMaxLength", 511)
-        End Get
-    End Property
-
     Public ReadOnly Property FastInputImportPath() As String
         Get
             Return GetString("FastInputImportPath", String.Empty)
@@ -973,33 +884,9 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property MailDisclaimer() As String
-        Get
-            Return GetString("MailDisclaimer", String.Empty)
-        End Get
-    End Property
-
-    Public ReadOnly Property SmartClientMailBody() As String
-        Get
-            Return GetString("SmartClientMailBody", String.Empty)
-        End Get
-    End Property
-
     Public ReadOnly Property PdfPrint() As Boolean
         Get
             Return GetBoolean("PdfPrint")
-        End Get
-    End Property
-
-    Public ReadOnly Property ProtocolImportClass() As String
-        Get
-            Return GetString("ProtocolImportClass", String.Empty)
-        End Get
-    End Property
-
-    Public ReadOnly Property ProtocolImportLimit() As Integer
-        Get
-            Return GetInteger("ProtocolImportLimit")
         End Get
     End Property
 
@@ -1018,13 +905,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property EnvGroupModifyAttachmentProt() As String
         Get
             Return GetString("EnvGroupModifyAttachmentProt", String.Empty)
-        End Get
-    End Property
-
-
-    Public ReadOnly Property WSTopMediaReadCount() As Integer
-        Get
-            Return GetInteger("WSTopMediaReadCount", 0)
         End Get
     End Property
 
@@ -1094,19 +974,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    ''' <summary> Specifica se deve essere DocumentSource.aspx a chiamare il servizio di Stampa Conforme. </summary>
-    Public ReadOnly Property DocumentSourceConversion() As Boolean
-        Get
-            Return GetBoolean("DocumentSourceConversion")
-        End Get
-    End Property
-
-    Public ReadOnly Property DocumentSourceScriptTimeout() As Integer
-        Get
-            Return GetInteger("DocumentSourceScriptTimeout")
-        End Get
-    End Property
-
     Public ReadOnly Property IsRecoverEnabled() As Boolean
         Get
             Return GetBoolean("RecoverEnabled")
@@ -1171,18 +1038,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property PECLogHideIpAddress As Boolean
-        Get
-            Return GetBoolean("PECLogHideIpAddress")
-        End Get
-    End Property
-
-    Public ReadOnly Property PECLogShowMoveDefaultValue As Boolean
-        Get
-            Return GetBoolean("PECLogShowMoveDefaultValue")
-        End Get
-    End Property
-
     Public ReadOnly Property PECMoveNotificationEnabled As Boolean
         Get
             Return GetBoolean("PECMoveNotificationEnabled")
@@ -1193,13 +1048,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property ProtocolTransfertEnabled As Boolean
         Get
             Return GetBoolean("ProtocolTransfertEnabled")
-        End Get
-    End Property
-
-    ''' <summary> Indica se 蠡ttiva la ricerca "light" per NHibernateProtocolFinder. </summary>
-    Public ReadOnly Property CreateCriteriaLight() As Boolean
-        Get
-            Return GetBoolean("CreateCriteriaLight")
         End Get
     End Property
 
@@ -1231,15 +1079,9 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property AbilitazioneRubricaOChart As Boolean
-        Get
-            Return APIEnabled AndAlso GetBoolean("AbilitazioneRubricaOChart")
-        End Get
-    End Property
-
     Public ReadOnly Property RubricaDomainExistingOnly As Boolean
         Get
-            Return IsSecurityGroupEnabled AndAlso AbilitazioneRubricaDomain AndAlso GetBoolean("RubricaDomainExistingOnly")
+            Return AbilitazioneRubricaDomain AndAlso GetBoolean("RubricaDomainExistingOnly")
         End Get
     End Property
 
@@ -1248,6 +1090,7 @@ Public Class ProtocolEnv
             Return GetBoolean("PECDestinationOptional")
         End Get
     End Property
+
     Public ReadOnly Property PECFisicalDeleteGroups() As String
         Get
             Return GetString("PECFisicalDeleteGroups", String.Empty)
@@ -1269,8 +1112,6 @@ Public Class ProtocolEnv
             Return _removePECEnabledInPECMailBoxes
         End Get
     End Property
-
-
 
     ''' <summary> Indica se se proporre o meno la data documento da protocollazione da pec. </summary>
     Public ReadOnly Property EnableDocumentDateFromPEC() As Boolean
@@ -1331,7 +1172,7 @@ Public Class ProtocolEnv
 
     Public ReadOnly Property AutocompleteContainer As Boolean
         Get
-            Return GetBoolean("AutocompleteContainer")
+            Return GetBoolean("AutocompleteContainer", True)
         End Get
     End Property
 
@@ -1344,12 +1185,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property CollaborationNoMultipleSign() As Boolean
         Get
             Return GetBoolean("CollaborationNoMultipleSign")
-        End Get
-    End Property
-
-    Public ReadOnly Property SuperAdmin() As String
-        Get
-            Return GetString("SuperAdmin", String.Empty)
         End Get
     End Property
 
@@ -1370,13 +1205,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property DisabledRolesRights() As Boolean
         Get
             Return GetBoolean("DisabledRolesRights")
-        End Get
-    End Property
-
-    ''' <summary> Indica se il PARER 蠡ttivo per il DB di Protocollo. </summary>
-    Public ReadOnly Property ParerEnabled() As Boolean
-        Get
-            Return GetBoolean("ParerEnabled")
         End Get
     End Property
 
@@ -1466,7 +1294,11 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-
+    Public ReadOnly Property SuperAdmin() As String
+        Get
+            Return GetString("SuperAdmin", String.Empty)
+        End Get
+    End Property
 
     ''' <summary> Abilita la notifica via mail della presa in carico di una PEC al precedente gestore. </summary>
     Public ReadOnly Property PECHandlerNotificationEnabled As Boolean
@@ -1641,12 +1473,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property PECConfirmAllegaAProtocollo() As Boolean
-        Get
-            Return GetBoolean("PECConfirmAllegaAProtocollo")
-        End Get
-    End Property
-
     Public ReadOnly Property PECEnableDeleteIfNotRecorded() As Boolean
         Get
             Return GetBoolean("PECEnableDeleteIfNotRecorded")
@@ -1698,12 +1524,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property PecIntDefaultContactSenderId() As Integer
         Get
             Return GetInteger("PecIntDefaultContactSenderId", -1)
-        End Get
-    End Property
-
-    Public ReadOnly Property PecHandlerMessageEnabled As Boolean
-        Get
-            Return GetBoolean("PecHandlerMessageEnabled", False)
         End Get
     End Property
 
@@ -1987,7 +1807,7 @@ Public Class ProtocolEnv
     End Property
 
     ''' <summary> Abilita il rigetto di protocollo. </summary>
-    ''' <remarks> Funzione nata per **REMOVE**. </remarks>
+    ''' <remarks> Funzione nata per cliente. </remarks>
     Public ReadOnly Property ProtocolRejectionEnabled() As Boolean
         Get
             Return GetBoolean("ProtocolRejection", False)
@@ -1995,7 +1815,7 @@ Public Class ProtocolEnv
     End Property
 
     ''' <summary> Contenitore per i protocolli rigettati </summary>
-    ''' <remarks> Funzione nata per **REMOVE**</remarks>
+    ''' <remarks> Funzione nata per cliente </remarks>
     Public ReadOnly Property ProtocolRejectionContainerId As Integer
         Get
             Return GetInteger("ProtocolRejectionContainer")
@@ -2036,15 +1856,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property ExcludeInnerContact() As Boolean
         Get
             Return InnerContactRoot.HasValue AndAlso GetBoolean("ExcludeInnerContact")
-        End Get
-    End Property
-
-
-    ''' <summary> Indica il vincolo su classificatore. </summary>
-    ''' <value>0: nessuno, 1: uguale, 2: gerarchico</value>
-    Public ReadOnly Property FascicleProtocolConstraint() As Integer
-        Get
-            Return GetInteger("FascicleProtocolConstraint", 1)
         End Get
     End Property
 
@@ -2240,27 +2051,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    ''' <summary>Abilita le API di DocSuiteWeb.</summary>
-    Public ReadOnly Property APIEnabled As Boolean
-        Get
-            Return GetBoolean("APIEnabled", False)
-        End Get
-    End Property
-
-    ''' <summary>Indirizzo dell'APIProvider di default.</summary>
-    Public ReadOnly Property APIDefaultProvider As String
-        Get
-            Return GetString("APIDefaultProvider", "http://localhost/dswapi/")
-        End Get
-    End Property
-
-    ''' <summary>Numero di ore per cui verranno conservate le risposte in cache.</summary>
-    Public ReadOnly Property APICacheExpiration As Integer
-        Get
-            Return GetInteger("APICacheExpiration", 10)
-        End Get
-    End Property
-
     ''' <summary> Identificativo serie documentale default per AVCP. </summary>
     Public ReadOnly Property AvcpDocumentSeriesId As Integer?
         Get
@@ -2298,12 +2088,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property ProtocolBoxPecMailViewDefault As Integer
         Get
             Return GetInteger("ProtocolBoxPecMailViewDefault", 0)
-        End Get
-    End Property
-
-    Public ReadOnly Property OChartCommunicationDataName As String
-        Get
-            Return GetString("OChartCommunicationDataName", "OChartCommunicationData.xml")
         End Get
     End Property
 
@@ -2375,21 +2159,9 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property AVCPInclusiveNumberMask() As String
-        Get
-            Return GetString("AVCPInclusiveNumberMask", "{0:0000}/{2:0000000}")
-        End Get
-    End Property
-
     Public ReadOnly Property ProtCorrectionGroups() As String
         Get
             Return GetString("ProtCorrectionGroups", String.Empty)
-        End Get
-    End Property
-
-    Public ReadOnly Property AVCPConfigFolder() As String
-        Get
-            Return GetString("AVCPConfigFolder", "./Config/AVCP/")
         End Get
     End Property
 
@@ -2399,33 +2171,9 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property AVCPResolutionType() As Integer
-        Get
-            Return GetInteger("AVCPResolutionType", 0)
-        End Get
-    End Property
-
-    Public ReadOnly Property AVCPDefaultCategoryId() As Integer
-        Get
-            Return GetInteger("AVCPDefaultCategoryId")
-        End Get
-    End Property
-
-    Public ReadOnly Property AVCPLinkToResolution() As Boolean
-        Get
-            Return GetBoolean("AVCPLinkToResolution", False)
-        End Get
-    End Property
-
     Public ReadOnly Property AVCPEntePubblicatore() As String
         Get
             Return GetString("AVCPEntePubblicatore", String.Empty)
-        End Get
-    End Property
-
-    Public ReadOnly Property AVCPLicenza() As String
-        Get
-            Return GetString("AVCPLicenza", String.Empty)
         End Get
     End Property
 
@@ -2613,6 +2361,7 @@ Public Class ProtocolEnv
             Return GetBoolean("RoleGroupPECRightEnabled")
         End Get
     End Property
+
     Public ReadOnly Property RoleGroupProcotolMailBoxRightEnabled As Boolean
         Get
             Return GetBoolean("RoleGroupProcotolMailBoxRightEnabled")
@@ -2786,12 +2535,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property ProtocolStatusWcfDefault As String
-        Get
-            Return GetString("ProtocolStatusWcfDefault", String.Empty)
-        End Get
-    End Property
-
     Public ReadOnly Property DocumentSeriesIsMineRightEnabled As Boolean
         Get
             Return GetBoolean("DocumentSeriesIsMineRightEnabled", True)
@@ -2872,7 +2615,7 @@ Public Class ProtocolEnv
 
     Public ReadOnly Property CustomErrorFrontPageDocument As String
         Get
-            Return GetString("CustomErrorFrontPageDocument", String.Empty)
+            Return GetString("CustomErrorFrontPageDocument", "~/ExceptionTemplate/error.pdf")
         End Get
     End Property
 
@@ -2912,7 +2655,7 @@ Public Class ProtocolEnv
     End Property
     Public ReadOnly Property BasicPersonSearcherKey As String
         Get
-            Return GetString("BasicPersonSearcherKey", "(&(&(objectCategory=person)(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))(|(cn=*{0}*)(displayName={0})))")
+            Return GetString("BasicPersonSearcherKey", "(&(&(objectCategory=person)(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))(|(cn=*{0}*)(sAMAccountName={0})))")
         End Get
     End Property
 
@@ -2941,12 +2684,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property EnableMessageViewCcColumn As Boolean
         Get
             Return GetBoolean("EnableMessageViewCcColumn", False)
-        End Get
-    End Property
-
-    Public ReadOnly Property ProtocolSearchLocationEnabled As Boolean
-        Get
-            Return GetBoolean("ProtocolSearchLocationEnabled", True)
         End Get
     End Property
 
@@ -3140,11 +2877,7 @@ Public Class ProtocolEnv
             Return GetBoolean("EnableButtonAllega", True)
         End Get
     End Property
-    Public ReadOnly Property EnableButtonLinkProtocolSend As Boolean
-        Get
-            Return GetBoolean("EnableButtonLinkProtocolSend", True)
-        End Get
-    End Property
+
     Public ReadOnly Property EnableButtonLinkProtocolPrint As Boolean
         Get
             Return GetBoolean("EnableButtonLinkProtocolPrint", True)
@@ -3373,12 +3106,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property UserChangePasswordEnabled As Boolean
-        Get
-            Return GetBoolean("UserChangePasswordEnabled", False)
-        End Get
-    End Property
-
     Public ReadOnly Property CoccardaProtocolEnabled As Boolean
         Get
             Return GetBoolean("CoccardaProtocolEnabled", False)
@@ -3387,12 +3114,6 @@ Public Class ProtocolEnv
     Public ReadOnly Property JeepServiceModuleWarningDaysThreshold As Integer
         Get
             Return GetInteger("JeepServiceModuleWarningDaysThreshold", 0)
-        End Get
-    End Property
-
-    Public ReadOnly Property RoleContactHistoricizing As Boolean
-        Get
-            Return GetBoolean("RoleContactHistoricizing", False)
         End Get
     End Property
 
@@ -3536,12 +3257,6 @@ Public Class ProtocolEnv
         End Get
     End Property
 
-    Public ReadOnly Property TenantAuthorizationEnabled As Boolean
-        Get
-            Return GetBoolean("TenantAuthorizationEnabled", False)
-        End Get
-    End Property
-
     Public ReadOnly Property StrictManagerChange As Boolean
         Get
             Return GetBoolean("StrictManagerChange", False)
@@ -3577,7 +3292,6 @@ Public Class ProtocolEnv
             Return GetInteger("FascicolableThreshold", 30)
         End Get
     End Property
-
 
     Public ReadOnly Property FascicolableThresholdDate As String
         Get
@@ -3720,7 +3434,7 @@ Public Class ProtocolEnv
 
     Public ReadOnly Property RefusedProtocolsGroups As String
         Get
-            If IsSecurityGroupEnabled AndAlso RefusedProtocolAuthorizationEnabled Then
+            If RefusedProtocolAuthorizationEnabled Then
                 Return GetString("RefusedProtocolsGroups", String.Empty)
             Else
                 Return String.Empty
@@ -4333,7 +4047,7 @@ Public Class ProtocolEnv
 
     Public ReadOnly Property ZenDeskEmail As String
         Get
-            Return GetString("ZenDeskEmail", "**REMOVE****REMOVE**.it")
+            Return GetString("ZenDeskEmail", "fabrizio.lazzarotto@vecompsoftware.it")
         End Get
     End Property
 
@@ -4632,6 +4346,11 @@ Public Class ProtocolEnv
         End Get
     End Property
 
+    Public ReadOnly Property UnifiedPECLinksPanelEnabled As Boolean
+        Get
+            Return GetBoolean("UnifiedPECLinksPanelEnabled", False)
+        End Get
+    End Property
     Public ReadOnly Property DossierSendToSecretariesEnabled As Boolean
         Get
             Return GetBoolean("DossierSendToSecretariesEnabled", False)
@@ -4644,10 +4363,174 @@ Public Class ProtocolEnv
         End Get
     End Property
 
+    Public ReadOnly Property DocSuiteServiceAccounts As String
+        Get
+            Return GetString("DocSuiteServiceAccounts")
+        End Get
+    End Property
+
+    Public ReadOnly Property AdvancedMetadataSearchEnabled As Boolean
+        Get
+            Return GetBoolean("AdvancedMetadataSearchEnabled", True)
+        End Get
+    End Property
+
+    Public ReadOnly Property TreeViewNodesPageSize() As Integer
+        Get
+            Return GetInteger("TreeViewNodesPageSize", 20)
+        End Get
+    End Property
+
+    Public ReadOnly Property ShowDocumentUnitSequenceNumberEnabled As Boolean
+        Get
+            Return GetBoolean("ShowDocumentUnitSequenceNumberEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property GetPersonByAccount As String
+        Get
+            Return GetString("GetPersonByAccount", "(&(&(objectCategory=person)(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))(sAMAccountName={0}))")
+        End Get
+    End Property
+
+    Public ReadOnly Property ConservationEnabled() As Boolean
+        Get
+            Return GetBoolean("ConservationEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property IngestorBaseURL As String
+        Get
+            Return GetString("IngestorBaseURL", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property ConservationURIValidationRegex As String
+        Get
+            Return GetString("ConservationURIValidationRegex", "^summary\/[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}\/\w+\/[a-zA-Z0-9]{8}-([a-zA-Z0-9]{4}-){3}[a-zA-Z0-9]{12}$")
+        End Get
+    End Property
+
+    Public ReadOnly Property ViewAuthorizedRoleEmailsEnabled As Boolean
+        Get
+            Return GetBoolean("ViewAuthorizedRoleEmailsEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property DocumentSeriesPublicationDateConstraintEnabled As Boolean
+        Get
+            Return GetBoolean("DocumentSeriesPublicationDateConstraintEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property ProtocolRenameDocumentEnabled As Boolean
+        Get
+            Return GetBoolean("ProtocolRenameDocumentEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property DynamsoftTwainProductKey As String
+        Get
+            Return GetString("DynamsoftTwainProductKey", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property DynamsoftTwainVersion() As Integer
+        Get
+            Return GetInteger("DynamsoftTwainVersion", 17)
+        End Get
+    End Property
+
+    Public ReadOnly Property PECMailInsertAuthorizationEnabled As Boolean
+        Get
+            Return GetBoolean("PECMailInsertAuthorizationEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property ProtocolSendPecChainTypesExcluded As ICollection(Of ChainType)
+        Get
+            Return GetJson(Of ICollection(Of ChainType))("ProtocolSendPecChainTypesExcluded", "[]")
+        End Get
+    End Property
+
+    Public ReadOnly Property DistributionRejectableEnabled As Boolean
+        Get
+            Return GetBoolean("DistributionRejectableEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property DocSuiteNextBaseURL As String
+        Get
+            Return GetString("DocSuiteNextBaseURL", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property DocSuiteNextElsaBaseURL As String
+        Get
+            Return GetString("DocSuiteNextElsaBaseURL", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property AuthorizeInsertProtocolTypes As ICollection(Of Integer)
+        Get
+            Return GetJson(Of ICollection(Of Integer))("AuthorizeInsertProtocolTypes", "[-1,0,1]")
+        End Get
+    End Property
+
+    Public ReadOnly Property SendAutomaticAnswerBackPECFromProtocolCreatedEnabled As Boolean
+        Get
+            Return GetBoolean("SendAutomaticAnswerBackPECFromProtocolCreatedEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property BodyTemplateOfAnswerBackPECFromProtocolCreated As String
+        Get
+            Return GetString("BodyTemplateOfAnswerBackPECFromProtocolCreated", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property SubjectOfAnswerBackPECFromProtocolCreated As String
+        Get
+            Return GetString("SubjectOfAnswerBackPECFromProtocolCreated", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property ExcludePECAnswerBackProtocolContainerIds As ICollection(Of Integer)
+        Get
+            Return GetJson(Of ICollection(Of Integer))("ExcludePECAnswerBackProtocolContainerIds", "[]")
+        End Get
+    End Property
+
+    Public ReadOnly Property AnswerBackPECMailBoxId As Short
+        Get
+            Return GetShort("AnswerBackPECMailBoxId", -1)
+        End Get
+    End Property
+
+    Public ReadOnly Property SendPecWithPasswordToMailRecipientsCCEnabled As Boolean
+        Get
+            Return GetBoolean("SendPecWithPasswordToMailRecipientsCCEnabled", False)
+        End Get
+    End Property
+    Public ReadOnly Property IPAEnabled As Boolean
+        Get
+            Return GetBoolean("IPAEnabled", False)
+        End Get
+    End Property
+    Public ReadOnly Property IPAWebServiceUrl As String
+        Get
+            Return GetString("IPAWebServiceUrl", "https://www.indicepa.gov.it/")
+        End Get
+    End Property
+
+    Public ReadOnly Property IPAAuthId As String
+        Get
+            Return GetString("IPAAuthId", String.Empty)
+        End Get
+    End Property
 #End Region
 
-#Region " Methods "
-
+#Region "Methods"
     Function IsPosteWebEnabled() As Boolean
         Return (IsRaccomandataEnabled() OrElse IsLetteraEnabled() OrElse IsTelgrammaEnabled()) AndAlso Not TNoticeEnabled
     End Function
@@ -4659,12 +4542,9 @@ Public Class ProtocolEnv
     Function IsInvoiceDataGridResultEnabled() As Boolean
         Return IsInvoiceEnabled AndAlso IsInvoiceDataResultEnabled
     End Function
-    Function PECMailBoxPasswordEncriptionEnabled() As Boolean
-        Return Not String.IsNullOrEmpty(PasswordEncryptionKey) AndAlso PasswordEncryptionKey.Length = 32
-    End Function
 
     Function IsIPAAUSEnabled() As Boolean
-        Return Not String.IsNullOrEmpty(LdapIndicePa) OrElse AUSIntegrationEnabled
+        Return IPAEnabled OrElse AUSIntegrationEnabled
     End Function
 #End Region
 

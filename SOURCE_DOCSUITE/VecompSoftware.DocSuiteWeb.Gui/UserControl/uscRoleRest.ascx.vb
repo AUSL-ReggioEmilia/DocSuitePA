@@ -54,8 +54,6 @@ Public Class uscRoleRest
 
     Public Property RemoveAllDataButtonEnabled As Boolean
 
-    Public Property LoadAllRoles As Boolean
-
     Public Property RACIButtonEnabled As Boolean = False
 
     Public Property FascicleVisibilityTypeButtonEnabled As Boolean = False
@@ -66,7 +64,6 @@ Public Class uscRoleRest
 #Region " Events"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         If Not IsPostBack Then
-            lblCurrentTenant.Text = DocSuiteContext.Current.CurrentTenant.TenantName
             If Not ReadOnlyMode Then
                 actionToolbar.Visible = True
             End If

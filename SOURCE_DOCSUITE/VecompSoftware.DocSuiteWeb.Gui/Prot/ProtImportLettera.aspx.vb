@@ -298,11 +298,7 @@ Public Class ProtImportLettera
             End With
 
             Dim b As Boolean
-            If ImportFile.Eq("EXCEL") Then
-                b = oImport.InserimentoProtocolloExcel(prot)
-            Else
-                b = oImport.InserimentoProtocollo(prot, True)
-            End If
+            b = oImport.InserimentoProtocolloExcel(prot)
 
             If b Then
                 Me.SetupPageWithTaskRunning()

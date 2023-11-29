@@ -1,22 +1,21 @@
 ﻿Imports System.Collections.Generic
-Imports System.Linq
 Imports System.Collections.ObjectModel
-Imports VecompSoftware.DocSuiteWeb.DTO.Resolutions
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Resolutions
-Imports Telerik.Web.UI
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Data
+Imports System.Linq
 Imports System.Web
+Imports Telerik.Web.UI
+Imports VecompSoftware.Commons.Interfaces.CQRS.Events
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.DTO.Resolutions
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Resolutions
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.Model.Workflow.Actions
+Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Services.Biblos.Models
-Imports VecompSoftware.DocSuiteWeb.Model.Workflow
-Imports Newtonsoft.Json
-Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
-Imports VecompSoftware.DocSuiteWeb.Model.Integrations.GenericProcesses
+Imports VecompSoftware.Services.Logging
 
 Partial Public Class ReslInserimento
     Inherits ReslBasePage
@@ -26,9 +25,12 @@ Partial Public Class ReslInserimento
     Private _currColl As Collaboration
     Private _selectedContainer As Container
     Private _currentResolution As Resolution
+    Private _bidTypes As IList(Of BidType)
     Private Const PROPOSER_FIELD_DATA_NAME As String = "Proposer"
     Private Const ROLE_PROPOSER_PROPERTY_NAME As String = "ROLEPROPOSER"
     Private Const OPEN_WINDOW_SCRIPT As String = "<script language=""javascript"">function f(){OpenSelRoleProposerWindow(); Sys.Application.remove_load(f);}; Sys.Application.add_load(f);</script>"
+    Private Const STATO_CONTABILITA_NON_CONTABILE As String = "NC"
+    Private Const STATO_CONTABILITA_ALLA_RAGIONERIA As String = "AR"
 #End Region
 
 #Region " Properties "
@@ -59,6 +61,28 @@ Partial Public Class ReslInserimento
                 End If
             End If
             Return _selectedContainer
+        End Get
+    End Property
+
+    Private ReadOnly Property SelectedContainerHasAccountingEnabled() As Boolean
+        Get
+            If Not ResolutionEnv.ResolutionAccountingEnabled OrElse SelectedContainer Is Nothing Then
+                Return False
+            End If
+            Dim accountingProperty As ContainerProperty = SelectedContainer.ContainerProperties.FirstOrDefault(Function(x) x.Name.Equals(ContainerPropertiesName.ResolutionAccountingEnabled))
+            If accountingProperty Is Nothing Then
+                Return False
+            End If
+            Return accountingProperty.ValueBoolean.Value
+        End Get
+    End Property
+
+    Private ReadOnly Property BidTypes() As IList(Of BidType)
+        Get
+            If _bidTypes Is Nothing Then
+                _bidTypes = FacadeFactory.Instance.BidTypeFacade.GetAll()
+            End If
+            Return _bidTypes
         End Get
     End Property
 
@@ -117,17 +141,10 @@ Partial Public Class ReslInserimento
         Get
             If _currentResolution IsNot Nothing Then Return _currentResolution
             If ViewState("idResolution") IsNot Nothing Then _currentResolution = Facade.ResolutionFacade.GetById(CType(ViewState("idResolution"), Integer))
-            If _currentResolution IsNot Nothing Then
-                ''Salvo anche negli UserControl per non perdere il valore
-                uscPrivacyPanel.CurrentResolution = _currentResolution
-            End If
             Return _currentResolution
         End Get
         Set(value As Resolution)
             _currentResolution = value
-            ''Salvo anche negli UserControl per non perdere il valore
-            uscPrivacyPanel.CurrentResolution = value
-            ''Salvo l'id in viewState
             If (value IsNot Nothing) Then ViewState("idResolution") = value.Id
         End Set
     End Property
@@ -135,7 +152,7 @@ Partial Public Class ReslInserimento
     Private ReadOnly Property CurrentWorkflowType As String
         Get
             Dim resolutionType As ResolutionType = Facade.ResolutionTypeFacade.GetById(CType(rblProposta.SelectedValue, Short))
-            Return Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, resolutionType.Id)
+            Return Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, DocSuiteContext.Current.ResolutionEnv.Configuration, resolutionType.Id)
         End Get
     End Property
 
@@ -202,40 +219,11 @@ Partial Public Class ReslInserimento
             Initialize()
             InitializeDocumentControls()
         End If
-        InitizializePrivacy()
     End Sub
 
     Protected Sub ReslInserimentoAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
         Dim arguments As String() = Split(e.Argument, "|")
         Select Case arguments(0)
-            Case "blockinsert"
-                BlockInsert()
-                AjaxManager.ResponseScripts.Add("ExecuteAjaxRequest('privacygenerate');")
-
-            Case "privacygenerate"
-                '' Genero un inserimento
-                CurrentResolution = InsertResolution()
-
-                '' genero il file dove oscurare gli omissis a mano
-                uscPrivacyPanel.GeneratePrivacyDocumentToPrint(CurrentWorkflowType)
-
-                'Mostro i dati dell'atto in inizio della pagina
-                lblNumberLabel.Text = String.Format("{0}: ", Facade.ResolutionTypeFacade.GetDescription(CurrentResolutionType))
-                lblNumber.Text = CurrentResolution.InclusiveNumber
-                tblResolutionNumber.Visible = True
-
-                btnInserimento.Text = "COMPLETA INSERIMENTO"
-
-            Case "privacyreset"
-                uscPrivacyPanel.ResetSelector()
-
-            Case "checkdatatoinsert"
-                'Verifico prima la presenza dei dati di base dell'atto e poi di quelli specifici per la privacy
-                If CheckDataForInsert() AndAlso CheckPrivacy() Then
-                    uscPrivacyPanel.CheckPrivacy()
-                Else
-                    uscPrivacyPanel.ResetSelector()
-                End If
 
             Case "createNewDraftSeries"
                 NewDraftSeriesAction(Convert.ToInt32(arguments(1)))
@@ -326,21 +314,16 @@ Partial Public Class ReslInserimento
 
         If ResolutionEnv.ResolutionKindEnabled AndAlso DraftSeriesItemAdded IsNot Nothing Then
             For Each seriesDraftInsert As ResolutionSeriesDraftInsert In DraftSeriesItemAdded
-                Dim resolutionSeries As ResolutionDocumentSeriesItem = New ResolutionDocumentSeriesItem()
-                resolutionSeries.Resolution = CurrentResolution
-                resolutionSeries.UniqueIdResolution = CurrentResolution.UniqueId
-                resolutionSeries.IdDocumentSeriesItem = seriesDraftInsert.IdSeriesItem
-                resolutionSeries.UniqueIdDocumentSeriesItem = FacadeFactory.Instance.DocumentSeriesItemFacade.GetById(seriesDraftInsert.IdSeriesItem).UniqueId
+                Dim seriesItem As DocumentSeriesItem = FacadeFactory.Instance.DocumentSeriesItemFacade.GetById(seriesDraftInsert.IdSeriesItem)
+                Dim resolutionSeries As New ResolutionDocumentSeriesItem With {
+                    .Resolution = CurrentResolution,
+                    .UniqueIdResolution = CurrentResolution.UniqueId,
+                    .IdDocumentSeriesItem = seriesDraftInsert.IdSeriesItem,
+                    .UniqueIdDocumentSeriesItem = seriesItem.UniqueId
+                }
                 Facade.ResolutionDocumentSeriesItemFacade.Save(resolutionSeries)
+                Facade.DocumentSeriesItemResolutionLinkFacade.LinkResolutionToDocumentSeriesItem(CurrentResolution, seriesItem)
             Next
-        End If
-
-        '' Verifico se devo caricare il documento privacy
-        If uscPrivacyPanel.PrivacyDocumentVisible AndAlso DocSuiteContext.Current.ResolutionEnv.UseSharepointPublication Then
-            uscPrivacyPanel.SavePrivacyDocument(ResolutionFacade.DocType.PrivacyPublicationDocument)
-
-            ''Richiamo la finalizzazione dell'inserimento per effettuare l'inserimento automatico degli step di adozione/pubblicazione/esecutività
-            ProtocolFinalizeSharePointPublication(CurrentResolution)
         End If
 
         Dim s As String = "Type=Resl&idResolution=" & CurrentResolution.Id
@@ -350,109 +333,12 @@ Partial Public Class ReslInserimento
         Response.Redirect(String.Format("{0}?{1}", GetViewPageName(CurrentResolution.Id), CommonShared.AppendSecurityCheck(s)))
     End Sub
 
-    Private Sub ProtocolFinalizeSharePointPublication(res As Resolution)
-        Dim resolutionType As Integer = res.Type.Id
-        Const idCatena As Integer = 0
-        Const idCatenaAllegati As Integer = 0
-        Const idCatenaAllegatiRiservati As Integer = 0
-
-        Dim fileResolution As FileResolution = Facade.FileResolutionFacade.GetByResolution(res)(0)
-
-        If resolutionType = Data.ResolutionType.IdentifierDelibera Then
-            ' Mando avanti fino alla fine del Workflow
-            Dim tabWorkflowPubblicazione As TabWorkflow = Facade.TabWorkflowFacade.GetByDescription("Pubblicazione", res.WorkflowType)
-            Dim tabWorkflowPrecedingPubblicazione As TabWorkflow = Nothing
-            Facade.TabWorkflowFacade.GetByStep(res.WorkflowType, tabWorkflowPubblicazione.Id.ResStep - 1S, tabWorkflowPrecedingPubblicazione)
-            If StringHelper.InStrTest(tabWorkflowPrecedingPubblicazione.ManagedWorkflowData, "NextStep") Then
-                ' Pubblicazione
-
-                If fileResolution.IdFrontespizio Is Nothing Then
-                    ''Genero e inserisco il frontalino
-                    ResolutionWPFacade.InserisciFrontalinoPubblicazione(res, res.AdoptionDate.Value.AddDays(1), tabWorkflowPrecedingPubblicazione.Id.ResStep)
-                End If
-
-                Facade.ResolutionWorkflowFacade.InsertNextStep(res.Id, 2, idCatena, idCatenaAllegati, idCatenaAllegatiRiservati, Guid.Empty, Guid.Empty, Guid.Empty, DocSuiteContext.Current.User.FullUserName)
-                res.PublishingDate = res.AdoptionDate.Value.AddDays(1)
-                res.PublishingUser = res.AdoptionUser
-
-                PublicateResolutionOnSharePoint(res, res.AdoptionDate.Value.AddDays(1), True)
-            End If
-
-            Dim tabWorkflowEsecutivita As TabWorkflow = Facade.TabWorkflowFacade.GetByDescription("Esecutività", res.WorkflowType)
-            Dim tabWorkflowPrecedingEsecutivita As TabWorkflow = Nothing
-            Facade.TabWorkflowFacade.GetByStep(res.WorkflowType, tabWorkflowEsecutivita.Id.ResStep - 1S, tabWorkflowPrecedingEsecutivita)
-            If StringHelper.InStrTest(tabWorkflowPrecedingEsecutivita.ManagedWorkflowData, "NextStep") Then
-                ' Esecutività
-                Facade.ResolutionWorkflowFacade.InsertNextStep(res.Id, 3, idCatena, idCatenaAllegati, idCatenaAllegatiRiservati, Guid.Empty, Guid.Empty, Guid.Empty, DocSuiteContext.Current.User.FullUserName)
-                res.EffectivenessDate = res.PublishingDate.Value.AddDays(15)
-                res.EffectivenessUser = res.PublishingUser
-            End If
-            ' Salvo le modifiche
-            Facade.ResolutionFacade.UpdateOnly(res)
-
-            Facade.ResolutionFacade.SendUpdateResolutionCommand(res)
-
-        ElseIf resolutionType = Data.ResolutionType.IdentifierDetermina Then
-            'Verifico se devo salvare anche lo step successivo
-            Const myStep As Short = 2
-            Dim workStep As TabWorkflow = Facade.TabWorkflowFacade.GetByResolution(res.Id)
-            Dim lastWorkStep As TabWorkflow = workStep
-            Dim nextStepId As Short = myStep + 2
-
-            '' La variabile serve a costringere l'ingresso nel caso ci sia almeno 1 documento
-            Dim forceNext As Boolean = uscUploadDocumenti.DocumentsCount > 0
-            Dim howManyNextSteps As Short = 0
-
-            While StringHelper.InStrTest(lastWorkStep.ManagedWorkflowData, "NextStep") OrElse forceNext
-                '' Disattivo la variabile per evitare un ciclo infinito
-                forceNext = False
-
-                howManyNextSteps = howManyNextSteps + 1S
-                Dim workNextStep As TabWorkflow = Nothing
-                ' Recupero il nuovo step
-                Facade.TabWorkflowFacade.GetByStep(res.WorkflowType, nextStepId, workNextStep)
-
-                Dim data As Date = CType(ReflectionHelper.GetProperty(res, lastWorkStep.FieldDate), Date)
-                Select Case workNextStep.Description
-                    Case "Pubblicazione"
-                        data = data.AddDays(1)
-
-                        If fileResolution.IdFrontespizio Is Nothing Then
-                            '' Genero e inserisco il frontalino
-                            ' Recupero lo step precedente a quello di pubblicazione
-                            Facade.TabWorkflowFacade.GetByStep(res.WorkflowType, CType((workNextStep.Id.ResStep - 1), Short), workStep)
-                            ResolutionWPFacade.InserisciFrontalinoPubblicazione(res, data, CType((workNextStep.Id.ResStep - 1), Short))
-                        End If
-                        PublicateResolutionOnSharePoint(res, data, True)
-                    Case "Esecutività"
-                        data = data.AddDays(15)
-                End Select
-
-                Facade.ResolutionFacade.SqlResolutionUpdateWorkflowData(res.Id, CurrentResolutionType, Not res.Number.HasValue, workNextStep, String.Format("{0:dd/MM/yyyy}", data), "N", -1, -1, Guid.Empty, "N", True, DocSuiteContext.Current.User.FullUserName)
-
-                lastWorkStep = workNextStep
-                nextStepId = nextStepId + 1S
-            End While
-
-            ''Inserisco lo step di Documento Adozione nel caso in cui abbia già il documento
-            If uscUploadDocumenti.DocumentsCount > 0 Then
-                Facade.ResolutionWorkflowFacade.InsertNextStep(res.Id, myStep, 0, 0, 0, Guid.Empty, Guid.Empty, Guid.Empty, DocSuiteContext.Current.User.FullUserName)
-            End If
-
-            For index As Short = 1 To howManyNextSteps
-                Facade.ResolutionWorkflowFacade.InsertNextStep(res.Id, myStep + index, 0, 0, 0, Guid.Empty, Guid.Empty, Guid.Empty, DocSuiteContext.Current.User.FullUserName)
-            Next
-            Facade.ResolutionFacade.SendUpdateResolutionCommand(res)
-        End If
-    End Sub
-
     Private Sub rblProposta_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles rblProposta.SelectedIndexChanged
         ContainerDdlFiller()
         InitializeVisibleProperty()
         UpdateCategory()
         UpdateContainer()
         SelectedContainerChanged()
-        InitizializePrivacy()
     End Sub
 
     Private Sub chbAdoption_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs)
@@ -496,28 +382,14 @@ Partial Public Class ReslInserimento
         args.IsValid = chkAUSLREOCNonSoggetta.Checked OrElse chkAUSLREOCSoggetta.Checked
     End Sub
 
-    Private Sub UscUploadDocumentiDocumentRemoved(sender As Object, e As DocumentEventArgs) Handles uscUploadDocumenti.DocumentRemoved
-        ''Se rimuovo un documento e ho attiva la pubblicazione sharepoint di ASMN e l'atto non è una delibera e non ho documenti, allora tolgo il pannello
-        If ResolutionEnv.UseSharepointPublication Then
-            uscPrivacyPanel.PrivacyTypeVisible = Not (rblProposta.SelectedValue <> "1" AndAlso uscUploadDocumenti.DocumentsCount = 0)
-            uscPrivacyPanel.ValidatorEnabled = uscPrivacyPanel.PrivacyTypeVisible
-        End If
-    End Sub
-
-    Private Sub UscUploadDocumentiDocumentUploaded(sender As Object, e As DocumentEventArgs) Handles uscUploadDocumenti.DocumentUploaded
-        '' Se l'atto è di tipo disposizione e sto aggiungendo documenti, allora devo mostrare e rendere obbligatoria la scelta della privacy
-        If ResolutionEnv.UseSharepointPublication Then
-            uscPrivacyPanel.PrivacyTypeVisible = uscUploadDocumenti.DocumentsCount > 0
-            uscPrivacyPanel.ValidatorEnabled = uscPrivacyPanel.PrivacyTypeVisible
-        End If
-    End Sub
-
     Protected Sub DdlResolutionKind_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlResolutionKind.SelectedIndexChanged
         If CurrentResolutionModel Is Nothing OrElse (CurrentResolutionModel.ResolutionKind.HasValue AndAlso Not CurrentResolutionModel.ResolutionKind.Equals(Guid.Parse(ddlResolutionKind.SelectedValue))) Then
             DraftSeriesItemAdded = Nothing
         End If
 
         pnlAmmTrasp.Visible = False
+        pnlAmount.Visible = CurrentSelectedResolutionKind IsNot Nothing AndAlso CurrentSelectedResolutionKind.AmountEnabled
+        rfvAmount.Enabled = pnlAmount.Visible
         If CurrentSelectedResolutionKind IsNot Nothing AndAlso Not CurrentSelectedResolutionKind.ResolutionKindDocumentSeries.IsNullOrEmpty() Then
             pnlAmmTrasp.Visible = True
             dgvResolutionKindDocumentSeries.DataSource = CurrentSelectedResolutionKind.ResolutionKindDocumentSeries
@@ -633,31 +505,13 @@ Partial Public Class ReslInserimento
 
         End Select
 
-        Return True
-    End Function
+        If ResolutionEnv.OCOptions IsNot Nothing AndAlso ResolutionEnv.OCOptions.Required _
+            AndAlso Not chkOCSupervisoryBoard.Checked AndAlso Not chkOCConfSindaci.Checked AndAlso Not chkOCRegion.Checked _
+            AndAlso Not chkOCManagement.Checked AndAlso Not chkOCCorteConti.Checked AndAlso Not chkOCOther.Checked Then
+            AjaxAlert("E' obbligatorio selezionare almeno una voce di organo di controllo", Environment.NewLine)
+            Return False
+        End If
 
-    Private Function CheckPrivacy() As Boolean
-        Try
-            '' Eccezioni al corretto funzionamento della generazione automatica del documento da scansionare
-            If uscUploadDocumenti.DocumentInfos.Count = 0 Then
-                Throw New ArgumentException("E' necessario inserire un documento nell'atto.")
-            End If
-            If String.IsNullOrEmpty(idContainer.SelectedValue) Then
-                Throw New ArgumentException("E' necessario selezionare un contenitore per l'atto")
-            End If
-            If Not rdpDataAdozione.SelectedDate.HasValue Then
-                Throw New ArgumentException("E' necessario inserire la data di adozione dell'atto")
-            End If
-            If pnlAdozioneNumero.Enabled AndAlso String.IsNullOrEmpty(txtServiceNumber.Text) Then
-                Throw New ArgumentException("E' necessario inserire il numero di adozione dell'atto")
-            End If
-            If String.IsNullOrEmpty(SelOggetto.Text) Then
-                Throw New ArgumentException("E' necessario specificare l'oggetto dell'atto")
-            End If
-        Catch ex As Exception
-            uscPrivacyPanel.ResetSelector()
-            AjaxAlert("Impossibile attivare il pannello Privacy.{0}{1}", Environment.NewLine, ex.Message)
-        End Try
         Return True
     End Function
 
@@ -745,6 +599,9 @@ Partial Public Class ReslInserimento
         'Tipologia Atto
         If ResolutionEnv.ResolutionKindEnabled Then
             res.ResolutionKind = CurrentSelectedResolutionKind
+            If CurrentSelectedResolutionKind.AmountEnabled AndAlso txtAmount.Value.HasValue Then
+                res.Amount = Convert.ToSingle(txtAmount.Value.Value)
+            End If
         Else
             res.ResolutionKind = CurrentResolutionKindFacade.GetAll().First()
         End If
@@ -773,7 +630,7 @@ Partial Public Class ReslInserimento
             End If
         End If
 
-        res.WorkflowType = Facade.TabMasterFacade.GetFieldValue("WorkflowType", DocSuiteContext.Current.ResolutionEnv.Configuration, resolutionTypeId)
+        res.WorkflowType = Facade.TabMasterFacade.GetFieldValue(TabMasterFacade.WorkflowTypeField, DocSuiteContext.Current.ResolutionEnv.Configuration, resolutionTypeId)
 
         ' FileResolution
         Dim fr As New FileResolution
@@ -827,6 +684,14 @@ Partial Public Class ReslInserimento
             Next
         End If
 
+        If ResolutionEnv.ResolutionAccountingEnabled Then
+            If SelectedContainerHasAccountingEnabled AndAlso Not String.IsNullOrEmpty(rlbBidTypes.SelectedValue) Then
+                res.BidType = BidTypes.FirstOrDefault(Function(x) x.Acronym.Trim().Equals(rlbBidTypes.SelectedValue))
+            Else
+                res.BidType = BidTypes.FirstOrDefault(Function(x) x.Acronym.Trim().Equals(STATO_CONTABILITA_NON_CONTABILE))
+            End If
+        End If
+
         ''--biblos
         'Inserimento documento, allegato in biblos
         Dim year As Short = 0
@@ -844,16 +709,15 @@ Partial Public Class ReslInserimento
             If uscUploadDocumenti.DocumentInfos.Count > 0 Then
                 ' Segnatura su adozione automatica
                 If ResolutionEnv.IsInsertAdoption Then
-                    Dim param As Parameter = Facade.ParameterFacade.GetCurrentAndRefresh()
+                    Dim param As Parameter = New ParameterFacade("ReslDB").GetCurrentAndRefresh()
                     year = param.LastUsedResolutionYear
                     If resolutionTypeId = ResolutionType.IdentifierDelibera Then
-                        param.LastUsedResolutionNumber += 1S
                         number = param.LastUsedResolutionNumber
+                        Facade.ParameterFacade.UpdateResolutionLastUsedNumber(number + 1)
                     Else
                         number = param.LastUsedBillNumber
-                        param.LastUsedBillNumber += 1S
+                        Facade.ParameterFacade.UpdateResolutionLastUsedBillNumber(number + 1)
                     End If
-                    Facade.ParameterFacade.Update(param)
                     signature = Facade.ResolutionTypeFacade.GetDescription(res.Type)
                     signature &= String.Format(" {0}/{1:0000000} del {2}", year, number, rdpDataAdozione.SelectedDate.DefaultString)
 
@@ -952,16 +816,15 @@ Partial Public Class ReslInserimento
         ' adozione con numerazione automatica
         If ResolutionEnv.IsInsertAdoption AndAlso rdpDataAdozione.SelectedDate.HasValue Then
             If number <= 0 Then
-                Dim param As Parameter = Facade.ParameterFacade.GetCurrentAndRefresh()
+                Dim param As Parameter = New ParameterFacade("ReslDB").GetCurrentAndRefresh()
                 year = param.LastUsedResolutionYear
                 If resolutionTypeId = ResolutionType.IdentifierDelibera Then
-                    param.LastUsedResolutionNumber = param.LastUsedResolutionNumber + 1S
                     number = param.LastUsedResolutionNumber
+                    Facade.ParameterFacade.UpdateResolutionLastUsedNumber(number + 1)
                 Else
                     number = param.LastUsedBillNumber
-                    param.LastUsedBillNumber = param.LastUsedBillNumber + 1S
+                    Facade.ParameterFacade.UpdateResolutionLastUsedBillNumber(number + 1)
                 End If
-                Facade.ParameterFacade.Update(param)
             End If
             res.Year = year
             res.Number = number
@@ -976,26 +839,29 @@ Partial Public Class ReslInserimento
             ' Aggiungo lo step di Adozione
             Facade.ResolutionWorkflowFacade.InsertNextStep(IdResolution, 1, idCatena, idCatenaAllegati, idCatenaAllegatiRiservati, idCatenaAnnessi, idCatenaDocumentiOmissis, idCatenaAllegatiOmissis, DocSuiteContext.Current.User.FullUserName)
 
-            'Invio comando di creazione Resolution alle WebApi
-            Facade.ResolutionFacade.SendCreateResolutionCommand(CurrentResolution)
-
         End If
 
         'Collaborazione 
         If CurrentResolutionModel IsNot Nothing AndAlso CurrentResolutionModel.IdCollaboration.HasValue Then
             _currColl = FacadeFactory.Instance.CollaborationFacade.GetById(CurrentResolutionModel.IdCollaboration.Value)
         End If
-
+        Dim workflowActions As List(Of IWorkflowAction) = New List(Of IWorkflowAction)
         If Action.Eq("FromCollaboration") OrElse (CurrentResolutionModel IsNot Nothing AndAlso CurrentResolutionModel.IdCollaboration.HasValue) Then
             Try
+                workflowActions.Add(New WorkflowActionDocumentUnitLinkModel(New DocumentUnitModel() With {.UniqueId = res.UniqueId, .Environment = Model.Entities.Commons.DSWEnvironmentType.Resolution},
+                                                                            New DocumentUnitModel() With {.UniqueId = CurrentCollaboration.UniqueId, .EntityId = CurrentCollaboration.Id, .Environment = Model.Entities.Commons.DSWEnvironmentType.Collaboration}))
+
                 Facade.CollaborationFacade.Update(CurrentCollaboration, "", Nothing, "", Nothing, CollaborationStatusType.PT, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, res.Id, "", 0, False)
-                Facade.CollaborationFacade.SendMail(CurrentCollaboration, CollaborationMainAction.ProtocollatiGestiti)
+                Facade.CollaborationFacade.SendMail(CurrentCollaboration, CollaborationMainAction.ProtocollatiGestiti, CurrentTenant.TenantAOO.UniqueId)
             Catch ex As Exception
                 Facade.ResolutionLogFacade.Log(res, ResolutionLogType.RE, ex.Message)
                 FileLogger.Warn(LoggerName, "Problema inserimento da collaborazione", ex)
                 AjaxAlert("Errore in Aggiornamento dati registrazione della Collaborazione: " & ex.Message)
             End Try
         End If
+
+        'Invio comando di creazione Resolution alle WebApi
+        Facade.ResolutionFacade.SendCreateResolutionCommand(res, workflowActions)
 
         'Inserimento Log
         Facade.ResolutionLogFacade.Log(res, ResolutionLogType.RI, "")
@@ -1133,7 +999,7 @@ Partial Public Class ReslInserimento
     Private Sub SetAuthorizationFromCollaboration()
         ' Autorizzazioni da collaborazione
         If Not String.IsNullOrEmpty(ResolutionEnv.CollResolutionRole) Then
-            Dim roles As IList(Of Role) = Facade.CollaborationFacade.GetSecretaryRoles(CurrentCollaboration, DocSuiteContext.Current.User.FullUserName)
+            Dim roles As IList(Of Role) = Facade.CollaborationFacade.GetSecretaryRoles(CurrentCollaboration, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId)
             If Not roles.IsNullOrEmpty() Then
                 tblCollaborationAuthorize.Visible = True
                 collaborationAuthorizedRoles.SourceRoles = roles.ToList()
@@ -1209,7 +1075,7 @@ Partial Public Class ReslInserimento
 
         'Setto il proponente di default che è il medesimo settore della segreteria che ha generato l'atto
         If RoleProposerEnabled Then
-            Dim proposerCollRoles As IList(Of Role) = Facade.CollaborationFacade.GetSecretaryRoles(CurrentCollaboration, DocSuiteContext.Current.User.FullUserName)
+            Dim proposerCollRoles As IList(Of Role) = Facade.CollaborationFacade.GetSecretaryRoles(CurrentCollaboration, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId)
             If proposerCollRoles.Any() Then
                 Dim distinctRole As List(Of Role) = proposerCollRoles.Distinct().ToList()
                 If distinctRole.Count = 1 Then
@@ -1223,12 +1089,47 @@ Partial Public Class ReslInserimento
         End If
     End Sub
 
+    Private Sub InitializePageFromDesk()
+        If PreviousPage Is Nothing OrElse TypeOf PreviousPage IsNot IResolutionInitializer Then
+            Exit Sub
+        End If
+
+        Dim initializer As ResolutionInitializer = CType(PreviousPage, IResolutionInitializer).GetResolutionInitializer()
+        SelOggetto.Text = initializer.Subject
+        If initializer.MainDocument IsNot Nothing Then
+            uscUploadDocumenti.LoadDocumentInfo(initializer.MainDocument, False, True, False, True)
+            uscUploadDocumenti.InitializeNodesAsAdded(False)
+        End If
+
+        If initializer.MainDocumentOmissis IsNot Nothing Then
+            uscUploadDocumentiOmissis.LoadDocumentInfo(initializer.MainDocumentOmissis, False, True, False, True)
+            uscUploadDocumentiOmissis.InitializeNodesAsAdded(False)
+        End If
+
+        If initializer.Attachments IsNot Nothing Then
+            uscUploadAttach.LoadDocumentInfo(initializer.Attachments, False, True, False, True)
+            uscUploadAttach.InitializeNodesAsAdded(False)
+        End If
+
+        If initializer.AttachmentsOmissis IsNot Nothing Then
+            uscUploadAttachOmissis.LoadDocumentInfo(initializer.AttachmentsOmissis, False, True, False, True)
+            uscUploadAttachOmissis.InitializeNodesAsAdded(False)
+        End If
+
+        If initializer.Annexed IsNot Nothing Then
+            uscUploadAnnexed.LoadDocumentInfo(initializer.Annexed, False, True, False, True)
+            uscUploadAnnexed.InitializeNodesAsAdded(False)
+        End If
+    End Sub
+
     Private Sub InitializeAjax()
         AjaxManager.AjaxSettings.AddAjaxSetting(btnInserimento, pnlButtons, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, rblProposta)
         AjaxManager.AjaxSettings.AddAjaxSetting(rblProposta, uscUploadDocumenti)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscUploadAnnexed)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnInserimento, SelOggetto)
+        AjaxManager.AjaxSettings.AddAjaxSetting(idContainer, pnlAccounting)
+        AjaxManager.AjaxSettings.AddAjaxSetting(rblProposta, pnlAccounting)
 
         If DocSuiteContext.Current.PrivacyLevelsEnabled Then
             AjaxManager.AjaxSettings.AddAjaxSetting(idContainer, uscUploadDocumenti)
@@ -1274,6 +1175,7 @@ Partial Public Class ReslInserimento
 
         If ResolutionEnv.ResolutionKindEnabled Then
             AjaxManager.AjaxSettings.AddAjaxSetting(ddlResolutionKind, pnlAmmTrasp)
+            AjaxManager.AjaxSettings.AddAjaxSetting(ddlResolutionKind, pnlAmount)
         End If
 
         AjaxManager.AjaxSettings.AddAjaxSetting(rblProposta, pnlCategory)
@@ -1306,29 +1208,8 @@ Partial Public Class ReslInserimento
             AjaxManager.AjaxSettings.AddAjaxSetting(uscSettori, uscSettori)
         End If
 
-        'Pannello privacy per ASMN in inserimento
-        If DocSuiteContext.Current.ResolutionEnv.UseSharepointPublication Then
-            AjaxManager.AjaxSettings.AddAjaxSetting(uscUploadDocumenti, uscPrivacyPanel)
-            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscPrivacyPanel)
-            AjaxManager.AjaxSettings.AddAjaxSetting(rblProposta, uscPrivacyPanel)
-            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, tblResolutionNumber)
-
-            'Comandi necessari per bloccare i controlli in fase di inserimento parziale
-            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, idContainer)
-            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, rdpDataAdozione)
-            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, txtServiceNumber)
-            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, SelOggetto)
-            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, txtNote)
-        End If
-
-        'AjaxManager.AjaxSettings.AddAjaxSetting(rblProposta, SelProponenteAlt)
-        'AjaxManager.AjaxSettings.AddAjaxSetting(rblProposta, SelProponente)
-        'AjaxManager.AjaxSettings.AddAjaxSetting(rblProposta, uscRoleProposer)
-        'AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, SelProponenteAlt)
-        'AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, SelProponente)
         AjaxManager.AjaxSettings.AddAjaxSetting(rblProposta, pnlProposer)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlProposer)
-        'AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscRoleProposer)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnSelectRoleProposer, uscRoleProposer)
         AjaxManager.AjaxSettings.AddAjaxSetting(rtvRoles, rtvRoles)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnSelectRoleProposer, btnSelectRoleProposer)
@@ -1346,8 +1227,10 @@ Partial Public Class ReslInserimento
 
         If ResolutionEnv.ResolutionKindEnabled Then
             AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlAmmTrasp)
+            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlAmount)
             AjaxManager.AjaxSettings.AddAjaxSetting(dgvResolutionKindDocumentSeries, dgvResolutionKindDocumentSeries)
             AjaxManager.AjaxSettings.AddAjaxSetting(ddlResolutionKind, pnlAmmTrasp)
+            AjaxManager.AjaxSettings.AddAjaxSetting(ddlResolutionKind, pnlAmount)
             AjaxManager.AjaxSettings.AddAjaxSetting(windowSelDraftSeries, windowSelDraftSeries)
         End If
 
@@ -1444,7 +1327,7 @@ Partial Public Class ReslInserimento
                 PnlAllegatiVisible = True
                 pnlAdozione.Visible = False
                 pnlAutorizzazioni.Visible = True
-                pnlImmediatelyExecutive.Visible = True
+                pnlImmediatelyExecutive.Visible = ResolutionEnv.ImmediatelyExecutiveEnabled
                 pnlObjectPrivacy.Visible = False
                 pnlOC.Visible = True
                 pnlOCManagement.Visible = False
@@ -1456,7 +1339,7 @@ Partial Public Class ReslInserimento
                 PnlAllegatiVisible = True 'EF 20120111 Attivati gli allegati normali
                 pnlAdozione.Visible = False
                 pnlAutorizzazioni.Visible = False
-                pnlImmediatelyExecutive.Visible = False 'EF 20120111 Disattivato il flag *Immediatamente esecutiva"
+                pnlImmediatelyExecutive.Visible = ResolutionEnv.ImmediatelyExecutiveEnabled 'EF 20120111 Disattivato il flag *Immediatamente esecutiva"
                 pnlObjectPrivacy.Visible = False
 
                 If ResolutionEnv.CheckOCValidations Then
@@ -1482,7 +1365,7 @@ Partial Public Class ReslInserimento
                 End If
             Case Else
                 PnlAllegatiVisible = Facade.ResolutionFacade.IsManagedProperty("idAttachements", proposta, "")
-
+                pnlImmediatelyExecutive.Visible = ResolutionEnv.ImmediatelyExecutiveEnabled
         End Select
 
 
@@ -1544,12 +1427,48 @@ Partial Public Class ReslInserimento
 
         'Inizializzazione pannelli di Tipologia Atto
         pnlAmmTrasp.Visible = False
+        pnlAmount.Visible = False
         pnlResolutionKind.Visible = False
         ddlResolutionKindValidator.Enabled = False
         If ResolutionEnv.ResolutionKindEnabled Then
             pnlResolutionKind.Visible = True
             ddlResolutionKindValidator.Enabled = True
             BindResolutionKind()
+        End If
+
+        'Inizializzazione sezione dati economici
+        If ResolutionEnv.ResolutionAccountingEnabled Then
+            rlbBidTypes.Items.Clear()
+            For Each bidType As BidType In BidTypes
+                Dim ddi As DropDownListItem = New DropDownListItem(bidType.Description, bidType.Acronym.Trim().ToString())
+                If bidType.Acronym.Trim().Equals(STATO_CONTABILITA_NON_CONTABILE) Then
+                    ddi.Enabled = False
+                End If
+                If bidType.Acronym.Trim().Equals(STATO_CONTABILITA_ALLA_RAGIONERIA) Then
+                    ddi.Selected = True
+                    rlbBidTypes.Enabled = False
+                End If
+                rlbBidTypes.Items.Add(ddi)
+            Next bidType
+        End If
+
+        'Visibilità ed etichette dell'organo di controllo
+        Dim ocOptions As OCOptionsModel = ResolutionEnv.OCOptions
+
+        If ocOptions IsNot Nothing Then
+            pnlOCSupervisoryBoard.Visible = ocOptions.SupervisoryBoard.Visible
+            chkOCSupervisoryBoard.Text = ocOptions.SupervisoryBoard.Label
+            pnlOCConfSindaci.Visible = ocOptions.ConfSindaci.Visible
+            chkOCConfSindaci.Text = ocOptions.ConfSindaci.Label
+            pnlOCRegion.Visible = ocOptions.Region.Visible
+            chkOCRegion.Text = ocOptions.Region.Label
+            pnlOCManagement.Visible = ocOptions.Management.Visible
+            chkOCManagement.Text = ocOptions.Management.Label
+            pnlOCCorteConti.Visible = ocOptions.CorteConti.Visible
+            chkOCCorteConti.Text = ocOptions.CorteConti.Label
+            pnlOCOther.Visible = ocOptions.Other.Visible
+            chkOCOther.Text = ocOptions.Other.Label
+            txtOCOtherDescription.Visible = ocOptions.OtherDescription.Visible
         End If
 
         Select Case Action
@@ -1566,6 +1485,8 @@ Partial Public Class ReslInserimento
                     End If
                     BindPageFromModel()
                 End If
+            Case "FromDesk"
+                InitializePageFromDesk()
         End Select
 
         'Pulisco eventuali sessioni attive        
@@ -1580,7 +1501,6 @@ Partial Public Class ReslInserimento
                 UpdateCategory()
             End If
         End If
-
     End Sub
 
     Private Sub InitializeDocumentControls()
@@ -1628,6 +1548,16 @@ Partial Public Class ReslInserimento
             InitDocumentsPrivacyLevels(True)
         End If
 
+        rlbBidTypes.ClearSelection()
+        If SelectedContainerHasAccountingEnabled Then
+            SetAccoutingPanelVisibility(True)
+        Else
+            SetAccoutingPanelVisibility(False)
+        End If
+    End Sub
+
+    Private Sub SetAccoutingPanelVisibility(visible As Boolean)
+        pnlAccounting.Visible = visible
     End Sub
 
     Private Sub InitializeControls()
@@ -1672,6 +1602,7 @@ Partial Public Class ReslInserimento
             Case ConfTo
                 idContainer.AutoPostBack = True
                 uscUploadDocumenti.MultipleDocuments = True
+                uscUploadDocumenti.HideScannerMultipleDocumentButton = True
                 uscSelCategory.CategoryID = ResolutionEnv.CategoryRoot
                 AddHandler idContainer.SelectedIndexChanged, AddressOf IdContainerSelectedIndexChanged
             Case Else
@@ -1684,9 +1615,6 @@ Partial Public Class ReslInserimento
                 pnlAutorizzazioni.Visible = False
             Case 1, 2
                 pnlAutorizzazioni.Visible = True
-                If ProtocolEnv.MultiDomainEnabled AndAlso ProtocolEnv.TenantAuthorizationEnabled Then
-                    uscSettori.TenantEnabled = True
-                End If
                 uscSettori.Required = (ResolutionEnv.AuthorizInsert = 2)
                 AddHandler uscDestinatari.ContactRemoved, AddressOf UscContactRoleUpdate
                 AddHandler uscDestinatari.ContactAdded, AddressOf UscContactRoleUpdate
@@ -1715,15 +1643,6 @@ Partial Public Class ReslInserimento
 
         Return False
     End Function
-
-    Private Sub InitizializePrivacy()
-        '' Pannello controllo privacy
-        '' Se il tipo di atto è delibera, allora attivo il controllo privacy
-        uscPrivacyPanel.PrivacyTypeVisible = ResolutionEnv.UseSharepointPublication AndAlso (rblProposta.SelectedValue = "1" OrElse uscUploadDocumenti.DocumentsCount > 0)
-        uscPrivacyPanel.ValidatorEnabled = uscPrivacyPanel.PrivacyTypeVisible
-        uscPrivacyPanel.ResolutionTypeId = CurrentResolutionType
-        '' Se è invece disposizione, attivo il controllo solo se ho inserito documenti e lo faccio dal callback di documento caricato
-    End Sub
 
     ''' <summary> Riempie la dropdown dei contenitori. </summary>
     Private Sub ContainerDdlFiller()
@@ -1847,37 +1766,6 @@ Partial Public Class ReslInserimento
             idContainer.SelectedIndex = -1
         End If
 
-    End Sub
-
-    Private Sub BlockInsert()
-        ' Provvedo a bloccare i campi dai quali devo copiare i dati
-        uscPrivacyPanel.PrivacySelectorEnabled = False
-
-        uscUploadDocumenti.ReadOnly = True
-        idContainer.Enabled = False
-        If rdpDataAdozione.Visible Then
-            rdpDataAdozione.Enabled = False
-        End If
-        txtServiceNumber.Enabled = False
-        SelOggetto.Enabled = False
-        rblProposta.Enabled = False
-
-        ''Altri campi da bloccare
-        uscDestinatariAlt.ReadOnly = True
-        uscDestinatari.ReadOnly = True
-        'Proponente
-        If RoleProposerEnabled Then
-            uscRoleProposer.ReadOnly = True
-        Else
-            SelProponente.ReadOnly = True
-        End If
-
-        SelProponenteAlt.ReadOnly = True
-        txtNote.Enabled = False
-        uscUploadDocumenti.ReadOnly = True
-        uscUploadAttach.ReadOnly = True
-        uscUploadPrivacyAttachment.ReadOnly = True
-        uscUploadAnnexed.ReadOnly = True
     End Sub
 
     Private Sub BindResolutionKind()
@@ -2052,6 +1940,8 @@ Partial Public Class ReslInserimento
         If ResolutionEnv.ResolutionKindEnabled AndAlso CurrentResolutionModel.ResolutionKind.HasValue Then
             pnlAmmTrasp.Visible = True
             ddlResolutionKind.SelectedValue = CurrentResolutionModel.ResolutionKind.Value.ToString()
+            pnlAmount.Visible = CurrentSelectedResolutionKind.AmountEnabled
+            rfvAmount.Enabled = pnlAmount.Visible
             dgvResolutionKindDocumentSeries.DataSource = CurrentSelectedResolutionKind.ResolutionKindDocumentSeries
             dgvResolutionKindDocumentSeries.DataBind()
         End If

@@ -61,7 +61,7 @@ Namespace Series
         Private ReadOnly Property DraftFinder As DocumentSeriesItemFinder
             Get
                 If _draftFinder Is Nothing Then
-                    _draftFinder = New DocumentSeriesItemFinder()
+                    _draftFinder = New DocumentSeriesItemFinder(CurrentTenant.TenantAOO.UniqueId)
                     _draftFinder.ItemStatusIn = New List(Of DocumentSeriesItemStatus)() From {DocumentSeriesItemStatus.Draft}
                     If LimitDraftToSeries.HasValue Then
                         _draftFinder.IdDocumentSeriesIn = New List(Of Integer)() From {LimitDraftToSeries.Value}

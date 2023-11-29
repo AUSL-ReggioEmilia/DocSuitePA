@@ -121,7 +121,6 @@ Partial Public Class ProtRicerca
         End If
 
         If Not Page.IsPostBack Then
-            trLocazione.Visible = ProtocolEnv.ProtocolSearchLocationEnabled
             sett.SetDisplay(ProtocolEnv.RolesUserProfileEnabled)
 
             '' Se è visibile il componente ComboBox allora esco dalla routine in quanto il caricamento avviene in modo dinamico
@@ -140,8 +139,6 @@ Partial Public Class ProtRicerca
                 btnExpandSearch.Visible = False
             End If
 
-            ddlLocation.DataValueField = "Id"
-            ddlLocation.DataTextField = "Name"
             idDocType.DataValueField = "Id"
             idDocType.DataTextField = "Description"
             cmbTitoliStudio.DataValueField = "Id"
@@ -189,7 +186,7 @@ Partial Public Class ProtRicerca
             End If
             rowAssegnatario.Visible = False
             If ProtocolEnv.IsDistributionEnabled Then
-                Dim canManageableRoles As Boolean = Facade.RoleFacade.GetUserRolesCount(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Manager, True) > 0
+                Dim canManageableRoles As Boolean = Facade.RoleFacade.GetUserRolesCount(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Manager, True, CurrentTenant.TenantAOO.UniqueId) > 0
                 Dim canManagebleContainers As Boolean = CommonShared.UserProtocolCheckRight(ProtocolContainerRightPositions.DocDistribution)
                 If canManageableRoles OrElse canManagebleContainers Then
                     uscSettore.RoleRestictions = RoleRestrictions.None
@@ -235,7 +232,7 @@ Partial Public Class ProtRicerca
             LoadFinder()
 
             If ProtocolEnv.IsDistributionEnabled = True AndAlso IsProtocolDistribution.Checked = True Then
-                CommonUtil.GetInstance().ApplyProtocolFinderSecurity(_finder, SecurityType.Distribute, True)
+                CommonUtil.GetInstance().ApplyProtocolFinderSecurity(_finder, SecurityType.Distribute, CurrentTenant.TenantAOO.UniqueId, True)
                 _finder.NotDistributed = True
                 _finder.IdTypes = ProtocolEnv.ProtocolDistributionTypologies
             End If
@@ -244,7 +241,7 @@ Partial Public Class ProtRicerca
                 Throw New DocSuiteException("Errore di superamento soglia", "Il filtro Mittente/Destinatario supera il massimo grado di complessità prevista, riprovare con meno parole.")
             End If
 
-            If CommonInstance.ApplyProtocolFinderSecurity(_finder, SecurityType.Read, True) AndAlso ProtocolEnv.SearchMaxRecords <> 0 Then
+            If CommonInstance.ApplyProtocolFinderSecurity(_finder, SecurityType.Read, CurrentTenant.TenantAOO.UniqueId, True) AndAlso ProtocolEnv.SearchMaxRecords <> 0 Then
                 _finder.PageSize = ProtocolEnv.SearchMaxRecords
             End If
 
@@ -257,7 +254,7 @@ Partial Public Class ProtRicerca
                     Exit Sub
                 End If
             End If
-
+            _finder.IncludeCountRead = ProtocolEnv.IsLogStatusEnabled
             _finder.RestrictionOnlyRoles = False
             ' Settore autorizzato
             If Not uscSettore.RoleListAdded.IsNullOrEmpty() Then
@@ -370,7 +367,6 @@ Partial Public Class ProtRicerca
         If Not String.IsNullOrEmpty(ddlType.SelectedValue) Then
             _finder.IdTypes = New List(Of Integer) From {Convert.ToInt32(ddlType.SelectedValue)}
         End If
-        _finder.IdLocation = ddlLocation.SelectedValue
 
         If ProtocolEnv.AutocompleteContainer Then
             _finder.IdContainer = rcbContainer.SelectedValue
@@ -547,8 +543,6 @@ Partial Public Class ProtRicerca
         If Not _finder.IdTypes.IsNullOrEmpty() Then
             ddlType.SelectedValue = _finder.IdTypes.First().ToString()
         End If
-        ddlLocation.SelectedValue = _finder.IdLocation
-
 
         If ProtocolEnv.AutocompleteContainer Then
             rcbContainerValue.Value = _finder.IdContainer
@@ -703,7 +697,7 @@ Partial Public Class ProtRicerca
             Dim disabledContainers As New List(Of ListItem)
             For Each container As Container In containers
                 Dim li As New ListItem(container.Name, container.Id.ToString())
-                If container.IsActive = 1 AndAlso container.IsActiveRange() Then
+                If container.IsActive AndAlso container.IsActiveRange() Then
                     '' Se è attivo e valido lo aggiungo direttamente al controllo
                     comboBox.Items.Add(li)
                 Else
@@ -734,7 +728,7 @@ Partial Public Class ProtRicerca
             comboBox.Items.Add(New RadComboBoxItem(String.Empty, String.Empty))
             For Each container As Container In filtered
                 Dim item As New RadComboBoxItem(container.Name, container.Id.ToString())
-                If container.IsActive = 1 AndAlso container.IsActiveRange() Then
+                If container.IsActive AndAlso container.IsActiveRange() Then
                     '' Se è attivo e valido lo aggiungo direttamente al controllo
                     comboBox.Items.Add(item)
                 Else
@@ -781,7 +775,7 @@ Partial Public Class ProtRicerca
 
         Dim behaviour As New TextSearchBehaviour()
         behaviour.MatchMode = TextSearchBehaviour.TextMatchMode.Contains
-        behaviour.AtLeastOne = 0
+        behaviour.AtLeastOne = False
 
         Return behaviour
     End Function
@@ -924,7 +918,6 @@ Partial Public Class ProtRicerca
     End Sub
 
     Private Sub SimpleSearchFiltersVisibility()
-        trLocazione.Visible = ProtocolEnv.ProtocolSearchLocationEnabled
         sett.SetDisplay(ProtocolEnv.RolesUserProfileEnabled)
         SetControlsVisibilityRecursive(False, Me.searchTable.Controls)
         InitializeAdaptiveSearch()
@@ -932,9 +925,7 @@ Partial Public Class ProtRicerca
 
     Private Sub ExpandSearchFiltersVisibility()
         SetControlsVisibilityRecursive(True, Me.searchTable.Controls)
-        trLocazione.Visible = ProtocolEnv.ProtocolSearchLocationEnabled
         sett.SetDisplay(ProtocolEnv.RolesUserProfileEnabled)
-
         SetSpecificFilterVisibility()
     End Sub
 
@@ -996,12 +987,6 @@ Partial Public Class ProtRicerca
                                    chkRecipientContains.Visible = False
                            End Select
                        End Sub
-
-            Case ddlLocation.ID
-                Return Sub()
-                           trLocazione.Visible = ProtocolEnv.ProtocolSearchLocationEnabled
-                       End Sub
-
             Case txtRegistrationDateFrom.ID,
                  txtRegistrationDateTo.ID
                 Return Sub()

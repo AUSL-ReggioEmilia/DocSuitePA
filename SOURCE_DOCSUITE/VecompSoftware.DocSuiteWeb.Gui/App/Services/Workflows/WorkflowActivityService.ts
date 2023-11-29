@@ -126,20 +126,20 @@ class WorkflowActivityService extends BaseService {
             }, error);
     }
 
-  getWorkflowActivities(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-    let url: string = this._configuration.ODATAUrl.concat(`?$expand=WorkflowInstance&$filter=WorkflowInstance/UniqueId eq ${uniqueId} and Status eq 'Done' &$orderby=Name`);
-    this.getRequest(url, null,
-      (response: any) => {
-        if (callback) {
-          let modelMapper = new WorkflowActivityModelMapper();
-          let workflowActivities: WorkflowActivityModel[] = [];
-          $.each(response.value, function (i, value) {
-            workflowActivities.push(modelMapper.Map(value));
-          });
+    getWorkflowActivitiesByWorkflowInstanceId(instanceId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`?$expand=WorkflowInstance&$filter=WorkflowInstance/InstanceId eq ${instanceId} &$orderby=Name`);
+        this.getRequest(url, null,
+          (response: any) => {
+            if (callback) {
+              let modelMapper = new WorkflowActivityModelMapper();
+              let workflowActivities: WorkflowActivityModel[] = [];
+              $.each(response.value, function (i, value) {
+                workflowActivities.push(modelMapper.Map(value));
+              });
 
-          callback(workflowActivities);
-        }
-      }, error);
+              callback(workflowActivities);
+            }
+          }, error);
     }
 
     getActiveByReferenceDocumentUnitId(uniqueId: string, callback?: (data: WorkflowActivityModel[]) => any, error?: (exception: ExceptionDTO) => any): void {
@@ -166,6 +166,34 @@ class WorkflowActivityService extends BaseService {
             (response: any) => {
                 if (callback) {
                     callback(response);
+                }
+            }, error);
+    }
+
+    countByReferenceDocumentUnitId(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        let data: string = `/$count?$filter=DocumentUnitReferenced/UniqueId eq ${uniqueId} and (Status eq 'Todo' or Status eq 'Progress' or Status eq 'Done' or Status eq 'Error') and not (ActivityType in ('BuildProtocol','BuildAchive','BuildPECMail','BuildMessages')) and IsVisible eq true`;
+        url = url.concat(data);
+        this.getRequest(url, null,
+            (response: any) => {
+                if (callback) {
+                    callback(response);
+                }
+            }, error);
+    }
+
+    getByReferenceDocumentUnitId(uniqueId: string, callback?: (data: WorkflowActivityModel[]) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl.concat(`?$filter=DocumentUnitReferenced/UniqueId eq ${uniqueId} and (Status eq 'Todo' or Status eq 'Progress' or Status eq 'Done' or Status eq 'Error') and not (ActivityType in ('BuildProtocol','BuildAchive','BuildPECMail','BuildMessages')) and IsVisible eq true&$orderby=RegistrationDate desc`);
+        this.getRequest(url, null,
+            (response: any) => {
+                if (callback) {
+                    let modelMapper = new WorkflowActivityModelMapper();
+                    let workflowActivities: WorkflowActivityModel[] = [];
+                    $.each(response.value, function (i, value) {
+                        workflowActivities.push(modelMapper.Map(value));
+                    });
+
+                    callback(workflowActivities);
                 }
             }, error);
     }

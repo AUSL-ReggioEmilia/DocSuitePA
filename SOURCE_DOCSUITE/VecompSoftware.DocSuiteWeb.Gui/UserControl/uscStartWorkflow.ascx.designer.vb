@@ -68,13 +68,13 @@ Partial Public Class uscStartWorkflow
     Protected WithEvents lblTemplateCollaboration As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''ddlTemplateCollaboration control.
+    '''uscTemplateCollaborationSelRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ddlTemplateCollaboration As Global.Telerik.Web.UI.RadComboBox
+    Protected WithEvents uscTemplateCollaborationSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscTemplateCollaborationSelRest
 
     '''<summary>
     '''uscRoleProposerRest control.
@@ -239,6 +239,15 @@ Partial Public Class uscStartWorkflow
     Protected WithEvents uscWorkflowFolderSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscWorkflowFolderSelRest
 
     '''<summary>
+    '''uscRoleUserSelRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscRoleUserSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleUserSelRest
+
+    '''<summary>
     '''lblDatas control.
     '''</summary>
     '''<remarks>
@@ -318,6 +327,24 @@ Partial Public Class uscStartWorkflow
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ctrlTxtWf As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
+    '''pnlNotificationMessages control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlNotificationMessages As Global.Telerik.Web.UI.RadPageLayout
+
+    '''<summary>
+    '''radListMessages control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents radListMessages As Global.Telerik.Web.UI.RadListBox
 
     '''<summary>
     '''btnConfirm control.

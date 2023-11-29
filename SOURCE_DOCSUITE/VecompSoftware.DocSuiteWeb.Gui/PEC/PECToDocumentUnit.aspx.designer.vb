@@ -311,15 +311,6 @@ Partial Public Class PECToDocumentUnit
     Protected WithEvents chbEMailCertified As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
-    '''chkUseOChart control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents chkUseOChart As Global.System.Web.UI.WebControls.CheckBox
-
-    '''<summary>
     '''uscMittenti control.
     '''</summary>
     '''<remarks>

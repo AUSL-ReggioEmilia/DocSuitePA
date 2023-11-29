@@ -11,8 +11,7 @@ Partial Public Class TbltTitoloStudio
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         If Not CommonShared.HasGroupAdministratorRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
 
         InitializeAjaxSettings()
@@ -96,8 +95,8 @@ Partial Public Class TbltTitoloStudio
 
     Private Sub SetRecoveryButton()
         Dim tn As RadTreeNode = RadTreeView1.SelectedNode
-        
-        If tn.Attributes("isActive").Eq("0") Then
+
+        If tn.Attributes("isActive").Eq("false") Then
             btnElimina.Text = "Recupera"
             btnElimina.OnClientClick = "OpenEditWindow('windowEdit','Recovery');return false;"
         Else
@@ -130,7 +129,7 @@ Partial Public Class TbltTitoloStudio
             tn.Value = contacttitle.Id.ToString()
             tn.Text = contacttitle.Description
 
-            If contacttitle.IsActive = 0 Then
+            If Not contacttitle.IsActive Then
                 'tn.Attributes.Add("Color", "#808080")
                 tn.ForeColor = Drawing.Color.Gray
             End If

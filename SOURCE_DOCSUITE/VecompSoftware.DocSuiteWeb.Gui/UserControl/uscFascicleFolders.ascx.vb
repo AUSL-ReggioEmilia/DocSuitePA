@@ -11,6 +11,7 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Services.Logging
 Imports documentModelAPI = VecompSoftware.DocSuiteWeb.Model.Entities.Commons.DocumentModel
 
 Public Class uscFascicleFolders
@@ -71,36 +72,44 @@ Public Class uscFascicleFolders
 
     Protected Sub uscFascicleFoldersAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
         Dim model As String = e.Argument
-        Dim arg As AjaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(model)
-        Select Case arg.ActionName
-            Case "Upload_document"
-                Dim deserialized As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(arg.Value(0))
-                For Each item As KeyValuePair(Of String, String) In deserialized
-                    Dim name As String = item.Value
-                    Dim chainId As Guid = If(arg.Value(1) Is Nothing, Guid.Empty, Guid.Parse(arg.Value(1)))
-                    Dim biblosFunc As Func(Of DocumentInfo, BiblosDocumentInfo) = Function(d As DocumentInfo) SaveBiblosDocument(d, chainId)
-                    Dim doc As New TempFileDocumentInfo(name, New FileInfo(Path.Combine(CommonUtil.GetInstance().AppTempPath, item.Key)))
-                    Dim savedTemplate As BiblosDocumentInfo = biblosFunc(doc)
-                    chainId = savedTemplate.ChainId
+        Dim arg As AjaxModel = Nothing
+        Try
+            arg = JsonConvert.DeserializeObject(Of AjaxModel)(model)
+        Catch ex As Exception
+            FileLogger.Warn(LoggerName, ex.Message, ex)
+        End Try
+        If arg IsNot Nothing Then
+            Select Case arg.ActionName
+                Case "Upload_document"
+                    Dim deserialized As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(arg.Value(0))
+                    For Each item As KeyValuePair(Of String, String) In deserialized
+                        Dim name As String = item.Value
+                        Dim chainId As Guid = If(arg.Value(1) Is Nothing, Guid.Empty, Guid.Parse(arg.Value(1)))
+                        Dim biblosFunc As Func(Of DocumentInfo, BiblosDocumentInfo) = Function(d As DocumentInfo) SaveBiblosDocument(d, chainId)
+                        Dim doc As New TempFileDocumentInfo(name, New FileInfo(Path.Combine(CommonUtil.GetInstance().AppTempPath, item.Key)))
+                        Dim savedTemplate As BiblosDocumentInfo = biblosFunc(doc)
+                        chainId = savedTemplate.ChainId
 
-                    AjaxManager.ResponseScripts.Add(String.Format(BIND_MISCELLANEA, chainId))
-                Next
-            Case "Scan_document"
-                Dim documents As List(Of documentModelAPI) = JsonConvert.DeserializeObject(Of List(Of documentModelAPI))(arg.Value(0))
-                Dim tempDoc As TempFileDocumentInfo
-                Dim pathInfo As String
-                For Each document As documentModelAPI In documents
-                    pathInfo = Path.Combine(CommonUtil.GetInstance().TempDirectory.FullName, FileHelper.UniqueFileNameFormat(document.FileName, DocSuiteContext.Current.User.UserName))
-                    File.WriteAllBytes(pathInfo, document.ContentStream)
-                    tempDoc = New TempFileDocumentInfo(document.FileName, New FileInfo(pathInfo))
-                    Dim chainId As Guid = If(arg.Value(1) Is Nothing, Guid.Empty, Guid.Parse(arg.Value(1)))
-                    Dim biblosFunc As Func(Of DocumentInfo, BiblosDocumentInfo) = Function(d As DocumentInfo) SaveBiblosDocument(d, chainId)
-                    Dim savedTemplate As BiblosDocumentInfo = biblosFunc(tempDoc)
-                    chainId = savedTemplate.ChainId
+                        AjaxManager.ResponseScripts.Add(String.Format(BIND_MISCELLANEA, chainId))
+                    Next
+                Case "Scan_document"
+                    Dim documents As List(Of documentModelAPI) = JsonConvert.DeserializeObject(Of List(Of documentModelAPI))(arg.Value(0))
+                    Dim tempDoc As TempFileDocumentInfo
+                    Dim pathInfo As String
+                    For Each document As documentModelAPI In documents
+                        pathInfo = Path.Combine(CommonUtil.GetInstance().TempDirectory.FullName, FileHelper.UniqueFileNameFormat(document.FileName, DocSuiteContext.Current.User.UserName))
+                        File.WriteAllBytes(pathInfo, document.ContentStream)
+                        tempDoc = New TempFileDocumentInfo(document.FileName, New FileInfo(pathInfo))
+                        Dim chainId As Guid = If(arg.Value(1) Is Nothing, Guid.Empty, Guid.Parse(arg.Value(1)))
+                        Dim biblosFunc As Func(Of DocumentInfo, BiblosDocumentInfo) = Function(d As DocumentInfo) SaveBiblosDocument(d, chainId)
+                        Dim savedTemplate As BiblosDocumentInfo = biblosFunc(tempDoc)
+                        chainId = savedTemplate.ChainId
 
-                    AjaxManager.ResponseScripts.Add(String.Format(BIND_MISCELLANEA, chainId))
-                Next
-        End Select
+                        AjaxManager.ResponseScripts.Add(String.Format(BIND_MISCELLANEA, chainId))
+                    Next
+            End Select
+        End If
+
     End Sub
 
 #End Region

@@ -75,7 +75,6 @@
       "FirstNode4": { "Name": "Ricerca" },
       "FirstNode5": { "Name": "Recupero" },
       "FirstNode6": { "Name": "Elenco per recupero" },
-      "FirstNode7": { "Name": "Verifica archiviazione" },
       "FirstNode8": { "Name": "Recupero errori" },
       "FirstNode9": { "Name": "Protocolli incompleti" },
       "FirstNode10": { "Name": "Importazione lettere" },
@@ -119,7 +118,8 @@
           "SecondNode11": { "Name": "Inserimento mese" },
           "SecondNode12": { "Name": "Da accettare" },
           "SecondNode13": { "Name": "Autorizzati non accettati" },
-          "SecondNode14": { "Name": "Respinti" }
+          "SecondNode14": { "Name": "Respinti" },
+          "SecondNode15": { "Name": "Mai distribuiti" }
         }
       },
       "FirstNode19": {
@@ -235,8 +235,6 @@
           "SecondNode1": { "Name": "Archiviata" },
           "SecondNode2": { "Name": "In attesa dati contabili" },
           "SecondNode3": { "Name": "Contabilizzata" },
-          "SecondNode4": { "Name": "B2B in errore" },
-          "SecondNode5": { "Name": "B2B in lavorazione" },
           "SecondNode6": { "Name": "Flusso di lavoro" }
         }
       },
@@ -263,7 +261,6 @@
     "Nodes": {
       "FirstNode1": { "Name": "Inserimento" },
       "FirstNode2": { "Name": "Ricerca" },
-      "FirstNode3": { "Name": "Verifica archiviazione" },
       "FirstNode5": { "Name": "PEC a collegio sindacale" },
       "FirstNode6": { "Name": "Ricerca flusso" },
       "FirstNode7": { "Name": "Firma ultima pagina" },
@@ -312,7 +309,8 @@
           "SecondNode15": { "Name": "Inserimento oggi" },
           "SecondNode16": { "Name": "Inserimento settimana" },
           "SecondNode17": { "Name": "Inserimento mese" },
-          "SecondNode18": { "Name": "Alla verifica" }
+          "SecondNode18": { "Name": "Alla verifica" },
+          "SecondNode19": { "Name": "Assegnate a SC Affari Generali" }
         }
       },
       "FirstNode17": { "Name": "Controllo avanzamento flusso" }
@@ -334,15 +332,16 @@
     "Name": "Tabelle",
     "Nodes": {
       "FirstNode1": {
-        "Name": "Organigramma",
+        "Name": "Sicurezza applicativa",
         "Nodes": {
-          "SecondNode1": { "Name": "Gestione" }
+          "SecondNode1": { "Name": "Utenti" },
+          "SecondNode2": { "Name": "Gruppi" },
+          "SecondNode3": { "Name": "Settori" },
+          "SecondNode4": { "Name": "Contenitori" },
+          "SecondNode5": { "Name": "Organigramma" },
+          "SecondNode6": { "Name": "Archivi BiblosDS" }
         }
       },
-      "FirstNode2": { "Name": "Oggetti" },
-      "FirstNode3": { "Name": "Categorie servizio" },
-      "FirstNode4": { "Name": "Tipologia spedizione" },
-      "FirstNode6": { "Name": "Notifiche SMS ricezione PEC" },
       "FirstNode7": {
         "Name": "Archivi",
         "Nodes": {
@@ -354,10 +353,11 @@
       "FirstNode8": {
         "Name": "Gestione archivistica",
         "Nodes": {
-          "SecondNode4": { "Name": "Gestione serie e volumi" },
-          "SecondNode1": { "Name": "Classificatore/Titolario" },
-          "SecondNode2": { "Name": "Massimario di scarto" },
-          "SecondNode3": { "Name": "Versione del classificatore/titolario" }
+          "SecondNode1": { "Name": "Elenco AOO" },
+          "SecondNode2": { "Name": "Gestione serie e volumi" },
+          "SecondNode3": { "Name": "Classificatore" },
+          "SecondNode4": { "Name": "Massimario di scarto" },
+          "SecondNode5": { "Name": "Versione del classificatore" }
         }
       },
       "FirstNode9": {
@@ -365,15 +365,10 @@
         "Nodes": {
           "SecondNode1": { "Name": "Rubrica" },
           "SecondNode2": { "Name": "Liste di contatti" },
-          "SecondNode3": { "Name": "Titoli studio" }
-        }
-      },
-      "FirstNode11": { "Name": "Settori" },
-      "FirstNode12": {
-        "Name": "Gestione contenitori" ,
-        "Nodes": {
-          "SecondNode1": { "Name": "Contenitori" },
-          "SecondNode2": { "Name": "Deposito Documentale" }
+          "SecondNode3": { "Name": "Titoli studio" },
+          "SecondNode4": { "Name": "Oggetti" },
+          "SecondNode5": { "Name": "Categorie servizio" },
+          "SecondNode6": { "Name": "Tipologia spedizione" }
         }
       },
       "FirstNode14": { "Name": "Scatoloni" },
@@ -387,30 +382,23 @@
           "SecondNode5": { "Name": "Contenitori con sicurezza" }
         }
       },
-      "FirstNode18": { "Name": "Attività" },
-      "FirstNode19": { "Name": "Gruppi" },
-      "FirstNode24": { "Name": "Utenti" },
       "FirstNode21": {
         "Name": "Template",
         "Nodes": {
-          "SecondNode1": { "Name": "Template di protocollo" },
-          "SecondNode2": { "Name": "Template di collaborazione" },
-          "SecondNode3": { "Name": "Template di trasparenza" },
-          "SecondNode4": { "Name": "Template documenti" }
+          "SecondNode1": { "Name": "Template workflow" },
+          "SecondNode2": { "Name": "Template protocollo" },
+          "SecondNode3": { "Name": "Template collaborazione" },
+          "SecondNode4": { "Name": "Template trasparenza" },
+          "SecondNode5": { "Name": "Template documenti" },
+          "SecondNode6": { "Name": "Template metadati" }
         }
       },
-      "FirstNode23": { "Name": "Metadati" },
       "FirstNode25": { "Name": "Livelli riservatezza" },
       "FirstNode26": {
         "Name": "Posta elettronica certificata",
         "Nodes": {
-          "SecondNode1": { "Name": "Caselle PEC" }
-        }
-      },
-      "FirstNode27": {
-        "Name": "Gestione AOO",
-        "Nodes": {
-          "SecondNode1": { "Name": "Elenco AOO" }
+          "SecondNode1": { "Name": "Caselle PEC" },
+          "SecondNode2": { "Name": "Notifiche SMS" }
         }
       }
     }
@@ -422,17 +410,12 @@
         "Name": "Super Admin",
         "Nodes": {
           "SecondNode1": { "Name": "Parametri" },
-          "SecondNode2": { "Name": "Locations" },
           "SecondNode3": { "Name": "Mapping" },
-          "SecondNode4": { "Name": "Impersonator" },
           "SecondNode5": { "Name": "BiblosDS" },
           "SecondNode6": { "Name": "Rendering" },
           "SecondNode7": { "Name": "SmtpMail" },
           "SecondNode8": { "Name": "Trace" },
-          "SecondNode9": { "Name": "Importazione WS" },
-          "SecondNode10": { "Name": "Watermark" },
-          "SecondNode11": { "Name": "Test Signatura" },
-          "SecondNode14": { "Name": "API Providers" }
+          "SecondNode11": { "Name": "Test Signatura" }
         }
       },
       "FirstNode2": { "Name": "Lista accessi" },
@@ -445,17 +428,9 @@
         }
       },
       "FirstNode6": { "Name": "Configurazione" },
-      "FirstNode7": {
-        "Name": "BiblosDS",
-        "Nodes": {
-          "SecondNode1": { "Name": "Supporti" },
-          "SecondNode2": { "Name": "Catena documento" }
-        }
-      },
       "FirstNode8": {
         "Name": "Impostazioni PEC Mail",
         "Nodes": {
-          "SecondNode1": { "Name": "Gestione caselle PEC" },
           "SecondNode2": { "Name": "Gestione profili caselle PEC" },
           "SecondNode3": { "Name": "Gestione JeepService" }
         }
@@ -470,20 +445,16 @@
       "FirstNode10": {
         "Name": "DataBase",
         "Nodes": {
-          "SecondNode1": { "Name": "Verifica tabelle" },
           "SecondNode2": { "Name": "Contatori" },
-          "SecondNode3": { "Name": "Contatori amministrazione trasparente" },
-          "SecondNode4": { "Name": "Protocollo" }
+          "SecondNode3": { "Name": "Contatori amministrazione trasparente" }
         }
       },
-      "FirstNode11": { "Name": "Allineamento protocolli TD" },
       "FirstNode12": {
         "Name": "Gestione Log",
         "Nodes": {
           "SecondNode1": { "Name": "Protocollo" },
           "SecondNode2": { "Name": "Pratiche" },
           "SecondNode3": { "Name": "Tabelle" },
-          "SecondNode4": { "Name": "Servizi" },
           "SecondNode5": { "Name": "Errori" }
         }
       },
@@ -499,7 +470,6 @@
         "Nodes": {
           "SecondNode1": { "Name": "Gestione ComputerLog" },
           "SecondNode2": { "Name": "Configurazione scanner" },
-          "SecondNode3": { "Name": "Allineamento progressivi protocollo" },
           "SecondNode4": { "Name": "Reset parameters" }
         }
       },

@@ -50,8 +50,19 @@ Partial Public Class uscCollGrid
     Public Const COLUMN_TO_PROTOCOL As String = "cToProtocol"
     Public Const COLUMN_DOWNLOAD As String = "cDownload"
     Public Const COLUMN_SIGN_REQUIRED As String = "signDocRequired"
-    Public Const COLUMN_TENANT As String = "TenantModel.TenantName"
     Public Const COLUMN_ENTITY_DOCUMENT_TYPE As String = "Entity.DocumentType"
+    Private Const CUSTOM_EXPORT_TEXT As String = "Esporta per firmatario"
+    Private Const CUSTOM_EXPORT_TOOLTIP As String = "Esporta tutti i risultati della ricerca raggruppati per firmatari in Excel"
+    Private Const EXCEL_COLUMN_ID As String = "Identificativo"
+    Private Const EXCEL_COLUMN_NUMBER As String = "Numero"
+    Private Const EXCEL_COLUMN_MEMORANDUM_DATE As String = "Data Prom."
+    Private Const EXCEL_COLUMN_SUBJECT As String = "Oggetto"
+    Private Const EXCEL_COLUMN_NOTE As String = "Note"
+    Private Const EXCEL_COLUMN_PROPOSER As String = "Proponente"
+    Private Const EXCEL_COLUMN_TO_SIGN As String = "Da visionare/firmare"
+    Private Const EXCEL_COLUMN_SIGN_DATE As String = "Data di firma"
+    Private Const EXCEL_COLUMN_IS_ACTIVE As String = "Attivo?"
+    Private Const EXCEL_COLUMN_REGISTRATION_DATE As String = "Data collaborazione"
 
     Const ContentName As String = "~\UserControl\uscCollOffline.ascx"
     Private _currentUDSFacade As UDSFacade
@@ -134,54 +145,21 @@ Partial Public Class uscCollGrid
                     End Using
                 End If
             Case "Selz"
-                SetCollSelected(Integer.Parse(arguments(0)), arguments(1), arguments(2))
+                SetCollSelected(Integer.Parse(arguments(0)), arguments(1))
             Case "Prot"
                 Dim url As String = String.Concat("~/Prot/ProtVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&Type=Prot", arguments(0))))
-                If ProtocolEnv.MultiDomainEnabled AndAlso Not DocSuiteContext.Current.CurrentTenant.TenantName.Eq(arguments(3)) Then
-                    Dim tenant As TenantModel = DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) x.TenantName.Eq(arguments(3)))
-                    url = String.Format("{0}/?Tipo=Prot&Azione=Apri&Anno={1}&Numero={2}", tenant.DSWUrl, arguments(1), arguments(2))
-                    Response.RedirectToNewWindow(url)
-                End If
                 Response.Redirect(ResolveUrl(url))
             Case "Resl"
                 Dim url As String = String.Concat("~/Resl/ReslVisualizza.aspx?", CommonShared.AppendSecurityCheck(String.Format("IdResolution={0}&Type=Resl", arguments(0))))
-                If ProtocolEnv.MultiDomainEnabled AndAlso Not DocSuiteContext.Current.CurrentTenant.TenantName.Eq(arguments(1)) Then
-                    Dim tenant As TenantModel = DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) x.TenantName.Eq(arguments(1)))
-                    url = String.Format("{0}/?Tipo=Resl&Azione=Apri&Identificativo={1}", tenant.DSWUrl, arguments(0))
-                    Response.RedirectToNewWindow(url)
-                End If
                 Response.Redirect(ResolveUrl(url))
             Case "Series"
                 Dim url As String = String.Concat("~/Series/Item.aspx?", CommonShared.AppendSecurityCheck(String.Format("IdDocumentSeriesItem={0}&Type=Series&Action=View", arguments(0))))
-                If ProtocolEnv.MultiDomainEnabled AndAlso Not DocSuiteContext.Current.CurrentTenant.TenantName.Eq(arguments(1)) Then
-                    Dim tenant As TenantModel = DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) x.TenantName.Eq(arguments(1)))
-                    url = String.Format("{0}/?Tipo=DocumentSeries&Azione=Apri&IdDocumentSeriesItem={1}", tenant.DSWUrl, arguments(0))
-                    Response.RedirectToNewWindow(url)
-                End If
                 Response.Redirect(ResolveUrl(url))
             Case "UDS"
                 Dim url As String = String.Concat("~/UDS/UDSView.aspx?Type=UDS&IdUDS=", arguments(0), "&IdUDSRepository=", arguments(1))
-                If ProtocolEnv.MultiDomainEnabled AndAlso Not DocSuiteContext.Current.CurrentTenant.TenantName.Eq(arguments(2)) Then
-                    Dim tenant As TenantModel = DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) x.TenantName.Eq(arguments(2)))
-                    url = String.Format("{0}/?Tipo=UDS&Azione=Apri&IdUDS={1}&IdUDSRepository={2}", tenant.DSWUrl, arguments(0), arguments(1))
-                    Response.RedirectToNewWindow(url)
-                End If
                 Response.Redirect(ResolveUrl(url))
 
         End Select
-    End Sub
-
-    Protected Sub cmbTenants_SelectedIndexChanged(sender As Object, e As RadComboBoxSelectedIndexChangedEventArgs)
-        Dim comboBox As RadComboBox = DirectCast(sender, RadComboBox)
-
-        Dim filterItem As GridFilteringItem = DirectCast(comboBox.NamingContainer, GridFilteringItem)
-        Dim filters As IList(Of IFilterExpression) = New List(Of IFilterExpression)()
-        Dim filterType As Data.FilterExpression.FilterType = Data.FilterExpression.FilterType.NoFilter
-        If (Not String.IsNullOrEmpty(comboBox.SelectedValue)) Then
-            filterType = Data.FilterExpression.FilterType.EqualTo
-        End If
-        filters.Add(New Data.FilterExpression(COLUMN_TENANT, GetType(Short), comboBox.SelectedValue, filterType))
-        filterItem.FireCommandEvent("CustomFilter", filters)
     End Sub
 
     Private Sub gvCollaboration_ItemDataBound(sender As Object, e As GridItemEventArgs) Handles gvCollaboration.ItemDataBound
@@ -192,21 +170,6 @@ Partial Public Class uscCollGrid
                 Dim isRequired As Boolean = False
                 Boolean.TryParse(groupDataRow("IsSignedRequired").ToString(), isRequired)
                 item.DataCell.Text = If(isRequired, "Firma obbligatoria", "Firma non obbligatoria")
-            End If
-        End If
-
-        If (TypeOf e.Item Is GridFilteringItem) Then
-            Dim filterItem As GridFilteringItem = DirectCast(e.Item, GridFilteringItem)
-            Dim combo As RadComboBox = DirectCast(filterItem.FindControl("cmbTenants"), RadComboBox)
-            combo.Items.Insert(0, New RadComboBoxItem("", ""))
-            For Each tenant As TenantModel In DocSuiteContext.Current.Tenants
-                combo.Items.Add(New RadComboBoxItem(tenant.TenantName, tenant.TenantName))
-            Next
-
-            If gvCollaboration.Finder.FilterExpressions.Any(Function(x) x.Key.Eq(COLUMN_TENANT)) Then
-                Dim control As Control = filterItem.FindControl("cmbTenants")
-                Dim value As String = gvCollaboration.Finder.FilterExpressions(COLUMN_TENANT).FilterValue.ToString()
-                FilterHelper.SetFilterValue(control, value)
             End If
         End If
 
@@ -223,11 +186,11 @@ Partial Public Class uscCollGrid
                 Select Case item.Entity.DocumentType
                     Case CollaborationDocumentType.P.ToString(),
                          CollaborationDocumentType.W.ToString()
-                        imgDocTypeItem.Image.ImageUrl = "../Comm/images/Docsuite/Protocollo16.gif"
+                        imgDocTypeItem.Image.ImageUrl = "../Comm/Images/DocSuite/Protocollo16.png"
                     Case CollaborationDocumentType.D.ToString()
-                        imgDocTypeItem.Image.ImageUrl = "../Comm/images/Docsuite/Delibera16.gif"
+                        imgDocTypeItem.Image.ImageUrl = "../Comm/Images/DocSuite/Delibera16.png"
                     Case CollaborationDocumentType.A.ToString()
-                        imgDocTypeItem.Image.ImageUrl = "../Comm/images/Docsuite/Atto16.gif"
+                        imgDocTypeItem.Image.ImageUrl = "../Comm/images/Docsuite/Atto16.png"
                     Case CollaborationDocumentType.S.ToString(),
                          CollaborationDocumentType.UDS.ToString()
                         imgDocTypeItem.Image.ImageUrl = ImagePath.SmallDocumentSeries
@@ -238,7 +201,7 @@ Partial Public Class uscCollGrid
                     imgDocTypeItem.Image.ImageUrl = ImagePath.SmallDocumentSeries
                 End If
                 imgDocTypeItem.ToolTip = item.Entity.TemplateName
-                imgDocTypeItem.CommandArgument = String.Format("{0}|{1}|{2}", item.Entity.IdCollaboration, item.Entity.DocumentType, item.TenantModel.TenantName)
+                imgDocTypeItem.CommandArgument = String.Format("{0}|{1}", item.Entity.IdCollaboration, item.Entity.DocumentType)
             End If
 
             Dim lblHasDocumentExtracted As Label = CType(e.Item.FindControl("lblHasDocumentExtracted"), Label)
@@ -299,13 +262,7 @@ Partial Public Class uscCollGrid
                 If Not item.Entity.DocumentType.Eq(CollaborationDocumentType.O.ToString()) Then
                     imgTypeItem.Image.ImageUrl = ImagePath.FromFileNoSignature(MainDocumentName(item.Entity.CollaborationVersionings), True)
                     Dim url As String = String.Concat("~/viewers/CollaborationViewer.aspx?", CommonShared.AppendSecurityCheck(String.Concat("DataSourceType=coll&id=", item.Entity.IdCollaboration.ToString())))
-                    If ProtocolEnv.MultiDomainEnabled AndAlso Not item.TenantModel.CurrentTenant Then
-                        url = String.Format("{0}/?Tipo=Coll&Azione=Documenti&Identificativo={1}", item.TenantModel.DSWUrl, item.Entity.IdCollaboration)
-                        imgTypeItem.NavigateUrl = url
-                        imgTypeItem.Target = "_blank"
-                    Else
-                        imgTypeItem.NavigateUrl = ResolveUrl(url)
-                    End If
+                    imgTypeItem.NavigateUrl = ResolveUrl(url)
                 Else
                     imgTypeItem.Visible = False
                 End If
@@ -366,61 +323,36 @@ Partial Public Class uscCollGrid
                 ' testo e argomento
                 Select Case item.Entity.DocumentType
                     Case CollaborationDocumentType.P.ToString(), CollaborationDocumentType.U.ToString(), CollaborationDocumentType.W.ToString()
-                        Dim protocolId As String = ""
-                        If item.Entity.Year.HasValue AndAlso item.Entity.Number.HasValue Then
-                            protocolId = String.Format("{0}/{1:0000000}", item.Entity.Year.Value, item.Entity.Number.Value)
-                        End If
-                        lnkNumberItem.Text = String.Format("{0}{1}{2}", protocolId, WebHelper.Br, item.Entity.PublicationDate.DefaultString())
-                        Dim currentCollaboration As Collaboration = Facade.CollaborationFacade.GetById(item.Entity.IdCollaboration.Value)
-                        lnkNumberItem.CommandArgument = String.Format("{0}|{1}|{2:0000000}|{3}", currentCollaboration.IdDocumentUnit, item.Entity.Year, item.Entity.Number, item.TenantModel.TenantName)
-
-                    Case CollaborationDocumentType.D.ToString(), CollaborationDocumentType.A.ToString()
-                        Dim reslType As ResolutionType
-                        If item.Entity.HasResolution() Then
-                            If item.Entity.DocumentType.Eq(CollaborationDocumentType.D.ToString()) Then
-                                reslType = Facade.ResolutionTypeFacade.GetById(ResolutionType.IdentifierDelibera)
-                            Else
-                                reslType = Facade.ResolutionTypeFacade.GetById(ResolutionType.IdentifierDetermina)
+                        If item.Entity.HasProtocol() Then
+                            Dim protocolId As String = String.Empty
+                            If item.Entity.Year.HasValue AndAlso item.Entity.Number.HasValue Then
+                                protocolId = $"{item.Entity.DocumentUnit.Title}"
                             End If
-                            Dim formattedNumber As String = Facade.ResolutionFacade.ComposeReslNumber(item.Entity.Resolution.Year, item.Entity.Resolution.Number,
-                                                                                                          item.Entity.Resolution.ServiceNumber, item.Entity.Resolution.IdResolution.Value, reslType, item.Entity.Resolution.AdoptionDate,
-                                                                                                          item.Entity.Resolution.PublishingDate, False, item.TenantModel.TenantName)
-                            lnkNumberItem.Text = If(item.Entity.HasResolution(), formattedNumber, "")
-                            lnkNumberItem.CommandArgument = String.Format("{0}|{1}", item.Entity.Resolution.IdResolution, item.TenantModel.TenantName)
+                            lnkNumberItem.Text = $"{protocolId}{WebHelper.Br}{item.Entity.PublicationDate.DefaultString()}"
+                            lnkNumberItem.CommandArgument = $"{item.Entity.DocumentUnit.UniqueId}|{item.Entity.Year}|{item.Entity.Number:0000000}"
+                        End If
+                    Case CollaborationDocumentType.D.ToString(), CollaborationDocumentType.A.ToString()
+                        If item.Entity.HasResolution() Then
+                            lnkNumberItem.Text = $"{item.Entity.DocumentUnit.DocumentUnitName} {item.Entity.DocumentUnit.Title} del {item.Entity.DocumentUnit.RegistrationDate.DefaultString()}"
+                            lnkNumberItem.CommandArgument = $"{item.Entity.DocumentUnit.EntityId}"
                         End If
                     Case CollaborationDocumentType.S.ToString()
                         If item.Entity.HasSeries() Then
-                            If item.Entity.DocumentSeriesItem.Year.HasValue Then
-                                lnkNumberItem.Text = String.Format("{0}/{1:0000000}", item.Entity.DocumentSeriesItem.Year, item.Entity.DocumentSeriesItem.Number)
+                            If item.Entity.DocumentUnit.Year > 0 Then
+                                lnkNumberItem.Text = $"{item.Entity.DocumentUnit.Title}"
                             Else
-                                lnkNumberItem.Text = String.Format("Bozza N. {0}", item.Entity.DocumentSeriesItem.IdDocumentSeriesItem)
+                                lnkNumberItem.Text = $"Bozza N. {item.Entity.DocumentUnit.EntityId}"
                             End If
-                            lnkNumberItem.CommandArgument = String.Format("{0}|{1}", item.Entity.DocumentSeriesItem.IdDocumentSeriesItem, item.TenantModel.TenantName)
+                            lnkNumberItem.CommandArgument = $"{item.Entity.DocumentUnit.EntityId}"
                         End If
                 End Select
 
-                If item.Entity.DocumentType.Eq(CollaborationDocumentType.UDS.ToString()) OrElse Integer.TryParse(item.Entity.DocumentType, 0) Then
-                    Dim results As ICollection(Of WebAPIDto(Of Entity.UDS.UDSCollaboration)) = WebAPIImpersonatorFacade.ImpersonateFinder(CurrentUDSCollaborationFinder,
-                        Function(impersonationType, finder)
-                            finder.ResetDecoration()
-                            finder.EnablePaging = False
-                            finder.IdCollaboration = item.Entity.IdCollaboration
-                            finder.ExpandRepository = True
-                            Return finder.DoSearch()
-                        End Function)
-
-                    If results IsNot Nothing Then
-                        Dim udsCollaboration As Entity.UDS.UDSCollaboration = results.Select(Function(s) s.Entity).SingleOrDefault()
-                        If udsCollaboration IsNot Nothing Then
-                            Dim udsId As String = String.Empty
-                            Dim tmpRepository As UDSRepository = CurrentUDSRepositoryFacade.GetById(udsCollaboration.Repository.UniqueId)
-                            Dim tmpUDS As UDSDto = CurrentUDSFacade.GetUDSSource(tmpRepository, String.Concat("$filter=UDSId eq ", udsCollaboration.IdUDS))
-                            If tmpUDS IsNot Nothing Then
-                                udsId = String.Format("{0}/{1:0000000}", tmpUDS.Year, tmpUDS.Number)
-                            End If
-                            lnkNumberItem.Text = String.Format("{0}{1}{2}", udsId, WebHelper.Br, item.Entity.PublicationDate.DefaultString())
-                            lnkNumberItem.CommandArgument = String.Format("{0}|{1}|{2}", udsCollaboration.IdUDS, udsCollaboration.Repository.UniqueId, item.TenantModel.TenantName)
-                        End If
+                Dim udsTypeParsed As Integer = 0
+                If item.Entity.DocumentType.Eq(CollaborationDocumentType.UDS.ToString()) OrElse Integer.TryParse(item.Entity.DocumentType, udsTypeParsed) AndAlso udsTypeParsed >= 100 Then
+                    If item.Entity.DocumentUnit IsNot Nothing AndAlso item.Entity.DocumentUnit.IdUDSRepository.HasValue Then
+                        Dim udsId As String = $"{item.Entity.DocumentUnit.Title}"
+                        lnkNumberItem.Text = $"{udsId}{WebHelper.Br}{item.Entity.PublicationDate.DefaultString()}"
+                        lnkNumberItem.CommandArgument = $"{item.Entity.DocumentUnit.UniqueId}|{item.Entity.DocumentUnit.IdUDSRepository.Value}"
                     End If
                 End If
             End If
@@ -428,11 +360,6 @@ Partial Public Class uscCollGrid
             Dim lblSignsItem As Label = CType(e.Item.FindControl("lblSigns"), Label)
             If lblSignsItem IsNot Nothing Then
                 lblSignsItem.Text = SetSignsLabel(item.Entity)
-            End If
-
-            Dim lblTenantName As Label = CType(e.Item.FindControl("lblTenantName"), Label)
-            If lblTenantName IsNot Nothing Then
-                lblTenantName.Text = item.TenantModel.TenantName
             End If
 
             Dim lblToProtocolItem As Label = CType(e.Item.FindControl("lblToProtocol"), Label)
@@ -447,27 +374,34 @@ Partial Public Class uscCollGrid
         End If
     End Sub
 
+    Private Sub gvCollaboration_Init(sender As Object, e As EventArgs) Handles gvCollaboration.Init
+        gvCollaboration.EnableCustomExportButtons = True
+        gvCollaboration.CustomExportButtonText = CUSTOM_EXPORT_TEXT
+        gvCollaboration.CustomExportButtonTooltip = CUSTOM_EXPORT_TOOLTIP
+    End Sub
+
+    Private Sub gvCollaboration_OnCustomExportDataRequest(sender As Object, e As EventArgs) Handles gvCollaboration.OnCustomExportDataRequest
+        gvCollaboration.DataBindFinder()
+        Dim customTable As Table = CreateCustomTable()
+        gvCollaboration.DoCustomExport(customTable)
+    End Sub
 #End Region
 
 #Region " Methods "
 
-    Private Sub SetCollSelected(idCollaboration As Integer, documentType As String, tenant As String)
-        If Not ProtocolEnv.MultiDomainEnabled Then
-            Dim coll As Collaboration = Facade.CollaborationFacade.GetById(idCollaboration)
-            If coll Is Nothing Then
-                BasePage.AjaxAlert(Server.HtmlEncode("La Registrazione è stata modificata\n\nAggiornamento automatico dell'elenco"), False)
-                RaiseEvent OnRefresh(Me, New CollaborationEventArgs(idCollaboration))
-                Exit Sub
-            Else
-                RaiseEvent OnSelectedCollaboration(Me, New CollaborationEventArgs(idCollaboration) With {.DocumentType = documentType})
-            End If
+    Private Sub SetCollSelected(idCollaboration As Integer, documentType As String)
+        Dim coll As Collaboration = Facade.CollaborationFacade.GetById(idCollaboration)
+        If coll Is Nothing Then
+            BasePage.AjaxAlert(Server.HtmlEncode("La Registrazione è stata modificata\n\nAggiornamento automatico dell'elenco"), False)
+            RaiseEvent OnRefresh(Me, New CollaborationEventArgs(idCollaboration))
+            Exit Sub
         Else
-            RaiseEvent OnSelectedCollaboration(Me, New CollaborationEventArgs(idCollaboration) With {.DocumentType = documentType, .TenantName = tenant})
+            RaiseEvent OnSelectedCollaboration(Me, New CollaborationEventArgs(idCollaboration) With {.DocumentType = documentType})
         End If
     End Sub
 
     Public Sub SelectCollaboration(ByVal idCollaboration As Integer)
-        SetCollSelected(idCollaboration, "", DocSuiteContext.Current.CurrentTenant.TenantName)
+        SetCollSelected(idCollaboration, String.Empty)
     End Sub
 
     Private Function MainDocumentName(versionings As ICollection(Of CollaborationVersioningModel)) As String
@@ -588,6 +522,148 @@ Partial Public Class uscCollGrid
         End If
     End Sub
 
+
+    Private Function CreateCustomTable() As Table
+        Dim customTable As DSTable = New DSTable()
+        customTable.Table.Style.Add("border-collapse", "collapse")
+        CreateCustomTableHeader(customTable)
+
+        Dim signUsers As ICollection(Of CollaborationSignModel) = GridDataSource _
+            .SelectMany(Function(x) x.Entity.CollaborationSigns) _
+            .ToList()
+        Dim collaborations As ICollection(Of CollaborationModel) = GridDataSource.Select(Function(x) x.Entity).ToList()
+
+        Dim collaborations_collaborationSigns As List(Of KeyValuePair(Of CollaborationSignModel, CollaborationModel)) = signUsers _
+            .Join(collaborations, Function(CS) CS.IdCollaboration, Function(C) C.IdCollaboration.Value,
+             Function(signUser, collection) New KeyValuePair(Of CollaborationSignModel, CollaborationModel)(signUser, collection)) _
+             .OrderBy(Function(x) x.Key.SignName).ToList()
+
+        For Each collaboration_collaboratonSign As KeyValuePair(Of CollaborationSignModel, CollaborationModel) In collaborations_collaborationSigns
+            customTable.CreateEmptyRow()
+            For Each customTableColumn As DSTableCell In customTable.Rows(0).Cells
+                customTable.CurrentRow.CreateEmpytCell()
+                customTable.CurrentRow.CurrentCell.ApplyStyle(GetCellItemStyle())
+                customTable.CurrentRow.CurrentCell.Text = GetCellItemText(customTableColumn.Text, collaboration_collaboratonSign.Value, collaboration_collaboratonSign.Key)
+            Next
+        Next
+        Return customTable.Table
+    End Function
+
+    Private Function GetTableWidth() As Double
+        Dim index As Integer = -1
+        Dim manageableColumns As IDictionary(Of Integer, GridColumn) = gvCollaboration.Columns.Cast(Of GridColumn) _
+            .ToDictionary(Function(k)
+                              index += 1
+                              Return index
+                          End Function, Function(k) k).Where(Function(c) c.Value.Visible AndAlso c.Value.Display AndAlso Not c.Value.UniqueName.Eq("ClientSelectColumn")).ToDictionary(Function(i) i.Key, Function(c) c.Value)
+        Return manageableColumns.Sum(Function(c) c.Value.HeaderStyle.Width.Value)
+    End Function
+
+    Private Sub CreateCustomTableHeader(customTable As DSTable)
+        Dim cellPercentageWidth As Double = 0
+        Dim dateCellWidth As Double = 0
+        customTable.CreateEmptyRow()
+
+        customTable.CurrentRow.CreateEmpytCell()
+        customTable.CurrentRow.CurrentCell.Text = EXCEL_COLUMN_ID
+        customTable.CurrentRow.CurrentCell.ApplyStyle(GetCellHeaderStyle(dateCellWidth))
+
+        For Each gridColumn As GridColumn In gvCollaboration.Columns
+            If gridColumn.HeaderText = String.Empty OrElse Not gridColumn.Visible OrElse gridColumn.UniqueName = COLUMN_TO_PROTOCOL OrElse gridColumn.UniqueName = COLUMN_VERSIONING_COUNT Then
+                Continue For
+            End If
+
+            cellPercentageWidth = (gridColumn.HeaderStyle.Width.Value / GetTableWidth()) * 100
+
+            If gridColumn.UniqueName = COLUMN_MEMORANDUM_DATE Then
+                dateCellWidth = cellPercentageWidth
+            End If
+
+            customTable.CurrentRow.CreateEmpytCell()
+            customTable.CurrentRow.CurrentCell.Text = gridColumn.HeaderText
+            customTable.CurrentRow.CurrentCell.ApplyStyle(GetCellHeaderStyle(cellPercentageWidth))
+        Next
+
+        customTable.CurrentRow.CreateEmpytCell()
+        customTable.CurrentRow.CurrentCell.Text = EXCEL_COLUMN_SIGN_DATE
+        customTable.CurrentRow.CurrentCell.ApplyStyle(GetCellHeaderStyle(dateCellWidth))
+
+        customTable.CurrentRow.CreateEmpytCell()
+        customTable.CurrentRow.CurrentCell.Text = EXCEL_COLUMN_IS_ACTIVE
+        customTable.CurrentRow.CurrentCell.ApplyStyle(GetCellHeaderStyle(cellPercentageWidth))
+
+        customTable.CurrentRow.CreateEmpytCell()
+        customTable.CurrentRow.CurrentCell.ApplyStyle(GetCellHeaderStyle(dateCellWidth))
+        customTable.CurrentRow.CurrentCell.Text = EXCEL_COLUMN_REGISTRATION_DATE
+    End Sub
+
+    Private Function GetCellHeaderStyle(width As Double) As DSTableCellStyle
+        Dim cellHeaderStyle As New DSTableCellStyle()
+        cellHeaderStyle.Width = Unit.Percentage(width)
+        cellHeaderStyle.Font.Bold = True
+        cellHeaderStyle.LineBox = True
+        Return cellHeaderStyle
+    End Function
+
+    Private Function GetCellItemStyle() As DSTableCellStyle
+        Return New DSTableCellStyle() With {
+            .LineBox = True
+        }
+    End Function
+
+    Private Function GetCollaborationNumber(collaboration As CollaborationModel) As String
+        Dim collaborationNumber As String = String.Empty
+        Select Case collaboration.DocumentType
+            Case CollaborationDocumentType.P.ToString(), CollaborationDocumentType.U.ToString(), CollaborationDocumentType.W.ToString()
+                If collaboration.HasProtocol() Then
+                    Dim protocolId As String = String.Empty
+                    If collaboration.Year.HasValue AndAlso collaboration.Number.HasValue Then
+                        protocolId = $"{collaboration.DocumentUnit.Title}"
+                    End If
+                    collaborationNumber = $"{protocolId}{WebHelper.Br}{collaboration.PublicationDate.DefaultString()}"
+                End If
+            Case CollaborationDocumentType.D.ToString(), CollaborationDocumentType.A.ToString()
+                If collaboration.HasResolution() Then
+                    collaborationNumber = $"{collaboration.DocumentUnit.DocumentUnitName} {collaboration.DocumentUnit.Title} del {collaboration.DocumentUnit.RegistrationDate.DefaultString()}"
+                End If
+            Case CollaborationDocumentType.S.ToString()
+                If collaboration.HasSeries() Then
+                    If collaboration.DocumentUnit.Year > 0 Then
+                        collaborationNumber = $"{collaboration.DocumentUnit.Title}"
+                    Else
+                        collaborationNumber = $"Bozza N. {collaboration.DocumentUnit.EntityId}"
+                    End If
+                End If
+        End Select
+        Return collaborationNumber
+    End Function
+
+    Private Function GetCellItemText(columnDescription As String, collaboration As CollaborationModel, signUser As CollaborationSignModel) As String
+        Dim cellItemText As String = String.Empty
+        Select Case columnDescription
+            Case EXCEL_COLUMN_ID
+                cellItemText = collaboration.IdCollaboration.ToString()
+            Case EXCEL_COLUMN_NUMBER
+                cellItemText = GetCollaborationNumber(collaboration)
+            Case EXCEL_COLUMN_MEMORANDUM_DATE
+                cellItemText = $"{collaboration.MemorandumDate:dd/MM/yyyy}"
+            Case EXCEL_COLUMN_SUBJECT
+                cellItemText = collaboration.Subject
+            Case EXCEL_COLUMN_NOTE
+                cellItemText = collaboration.Note
+            Case EXCEL_COLUMN_PROPOSER
+                cellItemText = collaboration.RegistrationName
+            Case EXCEL_COLUMN_TO_SIGN
+                cellItemText = Facade.CollaborationSignsFacade.GetCollaborationSignDescription(signUser.SignName, signUser.IsAbsent)
+            Case EXCEL_COLUMN_SIGN_DATE
+                cellItemText = $"{signUser.SignDate:dd/MM/yyyy}"
+            Case EXCEL_COLUMN_IS_ACTIVE
+                cellItemText = If(signUser.IsActive, "Si", "No")
+            Case EXCEL_COLUMN_REGISTRATION_DATE
+                cellItemText = $"{collaboration.RegistrationDate:dd/MM/yyyy}"
+        End Select
+        Return cellItemText
+    End Function
 #End Region
 
 End Class

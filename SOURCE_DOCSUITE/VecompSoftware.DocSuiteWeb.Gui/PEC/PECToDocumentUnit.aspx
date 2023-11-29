@@ -438,15 +438,6 @@
                     </td>
                 </tr>
             </table>
-
-            <table class="datatable">
-
-                <tr class="Chiaro">
-                    <td>
-                        <asp:CheckBox ID="chkUseOChart" runat="server" Text="Utilizza protocollazione da Organigramma" Visible="False" AutoPostBack="True" />
-                    </td>
-                </tr>
-            </table>
             <usc:SelContatti ButtonDeleteVisible="False" ButtonImportManualVisible="false" ButtonImportVisible="False" ButtonManualVisible="False" ButtonPropertiesVisible="True" ButtonSelectDomainVisible="false" ButtonSelectOChartVisible="false" ButtonSelectVisible="False" Caption="Mittenti" EnableCC="false" ID="uscMittenti" Multiple="true" MultiSelect="true" ProtType="True" ReadOnly="False" RequiredErrorMessage="Mittente obbligatorio" runat="server" TreeViewCaption="Mittenti" Type="Prot" />
 
         </asp:Panel>

@@ -7,10 +7,12 @@ import InsertActionType = require("App/Models/InsertActionType");
 import DossierFolderModel = require('App/Models/Dossiers/DossierFolderModel');
 import IDossierFolderService = require('App/Services/Dossiers/IDossierFolderService');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
-import ProcessFascicleTemplateModelMapper = require('../../Mappers/Processes/ProcessFascicleTemplateModelMapper');
-import ProcessFascicleTemplateModel = require('../../Models/Processes/ProcessFascicleTemplateModel');
-import DossierFolderModelMapper = require('../../Mappers/Dossiers/DossierFolderModelMapper');
+import ProcessFascicleTemplateModelMapper = require('App/Mappers/Processes/ProcessFascicleTemplateModelMapper');
+import ProcessFascicleTemplateModel = require('App/Models/Processes/ProcessFascicleTemplateModel');
+import DossierFolderModelMapper = require('App/Mappers/Dossiers/DossierFolderModelMapper');
 import DossierModelMapper = require('App/Mappers/Dossiers/DossierModelMapper');
+import PaginationModel = require('App/Models/Commons/PaginationModel');
+import ODATAResponseModel = require('App/Models/ODATAResponseModel');
 
 
 class DossierFolderService extends BaseService implements IDossierFolderService {
@@ -24,20 +26,23 @@ class DossierFolderService extends BaseService implements IDossierFolderService 
         this._configuration = configuration;
     }
 
-    getChildren(uniqueId: string, status: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.concat("/DossierFolderService.GetChildrenByParent(idDossierFolder=", uniqueId, ",status=", status.toString(), ")")
-        let data: string = "$orderby=Name asc";
+    getChildren(uniqueId: string, status: number, callback?: (data: DossierSummaryFolderViewModel[]) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/DossierFolderService.GetChildrenByParent(idDossierFolder=${uniqueId}, status=${status})?$orderby=Name asc`;
 
-        this.getRequest(url, data,
+        this.getRequest(odataQuery, null,
             (response: any) => {
-                if (callback) {
-                    let mapper = new DossierSummaryFolderViewModelMapper();
-                    let dossierFolders: DossierSummaryFolderViewModel[] = [];
-                    if (response) {
-                        dossierFolders = mapper.MapCollection(response.value);
-                        callback(dossierFolders)
-                    }
+                if (!callback) {
+                    return;
                 }
+
+                let mapper = new DossierSummaryFolderViewModelMapper();
+                let dossierFolders: DossierSummaryFolderViewModel[] = [];
+                if (response && response.value) {
+                    dossierFolders = mapper.MapCollection(response.value);
+                }
+
+                callback(dossierFolders);
             }, error);
     }
 
@@ -106,6 +111,21 @@ class DossierFolderService extends BaseService implements IDossierFolderService 
             }, error);
     }
 
+    getDossierFolderWithRoles(dossierFolderId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        let data: string = `$filter=UniqueId eq ${dossierFolderId}&$expand=DossierFolderRoles`;
+
+        this.getRequest(url, data,
+            (response: any) => {
+                if (callback && response) {
+                    let mapper: DossierFolderModelMapper = new DossierFolderModelMapper();
+                    let dossierFolderModel: DossierFolderModel = mapper.Map(response.value[0]);
+
+                    callback(dossierFolderModel);
+                }
+            }, error);
+    }
+
     getFullDossierFolder(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
         let data: string = "$filter=UniqueId eq ".concat(uniqueId, "&$expand=Fascicle,Category,Dossier($expand=MetadataRepository),DossierFolderRoles($expand=Role)");
@@ -117,32 +137,36 @@ class DossierFolderService extends BaseService implements IDossierFolderService 
             }, error);
     }
 
-    getFascicleTemplatesByDossierFolderId(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl;
-        let data: string = `$expand=FascicleTemplates&$filter=UniqueId eq ${uniqueId}&$select=FascicleTemplates&$orderby=Name`;
-        this.getRequest(url, data,
-            (response: any) => {
-                if (callback && response) {
-                    let mapper: ProcessFascicleTemplateModelMapper = new ProcessFascicleTemplateModelMapper();
-                    let results: ProcessFascicleTemplateModel[] = [];
-                    if (response.value.length) {
-                        for (let item of response.value[0].FascicleTemplates) {
-                            results.push(mapper.Map(item));
-                        }
-                    }
-                    callback(results);
-                }
-            }, error);
-    }
-
     getProcessFolders(name: string, idProcess: string, loadOnlyActive: boolean, loadOnlyMy: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         if (name) {
             name = `'${name}'`;
         }
-        let url: string = `${this._configuration.ODATAUrl}/DossierFolderService.GetProcessFolders(name=${name},idProcess=${idProcess},loadOnlyActive=${loadOnlyActive},loadOnlyMy=${loadOnlyMy})?$filter=Status ne 'Fascicle'&$orderby=Name`;
-        this.getRequest(url, null,
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/DossierFolderService.GetProcessFolders(name=${name},idProcess=${idProcess},loadOnlyActive=${loadOnlyActive},loadOnlyMy=${loadOnlyMy})?$filter=Status ne 'Fascicle'&$orderby=Name`;
+
+        this.getRequest(odataQuery, null,
             (response: any) => {
-                if (callback && response) {
+                if (!callback) {
+                    return;
+                }
+
+                if (response) {
+                    callback(response.value);
+                }
+            }, error);
+    }
+
+    getChildrenByParentProcess(idProcess: string, loadOnlyActive: boolean, loadOnlyMy: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/DossierFolderService.GetChildrenByParentProcess(idProcess=${idProcess},loadOnlyActive=${loadOnlyActive},loadOnlyMy=${loadOnlyMy})?$filter=Status ne 'Fascicle'&$orderby=Name`;
+
+        this.getRequest(odataQuery, null,
+            (response: any) => {
+                if (!callback) {
+                    return;
+                }
+
+                if (response) {
                     callback(response.value);
                 }
             }, error);
@@ -241,6 +265,74 @@ class DossierFolderService extends BaseService implements IDossierFolderService 
                 if (callback) {
                     callback(response);
                 }
+            }, error);
+    }
+
+    countDossierFolderChildren(dossierFolderId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, loadOnlyFolders: boolean = null): void {
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/DossierFolderService.CountDossierFolderChildren(idDossierFolder=${dossierFolderId}, loadOnlyFolders=${loadOnlyFolders})`;
+
+        this.getRequest(odataQuery, null, (response: any) => {
+            if (callback && response) {
+                callback(response.value);
+            }
+        }, error);
+    }
+
+    getDossierFolderChildren(dossierFolderId: string, paginationModel: PaginationModel, callback?: (data: DossierSummaryFolderViewModel[]) => any, error?: (exception: ExceptionDTO) => any, loadOnlyFolders: boolean = null): void {
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/DossierFolderService.GetChildren(idDossierFolder=${dossierFolderId}, skip=${paginationModel.Skip}, top=${paginationModel.Take}, loadOnlyFolders=${loadOnlyFolders})`;
+
+        this.getRequest(odataQuery, null,
+            (response: any) => {
+                if (!callback) {
+                    return;
+                }
+
+                let mapper = new DossierSummaryFolderViewModelMapper();
+                let dossierFolders: DossierSummaryFolderViewModel[] = [];
+                if (response && response.value) {
+                    dossierFolders = mapper.MapCollection(response.value);
+                }
+
+                callback(dossierFolders);
+            }, error);
+    }
+
+    getDossierFoldersByProcessId(processId: string, callback?: (data: DossierFolderModel[] | ODATAResponseModel<DossierFolderModel>) => any, error?: (exception: ExceptionDTO) => any, paginationModel?: PaginationModel, loadOnlyFolders: boolean = false): void {
+        let odataURL: string = this._configuration.ODATAUrl;
+        let odataFilter: string = `$filter=Dossier/Processes/any(p: p/UniqueId eq ${processId}) and DossierFolderLevel eq 2`;
+
+        if (loadOnlyFolders) {
+            odataFilter = `${odataFilter} and Status in ('InProgress','Folder')`;
+        }
+
+        let odataQuery: string = `${odataURL}?${odataFilter}&$expand=Fascicle($select=UniqueId)&$orderby=Name`;
+        if (paginationModel) {
+            odataQuery = `${odataQuery}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}&$count=true`;
+        }
+
+        this.getRequest(odataQuery, null,
+            (response: any) => {
+
+                if (!callback) {
+                    return;
+                }
+
+                const dossierFolderModelMapper: DossierFolderModelMapper = new DossierFolderModelMapper();
+                let dossierFolders: DossierFolderModel[] = [];
+                if (response && response.value) {
+                    dossierFolders = dossierFolderModelMapper.MapCollection(response.value);
+                }
+
+                if (!paginationModel) {
+                    callback(dossierFolders);
+                    return;
+                }
+
+                const odataResult: ODATAResponseModel<DossierFolderModel> = new ODATAResponseModel<DossierFolderModel>(response);
+                odataResult.value = dossierFolders;
+                callback(odataResult);
             }, error);
     }
 } export = DossierFolderService;

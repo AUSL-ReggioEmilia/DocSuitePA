@@ -1,15 +1,13 @@
-﻿Imports System.IO
+﻿Imports System.Collections.Generic
+Imports System.IO
 Imports System.Reflection
 Imports System.Text
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Templates
-Imports VecompSoftware.DocSuiteWeb.Entity.Templates
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
-Imports System.Collections.Generic
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Entity.Templates
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.Services.Logging
 
 Partial Class CommIntro
     Inherits CommBasePage
@@ -39,7 +37,7 @@ Partial Class CommIntro
         imbUtente.Image.ImageUrl = ImagePath.SmallEmpty
 
         Dim userLabel As New StringBuilder()
-        If DocSuiteContext.Current.ProtocolEnv.IsSecurityGroupEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
+        If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
             userLabel.AppendFormat("Utente: {0}\{1}", DocSuiteContext.Current.User.Domain, DocSuiteContext.Current.User.UserName)
         Else
             userLabel.AppendFormat("Utente: {0}", DocSuiteContext.Current.User.UserName)

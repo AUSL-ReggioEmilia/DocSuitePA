@@ -57,8 +57,8 @@
         <uc:uscProtocollo ID="uscProtocollo" runat="server" />
         <%--documenti--%>
         <uc:uscDocumentUpload ID="uscDocumento" IsDocumentRequired="false" ReadOnly="true" runat="server" />
-        <uc:uscDocumentUpload ID="uscAllegati" IsDocumentRequired="false" MultipleDocuments="true" ReadOnly="true" runat="server" />
-        <uc:uscDocumentUpload ID="uscAnnexes" IsDocumentRequired="false" MultipleDocuments="true" Prefix="" runat="server" ButtonRemoveEnabled="false" />
+        <uc:uscDocumentUpload ID="uscAllegati" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" ReadOnly="true" runat="server" />
+        <uc:uscDocumentUpload ID="uscAnnexes" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" Prefix="" runat="server" ButtonRemoveEnabled="false" />
         <%--contenitore--%>
         <table id="tblEditContenitore" runat="server" class="datatable">
             <tr>

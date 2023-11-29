@@ -17,7 +17,6 @@ class uscSettori {
     ajaxLoadingPanelId: string;
     dswEnvironment: string;
     multiSelect: string;
-    currentTenantId: string;
     toolBarId: string;
     validatorAnyNodeId: string;
     btnPropagateAuthorizationsId: string;
@@ -37,7 +36,7 @@ class uscSettori {
     private _toolBar: Telerik.Web.UI.RadToolBar;
     private _btnFascicleVisibilityType: Telerik.Web.UI.RadToolBarButton;
     private _btnPropagateAuthorizations: Telerik.Web.UI.RadToolBarButton;
-    private _btnExpandRoles = <Telerik.Web.UI.RadButton>$find(this.btnExpandRolesId);
+    private _btnExpandRoles: Telerik.Web.UI.RadButton;
     private _isContentExpanded: boolean;
     private _rowContent: JQuery;
 
@@ -85,7 +84,7 @@ class uscSettori {
     */
     initialize() {
         this._selectedRoles = new Array<RoleModel>();
-        this._toolBar = <Telerik.Web.UI.RadToolBar>$find(this.toolBarId);       
+        this._toolBar = <Telerik.Web.UI.RadToolBar>$find(this.toolBarId);
         this._rowContent = $("#".concat(this.contentRowId));
         this._btnExpandRoles = <Telerik.Web.UI.RadButton>$find(this.btnExpandRolesId);
         this._ajaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
@@ -94,16 +93,15 @@ class uscSettori {
         if (this._btnExpandRoles) {
             this._btnExpandRoles.addCssClass("dsw-arrow-down");
             this._btnExpandRoles.add_clicking(this.btnExpandRoles_OnClick);
-        }        
+        }
 
-        this._sessionStorageKey = this.contentId.concat(uscSettori.SESSION_NAME_SELECTED_ROLES);   
+        this._sessionStorageKey = this.contentId.concat(uscSettori.SESSION_NAME_SELECTED_ROLES);
         this.bindLoaded();
     }
 
     setRoles = (isAjaxModelResult: boolean, ajaxResult: any) => {
         let inputString: any;
         let inputs: string[];
-        let tenantId: string = this.currentTenantId;
         if (isAjaxModelResult === true) {
             inputString = ajaxResult.Value;
         }
@@ -111,19 +109,9 @@ class uscSettori {
             inputString = ajaxResult;
         }
         inputs = inputString.toString().split("|");
-        
-        //parte che guarda tenantId e UserName        
-        let tenants: string[] = inputs.filter(i=>i.search("tenantId= ")!=-1);
-        if (tenants.length==1) {
-            tenantId = tenants[0].trim().split("tenantId= ")[0];
-        }
-
         let rolesToAdd: string[] = inputs[1].split(",");
-
-        //chiamo il roleservice?
-
         this._selectedRoles = new Array<RoleModel>();
-        if (this.multiSelect.toLowerCase()==="true") {
+        if (this.multiSelect.toLowerCase() === "true") {
             let sessionValue = this.getRoles();
             if (sessionValue != null) {
                 let source: any = JSON.parse(sessionValue);
@@ -134,7 +122,6 @@ class uscSettori {
         for (let r of rolesToAdd) {
             let roleAdded: RoleModel = <RoleModel>{};
             roleAdded.EntityShortId = parseInt(r);
-            roleAdded.TenantId = tenantId;
             this._selectedRoles.push(roleAdded);
         }
 
@@ -142,38 +129,31 @@ class uscSettori {
     }
 
     getRoles = () => {
-        let result : any = sessionStorage[this._sessionStorageKey];
-        if (result == null){
+        let result: any = sessionStorage[this._sessionStorageKey];
+        if (result == null) {
             return null;
         }
         return result;
     }
 
-    getRolesByTenantId(tenantId: string) {
-        let ajaxModel: AjaxModel = <AjaxModel>{};
-        ajaxModel.Value = new Array<string>();
-        ajaxModel.Value.push(tenantId);
-        ajaxModel.ActionName = "GetByTenantId";
-        this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
-    }
 
-    parseRolesFromJson = (source:any) => {
-        let result: Array<RoleModel> = new Array < RoleModel> ();
+    parseRolesFromJson = (source: any) => {
+        let result: Array<RoleModel> = new Array<RoleModel>();
         for (let s of source) {
             let role: RoleModel = <RoleModel>{};
             role.EntityShortId = s.EntityShortId;
-            role.TenantId = s.TenantId;
+            role.IdTenantAOO = s.IdTenantAOO;
             result.push(role);
         }
         return result
     }
 
-    deleteCallback = (roleId: string, roleTenantId: string) => {
+    deleteCallback = (roleId: string) => {
         let source: any = this.getRoles();
-        if (source != null){
+        if (source != null) {
             this._selectedRoles = this.parseRolesFromJson(JSON.parse(source));
-           
-            let updatedRoles: RoleModel[] = this._selectedRoles.filter(d => !(d.EntityShortId === parseInt(roleId) && d.TenantId == roleTenantId));
+
+            let updatedRoles: RoleModel[] = this._selectedRoles.filter(d => !(d.EntityShortId === parseInt(roleId)));
             sessionStorage[this._sessionStorageKey] = JSON.stringify(updatedRoles);
         }
     }
@@ -185,14 +165,14 @@ class uscSettori {
     }
 
     getFascicleVisibilityType = () => {
-        this._btnFascicleVisibilityType = <Telerik.Web.UI.RadToolBarButton>this._toolBar.findItemByValue("checkFascicleVisibilityType"); 
+        this._btnFascicleVisibilityType = <Telerik.Web.UI.RadToolBarButton>this._toolBar.findItemByValue("checkFascicleVisibilityType");
         if (this._btnFascicleVisibilityType) {
             let checked: boolean = <any>this._btnFascicleVisibilityType.get_checked();
             if (checked) {
                 return VisibilityType.Accessible;
             }
             return VisibilityType.Confidential;
-        }        
+        }
     }
 
     /**

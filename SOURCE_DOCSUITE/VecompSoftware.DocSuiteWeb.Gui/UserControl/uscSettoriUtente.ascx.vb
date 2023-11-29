@@ -179,7 +179,7 @@ Partial Public Class uscSettoriUtente
             End If
             parent.Nodes.Add(newNode)
             parent = newNode
-            children = Facade.RoleFacade.GetChildren(role, Nothing)
+            children = Facade.RoleFacade.GetChildren(role, Nothing, CurrentTenant.TenantAOO.UniqueId)
             For Each child As Role In children
                 SetRole(parent, child, False)
             Next

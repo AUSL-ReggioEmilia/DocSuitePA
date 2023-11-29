@@ -5,6 +5,26 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 Public Class ResolutionChangeControllerTO
     Inherits ResolutionChangeController
 
+#Region " Fields "
+    Private Const OCDATA_FIELD_NAME As String = "OCData"
+    Private Const OBJECT_FIELD_NAME As String = "Object"
+    Private Const STATUSDATA_FIELD_NAME As String = "StatusData"
+
+    Private Const OC_CS_PROPERTY_NAME As String = "CS"
+    Private Const OC_REG_PROPERTY_NAME As String = "REG"
+    Private Const OC_GEST_PROPERTY_NAME As String = "GEST"
+    Private Const OC_ALTRO_PROPERTY_NAME As String = "ALTRO"
+    Private Const OC_CC_PROPERTY_NAME As String = "CC"
+    Private Const STATUSDATA_NOTEXECUTIVE_PROPERTY_NAME As String = "NOTEXECUTIVE"
+
+    Private Const OC_CS_FILED_VALUE As String = ".CS."
+    Private Const OC_REG_FILED_VALUE As String = ".REG."
+    Private Const OC_GEST_FILED_VALUE As String = ".GEST."
+    Private Const OC_ALTRO_FILED_VALUE As String = ".ALTRO."
+    Private Const OC_CC_FILED_VALUE As String = ".CC."
+    Private Const STATUSDATA_NOTEXECUTIVE_FIELD_VALUE As String = ".NOTEXECUTIVE."
+#End Region
+
 #Region " Constructors "
 
     Public Sub New(ByRef uscControl As uscResolutionChange)
@@ -28,7 +48,7 @@ Public Class ResolutionChangeControllerTO
         'Proponente di default
         _uscReslChange.ControlProposerInterop.ContactRoot = DocSuiteContext.Current.ResolutionEnv.ProposerContact
 
-        _uscReslChange.VisibleImmediatelyExecutive = True
+        _uscReslChange.VisibleImmediatelyExecutive = DocSuiteContext.Current.ResolutionEnv.ImmediatelyExecutiveEnabled
 
         Dim changeableData As String = String.Empty
 
@@ -37,29 +57,45 @@ Public Class ResolutionChangeControllerTO
             'Recovery OC Rights
             Dim cheCkOCRights As Boolean = ResolutionRights.CheckIsExecutive(_uscReslChange.CurrentResolution)
             'OC Data
-            _uscReslChange.VisibleOCList = ManagedDataTest("OCData", , changeableData, "OCData") AndAlso cheCkOCRights
+            _uscReslChange.VisibleOCList = ManagedDataTest(OCDATA_FIELD_NAME, , changeableData, OCDATA_FIELD_NAME) AndAlso cheCkOCRights
             'OC SupervisoryBoard
-            _uscReslChange.VisibleOCSupervisoryBoard = ManagedDataTest("OCData", "CS", changeableData, ".CS.") AndAlso cheCkOCRights
+            _uscReslChange.VisibleOCSupervisoryBoard = ManagedDataTest(OCDATA_FIELD_NAME, OC_CS_PROPERTY_NAME, changeableData, OC_CS_FILED_VALUE) AndAlso cheCkOCRights
             _uscReslChange.VisibleOCSupervisoryBoardExtra = _uscReslChange.CurrentResolution.OCSupervisoryBoard.GetValueOrDefault(False)
             'OC Region
-            _uscReslChange.VisibleOCRegion = ManagedDataTest("OCData", "REG", changeableData, ".REG.") AndAlso cheCkOCRights AndAlso _uscReslChange.CurrentResolution.OCRegion.GetValueOrDefault(False)
+            _uscReslChange.VisibleOCRegion = ManagedDataTest(OCDATA_FIELD_NAME, OC_REG_PROPERTY_NAME, changeableData, OC_REG_FILED_VALUE) AndAlso cheCkOCRights AndAlso _uscReslChange.CurrentResolution.OCRegion.GetValueOrDefault(False)
             'OC Management
-            _uscReslChange.VisibleOCManagement = ManagedDataTest("OCData", "GEST", changeableData, ".GEST.") AndAlso cheCkOCRights AndAlso _uscReslChange.CurrentResolution.OCManagement.GetValueOrDefault(False)
+            _uscReslChange.VisibleOCManagement = ManagedDataTest(OCDATA_FIELD_NAME, OC_GEST_PROPERTY_NAME, changeableData, OC_GEST_FILED_VALUE) AndAlso cheCkOCRights AndAlso _uscReslChange.CurrentResolution.OCManagement.GetValueOrDefault(False)
             'OC Other
-            _uscReslChange.VisibleOCOther = ManagedDataTest("OCData", "ALTRO", changeableData, ".ALTRO.") AndAlso cheCkOCRights AndAlso _uscReslChange.CurrentResolution.OCOther.GetValueOrDefault(False)
+            _uscReslChange.VisibleOCOther = ManagedDataTest(OCDATA_FIELD_NAME, OC_ALTRO_PROPERTY_NAME, changeableData, OC_ALTRO_FILED_VALUE) AndAlso cheCkOCRights AndAlso _uscReslChange.CurrentResolution.OCOther.GetValueOrDefault(False)
 
             'Object Privacy
-            _uscReslChange.VisibleObjectPrivacy = ManagedDataTest("Object", , changeableData, "Object") AndAlso cheCkOCRights
+            _uscReslChange.VisibleObjectPrivacy = ManagedDataTest(OBJECT_FIELD_NAME, , changeableData, OBJECT_FIELD_NAME) AndAlso cheCkOCRights
 
             ' CorteDeiConti
-            _uscReslChange.VisibleCorteDeiConti = ManagedDataTest("OCData", "CC", changeableData, ".CC.") AndAlso cheCkOCRights AndAlso _uscReslChange.CurrentResolution.OCCorteConti.GetValueOrDefault(False)
+            _uscReslChange.VisibleCorteDeiConti = ManagedDataTest(OCDATA_FIELD_NAME, OC_CC_PROPERTY_NAME, changeableData, OC_CC_FILED_VALUE) AndAlso cheCkOCRights AndAlso _uscReslChange.CurrentResolution.OCCorteConti.GetValueOrDefault(False)
         End If
 
         If _uscReslChange.CurrentResolution.EffectivenessDate.HasValue AndAlso Not String.IsNullOrEmpty(_uscReslChange.CurrentResolution.EffectivenessUser) AndAlso
-            CommonShared.UserConnectedBelongsTo(ResolutionEnv.OCExecutiveModifyGroups) Then
+            CommonShared.UserConnectedBelongsTo(ResolutionEnv.OCExecutiveModifyGroups) AndAlso DocSuiteContext.Current.ResolutionEnv.CheckOCValidations Then
             _uscReslChange.SetOCControlsVisible()
         End If
 
+        'Visibilità ed etichette dell'organo di controllo
+        Dim ocOptions As OCOptionsModel = DocSuiteContext.Current.ResolutionEnv.OCOptions
+        If ocOptions IsNot Nothing Then
+            _uscReslChange.VisibleOCSupervisoryBoardCheckbox = ocOptions.SupervisoryBoard.Visible
+            _uscReslChange.LabelOCSupervisoryBoardCheckbox = ocOptions.SupervisoryBoard.Label
+            _uscReslChange.VisibleOCConfSindaciCheckbox = ocOptions.ConfSindaci.Visible
+            _uscReslChange.LabelOCConfSindaciCheckbox = ocOptions.ConfSindaci.Label
+            _uscReslChange.VisibleOCRegionCheckbox = ocOptions.Region.Visible
+            _uscReslChange.LabelOCRegionCheckbox = ocOptions.Region.Label
+            _uscReslChange.VisibleOCManagementCheckbox = ocOptions.Management.Visible
+            _uscReslChange.LabelOCManagementCheckbox = ocOptions.Management.Label
+            _uscReslChange.VisibleOCCorteContiCheckbox = ocOptions.CorteConti.Visible
+            _uscReslChange.LabelOCCorteContiCheckbox = ocOptions.CorteConti.Label
+            _uscReslChange.VisibleOCOtherCheckbox = ocOptions.Other.Visible
+            _uscReslChange.LabelOCOtherCheckbox = ocOptions.Other.Label
+        End If
     End Sub
 
     Public Overrides Function ValidateData(ByRef errorMessage As String) As Boolean
@@ -181,11 +217,14 @@ Public Class ResolutionChangeControllerTO
 
     Protected Overrides Sub InitializeDelegates()
         'Status delegate
-        Dim workflowStep As ResolutionWorkflow = Facade.ResolutionWorkflowFacade.SqlResolutionWorkflowSearch(_uscReslChange.CurrentResolution.Id, 0)
-        If workflowStep.ResStep.HasValue AndAlso workflowStep.ResStep.Value = 4 Then
-            GetStatusList = New GetStatusListDelegate(AddressOf Facade.ResolutionStatusFacade.GetStatusList)
-        Else
+        Dim changeableData As String = String.Empty
+        Facade.TabWorkflowFacade.GetChangeableData(_uscReslChange.CurrentResolution.Id, _uscReslChange.CurrentResolution.WorkflowType, 0, changeableData)
+
+        If Not String.IsNullOrWhiteSpace(changeableData) AndAlso Not _uscReslChange.CurrentResolution.SupervisoryBoardWarningDate.HasValue _
+            AndAlso ManagedDataTest(STATUSDATA_FIELD_NAME, changeableData:=changeableData, FieldTest:=STATUSDATA_NOTEXECUTIVE_FIELD_VALUE) Then
             GetStatusList = New GetStatusListDelegate(AddressOf Facade.ResolutionStatusFacade.GetStatusNotExecutive)
+        Else
+            GetStatusList = New GetStatusListDelegate(AddressOf Facade.ResolutionStatusFacade.GetStatusList)
         End If
 
     End Sub

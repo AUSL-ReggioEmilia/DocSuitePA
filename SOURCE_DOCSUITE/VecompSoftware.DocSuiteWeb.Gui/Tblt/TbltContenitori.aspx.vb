@@ -86,6 +86,10 @@ Partial Class TbltContenitori
 
 #Region " Events "
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerRight OrElse CommonShared.HasGroupTblContainerAdminRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         If Not Page.IsPostBack Then
             Initialize()
         End If
@@ -271,7 +275,7 @@ Partial Class TbltContenitori
 
         If DocSuiteContext.Current.IsProtocolEnabled Then
             Dim item As RadComboBoxItem = New RadComboBoxItem("Protocolli", DirectCast(LocationTypeEnum.ProtLocation, Integer).ToString())
-            item.ImageUrl = "~/Comm/Images/DocSuite/Protocollo16.gif"
+            item.ImageUrl = "~/Comm/Images/DocSuite/Protocollo16.png"
             result.Add(item)
         End If
         If DocSuiteContext.Current.IsDocumentEnabled Then
@@ -281,7 +285,7 @@ Partial Class TbltContenitori
         End If
         If DocSuiteContext.Current.IsResolutionEnabled Then
             Dim item As RadComboBoxItem = New RadComboBoxItem(FacadeFactory.Instance.TabMasterFacade.TreeViewCaption, DirectCast(LocationTypeEnum.ReslLocation, Integer).ToString())
-            item.ImageUrl = "~/Comm/Images/DocSuite/Atti16.gif"
+            item.ImageUrl = "~/Comm/Images/DocSuite/Atti16.png"
             result.Add(item)
         End If
         If DocSuiteContext.Current.ProtocolEnv.DocumentSeriesEnabled Then
@@ -313,10 +317,10 @@ Partial Class TbltContenitori
         Dim containers As ICollection(Of Container) = finder.List()
         For Each item As Container In containers
 
-            If active.Checked = True AndAlso item.IsActive = 1 Then
+            If active.Checked = True AndAlso item.IsActive Then
                 AddNode(item)
             End If
-            If inActive.Checked = True AndAlso item.IsActive = 0 Then
+            If inActive.Checked = True AndAlso Not item.IsActive Then
                 AddNode(item)
             End If
 
@@ -324,7 +328,7 @@ Partial Class TbltContenitori
 
         If active.Checked = True Then
             For Each item As Container In containers
-                If item.IsActive = 1 Then
+                If item.IsActive Then
                     AddNode(item)
                 End If
             Next
@@ -333,7 +337,7 @@ Partial Class TbltContenitori
         If active.Checked = False Then
             For Each item As Container In containers
 
-                If item.IsActive = 0 Then
+                If Not item.IsActive Then
                     AddNode(item)
                 End If
 
@@ -415,7 +419,7 @@ Partial Class TbltContenitori
         Else
             FolderToolBar.FindItemByValue(CREATE_OPTION).Enabled = True
             FolderToolBar.FindItemByValue(DELETE_OPTION).Enabled = True
-            If selectedContainer IsNot Nothing AndAlso selectedContainer.IsActive <> 1 Then
+            If selectedContainer IsNot Nothing AndAlso Not selectedContainer.IsActive Then
                 FolderToolBar.FindItemByValue(RECOVER_OPTION).Visible = True
                 FolderToolBar.FindItemByValue(RECOVER_OPTION).Enabled = True
             End If

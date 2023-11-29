@@ -194,6 +194,11 @@ Partial Public Class CommonUploadDocument
 
         For Each item As UploadedFile In AsyncUploadDocument.UploadedFiles
             Dim fileName As String = Path.GetFileName(FileHelper.ReplaceUnicode(item.FileName))
+            Dim extension As String = Path.GetExtension(item.FileName).ToLowerInvariant()
+            If FileExtensionBlackList IsNot Nothing AndAlso FileExtensionBlackList.Contains(extension) Then
+                invalidEntries.Add(fileName)
+                Continue For
+            End If
             Dim targetFileName As String = FileHelper.UniqueFileNameFormat(fileName, DocSuiteContext.Current.User.UserName)
             Dim targetPath As String = Path.Combine(CommonUtil.GetInstance().AppTempPath, targetFileName)
             Try
@@ -231,7 +236,7 @@ Partial Public Class CommonUploadDocument
 
                     For Each compressItem As CompressItem In compressedItems
                         Dim uniqueFileName As String = compressItem.FullFilename.Replace("/", "_")
-                        Dim extension As String = Path.GetExtension(compressItem.Filename).ToLowerInvariant()
+                        extension = Path.GetExtension(compressItem.Filename).ToLowerInvariant()
                         If FileExtensionWhiteList IsNot Nothing AndAlso Not chkDisableFileExtensionWhiteList.Checked AndAlso Not FileExtensionWhiteList.Contains(extension) Then
                             invalidEntries.Add(compressItem.FullFilename)
                             Continue For
@@ -264,8 +269,6 @@ Partial Public Class CommonUploadDocument
 
         Dim serialized As String = HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(serializeMe))
         AjaxManager.ResponseScripts.Add(String.Format("CloseWindow('{0}');", serialized))
-
-
     End Sub
 
 #End Region

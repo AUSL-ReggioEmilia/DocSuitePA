@@ -26,7 +26,7 @@ namespace BiblosDs.Document.AdminCentral.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=srvbiblos;Initial Catalog=Document;User ID=DocSuite;Password=DocSuite" +
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.;Initial Catalog=Document;User ID=utente;Password=DocSuite" +
             "")]
         public string DocumentConnectionString {
             get {

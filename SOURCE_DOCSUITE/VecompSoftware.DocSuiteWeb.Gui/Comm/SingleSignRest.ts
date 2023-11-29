@@ -16,6 +16,9 @@ import GenericHelper = require("App/Helpers/GenericHelper");
 import WorkflowSignModel = require("App/Models/Workflows/WorkflowSignModel");
 import BiblosDocumentsService = require("App/Services/Biblos/BiblosDocumentsService");
 import DocumentModel = require("App/Models/Workflows/DocumentModel");
+import WorkflowStartModel = require("App/Models/Workflows/WorkflowStartModel");
+import WorkflowPropertyHelper = require("App/Models/Workflows/WorkflowPropertyHelper");
+import ArgumentType = require("App/Models/Workflows/ArgumentType");
 
 class SingleSignRest {
     typeOfSign: string;
@@ -27,6 +30,9 @@ class SingleSignRest {
     currentSignProperties: SignModel;
     correlationId: string;
     chainId: string;
+    currentUserTenantName: string;
+    currentUserTenantId: string;
+    currentUserTenantAOOId: string;
 
     documentFormatType: string;
     documentsToSign: DocumentModel[];
@@ -254,7 +260,27 @@ class SingleSignRest {
                 });
             }
 
-            this._signalR.sendServerMessages(serverFunction, this.correlationId, JSON.stringify(workflowReferenceBiblosModel), 'workflow_integration', 'WorkflowStartRemoteSign', this.onDoneSignalRSubscriptionCallback, this.onErrorSignalRCallback);
+            let startImportModel: any = { "Documents": workflowReferenceBiblosModel };
+            const serializedModel = JSON.stringify(startImportModel);
+
+            var workflowName = "Avvia firma remota";
+            var evt = {
+                "WorkflowName": workflowName, "WorkflowAutoComplete": true, "EventModel": { "CustomProperties": {} }
+            };
+            evt.EventModel.CustomProperties["DocumentManagementRequestModel"] = serializedModel;
+
+            var referenceModel = { "ReferenceId": this.correlationId, "ReferenceModel": JSON.stringify(evt) };
+
+            let workflowStartModel: WorkflowStartModel = <WorkflowStartModel>{};
+            workflowStartModel.WorkflowName = workflowName;
+            workflowStartModel.Arguments = {};
+            workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ACTIVITY_NAME] = { "PropertyType": ArgumentType.PropertyString, "Name": WorkflowPropertyHelper.DSW_PROPERTY_ACTIVITY_NAME, "ValueString": "Firma remota" };
+            workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = { "PropertyType": ArgumentType.PropertyGuid, "Name": WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, "ValueGuid": this.currentUserTenantId };
+            workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = { "PropertyType": ArgumentType.PropertyGuid, "Name": WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, "ValueGuid": this.currentUserTenantAOOId };
+            workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = { "PropertyType": ArgumentType.PropertyString, "Name": WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, "ValueString": this.currentUserTenantName };
+            workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL] = { "PropertyType": ArgumentType.Json, "Name": WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL, "ValueString": JSON.stringify(referenceModel) };
+
+            this._signalR.sendServerMessages(serverFunction, this.correlationId, JSON.stringify(workflowStartModel), this.onDoneSignalRSubscriptionCallback, this.onErrorSignalRCallback);
         });
     }
 
@@ -265,7 +291,27 @@ class SingleSignRest {
         var requestOTPData: any = [];
         requestOTPData.push({ "ArchiveName": "", "ArchiveChainId": this.chainId, "DocumentName": "", ReferenceModel: JSON.stringify(this.currentSignProperties) });
 
-        this._signalR.sendServerMessages(serverFunction, this.correlationId, JSON.stringify(requestOTPData), 'workflow_integration', 'WorkflowStartOTPRequest', this.onDoneSignalRSubscriptionCallback, this.onErrorSignalRCallback);
+        let startImportModel: any = { "Documents": requestOTPData };
+        const serializedModel = JSON.stringify(startImportModel);
+
+        var workflowName = "Avvio richiesta OTP";
+        var evt = {
+            "WorkflowName": workflowName, "WorkflowAutoComplete": true, "EventModel": { "CustomProperties": {} }
+        };
+        evt.EventModel.CustomProperties["DocumentManagementRequestModel"] = serializedModel;
+
+        var referenceModel = { "ReferenceId": this.correlationId, "ReferenceModel": JSON.stringify(evt) };
+
+        let workflowStartModel: WorkflowStartModel = <WorkflowStartModel>{};
+        workflowStartModel.WorkflowName = workflowName;
+        workflowStartModel.Arguments = {};
+        workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ACTIVITY_NAME] = { "PropertyType": ArgumentType.PropertyString, "Name": WorkflowPropertyHelper.DSW_PROPERTY_ACTIVITY_NAME, "ValueString": "Richiesta OTP" };
+        workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = { "PropertyType": ArgumentType.PropertyGuid, "Name": WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, "ValueGuid": this.currentUserTenantId };
+        workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = { "PropertyType": ArgumentType.PropertyGuid, "Name": WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, "ValueGuid": this.currentUserTenantAOOId };
+        workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = { "PropertyType": ArgumentType.PropertyString, "Name": WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, "ValueString": this.currentUserTenantName };
+        workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL] = { "PropertyType": ArgumentType.Json, "Name": WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL, "ValueString": JSON.stringify(referenceModel) };
+
+        this._signalR.sendServerMessages(serverFunction, this.correlationId, JSON.stringify(workflowStartModel), this.onDoneSignalRSubscriptionCallback, this.onErrorSignalRCallback);
     }
 
     onDoneSignalRSubscriptionCallback() {

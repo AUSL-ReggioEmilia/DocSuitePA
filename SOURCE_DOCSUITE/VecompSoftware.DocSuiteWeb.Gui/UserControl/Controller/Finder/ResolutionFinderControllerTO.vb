@@ -26,7 +26,7 @@ Public Class ResolutionFinderControllerTO
         _uscFinder.VisibleIdResolution = Facade.ResolutionFacade.IsManagedProperty("idResolution", ResolutionType.IdentifierDelibera)
         _uscFinder.VisibleCategory = Facade.ResolutionFacade.IsManagedProperty("Category", ResolutionType.IdentifierDelibera)
 
-        _uscFinder.VisibleImmediatelyExecutive = True
+        _uscFinder.VisibleImmediatelyExecutive = DocSuiteContext.Current.ResolutionEnv.ImmediatelyExecutiveEnabled
         _uscFinder.VisibleAdoptionDate = True
         _uscFinder.VisibleProposerDate = True
         _uscFinder.VisibleOCList = True
@@ -34,11 +34,34 @@ Public Class ResolutionFinderControllerTO
         _uscFinder.VisibleOnlytatusCancel = True
 
         _uscFinder.VisibleWorkflowStep = False
+        _uscFinder.VisibleWorkflowSearchableSteps = DocSuiteContext.Current.ResolutionEnv.ResolutionSearchableSteps IsNot Nothing AndAlso DocSuiteContext.Current.ResolutionEnv.ResolutionSearchableSteps.Count > 0
         _uscFinder.VisibleOC = False
         _uscFinder.VisibileOC_Management = False
-        _uscFinder.VisibleDateStep = False
+        _uscFinder.VisibleDateStep = DocSuiteContext.Current.ResolutionEnv.ResolutionSearchableSteps IsNot Nothing AndAlso DocSuiteContext.Current.ResolutionEnv.ResolutionSearchableSteps.Count > 0
         _uscFinder.VisibleAssigneeContact = False
         _uscFinder.VisibleManagerContact = False
         _uscFinder.VisibleRecipientContact = False
+
+        _uscFinder.VisibleOCComment = DocSuiteContext.Current.ResolutionEnv.CheckOCValidations
+        _uscFinder.VisibleOCOpinion = DocSuiteContext.Current.ResolutionEnv.CheckOCValidations
+
+        _uscFinder.VisibleStatoContabilita = DocSuiteContext.Current.ResolutionEnv.ResolutionAccountingEnabled
+
+        'Visibilità ed etichette dell'organo di controllo
+        Dim ocOptions As OCOptionsModel = DocSuiteContext.Current.ResolutionEnv.OCOptions
+        If ocOptions IsNot Nothing Then
+            _uscFinder.VisibileOC_SupervisoryBoard = ocOptions.SupervisoryBoard.Visible
+            _uscFinder.LabelOC_SupervisoryBoard = ocOptions.SupervisoryBoard.Label
+            _uscFinder.VisibileOC_ConfSind = ocOptions.ConfSindaci.Visible
+            _uscFinder.LabelOC_ConfSind = ocOptions.ConfSindaci.Label
+            _uscFinder.VisibileOC_Region = ocOptions.Region.Visible
+            _uscFinder.LabelOC_Region = ocOptions.Region.Label
+            _uscFinder.VisibileOC_Management = ocOptions.Management.Visible
+            _uscFinder.LabelOC_Management = ocOptions.Management.Label
+            _uscFinder.VisibileOC_CorteConti = ocOptions.CorteConti.Visible
+            _uscFinder.LabelOC_CorteConti = ocOptions.CorteConti.Label
+            _uscFinder.VisibileOC_Other = ocOptions.Other.Visible
+            _uscFinder.LabelOC_Other = ocOptions.Other.Label
+        End If
     End Sub
 End Class

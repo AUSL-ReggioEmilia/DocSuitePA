@@ -122,6 +122,15 @@ Partial Public Class uscFascicleInsert
     Protected WithEvents uscRoleMaster As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
 
     '''<summary>
+    '''isRoleRow control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents isRoleRow As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
     '''uscRole control.
     '''</summary>
     '''<remarks>
@@ -140,13 +149,22 @@ Partial Public Class uscFascicleInsert
     Protected WithEvents rowGeneral As Global.Telerik.Web.UI.LayoutRow
 
     '''<summary>
-    '''uscObject control.
+    '''txtObject control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscObject As Global.VecompSoftware.DocSuiteWeb.Gui.uscOggetto
+    Protected WithEvents txtObject As Global.Telerik.Web.UI.RadTextBox
+
+    '''<summary>
+    '''rfvObject control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rfvObject As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
     '''<summary>
     '''txtNote control.
@@ -203,13 +221,13 @@ Partial Public Class uscFascicleInsert
     Protected WithEvents uscMetadataRepositorySel As Global.VecompSoftware.DocSuiteWeb.Gui.uscMetadataRepositorySel
 
     '''<summary>
-    '''uscDynamicMetadata control.
+    '''uscDynamicMetadataRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents uscDynamicMetadata As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadata
+    Protected WithEvents uscDynamicMetadataRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscDynamicMetadataRest
 
     '''<summary>
     '''customActionsRow control.

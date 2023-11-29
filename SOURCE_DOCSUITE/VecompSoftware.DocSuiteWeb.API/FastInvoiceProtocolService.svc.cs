@@ -42,7 +42,7 @@ namespace VecompSoftware.DocSuiteWeb.API
         {
             try
             {
-                ContactDTO[] dtos = FacadeFactory.Instance.ContactFacade.GetContactBySearchCode(searchCode, 1)
+                ContactDTO[] dtos = FacadeFactory.Instance.ContactFacade.GetContactBySearchCode(searchCode, true)
                     .Select(c => new ContactDTO() { Description = c.Description, Id = c.Id, EmailAddress = c.EmailAddress, FiscalCode = c.FiscalCode })
                     .ToArray();
                 return dtos.SerializeAsResponse();

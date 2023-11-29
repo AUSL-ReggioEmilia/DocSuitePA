@@ -272,7 +272,7 @@ Public Class ProtStatistiche
 
         ' Carico solo i container attivi
         ddlContainer.Items.Add("")
-        Dim containers As IList(Of Container) = Facade.ContainerFacade.GetAllRightsDistinct("Prot", 1)
+        Dim containers As IList(Of Container) = Facade.ContainerFacade.GetAllRightsDistinct("Prot", True)
         For Each container As Container In containers
             ddlContainer.Items.Add(New ListItem(container.Name, container.Id.ToString()))
         Next

@@ -274,14 +274,6 @@ Partial Public Class AuslPc_ReslPubblicaRevoca
     '''</remarks>
     Protected WithEvents rfvPrivacyObject As Global.System.Web.UI.WebControls.RequiredFieldValidator
 
-    '''<summary>
-    '''uscPrivacyPanel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscPrivacyPanel As Global.VecompSoftware.DocSuiteWeb.Gui.uscPrivacyPanel
 
     '''<summary>
     '''lblInfo control.

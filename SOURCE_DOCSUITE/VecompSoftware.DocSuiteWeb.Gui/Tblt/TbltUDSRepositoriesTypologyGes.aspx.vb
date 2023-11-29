@@ -1,5 +1,6 @@
 ﻿Imports System.Collections.Generic
 Imports System.Web
+Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
@@ -27,8 +28,7 @@ Partial Class TbltUDSRepositoriesTypologyGes
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         MasterDocSuite.TitleVisible = False
         If Not CommonShared.HasGroupAdministratorRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
 
         If Not IsPostBack Then

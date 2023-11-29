@@ -90,7 +90,7 @@ Public Class NHibernateDocumentTokenFinder
             ReDim ids(DocumentType.Count - 1)
             DocumentType.CopyTo(ids, 0)
             criteria.Add(Expression.In("D.DocumentTabToken.Id", ids))
-            criteria.Add(Expression.Gt("D.IsActive", Convert.ToInt16(0)))
+            criteria.Add(Expression.Gt("D.IsActive", False))
         End If
 
         AttachFilterExpressions(criteria)

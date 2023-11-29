@@ -38,9 +38,10 @@ Public Class TbltCategoryMetadata
 #Region "Events"
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        If Not CommonShared.HasGroupTblCategoryRight Then
-            Throw New DocSuiteException("Utente non autorizzato alla visualizzazione della Versione del Classificatore.")
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
+
         InitializeAjax()
         If Not Page.IsPostBack Then
             MasterDocSuite.TitleVisible = False

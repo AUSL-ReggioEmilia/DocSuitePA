@@ -23,6 +23,24 @@ Partial Public Class PECSummary
     Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
 
     '''<summary>
+    '''RadWindowManagerPec control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents RadWindowManagerPec As Global.Telerik.Web.UI.RadWindowManager
+
+    '''<summary>
+    '''windowStartWorkflow control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents windowStartWorkflow As Global.Telerik.Web.UI.RadWindow
+
+    '''<summary>
     '''pnlDestination control.
     '''</summary>
     '''<remarks>
@@ -156,6 +174,51 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblInfo As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''trConservationStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trConservationStatus As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''conservationIcon control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents conservationIcon As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblConservationStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConservationStatus As Global.System.Web.UI.WebControls.HyperLink
+
+    '''<summary>
+    '''conservationUriLabel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents conservationUriLabel As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConservationUri control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConservationUri As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''tblAnnullamento control.
@@ -365,6 +428,15 @@ Partial Public Class PECSummary
     Protected WithEvents btnOriginalEml As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
+    '''btnWorkflow control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnWorkflow As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
     '''cmdPECView control.
     '''</summary>
     '''<remarks>
@@ -471,4 +543,13 @@ Partial Public Class PECSummary
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdResend As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''uscNotification control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
 End Class

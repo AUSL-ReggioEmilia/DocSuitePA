@@ -24,7 +24,7 @@ Public Class PECMailBoxRoleFacade
             Return False
         End If
 
-        Dim targetRoles As IList(Of Role) = FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 3, True)
+        Dim targetRoles As IList(Of Role) = FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 3, True, roles.First().IdTenantAOO)
 
         Dim belongs As Boolean = False
         If Not targetRoles.IsNullOrEmpty() Then

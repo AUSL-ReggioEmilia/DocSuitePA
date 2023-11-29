@@ -39,6 +39,7 @@
                     fascUDManager.uscFascicleSearchId = "<%= uscFascicleSearch.PageControl.ClientID %>";
                     fascUDManager.processEnabled = <%= ProtocolEnv.ProcessEnabled.ToString().ToLower() %>;
                     fascUDManager.folderSelectionEnabled = <%= FolderSelectionEnabled.ToString().ToLower() %>;
+                    fascUDManager.authorizedFasciclesEnabled = <%= AuthorizedFasciclesEnabled.ToString().ToLower() %>;
                     fascUDManager.initialize();
                 });
             });

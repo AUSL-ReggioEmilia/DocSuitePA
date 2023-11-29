@@ -45,7 +45,7 @@
                 <Rows>
                     <telerik:LayoutRow runat="server" HtmlTag="Div">
                         <Content>
-                            <uc1:uscDocumentUpload ID="uscDocumentUpload" Caption="Documento" runat="server" SignButtonEnabled="false" ButtonScannerEnabled="true" ButtonLibrarySharepointEnabled="false" MultipleDocuments='<%# MultiDoc %>' UseSessionStorage="true" Type="Prot" />
+                            <uc1:uscDocumentUpload ID="uscDocumentUpload" Caption="Documento" runat="server" SignButtonEnabled="false" ButtonScannerEnabled="true" ButtonLibrarySharepointEnabled="false" MultipleDocuments='<%# MultiDoc %>' HideScannerMultipleDocumentButton='<%# MultiDoc %>' UseSessionStorage="true" Type="Prot" />
                         </Content>
                     </telerik:LayoutRow>
                 </Rows>

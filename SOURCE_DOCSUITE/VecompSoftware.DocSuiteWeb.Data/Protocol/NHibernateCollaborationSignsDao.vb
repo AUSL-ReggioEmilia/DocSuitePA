@@ -55,7 +55,7 @@ Public Class NHibernateCollaborationSignsDao
 
         criteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Like("SignUser", String.Format("\{0}", username), MatchMode.End))
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
         criteria.Add(Restrictions.IsNull("SignDate"))
 
         Return criteria.List(Of CollaborationSign)()
@@ -76,7 +76,7 @@ Public Class NHibernateCollaborationSignsDao
         criteria.Add(Restrictions.Eq("IdCollaboration", idCollaboration))
 
         If isActive Then
-            criteria.Add(Restrictions.Eq("IsActive", 1S))
+            criteria.Add(Restrictions.Eq("IsActive", True))
         End If
 
         If incremental <> 0 Then
@@ -102,7 +102,7 @@ Public Class NHibernateCollaborationSignsDao
 
     Public Function GetNext(idCollaboration As Integer) As IList(Of CollaborationSign)
         Dim dc As DetachedCriteria = DetachedCriteria.For(Of CollaborationSign)("CSS")
-        dc.Add(Restrictions.Eq("CSS.IsActive", 1S))
+        dc.Add(Restrictions.Eq("CSS.IsActive", True))
         dc.Add(Restrictions.EqProperty("CSS.IdCollaboration", "CSM.IdCollaboration"))
         dc.SetProjection(Projections.Property("CSS.Incremental"))
 
@@ -116,7 +116,7 @@ Public Class NHibernateCollaborationSignsDao
 
     Public Function GetPrev(idCollaboration As Integer) As IList(Of CollaborationSign)
         Dim dc As DetachedCriteria = DetachedCriteria.For(Of CollaborationSign)("CSS")
-        dc.Add(Restrictions.Eq("CSS.IsActive", 1S))
+        dc.Add(Restrictions.Eq("CSS.IsActive", True))
         dc.Add(Restrictions.EqProperty("CSS.IdCollaboration", "CSM.IdCollaboration"))
         dc.SetProjection(Projections.Property("CSS.Incremental"))
 
@@ -139,7 +139,7 @@ Public Class NHibernateCollaborationSignsDao
     End Function
 
     ''' <summary> Ritorna la lista delle firme di una Collaborazione dati idCollaboration, signUser e isActive </summary>
-    Function GetCollaborationSignsBy(ByVal idCollaboration As Integer, ByVal signUser As String, ByVal isActive As Short) As IList(Of CollaborationSign)
+    Function GetCollaborationSignsBy(ByVal idCollaboration As Integer, ByVal signUser As String, ByVal isActive As Boolean) As IList(Of CollaborationSign)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Eq("IdCollaboration", idCollaboration))
         criteria.Add(Restrictions.Eq("SignUser", signUser))
@@ -149,7 +149,7 @@ Public Class NHibernateCollaborationSignsDao
     End Function
 
     ''' <summary> Ritorna la lista delle firme di una Collaborazione dati idCollaboration e isActive </summary>
-    Function GetCollaborationSignsBy(ByVal idCollaboration As Integer, ByVal isActive As Short) As IList(Of CollaborationSign)
+    Function GetCollaborationSignsBy(ByVal idCollaboration As Integer, ByVal isActive As Boolean) As IList(Of CollaborationSign)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Eq("IdCollaboration", idCollaboration))
         criteria.Add(Restrictions.Eq("IsActive", isActive))
@@ -165,7 +165,7 @@ Public Class NHibernateCollaborationSignsDao
         With detachedActiveIncremental
             .SetMaxResults(1)
             .Add(Restrictions.EqProperty("SCS.IdCollaboration", "CS.IdCollaboration"))
-            .Add(Restrictions.Eq("SCS.IsActive", 1S))
+            .Add(Restrictions.Eq("SCS.IsActive", True))
             .SetProjection(Projections.Property("SCS.Incremental"))
         End With
 
@@ -184,7 +184,7 @@ Public Class NHibernateCollaborationSignsDao
     Function IsCollaborationSignedByActiveSigner(ByVal idCollaboration As Integer) As Boolean
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Eq("IdCollaboration", idCollaboration))
-        criteria.Add(Restrictions.Eq("IsActive", Convert.ToInt16(1)))
+        criteria.Add(Restrictions.Eq("IsActive", True))
         criteria.SetProjection(Projections.Property("SignDate"))
         Dim result As Date? = criteria.UniqueResult(Of Date?)
         Return result.HasValue
@@ -192,7 +192,7 @@ Public Class NHibernateCollaborationSignsDao
 
     Public Function DisableActiveRequiredSigns(idCollaboration As Integer) As List(Of CollaborationSign)
         Dim signs As IList(Of CollaborationSign) = GetByIdCollaboration(idCollaboration)
-        Dim requiresEditing As List(Of CollaborationSign) = signs.Where(Function(s) s.IsActive = 1S AndAlso s.IsRequired.GetValueOrDefault()).ToList()
+        Dim requiresEditing As List(Of CollaborationSign) = signs.Where(Function(s) s.IsActive AndAlso s.IsRequired.GetValueOrDefault()).ToList()
         If requiresEditing.IsNullOrEmpty() Then
             Return New List(Of CollaborationSign)
         End If

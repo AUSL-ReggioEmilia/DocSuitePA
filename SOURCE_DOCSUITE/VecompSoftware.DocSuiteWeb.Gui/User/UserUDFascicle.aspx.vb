@@ -71,7 +71,7 @@ Public Class UserUDFascicle
         finder.Domain = DocSuiteContext.Current.User.Domain
         finder.DateFrom = New DateTimeOffset(rdpDateFrom.SelectedDate.Value)
         finder.DateTo = New DateTimeOffset(rdpDateTo.SelectedDate.Value).AddDays(1)
-        finder.IsSecurityUserEnabled = DocSuiteContext.Current.ProtocolEnv.IsSecurityGroupEnabled
+        finder.IsSecurityUserEnabled = True
         finder.IncludeThreshold = chkRedThreshold.Checked
         finder.ExcludeLinked = chkExcludeLinked.Checked
         finder.FascicolableThresholdDate = Convert.ToDateTime(DocSuiteContext.Current.ProtocolEnv.FascicolableThresholdDate)
@@ -88,10 +88,6 @@ Public Class UserUDFascicle
         Else
             MasterDocSuite.Title = "Fascicoli - Nessun risultato"
         End If
-    End Sub
-
-    Private Sub LoadOpenFascicles()
-        'WebAPIImpersonatorFacade.
     End Sub
 
     Private Function ImpersonateGridCallback(Of TResult)(finder As IFinder, callback As Func(Of TResult)) As TResult

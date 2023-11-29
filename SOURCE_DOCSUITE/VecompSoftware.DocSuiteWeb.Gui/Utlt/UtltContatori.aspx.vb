@@ -15,6 +15,10 @@ Partial Class UtltContatori
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
         InitializeAjaxSettings()
         If Not IsPostBack Then
             Initialize()

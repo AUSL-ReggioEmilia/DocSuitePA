@@ -57,9 +57,24 @@
                 </td>
             </tr>
         </table>
+        <table id="tblContenitori" class="datatable" runat="server">
+            <tr>
+                <th colspan="2">Modifica contenitori</th>
+            </tr>
+            <tr>
+                <td class="label" style="width: 8%">Contenitori: </td>
+                <td>
+                        <telerik:RadComboBox runat="server" CausesValidation="false"
+                            ID="rcbContainer" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true"
+                            ItemRequestTimeout="500" Visible="false" Style="margin-left: 150px;" Width="500px">
+                        </telerik:RadComboBox>
+                        <asp:DropDownList ID="cmbProtocolContenitori" runat="server" Style="margin-left: 150px;" AutoPostBack="false" />
+                    </td>
+            </tr>
+        </table>
     </asp:Panel>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphFooter">
-    <asp:Button ID="btnConfermaAssegna" runat="server" Text="Conferma modifica" OnClientClick="if(!confirmSetStatus()) return false;" />
+    <telerik:RadButton ID="btnConfermaAssegna" runat="server" Text="Conferma modifica" OnClientClick="if(!confirmSetStatus()) return false;" />
 </asp:Content>

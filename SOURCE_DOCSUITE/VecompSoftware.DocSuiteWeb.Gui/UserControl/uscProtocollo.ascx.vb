@@ -1,17 +1,19 @@
 ﻿Imports System.Collections.Generic
 Imports System.Linq
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports Telerik.Web.UI
-Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
-Imports VecompSoftware.Helpers.UDS
-Imports VecompSoftware.Helpers.WebAPI
+Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.UDS
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Helpers.WebAPI
 Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.DocSuiteWeb.Facade.ProtocolParerFacade
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations
+Imports VecompSoftware.DocSuiteWeb.Entity.Conservations
+Imports System.Text.RegularExpressions
 
 Partial Public Class uscProtocollo
     Inherits DocSuite2008BaseControl
@@ -30,6 +32,7 @@ Partial Public Class uscProtocollo
     Private Const ODATA_EQUAL_UDSID As String = "$filter=UDSId eq {0}"
     Private _currentUDSFacade As UDSFacade
     Private _webAPIHelper As IWebAPIHelper
+    Private _currentConservation As Conservation
 #End Region
 
 #Region " Properties "
@@ -232,7 +235,7 @@ Partial Public Class uscProtocollo
     End Property
 
     ''' <summary> Hide/Show del Pannello assegnatario di protocollo </summary>
-    ''' <remarks> **REMOVE**</remarks>
+    ''' <remarks> cliente </remarks>
     Public Property VisibleHandler() As Boolean
         Get
             Return tblAssegnatario.Visible
@@ -284,14 +287,6 @@ Partial Public Class uscProtocollo
         End Get
         Set(value As Boolean)
             trSourceCollaboration.Visible = value AndAlso DocSuiteContext.Current.ProtocolEnv.CollaborationSourceProtocolEnabled
-        End Set
-    End Property
-    Public Property VisibleMulticlassification As Boolean
-        Get
-            Return uscMulticlassificationRest.Visible
-        End Get
-        Set(ByVal value As Boolean)
-            uscMulticlassificationRest.Visible = value
         End Set
     End Property
 
@@ -410,14 +405,6 @@ Partial Public Class uscProtocollo
             ViewState("viewUDSSource") = value
         End Set
     End Property
-    Public Property VisibleParer As Boolean
-        Get
-            Return tblParer.Visible
-        End Get
-        Set(value As Boolean)
-            tblParer.Visible = value
-        End Set
-    End Property
 
     Public Property VisibleInvoicePA As Boolean
         Get
@@ -447,12 +434,39 @@ Partial Public Class uscProtocollo
             rowDocumentUnitReference.Visible = value
         End Set
     End Property
+
+    Public ReadOnly Property CurrentConservation As Conservation
+        Get
+            If _currentConservation Is Nothing AndAlso CurrentProtocol IsNot Nothing Then
+                Dim conservation As Conservation = WebAPIImpersonatorFacade.ImpersonateFinder(New ConservationFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.UniqueId = CurrentProtocol.Id
+                        finder.EnablePaging = False
+                        Return finder.DoSearch().Select(Function(x) x.Entity).FirstOrDefault()
+                    End Function)
+
+                _currentConservation = conservation
+            End If
+            Return _currentConservation
+        End Get
+    End Property
+
+    Public Property HideMulticlassification As Boolean
+        Get
+            If ViewState("HideMulticlassification") Is Nothing Then
+                Return False
+            End If
+            Return CType(ViewState("HideMulticlassification"), Boolean)
+        End Get
+        Set(ByVal value As Boolean)
+            ViewState("HideMulticlassification") = value
+        End Set
+    End Property
 #End Region
 
 #Region " Events "
 
     Private Sub Page_Init(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Init
-        ' TODO: perchè inizializzare così? dangerous!
         CurrentProtocol = Nothing
         VisibleAltri = False
         VisibleAnnullamento = False
@@ -470,22 +484,12 @@ Partial Public Class uscProtocollo
         VisibleTipoDocumento = False
         VisibleScatolone = False
         ClaimModifyEnable = False
-        lblTitle.Text = "Protocollo del Documento"
-
-
+        lblTitle.Text = "Protocollo del documento"
     End Sub
 
     Private Sub PageLoad(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         InitializeAjax()
-
-        If (ProtocolEnv.RoleContactHistoricizing) Then
-            uscMittenti.HistoricizeDate = CurrentProtocol.RegistrationDate.ToLocalTime.DateTime
-            uscDestinatari.HistoricizeDate = CurrentProtocol.RegistrationDate.ToLocalTime.DateTime
-
-        End If
-
         RedundantLegacyLoader()
-
         If Not Page.IsPostBack Then
             Initialize()
         End If
@@ -573,30 +577,31 @@ Partial Public Class uscProtocollo
     End Sub
 
     Private Sub Initialize()
-
-        If ProtocolEnv.RoleContactHistoricizing Then
-            uscMittenti.HistoricizeDate = CurrentProtocol.RegistrationDate.ToLocalTime().DateTime
-            uscDestinatari.HistoricizeDate = CurrentProtocol.RegistrationDate.ToLocalTime().DateTime
-        End If
-
         InitializeSourceCollaboation()
         InitializeUDSDynamicsControl()
 
         uscMulticlassificationRest.IdDocumentUnit = CurrentProtocol.Id.ToString()
-        uscMulticlassificationRest.Visible = ProtocolEnv.MulticlassificationEnabled
+        uscMulticlassificationRest.Visible = ProtocolEnv.MulticlassificationEnabled AndAlso Not HideMulticlassification
         Dim showCheckBox As Boolean = checkPECSendMessages()
 
-        uscDocumentUnitReferences.IdDocumentUnit = CurrentProtocol.Id.ToString()
+        uscDocumentUnitReferences.ReferenceUniqueId = CurrentProtocol.Id.ToString()
         uscDocumentUnitReferences.DocumentUnitYear = CurrentProtocol.Year.ToString()
         uscDocumentUnitReferences.DocumentUnitNumber = CurrentProtocol.Number.ToString()
         uscDocumentUnitReferences.ShowArchiveRelationLinks = ProtocolEnv.UDSEnabled
-        uscDocumentUnitReferences.ShowActiveWorkflowActivities = ProtocolEnv.WorkflowManagerEnabled AndAlso ProtocolEnv.WorkflowStateSummaryEnabled
-        uscDocumentUnitReferences.ShowDoneWorkflowActivities = ProtocolEnv.WorkflowManagerEnabled AndAlso ProtocolEnv.WorkflowStateSummaryEnabled
+        uscDocumentUnitReferences.ShowWorkflowActivities = ProtocolEnv.WorkflowManagerEnabled AndAlso ProtocolEnv.WorkflowStateSummaryEnabled
         uscDocumentUnitReferences.ShowTNotice = ProtocolEnv.TNoticeEnabled
         uscDocumentUnitReferences.ShowPECIncoming = False
         uscDocumentUnitReferences.ShowPECOutgoing = False
+        uscDocumentUnitReferences.ShowPECUnified = False
+        uscDocumentUnitReferences.ShowFascicleLinks = Not ProtocolEnv.ProcessEnabled AndAlso ProtocolEnv.FascicleEnabled
+        uscDocumentUnitReferences.ShowDocumentUnitFascicleLinks = ProtocolEnv.ProcessEnabled
 
         If ProtocolEnv.IsPECEnabled Then
+            If ProtocolEnv.UnifiedPECLinksPanelEnabled Then
+                uscDocumentUnitReferences.ShowPECUnified = True
+                Return
+            End If
+
             If CurrentProtocol.Type.ShortDescription.Eq("U") Then
                 uscDocumentUnitReferences.ShowPECOutgoing = True
                 uscDocumentUnitReferences.ShowPECIncoming = False
@@ -766,20 +771,11 @@ Partial Public Class uscProtocollo
         'Motivazione modifica oggetto
         trObjectChangeReason.Visible = ProtocolEnv.IsChangeObjectEnable And Not String.IsNullOrEmpty(CurrentProtocol.ObjectChangeReason)
 
-        'Contenitore e Location
-        If Not IsNothing(CurrentProtocol.Location) Then
-            LocationName.Text = CurrentProtocol.Location.Name
-        End If
         If Not IsNothing(CurrentProtocol.Container) Then
             ContainerName.Text = CurrentProtocol.Container.Name
         End If
 
-        ' PARER
-        If ProtocolEnv.ParerEnabled AndAlso VisibleParer Then
-            LoadParer()
-        Else
-            VisibleParer = False
-        End If
+        LoadConservation()
 
         If ProtocolEnv.ProtocolKindEnabled AndAlso ProtocolEnv.IsInvoiceEnabled AndAlso ProtocolEnv.InvoicePAEnabled AndAlso VisibleInvoicePA AndAlso CurrentProtocol.IdProtocolKind.Equals(ProtocolKind.FatturePA) Then
             LoadInvoicePA()
@@ -801,12 +797,6 @@ Partial Public Class uscProtocollo
         ElseIf (CurrentProtocol.LastChangedDate.HasValue) Then
             lblProtocolLastChangedUser.Text = String.Format("{0} {1:dd/MM/yyyy}", CommonAD.GetDisplayName(CurrentProtocol.LastChangedUser), CurrentProtocol.LastChangedDate.Value.ToLocalTime())
         End If
-
-        'Collegamento Protocolli
-        If CurrentProtocol.ProtocolLinks IsNot Nothing AndAlso CurrentProtocol.ProtocolLinks.Count > 0 Then
-            lblProtocolLink.Text = CurrentProtocol.ProtocolLinks.Count.ToString()
-        End If
-
         If VisibleRefusedTreeView Then
             For Each rejectedRole As ProtocolRejectedRole In CurrentProtocol.RejectedRoles.Where(Function(r) r.Status = ProtocolRoleStatus.Refused)
                 Dim node As New RadTreeNode()
@@ -846,20 +836,30 @@ Partial Public Class uscProtocollo
         dgPosteRequestContact.DataBind()
     End Sub
 
-    Public Sub LoadParer()
-        ' Controllo se soggetto alla conservazione sostitutiva
-        If Not Facade.ProtocolParerFacade.Exists(CurrentProtocol) Then
-            parerInfo.Visible = False
-            parerIcon.ImageUrl = "../Comm/images/parer/lightgray.png"
-            parerLabel.Text = "Non soggetto alla conservazione anticipata."
-            Exit Sub
-        End If
+    Public Sub LoadConservation()
+        trConservationStatus.Visible = False
 
-        parerInfo.ImageUrl = "../Comm/images/info.png"
-        parerInfo.OnClientClick = String.Format("return OpenParerDetail('{0}');", CurrentProtocol.Id)
-        Dim status As ProtocolParerConservationStatus = Facade.ProtocolParerFacade.GetConservationStatus(CurrentProtocol)
-        parerIcon.ImageUrl = uscProtGrid.GetParerStatusIcon(status)
-        parerLabel.Text = ConservationsStatus(status)
+        If ProtocolEnv.ConservationEnabled AndAlso CurrentConservation IsNot Nothing Then
+            trConservationStatus.Visible = True
+            imgConservationIcon.ImageUrl = ConservationHelper.StatusSmallIcon(CurrentConservation.Status)
+            lblConservationStatus.Text = ConservationHelper.StatusDescription(CurrentConservation.Status)
+
+            If String.IsNullOrEmpty(CurrentConservation.Uri) Then
+                Exit Sub
+            End If
+
+            If Not Regex.IsMatch(CurrentConservation.Uri, ProtocolEnv.ConservationURIValidationRegex) Then
+                lblConservationUri.Visible = True
+                conservationUriLabel.Visible = True
+
+                lblConservationStatus.ToolTip = "Url non compatibile con il portale ingestor"
+                lblConservationUri.Text = CurrentConservation.Uri
+                Exit Sub
+            End If
+            If Not String.IsNullOrWhiteSpace(ProtocolEnv.IngestorBaseURL) Then
+                lblConservationStatus.NavigateUrl = $"{ProtocolEnv.IngestorBaseURL}/{CurrentConservation.Uri}"
+            End If
+        End If
     End Sub
 
     Public Sub LoadInvoicePA()
@@ -903,7 +903,6 @@ Partial Public Class uscProtocollo
                 uscMittenti.MultiSelect = True
                 uscMittenti.ButtonSelectVisible = True
                 uscMittenti.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
-                uscMittenti.ButtonSelectOChartVisible = True
                 uscMittenti.ButtonDeleteVisible = True
                 uscMittenti.ButtonManualVisible = True
                 uscMittenti.ButtonPropertiesVisible = True
@@ -915,7 +914,6 @@ Partial Public Class uscProtocollo
                 uscDestinatari.MultiSelect = True
                 uscDestinatari.ButtonSelectVisible = True
                 uscDestinatari.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
-                uscDestinatari.ButtonSelectOChartVisible = True
                 uscDestinatari.ButtonDeleteVisible = True
                 uscDestinatari.ButtonManualVisible = True
                 uscDestinatari.ButtonPropertiesVisible = True
@@ -929,7 +927,6 @@ Partial Public Class uscProtocollo
                     uscMittenti.MultiSelect = False ' non supporta la multiselezione, eventualmente prevedere una proprietà ContactMittentiModifyEnable
                     uscMittenti.ButtonSelectVisible = True
                     uscMittenti.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
-                    uscMittenti.ButtonSelectOChartVisible = True
                     uscMittenti.ButtonDeleteVisible = True
                     uscMittenti.ButtonManualVisible = True
                     uscMittenti.ButtonPropertiesVisible = True
@@ -944,7 +941,6 @@ Partial Public Class uscProtocollo
                     uscDestinatari.MultiSelect = True
                     uscDestinatari.ButtonSelectVisible = True
                     uscDestinatari.ButtonSelectDomainVisible = DocSuiteContext.Current.ProtocolEnv.AbilitazioneRubricaDomain
-                    uscDestinatari.ButtonSelectOChartVisible = True
                     uscDestinatari.ButtonDeleteVisible = True
                     uscDestinatari.ButtonManualVisible = True
                     uscDestinatari.ButtonPropertiesVisible = True
@@ -1028,10 +1024,6 @@ Partial Public Class uscProtocollo
         End If
         tdAccountingSectional.InnerText = txtAccounting
     End Sub
-
-    Protected Function ProtocolParerDetailUrl() As String
-        Return ResolveUrl("~/PARER/ParerDetail.aspx")
-    End Function
 
     Protected Function GetContenutoRequest(ByVal rq As POLRequestRecipientHeader) As String
         Select Case rq.RequestType

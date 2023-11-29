@@ -2,12 +2,18 @@
 using System.IO;
 using System.Web;
 using VecompSoftware.DocSuiteWeb.Data;
+using VecompSoftware.DocSuiteWeb.Model.Parameters;
 using VecompSoftware.DocSuiteWeb.Report;
 
 namespace VecompSoftware.DocSuiteWeb.Facade.Report
 {
     public static class ReportFacade
     {
+        public static TenantModel TenantModel
+        {
+            get; set;
+        }
+
         /// <summary>
         /// Genera un report a partire da un DataSet grezzo (es. una lista di elementi oppure una griglia Telerik)
         /// </summary>
@@ -87,7 +93,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Report
         /// <returns></returns>
         private static IReport<T> GetManager<T>()
         {
-            if (typeof(T) == typeof(Protocol)) return (IReport<T>)new ProtocolReport();
+            if (typeof(T) == typeof(Protocol)) return (IReport<T>)new ProtocolReport(TenantModel);
             if (typeof(T) == typeof(Collaboration)) return (IReport<T>)new CollaborationReport();
             if (typeof(T) == typeof(Resolution)) return (IReport<T>)new ResolutionReport();
             return new GenericDataSetGridReport<T>();

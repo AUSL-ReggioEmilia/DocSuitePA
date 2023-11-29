@@ -17,6 +17,7 @@ import AjaxModel = require("App/Models/AjaxModel");
 import UscStartWorkflow = require('UserControl/uscStartWorkflow');
 import ExceptionStatusCode = require("App/DTOs/ExceptionStatusCode");
 import SessionStorageKeysHelper = require("App/Helpers/SessionStorageKeysHelper");
+import DSWEnvironmentType = require("App/Models/Workflows/WorkflowDSWEnvironmentType");
 
 class UDSView extends UDSViewBase {
 
@@ -109,7 +110,7 @@ class UDSView extends UDSViewBase {
         args.set_cancel(true);
         this.setSessionVariables();
 
-        let url = `../Workflows/StartWorkflow.aspx?Type=UDS&ManagerID=${this.radWindowManagerId}&DSWEnvironment=${this._documentUnitModel.Environment}&Callback=${window.location.href}`;
+        let url = `../Workflows/StartWorkflow.aspx?Type=UDS&ManagerID=${this.radWindowManagerId}&DSWEnvironment=${DSWEnvironmentType.UDS}& Callback=${ window.location.href }`;
         return this.openWindow(url, "windowStartWorkflow", 730, 550);
     }
 

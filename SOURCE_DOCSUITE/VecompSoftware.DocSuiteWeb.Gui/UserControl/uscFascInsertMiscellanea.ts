@@ -16,6 +16,7 @@ import FascicleModelMapper = require('App/Mappers/Fascicles/FascicleModelMapper'
 import AjaxModel = require('App/Models/AjaxModel');
 import FascicleDocumentService = require('App/Services/Fascicles/FascicleDocumentService');
 import FascicleFolderModel = require('App/Models/Fascicles/FascicleFolderModel');
+import Environment = require('App/Models/Environment');
 
 class uscFascInsertMiscellanea extends FascicleBase {
 
@@ -107,8 +108,8 @@ class uscFascInsertMiscellanea extends FascicleBase {
                             this.loadMiscellanea();
                         });
 
-                        $("#".concat(this.uscMiscellaneaId)).on(UscMiscellanea.DELETE_DOCUMENT_EVENT, (args, idDocument, idArchiveChain) => {
-                            this.deleteDocument(idDocument, idArchiveChain);
+                        $("#".concat(this.uscMiscellaneaId)).on(UscMiscellanea.DELETE_DOCUMENT_EVENT, (args, idDocument, idArchiveChain, documentName) => {
+                            this.deleteDocument(idDocument, idArchiveChain, documentName);
                         });
 
 
@@ -175,25 +176,29 @@ class uscFascInsertMiscellanea extends FascicleBase {
         }
     }
 
-    private deleteDocument(idDocument: string, idArchiveChain: string) {
+    private deleteDocument(idDocument: string, idArchiveChain: string, documentName: string) {
         let request: AjaxModel = <AjaxModel>{};
         request.ActionName = uscFascInsertMiscellanea.DELETE_DOCUMENT;
         request.Value = [];
         request.Value.push(idDocument);
         request.Value.push(idArchiveChain);
+        request.Value.push(documentName);
+        request.Value.push(this._fascicleModel.Title);
+
 
         this._ajaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
         this._ajaxManager.ajaxRequest(JSON.stringify(request));
     }
 
     refreshDocuments = () => {
+        this._loadingPanel.hide(this.uscMiscellaneaId);
         this.loadMiscellanea();
     }
 
     openUploadDocumentWindow(documentPageName: string, multiDoc: string) {
         let uscMiscellanea: UscMiscellanea = <UscMiscellanea>$("#".concat(this.uscMiscellaneaId)).data();
         if (!jQuery.isEmptyObject(uscMiscellanea)) {
-            let url: string = `../UserControl/${documentPageName}.aspx?Action=Add&Type=Fasc&IdLocation=${this.locationId}&ArchiveName=${this.archiveName}&MultiDoc=${multiDoc}`;
+            let url: string = `../UserControl/${documentPageName}.aspx?Action=Add&Type=Fasc&IdLocation=${this.locationId}&ArchiveName=${this.archiveName}&MultiDoc=${multiDoc}&Environment=${Environment.Fascicle}&DocumentUnitId=${this._fascicleModel.UniqueId}`;
 
             let inserts: FascicleDocumentModel = $.grep(this._fascicleModel.FascicleDocuments, (x) => x.ChainType == ChainType.Miscellanea)[0];
             if (inserts != undefined) {

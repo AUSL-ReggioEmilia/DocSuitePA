@@ -62,7 +62,7 @@ Partial Public Class ProtRegistroPrint
                 root.Nodes.Add(node)
             Next
         Else
-            Dim containers As IList(Of ContainerRightsDto) = Facade.ContainerFacade.GetAllRights("Prot", 1)
+            Dim containers As IList(Of ContainerRightsDto) = Facade.ContainerFacade.GetAllRights("Prot", True)
             If containers Is Nothing OrElse containers.Count = 0 Then
                 Throw New DocSuiteException("Registro Giornaliero", "Nessun contenitore abilitato.")
             End If

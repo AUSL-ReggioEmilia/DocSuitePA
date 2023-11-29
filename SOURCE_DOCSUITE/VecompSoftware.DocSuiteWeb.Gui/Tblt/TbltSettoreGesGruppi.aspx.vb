@@ -71,6 +71,10 @@ Partial Public Class TbltSettoreGesGruppi
 
 #Region " Events "
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblRoleAdminRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         MasterDocSuite.TitleVisible = False
         InitializeAjax()
         InitializeUserControlGroups()

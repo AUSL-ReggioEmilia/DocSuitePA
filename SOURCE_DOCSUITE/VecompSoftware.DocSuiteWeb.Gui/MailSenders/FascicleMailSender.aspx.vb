@@ -3,6 +3,7 @@ Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class FascicleMailSender
     Inherits FascBasePage
@@ -12,7 +13,11 @@ Public Class FascicleMailSender
 #End Region
 
 #Region " Properties "
-
+    Private ReadOnly Property SendToRoles As Boolean
+        Get
+            Return Request.QueryString.GetValueOrDefault("SendToRoles", False)
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
@@ -64,7 +69,7 @@ Public Class FascicleMailSender
             MailSenderControl.Recipients = previous.Recipients
         End If
 
-        If ProtocolEnv.DeleteMultipleMailRecipientPages.Contains(CURRENT_PAGE_NAME) Then
+        If ProtocolEnv.DeleteMultipleMailRecipientPages.Contains(CURRENT_PAGE_NAME) OrElse SendToRoles Then
             MailSenderControl.EnableCheckBoxRecipients = True
         End If
 

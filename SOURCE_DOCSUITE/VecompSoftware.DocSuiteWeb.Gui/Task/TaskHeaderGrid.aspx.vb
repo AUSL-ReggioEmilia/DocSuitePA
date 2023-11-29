@@ -156,6 +156,8 @@ Public Class TaskHeaderGrid
         End If
 
         DirectCast(e.Item, GridDataItem)("Status").Text = bound.Status.GetDescription()
+
+        DirectCast(e.Item, GridDataItem)("RegistrationDate").Text = bound.RegistrationDate.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")
     End Sub
 
     Private Sub cmdNew_Click(sender As Object, e As EventArgs) Handles cmdNew.Click

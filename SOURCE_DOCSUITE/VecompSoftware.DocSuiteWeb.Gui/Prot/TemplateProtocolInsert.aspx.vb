@@ -124,16 +124,11 @@ Public Class TemplateProtocolInsert
 
 #Region "Methods"
 
-    Private Overloads Sub BindDocType(idContainer As Integer?)
-        Dim availableDocTypes As IList(Of DocumentType)
-        If idContainer.HasValue Then
-            availableDocTypes = Facade.ContainerDocTypeFacade.ContainerDocTypeSearch(idContainer, True)
-        Else
-            availableDocTypes = Facade.DocumentTypeFacade.DocTypeSearch(0, True, ProtocolEnv.IsPackageEnabled, "")
-        End If
+    Private Overloads Sub BindDocType()
+        Dim availableDocTypes As IList(Of DocumentType) = Facade.DocumentTypeFacade.DocTypeSearch(0, True, ProtocolEnv.IsPackageEnabled, String.Empty)
         cboIdDocType.Items.Clear()
         For Each dt As DocumentType In availableDocTypes
-            Dim currentItem As New ListItem(dt.Description, dt.Id)
+            Dim currentItem As New ListItem(dt.Description, dt.Id.ToString())
             If ProtocolEnv.IsPackageEnabled AndAlso dt.NeedPackage Then
                 If String.IsNullOrEmpty(dt.CommonUser) Then
                     currentItem.Text &= " (*)"
@@ -153,13 +148,7 @@ Public Class TemplateProtocolInsert
         If ProtocolEnv.IsTableDocTypeEnabled Then
             'Carico l'ultima impostazione della Tipologia spedizione fatta
             Dim prevSelectedDocType As String = cboIdDocType.SelectedValue
-
-            If Not String.IsNullOrEmpty(CurrentContainerControl.SelectedValue) Then
-                BindDocType(Integer.Parse(CurrentContainerControl.SelectedValue))
-            Else
-                BindDocType(Nothing)
-            End If
-
+            BindDocType()
             If Not String.IsNullOrEmpty(prevSelectedDocType) Then
                 If cboIdDocType.Items.FindByValue(prevSelectedDocType) IsNot Nothing Then
                     cboIdDocType.ClearSelection()
@@ -255,6 +244,7 @@ Public Class TemplateProtocolInsert
 
         'Impostazione Titolo Pagina
         btnSave.Visible = False
+        pnlUscOggetto.Visible = True
         Select Case Action
             Case "add"
                 Title = "Inserimento nuovo Template di Protocollo"
@@ -412,11 +402,9 @@ Public Class TemplateProtocolInsert
         rblTipoProtocollo.Width = Unit.Pixel(5)
 
         uscMittenti.IsRequired = False
-        uscMittenti.APIDefaultProvider = False
         uscMittenti.Enable()
 
         uscDestinatari.IsRequired = False
-        uscDestinatari.APIDefaultProvider = True
         uscDestinatari.Disable()
 
         If ProtocolEnv.InnerContactRoot.HasValue Then
@@ -438,11 +426,7 @@ Public Class TemplateProtocolInsert
     'Inizializzazione per tipo protocollo in Uscita
     Private Sub InitializeOutgoingProtocolType()
         lblAssegnatario.Text = "Proponente:"
-
-        uscMittenti.APIDefaultProvider = True
         uscMittenti.Disable()
-
-        uscDestinatari.APIDefaultProvider = False
         uscDestinatari.Enable()
 
         If ProtocolEnv.InnerContactRoot.HasValue Then
@@ -465,11 +449,7 @@ Public Class TemplateProtocolInsert
 
     Private Sub InitializeBetweenOfficesProtocolType()
         lblAssegnatario.Text = "Interno:"
-
-        uscMittenti.APIDefaultProvider = True
         uscMittenti.Enable()
-
-        uscDestinatari.APIDefaultProvider = True
         uscDestinatari.Enable()
 
         uscMittenti.ExcludeContacts = Nothing

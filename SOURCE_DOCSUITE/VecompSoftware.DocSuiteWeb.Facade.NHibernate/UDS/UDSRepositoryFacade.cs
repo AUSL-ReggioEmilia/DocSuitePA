@@ -8,9 +8,13 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.UDS;
 using VecompSoftware.DocSuiteWeb.DTO.UDS;
+using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.EntityMapper.UDS;
+using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
 using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
+using VecompSoftware.DocSuiteWeb.Model.Workflow.Actions;
 using VecompSoftware.Helpers.UDS;
 using VecompSoftware.Services.Biblos.Models;
 using VecompSoftware.Services.Command.CQRS.Commands.Models.UDS;
@@ -98,11 +102,11 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
             return _dao.HasProtocollableRepositories();
         }
 
-        public Guid SendCommandInsertData(Guid idRepository, Guid correlationId, UDSModel model)
+        public Guid SendCommandInsertData(Guid idRepository, Guid correlationId, UDSModel model, Guid? idFascicle)
         {
             CommandFacade<ICommandInsertUDSData> commandFacade = new CommandFacade<ICommandInsertUDSData>();
             IdentityContext identity = new IdentityContext(DocSuiteContext.Current.User.FullUserName);
-            UDSBuildModel commandModel = CreateUDSCommandModel(idRepository, idRepository, model);
+            UDSBuildModel commandModel = CreateUDSCommandModel(idRepository, null, model, idFascicle);
 
             ICommandInsertUDSData commandInsert = new CommandInsertUDSData(correlationId, CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, identity, commandModel);
             commandFacade.Push(commandInsert);
@@ -132,13 +136,43 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
             return commandCancel.Id;
         }
 
-        private UDSBuildModel CreateUDSCommandModel(Guid idRepository, Guid idUDS, UDSModel model)
+        private UDSBuildModel CreateUDSCommandModel(Guid idRepository, Guid? idUDS, UDSModel model, Guid? idFascicle = null)
         {
             UDSRepositoryModelMapper repositoryModelMapper = new UDSRepositoryModelMapper();
             UDSBuildModel commandModel = new UDSBuildModel(model.SerializeToXml());
             UDSRepository repository = GetById(idRepository);
+
+            idUDS = idUDS ?? Guid.Parse(model.Model.UDSId);
+
+            if (model.Model.Collaborations != null && model.Model.Collaborations.Instances != null)
+            {
+                foreach (CollaborationInstance item in model.Model.Collaborations.Instances)
+                {
+                    commandModel.WorkflowActions.Add(new WorkflowActionDocumentUnitLinkModel(
+                        new DocumentUnitModel()
+                        {
+                            UniqueId = idUDS.Value,
+                            Environment = repository.DSWEnvironment
+                        },
+                        new DocumentUnitModel()
+                        {
+                            UniqueId = Guid.Parse(item.UniqueId),
+                            EntityId = item.IdCollaboration,
+                            Environment = (int)DSWEnvironmentType.Collaboration
+                        }));
+                }
+            }
+
+            if (idFascicle.HasValue)
+            {
+                commandModel.WorkflowActions.Add(new WorkflowActionFascicleModel(
+                    new FascicleModel { UniqueId = idFascicle.Value },
+                    new DocumentUnitModel { UniqueId = idUDS.Value, Environment = (int)DSWEnvironmentType.UDS },
+                    null));
+            }
+
             commandModel.UDSRepository = repositoryModelMapper.MappingDTO(repository);
-            commandModel.UniqueId = idUDS;
+            commandModel.UniqueId = idUDS.Value;
             commandModel.RegistrationUser = DocSuiteContext.Current.User.FullUserName;
 
             return commandModel;
@@ -162,7 +196,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
                         {
                             protInitializer.ProtocolType = -1;
                             break;
-                        }                        
+                        }
                     case ProtocolDirectionType.Out:
                         {
                             protInitializer.ProtocolType = 1;

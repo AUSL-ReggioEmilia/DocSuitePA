@@ -46,7 +46,7 @@ Partial Public Class DocmCartella
                     .DocumentsRequired = Integer.Parse(txtDocNumber.Text)
                     .ExpiryDate = rdpExpiryDate.SelectedDate
                     .Description = txtDescription.Text
-                    .IsActive = 1
+                    .IsActive = True
                 End With
 
                 Facade.DocumentFolderFacade.Save(folder)

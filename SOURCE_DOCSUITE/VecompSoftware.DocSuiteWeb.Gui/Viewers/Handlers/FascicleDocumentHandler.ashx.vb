@@ -15,6 +15,7 @@ Namespace Viewers.Handlers
 
 
         Private _udsLogFacade As UDSLogFacade
+        Private _protocolLogFacade As WebAPI.Protocols.ProtocolLogFacade
 
         Public ReadOnly Property UDSLogFacade As UDSLogFacade
             Get
@@ -22,6 +23,15 @@ Namespace Viewers.Handlers
                     _udsLogFacade = New UDSLogFacade(DocSuiteContext.Current.Tenants, Nothing)
                 End If
                 Return _udsLogFacade
+            End Get
+        End Property
+
+        Public ReadOnly Property ProtocolLogFacade As WebAPI.Protocols.ProtocolLogFacade
+            Get
+                If _protocolLogFacade Is Nothing Then
+                    _protocolLogFacade = New WebAPI.Protocols.ProtocolLogFacade(DocSuiteContext.Current.Tenants, Nothing)
+                End If
+                Return _protocolLogFacade
             End Get
         End Property
 
@@ -62,7 +72,7 @@ Namespace Viewers.Handlers
                 Dim logDescription As String = String.Format("Visualizzato documento ""{0}"" [{1}]", documentName, guid.ToString("N"))
                 Select Case Environment.Value
                     Case DSWEnvironment.Protocol
-                        FacadeFactory.ProtocolLogFacade.Insert(CurrentDocumentUnit.Year, CurrentDocumentUnit.Number, ProtocolLogEvent.PD.ToString(), logDescription)
+                        ProtocolLogFacade.InsertViewDocumentLog(CurrentDocumentUnit.UniqueId, $"""{documentName}"" [{guid:N}]")
                     Case DSWEnvironment.Resolution
                         FacadeFactory.ResolutionLogFacade.Insert(CurrentDocumentUnit.EntityId, ResolutionLogType.RD, logDescription)
                     Case DSWEnvironment.DocumentSeries

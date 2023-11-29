@@ -51,6 +51,43 @@
     </tr>
 </table>
 
+<%-- OC List --%>
+<table id="tblODCOptions" class="datatable" runat="server" summary="Organo di Controllo" visible="false">
+    <tr>
+        <th colspan="2">
+            Organi di controllo
+        </th>
+    </tr>
+    <tr>
+        <td class="label" width="20%">&nbsp;</td>
+        <td>
+            <asp:Panel ID="pnlOCSupervisoryBoard" runat="server">
+                <asp:CheckBox ID="chkOCSupervisoryBoard" runat="server" Text="Collegio Sindacale" Enabled="false" />
+                <br />
+            </asp:Panel>
+            <asp:Panel ID="pnlOCConfSindaci" runat="server" Visible="false">
+                <asp:CheckBox ID="chkOCConfSindaci" runat="server" Text="Controllo conferenza dei sindaci" Enabled="false"  />
+                <br />
+            </asp:Panel>
+            <asp:Panel ID="pnlOCRegion" runat="server">
+                <asp:CheckBox ID="chkOCRegion" runat="server" Text="Regione" Enabled="false" />
+                <br />
+            </asp:Panel>
+            <asp:Panel ID="pnlOCManagement" runat="server">
+                <asp:CheckBox ID="chkOCManagement" runat="server" Text="Controllo di gestione" Enabled="false"  />
+                <br />
+            </asp:Panel>
+            <asp:Panel ID="pnlOCCorteConti" runat="server">
+                <asp:CheckBox ID="chkOCCorteConti" runat="server" Text="Corte dei conti" Enabled="false"  />
+                <br />
+            </asp:Panel>
+            <asp:Panel ID="pnlOCOther" runat="server">
+                <asp:CheckBox ID="chkOCOther" runat="server" Text="Altro" Enabled="false" />
+            </asp:Panel>
+        </td>
+    </tr>
+</table>
+
  <%--OC: Collegio Sindacale--%> 
 <table id="tblOCSupervisoryBoard" class="datatable" runat="server" summary="Collegio Sindacale" visible="false">
     <tr>
@@ -65,7 +102,7 @@
             Prot. n. <%=Resolution.FormatProtocolLink(CurrentResolution.SupervisoryBoardProtocolLink, "")%>
         </td>
         <td style="width: 15%;vertical-align:middle;">
-            <asp:ImageButton runat="server" ID="imgSupervisoryBoardLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.gif" AlternateText="Collegamento al Protocollo" Visible="false" />
+            <asp:ImageButton runat="server" ID="imgSupervisoryBoardLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.png" AlternateText="Collegamento al Protocollo" Visible="false" />
         </td>
     </tr>
     <tr id="trSupervisoryBoardOpinion" runat="server">
@@ -94,7 +131,7 @@
             Prot. n. <%= Resolution.FormatProtocolLink(CurrentResolution.ManagementProtocolLink, String.Empty)%>
         </td>
         <td style="width: 15%;vertical-align:middle;">
-            <asp:ImageButton runat="server" ID="imgConfSindaciProtocolLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.gif" AlternateText="Collegamento al Protocollo" Visible="false" />
+            <asp:ImageButton runat="server" ID="imgConfSindaciProtocolLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.png" AlternateText="Collegamento al Protocollo" Visible="false" />
         </td>
     </tr>
 </table>
@@ -113,7 +150,7 @@
             Prot. n. <%=Resolution.FormatProtocolLink(CurrentResolution.RegionProtocolLink, "")%>
         </td>
         <td style="width: 15%">
-            <asp:ImageButton runat="server" ID="imgRegionProtocolLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.gif" AlternateText="Collegamento al Protocollo" Visible="false" />
+            <asp:ImageButton runat="server" ID="imgRegionProtocolLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.png" AlternateText="Collegamento al Protocollo" Visible="false" />
         </td>
     </tr>
     <tr id="trRegionRicezioneScadenza" runat="server">
@@ -131,7 +168,7 @@
             Prot. n. <%=Resolution.FormatProtocolLink(CurrentResolution.ResponseProtocol, "")%>
         </td>
         <td style="width: 15%">
-            <asp:ImageButton runat="server" ID="imgRegionResponseProtocolLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.gif" AlternateText="Collegamento al Protocollo" Visible="false" />
+            <asp:ImageButton runat="server" ID="imgRegionResponseProtocolLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.png" AlternateText="Collegamento al Protocollo" Visible="false" />
         </td>
     </tr>
     <tr id="trRegionInvioChiarimenti" runat="server" visible="false">
@@ -141,7 +178,7 @@
             Prot. n. <%=Resolution.FormatProtocolLink(CurrentResolution.ConfirmProtocol, "")%>
         </td>
         <td style="width: 15%">
-            <asp:ImageButton runat="server" ID="imgRegionInvioCommentoRegioneLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.gif" AlternateText="Collegamento al Protocollo" Visible="false" />
+            <asp:ImageButton runat="server" ID="imgRegionInvioCommentoRegioneLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.png" AlternateText="Collegamento al Protocollo" Visible="false" />
         </td>
     </tr>
     <tr id="trRegionCommento" runat="server">
@@ -182,7 +219,7 @@
             Prot. n. <%= Resolution.FormatProtocolLink(CurrentResolution.CorteDeiContiProtocolLink, String.Empty)%>
         </td>
         <td style="width: 15%;vertical-align:middle;">
-            <asp:ImageButton runat="server" ID="imgCorteDeiContiProtocolLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.gif" AlternateText="Collegamento al Protocollo" Visible="false" />
+            <asp:ImageButton runat="server" ID="imgCorteDeiContiProtocolLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.png" AlternateText="Collegamento al Protocollo" Visible="false" />
         </td>
     </tr>
 </table>
@@ -201,7 +238,7 @@
             Prot. n. <%=Resolution.FormatProtocolLink(CurrentResolution.ManagementProtocolLink, "")%>
         </td>
         <td style="width: 15%;vertical-align:middle;">
-            <asp:ImageButton runat="server" ID="imgManagmentProtocolLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.gif" AlternateText="Collegamento al Protocollo" Visible="false" />
+            <asp:ImageButton runat="server" ID="imgManagmentProtocolLink" ImageUrl="../Comm/Images/DocSuite/Protocollo16.png" AlternateText="Collegamento al Protocollo" Visible="false" />
         </td>
     </tr>
 </table>

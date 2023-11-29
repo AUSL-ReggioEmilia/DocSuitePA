@@ -24,6 +24,17 @@ class BiblosDocumentsService extends BaseService {
             }
         }, error);
     }
+
+    getBiblosDocumentContent(id: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        url = url.concat("/DocumentUnitService.GetBiblosDocumentContent(documentId=", id, ")");
+
+        this.getRequest(url, null, (response: any) => {
+            if (callback) {
+                callback(response.value);
+            }
+        }, error);
+    }
 }
 
 export = BiblosDocumentsService;

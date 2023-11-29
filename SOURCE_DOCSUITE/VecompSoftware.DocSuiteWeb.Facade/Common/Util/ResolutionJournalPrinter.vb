@@ -3,9 +3,9 @@ Imports System.Linq
 Imports System.Text
 Imports System.Web
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports itextsharp.text.pdf
 Imports Microsoft.Reporting.WebForms
 Imports VecompSoftware.Helpers.ExtensionMethods
+Imports iText.Kernel.Pdf
 
 Public Class ResolutionJournalPrinter
 
@@ -44,6 +44,7 @@ Public Class ResolutionJournalPrinter
         End If
 
         Dim report As New ReportViewer()
+        report.LocalReport.SetBasePermissionsForSandboxAppDomain(New System.Security.PermissionSet(System.Security.Permissions.PermissionState.Unrestricted))
         report.LocalReport.ReportPath = reportTemplate.FullName
         For Each table As DataTable In ds.Tables
             report.LocalReport.DataSources.Add(New ReportDataSource(ds.DataSetName & "_" & table.TableName, table))
@@ -351,9 +352,9 @@ Public Class ResolutionJournalPrinter
         Dim i As Integer = 0
 
         If file.Exists Then
-            Dim reader As New PdfReader(file.FullName)
-            i = reader.NumberOfPages
-            reader.Close()
+            Dim pdfDpcument As iText.Kernel.Pdf.PdfDocument = New iText.Kernel.Pdf.PdfDocument(New iText.Kernel.Pdf.PdfReader(file.FullName))
+            i = pdfDpcument.GetNumberOfPages()
+            pdfDpcument.Close()
         End If
 
         Return i

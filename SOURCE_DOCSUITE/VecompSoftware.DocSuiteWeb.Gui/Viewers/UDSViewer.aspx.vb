@@ -3,8 +3,10 @@ Imports System.Linq
 Imports System.Text
 Imports Newtonsoft.Json
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 Imports VecompSoftware.Helpers.ExtensionMethods
@@ -152,7 +154,11 @@ Public Class UDSViewer
         If ViewOriginal Then
             ViewerLight.ViewOriginal = True
         End If
-        ViewerLight.DataSource = UDSList.Select(Function(u) GetUDSDocuments(u)).ToList()
+
+        Dim udsDocuments As List(Of DocumentInfo) = UDSList.Select(Function(u) GetUDSDocuments(u)).ToList()
+        udsDocuments = GetUDSDocumentsFromChains(UDSList.First().Id, CType(udsDocuments.First(), FolderInfo))
+
+        ViewerLight.DataSource = udsDocuments
     End Sub
 
 
@@ -161,6 +167,33 @@ Public Class UDSViewer
                                                             document.AddAttribute(Viewers.ViewerLight.BIBLOS_ATTRIBUTE_UniqueId, udsSource.Id.ToString())
                                                             document.AddAttribute(Viewers.ViewerLight.BIBLOS_ATTRIBUTE_Environment, DirectCast(DSWEnvironment.UDS, Integer).ToString())
                                                         End Sub)
+    End Function
+
+    Private Function GetUDSDocumentsFromChains(udsId As Guid, mainFolder As FolderInfo) As List(Of DocumentInfo)
+        Dim result As ICollection(Of WebAPIDto(Of DocumentUnitChain)) = WebAPIImpersonatorFacade.ImpersonateFinder(New DocumentUnitChainFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.IdDocumentUnit = udsId
+                        finder.EnablePaging = False
+                        finder.ExpandProperties = False
+                        Return finder.DoSearch()
+                    End Function)
+
+        Dim dematerialisationChain As WebAPIDto(Of DocumentUnitChain) = result.SingleOrDefault(Function(x) x.Entity.ChainType = ChainType.DematerialisationChain)
+        If dematerialisationChain IsNot Nothing Then
+            Dim dematerialisationDocuments As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentsLatestVersion(dematerialisationChain.Entity.IdArchiveChain)
+            Dim dematerialisationFolder As New FolderInfo() With {.Name = "Dematerializzazione", .Parent = mainFolder}
+            dematerialisationFolder.AddChildren(dematerialisationDocuments.ToArray())
+        End If
+
+        Dim metadataChain As WebAPIDto(Of DocumentUnitChain) = result.SingleOrDefault(Function(x) x.Entity.ChainType = ChainType.MetadataChain)
+        If metadataChain IsNot Nothing Then
+            Dim metadataDocuments As ICollection(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocumentsLatestVersion(metadataChain.Entity.IdArchiveChain)
+            Dim metadataFolder As New FolderInfo() With {.Name = "Metadata", .Parent = mainFolder}
+            metadataFolder.AddChildren(metadataDocuments.ToArray())
+        End If
+
+        Return New List(Of DocumentInfo) From {mainFolder}
     End Function
 
 #End Region

@@ -11,7 +11,7 @@
                 documentUnit = new UscDocumentUnitReferences(tenantModelConfiguration.serviceConfiguration);
 
                 documentUnit.radTreeDocumentsId = "<%=RadTreeDocuments.ClientID%>"
-                documentUnit.documentUnitId = "<%=IdDocumentUnit%>";
+                documentUnit.referenceUniqueId = "<%=ReferenceUniqueId%>";
                 documentUnit.documentUnitYear = "<%=DocumentUnitYear%>";
                 documentUnit.documentUnitNumber = "<%=DocumentUnitNumber%>";
 
@@ -33,17 +33,21 @@
                 documentUnit.showProtocolLinks = "<%=ShowProtocolLinks%>";
                 documentUnit.showIncomingPECMailLinks = "<%=ShowPECIncoming%>";
                 documentUnit.showOutgoingPECMailLinks = "<%=ShowPECOutgoing%>";
+                documentUnit.showPECUnifiedLinks = "<%=ShowPECUnified%>";
                 documentUnit.showResolutionlMessageLinks = "<%=ShowResolutionlMessageLinks%>";
                 documentUnit.showResolutionDocumentSeriesLinks = "<%=ShowResolutionDocumentSeriesLinks%>";
                 documentUnit.showFasciclesLinks = "<%=ShowFasciclesLinks%>";
                 documentUnit.showDossierLinks = "<%=ShowDossierLinks%>";
                 documentUnit.showRemoveUDSLinksButton = "<%=ShowRemoveUDSLinksButton%>";
-                documentUnit.showActiveWorkflowActivities = "<%=ShowActiveWorkflowActivities%>";
-                documentUnit.showDoneWorkflowActivities = "<%=ShowDoneWorkflowActivities%>";
+                documentUnit.showWorkflowActivities = "<%=ShowWorkflowActivities%>";
                 documentUnit.showTNotice = "<%=ShowTNotice%>";
+                documentUnit.showDeletedFascicleDocumentUnits = "<%=ShowDeletedFascicleDocumentUnits%>";
+                documentUnit.showDeletedFascicleDocuments = "<%=ShowDeletedFascicleDocuments%>";
+                documentUnit.showDocumentUnitFascicleLinks = "<%=ShowDocumentUnitFascicleLinks%>";
 
                 documentUnit.btnExpandDocumentUnitReferenceId = "<%=btnExpandDocumentUnitReference.ClientID%>";
                 documentUnit.documentUnitReferenceInfoId = "<%=documentUnitReferenceInfo.ClientID%>";
+                documentUnit.docSuiteNextBaseUrl = "<%=DocSuiteNextBaseUrl%>";
                 documentUnit.initialize();
             });
         });

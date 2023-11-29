@@ -6,6 +6,7 @@
 <%@ Register Src="~/UserControl/uscRoleRest.ascx" TagName="uscRoleRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscDomainUserSelRest.ascx" TagName="uscDomainUserSelRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscWorkflowDesignerValidations.ascx" TagName="uscWorkflowDesignerValidations" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscTemplateCollaborationSelRest.ascx" TagName="uscTemplateCollaborationSelRest" TagPrefix="usc" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1" EnableViewState="false">
@@ -39,7 +40,7 @@
                     tbltWorkflowEvaluationPropertyGes.uscDomainUserSelRestId = "<%=uscDomainUserSelRest.PageContent.ClientID %>";
                     tbltWorkflowEvaluationPropertyGes.uscDomainUserSelRestContainerId = "<%="uscDomainUserSelRestContainer"%>";
 
-                    tbltWorkflowEvaluationPropertyGes.ddlTemplateCollaborationId = "<%= ddlTemplateCollaboration.ClientID %>";;
+                    tbltWorkflowEvaluationPropertyGes.uscTemplateCollaborationSelRestId = "<%= uscTemplateCollaborationSelRest.MainPanel.ClientID %>";
                     tbltWorkflowEvaluationPropertyGes.uscTemplateCollaborationContainerId = "<%="uscTemplateCollaborationContainer"%>";
 
                     tbltWorkflowEvaluationPropertyGes.ddlCollaborationSignSummaryId = "<%=ddlCollaborationSignSummary.ClientID%>"
@@ -64,7 +65,7 @@
                 <td class="col-dsw-7">
                     <telerik:RadComboBox AllowCustomText="true" runat="server" CausesValidation="false"
                         ID="rcbName" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true"
-                        ItemRequestTimeout="500" Width="400">
+                        ItemRequestTimeout="500" Width="500">
                     </telerik:RadComboBox>
                     <asp:RequiredFieldValidator ID="tfvNameWorkflowStartup" runat="server" Display="Dynamic" ErrorMessage="Campo proprietà obbligatorio" ControlToValidate="rcbName" />
                 </td>
@@ -84,8 +85,8 @@
                         ID="rtbValueString" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true">
                     </telerik:RadTextBox>
 
-                    <telerik:RadTextBox runat="server" CausesValidation="false" Width="400"
-                        ID="rtbValueJson" Rows="5" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true"
+                    <telerik:RadTextBox runat="server" CausesValidation="false" Width="500"
+                        ID="rtbValueJson" Rows="10" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true"
                         TextMode="MultiLine">
                     </telerik:RadTextBox>
 
@@ -99,9 +100,11 @@
                     </div>
 
                     <div id="uscTemplateCollaborationContainer">
-                        <telerik:RadComboBox runat="server" ID="ddlTemplateCollaboration" Width="100%" Filter="Contains"
+                        <!-- TEMPLATE COLLABORATION DDL -->
+                        <usc:uscTemplateCollaborationSelRest runat="server" ID="uscTemplateCollaborationSelRest" AutoPostBack="True" TreeViewInitializationEnabled="False" />
+<%--                        <telerik:RadComboBox runat="server" ID="ddlTemplateCollaboration" Width="100%" Filter="Contains"
                             CausesValidation="false" EnableLoadOnDemand="True" AutoPostBack="false" EmptyMessage="Selezionare template">
-                        </telerik:RadComboBox>
+                        </telerik:RadComboBox>--%>
                     </div>
 
                     <div id="uscCollaborationSignSummaryContainer">

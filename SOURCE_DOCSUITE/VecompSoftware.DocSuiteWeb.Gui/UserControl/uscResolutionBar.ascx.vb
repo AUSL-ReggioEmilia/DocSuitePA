@@ -130,27 +130,9 @@ Partial Public Class uscResolutionBar
         End Get
     End Property
 
-    Public ReadOnly Property PanelWebPublishButtons() As Panel
-        Get
-            Return pnlWebPublication
-        End Get
-    End Property
-
     Public ReadOnly Property TempTable() As TableRow
         Get
             Return rowBtn
-        End Get
-    End Property
-
-    Public ReadOnly Property ButtonPublishWeb() As Button
-        Get
-            Return bntPubblicaInternet
-        End Get
-    End Property
-
-    Public ReadOnly Property ButtonRevokeWeb() As Button
-        Get
-            Return bntRitiraInternet
         End Get
     End Property
 
@@ -283,6 +265,20 @@ Partial Public Class uscResolutionBar
             Return btnConfirmView
         End Get
     End Property
+
+    Public ReadOnly Property ButtonTakeCharge As Button
+        Get
+            Return btnTakeCharge
+        End Get
+    End Property
+
+    Public ReadOnly Property ButtonWorkflow As Button
+        Get
+            Return btnWorkflow
+        End Get
+    End Property
+
+    'Public Property IsConservated As Boolean
 #End Region
 
 #Region " Events "
@@ -307,7 +303,7 @@ Partial Public Class uscResolutionBar
     End Sub
 
     Protected Sub BtnFascicle_OnClick(sender As Object, e As EventArgs) Handles btnFascicle.Click
-        Dim params As String = String.Format("Type=Fasc&UDType={0}&UniqueId={1}&CategoryId={2}", Convert.ToInt32(DSWEnvironment.Resolution), CurrentResolution.UniqueId, If(IsNothing(CurrentResolution.SubCategory), CurrentResolution.Category, CurrentResolution.SubCategory).Id)
+        Dim params As String = String.Format("Type=Fasc&UDType={0}&FolderSelectionEnabled=True&UniqueId={1}&CategoryId={2}", Convert.ToInt32(DSWEnvironment.Resolution), CurrentResolution.UniqueId, If(IsNothing(CurrentResolution.SubCategory), CurrentResolution.Category, CurrentResolution.SubCategory).Id)
         Response.Redirect(String.Format("../Fasc/FascUDManager.aspx?{0}", params))
     End Sub
 
@@ -360,7 +356,7 @@ Partial Public Class uscResolutionBar
             If CurrentResolution.Container.Privacy.HasValue AndAlso Convert.ToBoolean(CurrentResolution.Container.Privacy.Value) Then
                 viewableDocument = CurrentResolutionRight.IsPrivacyViewable
             End If
-            Dim querystring As String = String.Format("IdResolution={0}&documents={1}&attachments=true&annexes=true&documentsomissis=true&attachmentsomissis=true&previous=conditional", CurrentResolution.Id, viewableDocument.ToString().ToLower())
+            Dim querystring As String = String.Format("IdResolution={0}&documents={1}&attachments=true&annexes=true&documentsomissis=true&attachmentsomissis=true&dematerialisation=true&metadata=true&previous=conditional", CurrentResolution.Id, viewableDocument.ToString().ToLower())
             btnQuickDocument.PostBackUrl = String.Concat(ResolveUrl("~/viewers/ResolutionViewer.aspx?"), CommonShared.AppendSecurityCheck(querystring))
         Else
             btnQuickDocument.Enabled = False
@@ -371,6 +367,10 @@ Partial Public Class uscResolutionBar
 
             If ResolutionEnv.CheckRoleButtonRightsEnabled AndAlso Not CurrentResolutionRight.CanInsertInContainer() AndAlso
                 Not CurrentResolutionRight.IsAdministrable() AndAlso Not CurrentResolutionRight.IsExecutive() Then
+                Continue For
+            End If
+
+            If Not CurrentResolutionRight.HasCurrentStepFlowResponsabilityRights Then
                 Continue For
             End If
 
@@ -407,6 +407,10 @@ Partial Public Class uscResolutionBar
             btnModifica.Visible = False
         End If
 
+        If CurrentResolutionRight.IsConservated Then
+            SetConservationButtonVisibility()
+        End If
+
     End Sub
 
     Private Sub InitializeAjax()
@@ -431,6 +435,11 @@ Partial Public Class uscResolutionBar
         CurrentResolutionModel = model
     End Sub
 
+    Private Sub SetConservationButtonVisibility()
+        btnFlushAnnexed.Visible = False
+        btnDeleteFrontespizio.Visible = False
+        btnDeleteUltimaPagina.Visible = False
+    End Sub
 #End Region
 
 End Class

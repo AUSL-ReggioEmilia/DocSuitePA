@@ -19,6 +19,8 @@ Public Class UserBasePage
     Private _workflowOperation As Boolean?
     Private _idWorkflowActivity As Guid?
     Private _templateModels As List(Of TemplateAuthorizationModel) = Nothing
+    Protected Const _versioningGuidPattern As String = "[a-fA-F\d]{8}-([a-fA-F\d]{4}-){3}[a-fA-F\d]{12}"
+
 
 #End Region
 

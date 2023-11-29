@@ -8,6 +8,7 @@ Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.Helpers
 Imports Newtonsoft.Json
 Imports System.Web
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Partial Public Class uscReslGridBar
     Inherits BaseGridBar
@@ -119,7 +120,7 @@ Partial Public Class uscReslGridBar
         End Get
     End Property
 
-    Public ReadOnly Property PubblicaWebButton() As Button
+    Public ReadOnly Property PubblicaWebButton() As RadButton
         Get
             Return btnPubblicaWeb
         End Get
@@ -152,31 +153,31 @@ Partial Public Class uscReslGridBar
 
 #Region "BaseGrid Implementation: Properties"
 
-    Public Overrides ReadOnly Property DeselectButton() As System.Web.UI.WebControls.Button
+    Public Overrides ReadOnly Property DeselectButton() As RadButton
         Get
             Return btnDeselectAll
         End Get
     End Property
 
-    Public Overrides ReadOnly Property PrintButton() As System.Web.UI.WebControls.Button
+    Public Overrides ReadOnly Property PrintButton() As RadButton
         Get
             Return btnStampa
         End Get
     End Property
 
-    Public Overrides ReadOnly Property DocumentsButton() As Button
+    Public Overrides ReadOnly Property DocumentsButton() As RadButton
         Get
             Return btnDocuments
         End Get
     End Property
 
-    Public Overrides ReadOnly Property SelectButton() As System.Web.UI.WebControls.Button
+    Public Overrides ReadOnly Property SelectButton() As RadButton
         Get
             Return btnSelectAll
         End Get
     End Property
 
-    Public Overrides ReadOnly Property SetReadButton() As System.Web.UI.WebControls.Button
+    Public Overrides ReadOnly Property SetReadButton() As RadButton
         Get
             Return btnSetRead
         End Get
@@ -254,7 +255,7 @@ Partial Public Class uscReslGridBar
 
         Dim serialized As String = JsonConvert.SerializeObject(selection)
         Dim encoded As String = HttpUtility.UrlEncode(serialized)
-        Dim redirectUrl As String = "~/viewers/ResolutionViewer.aspx?multiple=true&keys={0}&documents=true&attachments=true&annexes=true&documentsomissis=true&attachmentsomissis=true&previous=conditional"
+        Dim redirectUrl As String = "~/viewers/ResolutionViewer.aspx?multiple=true&keys={0}&documents=true&attachments=true&annexes=true&documentsomissis=true&attachmentsomissis=true&dematerialisation=true&metadata=true&previous=conditional"
         redirectUrl = String.Format(redirectUrl, encoded)
         Response.Redirect(redirectUrl)
     End Sub
@@ -391,7 +392,7 @@ Partial Public Class uscReslGridBar
                 For Each idResolution As Integer In resolutionIds
                     Dim resolution As Resolution = Facade.ResolutionFacade.GetById(idResolution)
                     Dim ultimaPaginaPrintPdf As New ReslUltimaPaginaPrintPdf(CheckOmissis)
-                    Dim path As String = ultimaPaginaPrintPdf.GeneraUltimaPagina(resolution, True)
+                    Dim path As String = ultimaPaginaPrintPdf.GeneraUltimaPagina(resolution, True, CurrentTenant.TenantAOO.UniqueId)
                     allPdfs.Add(path)
                     ' LOG
                     Facade.ResolutionLogFacade.Log(resolution, ResolutionLogType.RP, "Ultima pagina creata per stampa")
@@ -658,6 +659,8 @@ Partial Public Class uscReslGridBar
             Case ResolutionGridBarController.BarWorkflowStep.Adotta
                 btnWorkflow.Text = ADOTTA
                 btnWorkflow.Width = Unit.Pixel(243)
+            Case ResolutionGridBarController.BarWorkflowStep.AssegnateAffariGenerali
+                btnWorkflow.SetDisplay(False)
             Case ResolutionGridBarController.BarWorkflowStep.AvvenutaAdozione
                 btnWorkflow.Text = AVVENUTA_ADOZIONE
                 btnWorkflow.Width = Unit.Pixel(243)

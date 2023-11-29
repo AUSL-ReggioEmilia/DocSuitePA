@@ -2,6 +2,7 @@
 Imports System.Linq
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
 Imports VecompSoftware.DocSuiteWeb.Facade
 
 Partial Public Class uscAuthorizations
@@ -23,6 +24,7 @@ Partial Public Class uscAuthorizations
     Public Property ResponsibleRoles As ICollection(Of Role)
     Public Property AccountedRoles As ICollection(Of Role)
     Public Property ResponsibleContacts As ICollection(Of Entity.Commons.Contact)
+    Public Property FascicleRoles As ICollection(Of FascicleRole)
     Public Property AccountedRoleCaption As String
     Public Property WorkflowRole As ICollection(Of Role)
     Public Property WorkflowHandler As String
@@ -126,16 +128,20 @@ Partial Public Class uscAuthorizations
         Dim reeView As RadTreeNode = tree
         Dim node As RadTreeNode
         For Each role As Role In roles
-            node = SeekAndImplementNode(Nothing, role, tree, role.TenantId.ToString())
+            node = SeekAndImplementNode(Nothing, role, tree)
             node.Font.Bold = True
             If isWorkflowRole Then
                 node.ImageUrl = "../App_Themes/DocSuite2008/imgset16/Admin.png"
             End If
+            If Not isWorkflowRole AndAlso FascicleRoles.Any(Function(f) f.AuthorizationRoleType = AuthorizationRoleType.Responsible AndAlso f.IsMaster = False AndAlso f.Role.EntityShortId = role.Id) Then
+                node.ImageUrl = "../App_Themes/DocSuite2008/imgset16/coedit.png"
+            End If
+
         Next
     End Sub
 
-    Private Function SeekAndImplementNode(ByRef node As RadTreeNode, ByVal role As Role, ByRef treeView As RadTreeNode, tenantId As String) As RadTreeNode
-        Dim existingNode As RadTreeNode = treeView.Nodes.FindNodeByValue(role.IdRoleTenant.ToString())
+    Private Function SeekAndImplementNode(ByRef node As RadTreeNode, ByVal role As Role, ByRef treeView As RadTreeNode) As RadTreeNode
+        Dim existingNode As RadTreeNode = treeView.Nodes.FindNodeByValue(role.Id.ToString())
         If existingNode IsNot Nothing Then
             Return existingNode
         End If
@@ -144,15 +150,15 @@ Partial Public Class uscAuthorizations
         nodeToAdd.Checkable = False
         If role IsNot Nothing Then
             nodeToAdd.Text = role.Name
-            nodeToAdd.Value = role.IdRoleTenant.ToString()
+            nodeToAdd.Value = role.Id.ToString()
             If role.Father Is Nothing Then 'Primo Livello
                 nodeToAdd.ImageUrl = ImagePath.SmallRole
                 treeView.Nodes.Add(nodeToAdd)
             Else
                 nodeToAdd.ImageUrl = ImagePath.SmallSubRole
-                Dim newNode As RadTreeNode = treeView.Nodes.FindNodeByValue(role.Father.IdRoleTenant.ToString())
+                Dim newNode As RadTreeNode = treeView.Nodes.FindNodeByValue(role.Father.Id.ToString())
                 If (newNode Is Nothing) Then
-                    SeekAndImplementNode(nodeToAdd, role.Father, treeView, tenantId)
+                    SeekAndImplementNode(nodeToAdd, role.Father, treeView)
                 Else
                     newNode.Nodes.Add(nodeToAdd)
                 End If

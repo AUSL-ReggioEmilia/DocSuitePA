@@ -20,6 +20,8 @@ Partial Public Class uscSettori
     Public Delegate Sub OnRolesAddedEventHandler(ByVal sender As Object, ByVal e As EventArgs)
     Public Delegate Sub OnRoleAddedEventHandler(ByVal sender As Object, ByVal e As RoleEventArgs)
     Public Delegate Sub OnRoleAddingEventHandler(ByVal sender As Object, ByVal e As RoleEventArgs)
+    Public Delegate Sub OnRoleUserAddedEventHandler(ByVal sender As Object, ByVal e As RoleUserEventArgs)
+    Public Delegate Sub OnRoleUserRemovedEventHandler(ByVal sender As Object, ByVal e As RoleUserEventArgs)
 
     Public Delegate Sub RoleSelectedHandler(ByVal sender As Object, ByVal e As RoleEventArgs)
 
@@ -42,6 +44,9 @@ Partial Public Class uscSettori
     Public Event OnRoleUserViewModeChanged As RoleUserViewModeChanged
 
     Public Event OnRoleUserViewManagersChanged As RoleUserViewModeChanged
+
+    Public Event RoleUserAdded As OnRoleUserAddedEventHandler
+    Public Event RoleUserRemoved As OnRoleUserRemovedEventHandler
 
     Private Enum ProtocolRoleUserColumns As Byte
         IdRole = 0
@@ -86,7 +91,7 @@ Partial Public Class uscSettori
     Private Const TrueAttributeValue As String = "TRUE"
     Private Const FalseAttributeValue As String = "FALSE"
 
-    Private Const DELETE_ROLE_CALLBACK As String = "{0}_uscSettoriTS.deleteCallback('{1}','{2}')"
+    Private Const DELETE_ROLE_CALLBACK As String = "{0}_uscSettoriTS.deleteCallback('{1}')"
 
     Private _multiSelect As String = String.Empty
     Private _location As String = String.Empty
@@ -97,29 +102,10 @@ Partial Public Class uscSettori
     Private _manageableRolesSessionName As String
     Private _manageableRoles As String
     Private _roleFacade As RoleFacade
-    Private _roleNameFacade As RoleNameFacade
     Private _toolbarVisible As Boolean = True
 #End Region
 
 #Region " Properties "
-
-    Public ReadOnly Property RoleFacade As RoleFacade
-        Get
-            If _roleFacade Is Nothing Then
-                _roleFacade = New RoleFacade
-            End If
-            Return _roleFacade
-        End Get
-    End Property
-
-    Public ReadOnly Property RoleNameFacade As RoleNameFacade
-        Get
-            If _roleNameFacade Is Nothing Then
-                _roleNameFacade = New RoleNameFacade
-            End If
-            Return _roleNameFacade
-        End Get
-    End Property
 
     Private ReadOnly Property RoleUserViewModeSessionName() As String
         Get
@@ -214,6 +200,7 @@ Partial Public Class uscSettori
         End Get
     End Property
 
+    Public Property MyAuthorizedRolesEnabled() As Boolean = False
     ''' <summary>
     ''' Imposta o restituisce la sicurezza sugli utenti: se attivo verranno considerati i gruppi di appartenenza dell'utente
     ''' </summary>
@@ -378,16 +365,14 @@ Partial Public Class uscSettori
     Public ReadOnly Property SelectedRole() As Role
         Get
             Dim node As RadTreeNode = RadTreeSettori.SelectedNode
-            Dim tenantNode As RadTreeNode = RadTreeRoleTenant.SelectedNode
-            If (node Is Nothing OrElse String.IsNullOrEmpty(node.Value)) AndAlso (tenantNode Is Nothing OrElse String.IsNullOrEmpty(tenantNode.Value)) Then
+            If node Is Nothing OrElse String.IsNullOrEmpty(node.Value) Then
                 Return Nothing
             End If
 
             If node IsNot Nothing AndAlso Not String.IsNullOrEmpty(node.Value) AndAlso node.Attributes(UserAuthorizationAttribute) Is Nothing AndAlso IsNumeric(node.Value) Then
-                Return Facade.RoleFacade.GetByIdAndTenant(Integer.Parse(node.Value), DocSuiteContext.Current.CurrentTenant.TenantId)
-            ElseIf tenantNode IsNot Nothing AndAlso Not String.IsNullOrEmpty(tenantNode.Value) AndAlso node.Attributes(UserAuthorizationAttribute) Is Nothing AndAlso IsNumeric(tenantNode.Value) Then
-                Return Facade.RoleFacade.GetByIdAndTenant(Integer.Parse(tenantNode.Value), DocSuiteContext.Current.Tenants.FirstOrDefault(Function(x) Not x.CurrentTenant).TenantId)
+                Return Facade.RoleFacade.GetById(Integer.Parse(node.Value))
             End If
+
             Return Nothing
         End Get
     End Property
@@ -476,8 +461,6 @@ Partial Public Class uscSettori
         End Set
     End Property
 
-    Public Property TenantEnabled As Boolean
-
     Public Property SearchByUserEnabled As Boolean
 
     Public Property SelectedRoleUserAccount As String
@@ -512,11 +495,6 @@ Partial Public Class uscSettori
             ViewState("AnyRightInAnyEnvironment") = value
         End Set
     End Property
-    Protected Shared ReadOnly Property CurrentTenantId As Guid
-        Get
-            Return DocSuiteContext.Current.CurrentTenant.TenantId
-        End Get
-    End Property
 
     Public Property FascicleVisibilityType As VisibilityType
         Get
@@ -546,6 +524,16 @@ Partial Public Class uscSettori
     Public Property PrivacyAuthorizationButtonVisible As Boolean
 
     Public Property UserAuthorizationEnabled As Boolean
+        Get
+            If ViewState("UserAuthorizationEnabled") Is Nothing Then
+                ViewState("UserAuthorizationEnabled") = False
+            End If
+            Return CType(ViewState("UserAuthorizationEnabled"), Boolean)
+        End Get
+        Set(value As Boolean)
+            ViewState("UserAuthorizationEnabled") = value
+        End Set
+    End Property
 
     Public Property ViewDistributableManager As Boolean
 
@@ -555,6 +543,8 @@ Partial Public Class uscSettori
     Public Property HidePanelByControlId As String
 
     Public Property SelectedTenantId As Guid
+    Public Property RoleEnvironment As DSWEnvironment
+    Public Property UserMultiSelectionEnabled As Boolean = True
 #End Region
 
 #Region " Events "
@@ -583,7 +573,7 @@ Partial Public Class uscSettori
                     DeleteSettore(role)
                     Exit Sub
                 End If
-                If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso RadTreeSettori.SelectedNode.Attributes(UserAuthorizationAttribute) IsNot Nothing AndAlso
+                If RadTreeSettori.SelectedNode.Attributes(UserAuthorizationAttribute) IsNot Nothing AndAlso
                     RadTreeSettori.SelectedNode.Attributes(UserAuthorizationAttribute) = TrueAttributeValue Then
                     RadTreeSettori.SelectedNode.Remove()
                 End If
@@ -592,13 +582,10 @@ Partial Public Class uscSettori
             Case "viewManagers"
                 RaiseEvent OnRoleUserViewManagersChanged(Me, New EventArgs)
             Case "checkPrivacy"
-                If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso SelectedRole IsNot Nothing Then
+                If SelectedRole IsNot Nothing Then
                     Dim role As Role = SelectedRole
                     Dim treeView As RadTreeView = RadTreeSettori
-                    If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso Not role.TenantId.Equals(Guid.Empty) AndAlso Not role.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId) Then
-                        treeView = RadTreeRoleTenant
-                    End If
-                    Dim selectedNode As RadTreeNode = treeView.FindNodeByValue(role.IdRoleTenant.ToString())
+                    Dim selectedNode As RadTreeNode = treeView.FindNodeByValue(role.Id.ToString())
                     Dim privacyRoleAttributeValue As String = TrueAttributeValue
 
                     If selectedNode.Attributes.Item(PrivacyRoleAttribute) IsNot Nothing Then
@@ -629,46 +616,30 @@ Partial Public Class uscSettori
     End Sub
 
     Private Sub uscSettori_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
-
         Dim ajaxModel As AjaxModel = If(CanDeserialize(Of AjaxModel)(e.Argument), JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument), Nothing)
-
-        If ajaxModel IsNot Nothing AndAlso ajaxModel.ActionName.Eq("GetByTenantId") Then
-            MultiTenantDataBind(Guid.Parse(ajaxModel.Value(0)))
-        End If
-
         Dim arguments As String() = e.Argument.Split("|"c)
         If Not arguments(0).Eq(ClientID) OrElse String.IsNullOrEmpty(arguments(1)) Then
             Exit Sub
         End If
 
         'Autorizzazione utente
-        If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso arguments.Length > 2 AndAlso arguments(1).Eq("User") Then
+        If UserAuthorizationEnabled AndAlso arguments.Length > 2 AndAlso arguments(1).Eq("User") Then
             Dim localArg As String = HttpUtility.HtmlDecode(arguments(2))
             Dim contact As Contact = JsonConvert.DeserializeObject(Of Contact)(localArg)
             AddUserAuthorization(contact.FullDescription(False), contact.Code, localArg, False, Nothing, ProtocolUserType.Authorization, String.Empty)
             Exit Sub
         End If
 
-        Dim tenantId As Guid = DocSuiteContext.Current.CurrentTenant.TenantId
         Dim account As String = String.Empty
         Dim currentTreeView As RadTreeView = RadTreeSettori
 
         If arguments.Count > 2 Then
-            If (arguments.Any(Function(f) f.StartsWith("tenantId="))) Then
-                tenantId = Guid.Parse(arguments.Single(Function(f) f.StartsWith("tenantId=")).Split("="c)(1))
-
-                If Not tenantId = DocSuiteContext.Current.CurrentTenant.TenantId Then
-                    currentTreeView = RadTreeRoleTenant
-                End If
-            End If
-
-            If (arguments.Any(Function(f) f.StartsWith("userName="))) Then
+            If arguments.Any(Function(f) f.StartsWith("userName=")) Then
                 account = arguments.Single(Function(f) f.StartsWith("userName=")).Split("="c)(1)
             End If
-
         End If
 
-        AddSettori(arguments(1), tenantId, currentTreeView, account)
+        AddSettori(arguments(1), currentTreeView, account)
         If RadTreeSettori.Nodes.Count > 0 Then
             fldCurrentTenant.SetDisplay(True)
         End If
@@ -680,14 +651,10 @@ Partial Public Class uscSettori
     End Sub
 
     Protected Sub RadTreeSettori_NodeClick(ByVal sender As Object, ByVal e As RadTreeNodeEventArgs) Handles RadTreeSettori.NodeClick
-        If RoleSelectedEvent Is Nothing AndAlso RadTreeSettori.SelectedNode Is Nothing AndAlso RadTreeRoleTenant.SelectedNode Is Nothing Then
+        If RoleSelectedEvent Is Nothing AndAlso RadTreeSettori.SelectedNode Is Nothing Then
             Exit Sub
         End If
 
-        Dim otherTenantNode As RadTreeNode = RadTreeRoleTenant.SelectedNode
-        If RadTreeRoleTenant.SelectedNode IsNot Nothing Then
-            otherTenantNode.Selected = False
-        End If
         Dim node As RadTreeNode = e.Node
         Dim nodeValue As Integer = 0
         If node IsNot Nothing Then
@@ -699,9 +666,11 @@ Partial Public Class uscSettori
             End If
 
             If Integer.TryParse(node.Value, nodeValue) Then
-                Dim role As Role = Facade.RoleFacade.GetByIdAndTenant(nodeValue, DocSuiteContext.Current.CurrentTenant.TenantId)
+                Dim role As Role = Facade.RoleFacade.GetById(nodeValue)
 
-                If ProtocolEnv.RefusedProtocolAuthorizationEnabled AndAlso CurrentProtocol IsNot Nothing AndAlso CurrentProtocol.Roles.Any(Function(r) r.Role.Id.Equals(role.Id)) Then
+                If ((ProtocolEnv.RefusedProtocolAuthorizationEnabled) OrElse (ProtocolEnv.IsDistributionEnabled AndAlso ProtocolEnv.DistributionRejectableEnabled)) AndAlso
+                    CurrentProtocol IsNot Nothing AndAlso
+                    CurrentProtocol.Roles.Any(Function(r) r.Role.Id.Equals(role.Id)) Then
                     Dim protRole As ProtocolRole = CurrentProtocol.Roles.Single(Function(r) r.Role.Id.Equals(role.Id))
                     If protRole.Status = ProtocolRoleStatus.Accepted Then
                         node.CssClass = "selected-node-accepted-role"
@@ -709,35 +678,6 @@ Partial Public Class uscSettori
                 End If
                 RaiseEvent RoleSelected(sender, New RoleEventArgs(role))
             End If
-        End If
-    End Sub
-
-    Protected Sub RadTreeRoleTenant_NodeClick(ByVal sender As Object, ByVal e As RadTreeNodeEventArgs) Handles RadTreeRoleTenant.NodeClick
-        If DocSuiteContext.Current.SimplifiedPrivacyEnabled Then
-            Dim privacy As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("checkPrivacy"), RadToolBarButton)
-            If privacy.Visible Then
-                privacy.Enabled = RadTreeSettori.Nodes.Count > 0 OrElse RadTreeRoleTenant.Nodes.Count > 0
-            End If
-        End If
-        If RoleSelectedEvent Is Nothing AndAlso RadTreeSettori.SelectedNode Is Nothing Then
-            Exit Sub
-        End If
-
-        Dim currentTenantNode As RadTreeNode = RadTreeSettori.SelectedNode
-        If RadTreeSettori.SelectedNode IsNot Nothing Then
-            currentTenantNode.Selected = False
-        End If
-        Dim node As RadTreeNode = e.Node
-        Dim nodeValue As Integer = 0
-        If node IsNot Nothing AndAlso Integer.TryParse(node.Value, nodeValue) Then
-            Dim role As Role = Facade.RoleFacade.GetByIdAndTenant(nodeValue, DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) Not x.CurrentTenant).TenantId)
-            RaiseEvent RoleSelected(sender, New RoleEventArgs(role))
-        End If
-    End Sub
-
-    Protected Sub RadTreeRoleTenant_NodeEvents(sender As Object, e As EventArgs) Handles RadTreeRoleTenant.NodeDataBound, RadTreeRoleTenant.NodeCreated
-        If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.TenantAuthorizationEnabled AndAlso RadTreeRoleTenant.Nodes.Count > 0 Then
-            fldOtherTenant.SetDisplay(True)
         End If
     End Sub
 
@@ -753,20 +693,27 @@ Partial Public Class uscSettori
 
     Public Sub Initialize(Optional needClearSessionStorage As Boolean = True)
         RadTreeSettori.CheckBoxes = Checkable
-        lblCurrentTenant.Text = DocSuiteContext.Current.CurrentTenant.TenantName
-        If ProtocolEnv.TenantAuthorizationEnabled Then
-            Dim otherTenant As TenantModel = DocSuiteContext.Current.Tenants.FirstOrDefault(Function(x) Not x.CurrentTenant)
-            If otherTenant IsNot Nothing Then
-                lblOtherTenant.Text = otherTenant.TenantName
-            End If
-        End If
         InitializeControls()
 
         If Visible AndAlso UseSessionStorage AndAlso needClearSessionStorage Then
             AjaxManager.ResponseScripts.Add(Me.ClientID + "_ClearSessionStorage()")
         End If
     End Sub
+    Public Sub AddMyAuthorizedRoles(enviroment As DSWEnvironment)
+        Dim roleFacade As New RoleFacade(System.Enum.GetName(GetType(EnvironmentDataCode), EnvironmentDataCode.ProtDB))
+        Dim roles As IList(Of Role) = roleFacade.GetUserRoles(enviroment, 1, True, CurrentTenant.TenantAOO.UniqueId)
+        If roles Is Nothing OrElse roles.Count <= 0 Then
+            Exit Sub
+        End If
+        Dim rolesToAdd As IList(Of Role) = New List(Of Role)()
+        For Each role As Role In roles
+            If roleFacade.CurrentUserBelongsToRoles(enviroment, role) Then
+                rolesToAdd.Add(role)
+            End If
+        Next
 
+        AddRoles(rolesToAdd, True, False, False)
+    End Sub
     Public Sub SetButtonsVisibility(value As Boolean)
         Dim delete As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("delete"), RadToolBarButton)
         delete.Visible = value
@@ -777,16 +724,8 @@ Partial Public Class uscSettori
             AddHandler AjaxManager.AjaxRequest, AddressOf uscSettori_AjaxRequest
             AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeSettori, ToolBar)
             AjaxManager.AjaxSettings.AddAjaxSetting(ToolBar, RadTreeSettori)
-            AjaxManager.AjaxSettings.AddAjaxSetting(ToolBar, RadTreeRoleTenant)
-            'AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, RadTreeSettori)
-            'AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, RadTreeRoleTenant)
             AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, fldCurrentTenant)
-            AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, fldOtherTenant)
-            AjaxManager.AjaxSettings.AddAjaxSetting(ToolBar, fldOtherTenant, BasePage.MasterDocSuite.AjaxDefaultLoadingPanel)
             AjaxManager.AjaxSettings.AddAjaxSetting(ToolBar, fldCurrentTenant, BasePage.MasterDocSuite.AjaxDefaultLoadingPanel)
-            AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeSettori, RadTreeRoleTenant)
-            AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeRoleTenant, RadTreeSettori)
-            'AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeSettori, RadTreeSettori)
         End If
     End Sub
 
@@ -832,7 +771,7 @@ Partial Public Class uscSettori
         btnDelete.ImageUrl = "../App_Themes/DocSuite2008/imgset16/brick_delete.png"
         btnDelete.ToolTip = "Elimina settore"
         btnADUser.Visible = False
-        If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso UserAuthorizationEnabled Then
+        If UserAuthorizationEnabled Then
             btnADUser.Visible = Not [ReadOnly]
             btnDelete.ImageUrl = "../App_Themes/DocSuite2008/imgset16/delete.png"
             btnDelete.ToolTip = "Elimina autorizzazione"
@@ -845,7 +784,7 @@ Partial Public Class uscSettori
         If privacy.Visible Then
             privacy.Text = CommonBasePage.PRIVACY_LABEL
             privacy.ToolTip = CommonBasePage.PRIVACY_LABEL
-            privacy.Enabled = RadTreeSettori.Nodes.Count > 0 OrElse RadTreeRoleTenant.Nodes.Count > 0
+            privacy.Enabled = RadTreeSettori.Nodes.Count > 0
         End If
     End Sub
 
@@ -861,13 +800,13 @@ Partial Public Class uscSettori
 
         Dim parameters As String = GetWindowParameters()
         If selRoles.Length <> 0 Then
-            parameters = String.Format("{0}&Selected={1}&TenantSelected={2}", parameters, selRoles.ToString(), String.Empty)
+            parameters = String.Format("{0}&Selected={1}", parameters, selRoles.ToString())
         End If
 
         AjaxManager.ResponseScripts.Add(String.Format("return {0}_OpenWindow({1},{2},'{3}');", ClientID, ProtocolEnv.DocumentPreviewWidth, ProtocolEnv.DocumentPreviewHeight, parameters))
     End Sub
 
-    Protected Sub AddSettori(ByVal settoriList As String, tenantId As Guid, ByRef treeView As RadTreeView, account As String)
+    Protected Sub AddSettori(ByVal settoriList As String, ByRef treeView As RadTreeView, account As String)
         If Not String.IsNullOrEmpty(settoriList) Then
             Dim v As String() = settoriList.Split(","c)
 
@@ -876,11 +815,11 @@ Partial Public Class uscSettori
                 idRoleList.Add(Integer.Parse(idRole))
             Next
 
-            Dim roles As IList(Of Role) = Facade.RoleFacade.GetByIds(idRoleList, tenantId).OrderBy(Function(x) x.Name).ToList()
+            Dim roles As IList(Of Role) = Facade.RoleFacade.GetByIds(idRoleList).OrderBy(Function(x) x.Name).ToList()
             If MultipleRoles = False Then
                 For Each node As RadTreeNode In treeView.GetAllNodes()
                     Dim idChild As Integer = CType(node.Value, Integer)
-                    SetRolesRemovedList(Facade.RoleFacade.GetByIdAndTenant(idChild, tenantId), treeView)
+                    SetRolesRemovedList(Facade.RoleFacade.GetById(idChild), treeView)
                 Next
                 treeView.Nodes.Clear()
             End If
@@ -898,12 +837,9 @@ Partial Public Class uscSettori
 
     Protected Sub DeleteSettore(role As Role)
         Dim treeView As RadTreeView = RadTreeSettori
-        If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso Not role.TenantId.Equals(Guid.Empty) AndAlso Not role.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId) Then
-            treeView = RadTreeRoleTenant
-        End If
 
         Dim args As New RoleEventArgs(role)
-        args.IsPersistent = Not RoleListAdded.Contains(role.IdRoleTenant)
+        args.IsPersistent = Not RoleListAdded.Contains(role.Id)
 
         RaiseEvent RoleRemoving(ToolBar, args)
 
@@ -911,7 +847,19 @@ Partial Public Class uscSettori
         If args.Cancel Then
             Exit Sub
         End If
-        Dim selectedNode As RadTreeNode = treeView.FindNodeByValue(role.IdRoleTenant.ToString())
+        Dim selectedNode As RadTreeNode = treeView.FindNodeByValue(role.Id.ToString())
+
+        If ((ProtocolEnv.RefusedProtocolAuthorizationEnabled) OrElse (ProtocolEnv.IsDistributionEnabled AndAlso ProtocolEnv.DistributionRejectableEnabled)) AndAlso
+            CurrentProtocol IsNot Nothing AndAlso
+            CurrentProtocol.Roles.Any(Function(k) k.Role.Id = role.Id AndAlso k.Status = ProtocolRoleStatus.Accepted) Then
+            BasePage.AjaxAlert("Settore [{0}] non rimovibile in quanto accettato.", role.Name)
+            RaiseEvent RoleRemoved(ToolBar, New RadTreeNodeEventArgs(selectedNode))
+            If UseSessionStorage Then
+                AjaxManager.ResponseScripts.Add(String.Format(DELETE_ROLE_CALLBACK, Me.ClientID, role.Id.ToString()))
+            End If
+            Exit Sub
+        End If
+
         If Not String.IsNullOrEmpty(ManageableRoles) Then
             ' Verifico che il settore corrente sia figlio di uno di quelli in cui l'utente corrente è manager.
             Dim manageables As String() = ManageableRoles.Split("|"c)
@@ -919,7 +867,7 @@ Partial Public Class uscSettori
             Dim isDeletable As Boolean = False
             For Each mr As String In manageables
                 ' ATTENZIONE! Rendo non deautorizzabili i settori di cui l'utente corrente è esplicitamente manager.
-                If role.FullIncrementalPath.Contains(mr) AndAlso Not role.IdRoleTenant.ToString.Equals(mr) Then
+                If role.FullIncrementalPath.Contains(mr) AndAlso Not role.Id.ToString.Equals(mr) Then
                     isDeletable = True ' Se si ne permetto la cancellazione.
                     Exit For
                 End If
@@ -931,34 +879,28 @@ Partial Public Class uscSettori
 
                 RaiseEvent RoleRemoved(ToolBar, New RadTreeNodeEventArgs(selectedNode)) ' Sollevo comunque l'evento per reimpostare le checkbox nell'albero.
                 If UseSessionStorage Then
-                    AjaxManager.ResponseScripts.Add(String.Format(DELETE_ROLE_CALLBACK, Me.ClientID, role.Id.ToString(), role.TenantId.ToString()))
+                    AjaxManager.ResponseScripts.Add(String.Format(DELETE_ROLE_CALLBACK, Me.ClientID, role.Id.ToString()))
                 End If
                 Exit Sub
             End If
         End If
 
         If selectedNode IsNot Nothing AndAlso selectedNode.Parent IsNot Nothing Then
-            RemoveNodeRecursive(selectedNode, treeView, role.TenantId.ToString())
+            RemoveNodeRecursive(selectedNode, treeView)
             If RadTreeSettori.Nodes.Count = 0 Then
                 fldCurrentTenant.SetDisplay(False)
             End If
 
-            If RadTreeRoleTenant.Nodes.Count = 0 Then
-                fldOtherTenant.SetDisplay(False)
-            End If
             RaiseEvent RoleRemoved(ToolBar, New RadTreeNodeEventArgs(selectedNode))
             If UseSessionStorage Then
-                AjaxManager.ResponseScripts.Add(String.Format(DELETE_ROLE_CALLBACK, Me.ClientID, role.Id.ToString(), role.TenantId.ToString()))
+                AjaxManager.ResponseScripts.Add(String.Format(DELETE_ROLE_CALLBACK, Me.ClientID, role.Id.ToString()))
             End If
         End If
     End Sub
 
-    Private Sub RemoveNodeRecursive(ByVal delNode As RadTreeNode, ByRef treeView As RadTreeView, Optional tenantId As String = Nothing)
-        If String.IsNullOrEmpty(tenantId) Then
-            tenantId = DocSuiteContext.Current.CurrentTenant.TenantId.ToString()
-        End If
-        Dim role As Role = Facade.RoleFacade.GetByIdAndTenant(Integer.Parse(delNode.Value), Guid.Parse(tenantId))
-        Dim node As RadTreeNode = SeekAndImplementNode(Nothing, role, treeView, tenantId)
+    Private Sub RemoveNodeRecursive(ByVal delNode As RadTreeNode, ByRef treeView As RadTreeView)
+        Dim role As Role = Facade.RoleFacade.GetById(Integer.Parse(delNode.Value))
+        Dim node As RadTreeNode = SeekAndImplementNode(Nothing, role, treeView)
         node.Attributes.Add(RemovedRoleAttribute, FalseAttributeValue)
         node.Font.Bold = False
 
@@ -968,8 +910,8 @@ Partial Public Class uscSettori
         If delNode.Parent IsNot Nothing Then
             'Se il nodo da eliminare non ha un fratello rimuovo il padre. Verifico che l'unico nodo figlio sia il delNode.
             If delNode.ParentNode IsNot Nothing AndAlso delNode.ParentNode.Nodes.Count = 1 AndAlso delNode.ParentNode.Nodes.FindNodeByValue(delNode.Value) IsNot Nothing AndAlso
-                Not GetRoles().Any(Function(x) x.IdRoleTenant.ToString().Eq(delNode.ParentNode.Value) AndAlso x.TenantId.ToString().Eq(tenantId)) Then
-                RemoveNodeRecursive(delNode.ParentNode, treeView, tenantId)
+                Not GetRoles().Any(Function(x) x.Id.ToString().Eq(delNode.ParentNode.Value)) Then
+                RemoveNodeRecursive(delNode.ParentNode, treeView)
             End If
         End If
         delNode.Remove()
@@ -977,7 +919,7 @@ Partial Public Class uscSettori
 
     Public Sub RemoveRoleNode(role As Role)
 
-        Dim existingNode As RadTreeNode = RadTreeSettori.FindNodeByValue(role.IdRoleTenant.ToString())
+        Dim existingNode As RadTreeNode = RadTreeSettori.FindNodeByValue(role.Id.ToString())
         If existingNode Is Nothing Then Throw New NullReferenceException()
 
         RemoveNodeRecursive(existingNode, RadTreeSettori)
@@ -987,8 +929,8 @@ Partial Public Class uscSettori
     ''' <param name="node"> Eventuale nodo figlio </param>
     ''' <param name="role"> Settore inerente a questo macello </param>
     ''' <remarks> Ci facciamo un baffo del Single responsibility principle </remarks>
-    Private Function SeekAndImplementNode(ByRef node As RadTreeNode, ByVal role As Role, ByRef treeView As RadTreeView, tenantId As String, Optional dateToHistoricize As DateTime? = Nothing) As RadTreeNode
-        Dim existingNode As RadTreeNode = treeView.FindNodeByValue(role.IdRoleTenant.ToString())
+    Private Function SeekAndImplementNode(ByRef node As RadTreeNode, ByVal role As Role, ByRef treeView As RadTreeView) As RadTreeNode
+        Dim existingNode As RadTreeNode = treeView.FindNodeByValue(role.Id.ToString())
         If existingNode IsNot Nothing Then
             Return existingNode
         End If
@@ -998,22 +940,14 @@ Partial Public Class uscSettori
         If role IsNot Nothing Then
 
             nodeToAdd.Text = role.Name
-            ' Se è attiva la storicizzazione e la data è stata impostata, vado a recuperare il nome "storico".
-            If ProtocolEnv.RoleContactHistoricizing AndAlso dateToHistoricize.HasValue Then
-                Dim RoleAggiornato As RoleName = RoleNameFacade.GetRoleNamesByValidDate(role.IdRoleTenant, dateToHistoricize.Value, tenantId)
-                If RoleAggiornato IsNot Nothing Then
-                    nodeToAdd.Text = RoleAggiornato.Name
-                End If
-            End If
-
-            Dim currentProtocolRole As ProtocolRole = GetProtocolRoleByRoleId(role.IdRoleTenant)
+            Dim currentProtocolRole As ProtocolRole = GetProtocolRoleByRoleId(role.Id)
             If currentProtocolRole IsNot Nothing AndAlso currentProtocolRole.Type IsNot Nothing AndAlso currentProtocolRole.Type.Eq(ProtocolRoleTypes.CarbonCopy) Then
                 nodeToAdd.Text = String.Concat(nodeToAdd.Text, " (CC)")
             End If
 
-            nodeToAdd.Value = role.IdRoleTenant.ToString()
+            nodeToAdd.Value = role.Id.ToString()
 
-            If role.IsActive <> 1 OrElse Not role.IsActiveRange() Then
+            If Not role.IsActive OrElse Not role.IsActiveRange() Then
                 nodeToAdd.CssClass = "notActive"
                 nodeToAdd.ToolTip = "il settore non è più attivo"
             End If
@@ -1026,9 +960,9 @@ Partial Public Class uscSettori
             Else
                 nodeToAdd.ImageUrl = ImagePath.SmallSubRole
                 nodeToAdd.Attributes.Add(TypeAttribute, TypeAttributeValue.SubRole.ToString())
-                Dim newNode As RadTreeNode = treeView.FindNodeByValue(role.Father.IdRoleTenant.ToString())
+                Dim newNode As RadTreeNode = treeView.FindNodeByValue(role.Father.Id.ToString())
                 If (newNode Is Nothing) Then
-                    SeekAndImplementNode(nodeToAdd, role.Father, treeView, tenantId, dateToHistoricize)
+                    SeekAndImplementNode(nodeToAdd, role.Father, treeView)
                 Else
                     AddUsersOfGroupsNode(nodeToAdd, role)
                     newNode.Nodes.Add(nodeToAdd)
@@ -1041,32 +975,25 @@ Partial Public Class uscSettori
             nodeToAdd.Nodes.Add(node)
         End If
 
-        If RoleListRemoved.Contains(role.IdRoleTenant) Then
-            RoleListRemoved.Remove(role.IdRoleTenant)
+        If RoleListRemoved.Contains(role.Id) Then
+            RoleListRemoved.Remove(role.Id)
         End If
         Return nodeToAdd
     End Function
 
-    Public Sub AddRoles(ByVal roles As IList(Of Role), ByVal persistState As Boolean, ByVal recursive As Boolean, ByVal onlyWithPecAddress As Boolean, Optional multitenantEnabled As Boolean = False, Optional tenantId As Guid? = Nothing)
+    Public Sub AddRoles(ByVal roles As IList(Of Role), ByVal persistState As Boolean, ByVal recursive As Boolean, ByVal onlyWithPecAddress As Boolean)
         Dim treeView As RadTreeView = RadTreeSettori
-
         For Each role As Role In roles
-            If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso Not role.TenantId.Equals(Guid.Empty) AndAlso Not role.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId) Then
-                treeView = RadTreeRoleTenant
-            End If
-            AddRole(role, persistState, recursive, onlyWithPecAddress, True, treeView, multitenantEnabled:=multitenantEnabled, selectedTenantId:=tenantId)
+            AddRole(role, persistState, recursive, onlyWithPecAddress, True, treeView)
         Next
     End Sub
 
     Public Sub AddRole(ByVal role As Role, ByVal persistState As Boolean, ByVal recursive As Boolean, ByVal onlyWithPecAddress As Boolean, ByVal checked As Boolean)
         Dim treeView As RadTreeView = RadTreeSettori
-        If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso Not role.TenantId.Equals(Guid.Empty) AndAlso Not role.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId) Then
-            treeView = RadTreeRoleTenant
-        End If
         AddRole(role, persistState, recursive, onlyWithPecAddress, checked, treeView)
     End Sub
 
-    Public Sub AddRole(ByVal role As Role, ByVal persistState As Boolean, ByVal recursive As Boolean, ByVal onlyWithPecAddress As Boolean, ByVal checked As Boolean, treeView As RadTreeView, Optional multitenantEnabled As Boolean = False, Optional selectedTenantId As Guid? = Nothing)
+    Public Sub AddRole(ByVal role As Role, ByVal persistState As Boolean, ByVal recursive As Boolean, ByVal onlyWithPecAddress As Boolean, ByVal checked As Boolean, treeView As RadTreeView)
         Dim cancelableEvent As RoleEventArgs = New RoleEventArgs(role)
         RaiseEvent RoleAdding(ToolBar, cancelableEvent)
         If cancelableEvent.Cancel Then
@@ -1074,9 +1001,9 @@ Partial Public Class uscSettori
         End If
 
         If recursive Then
-            AddRecursiveNode(Nothing, role, onlyWithPecAddress, treeView, If(multitenantEnabled, selectedTenantId.Value, role.TenantId), multitenantEnabled:=multitenantEnabled)
+            AddRecursiveNode(Nothing, role, onlyWithPecAddress, treeView)
         Else
-            Dim node As RadTreeNode = SeekAndImplementNode(Nothing, role, treeView, role.TenantId.ToString())
+            Dim node As RadTreeNode = SeekAndImplementNode(Nothing, role, treeView)
             node.Attributes.Add(SelectedRoleAttribute, TrueAttributeValue)
             node.Attributes.Add(SelectedFullIncrementalPathAttribute, role.FullIncrementalPath)
             node.Font.Bold = True
@@ -1103,7 +1030,7 @@ Partial Public Class uscSettori
         Dim ajaxResult As AjaxModel = New AjaxModel()
         ajaxResult.ActionName = actionName
         ajaxResult.Value = New List(Of String)()
-        ajaxResult.Value.Add(JsonConvert.SerializeObject(String.Concat(clientId, "|", role.Id, "|tenantId=", role.TenantId)))
+        ajaxResult.Value.Add(JsonConvert.SerializeObject(String.Concat(clientId, "|", role.Id)))
         Dim script As String = String.Format("{0}_uscSettoriTS.setRoles({1},{2});", clientId, True.ToString().ToLower(), JsonConvert.SerializeObject(ajaxResult))
         Return script
     End Function
@@ -1121,11 +1048,11 @@ Partial Public Class uscSettori
     Private Sub AddNodeUser(ByRef node As RadTreeNode, ByRef group As RoleGroup, ByVal administrator As Boolean)
         For Each user As AccountModel In CommonAD.GetADUsersFromGroup(group.Name, CommonShared.UserDomain)
             Dim userNode As New RadTreeNode
-            userNode.Value = group.Role.IdRoleTenant.ToString()
+            userNode.Value = group.Role.Id.ToString()
             userNode.Text = user.Account
             userNode.Attributes.Add(TypeAttribute, TypeAttributeValue.User.ToString())
             userNode.Attributes.Add("UserType", "UA")
-            userNode.Attributes.Add("GroupId", group.Role.IdRoleTenant.ToString())
+            userNode.Attributes.Add("GroupId", group.Role.Id.ToString())
             userNode.Attributes.Add("GroupName", group.Name)
             userNode.Attributes.Add("UserName", user.Account)
             userNode.Attributes.Add(UserAccountAttribute, user.GetFullUserName())
@@ -1145,6 +1072,13 @@ Partial Public Class uscSettori
         Dim foundNode As RadTreeNode = RadTreeSettori.Nodes.FindNodeByValue(fullAccount)
         If foundNode IsNot Nothing Then
             Exit Sub
+        End If
+
+        If Not UserMultiSelectionEnabled Then
+            Dim nodeToRemove As RadTreeNode = RadTreeSettori.Nodes.FindNodeByAttribute(UserAuthorizationAttribute, TrueAttributeValue)
+            If nodeToRemove IsNot Nothing Then
+                RadTreeSettori.Nodes.Remove(nodeToRemove)
+            End If
         End If
 
         Dim node As RadTreeNode = New RadTreeNode()
@@ -1167,11 +1101,13 @@ Partial Public Class uscSettori
         node.ImageUrl = Page.ResolveClientUrl("~/App_Themes/DocSuite2008/imgset16/user.png")
         TreeViewUtils.ChangeNodesForeColor(node, Color.Empty)
         RadTreeSettori.Nodes.Add(node)
+
+        RaiseEvent RoleUserAdded(ToolBar, New RoleUserEventArgs(New KeyValuePair(Of String, String)(fullAccount, fullDescription)))
     End Sub
 
     Sub RemoveRole(role As Role)
         If SourceRoles.Contains(role) Then
-            Dim node As RadTreeNode = RadTreeSettori.FindNodeByValue(role.IdRoleTenant.ToString)
+            Dim node As RadTreeNode = RadTreeSettori.FindNodeByValue(role.Id.ToString)
             If node IsNot Nothing Then
                 RemoveNodeRecursive(node, RadTreeSettori)
             End If
@@ -1193,7 +1129,6 @@ Partial Public Class uscSettori
         parameters.AppendFormat("&RoleRestiction={0}", RoleRestictions)
         parameters.AppendFormat("&Rights={0}", Rights)
         parameters.AppendFormat("&isActive={0}", ShowActive)
-        parameters.AppendFormat("&TenantEnabled={0}", TenantEnabled)
         parameters.AppendFormat("&SearchByUserEnabled={0}", SearchByUserEnabled)
 
         If IdCategorySelected IsNot Nothing Then
@@ -1220,17 +1155,13 @@ Partial Public Class uscSettori
         Dim roleDate As DateTimeOffset
         For Each protRole As ProtocolRole In protRoleList
             treeView = RadTreeSettori
-            If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso Not protRole.Role.TenantId.Equals(Guid.Empty) AndAlso Not protRole.Role.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId) Then
-                treeView = RadTreeRoleTenant
-            End If
 
-            node = SeekAndImplementNode(Nothing, protRole.Role, treeView, protRole.Role.TenantId.ToString(), protRole.RegistrationDate.DateTime)
+            node = SeekAndImplementNode(Nothing, protRole.Role, treeView)
             node.Attributes.Add(SelectedRoleAttribute, TrueAttributeValue)
             node.Attributes.Add(SelectedFullIncrementalPathAttribute, protRole.Role.FullIncrementalPath)
-
             node.Font.Bold = True
-
-            If ProtocolEnv.RefusedProtocolAuthorizationEnabled AndAlso protRole.Status = ProtocolRoleStatus.Accepted Then
+            If ((ProtocolEnv.RefusedProtocolAuthorizationEnabled) OrElse (ProtocolEnv.IsDistributionEnabled AndAlso ProtocolEnv.DistributionRejectableEnabled)) AndAlso
+                protRole.Status = ProtocolRoleStatus.Accepted Then
                 node.CssClass = "node-accepted-role"
             End If
 
@@ -1243,7 +1174,7 @@ Partial Public Class uscSettori
                 node.Text = String.Concat(node.Text, " - autorizzato il ", String.Format("{0:dd/MM/yyyy}", roleDate))
             End If
 
-            Dim roleRights As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 1, True)
+            Dim roleRights As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 1, True, CurrentTenant.TenantAOO.UniqueId)
 
             If (Not String.IsNullOrEmpty(protRole.Note)) AndAlso
                (((Not protRole.NoteType = ProtocolRoleNoteType.Reserved) AndAlso (ProtocolEnv.ProtocolNoteReservedRoleEnabled)) OrElse ((protRole.NoteType = ProtocolRoleNoteType.Reserved) AndAlso (ProtocolEnv.ProtocolNoteReservedRoleEnabled) AndAlso (roleRights.Contains(protRole.Role))) OrElse (Not ProtocolEnv.ProtocolNoteReservedRoleEnabled)) Then
@@ -1255,7 +1186,7 @@ Partial Public Class uscSettori
                 End If
             End If
 
-            If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso protRole.Type.Eq(ProtocolRoleTypes.Privacy) Then
+            If protRole.Type.Eq(ProtocolRoleTypes.Privacy) Then
                 node.ImageUrl = "../App_Themes/DocSuite2008/imgset16/lock.png"
                 node.ToolTip = "Autorizzazione riservata/privacy"
             End If
@@ -1266,7 +1197,7 @@ Partial Public Class uscSettori
             'SetRoleAs(RoleAction.Added, protRole.Role.Id)
         Next
 
-        If (DocSuiteContext.Current.SimplifiedPrivacyEnabled OrElse ProtocolEnv.ProtocolHighlightEnabled) AndAlso users IsNot Nothing Then
+        If users IsNot Nothing Then
             For Each user As ProtocolUser In users.OrderByDescending(Function(f) f.RegistrationDate)
                 AddUserAuthorization(GetUserDescription(user.Account), user.Account, Nothing, True, user.RegistrationDate, user.Type, GetUserDescription(user.RegistrationUser))
             Next
@@ -1275,22 +1206,22 @@ Partial Public Class uscSettori
         If RadTreeSettori.Nodes.Count > 0 Then
             fldCurrentTenant.SetDisplay(True)
         End If
-
-        If RadTreeRoleTenant.Nodes.Count > 0 Then
-            fldOtherTenant.SetDisplay(True)
-        End If
     End Sub
 
     Private Function GetUserDescription(account As String) As String
-        Dim adUser As AccountModel = CommonAD.GetAccount(account)
-        If adUser Is Nothing Then
+        Try
+            Dim adUser As AccountModel = CommonAD.GetAccount(account)
+            If adUser Is Nothing Then
+                Return account
+            End If
+            Return String.Concat(adUser.DisplayName, " (", adUser.Account, ")")
+        Catch
             Return account
-        End If
-        Return String.Concat(adUser.DisplayName, " (", adUser.Account, ")")
+        End Try
     End Function
 
     Public Sub SetProtocolSourceUsers(protocolUsers As IEnumerable(Of ProtocolUser))
-        If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso protocolUsers IsNot Nothing Then
+        If protocolUsers IsNot Nothing Then
             For Each user As ProtocolUser In CurrentProtocol.Users.Where(Function(u) u.Type = ProtocolUserType.Authorization)
                 If Not SourceUsers.ContainsKey(user.Account) Then
                     SourceUsers.Add(user.Account, GetUserDescription(user.Account))
@@ -1302,25 +1233,11 @@ Partial Public Class uscSettori
     ''' <summary> Popola la treeview con i ruoli impostati nel datasource. </summary>
     Public Shadows Sub DataBind(Optional ByVal recursive As Boolean = False, Optional ByVal onlyWithPecAddress As Boolean = False)
         RadTreeSettori.Nodes.Clear()
-        RadTreeRoleTenant.Nodes.Clear()
-
-        Dim currentTenantRoleList As IList(Of Role) = New List(Of Role)
-        Dim otherTenantRoleList As IList(Of Role) = New List(Of Role)
-
         If SourceRoles IsNot Nothing AndAlso SourceRoles.Count > 0 Then
-            For Each role As Role In SourceRoles.Where(Function(x) x.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId))
-                currentTenantRoleList.Add(role)
-            Next
-
-            For Each role As Role In SourceRoles.Where(Function(x) Not x.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId))
-                otherTenantRoleList.Add(role)
-            Next
-            AddRoles(currentTenantRoleList, False, recursive, onlyWithPecAddress)
-            AddRoles(otherTenantRoleList, False, recursive, onlyWithPecAddress)
-
+            AddRoles(SourceRoles, False, recursive, onlyWithPecAddress)
         End If
 
-        If DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso SourceUsers IsNot Nothing AndAlso SourceUsers.Count > 0 Then
+        If SourceUsers IsNot Nothing AndAlso SourceUsers.Count > 0 Then
             For Each user As KeyValuePair(Of String, String) In SourceUsers
                 AddUserAuthorization(user.Value, user.Key, String.Empty, False, Nothing, ProtocolUserType.Authorization, String.Empty)
             Next
@@ -1329,34 +1246,21 @@ Partial Public Class uscSettori
         If RadTreeSettori.Nodes.Count > 0 Then
             fldCurrentTenant.SetDisplay(True)
         End If
-
-        If RadTreeRoleTenant.Nodes.Count > 0 Then
-            fldOtherTenant.SetDisplay(True)
-        End If
     End Sub
 
     ''' <summary> Lista di ruoli presenti. </summary>
     Public Function GetRoles() As IList(Of Role)
         Dim values As String() = RadTreeSettori.GetAllNodes().Where(Function(x) x.Attributes(SelectedRoleAttribute).Eq(TrueAttributeValue)).Select(Function(x) x.Value).ToArray()
-        Dim tenantValues As String() = RadTreeRoleTenant.GetAllNodes().Where(Function(x) x.Attributes(SelectedRoleAttribute).Eq(TrueAttributeValue)).Select(Function(x) x.Value).ToArray()
 
         SourceRoles = New List(Of Role)
         For Each value As String In values
             SourceRoles.Add(Facade.RoleFacade.GetById(Integer.Parse(value)))
         Next
-        If tenantValues IsNot Nothing Then
-            For Each value As String In tenantValues
-                SourceRoles.Add(Facade.RoleFacade.GetByIdAndTenant(Integer.Parse(value), DocSuiteContext.Current.Tenants.FirstOrDefault(Function(x) Not x.CurrentTenant).TenantId))
-            Next
-        End If
         Return SourceRoles
     End Function
 
     Private Function GetCheckedNodes() As IList(Of RadTreeNode)
         Dim checkedNodes As IList(Of RadTreeNode) = RadTreeSettori.GetAllNodes().Where(Function(x) x.Attributes(SelectedRoleAttribute).Eq(TrueAttributeValue) AndAlso x.Checked).ToList()
-        For Each item As RadTreeNode In RadTreeRoleTenant.GetAllNodes().Where(Function(x) x.Attributes(SelectedRoleAttribute).Eq(TrueAttributeValue) AndAlso x.Checked).ToList()
-            checkedNodes.Add(item)
-        Next
         Return checkedNodes
     End Function
 
@@ -1379,9 +1283,6 @@ Partial Public Class uscSettori
     ''' <summary> Lista di ruoli non selezionati. </summary>
     Public Function GetUncheckedRoles() As IList(Of Role)
         Dim values As New List(Of Integer)(RadTreeSettori.GetAllNodes().Where(Function(x) x.Attributes(SelectedRoleAttribute).Eq(TrueAttributeValue) AndAlso Not x.Checked).Select(Function(x) Integer.Parse(x.Value)).ToArray())
-        For Each item As Integer In RadTreeRoleTenant.GetAllNodes().Where(Function(x) x.Attributes(SelectedRoleAttribute).Eq(TrueAttributeValue) AndAlso Not x.Checked).Select(Function(x) Integer.Parse(x.Value)).ToArray()
-            values.Add(item)
-        Next
         Return Facade.RoleFacade.GetByIds(values)
     End Function
 
@@ -1427,13 +1328,13 @@ Partial Public Class uscSettori
             SourceRoles.Clear()
         Else
             SourceRoles.AddRange(GetRoles())
-            If DocSuiteContext.Current.SimplifiedPrivacyEnabled Then
-                For Each user As KeyValuePair(Of String, String) In GetUsers()
-                    If Not SourceUsers.ContainsKey(user.Key) Then
-                        SourceUsers.Add(user.Key, user.Value)
-                    End If
-                Next
-            End If
+            'If DocSuiteContext.Current.SimplifiedPrivacyEnabled Then
+            For Each user As KeyValuePair(Of String, String) In GetUsers()
+                If Not SourceUsers.ContainsKey(user.Key) Then
+                    SourceUsers.Add(user.Key, user.Value)
+                End If
+            Next
+            'End If
         End If
         If (contactList IsNot Nothing) AndAlso (contactList.Count > 0) Then
             SourceRoles.AddRange(contactList.Where(Function(cdto) cdto.Contact IsNot Nothing AndAlso cdto.Contact.Role IsNot Nothing).Select(Function(c) c.Contact.Role))
@@ -1445,13 +1346,13 @@ Partial Public Class uscSettori
 
     Private Sub SetGroupNode(ByRef node As RadTreeNode, ByVal roleGroup As RoleGroup)
         node.Text = roleGroup.Name
-        node.Value = roleGroup.Role.IdRoleTenant.ToString()
+        node.Value = roleGroup.Role.Id.ToString()
         node.ImageUrl = "../App_Themes/DocSuite2008/imgset16/GroupMembers.png"
         node.Attributes.Add(NodeTypeAttribute, NodeTypeAttributeValue.Group.ToString())
         node.Target = "InternoPrincipale"
     End Sub
 
-    Private Sub AddRecursiveNode(ByRef parentNode As RadTreeNode, ByRef role As Role, ByVal onlyWithPecAddress As Boolean, ByRef treeView As RadTreeView, tenantId As Guid, Optional multitenantEnabled As Boolean = False)
+    Private Sub AddRecursiveNode(ByRef parentNode As RadTreeNode, ByRef role As Role, ByVal onlyWithPecAddress As Boolean, ByRef treeView As RadTreeView)
         Dim nodeToAdd As RadTreeNode = CreateNode(role, False, onlyWithPecAddress)
         If Not onlyWithPecAddress Then
             AddRoleGroups(nodeToAdd, role)
@@ -1461,10 +1362,10 @@ Partial Public Class uscSettori
         Else
             parentNode.Nodes.Add(nodeToAdd)
         End If
-        Dim children As IList(Of Role) = Facade.RoleFacade.GetItemsByParentId(role.IdRoleTenant, onlyWithPecAddress, tenantId, multitenantEnabled:=multitenantEnabled)
+        Dim children As IList(Of Role) = Facade.RoleFacade.GetItemsByParentId(role.Id, onlyWithPecAddress)
         If children IsNot Nothing AndAlso children.Count > 0 Then
             For Each child As Role In children
-                AddRecursiveNode(nodeToAdd, child, onlyWithPecAddress, treeView, tenantId, multitenantEnabled:=multitenantEnabled)
+                AddRecursiveNode(nodeToAdd, child, onlyWithPecAddress, treeView)
             Next
         End If
     End Sub
@@ -1472,8 +1373,7 @@ Partial Public Class uscSettori
     Private Function CreateNode(ByVal role As Role, ByVal expandCallBack As Boolean, ByVal onlyWithPecAddress As Boolean) As RadTreeNode
         Dim node As New RadTreeNode()
         node.Text = role.Name
-        node.Value = role.IdRoleTenant.ToString()
-        node.Attributes.Add("IdRoleTenant", role.IdRoleTenant.ToString())
+        node.Value = role.Id.ToString()
         If (role.Father Is Nothing) Then
             If (expandCallBack) Then
                 node.ExpandMode = TreeNodeExpandMode.ServerSideCallBack
@@ -1484,7 +1384,7 @@ Partial Public Class uscSettori
             node.ImageUrl = ImagePath.SmallSubRole
             node.Attributes.Add(NodeTypeAttribute, NodeTypeAttributeValue.SubRole.ToString())
         End If
-        If (role.IsActive <> 1) Then
+        If Not role.IsActive Then
             node.Style.Add("color", "gray")
             node.Attributes.Add("Recovery", "true")
         Else
@@ -1525,7 +1425,7 @@ Partial Public Class uscSettori
         If Not RoleListAdded.Contains(role.Id) Then
             ' VERIFICO se era già in datasource
             For Each roleds As Role In SourceRoles
-                If roleds.IdRoleTenant = role.IdRoleTenant Then
+                If roleds.Id = role.Id Then
                     Exit Sub
                 End If
             Next
@@ -1536,7 +1436,7 @@ Partial Public Class uscSettori
 
     Private Sub SetRolesRemovedList(ByVal role As Role, ByRef treeView As RadTreeView)
         'Verifica eventuali figli
-        Dim node As RadTreeNode = treeView.FindNodeByValue(CType(role.IdRoleTenant, String))
+        Dim node As RadTreeNode = treeView.FindNodeByValue(CType(role.Id, String))
 
         If RoleListAdded.Contains(role.Id) Then
             RoleListAdded.Remove(role.Id)
@@ -1548,9 +1448,9 @@ Partial Public Class uscSettori
 
         If node IsNot Nothing Then
             For Each child As RadTreeNode In node.Nodes
-                If (Not RoleListRemoved.Contains(child.Value)) Then
+                If Not RoleListRemoved.Contains(Integer.Parse(child.Value)) Then
                     Dim idChild As Integer = CType(child.Value, Integer)
-                    SetRolesRemovedList(Facade.RoleFacade.GetByIdAndTenant(idChild, role.TenantId), treeView)
+                    SetRolesRemovedList(Facade.RoleFacade.GetById(idChild), treeView)
                 End If
             Next
         End If
@@ -1560,7 +1460,7 @@ Partial Public Class uscSettori
 
     ''' <summary> Seleziona il settore </summary>
     Public Sub CheckRole(ByVal role As Role)
-        Dim nodeToCheck As RadTreeNode = RadTreeSettori.FindNodeByValue(role.IdRoleTenant.ToString())
+        Dim nodeToCheck As RadTreeNode = RadTreeSettori.FindNodeByValue(role.Id.ToString())
         If nodeToCheck IsNot Nothing AndAlso nodeToCheck.Checkable Then
             nodeToCheck.Checked = True
         End If
@@ -1590,22 +1490,12 @@ Partial Public Class uscSettori
         For Each node As RadTreeNode In RadTreeSettori.Nodes
             GetSelectedNodes(node, selectedNodes, nodeType, selected)
         Next
-
-        For Each node As RadTreeNode In RadTreeRoleTenant.Nodes
-            GetSelectedNodes(node, selectedNodes, nodeType, selected)
-        Next
         Return selectedNodes
     End Function
 
     Public Function GetPrivacyRoles() As IList(Of String)
         Dim privacyNodes As List(Of String) = New List(Of String)
         For Each node As RadTreeNode In RadTreeSettori.GetAllNodes()
-            If node.Attributes.Item(PrivacyRoleAttribute) IsNot Nothing AndAlso node.Attributes.Item(PrivacyRoleAttribute).Eq(TrueAttributeValue) Then
-                privacyNodes.Add(node.Value)
-            End If
-        Next
-
-        For Each node As RadTreeNode In RadTreeRoleTenant.GetAllNodes()
             If node.Attributes.Item(PrivacyRoleAttribute) IsNot Nothing AndAlso node.Attributes.Item(PrivacyRoleAttribute).Eq(TrueAttributeValue) Then
                 privacyNodes.Add(node.Value)
             End If
@@ -1656,10 +1546,6 @@ Partial Public Class uscSettori
     Public Function GetFullIncrementalPathAttribute(selected As Boolean, nodeType As NodeTypeAttributeValue) As IList(Of KeyValuePair(Of String, String))
         Dim selectedNodes As IList(Of KeyValuePair(Of String, String)) = Nothing
         For Each node As RadTreeNode In RadTreeSettori.Nodes
-            GetSelectedFullIncrementalPathNodes(node, selectedNodes, nodeType, selected)
-        Next
-
-        For Each node As RadTreeNode In RadTreeRoleTenant.Nodes
             GetSelectedFullIncrementalPathNodes(node, selectedNodes, nodeType, selected)
         Next
         Return selectedNodes
@@ -1753,26 +1639,14 @@ Partial Public Class uscSettori
     ''' <summary> Lista di IdRole presenti nell'albero nei quali risulto essere manager. </summary>
     Private Function GetManageableRoles() As IList(Of Integer)
         Dim foundCurrentTenantRoles As New List(Of String)
-        Dim foundOtherTenantRoles As New List(Of String)
         For Each node As RadTreeNode In RadTreeSettori.Nodes
             GetNodesByNodeType(node, foundCurrentTenantRoles, NodeTypeAttributeValue.Role)
-        Next
-
-        For Each node As RadTreeNode In RadTreeRoleTenant.Nodes
-            GetNodesByNodeType(node, foundOtherTenantRoles, NodeTypeAttributeValue.Role)
         Next
 
         Dim manageables As New List(Of Integer)
         For Each temp As String In foundCurrentTenantRoles
             Dim roleId As Integer = Integer.Parse(temp)
-            If Not manageables.Contains(roleId) AndAlso Facade.RoleFacade.IsRoleDistributionManager(roleId, DocSuiteContext.Current.CurrentTenant.TenantId) Then
-                manageables.Add(roleId)
-            End If
-        Next
-
-        For Each temp As String In foundOtherTenantRoles
-            Dim roleId As Integer = Integer.Parse(temp)
-            If Not manageables.Contains(roleId) AndAlso Facade.RoleFacade.IsRoleDistributionManager(roleId, DocSuiteContext.Current.Tenants.SingleOrDefault(Function(x) Not x.CurrentTenant).TenantId) Then
+            If Not manageables.Contains(roleId) AndAlso Facade.RoleFacade.IsRoleDistributionManager(roleId, CurrentTenant.TenantAOO.UniqueId) Then
                 manageables.Add(roleId)
             End If
         Next
@@ -1818,7 +1692,7 @@ Partial Public Class uscSettori
         End If
 
         For Each pru As ProtocolRoleUser In CurrentProtocol.RoleUsers
-            If pru.Role.Id = roleGroup.Role.IdRoleTenant AndAlso pru.GroupName.Eq(roleGroup.Name) Then
+            If pru.Role.Id = roleGroup.Role.Id AndAlso pru.GroupName.Eq(roleGroup.Name) Then
                 Return True
             End If
         Next
@@ -1839,7 +1713,7 @@ Partial Public Class uscSettori
     ''' <param name="userName">Nome utente</param>
     ''' <param name="userAccount">Account utente</param>
     Private Overloads Function GetRoleUserNodeValue(ByVal roleGroup As RoleGroup, ByVal userName As String, ByVal userAccount As String) As String
-        Return GetRoleUserNodeValue(roleGroup.Role.IdRoleTenant.ToString(), roleGroup.Name, userName, userAccount)
+        Return GetRoleUserNodeValue(roleGroup.Role.Id.ToString(), roleGroup.Name, userName, userAccount)
     End Function
 
     ''' <summary> Imposta un nodo di tipo RoleUser. </summary>
@@ -1900,7 +1774,7 @@ Partial Public Class uscSettori
     End Sub
 
     Private Function CreateRoleGroupNodeValue(ByVal roleGroup As RoleGroup) As String
-        Return String.Format("{0}|{1}", roleGroup.Role.IdRoleTenant.ToString(), If(roleGroup.ProtocolRights.IsRoleManager, "R", "U"))
+        Return String.Format("{0}|{1}", roleGroup.Role.Id.ToString(), If(roleGroup.ProtocolRights.IsRoleManager, "R", "U"))
     End Function
 
     ''' <summary> Imposta un nodo di tipo RoleGroup. </summary>
@@ -1929,10 +1803,7 @@ Partial Public Class uscSettori
     ''' <param name="role">Settore</param>
     Private Sub AddRoleGroupsForRoleUser(ByVal role As Role, ByVal asRoleDistributionManager As Boolean, ByVal asCopiaConoscenza As Boolean)
         Dim viewManagers As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("viewManagers"), RadToolBarButton)
-        Dim fatherNode As RadTreeNode = RadTreeSettori.FindNodeByValue(role.IdRoleTenant.ToString())
-        If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso Not role.TenantId.Equals(Guid.Empty) AndAlso Not role.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId) Then
-            fatherNode = RadTreeRoleTenant.FindNodeByValue(role.IdRoleTenant.ToString())
-        End If
+        Dim fatherNode As RadTreeNode = RadTreeSettori.FindNodeByValue(role.Id.ToString())
 
         For Each rg As RoleGroup In role.RoleGroups
             If Not rg.ProtocolRights.IsRoleEnabled Then
@@ -1969,13 +1840,13 @@ Partial Public Class uscSettori
         Dim retval As New RadTreeNode
 
         retval.Text = role.Name
-        retval.Value = role.IdRoleTenant.ToString()
+        retval.Value = role.Id.ToString()
         retval.Attributes.Add(NodeTypeAttribute, NodeTypeAttributeValue.Role.ToString())
         ' La possibilità di Copia Conoscenza è concessa quando:
         ' l'usercontrol è configurato per essere checkabile
         ' - E - l'utente ha i permessi di distribuzione a livello di contenitore
         ' - OPPURE - l'utente è manager di distribuzione in almeno un settore padre - MA NON - di quello corrente.
-        retval.Checkable = Checkable AndAlso (CopiaConoscenzaEnabled OrElse (asRoleDistributionManager AndAlso Not Facade.RoleFacade.IsRoleDistributionManager(role.IdRoleTenant, role.TenantId)))
+        retval.Checkable = Checkable AndAlso (CopiaConoscenzaEnabled OrElse (asRoleDistributionManager AndAlso Not Facade.RoleFacade.IsRoleDistributionManager(role.Id, role.IdTenantAOO)))
         retval.Expanded = True
         retval.ImageUrl = ImagePath.SmallRole
         retval.Font.Bold = True
@@ -2005,15 +1876,12 @@ Partial Public Class uscSettori
 
     Private Overloads Sub AddRoleForRoleUser(ByVal role As Role, ByVal idProtocolType As Integer, ByVal isDistributable As Boolean)
         Dim treeView As RadTreeView = RadTreeSettori
-        If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso Not role.TenantId.Equals(Guid.Empty) AndAlso Not role.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId) Then
-            treeView = RadTreeRoleTenant
-        End If
         AddRoleForRoleUser(role, idProtocolType, isDistributable, treeView)
     End Sub
 
     ''' <summary> Aggiunge un nodo Role all'albero. </summary>
     Private Overloads Sub AddRoleForRoleUser(ByVal role As Role, ByVal idProtocolType As Integer, ByVal isDistributable As Boolean, treeView As RadTreeView)
-        Dim currentNode As RadTreeNode = treeView.FindNodeByValue(role.IdRoleTenant.ToString())
+        Dim currentNode As RadTreeNode = treeView.FindNodeByValue(role.Id.ToString())
         If currentNode IsNot Nothing Then
             Exit Sub
         End If
@@ -2024,18 +1892,18 @@ Partial Public Class uscSettori
         If role.Father Is Nothing Then
             ' Essendo una nuova radice verifico di essere manager del settore corrente.
             fatherNode = Nothing
-            asRoleDistributionManager = Facade.RoleFacade.IsRoleDistributionManager(role.IdRoleTenant, role.TenantId)
+            asRoleDistributionManager = Facade.RoleFacade.IsRoleDistributionManager(role.Id, role.IdTenantAOO)
         Else
             AddRoleForRoleUser(role.Father, idProtocolType, isDistributable, treeView)
 
-            fatherNode = treeView.FindNodeByValue(role.Father.IdRoleTenant.ToString())
+            fatherNode = treeView.FindNodeByValue(role.Father.Id.ToString())
             ' Verifico di essere manager del settore padre - OPPURE - di esserlo per il settore corrente.
-            asRoleDistributionManager = (fatherNode.Attributes("NodeManager") IsNot Nothing AndAlso fatherNode.Attributes("NodeManager").Eq("M")) OrElse Facade.RoleFacade.IsRoleDistributionManager(role.IdRoleTenant, role.TenantId)
+            asRoleDistributionManager = (fatherNode.Attributes("NodeManager") IsNot Nothing AndAlso fatherNode.Attributes("NodeManager").Eq("M")) OrElse Facade.RoleFacade.IsRoleDistributionManager(role.Id, role.IdTenantAOO)
         End If
         If Not DocSuiteContext.Current.ProtocolEnv.DistributionHierarchicalEnabled Then
             asRoleDistributionManager = True
         End If
-        Dim currentProtocolRole As ProtocolRole = GetProtocolRoleByRoleId(role.IdRoleTenant)
+        Dim currentProtocolRole As ProtocolRole = GetProtocolRoleByRoleId(role.Id)
         currentNode = SetRoleNodeForRoleUser(role, currentProtocolRole, asRoleDistributionManager)
 
         ' Aggiungo il FullIncrementalPath su tutti i nodi
@@ -2056,11 +1924,9 @@ Partial Public Class uscSettori
     ''' <summary> Popola l'albero per la gestione di RoleUser. </summary>
     Public Sub DataBindForRoleUser(ByVal idProtocolType As Integer?, ByVal isDistributable As Boolean?, Optional ByVal forceisDistributableToTrue As Boolean = False, Optional RadTreeSettoriOnClientNodeClick As Boolean = False)
         RadTreeSettori.Nodes.Clear()
-        RadTreeRoleTenant.Nodes.Clear()
         If Not RadTreeSettoriOnClientNodeClick Then
             RadTreeSettori.OnClientNodeClicking = "CanceledClientNodeClicking"
         End If
-        RadTreeRoleTenant.OnClientNodeClicking = "CanceledClientNodeClicking"
 
         idProtocolType = If(idProtocolType, CurrentProtocol.Type.Id)
         isDistributable = If(isDistributable, CurrentProtocolRights.IsDistributable) OrElse forceisDistributableToTrue
@@ -2069,16 +1935,11 @@ Partial Public Class uscSettori
             AddRoleForRoleUser(r, idProtocolType.Value, isDistributable.Value)
         Next
 
-        If (RadTreeSettori.Nodes.Count > 0 OrElse RadTreeRoleTenant.Nodes.Count > 0) AndAlso Checkable AndAlso CurrentProtocol IsNot Nothing AndAlso Not CurrentProtocol.RoleUsers.IsNullOrEmpty() Then
+        If RadTreeSettori.Nodes.Count > 0 AndAlso Checkable AndAlso CurrentProtocol IsNot Nothing AndAlso Not CurrentProtocol.RoleUsers.IsNullOrEmpty() Then
             ' Seleziona i nodi RoleUser presenti in ProtocolRoleUser
             For Each pru As ProtocolRoleUser In CurrentProtocol.RoleUsers
                 Dim seek As String = GetRoleUserNodeValue(pru.Role.Id.ToString(), pru.GroupName, pru.UserName, pru.Account)
-                Dim currentNode As RadTreeNode = Nothing
-                If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso Not pru.Role.TenantId.Equals(Guid.Empty) AndAlso Not pru.Role.TenantId.Equals(DocSuiteContext.Current.CurrentTenant.TenantId) Then
-                    currentNode = RadTreeRoleTenant.FindNodeByValue(seek)
-                Else
-                    currentNode = RadTreeSettori.FindNodeByValue(seek)
-                End If
+                Dim currentNode As RadTreeNode = RadTreeSettori.FindNodeByValue(seek)
                 If currentNode IsNot Nothing AndAlso currentNode.Checkable Then
                     currentNode.Checked = True
                 End If
@@ -2101,15 +1962,11 @@ Partial Public Class uscSettori
     ''' </summary>
     Public Sub RemoveAllRoles()
         RadTreeSettori.Nodes.Clear()
-        RadTreeRoleTenant.Nodes.Clear()
     End Sub
 
     Public Sub SetPrivacyAuthorizationNodes(roleIds As Integer())
         For Each id As Integer In roleIds
             Dim node As RadTreeNode = RadTreeSettori.FindNodeByValue(id.ToString())
-            If node Is Nothing Then
-                node = RadTreeRoleTenant.FindNodeByValue(id.ToString())
-            End If
             node.ImageUrl = "../App_Themes/DocSuite2008/imgset16/lock.png"
             node.ToolTip = "Autorizzazione riservata/privacy"
             node.AddAttribute(PrivacyRoleAttribute, TrueAttributeValue)
@@ -2125,15 +1982,12 @@ Partial Public Class uscSettori
     End Function
 
 #Region " MultiTenant "
-    Private Sub MultiTenantDataBind(tenantId As Guid)
-        Dim roles As List(Of Role) = Facade.RoleFacade.GetRootItems(True, False, tenantId, True).ToList()
+    Private Sub MultiTenantDataBind()
+        Dim roles As List(Of Role) = Facade.RoleFacade.GetRootItems(CurrentTenant.TenantAOO.UniqueId, True, False).ToList()
         RadTreeSettori.Nodes.Clear()
-        AddRoles(roles, False, True, False, multitenantEnabled:=ProtocolEnv.MultiTenantEnabled, tenantId:=tenantId)
+        AddRoles(roles, False, True, False)
     End Sub
 
-    Private Sub RadTreeSettori_Load(sender As Object, e As EventArgs) Handles RadTreeSettori.Load
-
-    End Sub
 #End Region
 
 

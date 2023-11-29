@@ -1,6 +1,7 @@
 ﻿using NHibernate;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.Entity.Commons;
@@ -88,7 +89,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
         public override void Save(ref CategoryFascicle model)
         {
             using (IStatelessSession session = NHibernateSessionManager.Instance.OpenStatelessSession("ProtDB"))
-            using (ITransaction tx = session.BeginTransaction())
+            using (ITransaction tx = session.BeginTransaction(IsolationLevel.ReadCommitted))
             {
                 try
                 {
@@ -131,7 +132,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
             //Ricorsivamente per ogni figlio
             if (model.Category.HasChildren)
             {
-                foreach (Category child in model.Category.Children.Where(t => t.IsActive == 1))
+                foreach (Category child in model.Category.Children.Where(t => t.IsActive))
                 {
                     CategoryFascicle childModel = new CategoryFascicle(model.RegistrationUser);
                     childModel.Category = child;

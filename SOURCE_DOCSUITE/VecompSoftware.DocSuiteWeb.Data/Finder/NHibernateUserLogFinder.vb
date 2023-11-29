@@ -4,6 +4,7 @@ Imports NHibernate.Criterion
 Imports VecompSoftware.NHibernateManager
 Imports System.ComponentModel
 Imports VecompSoftware.Helpers.ExtensionMethods
+Imports System.Linq
 
 <Serializable(), DataObject()>
 Public Class NHibernateUserLogFinder
@@ -97,8 +98,18 @@ Public Class NHibernateUserLogFinder
 
         criteria.SetFirstResult(_startIndex)
         criteria.SetMaxResults(_pageSize)
+        Dim encryptedUserLogs As List(Of UserLog) = criteria.List(Of UserLog)()
 
-        Return criteria.List(Of UserLog)()
+        Dim decryptedUserLogs As List(Of UserLog) = New List(Of UserLog)
+
+        For Each decryptedUserLog As UserLog In encryptedUserLogs
+            If Not String.IsNullOrEmpty(decryptedUserLog.UserProfile) Then
+                decryptedUserLog.UserProfile = Helpers.Security.EncryptionHelper.DecryptString(decryptedUserLog.UserProfile, DocSuiteContext.PasswordEncryptionKey)
+            End If
+            decryptedUserLogs.Add(decryptedUserLog)
+        Next
+
+        Return decryptedUserLogs
     End Function
 #End Region
 

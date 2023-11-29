@@ -4,16 +4,16 @@ interface RoleModel {
     UniqueId: string;
     EntityShortId: number;
     Name: string;
-    IdRoleTenant: number;
-    TenantId: string;
+    IdTenantAOO: string;
     IdRole: number;
     FullIncrementalPath?: string;
-    IsActive?: number;
+    IsActive?: boolean;
     IdRoleFather?: number;
     ServiceCode: string;
-    ActiveFrom?: string;
     Children?: RoleModel[];
     CategoryFascicleRights: CategoryFascicleRightModel[];
+    RoleTypology: string;
+    IsRealResult: boolean;
 }
 
 export = RoleModel;

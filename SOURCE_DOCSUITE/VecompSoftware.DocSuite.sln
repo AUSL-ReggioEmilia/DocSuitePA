@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VecompSoftware.DocSuiteWeb.Data", "VecompSoftware.DocSuiteWeb.Data\VecompSoftware.DocSuiteWeb.Data.vbproj", "{26FC3668-B677-40A7-ABBB-512736E7A815}"
 EndProject
@@ -16,8 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.NHibernateManager", "VecompSoftware.NHibernateManager\VecompSoftware.NHibernateManager.csproj", "{531372FD-AA62-4CD8-8D94-B5F3F835B185}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Facade.Observers.TopMedia", "VecompSoftware.DocSuiteWeb.Facade.Observers.TopMedia\VecompSoftware.DocSuiteWeb.Facade.Observers.TopMedia.csproj", "{3193E7D2-32AE-4869-B125-8BAE2B67FEFF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Services.WSProt", "VecompSoftware.DocSuiteWeb.Services.WSProt\VecompSoftware.DocSuiteWeb.Services.WSProt.csproj", "{7FB7FAEE-3F11-4422-8382-E79186C820C4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Report", "VecompSoftware.DocSuiteWeb.Report\VecompSoftware.DocSuiteWeb.Report.csproj", "{E7B7CB6C-11C4-4DED-9566-8C7AF7028E11}"
 EndProject
@@ -59,8 +57,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.UDSDesigner", "VecompSoftware.DocSuiteWeb.UDSDesigner\VecompSoftware.DocSuiteWeb.UDSDesigner.csproj", "{F8895C4E-223F-45D3-B1E5-82A88BD3AD80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Services.WSColl", "VecompSoftware.DocSuiteWeb.Services.WSColl\VecompSoftware.DocSuiteWeb.Services.WSColl.csproj", "{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}"
-EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "VecompSoftware.DocSuiteWeb.Services.AuslPcPubblicazione", "VecompSoftware.DocSuiteWeb.Services.AuslPcPubblicazione\VecompSoftware.DocSuiteWeb.Services.AuslPcPubblicazione.vbproj", "{168C3072-A642-4369-AEF7-3E723791EC77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.DTO.WSSeries", "VecompSoftware.DocSuiteWeb.DTO.WSSeries\VecompSoftware.DocSuiteWeb.DTO.WSSeries.csproj", "{EF060C75-6D98-4485-949D-FA7CFA1385B4}"
@@ -77,12 +73,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Services.WSSeries", "VecompSoftware.DocSuiteWeb.Services.WSSeries\VecompSoftware.DocSuiteWeb.Services.WSSeries.csproj", "{A7A33205-7788-455E-8CD9-04DCD3388BE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Services.CMVGroup", "VecompSoftware.DocSuiteWeb.Services.CMVGroup\VecompSoftware.DocSuiteWeb.Services.CMVGroup.csproj", "{764B4E8F-4453-4AC8-A171-485EE739453B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Services.DromedianWeb", "VecompSoftware.DocSuiteWeb.Services.DromedianWeb\VecompSoftware.DocSuiteWeb.Services.DromedianWeb.csproj", "{764B4E8F-4453-4AC8-A171-485EE739453B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{17AB3268-3D9F-4374-B7F6-BFA0436EC975}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VecompSoftware.DocSuiteWeb.Services.CMVGroup", "VecompSoftware.DocSuiteWeb.Services.CMVGroup\VecompSoftware.DocSuiteWeb.Services.CMVGroup.csproj", "{90057B33-24FE-42D1-AE44-8B1F138FC139}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -160,14 +158,6 @@ Global
 		{3193E7D2-32AE-4869-B125-8BAE2B67FEFF}.Release|x64.ActiveCfg = Release|Any CPU
 		{3193E7D2-32AE-4869-B125-8BAE2B67FEFF}.Release|x86.ActiveCfg = Release|x86
 		{3193E7D2-32AE-4869-B125-8BAE2B67FEFF}.Release|x86.Build.0 = Release|x86
-		{7FB7FAEE-3F11-4422-8382-E79186C820C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7FB7FAEE-3F11-4422-8382-E79186C820C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7FB7FAEE-3F11-4422-8382-E79186C820C4}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7FB7FAEE-3F11-4422-8382-E79186C820C4}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7FB7FAEE-3F11-4422-8382-E79186C820C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7FB7FAEE-3F11-4422-8382-E79186C820C4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7FB7FAEE-3F11-4422-8382-E79186C820C4}.Release|x64.ActiveCfg = Release|Any CPU
-		{7FB7FAEE-3F11-4422-8382-E79186C820C4}.Release|x86.ActiveCfg = Release|x86
 		{E7B7CB6C-11C4-4DED-9566-8C7AF7028E11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E7B7CB6C-11C4-4DED-9566-8C7AF7028E11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7B7CB6C-11C4-4DED-9566-8C7AF7028E11}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -300,18 +290,6 @@ Global
 		{F8895C4E-223F-45D3-B1E5-82A88BD3AD80}.Release|x64.Build.0 = Release|Any CPU
 		{F8895C4E-223F-45D3-B1E5-82A88BD3AD80}.Release|x86.ActiveCfg = Release|Any CPU
 		{F8895C4E-223F-45D3-B1E5-82A88BD3AD80}.Release|x86.Build.0 = Release|Any CPU
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Debug|x64.Build.0 = Debug|Any CPU
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Debug|x86.ActiveCfg = Debug|x86
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Debug|x86.Build.0 = Debug|x86
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Release|x64.ActiveCfg = Release|Any CPU
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Release|x64.Build.0 = Release|Any CPU
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Release|x86.ActiveCfg = Release|x86
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD}.Release|x86.Build.0 = Release|x86
 		{168C3072-A642-4369-AEF7-3E723791EC77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{168C3072-A642-4369-AEF7-3E723791EC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{168C3072-A642-4369-AEF7-3E723791EC77}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -420,6 +398,18 @@ Global
 		{764B4E8F-4453-4AC8-A171-485EE739453B}.Release|x64.Build.0 = Release|Any CPU
 		{764B4E8F-4453-4AC8-A171-485EE739453B}.Release|x86.ActiveCfg = Release|Any CPU
 		{764B4E8F-4453-4AC8-A171-485EE739453B}.Release|x86.Build.0 = Release|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Debug|x64.Build.0 = Debug|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Debug|x86.Build.0 = Debug|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Release|x64.ActiveCfg = Release|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Release|x64.Build.0 = Release|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Release|x86.ActiveCfg = Release|Any CPU
+		{90057B33-24FE-42D1-AE44-8B1F138FC139}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -432,7 +422,6 @@ Global
 		{1B1B553C-C4FB-4853-9F01-8706BEBE97EE} = {362980DD-B3D9-4F0E-A20B-F5F3CE208804}
 		{531372FD-AA62-4CD8-8D94-B5F3F835B185} = {7DBF6B87-9B3B-4927-BDE8-D60A67681960}
 		{3193E7D2-32AE-4869-B125-8BAE2B67FEFF} = {13F65826-30F4-48AF-B328-85A61C77BBAF}
-		{7FB7FAEE-3F11-4422-8382-E79186C820C4} = {D19DD359-C45F-4FF1-BDD2-E07318CCB914}
 		{E7B7CB6C-11C4-4DED-9566-8C7AF7028E11} = {13F65826-30F4-48AF-B328-85A61C77BBAF}
 		{7ABD3B94-6088-4AA4-91D5-6A67D9160807} = {D19DD359-C45F-4FF1-BDD2-E07318CCB914}
 		{D63CFD6B-C2D5-4852-83E9-F9C87AB90C6F} = {D19DD359-C45F-4FF1-BDD2-E07318CCB914}
@@ -449,7 +438,6 @@ Global
 		{66AF8FE9-FA36-4ED8-81FF-9DB812BAA8F6} = {13F65826-30F4-48AF-B328-85A61C77BBAF}
 		{C560AE31-F3D6-4531-B930-C69FE33C37BF} = {13F65826-30F4-48AF-B328-85A61C77BBAF}
 		{F8895C4E-223F-45D3-B1E5-82A88BD3AD80} = {13F65826-30F4-48AF-B328-85A61C77BBAF}
-		{5D5943B5-AAA7-4FBC-9D35-6A346BDED9BD} = {D19DD359-C45F-4FF1-BDD2-E07318CCB914}
 		{168C3072-A642-4369-AEF7-3E723791EC77} = {D19DD359-C45F-4FF1-BDD2-E07318CCB914}
 		{EF060C75-6D98-4485-949D-FA7CFA1385B4} = {13F65826-30F4-48AF-B328-85A61C77BBAF}
 		{992A4C8E-EA09-4650-BB89-D48E201F4BB0} = {7DBF6B87-9B3B-4927-BDE8-D60A67681960}
@@ -459,150 +447,9 @@ Global
 		{D6C8F945-56C2-4187-B06A-14C89301DB62} = {7DBF6B87-9B3B-4927-BDE8-D60A67681960}
 		{A7A33205-7788-455E-8CD9-04DCD3388BE0} = {D19DD359-C45F-4FF1-BDD2-E07318CCB914}
 		{764B4E8F-4453-4AC8-A171-485EE739453B} = {D19DD359-C45F-4FF1-BDD2-E07318CCB914}
+		{90057B33-24FE-42D1-AE44-8B1F138FC139} = {D19DD359-C45F-4FF1-BDD2-E07318CCB914}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7291DCFE-78B6-4A4E-ABAF-8BAD3BB1796E}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 35
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://dev.azure.com/docsuiteweb
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = VecompSoftware.DocSuiteWeb.Data\\VecompSoftware.DocSuiteWeb.Data.vbproj
-		SccProjectTopLevelParentUniqueName1 = VecompSoftware.DocSuite.sln
-		SccProjectName1 = VecompSoftware.DocSuiteWeb.Data
-		SccLocalPath1 = VecompSoftware.DocSuiteWeb.Data
-		SccProjectUniqueName2 = VecompSoftware.DocSuiteWeb.Facade\\VecompSoftware.DocSuiteWeb.Facade.vbproj
-		SccProjectTopLevelParentUniqueName2 = VecompSoftware.DocSuite.sln
-		SccProjectName2 = VecompSoftware.DocSuiteWeb.Facade
-		SccLocalPath2 = VecompSoftware.DocSuiteWeb.Facade
-		SccProjectUniqueName3 = VecompSoftware.DocSuiteWeb.Facade.Common\\VecompSoftware.DocSuiteWeb.Facade.Common.csproj
-		SccProjectTopLevelParentUniqueName3 = VecompSoftware.DocSuite.sln
-		SccProjectName3 = VecompSoftware.DocSuiteWeb.Facade.Common
-		SccLocalPath3 = VecompSoftware.DocSuiteWeb.Facade.Common
-		SccProjectUniqueName4 = VecompSoftware.DocSuiteWeb.Presentation\\VecompSoftware.DocSuiteWeb.Presentation.vbproj
-		SccProjectTopLevelParentUniqueName4 = VecompSoftware.DocSuite.sln
-		SccProjectName4 = VecompSoftware.DocSuiteWeb.Presentation
-		SccLocalPath4 = VecompSoftware.DocSuiteWeb.Presentation
-		SccProjectUniqueName5 = VecompSoftware.DocSuiteWeb.Gui\\VecompSoftware.DocSuiteWeb.Gui.vbproj
-		SccProjectTopLevelParentUniqueName5 = VecompSoftware.DocSuite.sln
-		SccProjectName5 = VecompSoftware.DocSuiteWeb.Gui
-		SccLocalPath5 = VecompSoftware.DocSuiteWeb.Gui
-		SccProjectUniqueName6 = VecompSoftware.NHibernateManager\\VecompSoftware.NHibernateManager.csproj
-		SccProjectTopLevelParentUniqueName6 = VecompSoftware.DocSuite.sln
-		SccProjectName6 = VecompSoftware.NHibernateManager
-		SccLocalPath6 = VecompSoftware.NHibernateManager
-		SccProjectUniqueName7 = VecompSoftware.DocSuiteWeb.Facade.Observers.TopMedia\\VecompSoftware.DocSuiteWeb.Facade.Observers.TopMedia.csproj
-		SccProjectTopLevelParentUniqueName7 = VecompSoftware.DocSuite.sln
-		SccProjectName7 = VecompSoftware.DocSuiteWeb.Facade.Observers.TopMedia
-		SccLocalPath7 = VecompSoftware.DocSuiteWeb.Facade.Observers.TopMedia
-		SccProjectUniqueName8 = VecompSoftware.DocSuiteWeb.Services.WSProt\\VecompSoftware.DocSuiteWeb.Services.WSProt.csproj
-		SccProjectTopLevelParentUniqueName8 = VecompSoftware.DocSuite.sln
-		SccProjectName8 = VecompSoftware.DocSuiteWeb.Services.WSProt
-		SccLocalPath8 = VecompSoftware.DocSuiteWeb.Services.WSProt
-		SccProjectUniqueName9 = VecompSoftware.DocSuiteWeb.Services.WSSeries\\VecompSoftware.DocSuiteWeb.Services.WSSeries.csproj
-		SccProjectTopLevelParentUniqueName9 = VecompSoftware.DocSuite.sln
-		SccProjectName9 = VecompSoftware.DocSuiteWeb.Services.WSSeries
-		SccLocalPath9 = VecompSoftware.DocSuiteWeb.Services.WSSeries
-		SccProjectUniqueName10 = VecompSoftware.DocSuiteWeb.Services.CMVGroup\\VecompSoftware.DocSuiteWeb.Services.CMVGroup.csproj
-		SccProjectTopLevelParentUniqueName10 = VecompSoftware.DocSuite.sln
-		SccProjectName10 = VecompSoftware.DocSuiteWeb.Services.CMVGroup
-		SccLocalPath10 = VecompSoftware.DocSuiteWeb.Services.CMVGroup
-		SccProjectUniqueName11 = VecompSoftware.DocSuiteWeb.Report\\VecompSoftware.DocSuiteWeb.Report.csproj
-		SccProjectTopLevelParentUniqueName11 = VecompSoftware.DocSuite.sln
-		SccProjectName11 = VecompSoftware.DocSuiteWeb.Report
-		SccLocalPath11 = VecompSoftware.DocSuiteWeb.Report
-		SccProjectUniqueName12 = VecompSoftware.DocSuiteWeb.API\\VecompSoftware.DocSuiteWeb.API.csproj
-		SccProjectTopLevelParentUniqueName12 = VecompSoftware.DocSuite.sln
-		SccProjectName12 = VecompSoftware.DocSuiteWeb.API
-		SccLocalPath12 = VecompSoftware.DocSuiteWeb.API
-		SccProjectUniqueName13 = VecompSoftware.DocSuiteWeb.Facade.Report\\VecompSoftware.DocSuiteWeb.Facade.Report.csproj
-		SccProjectTopLevelParentUniqueName13 = VecompSoftware.DocSuite.sln
-		SccProjectName13 = VecompSoftware.DocSuiteWeb.Facade.Report
-		SccLocalPath13 = VecompSoftware.DocSuiteWeb.Facade.Report
-		SccProjectUniqueName14 = VecompSoftware.DocSuiteWeb.AVCP\\VecompSoftware.DocSuiteWeb.AVCP.csproj
-		SccProjectTopLevelParentUniqueName14 = VecompSoftware.DocSuite.sln
-		SccProjectName14 = VecompSoftware.DocSuiteWeb.AVCP
-		SccLocalPath14 = VecompSoftware.DocSuiteWeb.AVCP
-		SccProjectUniqueName15 = VecompSoftware.DocSuiteWeb.Services.WSDocm\\VecompSoftware.DocSuiteWeb.Services.WSDocm.csproj
-		SccProjectTopLevelParentUniqueName15 = VecompSoftware.DocSuite.sln
-		SccProjectName15 = VecompSoftware.DocSuiteWeb.Services.WSDocm
-		SccLocalPath15 = VecompSoftware.DocSuiteWeb.Services.WSDocm
-		SccProjectUniqueName16 = VecompSoftware.DocSuiteWeb.Data.Entity\\VecompSoftware.DocSuiteWeb.Data.Entity.csproj
-		SccProjectTopLevelParentUniqueName16 = VecompSoftware.DocSuite.sln
-		SccProjectName16 = VecompSoftware.DocSuiteWeb.Data.Entity
-		SccLocalPath16 = VecompSoftware.DocSuiteWeb.Data.Entity
-		SccProjectUniqueName17 = VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao\\VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.csproj
-		SccProjectTopLevelParentUniqueName17 = VecompSoftware.DocSuite.sln
-		SccProjectName17 = VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao
-		SccLocalPath17 = VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao
-		SccProjectUniqueName18 = VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder\\VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.csproj
-		SccProjectTopLevelParentUniqueName18 = VecompSoftware.DocSuite.sln
-		SccProjectName18 = VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder
-		SccLocalPath18 = VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder
-		SccProjectUniqueName19 = VecompSoftware.DocSuiteWeb.Facade.NHibernate\\VecompSoftware.DocSuiteWeb.Facade.NHibernate.csproj
-		SccProjectTopLevelParentUniqueName19 = VecompSoftware.DocSuite.sln
-		SccProjectName19 = VecompSoftware.DocSuiteWeb.Facade.NHibernate
-		SccLocalPath19 = VecompSoftware.DocSuiteWeb.Facade.NHibernate
-		SccProjectUniqueName20 = VecompSoftware.DocSuiteWeb.DTO\\VecompSoftware.DocSuiteWeb.DTO.csproj
-		SccProjectTopLevelParentUniqueName20 = VecompSoftware.DocSuite.sln
-		SccProjectName20 = VecompSoftware.DocSuiteWeb.DTO
-		SccLocalPath20 = VecompSoftware.DocSuiteWeb.DTO
-		SccProjectUniqueName21 = VecompSoftware.DocSuiteWeb.EntityMapper\\VecompSoftware.DocSuiteWeb.EntityMapper.csproj
-		SccProjectTopLevelParentUniqueName21 = VecompSoftware.DocSuite.sln
-		SccProjectName21 = VecompSoftware.DocSuiteWeb.EntityMapper
-		SccLocalPath21 = VecompSoftware.DocSuiteWeb.EntityMapper
-		SccProjectUniqueName22 = VecompSoftware.DocSuiteWeb.API.Connector\\VecompSoftware.DocSuiteWeb.API.Connector.csproj
-		SccProjectTopLevelParentUniqueName22 = VecompSoftware.DocSuite.sln
-		SccProjectName22 = VecompSoftware.DocSuiteWeb.API.Connector
-		SccLocalPath22 = VecompSoftware.DocSuiteWeb.API.Connector
-		SccProjectUniqueName23 = VecompSoftware.DocSuiteWeb.API.Interface\\VecompSoftware.DocSuiteWeb.API.Interface.csproj
-		SccProjectTopLevelParentUniqueName23 = VecompSoftware.DocSuite.sln
-		SccProjectName23 = VecompSoftware.DocSuiteWeb.API.Interface
-		SccLocalPath23 = VecompSoftware.DocSuiteWeb.API.Interface
-		SccProjectUniqueName24 = VecompSoftware.DocSuiteWeb.BusinessRule\\VecompSoftware.DocSuiteWeb.BusinessRule.csproj
-		SccProjectTopLevelParentUniqueName24 = VecompSoftware.DocSuite.sln
-		SccProjectName24 = VecompSoftware.DocSuiteWeb.BusinessRule
-		SccLocalPath24 = VecompSoftware.DocSuiteWeb.BusinessRule
-		SccProjectUniqueName25 = VecompSoftware.DocSuiteWeb.Gui.WebComponent\\VecompSoftware.DocSuiteWeb.Gui.WebComponent.csproj
-		SccProjectTopLevelParentUniqueName25 = VecompSoftware.DocSuite.sln
-		SccProjectName25 = VecompSoftware.DocSuiteWeb.Gui.WebComponent
-		SccLocalPath25 = VecompSoftware.DocSuiteWeb.Gui.WebComponent
-		SccProjectUniqueName26 = VecompSoftware.DocSuiteWeb.UDSDesigner\\VecompSoftware.DocSuiteWeb.UDSDesigner.csproj
-		SccProjectTopLevelParentUniqueName26 = VecompSoftware.DocSuite.sln
-		SccProjectName26 = VecompSoftware.DocSuiteWeb.UDSDesigner
-		SccLocalPath26 = VecompSoftware.DocSuiteWeb.UDSDesigner
-		SccProjectUniqueName27 = VecompSoftware.DocSuiteWeb.Services.WSColl\\VecompSoftware.DocSuiteWeb.Services.WSColl.csproj
-		SccProjectTopLevelParentUniqueName27 = VecompSoftware.DocSuite.sln
-		SccProjectName27 = VecompSoftware.DocSuiteWeb.Services.WSColl
-		SccLocalPath27 = VecompSoftware.DocSuiteWeb.Services.WSColl
-		SccProjectUniqueName28 = VecompSoftware.DocSuiteWeb.Services.AuslPcPubblicazione\\VecompSoftware.DocSuiteWeb.Services.AuslPcPubblicazione.vbproj
-		SccProjectTopLevelParentUniqueName28 = VecompSoftware.DocSuite.sln
-		SccProjectName28 = VecompSoftware.DocSuiteWeb.Services.AuslPcPubblicazione
-		SccLocalPath28 = VecompSoftware.DocSuiteWeb.Services.AuslPcPubblicazione
-		SccProjectUniqueName29 = VecompSoftware.DocSuiteWeb.DTO.WSSeries\\VecompSoftware.DocSuiteWeb.DTO.WSSeries.csproj
-		SccProjectTopLevelParentUniqueName29 = VecompSoftware.DocSuite.sln
-		SccProjectName29 = VecompSoftware.DocSuiteWeb.DTO.WSSeries
-		SccLocalPath29 = VecompSoftware.DocSuiteWeb.DTO.WSSeries
-		SccProjectUniqueName30 = VecompSoftware.DaoManager\\VecompSoftware.DaoManager.csproj
-		SccProjectTopLevelParentUniqueName30 = VecompSoftware.DocSuite.sln
-		SccProjectName30 = VecompSoftware.DaoManager
-		SccLocalPath30 = VecompSoftware.DaoManager
-		SccProjectUniqueName31 = VecompSoftware.WebAPIManager\\VecompSoftware.WebAPIManager.csproj
-		SccProjectTopLevelParentUniqueName31 = VecompSoftware.DocSuite.sln
-		SccProjectName31 = VecompSoftware.WebAPIManager
-		SccLocalPath31 = VecompSoftware.WebAPIManager
-		SccProjectUniqueName32 = VecompSoftware.DocSuiteWeb.Facade.WebAPI\\VecompSoftware.DocSuiteWeb.Facade.WebAPI.csproj
-		SccProjectTopLevelParentUniqueName32 = VecompSoftware.DocSuite.sln
-		SccProjectName32 = VecompSoftware.DocSuiteWeb.Facade.WebAPI
-		SccLocalPath32 = VecompSoftware.DocSuiteWeb.Facade.WebAPI
-		SccProjectUniqueName33 = VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao\\VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao.csproj
-		SccProjectTopLevelParentUniqueName33 = VecompSoftware.DocSuite.sln
-		SccProjectName33 = VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao
-		SccLocalPath33 = VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao
-		SccProjectUniqueName34 = VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder\\VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.csproj
-		SccProjectTopLevelParentUniqueName34 = VecompSoftware.DocSuite.sln
-		SccProjectName34 = VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder
-		SccLocalPath34 = VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder
 	EndGlobalSection
 EndGlobal

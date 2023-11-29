@@ -76,9 +76,7 @@ Public Class UserProfilo
     End Sub
 
     Private Sub btnExtend_Click(sender As Object, e As EventArgs) Handles btnExtend.Click
-        If DocSuiteContext.Current.ProtocolEnv.IsSecurityGroupEnabled Then
-            Throw New NotImplementedException("Funzionalità non ancora implementata.")
-        End If
+        Throw New NotImplementedException("Funzionalità non ancora implementata.")
 
         'Dim roles As IList(Of Role) = Facade.RoleFacade.GetUserRoleList(Type, CommonUtil.UserConnectedGroups, "11")
 
@@ -129,7 +127,7 @@ Public Class UserProfilo
 
         Dim roleFacade As New RoleFacade(GetDbName(environment))
 
-        Dim roles As IList(Of Role) = roleFacade.GetUserRoles(environment, right, True)
+        Dim roles As IList(Of Role) = roleFacade.GetUserRoles(environment, right, True, CurrentTenant.TenantAOO.UniqueId)
 
         'Se ricevo nothing significa che è la prima attivazione, quindi abilito tutto
         If roles Is Nothing OrElse roles.Count <= 0 Then

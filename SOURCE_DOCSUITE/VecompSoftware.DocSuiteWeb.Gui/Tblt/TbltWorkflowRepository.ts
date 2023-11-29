@@ -495,7 +495,7 @@ class TbltWorkflowRepository {
             let stepNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
             stepNode.set_text(workflowSteps[i].Name);
             stepNode.set_value(workflowSteps[i].Position);
-            stepNode.set_imageUrl('../Comm/Images/DocSuite/Resolution16.gif');
+            stepNode.set_imageUrl('../Comm/Images/DocSuite/Resolution16.png');
             stepNode.get_attributes().setAttribute(TbltWorkflowRepository.NODETYPE_ATTRNAME, WorkflowTreeNodeType.Step);
             selectedNodeParent.get_nodes().add(stepNode);
         }
@@ -520,7 +520,7 @@ class TbltWorkflowRepository {
             let stepNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
             stepNode.set_text(workflowStep.Name);
             stepNode.set_value(workflowStep.Position);
-            stepNode.set_imageUrl('../Comm/Images/DocSuite/Resolution16.gif');
+            stepNode.set_imageUrl('../Comm/Images/DocSuite/Resolution16.png');
             stepNode.get_attributes().setAttribute(TbltWorkflowRepository.NODETYPE_ATTRNAME, WorkflowTreeNodeType.Step);
 
             let parentNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.findNodeByValue(uniqueId);
@@ -860,8 +860,7 @@ class TbltWorkflowRepository {
 
     openWorkflowPropertyGesWindow(operation: number, argumentType: number) {
         this._rwWorkflowProperty.setSize(650, 400);
-        const validation: boolean = argumentType === WorkflowArgumentType.Evaluation;
-        const url = `../Tblt/TbltWorkflowPropertyGes.aspx?Type=Comm&Action=${OpenWindowOperationType[operation]}&Argument=${WorkflowArgumentType[argumentType]}&Validation=${validation}`;
+        const url = `../Tblt/TbltWorkflowPropertyGes.aspx?Type=Comm&Action=${OpenWindowOperationType[operation]}&Argument=${WorkflowArgumentType[argumentType]}&Validation=${true}`;
 
         const selectedNode: Telerik.Web.UI.RadTreeNode = this._rtvWorkflowRepository.get_selectedNode();
         const parentNodeId: string = selectedNode.get_parent().get_value();
@@ -1022,7 +1021,7 @@ class TbltWorkflowRepository {
             this._rtvWorkflowRepository.get_nodes().clear();
 
             let rootNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-            rootNode.set_text("Workflow Repositories");
+            rootNode.set_text("Elenco workflow");
             rootNode.set_imageUrl('../App_Themes/DocSuite2008/imgset16/process.png');
             rootNode.get_attributes().setAttribute(TbltWorkflowRepository.NODETYPE_ATTRNAME, WorkflowTreeNodeType.Root);
             rootNode.set_expanded(true);
@@ -1474,6 +1473,12 @@ class TbltWorkflowRepository {
                 return 'Tags';
             case WorkflowAuthorizationType.UserName:
                 return 'Nome utente';
+            case WorkflowAuthorizationType.AllProtocolSecurityUsers:
+                return 'Tutti gli utenti del gruppo di sicurezza di protocollo';
+            case WorkflowAuthorizationType.AllUDSSecurityUsers:
+                return 'Tutti gli utenti del gruppo di sicurezza delle UDS';
+            case WorkflowAuthorizationType.AllPECMailBoxRoleUser:
+                return 'Tutti gli utenti abilitati alla gestione PEC';
             default:
                 return '';
         }

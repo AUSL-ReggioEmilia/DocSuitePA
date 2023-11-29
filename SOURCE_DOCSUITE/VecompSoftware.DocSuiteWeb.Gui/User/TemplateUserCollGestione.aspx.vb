@@ -26,6 +26,7 @@ Public Class TemplateUserCollGestione
 #End Region
 
 #Region "Properties"
+
     Public ReadOnly Property CurrentUDSRepositoryFacade As UDSRepositoryFacade
         Get
             If _currentUDSRepositoryFacade Is Nothing Then
@@ -61,10 +62,27 @@ Public Class TemplateUserCollGestione
         End Set
     End Property
 
+    ''' <summary>
+    ''' Query paremeter representing the template being edited.
+    ''' Important: This parameter is used only when editing a template, creating a new template will not receive a template id parameter
+    ''' </summary>
     Public ReadOnly Property TemplateId As Guid?
         Get
             If Not String.IsNullOrEmpty(Request.QueryString("TemplateId")) Then
                 Return Guid.Parse(Request.QueryString("TemplateId"))
+            End If
+            Return Nothing
+        End Get
+    End Property
+
+    ''' <summary>
+    ''' Query parameter which will determine the parent (folder or fixed template) of the current template being created.
+    ''' Important: This parameter is used only when creating a new template, editing the parent is not possible
+    ''' </summary>
+    Public ReadOnly Property ParentId As Guid?
+        Get
+            If Not String.IsNullOrEmpty(Request.QueryString("ParentId")) Then
+                Return Guid.Parse(Request.QueryString("ParentId"))
             End If
             Return Nothing
         End Get

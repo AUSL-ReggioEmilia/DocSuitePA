@@ -1,5 +1,4 @@
 ﻿import ServiceConfiguration = require('App/Services/ServiceConfiguration');
-import EnumHelper = require("App/Helpers/EnumHelper");
 import ProcessService = require('App/Services/Processes/ProcessService');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import ProcessModel = require('App/Models/Processes/ProcessModel');
@@ -13,7 +12,6 @@ import uscCategoryRest = require('UserControl/uscCategoryRest');
 import DossierFolderModel = require('App/Models/Dossiers/DossierFolderModel');
 import DossierModel = require('App/Models/Dossiers/DossierModel');
 import CategoryModel = require('App/Models/Commons/CategoryModel');
-import DossierService = require('App/Services/Dossiers/DossierService');
 import RoleModel = require('App/Models/Commons/RoleModel');
 import ProcessFascicleTemplateService = require('App/Services/Processes/ProcessFascicleTemplateService');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
@@ -27,11 +25,11 @@ import CategoryService = require('App/Services/Commons/CategoryService');
 import CategoryFascicleRightViewModel = require('App/ViewModels/Commons/CategoryFascicleRightViewModel');
 import CategoryFascicleViewModel = require('App/ViewModels/Commons/CategoryFascicleViewModel');
 import ExternalSourceActionEnum = require('App/Helpers/ExternalSourceActionEnum');
-import FascicleModel = require('App/Models/Fascicles/FascicleModel');
-import FascicleRoleModel = require('App/Models/Fascicles/FascicleRoleModel');
 import DossierFolderRoleModel = require('App/Models/Dossiers/DossierFolderRoleModel');
 import CommonSelCategoryRest = require('UserControl/CommonSelCategoryRest');
 import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
+import PaginationModel = require('App/Models/Commons/PaginationModel');
+import ODATAResponseModel = require('App/Models/ODATAResponseModel');
 
 class TbltProcess {
     uscNotificationId: string;
@@ -54,6 +52,7 @@ class TbltProcess {
     defaultSelectedProcessId: string;
     defaultSelectedProcessCategoryId: string;
     currentTenantAOOId: string;
+    treeViewNodesPageSize: number;
 
     processesModel: ProcessModel[];
     processFascicleTemplatesModel: ProcessFascicleTemplateModel[];
@@ -63,15 +62,11 @@ class TbltProcess {
     selectedProcessFascicleTemplateId: string;
     processRoles: RoleModel[];
     categoryModel: CategoryModel;
-    private _processCategories: CategoryModel[];
 
     private _serviceConfigurations: ServiceConfiguration[];
-    private _enumHelper: EnumHelper;
-
     private _categoryService: CategoryService;
     private _processService: ProcessService;
     private _dossierFolderService: DossierFolderService;
-    private _dossierService: DossierService;
     private _fascicleTemplateService: ProcessFascicleTemplateService;
     protected static Process_TYPE_NAME = "Process";
     protected static DossierFolder_TYPE_NAME = "DossierFolder";
@@ -86,9 +81,24 @@ class TbltProcess {
     private static TOOLBAR_COPYPFT = "copyPFT";
     private static TOOLBAR_PASTEPFT = "pastePFT";
     public static NodeType_TYPE_NAME = "NodeType";
-    private static ProcessType_TYPE_NAME = "ProcessType";
     private static Category_ID_TYPE = "idCategory";
-
+    private static ATTRNAME_IDDOSSIER: string = "idDossier";
+    private static ATTRNAME_ISACTIVE: string = "IsActive";
+    private static ATTRNAME_DOSSIERFOLDERSTATUS: string = "DossierFolderStatus";
+    private static NOELEMENTS_NODE_LABEL: string = "Nessun elemento trovato";
+    private static LOADMORE_NODE_LABEL: string = "Carica più elementi";
+    private static LOAD_MORE_NODE_IMAGEURL: string = "../App_Themes/DocSuite2008/imgset16/add.png";
+    private static TOTAL_CHILDREN_COUNT_ATTRNAME: string = "totalChildrenCount";
+    private static CSSCLASS_FASCICLE_NODE: string = "node-fascicle";
+    private static CSSCLASS_NOTFASCICLE_NODE: string = "node-no-fascicle";
+    private static FOLDER_CLOSED_IMGURL: string = "../App_Themes/DocSuite2008/imgset16/folder_closed.png";
+    private static CATEGORY_NODE_IMGURL: string = "../Comm/images/Classificatore.gif";
+    private static FASCICLECLOSED_IMGURL: string = "../App_Themes/DocSuite2008/imgset16/fascicle_close.png";
+    private static FASCICLEOPENED_IMGURL: string = "../App_Themes/DocSuite2008/imgset16/fascicle_open.png";
+    private static PROCESS_NODE_IMGURL: string = "../App_Themes/DocSuite2008/imgset16/process.png";
+    private static BOLD_CSSCLASS: string = "dsw-text-bold";
+    private static PROCESS_ACTIVE_FILTERBTNVAL: string = "processActive";
+    private static SEARCH_BTNVAL: string = "search";
 
     private _ajaxLoadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _rtvProcesses: Telerik.Web.UI.RadTreeView;
@@ -106,20 +116,30 @@ class TbltProcess {
     private _filterToolbar: Telerik.Web.UI.RadToolBar;
     private _rtbProcessSearchName: Telerik.Web.UI.RadTextBox;
     private _uscProcessRoleRest: uscRoleRest;
+    private _nodeExpandingActionHandlerMap: Map<ProcessNodeType, (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel) => JQueryPromise<void>>;
+    private _createdCategoriesCache: Telerik.Web.UI.RadTreeNode[] = [];
+    private _currentActiveRequestsCount: number = 0;
 
+    private get _defaultPaginationModel(): PaginationModel {
+        return new PaginationModel(0, this.treeViewNodesPageSize);
+    }
+
+    private get filterInputValue(): string {
+        return this._rtbProcessSearchName.get_value();
+    }
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         this._serviceConfigurations = serviceConfigurations;
-        this._enumHelper = new EnumHelper();
     }
 
     initialize(): void {
         this.initializeServices();
         this.initializeControls();
         this.initializeUserControls();
+        this._initializeNodesExpandingActionHandlersMap();
         this._ajaxLoadingPanel.show(this.processViewPaneId);
         this.enableFolderToolbarButtons(false);
-        this._initializeProcessesTree();
+        this._initializeTreeView();
         this.processFascicleTemplatesModel = [];
         this.processRoles = [];
         sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_SELECTED_FASCICLE_TEMPLATE_MODEL);
@@ -130,8 +150,6 @@ class TbltProcess {
         this._processService = new ProcessService(processConfiguration);
         let dossierFolderConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, TbltProcess.DossierFolder_TYPE_NAME);
         this._dossierFolderService = new DossierFolderService(dossierFolderConfiguration);
-        let dossierConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, TbltProcess.Dossier_TYPE_NAME);
-        this._dossierService = new DossierService(dossierConfiguration);
         let fascicleTemplateConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, TbltProcess.ProcessFascicleTemplate_TYPE_NAME);
         this._fascicleTemplateService = new ProcessFascicleTemplateService(fascicleTemplateConfiguration);
         let categoryServiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, TbltProcess.Category_TYPE_NAME);
@@ -143,7 +161,6 @@ class TbltProcess {
         this._ajaxLoadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._rtvProcesses = <Telerik.Web.UI.RadTreeView>$find(this.rtvProcessesId);
         this._rtvProcesses.add_nodeClicked(this.rtvProcesses_nodeClicked);
-        this._rtvProcesses.get_nodes().getNode(0).get_attributes().setAttribute(TbltProcess.NodeType_TYPE_NAME, ProcessNodeType.Root);
         this._rtvProcesses.add_nodeExpanded(this.rtvProcess_onExpand);
         this._rtvProcesses.get_nodes().getNode(0).expand();
         this._rwInsert = <Telerik.Web.UI.RadWindow>$find(this.rwInsertId);
@@ -157,8 +174,7 @@ class TbltProcess {
         this._rbConfirm.add_clicked(this.rbConfirmInsert_onCLick);
         this._rcbProcessNote = <Telerik.Web.UI.RadTextBox>$find(this.rcbProcessNoteId);
         this._filterToolbar = <Telerik.Web.UI.RadToolBar>$find(this.filterToolbarId);
-        //TODO: feature will be completed in > 9.01
-        //this._filterToolbar.add_buttonClicked(this.filterToolbar_onClick);
+        this._filterToolbar.add_buttonClicked(this.filterToolbar_onClick);
         this._rtbProcessSearchName = <Telerik.Web.UI.RadTextBox>this._filterToolbar.findItemByValue("searchInput").findControl("txtSearch");
     }
 
@@ -173,10 +189,20 @@ class TbltProcess {
 
     }
 
+    private _initializeNodesExpandingActionHandlersMap(): void {
+        this._nodeExpandingActionHandlerMap = new Map<ProcessNodeType, (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel) => JQueryPromise<void>>();
+        this._nodeExpandingActionHandlerMap.set(ProcessNodeType.Root, this._rootNodeExpandedActionHandler);
+        this._nodeExpandingActionHandlerMap.set(ProcessNodeType.LoadMore, this._loadMoreNodeExpandedActionHandler);
+        this._nodeExpandingActionHandlerMap.set(ProcessNodeType.Category, this._categoryNodeExpandedActionHandler);
+        this._nodeExpandingActionHandlerMap.set(ProcessNodeType.Process, this._processNodeExpandedActionHandler);
+        this._nodeExpandingActionHandlerMap.set(ProcessNodeType.LoadProcessesAndFolders, this._processesAndFoldersNodeExpandedActionHandler);
+        this._nodeExpandingActionHandlerMap.set(ProcessNodeType.DossierFolder, this._dossierFolderNodeExpandedActionHandler);
+    }
+
     private addCategoryEventHandler = (data: JQueryEventObject, args: any): void => {
         let categoryId = args;
         if (categoryId) {
-            this._uscProcessRoleRest.clearRoleTreeView();
+            this._uscProcessRoleRest.clearRoleTreeView(false);
             this._categoryService.getRolesByCategoryId(categoryId, (data) => {
                 this.categoryModel = data;
                 let categoryFascicleModel: CategoryFascicleViewModel = this.categoryModel.CategoryFascicles[0];
@@ -218,8 +244,48 @@ class TbltProcess {
         }
     }
 
-    private _initializeProcessesTree(): void {
-        this.loadFascicolableCategories();
+    private _treeViewRootNode: Telerik.Web.UI.RadTreeNode;
+    private get TreeviewRootNode(): Telerik.Web.UI.RadTreeNode {
+        if (!this._treeViewRootNode) {
+            this._treeViewRootNode = this._rtvProcesses.get_nodes().getNode(0);
+        }
+
+        return this._treeViewRootNode;
+    }
+
+    private _initializeTreeView(): void {
+
+        if (this.TreeviewRootNode.get_nodes().get_count() > 0) {
+            this.TreeviewRootNode.get_nodes().clear();
+            this.TreeviewRootNode.set_selected(true);
+            this.showNodeDetails(this.TreeviewRootNode);
+        }
+
+        this._setNodeAttribute(this.TreeviewRootNode, TbltProcess.NodeType_TYPE_NAME, ProcessNodeType.Root);
+
+        this.TreeviewRootNode.showLoadingStatus('', Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
+        this._categoryService.getTenantAOORootCategory(this.currentTenantAOOId, (tenantAOOCategory: CategoryModel) => {
+
+            if (!tenantAOOCategory) {
+                this.TreeviewRootNode.hideLoadingStatus();
+                return;
+            }
+
+            this.TreeviewRootNode.set_value(tenantAOOCategory.EntityShortId);
+
+            this._loadCategories(this.TreeviewRootNode, this._defaultPaginationModel)
+                .done(() => {
+                    this.TreeviewRootNode.set_expanded(true);
+
+                    const expandedNodeParentTotalChildrenCount: number = this._getNodeAttribute<number>(this.TreeviewRootNode, TbltProcess.TOTAL_CHILDREN_COUNT_ATTRNAME);
+                    this._appendLoadMoreNode(this.TreeviewRootNode, expandedNodeParentTotalChildrenCount);
+                })
+                .always(() => {
+                    this.TreeviewRootNode.hideLoadingStatus();
+                    this._ajaxLoadingPanel.hide(this.processViewPaneId);
+                })
+                .fail(this.showNotificationException);
+        });
     }
 
     private registerUscRoleRestEventHandlers(): void {
@@ -247,182 +313,317 @@ class TbltProcess {
         return promise.promise();
     }
 
-    private loadFascicolableCategories(): void {
-        this._categoryService.getOnlyFascicolableCategories(this.currentTenantAOOId, (data) => {
-            if (!data) {
+    private _findProcessesByCategoryId(categoryId: number, paginationModel?: PaginationModel): JQueryPromise<ODATAResponseModel<ProcessModel>> {
+        let defferedRequest: JQueryDeferred<ODATAResponseModel<ProcessModel>> = $.Deferred<ODATAResponseModel<ProcessModel>>();
+
+        this._processService.getProcessesByCategoryId(categoryId, defferedRequest.resolve, defferedRequest.reject, paginationModel);
+
+        return defferedRequest.promise();
+    }
+
+    private _findProcessesByName(name: string, loadOnlyActiveProcesses: boolean, tenantAOOId?: string): JQueryPromise<ProcessModel[]> {
+        let defferedRequest: JQueryDeferred<ProcessModel[]> = $.Deferred<ProcessModel[]>();
+
+        this._processService.findProcessesByName(name, loadOnlyActiveProcesses, defferedRequest.resolve, defferedRequest.reject, tenantAOOId, ["Category($expand=Parent, CategoryFascicles)", "Dossier"]);
+
+        return defferedRequest.promise();
+    }
+
+    private _findProcessDossierFolders(processId: string, paginationModel?: PaginationModel): JQueryPromise<DossierFolderModel[] | ODATAResponseModel<DossierFolderModel>> {
+        let defferedRequest: JQueryDeferred<DossierFolderModel[] | ODATAResponseModel<DossierFolderModel>> = $.Deferred<DossierFolderModel[] | ODATAResponseModel<DossierFolderModel>>();
+
+        this._dossierFolderService.getDossierFoldersByProcessId(processId, defferedRequest.resolve, defferedRequest.reject, paginationModel, true);
+
+        return defferedRequest.promise();
+    }
+
+    private _findDossierFolderFascicleTemplates(dossierFolderId: string, paginationModel?: PaginationModel): JQueryPromise<ProcessFascicleTemplateModel[] | ODATAResponseModel<ProcessFascicleTemplateModel>> {
+        let defferedRequest: JQueryDeferred<ProcessFascicleTemplateModel[] | ODATAResponseModel<ProcessFascicleTemplateModel>> = $.Deferred<ProcessFascicleTemplateModel[] | ODATAResponseModel<ProcessFascicleTemplateModel>>();
+
+        this._fascicleTemplateService.getFascicleTemplateByDossierFolderId(dossierFolderId, defferedRequest.resolve, defferedRequest.reject, paginationModel);
+
+        return defferedRequest.promise();
+    }
+
+    private _findDossierFolderChildren(dossierFolderId: string, paginationModel?: PaginationModel): JQueryPromise<DossierSummaryFolderViewModel[]> {
+        let defferedRequest: JQueryDeferred<DossierSummaryFolderViewModel[]> = $.Deferred<DossierSummaryFolderViewModel[]>();
+
+        this._dossierFolderService.getDossierFolderChildren(dossierFolderId, paginationModel, defferedRequest.resolve, defferedRequest.reject, true);
+
+        return defferedRequest.promise();
+    } 
+
+    private _findCategoryChildren(categoryId: number, paginationModel?: PaginationModel, tenantAOOId?: string): JQueryPromise<ODATAResponseModel<CategoryModel>> {
+        let defferedRequest: JQueryDeferred<ODATAResponseModel<CategoryModel>> = $.Deferred<ODATAResponseModel<CategoryModel>>();
+
+        this._categoryService.getSubCategories(categoryId, defferedRequest.resolve, defferedRequest.reject, paginationModel, tenantAOOId, ["CategoryFascicles"]);
+
+        return defferedRequest.promise();
+    }
+
+    private _findCategoryById(categoryId: number, tenantAOOId: string): JQueryPromise<CategoryModel> {
+        let defferedRequest: JQueryDeferred<CategoryModel> = $.Deferred<CategoryModel>();
+
+        this._categoryService.getById(categoryId, defferedRequest.resolve, defferedRequest.reject, tenantAOOId, ["Parent", "CategoryFascicles"]);
+
+        return defferedRequest.promise();
+    }
+
+    private _getDossierFolderFascTemplatesCount = (dossierFolderId: string): JQueryPromise<number> => {
+        let defferedRequest: JQueryDeferred<number> = $.Deferred<number>();
+
+        this._fascicleTemplateService.countFascicleTemplatesByDossierFolderId(dossierFolderId, defferedRequest.resolve, defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+
+    private _getDossierFolderChildrenCount = (dossierFolderId: string): JQueryPromise<number> => {
+        let defferedRequest: JQueryDeferred<number> = $.Deferred<number>();
+
+        this._dossierFolderService.countDossierFolderChildren(dossierFolderId, defferedRequest.resolve, defferedRequest.reject, true);
+
+        return defferedRequest.promise();
+    }
+
+    private _loadCategories(expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel = null): JQueryPromise<Telerik.Web.UI.RadTreeNode[]> {
+        let defferedRequest: JQueryDeferred<Telerik.Web.UI.RadTreeNode[]> = $.Deferred<Telerik.Web.UI.RadTreeNode[]>();
+
+        this._findCategoryChildren(expandedNode.get_value(), paginationModel, this.currentTenantAOOId)
+            .then((odataResult: ODATAResponseModel<CategoryModel>) => this._createCategoryNodesFromModels(odataResult.value, expandedNode, odataResult.count))
+            .done(defferedRequest.resolve)
+            .fail(defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+
+    private _appendLoadMoreNode(expandedNode: Telerik.Web.UI.RadTreeNode, totalChildrenCount: number) {
+        let expandedNodeType: ProcessNodeType = expandedNode.get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME);
+
+        if (expandedNodeType === ProcessNodeType.LoadMore) {
+            const expandedNodeParentChildrenCollection: Telerik.Web.UI.RadTreeNodeCollection = expandedNode.get_parent().get_nodes();
+            const allChildrenLoaded: boolean = (expandedNodeParentChildrenCollection.get_count() - 1) === totalChildrenCount;
+
+            expandedNodeParentChildrenCollection.remove(expandedNode);
+            if (!allChildrenLoaded) {
+                expandedNodeParentChildrenCollection.add(this._createLoadMoreNode());
+            }
+        } else {
+            const expandedNodeChildrenCollection: Telerik.Web.UI.RadTreeNodeCollection = expandedNode.get_nodes();
+                // If node is of type Category, exclude "Serie e volumi" node from counting (-1)
+            const expandedNodeChildrenCount: number = expandedNodeChildrenCollection.get_count();
+            const loadedAllChildren: boolean = expandedNodeType === ProcessNodeType.Category
+                ? (expandedNodeChildrenCount - 1) === totalChildrenCount
+                : expandedNodeChildrenCount === totalChildrenCount;
+
+            if (loadedAllChildren) {
                 return;
             }
-            this._processCategories = data;
-            this._rtvProcesses.get_nodes().getNode(0).showLoadingStatus('', Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
-            let categoryIds: number[] = this.getCategoryIds(0, null);
-            this.loadCategories(categoryIds, null);
-            this._ajaxLoadingPanel.hide(this.processViewPaneId);
-        }, (error) => {
-            this._ajaxLoadingPanel.hide(this.processViewPaneId);
-            this.showNotificationException(error);
-        });
-    }
 
-    private loadCategories(categoryIds: number[], parentId?: number): void {
-        this._categoryService.getCategoriesByIds(categoryIds, this.currentTenantAOOId, (data) => {
-            if (!data) {
-                return;
-            }
-            let categoryChildren: CategoryModel[] = data;
-            let parentNode: Telerik.Web.UI.RadTreeNode = parentId !== null
-                ? this._rtvProcesses.findNodeByValue(parentId.toString())
-                : this._rtvProcesses.get_nodes().getNode(0);
-            for (let categoryChild of categoryChildren) {
-                let categoryNode: Telerik.Web.UI.RadTreeNode = this.createTreeNodeFromCategoryModel(categoryChild, false);
-                parentNode.get_nodes().add(categoryNode);
-            }
-            if (parentId !== null) {
-                this.createProcessesNode(parentNode);
-            }
-            parentNode.hideLoadingStatus();
-        }, (error) => {
-            this._ajaxLoadingPanel.hide(this.processViewPaneId);
-            this.showNotificationException(error);
-        });
-    }
-
-    private expandCategoryNode(expandedNode: Telerik.Web.UI.RadTreeNode): void {
-        expandedNode.showLoadingStatus('', Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
-        expandedNode.get_nodes().clear();
-        let expandedCategoryId: number = +expandedNode.get_value();
-        let categoryIds: number[] = this.getCategoryIds(expandedNode.get_level(), expandedCategoryId);
-        this.loadCategories(categoryIds, expandedCategoryId);
-    }
-
-    private getCategoryIds(nodeLevel: number, parentCategoryId?: number): number[] {
-        let expandedCategoryChildren: CategoryModel[] = parentCategoryId !== null
-            ? this._processCategories.filter(x => +x.FullIncrementalPath.split('|')[nodeLevel] === parentCategoryId && x.EntityShortId !== parentCategoryId)
-            : this._processCategories;
-        let categoryIds: number[] = expandedCategoryChildren.map(x => +x.FullIncrementalPath.split('|')[nodeLevel + 1]).filter(x => !isNaN(x));
-        let distinctCategoryIds: number[] = [];
-        for (let categoryId of categoryIds) {
-            if (distinctCategoryIds.indexOf(categoryId) === -1) {
-                distinctCategoryIds.push(categoryId);
-            }
+            expandedNodeChildrenCollection.add(this._createLoadMoreNode());
         }
-        return distinctCategoryIds;
+
     }
 
-    private createTreeNodeFromCategoryModel(category: CategoryModel, expanded: boolean = true): Telerik.Web.UI.RadTreeNode {
-        let treeNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-        let treeNodeDescription: string = `${category.Code}.${category.Name}`;
-        let treeNodeImageUrl: string = "../Comm/images/Classificatore.gif";
+    private _appendLoadProcessesNode(parentNode: Telerik.Web.UI.RadTreeNode, processNodes?: Telerik.Web.UI.RadTreeNode[]): void {
+        let existingProcessNode: Telerik.Web.UI.RadTreeNode = parentNode.get_nodes().toArray()
+            .filter(child => this._getNodeAttribute<ProcessNodeType>(child, TbltProcess.NodeType_TYPE_NAME) === ProcessNodeType.LoadProcessesAndFolders)[0];
 
-        treeNode.set_text(treeNodeDescription);
-        treeNode.set_value(`${category.EntityShortId}`);
-        treeNode.set_imageUrl(treeNodeImageUrl);
-        treeNode.set_contentCssClass((category.CategoryFascicles && category.CategoryFascicles.length > 0) ? "node-fascicle" : "node-no-fascicle");
-        treeNode.get_attributes().setAttribute(TbltProcess.NodeType_TYPE_NAME, ProcessNodeType.Category);
-        if (category.CategoryFascicles) {
-            this.createProcessesNode(treeNode);
+        if (existingProcessNode) {
+            parentNode.get_nodes().remove(existingProcessNode);
         }
-        treeNode.set_expanded(expanded);
 
-        return treeNode;
-    }
-
-    private createProcessesNode(parentNode: Telerik.Web.UI.RadTreeNode): void {
         let processesNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
         processesNode.set_text(CommonSelCategoryRest.PROCESSES_AND_FOLDERS_TEXT);
-        this.createNoItemsFoundNode(processesNode);
-        parentNode.get_nodes().add(processesNode);
+        this._setNodeAttribute(processesNode, TbltProcess.NodeType_TYPE_NAME, ProcessNodeType.LoadProcessesAndFolders);
+
+        if (processNodes && processNodes.length) {
+            this._appendNodesToParent(processNodes, processesNode);
+            processesNode.set_expanded(true);
+        } else {
+            this.appendEmptyNode(processesNode);
+        }
+
+        parentNode.get_nodes().add(processesNode)
     }
 
-
-    private createNoItemsFoundNode(parentNode: Telerik.Web.UI.RadTreeNode): void {
+    private appendEmptyNode(parentNode: Telerik.Web.UI.RadTreeNode): void {
         let emptyNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
         emptyNode.set_text(CommonSelCategoryRest.NO_ITEMS_FOUND_TEXT);
         parentNode.get_nodes().add(emptyNode);
     }
 
-    private loadProcesses(categoryId: number): void {
-        this._processService.getProcessesByCategoryId(categoryId, (data) => {
-            if (!data) return;
-            this.processesModel = data;
-            if (this.processesModel.length > 0) {
-                this._rtvProcesses.findNodeByValue(categoryId.toString()).get_nodes().getNode(0).get_nodes().clear();
-            };
-            for (let process of this.processesModel) {
-                var node = new Telerik.Web.UI.RadTreeNode();
-                let isActive: boolean = process.EndDate === null || new Date(process.EndDate) > new Date();
-                this.createNode(node, process.Name, process.UniqueId, "../App_Themes/DocSuite2008/imgset16/process.png",
-                    ProcessNodeType.Process, false, null, isActive, process.Dossier.UniqueId,
-                    this._rtvProcesses.findNodeByValue(categoryId.toString()).get_nodes().getNode(0));
-                node.get_attributes().setAttribute(TbltProcess.ProcessType_TYPE_NAME, process.ProcessType);
-                node.get_attributes().setAttribute(TbltProcess.Category_ID_TYPE, process.Category.EntityShortId);
-                if (ProcessType[process.ProcessType.toString()] === ProcessType.Defined) {
-                    this.createEmptyNode(node.get_nodes());
-                }
-                this._rtvProcesses.commitChanges();
-            }
-            if (this.defaultSelectedProcessId.length) {
-                let treeNode: Telerik.Web.UI.RadTreeNode = this._rtvProcesses.findNodeByValue(this.defaultSelectedProcessId);
-                if (treeNode) {
-                    treeNode.set_selected(true);
-                    this.showNodeDetails(treeNode);
-                }
-            }
+    private _dossierFolderNodeExpandedActionHandler = (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
 
-            this._ajaxLoadingPanel.hide(this.processViewPaneId);
-        }, (error) => {
-            this._ajaxLoadingPanel.hide(this.processViewPaneId);
-            this.showNotificationException(error);
-        });
+        const totalChildrenCount: number | undefined = expandedNode.get_attributes().getAttribute(TbltProcess.TOTAL_CHILDREN_COUNT_ATTRNAME),
+            childrenAlreadyCounted: boolean = totalChildrenCount !== undefined,
+            dossierFolderId: string = expandedNode.get_value();
+
+        if (childrenAlreadyCounted) {
+            this._findDossierFolderChildren(dossierFolderId, paginationModel)
+                .then(this._createDossierFolderNodesFromViewModels)
+                .then((dossierFolderNodes: Telerik.Web.UI.RadTreeNode[]) => this._appendDossierFolderChildren(dossierFolderNodes, expandedNode))
+                .done(defferedRequest.resolve)
+                .fail(defferedRequest.reject);
+        } else {
+            $.when(this._getDossierFolderChildrenCount(dossierFolderId), this._getDossierFolderFascTemplatesCount(dossierFolderId))
+                .done((dossierFoldersCount, fascTemplatesCount) => {
+                    const totalChildrenCount: number = dossierFoldersCount + fascTemplatesCount;
+
+                    if (totalChildrenCount) {
+                        this._appendChildrenCountAttribute(expandedNode, totalChildrenCount);
+                    }
+
+                    this._findDossierFolderChildren(dossierFolderId, paginationModel)
+                        .then(this._createDossierFolderNodesFromViewModels)
+                        .then((dossierFolderNodes: Telerik.Web.UI.RadTreeNode[]) => this._appendDossierFolderChildren(dossierFolderNodes, expandedNode))
+                        .done(defferedRequest.resolve)
+                        .fail(defferedRequest.reject);
+                }).fail(defferedRequest.reject);
+        }
+
+        return defferedRequest.promise();
     }
+    private _processNodeExpandedActionHandler = (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
 
-    private createEmptyNode(nodes: Telerik.Web.UI.RadTreeNodeCollection): void {
-        let emptyNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-        emptyNode.set_text("");
-        nodes.add(emptyNode);
+        const processId: string = expandedNode.get_value();
+        this._findProcessDossierFolders(processId, paginationModel)
+            .then((odataResponse: ODATAResponseModel<DossierFolderModel>) => this._createDossierFolderNodesFromModels(odataResponse.value, expandedNode, odataResponse.count))
+            .then((dossierFolderNodes: Telerik.Web.UI.RadTreeNode[]) => this._appendNodesToParent(dossierFolderNodes, expandedNode))
+            .done(defferedRequest.resolve)
+            .fail(defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _processesAndFoldersNodeExpandedActionHandler = (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
+
+        const categoryId: number = +expandedNode.get_parent().get_value();
+        this._findProcessesByCategoryId(categoryId, paginationModel)
+            .then((odataResult: ODATAResponseModel<ProcessModel>) => {
+                this.processesModel = odataResult.value;
+
+                const processNodes: Telerik.Web.UI.RadTreeNode[] = this._createProcessNodesFromModels(odataResult.value, expandedNode, odataResult.count);
+
+                if (this.defaultSelectedProcessId.length) {
+                    let nodeToSelect: Telerik.Web.UI.RadTreeNode = this._rtvProcesses.findNodeByValue(this.defaultSelectedProcessId);
+                    if (nodeToSelect) {
+                        nodeToSelect.set_selected(true);
+                        this.showNodeDetails(nodeToSelect);
+                    }
+                }
+
+                return processNodes;
+            })
+            .then((processNodes: Telerik.Web.UI.RadTreeNode[]) => this._appendNodesToParent(processNodes, expandedNode))
+            .done(defferedRequest.resolve)
+            .fail(defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _categoryNodeExpandedActionHandler = (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
+
+        const categoryId: number = expandedNode.get_value();
+        this._findCategoryChildren(categoryId, paginationModel, this.currentTenantAOOId)
+            .then((odataResult: ODATAResponseModel<CategoryModel>) => this._createCategoryNodesFromModels(odataResult.value, expandedNode, odataResult.count))
+            .then((subCategories: Telerik.Web.UI.RadTreeNode[]) => this._appendNodesToParent(subCategories, expandedNode))
+            .done(defferedRequest.resolve)
+            .fail(defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _loadMoreNodeExpandedActionHandler = (expandedNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> => {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
+
+        const expandedNodeParent: Telerik.Web.UI.RadTreeNode = expandedNode.get_parent();
+        const parentNodeChildrenCount: number = expandedNodeParent.get_nodes().get_count();
+        const parentNodeType: ProcessNodeType = expandedNodeParent.get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME);
+
+        if (!this._nodeExpandingActionHandlerMap.has(parentNodeType)) {
+            defferedRequest.reject();
+            return;
+        }
+
+        const expandedNodeActionHandler: (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel) => JQueryPromise<void>
+            = this._nodeExpandingActionHandlerMap.get(parentNodeType);
+
+        // exclude "Load more" node from children collection count
+        const recordsToSkip: number = parentNodeChildrenCount - 1;
+        const paginationModel: PaginationModel = new PaginationModel(recordsToSkip, this.treeViewNodesPageSize);
+
+        expandedNodeActionHandler(expandedNodeParent, paginationModel)
+            .done(() => {
+                if (parentNodeType === ProcessNodeType.Category) {
+                    this._appendLoadProcessesNode(expandedNodeParent);
+                }
+
+                defferedRequest.resolve();
+            })
+            .fail(defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+    private _rootNodeExpandedActionHandler = (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel): JQueryPromise<void> => {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
+
+        this._loadCategories(expandedNode, paginationModel)
+            .done(() => defferedRequest.resolve())
+            .fail(defferedRequest.reject);
+
+        return defferedRequest.promise();
     }
 
     rtvProcess_onExpand = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => {
-        let expandedNode: Telerik.Web.UI.RadTreeNode = args.get_node();
-        if (expandedNode.get_level() === 0) {
-            expandedNode.get_nodes().clear();
-            this._initializeProcessesTree();
-        }
-        else if (expandedNode.get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME) === ProcessNodeType.Category) {
-            this.expandCategoryNode(expandedNode);
-        }
-        else if (expandedNode.get_text() === CommonSelCategoryRest.PROCESSES_AND_FOLDERS_TEXT) {
-            this.loadProcesses(expandedNode.get_parent().get_value());
-        }
-        else if (expandedNode.get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME) === ProcessNodeType.Process) {
-            this.expandNodeLogic(expandedNode);
-            this.loadData(expandedNode.get_attributes().getAttribute("idDossier"), 0, expandedNode.get_value());
-        }
-        else if (expandedNode.get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME) !== ProcessNodeType.Category) {
-            if (expandedNode.get_nodes().getNode(0).get_text() === "") {
-                expandedNode.get_nodes().clear();
-                this.loadData(expandedNode.get_value(), 0);
-            }
-            else {
-                for (let index = 0; index < expandedNode.get_nodes().get_count(); index++) {
-                    this.expandNodeLogic(expandedNode.get_nodes().getNode(index));
-                }
-            }
-        }
-    }
+        let expandedNode: Telerik.Web.UI.RadTreeNode = args.get_node(),
+            expandedNodeType: ProcessNodeType | undefined = expandedNode.get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME);
 
-    private expandNodeLogic(expandedNodeChild: Telerik.Web.UI.RadTreeNode): void {
-        expandedNodeChild.collapse();
-        expandedNodeChild.get_nodes().clear();
-        let dossierFolderStatus: string = expandedNodeChild.get_attributes().getAttribute("DossierFolderStatus");
-        if (dossierFolderStatus === DossierFolderStatus[DossierFolderStatus.Folder]) {
-            this.createEmptyNode(expandedNodeChild.get_nodes());
+        if (this.filterInputValue && expandedNodeType === ProcessNodeType.Root || this.filterInputValue && expandedNode.get_allNodes().length > 1) {
+            return;
         }
+
+        if (expandedNodeType === undefined) {
+            console.error(`Invalid expanded node type ${expandedNodeType}`);
+            return;
+        }
+
+        if (!this._nodeExpandingActionHandlerMap.has(expandedNodeType)) {
+            console.error(`Expanding action handler not registered for node type ${expandedNodeType}`);
+            return;
+        }
+
+        let expandedNodeActionHandler: (expandedNode: Telerik.Web.UI.RadTreeNode, paginationModel: PaginationModel) => JQueryPromise<void>
+            = this._nodeExpandingActionHandlerMap.get(expandedNodeType);
+
+        expandedNode.get_nodes().clear();
+        expandedNode.showLoadingStatus('', Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
+        expandedNodeActionHandler(expandedNode, this._defaultPaginationModel)
+            .done(() => {
+                expandedNode.set_expanded(true);
+
+                if (expandedNodeType === ProcessNodeType.Category) {
+                    this._appendLoadProcessesNode(expandedNode);
+                }
+
+                const expandedNodeParentTotalChildrenCount: number | undefined =
+                    expandedNodeType === ProcessNodeType.LoadMore
+                        ? expandedNode.get_parent().get_attributes().getAttribute(TbltProcess.TOTAL_CHILDREN_COUNT_ATTRNAME)
+                        : expandedNode.get_attributes().getAttribute(TbltProcess.TOTAL_CHILDREN_COUNT_ATTRNAME);
+
+                if (expandedNodeParentTotalChildrenCount) {
+                    this._appendLoadMoreNode(expandedNode, expandedNodeParentTotalChildrenCount);
+                }
+            })
+            .always(() => expandedNode.hideLoadingStatus())
+            .fail(this.showNotificationException);
     }
 
     private showNodeDetails(selectedNode: Telerik.Web.UI.RadTreeNode): void {
+        const selectedNodeType: ProcessNodeType = this._getNodeAttribute<ProcessNodeType>(selectedNode, TbltProcess.NodeType_TYPE_NAME);
+
         this.initializeNodeClicked(selectedNode);
-        if (selectedNode.get_level() === 0
-            || selectedNode.get_text() === CommonSelCategoryRest.NO_ITEMS_FOUND_TEXT) {
+        if (selectedNode.get_level() === 0 || selectedNode.get_text() === CommonSelCategoryRest.NO_ITEMS_FOUND_TEXT || selectedNodeType === ProcessNodeType.LoadMore) {
             $(`#${this._uscProcessDetails.pnlDetailsId}`).hide();
             this._uscProcessDetails.setPanelLoading(uscProcessDetails.InformationDetails_PanelName, false);
         }
@@ -432,7 +633,7 @@ class TbltProcess {
             this._uscProcessDetails.setPanelLoading(uscProcessDetails.InformationDetails_PanelName, false);
         }
         else {
-            switch (selectedNode.get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME)) {
+            switch (selectedNodeType) {
                 case ProcessNodeType.Category: {
                     this.initializeCategoryNodeDetails(selectedNode);
                     break;
@@ -535,54 +736,42 @@ class TbltProcess {
         this._uscProcessDetails.setFascicle();
     }
 
-    private loadData(currentNodeValue: string, status: number, idProcess?: string): void {
-        this._ajaxLoadingPanel.show(this.rtvProcessesId);
-        this._dossierFolderService.getProcessFascicleChildren(currentNodeValue, status, (data) => {
-            if (!data) return;
-            let dossierFolders: DossierSummaryFolderViewModel[] = data;
+    private _createDossierFolderNodesFromViewModels = (dossierFolders: DossierSummaryFolderViewModel[]): Telerik.Web.UI.RadTreeNode[] => {
+        const dossierFolderNodeImageUrl: string = TbltProcess.FOLDER_CLOSED_IMGURL;
 
-            for (let child of dossierFolders) {
-                var node = new Telerik.Web.UI.RadTreeNode();
-                this.createNode(node, child.Name, child.UniqueId, "../App_Themes/DocSuite2008/imgset16/folder_closed.png",
-                    ProcessNodeType.DossierFolder, true, DossierFolderStatus[child.Status], null, null,
-                    this._rtvProcesses.findNodeByValue(idProcess ? idProcess : currentNodeValue));
-                if (child.Status === DossierFolderStatus[DossierFolderStatus.Folder]) {
-                    this.createEmptyNode(node.get_nodes());
-                }
+        const dossierFolderNodes: Telerik.Web.UI.RadTreeNode[] = dossierFolders.map((dossierFolder: DossierSummaryFolderViewModel) => {
+            const dossierFolderNode: Telerik.Web.UI.RadTreeNode
+                = this._createTreeNode(ProcessNodeType.DossierFolder, dossierFolder.Name, dossierFolder.UniqueId, dossierFolderNodeImageUrl);
+
+            if (dossierFolder.Status.toString() === DossierFolderStatus[DossierFolderStatus.Folder].toString()) {
+                this._appendEmptyNode(dossierFolderNode);
             }
-            this.loadFascicleTemplates(currentNodeValue);
-            this._rtvProcesses.commitChanges();
-        }, (error) => {
-            this._ajaxLoadingPanel.hide(this.rtvProcessesId);
-            this.showNotificationException(error);
+
+            return dossierFolderNode;
         });
+
+        return dossierFolderNodes;
     }
 
-    private loadFascicleTemplates(dossierFolderId: string): void {
-        this._dossierFolderService.getFascicleTemplatesByDossierFolderId(dossierFolderId, (data) => {
-            if (!data) return;
-            this.processFascicleTemplatesModel = [];
-            for (let tpftm of data) {
-                if (tpftm) {
-                    this.tempPFTModel.push(tpftm);
-                }
+    private _createDossierFolderNodesFromModels = (dossierFolders: DossierFolderModel[], parentNode: Telerik.Web.UI.RadTreeNode, totalCount?: number): Telerik.Web.UI.RadTreeNode[] => {
+        const dossierFolderNodeImageUrl: string = TbltProcess.FOLDER_CLOSED_IMGURL;
+
+        const dossierFolderNodes: Telerik.Web.UI.RadTreeNode[] = dossierFolders.map((dossierFolder: DossierFolderModel) => {
+            const dossierFolderNode: Telerik.Web.UI.RadTreeNode
+                = this._createTreeNode(ProcessNodeType.DossierFolder, dossierFolder.Name, dossierFolder.UniqueId, dossierFolderNodeImageUrl);
+
+            if (dossierFolder.Status.toString() === DossierFolderStatus[DossierFolderStatus.Folder].toString()) {
+                this._appendEmptyNode(dossierFolderNode);
             }
-            this.processFascicleTemplatesModel = this.processFascicleTemplatesModel.concat(data);
-            for (let fascicleTemplate of this.processFascicleTemplatesModel) {
-                var node = new Telerik.Web.UI.RadTreeNode();
-                let isActive: boolean = fascicleTemplate.EndDate === null || new Date(fascicleTemplate.EndDate) > new Date();
-                let imageUrl: string = isActive
-                    ? "../App_Themes/DocSuite2008/imgset16/fascicle_close.png"
-                    : "../App_Themes/DocSuite2008/imgset16/fascicle_open.png";
-                this.createNode(node, fascicleTemplate.Name, fascicleTemplate.UniqueId, imageUrl,
-                    ProcessNodeType.ProcessFascicleTemplate, false, null, isActive, null,
-                    this._rtvProcesses.findNodeByValue(dossierFolderId));
-            }
-            this._ajaxLoadingPanel.hide(this.rtvProcessesId);
-        }, (error) => {
-            this._ajaxLoadingPanel.hide(this.rtvProcessesId);
-            this.showNotificationException(error);
+
+            return dossierFolderNode;
         });
+
+        if (totalCount) {
+            this._appendChildrenCountAttribute(parentNode, totalCount);
+        }
+
+        return dossierFolderNodes;
     }
 
     getProcessNodeByChild(node: Telerik.Web.UI.RadTreeNode): Telerik.Web.UI.RadTreeNode {
@@ -672,6 +861,7 @@ class TbltProcess {
                 break;
             }
             case TbltProcess.TOOLBAR_CREATE_PROCESS_FASCICLE_TEMPLATE: {
+                this._rtbFascicleTemplateName.clear();
                 this.selectedProcessFascicleTemplateId = "";
                 $("#insertFascicleTemplate").show();
                 this._rwInsert.set_title("Aggiungi modello di fascicolo di processo");
@@ -696,7 +886,7 @@ class TbltProcess {
                         let dossierFolder: DossierFolderModel = <DossierFolderModel>{};
                         dossierFolder.UniqueId = this._rtvProcesses.get_selectedNode().get_value();
                         if (this._rtvProcesses.get_selectedNode().get_parent().get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME) === ProcessNodeType.Process) {
-                            dossierFolder.ParentInsertId = this.getProcessNodeByChild(this._rtvProcesses.get_selectedNode()).get_attributes().getAttribute("idDossier");
+                            dossierFolder.ParentInsertId = this.getProcessNodeByChild(this._rtvProcesses.get_selectedNode()).get_attributes().getAttribute(TbltProcess.ATTRNAME_IDDOSSIER);
                         }
                         else {
                             dossierFolder.ParentInsertId = this._rtvProcesses.get_selectedNode().get_parent().get_value();
@@ -738,6 +928,7 @@ class TbltProcess {
                                 break;
                             }
                         }
+                        this._uscProcessRoleRest.enableButtons();
                         this._uscCategoryRest.disableButtons();
                         $("#insertProcess").show();
                         this._rwInsert.set_title("Modifica serie");
@@ -866,7 +1057,7 @@ class TbltProcess {
         this._uscProcessDetails.populateFascicleTemplateInfo().then((jsonModel) => {
             fascicleTemplate.JsonModel = jsonModel;
             this._fascicleTemplateService.update(fascicleTemplate, (data) => {
-                this.createNode(selectedNode, data.Name, data.UniqueId, imageUrl,
+                this._updateTreeNode(selectedNode, data.Name, data.UniqueId, imageUrl,
                     ProcessNodeType.ProcessFascicleTemplate, false, null, null, null, null);
                 this._rwInsert.close();
                 this._ajaxLoadingPanel.hide(this.rtvProcessesId);
@@ -886,7 +1077,7 @@ class TbltProcess {
             let hasChildren: number = selectedNode.get_nodes().get_count();
             let isExpandable: boolean = hasChildren > 0 ? false : true;
             let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-            this.createNode(node, data.Name, data.UniqueId, imageUrl,
+            this._updateTreeNode(node, data.Name, data.UniqueId, imageUrl,
                 ProcessNodeType.ProcessFascicleTemplate, true, null, null, null, selectedNode, isExpandable);
             this._rwInsert.close();
             this.processFascicleTemplatesModel.push(data);
@@ -934,7 +1125,7 @@ class TbltProcess {
         process.UniqueId = this.selectedProcessId;
         this._processService.update(process, (data) => {
             let isActive: boolean = data.EndDate === null || new Date(data.EndDate) > new Date();
-            this.createNode(selectedNode, data.Name, data.UniqueId, "../App_Themes/DocSuite2008/imgset16/process.png",
+            this._updateTreeNode(selectedNode, data.Name, data.UniqueId, TbltProcess.PROCESS_NODE_IMGURL,
                 ProcessNodeType.Process, false, null, isActive, data.Dossier.UniqueId, null, false);
 
             let processModelToUpdate: ProcessModel = this.processesModel.filter(x => x.UniqueId === data.UniqueId)[0];
@@ -972,7 +1163,7 @@ class TbltProcess {
             if (selectedNode.get_expanded() && selectedNode.get_nodes().getNode(0).get_text() === CommonSelCategoryRest.NO_ITEMS_FOUND_TEXT) {
                 selectedNode.get_nodes().clear();
             }
-            this.createNode(node, data.Name, data.UniqueId, "../App_Themes/DocSuite2008/imgset16/process.png",
+            this._updateTreeNode(node, data.Name, data.UniqueId, TbltProcess.PROCESS_NODE_IMGURL,
                 ProcessNodeType.Process, true, null, isActive, data.Dossier.UniqueId, selectedNode, false);
             data.Roles = this.processRoles;
             if (!this.processesModel) {
@@ -990,32 +1181,42 @@ class TbltProcess {
 
     ///Insert or Update Dossier Folder
     private insertOrUpdateDossierFolder(selectedNode: Telerik.Web.UI.RadTreeNode) {
-        if (this._rtbDossierFolderName.get_value()) {
-            let exists: boolean = this.selectedDossierFolderId !== "";
+        if (!this._rtbDossierFolderName.get_value()) {
+            return;
+        }
+
+        const selectedNodeType: ProcessNodeType = selectedNode.get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME),
+              exists: boolean = !!this.selectedDossierFolderId;
+
+        const dossierFolderParentInsertId: string = selectedNodeType === ProcessNodeType.Process
+            ? this.getProcessNodeByChild(selectedNode).get_attributes().getAttribute(TbltProcess.ATTRNAME_IDDOSSIER)
+            : (exists ? selectedNode.get_parent().get_value() : selectedNode.get_value());
+
+        if (exists) {
+            this._dossierFolderService.getDossierFolderWithRoles(this.selectedDossierFolderId,
+                (dossierFolderModel: DossierFolderModel) => {
+                    dossierFolderModel.Name = this._rtbDossierFolderName.get_value();
+                    dossierFolderModel.ParentInsertId = dossierFolderParentInsertId;
+
+                    this.updateDossierFolder(selectedNode, dossierFolderModel);
+                }, (error) => {
+                    this.showNotificationException(error);
+                });
+        } else {
             let dossierFolder: DossierFolderModel = <DossierFolderModel>{};
             dossierFolder.Name = this._rtbDossierFolderName.get_value();
-
-            if (selectedNode.get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME) !== ProcessNodeType.Process) {
-                dossierFolder.ParentInsertId = exists ? selectedNode.get_parent().get_value() : selectedNode.get_value();
-            }
-            else {
-                dossierFolder.ParentInsertId = this.getProcessNodeByChild(selectedNode).get_attributes().getAttribute("idDossier");
-            }
+            dossierFolder.ParentInsertId = dossierFolderParentInsertId;
             dossierFolder.Dossier = <DossierModel>{};
-            dossierFolder.Dossier.UniqueId = this.getProcessNodeByChild(selectedNode).get_attributes().getAttribute("idDossier");
-            if (exists) {
-                this.updateDossierFolder(selectedNode, dossierFolder);
-            }
-            else {
-                this.insertDossierFolder(selectedNode, dossierFolder);
-            }
+            dossierFolder.Dossier.UniqueId = this.getProcessNodeByChild(selectedNode).get_attributes().getAttribute(TbltProcess.ATTRNAME_IDDOSSIER);
+
+            this.insertDossierFolder(selectedNode, dossierFolder);
         }
     }
     private updateDossierFolder(selectedNode: Telerik.Web.UI.RadTreeNode, dossierFolder: DossierFolderModel): void {
         this._ajaxLoadingPanel.show(this.rtvProcessesId);
         dossierFolder.UniqueId = this.selectedDossierFolderId;
         this._dossierFolderService.updateDossierFolder(dossierFolder, null, (data) => {
-            this.createNode(selectedNode, data.Name, data.UniqueId, "../App_Themes/DocSuite2008/imgset16/folder_closed.png",
+            this._updateTreeNode(selectedNode, data.Name, data.UniqueId, TbltProcess.FOLDER_CLOSED_IMGURL,
                 ProcessNodeType.DossierFolder, false, data.Status, null, null, null);
             this._rwInsert.close();
             this._ajaxLoadingPanel.hide(this.rtvProcessesId);
@@ -1038,7 +1239,7 @@ class TbltProcess {
                 if (selectedNode.get_nodes().get_count() > 0 && selectedNode.get_nodes().getNode(0).get_text() === "") {
                     selectedNode.get_nodes().clear();
                 }
-                this.createNode(node, data.Name, data.UniqueId, "../App_Themes/DocSuite2008/imgset16/folder_closed.png",
+                this._updateTreeNode(node, data.Name, data.UniqueId, TbltProcess.FOLDER_CLOSED_IMGURL,
                     ProcessNodeType.DossierFolder, true, data.Status, null, null, selectedNode, false);
                 this._rwInsert.close();
                 this._ajaxLoadingPanel.hide(this.rtvProcessesId);
@@ -1059,14 +1260,14 @@ class TbltProcess {
             return;
         }
         if (this._rtvProcesses.get_selectedNode().get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME) === ProcessNodeType.DossierFolder) {
-            dossierFolder.ParentInsertId = this.getProcessNodeByChild(this._rtvProcesses.get_selectedNode()).get_attributes().getAttribute("idDossier");
+            dossierFolder.ParentInsertId = this.getProcessNodeByChild(this._rtvProcesses.get_selectedNode()).get_attributes().getAttribute(TbltProcess.ATTRNAME_IDDOSSIER);
         }
         else {
             dossierFolder.ParentInsertId = this._rtvProcesses.get_selectedNode().get_parent().get_value();
         }
         dossierFolder.JsonMetadata = sourceNode.get_value();
         dossierFolder.Dossier = <DossierModel>{};
-        dossierFolder.Dossier.UniqueId = this.getProcessNodeByChild(sourceNode).get_attributes().getAttribute("idDossier");
+        dossierFolder.Dossier.UniqueId = this.getProcessNodeByChild(sourceNode).get_attributes().getAttribute(TbltProcess.ATTRNAME_IDDOSSIER);
         //TODO: Remove ActionTypes in DocSuite 9.0X (move webapi logic in Store Procedure) 
         this._dossierFolderService.insertDossierFolder(dossierFolder, InsertActionType.CloneProcessFolder, (data) => {
             //insert node
@@ -1077,12 +1278,12 @@ class TbltProcess {
 
             //update node hierarchy
             this._dossierFolderService.updateDossierFolder(data, UpdateActionType.CloneProcessFolder, (data) => {
-                this.createNode(node, data.Name, data.UniqueId, "../App_Themes/DocSuite2008/imgset16/folder_closed.png",
+                this._updateTreeNode(node, data.Name, data.UniqueId, TbltProcess.FOLDER_CLOSED_IMGURL,
                     ProcessNodeType.DossierFolder, true, data.Status, null, null, this.getProcessNodeByChild(sourceNode), false);
 
                 //to be able to see the plus sign
                 let dummyNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-                this.createNode(dummyNode, "", "", "../App_Themes/DocSuite2008/imgset16/folder_closed.png",
+                this._updateTreeNode(dummyNode, "", "", TbltProcess.FOLDER_CLOSED_IMGURL,
                     ProcessNodeType.DossierFolder, true, data.Status, null, null, node, false);
 
                 this._rwInsert.close();
@@ -1098,7 +1299,7 @@ class TbltProcess {
     }
     ///end Clone dossier folder
 
-    private createNode(node: Telerik.Web.UI.RadTreeNode, text: string, value: string, imagePath: string, nodeType: ProcessNodeType, isExpanded: boolean,
+    private _updateTreeNode(node: Telerik.Web.UI.RadTreeNode, text: string, value: string, imagePath: string, nodeType: ProcessNodeType, isExpanded: boolean,
         dossierFolderStatus?: DossierFolderStatus, isActive?: boolean, idDossier?: string, parentNode?: Telerik.Web.UI.RadTreeNode, expandParent: boolean = true): void {
         node.set_value(value);
         node.set_text(text);
@@ -1106,16 +1307,16 @@ class TbltProcess {
         node.set_imageUrl(imagePath);
         switch (nodeType) {
             case ProcessNodeType.Process: {
-                node.get_attributes().setAttribute("IsActive", isActive);
-                node.get_attributes().setAttribute("idDossier", idDossier);
+                node.get_attributes().setAttribute(TbltProcess.ATTRNAME_ISACTIVE, isActive);
+                node.get_attributes().setAttribute(TbltProcess.ATTRNAME_IDDOSSIER, idDossier);
                 break;
             }
             case ProcessNodeType.DossierFolder: {
-                node.get_attributes().setAttribute("DossierFolderStatus", DossierFolderStatus[dossierFolderStatus]);
+                node.get_attributes().setAttribute(TbltProcess.ATTRNAME_DOSSIERFOLDERSTATUS, DossierFolderStatus[dossierFolderStatus]);
                 break;
             }
             case ProcessNodeType.ProcessFascicleTemplate: {
-                node.get_attributes().setAttribute("IsActive", isActive);
+                node.get_attributes().setAttribute(TbltProcess.ATTRNAME_ISACTIVE, isActive);
                 break;
             }
         }
@@ -1136,13 +1337,14 @@ class TbltProcess {
                 break;
             }
         }
-
+        fascicleTemplate.Name = this._rtvProcesses.get_selectedNode().get_text();
+        fascicleTemplate.JsonModel = uscProcessDetails.pftJsonModel;
         fascicleTemplate.EndDate = endDate;
         if (window.confirm("Vuoi eliminare modello di fascicolo selezionato?")) {
             this._fascicleTemplateService.update(fascicleTemplate, (data) => {
-                let imgUrl: string = "../App_Themes/DocSuite2008/imgset16/fascicle_open.png";
+                let imgUrl: string = TbltProcess.FASCICLEOPENED_IMGURL;
                 this._rtvProcesses.get_selectedNode().set_imageUrl(imgUrl);
-                this._rtvProcesses.get_selectedNode().get_attributes().setAttribute("IsActive", false);
+                this._rtvProcesses.get_selectedNode().get_attributes().setAttribute(TbltProcess.ATTRNAME_ISACTIVE, false);
                 this._rtvProcesses.commitChanges();
                 this._rwInsert.close();
                 this._ajaxLoadingPanel.hide(this.rtvProcessesId);
@@ -1167,9 +1369,8 @@ class TbltProcess {
         process.Roles = this.processRoles;
         process.EndDate = endDate;
         this._processService.delete(process, (data) => {
-            let processActiveItem: any = this._filterToolbar.findItemByValue("processActive");
-            let processDisabledItem: any = this._filterToolbar.findItemByValue("processDisabled");
-            let nodeRemoveConditions: boolean = processActiveItem.get_checked() && !processDisabledItem.get_checked();
+            let processActiveItem: any = this._filterToolbar.findItemByValue(TbltProcess.PROCESS_ACTIVE_FILTERBTNVAL);
+            let nodeRemoveConditions: boolean = processActiveItem.get_checked();
             if (nodeRemoveConditions || !nodeRemoveConditions) {
                 this._rtvProcesses.get_selectedNode().get_parent().get_nodes().remove(this._rtvProcesses.get_selectedNode());
             }
@@ -1181,25 +1382,106 @@ class TbltProcess {
         });
     }
 
-    //TODO: filtering feature will be completed in 9.0X
-    //filterToolbar_onClick = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
-    //    switch (args.get_item().get_value()) {
-    //        case "search": {
-    //            this._ajaxLoadingPanel.show(this.processViewPaneId);
-    //            this._uscProcessDetails = <uscProcessDetails>$(`#${this.uscProcessDetailsId}`).data();
-    //            this._uscProcessDetails.clearProcessDetails();
-    //            $(`#${this._uscProcessDetails.pnlDetailsId}`).hide();
-    //            this._rtvProcesses.get_nodes().getNode(0).get_nodes().clear();
-    //            let processSearchName: string = this._rtbProcessSearchName.get_value();
-    //            let processActiveItem: any = this._filterToolbar.findItemByValue("processActive");
-    //            let processDisabledItem: any = this._filterToolbar.findItemByValue("processDisabled");
-    //            let callLoadProcesses: void = processActiveItem.get_checked()
-    //                ? processDisabledItem.get_checked() ? this.loadProcesses(processSearchName, null) : this.loadProcesses(processSearchName, true)
-    //                : processDisabledItem.get_checked() ? this.loadProcesses(processSearchName, false) : this.loadProcesses(processSearchName, null);
-    //            break;
-    //        }
-    //    }
-    //}
+    filterToolbar_onClick = (sender: Telerik.Web.UI.RadToolBar, args: Telerik.Web.UI.RadToolBarEventArgs) => {
+        const toolbarBtnValue: string = args.get_item().get_value();
+        switch (toolbarBtnValue) {
+            case TbltProcess.SEARCH_BTNVAL: {
+                this._createdCategoriesCache = [];
+                this._currentActiveRequestsCount = 0;
+
+                if (!this.filterInputValue) {
+                    this._initializeTreeView();
+                    return;
+                }
+
+                this._uscProcessDetails = <uscProcessDetails>$(`#${this.uscProcessDetailsId}`).data();
+                this._uscProcessDetails.clearProcessDetails();
+                $(`#${this._uscProcessDetails.pnlDetailsId}`).hide();
+                this.TreeviewRootNode.set_expanded(false);
+                this.TreeviewRootNode.get_nodes().clear();
+
+                this._filterToolbar.findItemByValue(TbltProcess.SEARCH_BTNVAL).set_enabled(false);
+                let processActiveItem: any = this._filterToolbar.findItemByValue(TbltProcess.PROCESS_ACTIVE_FILTERBTNVAL);
+                this.TreeviewRootNode.showLoadingStatus('', Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
+                this._findProcessesByName(this.filterInputValue, processActiveItem.get_checked(), this.currentTenantAOOId)
+                    .then((processes: ProcessModel[]) => {
+
+                        if (!processes || !processes.length) {
+                            this.TreeviewRootNode.hideLoadingStatus();
+                            this._appendEmptyNode(this.TreeviewRootNode);
+                            this.TreeviewRootNode.set_expanded(true);
+                            this._filterToolbar.findItemByValue(TbltProcess.SEARCH_BTNVAL).set_enabled(true);
+                            return;
+                        }
+
+                        processes.forEach(processModel => {
+                            this._onRequestStarted();
+                            let processNode: Telerik.Web.UI.RadTreeNode = this._createProcessNode(processModel),
+                                existingParentCategoryNode: Telerik.Web.UI.RadTreeNode = this._createdCategoriesCache.filter(node => +node.get_value() === processModel.Category.EntityShortId)[0];
+
+                            processNode.set_contentCssClass(TbltProcess.BOLD_CSSCLASS);
+                            if (existingParentCategoryNode) {
+                                let categorySerieEVolumiNode: Telerik.Web.UI.RadTreeNode = existingParentCategoryNode.get_allNodes()
+                                    .filter(node => this._getNodeAttribute<ProcessNodeType>(node, TbltProcess.NodeType_TYPE_NAME) === ProcessNodeType.LoadProcessesAndFolders)[0];
+                                categorySerieEVolumiNode.get_nodes().add(processNode);
+                                existingParentCategoryNode.set_expanded(true);
+                                categorySerieEVolumiNode.set_expanded(true);
+                                this._onRequestCompleted();
+                                return;
+                            }
+
+                            let parentCategoryNode: Telerik.Web.UI.RadTreeNode = this._createCategoryNode(processModel.Category, true, null, [processNode]);
+                            parentCategoryNode.set_expanded(true);
+
+                            this._createdCategoriesCache.push(parentCategoryNode);
+
+                            this._appendProcessCategoryParents(parentCategoryNode, processModel.Category.Parent?.EntityShortId);
+                        });
+                    });
+                break;
+            }
+        }
+    }
+
+    private _appendProcessCategoryParents(currentCategoryNode: Telerik.Web.UI.RadTreeNode, parentId?: number): JQueryPromise<Telerik.Web.UI.RadTreeNode> {
+        let defferedRequest: JQueryDeferred<Telerik.Web.UI.RadTreeNode> = $.Deferred<Telerik.Web.UI.RadTreeNode>();
+
+        // Checks if current category already exists in the tree view
+        let currentNodeFromTree: Telerik.Web.UI.RadTreeNode = this.TreeviewRootNode.get_allNodes().filter(node => +node.get_value() === currentCategoryNode.get_value())[0];
+
+        if (currentNodeFromTree) {
+            currentNodeFromTree.set_expanded(true);
+            return defferedRequest.resolve(currentNodeFromTree);
+        }
+
+        currentCategoryNode.set_expanded(true);
+        if (parentId && parentId !== +this.TreeviewRootNode.get_value()) {
+            this._findCategoryById(parentId, this.currentTenantAOOId)
+                .then((parentCategory: CategoryModel) => {
+                    let currentParentNode: Telerik.Web.UI.RadTreeNode = this._createCategoryNode(parentCategory, false);
+                    this._appendProcessCategoryParents(currentParentNode, parentCategory.Parent?.EntityShortId)
+                        .then((parentNode: Telerik.Web.UI.RadTreeNode) => {
+                            let parentNodeFromTree: Telerik.Web.UI.RadTreeNode
+                                = parentNode.get_allNodes().filter(node => +node.get_value() === +currentCategoryNode.get_value())[0];
+
+                            if (parentNodeFromTree) {
+                                return defferedRequest.resolve(parentNodeFromTree);
+                            } else {
+                                parentNode.get_nodes().add(currentCategoryNode);
+                                parentNode.set_expanded(true);
+                                return defferedRequest.resolve(currentCategoryNode);
+                            }
+                        });
+                }).always(this._onRequestCompleted);
+        } else {
+            currentCategoryNode.set_expanded(true);
+            this.TreeviewRootNode.get_nodes().add(currentCategoryNode);
+            defferedRequest.resolve(currentCategoryNode);
+            this._onRequestCompleted();
+        }
+
+        return defferedRequest.promise();
+    }
 
     populateProcessInputs(processId: string): void {
         let process: ProcessModel = <ProcessModel>{};
@@ -1235,6 +1517,195 @@ class TbltProcess {
         let uscNotification: UscErrorNotification = <UscErrorNotification>$(`#${this.uscNotificationId}`).data();
         if (!jQuery.isEmptyObject(uscNotification)) {
             uscNotification.showNotificationMessage(customMessage);
+        }
+    }
+
+    private _appendChildrenCountAttribute(node: Telerik.Web.UI.RadTreeNode, totalChildrenCount: number): void {
+        const currentChildrenAttributeValue: number | undefined = node.get_attributes().getAttribute(TbltProcess.TOTAL_CHILDREN_COUNT_ATTRNAME);
+
+        if (currentChildrenAttributeValue === undefined) {
+            node.get_attributes().setAttribute(TbltProcess.TOTAL_CHILDREN_COUNT_ATTRNAME, totalChildrenCount);
+        }
+    }
+
+    private _appendEmptyNode(parentNode: Telerik.Web.UI.RadTreeNode): void {
+        let emptyNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+        emptyNode.set_text(TbltProcess.NOELEMENTS_NODE_LABEL);
+        parentNode.get_nodes().add(emptyNode);
+    }
+
+    private _createLoadMoreNode(): Telerik.Web.UI.RadTreeNode {
+        let loadMoreNode: Telerik.Web.UI.RadTreeNode = this._createTreeNode(ProcessNodeType.LoadMore, TbltProcess.LOADMORE_NODE_LABEL, null, TbltProcess.LOAD_MORE_NODE_IMAGEURL);
+        this.appendEmptyNode(loadMoreNode);
+
+        return loadMoreNode;
+    }
+
+    private _createTreeNode(nodeType: ProcessNodeType, nodeDescription: string, nodeValue: number | string, imageUrl: string, parentNode?: Telerik.Web.UI.RadTreeNode, tooltipText?: string, expandedImageUrl?: string): Telerik.Web.UI.RadTreeNode {
+        let treeNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+        treeNode.set_text(nodeDescription);
+        treeNode.set_value(nodeValue);
+
+        this._setNodeAttribute(treeNode, TbltProcess.NodeType_TYPE_NAME, nodeType);
+        if (imageUrl) {
+            treeNode.set_imageUrl(imageUrl);
+        }
+
+        if (tooltipText) {
+            treeNode.set_toolTip(tooltipText);
+        }
+
+        if (expandedImageUrl) {
+            treeNode.set_expandedImageUrl(expandedImageUrl);
+        }
+
+        if (parentNode) {
+            parentNode.get_nodes().add(treeNode);
+        }
+
+        return treeNode;
+    }
+
+    private _getNodeAttribute<TAttributeValue>(treeNode: Telerik.Web.UI.RadTreeNode, attributeName: string): TAttributeValue | undefined {
+        return treeNode.get_attributes().getAttribute(attributeName);
+    }
+
+    private _setNodeAttribute<TAttributeValue>(treeNode: Telerik.Web.UI.RadTreeNode, attributeName: string, attributeValue: TAttributeValue): void {
+        const currentNodeTypeAttributeValue: TAttributeValue = this._getNodeAttribute<TAttributeValue>(treeNode, attributeName);
+
+        if (currentNodeTypeAttributeValue !== undefined) {
+            treeNode.get_attributes().removeAttribute(TbltProcess.NodeType_TYPE_NAME);
+        }
+
+        treeNode.get_attributes().setAttribute(attributeName, attributeValue);
+    }
+
+    private _appendNodesToParent = (childNodes: Telerik.Web.UI.RadTreeNode[], parentNode: Telerik.Web.UI.RadTreeNode): void => {
+        let parentNodeCollection: Telerik.Web.UI.RadTreeNodeCollection = parentNode.get_nodes();
+        childNodes.forEach(childNode => parentNodeCollection.add(childNode));
+    }
+
+    private _createCategoryNode(categoryModel: CategoryModel, appendProcessesNode?: boolean, parentNode?: Telerik.Web.UI.RadTreeNode, childProcessNodes?: Telerik.Web.UI.RadTreeNode[]): Telerik.Web.UI.RadTreeNode {
+        const parentNodeIsRootNode: boolean = !!parentNode && parentNode.get_value() === this.TreeviewRootNode.get_value();
+        let treeNodeDescription: string = `${categoryModel.Code}.${categoryModel.Name}`;
+        let treeNodeImageUrl: string = TbltProcess.CATEGORY_NODE_IMGURL;
+
+        let treeNode: Telerik.Web.UI.RadTreeNode
+            = this._createTreeNode(ProcessNodeType.Category, treeNodeDescription, categoryModel.EntityShortId, treeNodeImageUrl, parentNodeIsRootNode ? parentNode : undefined);
+
+        treeNode.set_contentCssClass((categoryModel.CategoryFascicles && categoryModel.CategoryFascicles.length > 0) ? TbltProcess.CSSCLASS_FASCICLE_NODE : TbltProcess.CSSCLASS_NOTFASCICLE_NODE);
+
+        if (!!appendProcessesNode) {
+            this._appendLoadProcessesNode(treeNode, childProcessNodes);
+        }
+
+        return treeNode;
+    }
+
+    private _createCategoryNodesFromModels = (categories: CategoryModel[], parentNode: Telerik.Web.UI.RadTreeNode, totalCount?: number): Telerik.Web.UI.RadTreeNode[] => {
+        let categoryNodes: Telerik.Web.UI.RadTreeNode[] = categories.map(category => this._createCategoryNode(category, true, parentNode));
+
+        if (totalCount && totalCount > 0) {
+            this._appendChildrenCountAttribute(parentNode, totalCount);
+        }
+
+        return categoryNodes;
+    }
+
+    private _createProcessNode = (processModel: ProcessModel): Telerik.Web.UI.RadTreeNode => {
+        const isProcessActive: boolean = processModel.EndDate === null || new Date(processModel.EndDate) > new Date();
+        const processNode: Telerik.Web.UI.RadTreeNode
+            = this._createTreeNode(ProcessNodeType.Process, processModel.Name, processModel.UniqueId, TbltProcess.PROCESS_NODE_IMGURL);
+
+        this._setNodeAttribute(processNode, TbltProcess.ATTRNAME_ISACTIVE, isProcessActive);
+        this._setNodeAttribute(processNode, TbltProcess.ATTRNAME_IDDOSSIER, processModel.Dossier.UniqueId);
+        this._setNodeAttribute(processNode, TbltProcess.Category_ID_TYPE, processModel.Category.EntityShortId);
+
+        this._appendEmptyNode(processNode);
+
+        return processNode;
+    }
+
+    private _createProcessNodesFromModels = (processes: ProcessModel[], parentNode: Telerik.Web.UI.RadTreeNode, totalCount?: number): Telerik.Web.UI.RadTreeNode[] => {
+
+        const processNodes: Telerik.Web.UI.RadTreeNode[] = processes.map(this._createProcessNode);
+
+        if (totalCount && totalCount > 0) {
+            this._appendChildrenCountAttribute(parentNode, totalCount);
+        }
+
+        return processNodes;
+    }
+
+    private _createFascicleTemplateNodesFromModels = (fascTemplates: ProcessFascicleTemplateModel[]): Telerik.Web.UI.RadTreeNode[] => {
+        const fascicleTemplateNodes: Telerik.Web.UI.RadTreeNode[] = fascTemplates.map((fascTemplate: ProcessFascicleTemplateModel) => {
+            const isActive: boolean = fascTemplate.EndDate === null || new Date(fascTemplate.EndDate) > new Date();
+            const fascTemplateNodeImageUrl: string = isActive
+                ? TbltProcess.FASCICLECLOSED_IMGURL
+                : TbltProcess.FASCICLEOPENED_IMGURL;
+
+            const fascTemplateNode: Telerik.Web.UI.RadTreeNode
+                = this._createTreeNode(ProcessNodeType.ProcessFascicleTemplate, fascTemplate.Name, fascTemplate.UniqueId, fascTemplateNodeImageUrl);
+
+            this._setNodeAttribute(fascTemplateNode, TbltProcess.ATTRNAME_ISACTIVE, isActive)
+
+            return fascTemplateNode;
+        });
+
+        return fascicleTemplateNodes;
+    }
+
+    private _appendNodesToCollection(children: Telerik.Web.UI.RadTreeNode[], nodesCollection: Telerik.Web.UI.RadTreeNodeCollection): void {
+        children.forEach((childNode: Telerik.Web.UI.RadTreeNode) => nodesCollection.add(childNode));
+    }
+
+    private _appendDossierFolderChildren(dossierFolders: Telerik.Web.UI.RadTreeNode[], parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
+        let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
+
+        const fascicleTemplatesToLoad: number = this.treeViewNodesPageSize - dossierFolders.length;
+        const currentParentNodeCollection: Telerik.Web.UI.RadTreeNodeCollection = parentNode.get_nodes();
+        const dossierFolderId: string = parentNode.get_value();
+
+        if (!fascicleTemplatesToLoad) {
+            this._appendNodesToCollection(dossierFolders, currentParentNodeCollection);
+            defferedRequest.resolve();
+            return;
+        }
+
+        const alreadyLoadedFascTemplatesCount: number = currentParentNodeCollection.toArray()
+            .filter(node => this._getNodeAttribute<ProcessNodeType>(node, TbltProcess.NodeType_TYPE_NAME) === ProcessNodeType.ProcessFascicleTemplate)?.length;
+        const fascTemplatesPaginationModel: PaginationModel = new PaginationModel(alreadyLoadedFascTemplatesCount, fascicleTemplatesToLoad);
+        this._findDossierFolderFascicleTemplates(dossierFolderId, fascTemplatesPaginationModel)
+            .then((odataResult: ODATAResponseModel<ProcessFascicleTemplateModel>) => this._createFascicleTemplateNodesFromModels(odataResult.value))
+            .then((fascTemplateNodes: Telerik.Web.UI.RadTreeNode[]) => {
+                this._appendNodesToCollection(dossierFolders, currentParentNodeCollection);
+                this._appendNodesToCollection(fascTemplateNodes, currentParentNodeCollection);
+            })
+            .done(defferedRequest.resolve)
+            .fail(defferedRequest.reject);
+
+        return defferedRequest.promise();
+    }
+
+    private _onRequestStarted = (): void => {
+        this._currentActiveRequestsCount = this._currentActiveRequestsCount + 1;
+    }
+
+    private _onRequestCompleted = (): void => {
+
+        if (this._currentActiveRequestsCount > 0) {
+            this._currentActiveRequestsCount = this._currentActiveRequestsCount - 1;
+        }
+
+        if (this._currentActiveRequestsCount < 1) {
+
+            if (!this.TreeviewRootNode.get_allNodes().length) {
+                this._appendEmptyNode(this.TreeviewRootNode);
+            }
+
+            this.TreeviewRootNode.hideLoadingStatus();
+            this.TreeviewRootNode.set_expanded(true);
+            this._filterToolbar.findItemByValue(TbltProcess.SEARCH_BTNVAL).set_enabled(true);
         }
     }
 }

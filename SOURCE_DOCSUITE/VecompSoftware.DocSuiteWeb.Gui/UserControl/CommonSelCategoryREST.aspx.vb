@@ -41,6 +41,21 @@ Public Class CommonSelCategoryRest
             Return Request.QueryString.GetValueOrDefault(Of Boolean)("FascicleBehavioursEnabled", False)
         End Get
     End Property
+    Public ReadOnly Property ShowProcessFascicleTemplate As Boolean
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of Boolean)("ShowProcessFascicleTemplate", False)
+        End Get
+    End Property
+    Public ReadOnly Property ProcessNodeSelectable As Boolean
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of Boolean)("ProcessNodeSelectable", False)
+        End Get
+    End Property
+    Public ReadOnly Property IsProcessActive As Boolean
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of Boolean)("IsProcessActive", False)
+        End Get
+    End Property
 
     Protected ReadOnly Property RoleToPage As String
         Get

@@ -54,7 +54,7 @@ Public Class NHibernateDocumentTokenDao
         criteria.Add(Restrictions.Eq("Number", number))
         criteria.Add(Expression.In("DocumentTabToken.Id", idTokenTypes))
         If bIncludeIsActive Then
-            criteria.Add(Expression.Gt("IsActive", 0S))
+            criteria.Add(Expression.Gt("IsActive", False))
         End If
         If bAddResponseCriteria Then
             criteria.Add(Expression.Not(Restrictions.Eq("Response", "A")))
@@ -133,7 +133,7 @@ Public Class NHibernateDocumentTokenDao
 
         criteria.Add(Restrictions.Eq("Year", year))
         criteria.Add(Restrictions.Eq("Number", number))
-        criteria.Add(Expression.Gt("IsActive", 0S))
+        criteria.Add(Expression.Gt("IsActive", False))
         criteria.Add(Expression.In("DocumentTabToken.Id", idTokenTypes))
 
         criteria.Add(Expression.In("RoleDestination.Id", roles))
@@ -162,7 +162,7 @@ Public Class NHibernateDocumentTokenDao
             criteria.Add(Expression.Not(Restrictions.Eq("Response", "A")))
         End If
         If isActive Then
-            criteria.Add(Restrictions.Ge("IsActive", 0S))
+            criteria.Add(Restrictions.Ge("IsActive", False))
         End If
 
         criteria.AddOrder(Order.Asc("DocStep"))
@@ -173,7 +173,7 @@ Public Class NHibernateDocumentTokenDao
 
     End Function
 
-    Public Function GetByYearNumber(ByVal year As Short, ByVal number As Integer, ByVal isActive As Short) As IList(Of DocumentToken)
+    Public Function GetByYearNumber(ByVal year As Short, ByVal number As Integer, ByVal isActive As Boolean) As IList(Of DocumentToken)
         criteria = NHibernateSession.CreateCriteria(persitentType)
 
         criteria.Add(Restrictions.Eq("Year", year))
@@ -235,7 +235,7 @@ Public Class NHibernateDocumentTokenDao
         criteria.Add(Restrictions.Eq("T.Year", year))
         criteria.Add(Restrictions.Eq("T.Number", number))
         criteria.Add(Restrictions.Eq("RoleDestination.Id", IdRole))
-        criteria.Add(Expression.Gt("T.IsActive", 0S))
+        criteria.Add(Expression.Gt("T.IsActive", False))
 
         criteria.AddOrder(Order.Asc("T.OperationDate"))
 
@@ -250,7 +250,7 @@ Public Class NHibernateDocumentTokenDao
         criteria.Add(Restrictions.Eq("T.Year", Year))
         criteria.Add(Restrictions.Eq("T.Number", Number))
         criteria.Add(Expression.In("T.DocumentTabToken.Id", idTokenType))
-        criteria.Add(Expression.Not(Restrictions.Eq("T.IsActive", 0S)))
+        criteria.Add(Expression.Not(Restrictions.Eq("T.IsActive", False)))
 
         If Array.Exists(idTokenType, AddressOf TokenTypeRRCondition) And Array.Exists(idTokenType, AddressOf TokenTypePTCondition) Then
             criteria.Add(Restrictions.Eq("T.DocStep", Convert.ToInt16(iStep) - Convert.ToInt16(1)))
@@ -306,7 +306,7 @@ Public Class NHibernateDocumentTokenDao
         If idRoleDestination <> 0 Then
             criteria.Add(Restrictions.Eq("RoleDestination.Id", idRoleDestination))
         End If
-        criteria.Add(Expression.Gt("IsActive", 0S))
+        criteria.Add(Expression.Gt("IsActive", False))
         criteria.AddOrder(Order.Asc("DocStep"))
         criteria.AddOrder(Order.Asc("SubStep"))
         criteria.AddOrder(Order.Asc("IncrementalOrigin"))

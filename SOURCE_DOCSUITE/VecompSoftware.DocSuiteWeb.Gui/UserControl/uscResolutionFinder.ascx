@@ -123,25 +123,33 @@
             <telerik:RadDatePicker ID="DateAdoptionTo" DateInput-LabelWidth="20%" DateInput-LabelCssClass="strongRiLabel" Style="height: auto !important;" Width="200" DateInput-Label="A" runat="server" />
         </td>
     </tr>
+    <%--Stato contabilità--%>
+    <tr id="trStatoContabilita" runat="server" style="vertical-align: middle;" visible="false">
+        <td class="label" style="width: 30%;">Stato contabilità:
+        </td>
+        <td class="DXChiaro">
+            <asp:DropDownList ID="ddlBidType" runat="server" />
+        </td>
+    </tr>
     <%--Organi di Controllo--%>
     <tr id="trOCList" runat="server" visible="false">
-        <td class="label" style="width: 30%; vertical-align: top;">Organo di Controllo:
+        <td class="label" style="width: 30%; vertical-align: top;">Organo di controllo:
         </td>
         <td class="DXChiaro">
             <asp:Panel ID="pnlSupervisoryBoard" runat="server">
-                <asp:CheckBox ID="chkSupervisoryBoard" runat="server" Text="Collegio Sindacale" /><br />
+                <asp:CheckBox ID="chkSupervisoryBoard" runat="server" Text="Collegio sindacale" /><br />
             </asp:Panel>
             <asp:Panel ID="pnlConfSind" runat="server" Visible="false">
-                <asp:CheckBox ID="chkConfSind" runat="server" Text="Controllo Conferenza dei Sindaci" /><br />
+                <asp:CheckBox ID="chkConfSind" runat="server" Text="Controllo conferenza dei sindaci" /><br />
             </asp:Panel>
             <asp:Panel ID="pnlRegion" runat="server">
                 <asp:CheckBox ID="chkRegion" runat="server" Text="Regione" /><br />
             </asp:Panel>
             <asp:Panel ID="pnlManagement" runat="server">
-                <asp:CheckBox ID="chkManagement" runat="server" Text="Controllo di Gestione" /><br />
+                <asp:CheckBox ID="chkManagement" runat="server" Text="Controllo di gestione" /><br />
             </asp:Panel>
             <asp:Panel ID="pnlCorteConti" runat="server">
-                <asp:CheckBox ID="chkCorteConti" runat="server" Text="Corte dei Conti" /><br />
+                <asp:CheckBox ID="chkCorteConti" runat="server" Text="Corte dei conti" /><br />
             </asp:Panel>
             <asp:Panel ID="pnlOther" runat="server">
                 <asp:CheckBox ID="chkOther" runat="server" Text="Altro" />
@@ -161,9 +169,17 @@
 
         </td>
     </tr>
+
+    <tr id="trWorkflowSearchableSteps" runat="server" visible="false">
+        <td class="label" style="width: 30%; vertical-align: top;">Passo del flusso:
+        </td>
+        <td class="DXChiaro">
+            <asp:CheckBoxList ID="CheckBoxListWorkflowSteps" runat="server" AutoPostBack="true" />
+        </td>
+    </tr>
     <%--Organo di Controllo--%>
     <tr id="trOC" runat="server">
-        <td class="label" style="width: 30%;">Organo di Controllo:
+        <td class="label" style="width: 30%;">Organo di controllo:
         </td>
         <td class="DXChiaro">
 

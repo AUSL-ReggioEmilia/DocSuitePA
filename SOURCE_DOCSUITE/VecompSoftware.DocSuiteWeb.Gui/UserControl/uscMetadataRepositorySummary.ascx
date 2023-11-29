@@ -57,6 +57,24 @@
                         <input type="checkbox" disabled="disabled" aria-readonly="true" name="required" id="requiredText" class="checkBox" style="margin-left: 50px;" />
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchText" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="showInResults" id="visibleInSearchText" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelHiddenFieldText" style="margin-top: 5px; align-items: center; display: none;">Campo nascosto: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="hiddenField" id="hiddenFieldText" class="checkBox" style="margin-left: 72px; display: none;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyText" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="readOnly" id="readOnlyText" class="checkBox" style="margin-left: 100px;" />
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
@@ -80,6 +98,24 @@
                     <td>
                         <label class="control-label" id="labelRequiredComment">Campo obbligatorio: </label>
                         <input type="checkbox" disabled="disabled" aria-readonly="true" name="required" id="requiredComment" class="checkBox" style="margin-left: 50px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchComment" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="showInResults" id="visibleInSearchComment" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelHiddenFieldComment" style="margin-top: 5px; align-items: center; display: none;">Campo nascosto: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="hiddenField" id="hiddenFieldComment" class="checkBox" style="margin-left: 72px; display: none;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyComment" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="readOnly" id="readOnlyComment" class="checkBox" style="margin-left: 100px;" />
                     </td>
                 </tr>
             </table>
@@ -107,6 +143,24 @@
                         <input type="checkbox" disabled="disabled" aria-readonly="true" name="required" id="requiredDate" class="checkBox" style="margin-left: 50px;" />
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchDate" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="showInResults" id="visibleInSearchDate" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelHiddenFieldDate" style="margin-top: 5px; align-items: center; display: none;">Campo nascosto: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="hiddenField" id="hiddenFieldDate" class="checkBox" style="margin-left: 72px; display: none;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyDate" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="readOnly" id="readOnlyDate" class="checkBox" style="margin-left: 100px;" />
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
@@ -130,6 +184,36 @@
                     <td>
                         <label class="control-label" id="labelRequiredNumber">Campo obbligatorio: </label>
                         <input type="checkbox" disabled="disabled" aria-readonly="true" name="required" id="requiredNumber" class="checkBox" style="margin-left: 50px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchNumber" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="showInResults" id="visibleInSearchNumber" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelHiddenFieldNumber" style="margin-top: 5px; align-items: center; display: none;">Campo nascosto: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="hiddenField" id="hiddenFieldNumber" class="checkBox" style="margin-left: 72px; display: none;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyNumber" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="readOnly" id="readOnlyNumber" class="checkBox" style="margin-left: 100px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelFormatNumber" style="margin-top: 5px; align-items: center;">Formato: </label>
+                    </td>
+                    <td>
+                        <select id="formatType" disabled="disabled" aria-readonly="true" name="format" style="margin-left: -28px;">
+                            <option value="0" selected="selected">Intero</option>
+                            <option value="0.00">Numero con due decimali</option>
+                            <option value="0.0000">Numero con quattro decimali</option>
+                        </select>
                     </td>
                 </tr>
             </table>
@@ -157,6 +241,24 @@
                         <input type="checkbox" disabled="disabled" aria-readonly="true" name="required" id="requiredCheckbox" class="checkBox" style="margin-left: 50px;" />
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchCheckbox" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="showInResults" id="visibleInSearchCheckBox" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr> 
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelHiddenFieldCheckbox" style="margin-top: 5px; align-items: center; display: none;">Campo nascosto: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="hiddenField" id="hiddenFieldCheckbox" class="checkBox" style="margin-left: 72px; display: none;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyCheckbox" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="readOnly" id="readOnlyCheckbox" class="checkBox" style="margin-left: 100px;" />
+                    </td>
+                </tr>
             </table>
         </div>
     </div>
@@ -180,6 +282,24 @@
                     <td>
                         <label class="control-label" id="labelRequiredEnum">Campo obbligatorio: </label>
                         <input type="checkbox" disabled="disabled" aria-readonly="true" name="required" id="requiredEnum" class="checkBox" style="margin-left: 50px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelVisibleInSearchEnum" style="margin-top: 5px; align-items: center">Visibile in ricerca: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="showInResults" id="visibleInSearchEnum" class="checkBox" style="margin-left: 66px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelHiddenFieldEnum" style="margin-top: 5px; align-items: center; display: none;">Campo nascosto: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="hiddenField" id="hiddenFieldEnum" class="checkBox" style="margin-left: 72px; display: none;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label class="control-label" id="labelReadOnlyEnum" style="margin-top: 5px; align-items: center;">Sola lettura: </label>
+                        <input type="checkbox" disabled="disabled" aria-readonly="true" name="readOnly" id="readOnlyEnum" class="checkBox" style="margin-left: 100px;" />
                     </td>
                 </tr>
             </table>

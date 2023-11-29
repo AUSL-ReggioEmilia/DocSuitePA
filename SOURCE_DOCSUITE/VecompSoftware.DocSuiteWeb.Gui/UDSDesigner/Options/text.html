@@ -8,11 +8,31 @@
             <input type="text" class="form-control" rv-value="ctrl.label">
         </div>
     </div>
-
     <div class="form-group">
         <label class="control-label col-sm-3">Valore di default</label>
         <div class="controls col-sm-9">
-            <input type="text" class="form-control" rv-value="ctrl.defaultValue">
+            <input type="text" id="defaultValueId" class="form-control" rv-value="ctrl.defaultValue">
+        </div>
+    </div>
+    <div class="form-group" id="customActionId">
+        <label class="control-label col-sm-3">Azioni personalizzate</label>
+        <div class="controls col-sm-9">
+            <div class="btn-group">
+                <button data-toggle="dropdown" id="selectDefault" class="btn btn-default dropdown-toggle" rv-on-click="ctrl.getCustomActions">
+                    <i class="icon-edit data-label"></i> {ctrl.customActionSelected} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li rv-each-custom-action="ctrl.customActions">
+                        <a rv-on-click="ctrl.selectedItemChanged">{custom-action}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form-group" id="customActionsKeyId" style="display:none;">
+        <label class="control-label col-sm-3">Chiave</label>
+        <div class="controls col-sm-9">
+            <input type="text" class="form-control" rv-value="ctrl.customActionKey">
         </div>
     </div>
     <div class="form-group">

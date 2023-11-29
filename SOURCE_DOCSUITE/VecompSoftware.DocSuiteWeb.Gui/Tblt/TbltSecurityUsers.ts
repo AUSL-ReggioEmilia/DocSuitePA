@@ -18,6 +18,7 @@ class TbltSecurityUsers {
 
     private static ADD_COMMANDNAME = "AddUser";
     private static DELETEUSER_COMMANDNAME = "DeleteUser";
+    private static DELETEUNCONFIGURATEDUSER_COMMANDNAME = "DeleteUnconfiguratedUser";
     private static COPYFROMUSER_COMMANDNAME = "CopyFromUser";
     private static GROUPSADD_COMMANDNAME = "AddGroups";
     private static GUIDEDGROUPSADD_COMMANDNAME = "GuidedGroupsAdd";
@@ -26,7 +27,8 @@ class TbltSecurityUsers {
     private toolbarActions(): Array<[string, () => void]> {
         let items: Array<[string, () => void]> = [
             [TbltSecurityUsers.ADD_COMMANDNAME, () => this.btnAddUser_OnClick()],
-            [TbltSecurityUsers.DELETEUSER_COMMANDNAME, () => this.btnDeleteUser_OnClick()]
+            [TbltSecurityUsers.DELETEUSER_COMMANDNAME, () => this.btnDeleteUser_OnClick()],
+            [TbltSecurityUsers.DELETEUNCONFIGURATEDUSER_COMMANDNAME, () => this.btnDeleteUnconfiguratedUser_OnClick()]
         ];
         return items;
     }
@@ -158,6 +160,20 @@ class TbltSecurityUsers {
         }, 300, 160);
     }
 
+    btnDeleteUnconfiguratedUser_OnClick = () => {
+        this._rtvUsers = <Telerik.Web.UI.RadTreeView>$find(this.rtvUsersId);
+        if (!this._rtvUsers.get_selectedNode() || !this._rtvUsers.get_selectedNode().get_value()) {
+            this.showWarningMessage(this.uscNotificationId, "Selezionare un utente.");
+            return;
+        }
+
+        this._wndManager.radconfirm("Sei sicuro di voler rimuovere l'utente da tutti i gruppi?", (arg) => {
+            if (arg) {
+                this._ajaxManager.ajaxRequest('deleteunconfigureduser');
+            }
+        }, 300, 160);
+    }
+
     /**
     * Evento scatenato al click del bottone Assegna gruppi
     * @param sender
@@ -261,7 +277,7 @@ class TbltSecurityUsers {
         this._toolbarSpecialAction.get_items().forEach((item: Telerik.Web.UI.RadToolBarButton) => {
             let btnCommandName: string = item.get_commandName();
 
-            if (btnCommandName === TbltSecurityUsers.ADD_COMMANDNAME || btnCommandName === TbltSecurityUsers.DELETEUSER_COMMANDNAME) {
+            if (btnCommandName === TbltSecurityUsers.ADD_COMMANDNAME || btnCommandName === TbltSecurityUsers.DELETEUSER_COMMANDNAME || btnCommandName === TbltSecurityUsers.DELETEUNCONFIGURATEDUSER_COMMANDNAME) {
                 return;
             }
 
@@ -288,6 +304,12 @@ class TbltSecurityUsers {
         if (!jQuery.isEmptyObject(uscNotification)) {
             uscNotification.showWarningMessage(customMessage)
         }
+    }
+
+    setCommandNameForDelete(commandNameDelete: string) {
+        let currentActionButtonItem: Telerik.Web.UI.RadToolBarButton = this._actionToolbar.get_items().getItem(1) as Telerik.Web.UI.RadToolBarButton;
+        console.log(currentActionButtonItem.get_commandName());
+        currentActionButtonItem.set_commandName(commandNameDelete);
     }
 
 }

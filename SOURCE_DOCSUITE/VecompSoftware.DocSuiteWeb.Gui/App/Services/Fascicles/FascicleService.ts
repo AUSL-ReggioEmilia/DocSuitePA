@@ -13,6 +13,7 @@ import FascicleType = require('App/Models/Fascicles/FascicleType');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import FascicleModelMapper = require('App/Mappers/Fascicles/FascicleModelMapper');
 import IFascicleService = require('App/Services/Fascicles/IFascicleService');
+import PaginationModel = require('App/Models/Commons/PaginationModel');
 
 class FascicleService extends BaseService implements IFascicleService {
     _configuration: ServiceConfiguration;
@@ -237,8 +238,10 @@ class FascicleService extends BaseService implements IFascicleService {
     }
 
     getFascicleByCategory(idCategory: number, name: string, hasProcess?: boolean, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = `${this._configuration.ODATAUrl}/FascicleService.GetFasciclesByCategory(idCategory=${idCategory}, name='${name}', hasProcess=${hasProcess})`;
-        this.getRequest(url, null,
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/FascicleService.GetFasciclesByCategory(idCategory=${idCategory},name='${name}',hasProcess=${hasProcess})`;
+
+        this.getRequest(odataQuery, null,
             (response: any) => {
                 if (callback) {
 
@@ -354,6 +357,54 @@ class FascicleService extends BaseService implements IFascicleService {
 
                     callback(response.value);
                 }
+            }, error);
+    }
+
+    countAuthorizedCategoryFascicles(idCategory: number, callback?: (count: number) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataURL: string = this._configuration.ODATAUrl;
+        let odataQuery: string = `${odataURL}/FascicleService.CountAuthorizedCategoryFascicles(idCategory=${idCategory})`;
+
+        this.getRequest(odataQuery, null,
+            (response: any) => {
+                if (!callback && !response) {
+                    return;
+                }
+
+                callback(response.value);
+            }, error);
+    }
+
+    getAuthorizedCategoryFascicles(idCategory: number, paginationModel: PaginationModel, callback?: (data: FascicleModel[]) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataURL: string = this._configuration.ODATAUrl;
+        let odataQuery: string = `${odataURL}/FascicleService.AuthorizedCategoryFascicles(idCategory=${idCategory},skip=${paginationModel.Skip},top=${paginationModel.Take})`;
+
+        this.getRequest(odataQuery, null,
+            (response: any) => {
+                if (!callback) {
+                    return;
+                }
+
+                let mapper = new FascicleModelMapper();
+                const fascicles: FascicleModel[] = mapper.MapCollection(response.value);
+
+                callback(fascicles);
+            }, error);
+    }
+
+    getFasciclesFromDocumentUnit(idDocumentUnit: string, callback?: (data: FascicleModel[]) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataURL: string = this._configuration.ODATAUrl;
+        let odataQuery: string = `${odataURL}/FascicleService.FasciclesFromDocumentUnit(idDocumentUnit=${idDocumentUnit})`;
+
+        this.getRequest(odataQuery, null,
+            (response: any) => {
+                if (!callback) {
+                    return;
+                }
+
+                let mapper = new FascicleModelMapper();
+                const fascicles: FascicleModel[] = mapper.MapCollection(response.value);
+
+                callback(fascicles);
             }, error);
     }
 }

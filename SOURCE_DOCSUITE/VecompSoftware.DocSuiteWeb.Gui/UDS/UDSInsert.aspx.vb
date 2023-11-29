@@ -143,6 +143,18 @@ Public Class UDSInsert
             Return _fromWorkFlow.Value
         End Get
     End Property
+
+    Public Property IdFascicle As Guid?
+        Get
+            If ViewState(String.Format("{0}_IdFascicle", ID)) Is Nothing Then
+                Return Nothing
+            End If
+            Return Guid.Parse(ViewState(String.Format("{0}_IdFascicle", ID)).ToString())
+        End Get
+        Set(value As Guid?)
+            ViewState(String.Format("{0}_IdFascicle", ID)) = value
+        End Set
+    End Property
 #End Region
 
 #Region "Events"
@@ -192,6 +204,7 @@ Public Class UDSInsert
 
             Select Case Action
                 Case uscUDS.ACTION_TYPE_INSERT, uscUDS.ACTION_TYPE_DUPLICATE
+                    model.Model.UDSId = Guid.NewGuid().ToString()
                     If IdPECMail.HasValue Then
                         Dim pecMail As PECMail = Facade.PECMailFacade.GetById(IdPECMail.Value)
                         model.FillPECMails(New List(Of ReferenceModel) From {New ReferenceModel() With {.EntityId = IdPECMail.Value, .UniqueId = pecMail.UniqueId}})
@@ -207,8 +220,8 @@ Public Class UDSInsert
                     If Action.Equals("Duplicate") Then
                         uscUDS.CurrentUDSRepositoryId = CurrentUDSRepositoryFacade.GetMaxVersionByName(CurrentUDSRepository.Name).Id
                     End If
-                    sendedCommandId = CurrentUDSRepositoryFacade.SendCommandInsertData(uscUDS.CurrentUDSRepositoryId.Value, correlationId, model)
 
+                    sendedCommandId = CurrentUDSRepositoryFacade.SendCommandInsertData(uscUDS.CurrentUDSRepositoryId.Value, correlationId, model, IdFascicle)
 
                 Case uscUDS.ACTION_TYPE_EDIT
                     If Not model.Model.Category.IdCategory.Eq(UDSSource.UDSModel.Model.Category.IdCategory) Then
@@ -230,7 +243,6 @@ Public Class UDSInsert
             End Select
 
             FileLogger.Info(LoggerName, $"Command sended with Id {sendedCommandId} and CorrelationId {correlationId}")
-            btnSave.Enabled = False
         Catch ex As DocSuiteSignRequiredException
             FileLogger.Error(LoggerName, ex.Message, ex)
             Dim exceptionMessage As String = String.Format("Errore nella fase di invio: {0}", ex.Message)
@@ -405,6 +417,8 @@ Public Class UDSInsert
             End If
 
             uscUDS.UDSItemSource = dtoInitializer.UDSModel
+
+            IdFascicle = CType(PreviousPage, IUDSInitializer).GetIdFascicle()
         End If
     End Sub
 

@@ -3,30 +3,19 @@
 /// <amd-dependency path="../app/core/extensions/string" />
 
 import FascicleModel = require('App/Models/Fascicles/FascicleModel');
-import FascicleRoleModel = require('App/Models/Fascicles/FascicleRoleModel');
-import RoleModel = require('App/Models/Commons/RoleModel');
-import CategoryModel = require('App/Models/Commons/CategoryModel');
 import ContactModel = require('App/Models/Commons/ContactModel');
 import FascicleType = require('App/Models/Fascicles/FascicleType');
-import VisibilityType = require('App/Models/Fascicles/VisibilityType')
-import AuthorizationRoleType = require('App/Models/Commons/AuthorizationRoleType');
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import FascicleBase = require('Fasc/FascBase');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
-import ChainType = require('App/Models/DocumentUnits/ChainType');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
-import UscErrorNotification = require('UserControl/uscErrorNotification');
 import DocumentUnitModel = require('App/Models/DocumentUnits/DocumentUnitModel');
-import ProtocolModel = require('App/Models/Protocols/ProtocolModel');
 import FascicleReferenceType = require('App/Models/Fascicles/FascicleReferenceType');
 import FascicleDocumentUnitModel = require('App/Models/Fascicles/FascicleDocumentUnitModel');
-import ResolutionModel = require('App/Models/Resolutions/ResolutionModel');
-import Environment = require('App/Models/Environment');
 import IFascicolableBaseModel = require('App/Models/Fascicles/IFascicolableBaseModel');
 import IFascicolableBaseService = require('App/Services/Fascicles/IFascicolableBaseService');
 import FascicleDocumentUnitService = require('App/Services/Fascicles/FascicleDocumentUnitService');
 
-import UDSRepositoryModel = require('App/Models/UDS/UDSRepositoryModel');
 import ValidationExceptionDTO = require('App/DTOs/ValidationExceptionDTO');
 import ValidationMessageDTO = require('App/DTOs/ValidationMessageDTO');
 import UscFascicleInsert = require('UserControl/uscFascicleInsert');
@@ -35,6 +24,7 @@ import MetadataRepositoryModel = require('App/Models/Commons/MetadataRepositoryM
 import FascicolableActionType = require('App/Models/FascicolableActionType');
 import FascicleCustomActionModel = require('App/Models/Commons/FascicleCustomActionModel');
 import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
 
 declare var Page_IsValid: any;
 class FascInserimento extends FascicleBase {
@@ -182,48 +172,54 @@ class FascInserimento extends FascicleBase {
      * @param contact
      * @param category
      */
-    insertCallback(responsibleContact: number, metadataDesignerModel: string, metadataValueModel: string): void {
-        let uscFascInsert: UscFascicleInsert = <UscFascicleInsert>$("#".concat(this.uscFascInsertId)).data();
-        if (!jQuery.isEmptyObject(uscFascInsert)) {
-            let fascicleModel: FascicleModel = new FascicleModel();
-            fascicleModel = uscFascInsert.getFascicle();
+    insertCallback = (responsibleContact: string): void => {
+        PageClassHelper.callUserControlFunctionSafe<UscFascicleInsert>(this.uscFascInsertId)
+            .done((instance) => {
+                let fascicleModel: FascicleModel = new FascicleModel();
+                fascicleModel = instance.getFascicle();
 
-            if (fascicleModel.FascicleType != FascicleType.Activity) {
-                let contactModel: ContactModel = <ContactModel>{};
-                contactModel.EntityId = responsibleContact;
-                fascicleModel.Contacts.push(contactModel);
-            }
-
-            if (!!metadataValueModel) {
-                fascicleModel.MetadataDesigner = metadataDesignerModel;
-                fascicleModel.MetadataValues = metadataValueModel;
-                if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY)) {
-                    let metadataRepository: MetadataRepositoryModel = new MetadataRepositoryModel();
-                    metadataRepository.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
-                    fascicleModel.MetadataRepository = metadataRepository;
+                if (fascicleModel.FascicleType != FascicleType.Activity) {
+                    let contactModel: ContactModel = <ContactModel>{};
+                    contactModel.EntityId = +responsibleContact;
+                    fascicleModel.Contacts.push(contactModel);
                 }
-            }
 
-            uscFascInsert.getCustomActions().done((customActions: FascicleCustomActionModel) => {
-                fascicleModel.CustomActions = JSON.stringify(customActions);
-                this.service.insertFascicle(fascicleModel, null,
-                    (data: FascicleModel) => {
-                        if (this.currentUDId && this.environment) {
-                            fascicleModel.UniqueId = data.UniqueId;
-                            this.insertFascicolableUD(fascicleModel);
+                instance.fillMetadataModel().done((metadatas: [string, string]) => {
+                    let metadataDesignerModel = metadatas[0];
+                    let metadataValueModel = metadatas[1];
+
+                    if (!!metadataValueModel) {
+                        fascicleModel.MetadataDesigner = metadataDesignerModel;
+                        fascicleModel.MetadataValues = metadataValueModel;
+                        if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY)) {
+                            let metadataRepository: MetadataRepositoryModel = new MetadataRepositoryModel();
+                            metadataRepository.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
+                            fascicleModel.MetadataRepository = metadataRepository;
                         }
-                        else {
-                            window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(data.UniqueId);
-                        }
-                    },
-                    (exception: ExceptionDTO) => {
-                        this._loadingPanel.hide(this.fasciclePageContentId);
-                        this._btnInserimento.set_enabled(true);
-                        this.showNotificationException(this.uscNotificationId, exception);
                     }
-                );
+                });
+
+                instance.getCustomActions().done((customActions: FascicleCustomActionModel) => {
+                    fascicleModel.CustomActions = JSON.stringify(customActions);
+                    this.service.insertFascicle(fascicleModel, null,
+                        (data: FascicleModel) => {
+                            if (this.currentUDId && this.environment) {
+                                fascicleModel.UniqueId = data.UniqueId;
+                                this.insertFascicolableUD(fascicleModel);
+                            }
+                            else {
+                                window.location.href = "../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=".concat(data.UniqueId);
+                            }
+                        },
+                        (exception: ExceptionDTO) => {
+                            this._loadingPanel.hide(this.fasciclePageContentId);
+                            this._btnInserimento.set_enabled(true);
+                            this.showNotificationException(this.uscNotificationId, exception);
+                        }
+                    );
+                });
+
             });
-        }
     }
 
     insertFascicolableUD(fascicleModel: FascicleModel) {
@@ -234,7 +230,7 @@ class FascInserimento extends FascicleBase {
         fascicleDocumentUnitModel.DocumentUnit = <DocumentUnitModel>{ UniqueId: this.currentUDId };
         fascicleDocumentUnitModel.Fascicle = fascicleModel;
         let fascicleDocumentUnitConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, FascicleBase.FASCICLE_DOCUMENTUNIT_TYPE_NAME);
-        fascicolableService = new FascicleDocumentUnitService(fascicleDocumentUnitConfiguration); 
+        fascicolableService = new FascicleDocumentUnitService(fascicleDocumentUnitConfiguration);
         this.insertUD(fascicleDocumentUnitModel, fascicolableService, fascicleModel.UniqueId);
     }
 

@@ -177,7 +177,7 @@ Public Class DocumentUtil
         mm.From = New MailAddress(from)
 
 #If DEBUG Then
-        mm.From = New MailAddress("**REMOVE**@vecompsw.emea.microsoftonline.com")
+        mm.From = New MailAddress("fabrizio.gaiardo@vecompsw.emea.microsoftonline.com")
 #End If
 
         For Each destinatario As Role In destination
@@ -202,7 +202,7 @@ Public Class DocumentUtil
 
 #If DEBUG Then
         mm.To.Clear()
-        mm.To.Add(New MailAddress("**REMOVE**@vecompsw.emea.microsoftonline.com"))
+        mm.To.Add(New MailAddress("fabrizio.gaiardo@vecompsw.emea.microsoftonline.com"))
 #End If
 
         Select Case Response

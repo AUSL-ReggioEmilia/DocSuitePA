@@ -62,6 +62,9 @@ Namespace Series
 
         Private Sub cmdExportToExcel_Click(sender As Object, e As EventArgs) Handles cmdExportToExcel.Click
             Dim columns As IEnumerable(Of Column) = grdLogSummary.Columns.Cast(Of GridColumn).Select(Function(c) New Column(c))
+            If ReportFacade.TenantModel Is Nothing Then
+                ReportFacade.TenantModel = DocSuiteContext.Current.CurrentTenant
+            End If
             Dim report As IReport(Of RadGrid) = ReportFacade.GenerateReport(Of RadGrid)(New List(Of RadGrid) From {grdLogSummary}, columns.ToList())
             Dim doc As DocumentInfo = report.ExportExcel("DocumentSeriesLogSummary.xls")
 

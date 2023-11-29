@@ -9,7 +9,10 @@ import ImageHelper = require("App/Helpers/ImageHelper");
 import UscRoleRestEventType = require("App/Models/Commons/UscRoleRestEventType");
 import UscRoleRestConfiguration = require("App/Models/Commons/UscRoleRestConfiguration");
 import VisibilityType = require("App/Models/Fascicles/VisibilityType");
-import DSWEnvironmentType = require("../App/Models/Workflows/WorkflowDSWEnvironmentType");
+import DSWEnvironmentType = require("App/Models/Workflows/WorkflowDSWEnvironmentType");
+import Environment = require("App/Models/Environment");
+import RoleSearchFilterDTO = require("App/DTOs/RoleSearchFilterDTO");
+import RoleTypologyType = require("App/Models/Commons/RoleTypologyType");
 
 declare var ValidatorEnable: any;
 class uscRoleRest {
@@ -22,7 +25,8 @@ class uscRoleRest {
     public btnExpandRolesId: string;
     public contentRowId: string;
     public multipleRoles: string;
-    public onlyMyRoles: string;
+    public get onlyMyRoles(): boolean { return sessionStorage.getItem(`${this.pnlContentId}_onlyMyRoles`) === "true" };
+    public set onlyMyRoles(value: boolean) { this.setOnlyMyRole(value); };
     public requiredValidationEnabled: string;
     public expanded: string;
     public allDataButtonEnabled: string;
@@ -31,8 +35,10 @@ class uscRoleRest {
     public fascicleVisibilityTypeButtonEnabled: boolean;
     public entityId: string;
     public entityType: string;
-    public loadAllRoles: boolean;
     public dswEnvironmentType: string;
+    public idTenantAOO: string;
+    private _persistToolbarVisibilityOnClick: boolean;
+    private lblCaptionId: string;
 
     public uscRoleRestEvents = UscRoleRestEventType;
 
@@ -51,10 +57,12 @@ class uscRoleRest {
     private _rowContent: JQuery;
     private _initialRoleCollection: RoleModel[];
     private _raciRoleCollection: RoleModel[] = <RoleModel[]>[];
+    private _removedRaciRoleCollection: RoleModel[] = <RoleModel[]>[];
+    private _lblCaption: JQuery;
 
     private static DISABLED_CSSCLASS: string = "node-disabled";
     private static BOLD_CSSCLASS: string = "dsw-text-bold";
-    private static RACI_ROLE_ICON: string = "../App_Themes/DocSuite2008/imgset16/Admin.png";
+    private static RACI_ROLE_ICON: string = "../App_Themes/DocSuite2008/imgset16/coedit.png";
     private static LOADED_EVENT: string = "onLoaded";
     private static ADD_TOOLBAR_ACTION_KEYNAME = "add";
     private static DELETE_TOOLBAR_ACTION_KEYNAME = "delete";
@@ -63,6 +71,7 @@ class uscRoleRest {
     private static SET_RACI_ROLE_TOOLBAR_ACTION_KEYNAME = "setRaciRole";
     private static SET_FASCICLE_VISIBILITY_TYPE_TOOLBAR_ACTION_KEYNAME = "setFascicleVisibilityType";
     public static NEED_ROLES_FROM_EXTERNAL_SOURCE: string = "onNeedRolesFromExternalSource";
+    public static TENANT_CHANGE_EVENT: string = "onTenantChange";
 
     private _multipleRolesEnabled(): boolean {
         return JSON.parse(this.multipleRoles.toLowerCase());
@@ -120,6 +129,7 @@ class uscRoleRest {
         this._rowContent.show();
         this._isContentExpanded = true;
         this._btnExpandRoles = <Telerik.Web.UI.RadButton>$find(this.btnExpandRolesId);
+        this._lblCaption = <JQuery>$(`#${this.lblCaptionId}`);
 
         this.bindControlsEvents();
         $(`#${this.pnlContentId}`).data(this);
@@ -150,6 +160,16 @@ class uscRoleRest {
             }
         });
         $(`#${this.pnlContentId}`).triggerHandler(uscRoleRest.NEED_ROLES_FROM_EXTERNAL_SOURCE);
+        $(`#${this.pnlContentId}`).on(uscRoleRest.TENANT_CHANGE_EVENT, (args, idTenantAOO) => {
+            this.enableButtons();
+            this.idTenantAOO = idTenantAOO;
+        });
+    }
+
+    public countRoles(idTenantAOO: string): JQueryPromise<number> {
+        let promise: JQueryDeferred<number> = $.Deferred<number>();
+        this._roleService.countRoles(idTenantAOO, promise.resolve, promise.reject);
+        return promise.promise();
     }
 
     /**
@@ -220,8 +240,12 @@ class uscRoleRest {
         });
     }
 
-    public clearRoleTreeView(): void {
+    public clearRoleTreeView = (clearRolesModel: boolean): void => {
         this._rolesTree.get_nodes().clear();
+        if (clearRolesModel) {
+            this._initialRoleCollection = new Array<RoleModel>();
+            localStorage.removeItem(uscRoleRest.LOCAL_STORAGE_ROLE_REST);
+        }
     }
 
     /**
@@ -231,7 +255,7 @@ class uscRoleRest {
      */
     private createTreeNodeFromRoleModel(roleModel: RoleModel, isReadOnlyMode: boolean, isExpanded: boolean): Telerik.Web.UI.RadTreeNode {
         let treeNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-        let treeNodeDescription: string = isReadOnlyMode && roleModel.ActiveFrom ? `${roleModel.Name} - autorizzato il ${roleModel.ActiveFrom}` : `${roleModel.Name}`;
+        let treeNodeDescription: string = `${roleModel.Name}`;
         let treeNodeImageUrl: string = this._raciRoleCollection && this._raciRoleCollection.some(x => x.IdRole === roleModel.IdRole)
             ? uscRoleRest.RACI_ROLE_ICON
             : roleModel.IdRoleFather === null || roleModel.IdRoleFather === undefined
@@ -398,7 +422,13 @@ class uscRoleRest {
         }
 
         let parentNodeChildren: Telerik.Web.UI.RadTreeNodeCollection = selectedNodeParent.get_nodes();
-        parentNodeChildren.remove(selectedNodeToDelete);
+
+        if (selectedNodeToDelete.get_allNodes().length) {
+            selectedNodeToDelete.set_contentCssClass(uscRoleRest.DISABLED_CSSCLASS);
+            this._actionToolbar.findItemByValue(uscRoleRest.DELETE_TOOLBAR_ACTION_KEYNAME)?.set_enabled(false);
+        } else {
+            parentNodeChildren.remove(selectedNodeToDelete);
+        }
 
         let parentHasChildrenLeft: boolean = parentNodeChildren.get_count() > 0;
         let parentIsDisabled: boolean = selectedNodeParent.get_contentCssClass() === uscRoleRest.DISABLED_CSSCLASS;
@@ -419,11 +449,15 @@ class uscRoleRest {
         if (this.entityId) {
             url = `${url}&EntityId=${this.entityId}`;
         }
-        if (this.loadAllRoles) {
-            url = `${url}&LoadAllRoles=${this.loadAllRoles}`;
-        }
         if (this.dswEnvironmentType == DSWEnvironmentType[DSWEnvironmentType.Document]) {
             url = `${url}&DSWEnvironment=${this.dswEnvironmentType}`;
+        }
+
+        if (this.idTenantAOO) {
+            url = `${url}&IdTenantAOO=${this.idTenantAOO}`;
+        }
+        if (localStorage.getItem(uscRoleRest.LOCAL_STORAGE_ROLE_REST)) {
+            localStorage.removeItem(uscRoleRest.LOCAL_STORAGE_ROLE_REST);
         }
         localStorage.setItem(uscRoleRest.LOCAL_STORAGE_ROLE_REST, JSON.stringify(this._initialRoleCollection));
         this._windowManager.open(url, "windowSelRole", undefined);
@@ -452,6 +486,10 @@ class uscRoleRest {
         this._actionToolbar.get_items().forEach(function (item: Telerik.Web.UI.RadToolBarItem) {
             item.set_enabled(isVisible);
         });
+    }
+
+    public persistToolbarVisibilityOnClick = (persistVisibility: boolean): void => {
+        this._persistToolbarVisibilityOnClick = persistVisibility;
     }
 
     /**
@@ -483,10 +521,23 @@ class uscRoleRest {
      * */
     private setRaciRole = () => {
         let selectedNode: Telerik.Web.UI.RadTreeNode = this._rolesTree.get_selectedNode();
-        selectedNode.set_imageUrl(uscRoleRest.RACI_ROLE_ICON);
-        this.disableRaciRoleButton();
-        let selectedRole: RoleModel = this._initialRoleCollection.filter(x => x.IdRole === +selectedNode.get_value())[0];
-        this._raciRoleCollection.push(selectedRole);
+        if (!selectedNode) return;
+        if (selectedNode.get_imageUrl() === uscRoleRest.RACI_ROLE_ICON) {
+            if (selectedNode.get_level() === 0) {
+                selectedNode.set_imageUrl(ImageHelper.roleRootNodeImageUrl);
+            }
+            else {
+                selectedNode.set_imageUrl(ImageHelper.roleChildNodeImageUrl);
+            }
+            this._raciRoleCollection = this._raciRoleCollection.filter(x => x.IdRole !== +selectedNode.get_value());
+            this._removedRaciRoleCollection.push(this._initialRoleCollection.filter(x => x.IdRole === +selectedNode.get_value())[0]);
+        }
+        else {
+            selectedNode.set_imageUrl(uscRoleRest.RACI_ROLE_ICON);
+            let selectedRole: RoleModel = this._initialRoleCollection.filter(x => x.IdRole === +selectedNode.get_value())[0];
+            this._raciRoleCollection.push(selectedRole);
+            this._removedRaciRoleCollection = this._removedRaciRoleCollection.filter(x => x.IdRole !== selectedRole.IdRole);
+        }
     }
 
     private setFascicleVisibilityType = () => {
@@ -540,20 +591,16 @@ class uscRoleRest {
 
     rolesTree_onNodeClick = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => {
         if (args.get_node().get_contentCssClass() === uscRoleRest.DISABLED_CSSCLASS) {
-            this.disableRaciRoleButton();
+            this._actionToolbar.findItemByValue(uscRoleRest.SET_RACI_ROLE_TOOLBAR_ACTION_KEYNAME).disable();
             this._actionToolbar.findItemByValue(uscRoleRest.DELETE_TOOLBAR_ACTION_KEYNAME).disable();
-        }
-        else if (args.get_node().get_imageUrl() === uscRoleRest.RACI_ROLE_ICON) {
-            this.disableRaciRoleButton();
         }
         else {
             this._actionToolbar.findItemByValue(uscRoleRest.SET_RACI_ROLE_TOOLBAR_ACTION_KEYNAME).enable();
-            this._actionToolbar.findItemByValue(uscRoleRest.DELETE_TOOLBAR_ACTION_KEYNAME).enable();
-        }
-    }
 
-    disableRaciRoleButton = () => {
-        this._actionToolbar.findItemByValue(uscRoleRest.SET_RACI_ROLE_TOOLBAR_ACTION_KEYNAME).disable();
+            if (!this._persistToolbarVisibilityOnClick) {
+                this._actionToolbar.findItemByValue(uscRoleRest.DELETE_TOOLBAR_ACTION_KEYNAME).enable();
+            }
+        }
     }
 
     setRaciRoles = (raciRoles: RoleModel[]) => {
@@ -583,11 +630,29 @@ class uscRoleRest {
     public setToolbarRoleVisibility(isVisible: boolean): void {
         if (this._actionToolbar) {
             if (isVisible) {
-                $(`#${this.actionToolbarId}`).show();}
+                $(`#${this.actionToolbarId}`).show();
+            }
             else {
                 $(`#${this.actionToolbarId}`).hide();
             }
         }
+    }
+
+    getRemovedRaciRoles = (): RoleModel[] => {
+        return this._removedRaciRoleCollection;
+    }
+
+    public setCaption(caption: string): void {
+        this._lblCaption.text(caption);
+    }
+
+    public setOnlyMyRole(value: boolean): void {
+        sessionStorage.setItem(`${this.pnlContentId}_onlyMyRoles`, value.toString())
+    }
+
+    public setAddActionTooltip(tooltip: string): void {
+        this._actionToolbar.findItemByValue(uscRoleRest.ADD_TOOLBAR_ACTION_KEYNAME)
+            .set_toolTip(tooltip);
     }
 }
 

@@ -189,6 +189,10 @@ Public Class TbltSMSPecNotification
     End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If CommonShared.HasGroupAdministratorRight Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         InitializeAjax()
         'Inizializzo delegati per la griglia
         dgvUserConfiguration = DelegateForGrid(Of PECMailBoxUser, PECMailBoxUserDto).Delegate(dgvUserConfiguration)

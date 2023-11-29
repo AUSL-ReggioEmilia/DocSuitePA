@@ -12,6 +12,7 @@
                 uscMetadataRepositorySel = new UscMetadataRepositorySel(tenantModelConfiguration.serviceConfiguration);
                 uscMetadataRepositorySel.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                 uscMetadataRepositorySel.rcbMetadataRepositoryId = "<%= rcbMetadataRepository.ClientID %>";
+                uscMetadataRepositorySel.advancedMetadataSearchPanelId = "<%= advancedMetadataSearchPanel.ClientID %>";
                 uscMetadataRepositorySel.maxNumberElements = "<%= MaxNumberDropdownElements %>";
                 uscMetadataRepositorySel.metadataPageContentId = "<%= metadataPageContent.ClientID %>";
                 uscMetadataRepositorySel.setiContactEnabledId = <%=ProtocolEnv.SETIIntegrationEnabled.ToString().ToLower()%>;
@@ -21,6 +22,7 @@
                 uscMetadataRepositorySel.enableAdvancedMetadataSearchBtnId = "<%= enableAdvancedMetadataSearchBtn.ClientID %>";
                 uscMetadataRepositorySel.txtMetadataValueId = "<%= txtMetadataValue.ClientID %>";
                 uscMetadataRepositorySel.advancedMetadataRepositoryEnabled = <%= (EnableAdvancedMetadataSearch AndAlso ProtocolEnv.MetadataRepositoryEnabled).ToString().ToLower() %>;
+                uscMetadataRepositorySel.advancedMetadataSearchEnabled = <%=ProtocolEnv.AdvancedMetadataSearchEnabled.ToString().ToLower()%>;
 
                 uscMetadataRepositorySel.initialize();
             });
@@ -34,28 +36,13 @@
     <Rows>
         <telerik:LayoutRow runat="server" HtmlTag="Div" CssClass="dsw-panel-content" ID="metadataRepositoryRow">
             <Content>
-                <telerik:RadComboBox ID="rcbMetadataRepository" 
-                    AllowCustomText="false" 
-                    Width="300px" 
-                    CausesValidation="false" 
-                    EnableLoadOnDemand="true"
-                    EnableVirtualScrolling="false" 
-                    ShowMoreResultsBox="true" 
-                    AutoPostBack="false" 
-                    MaxHeight="160px" 
-                    runat="server" />
-                <asp:CheckBox runat="server" 
-                    ID="enableAdvancedMetadataSearchBtn" 
-                    Style="margin-left: 10px;" 
-                    Text="Ricerca avanzata"></asp:CheckBox>
+                <telerik:RadComboBox ID="rcbMetadataRepository" AllowCustomText="false" Width="300px" CausesValidation="false" EnableLoadOnDemand="true" EnableVirtualScrolling="false" ShowMoreResultsBox="true" AutoPostBack="false" MaxHeight="160px" runat="server" />
+                <div id="advancedMetadataSearchPanel" runat="server" style="display:none;">
+                <asp:CheckBox runat="server" ID="enableAdvancedMetadataSearchBtn" Style="margin-left: 10px;" Text="Ricerca avanzata"></asp:CheckBox>
+                </div>
                 <usc:uscSetiContactSel runat="server" ID="uscSetiContactSel" />
                 <div style="margin-top: 5px;">
-                    <telerik:RadTextBox ID="txtMetadataValue" 
-                        MaxLength="255" 
-                        runat="server" 
-                        Width="300px"
-                        LabelCssClass="strongRiLabel t-col-right-padding"
-                        Label="Valore metadati:"/>
+                    <telerik:RadTextBox ID="txtMetadataValue" MaxLength="255" runat="server" Width="300px" LabelCssClass="strongRiLabel t-col-right-padding" Label="Valore metadati:"/>
                 </div>
                 <usc:uscAdvancedSearchDynamicMetadataRest runat="server" ID="uscAdvancedSearchDynamicMetadataRest"></usc:uscAdvancedSearchDynamicMetadataRest>
             </Content>

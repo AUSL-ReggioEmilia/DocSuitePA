@@ -113,7 +113,7 @@ class FascProcessMove extends FascBase {
     private _loadCategoryProcesses(categoryId: number): JQueryPromise<void> {
         let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
 
-        this._processService.getAvailableProcesses(null, true, categoryId, null, (categoryProcesses: ProcessModel[]) => {
+        this._processService.getAvailableProcesses(null, true, categoryId, null, false, (categoryProcesses: ProcessModel[]) => {
             categoryProcesses.forEach((categoryProcess: ProcessModel) => {
                 let currentProcessTreeNode: Telerik.Web.UI.RadTreeNode
                     = this._createTreeNode(TreeNodeType.Process, categoryProcess.Name, categoryProcess.UniqueId, FascProcessMove.PROCESS_IMGURL, this._treeRootNode());

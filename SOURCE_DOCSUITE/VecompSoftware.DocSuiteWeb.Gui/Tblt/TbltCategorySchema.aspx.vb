@@ -56,6 +56,10 @@ Public Class TbltCategorySchema
         End If
     End Sub
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         InitializeAjax()
         If Not Page.IsPostBack Then
             InitializePage()
@@ -70,9 +74,6 @@ Public Class TbltCategorySchema
 
 #Region "Methods"
     Private Sub InitializePage()
-        If Not CommonShared.HasGroupTblCategoryRight Then
-            Throw New DocSuiteException("Utente non autorizzato alla visualizzazione della Versione del Classificatore.")
-        End If
         LoadCategorySchemas()
     End Sub
 

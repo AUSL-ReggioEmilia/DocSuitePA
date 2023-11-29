@@ -4,6 +4,7 @@ Imports System.Reflection
 Imports System.Web
 Imports System.Web.Optimization
 Imports HibernatingRhinos.Profiler.Appender.NHibernate
+Imports iText.License
 Imports Limilabs.Mail.Licensing
 Imports NHibernate
 Imports VecompSoftware.DocSuiteWeb.Data
@@ -49,9 +50,9 @@ Public Class GlobalAsax
             NHibernateProfiler.Initialize()
         End If
 
-        If ConfigurationManager.AppSettings.GetValueOrDefault(Of Boolean)("limilabs", False) Then
-            validateLimilabsLicense()
-        End If
+        ValidateItextLicense()
+
+        ValidateLimilabsLicense()
 
         ApplyTenantListenerCallback()
 
@@ -130,7 +131,7 @@ Public Class GlobalAsax
 
     ''' <summary> Verifica la validità del file di licenza. </summary>
     ''' <remarks> MailLicense.xml di Mail.dll (www.limilabs.com) </remarks>
-    Private Sub validateLimilabsLicense()
+    Private Sub ValidateLimilabsLicense()
         Dim license As String = LicenseHelper.GetLicensePath
         Dim status As LicenseStatus = LicenseHelper.GetLicenseStatus
 
@@ -148,6 +149,14 @@ Public Class GlobalAsax
             Case Else
                 Throw New DocSuiteException("Stato licenza MailLicense.xml sconosciuto")
         End Select
+    End Sub
+
+    Private Sub ValidateItextLicense()
+        Try
+            LicenseKey.LoadLicenseFile(Server.MapPath("itextkey.xml"))
+        Catch
+            Throw New DocSuiteException("Licenza itextkey.xml non valida.")
+        End Try
     End Sub
 
     Private Sub ApplyTenantListenerCallback()

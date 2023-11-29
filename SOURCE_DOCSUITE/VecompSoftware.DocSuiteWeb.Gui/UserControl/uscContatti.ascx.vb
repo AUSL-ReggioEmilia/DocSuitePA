@@ -1,13 +1,18 @@
 ﻿Imports System.Collections.Generic
+Imports System.IO
 Imports System.Linq
 Imports System.Text
+Imports OfficeOpenXml.Core
 Imports Telerik.Web.UI
+Imports Telerik.Web.UI.GridExcelBuilder
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
+Imports VecompSoftware.DocSuiteWeb.Gui.WebComponent
+Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.DocSuiteWeb.Gui.DataTableExtensions
 
 Partial Public Class uscContatti
     Inherits DocSuite2008BaseControl
@@ -22,6 +27,8 @@ Partial Public Class uscContatti
     Private _excluded As List(Of Integer)
     Private Const RoleEnabledContactTag As String = "IsRoleContact"
 
+    Private Const EXPORT_TO_EXCEL_COMMAND_NAME As String = "exportToExcel"
+    Private ReadOnly _excelColumns As List(Of String) = New List(Of String)() From {"CodiceRicerca", "RagioneSociale", "PEC", "Cognome", "Nome", "e-mail", "CodFisc/PIVA", "TitoloStudio", "Via/Piazza/Corso", "Indirizzo", "NCivico", "CAP", "Citta", "Provincia", "Telefono", "Fax", "Note"}
 #End Region
 
 #Region " Properties "
@@ -245,7 +252,7 @@ Partial Public Class uscContatti
     Public ReadOnly Property RoleContactIds As List(Of Integer)
         Get
             If _roleContactIds Is Nothing Then
-                _roleContactIds = FacadeFactory.Instance.ContactFacade.GetContactMyRoles()
+                _roleContactIds = FacadeFactory.Instance.ContactFacade.GetContactMyRoles(CurrentTenant.TenantAOO.UniqueId)
             End If
             Return _roleContactIds
         End Get
@@ -343,10 +350,6 @@ Partial Public Class uscContatti
                 Dim contact As Contact = Facade.ContactFacade.GetById(Integer.Parse(tn.Value))
                 tn.Style.Remove("color")
                 tn.Attributes("Recovery") = "false"
-                If contact.IsChanged.Equals(Convert.ToInt16(True)) Then
-                    tn.Style.Add("color", "green")
-                    tn.Attributes.Add("Changed", "true")
-                End If
                 tn.Nodes.Clear()
                 SelectNode(tn)
 
@@ -387,13 +390,10 @@ Partial Public Class uscContatti
             contactListId = Guid.Parse(ddlContactLists.SelectedValue)
         End If
 
-        ' Get current user's tenant
-        Dim currentUserTenant As Tenant = GetCurrentTenant()
-
-        Dim contactList As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(txtSearchCode.Text, 1S,
+        Dim contactList As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(txtSearchCode.Text, True,
                                                                                            categoryFascicleRightRoles:=CurrentCategoryFascicleRightRoles,
                                                                                            excludeParentIds:=ExcludedContacts, onlyParentId:=OnlyParentId, contactListId:=contactListId,
-                                                                                           procedureType:=CategoryContactsProcedureType, idRole:=SearchInRoleContacts, roleType:=RoleContactsProcedureType, currentTenantId:=currentUserTenant?.UniqueId)
+                                                                                           procedureType:=CategoryContactsProcedureType, idRole:=SearchInRoleContacts, roleType:=RoleContactsProcedureType)
         If (contactList.Count = 0) Then
             BasePage.AjaxAlert("Codice inesistente.")
             txtSearchCode.Focus()
@@ -442,6 +442,10 @@ Partial Public Class uscContatti
             Dim nodes As RadTreeNodeCollection = If(contactTree.SelectedNode IsNot Nothing, contactTree.SelectedNode.Nodes, contactTree.Nodes(0).Nodes)
             CheckNodes(nodes, btnToolbar.CommandName.Eq("checkAllContacts"))
         End If
+    End Sub
+
+    Private Sub BtnExportExcel(sender As Object, e As EventArgs) Handles btnExportToExcel.Click
+        ExportContactChildrenNodesToExcel(contactTree.SelectedNode)
     End Sub
 
     Private Sub GroupNodeChecked(ByVal sender As Object, ByVal e As RadTreeNodeEventArgs) Handles contactTree.NodeCheck
@@ -588,7 +592,7 @@ Partial Public Class uscContatti
 
         SetButtons(contactTree.SelectedNode)
 
-        DirectCast(ToolBar.FindButtonByCommandName("edit"), RadToolBarButton).ImageUrl = ImagePath.SmallEdit
+        DirectCast(ToolBar.FindButtonByCommandName("edit"), RadToolBarButton).ImageUrl = ImagePath.SmallAddressEditor
         DirectCast(ToolBar.FindButtonByCommandName("move"), RadToolBarButton).ImageUrl = ImagePath.SmallMoveToFolder
         DirectCast(ToolBar.FindButtonByCommandName("delete"), RadToolBarButton).ImageUrl = ImagePath.SmallRemove
         DirectCast(ToolBar.FindButtonByCommandName("recovery"), RadToolBarButton).ImageUrl = ImagePath.SmallRecycle
@@ -601,7 +605,7 @@ Partial Public Class uscContatti
         DirectCast(ToolBar.FindButtonByCommandName("log"), RadToolBarButton).ImageUrl = ImagePath.SmallLog
         DirectCast(ToolBar.FindButtonByCommandName("print"), RadToolBarButton).ImageUrl = ImagePath.SmallPrinter
         DirectCast(ToolBar.FindButtonByCommandName("legenda"), RadToolBarButton).ImageUrl = ImagePath.SmallLegend
-        DirectCast(ToolBar.FindButtonByCommandName("clone"), RadToolBarButton).ImageUrl = ImagePath.SmallDocumentCopies
+        DirectCast(ToolBar.FindButtonByCommandName("clone"), RadToolBarButton).ImageUrl = ImagePath.SmallClone
     End Sub
 
     ''' <summary> Impostazioni dei pulsanti che possono cambiare </summary>
@@ -614,8 +618,8 @@ Partial Public Class uscContatti
 
         Dim isRoot As Boolean = node Is Nothing OrElse node.ParentNode Is Nothing
         If MultiSelect Then
-            ToolBar.FindButtonByCommandName("checkAllContacts").Text = If(isRoot, "Seleziona tutti", "Seleziona Figli")
-            ToolBar.FindButtonByCommandName("uncheckAllContacts").Text = If(isRoot, "Deseleziona tutti", "Deseleziona Figli")
+            ToolBar.FindButtonByCommandName("checkAllContacts").Text = If(isRoot, "Seleziona tutti", "Seleziona figli")
+            ToolBar.FindButtonByCommandName("uncheckAllContacts").Text = If(isRoot, "Deseleziona tutti", "Deseleziona figli")
         End If
 
         ' Pulisco menu contestuale
@@ -632,9 +636,6 @@ Partial Public Class uscContatti
                 btn.Visible = False
             Next
             For Each btn As RadToolBarButton In ToolBar.GetGroupButtons("move")
-                btn.Visible = False
-            Next
-            For Each btn As RadToolBarButton In ToolBar.GetGroupButtons("history")
                 btn.Visible = False
             Next
             For Each btn As RadToolBarButton In ToolBar.GetGroupButtons("clone")
@@ -658,9 +659,6 @@ Partial Public Class uscContatti
         For Each btn As RadToolBarButton In ToolBar.GetGroupButtons("add")
             btn.Visible = False
         Next
-        For Each btn As RadToolBarButton In ToolBar.GetGroupButtons("history")
-            btn.Visible = False
-        Next
         For Each btn As RadToolBarButton In ToolBar.GetGroupButtons("clone")
             btn.Visible = False
         Next
@@ -673,22 +671,14 @@ Partial Public Class uscContatti
 
         Dim nodeContactType As String = If(node Is Nothing, "", node.Attributes("ContactType"))
 
-
-        If ProtocolEnv.RoleContactHistoricizing Then
-
-            Dim showHistory As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("showHistory"), RadToolBarButton)
-            If Not String.IsNullOrEmpty(node.Value) Then
-                If CheckHistoryDetails(Convert.ToInt32(node.Value)) Then
-                    showHistory.Enabled = CheckHistoryDetails(Convert.ToInt32(node.Value)) AndAlso enableButtons
-                    showHistory.Visible = CheckHistoryDetails(Convert.ToInt32(node.Value))
-                End If
-                showHistory.ImageUrl = ImagePath.SmallInfo
-                showHistory.CommandArgument = GetWindowParameters("Add", "H")
-                menu.Items.Add(New RadMenuItem("Storicizzazione Contatto") With {.Value = showHistory.CommandName, .ImageUrl = showHistory.ImageUrl})
-            Else
-                showHistory.Visible = False
-            End If
-
+        Dim exportToExcel As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("exportToExcel"), RadToolBarButton)
+        If node IsNot Nothing Then
+            exportToExcel.Visible = True
+            exportToExcel.ImageUrl = "~/App_Themes/DocSuite2008/imgset16/downloadDocument.png"
+            menu.Items.Add(New RadMenuItem("Esporta contatti in excel") With {.Value = exportToExcel.CommandName, .ImageUrl = exportToExcel.ImageUrl})
+            exportToExcel.Enabled = enableButtons
+        Else
+            exportToExcel.Visible = False
         End If
 
         Dim addAmministrazione As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("addAmministrazione"), RadToolBarButton)
@@ -753,7 +743,7 @@ Partial Public Class uscContatti
             addRuolo.Visible = True
             addRuolo.ImageUrl = ImagePath.ContactTypeIcon(ContactType.Role)
             addRuolo.CommandArgument = GetWindowParameters("Add", "R")
-            menu.Items.Add(New RadMenuItem("Nuovo Ruolo") With {.Value = addRuolo.CommandName, .ImageUrl = addRuolo.ImageUrl})
+            menu.Items.Add(New RadMenuItem("Nuovo ruolo") With {.Value = addRuolo.CommandName, .ImageUrl = addRuolo.ImageUrl})
             addRuolo.Enabled = enableButtons
         Else
             addRuolo.Visible = False
@@ -764,7 +754,7 @@ Partial Public Class uscContatti
             addPersona.Visible = True
             addPersona.ImageUrl = ImagePath.ContactTypeIcon(ContactType.Person)
             addPersona.CommandArgument = GetWindowParameters("Add", "P")
-            menu.Items.Add(New RadMenuItem("Nuova Persona") With {.Value = addPersona.CommandName, .ImageUrl = addPersona.ImageUrl})
+            menu.Items.Add(New RadMenuItem("Nuova persona") With {.Value = addPersona.CommandName, .ImageUrl = addPersona.ImageUrl})
             addPersona.Enabled = enableButtons
         Else
             addPersona.Visible = False
@@ -776,7 +766,7 @@ Partial Public Class uscContatti
         addPersoneExcel.ImageUrl = ImagePath.SmallExcel
         addPersoneExcel.CommandArgument = GetWindowParameters("Add", "P")
         addPersoneExcel.Enabled = enableButtons
-        menu.Items.Add(New RadMenuItem("Nuovi Contatti aziende tramite excel") With {.Value = addPersoneExcel.CommandName, .ImageUrl = addPersoneExcel.ImageUrl})
+        menu.Items.Add(New RadMenuItem("Nuovi contatti aziende tramite excel") With {.Value = addPersoneExcel.CommandName, .ImageUrl = addPersoneExcel.ImageUrl})
 
         Dim imgEdit As RadToolBarButton = DirectCast(ToolBar.FindButtonByCommandName("edit"), RadToolBarButton)
         imgEdit.Visible = True
@@ -893,18 +883,15 @@ Partial Public Class uscContatti
             Exit Sub
         End If
 
-        'recupera i contatti per descrizione
-        Dim currentUserTenant As Tenant = GetCurrentTenant()
-
         Dim contactList As IList(Of Contact)
         If containChecked Then
             contactList = Facade.ContactFacade.GetContactByDescription(search, NHibernateContactDao.DescriptionSearchType.Contains, ShowAll, RoleContactIds, categoryFascicleRightRoles:=CurrentCategoryFascicleRightRoles,
                                                                        rootFullIncrementalPath:=contactFullIncrementalPath, excludeParentId:=ExcludedContacts, onlyParentId:=OnlyParentId, contactListId:=contactListId,
-                                                                       procedureType:=CategoryContactsProcedureType, idRole:=SearchInRoleContacts, roleType:=RoleContactsProcedureType, currentTenant:=currentUserTenant)
+                                                                       procedureType:=CategoryContactsProcedureType, idRole:=SearchInRoleContacts, roleType:=RoleContactsProcedureType)
         Else
             contactList = Facade.ContactFacade.GetContactByDescription(search, NHibernateContactDao.DescriptionSearchType.Equal, ShowAll, RoleContactIds, categoryFascicleRightRoles:=CurrentCategoryFascicleRightRoles,
                                                                        rootFullIncrementalPath:=contactFullIncrementalPath, excludeParentId:=ExcludedContacts, onlyParentId:=OnlyParentId, contactListId:=contactListId,
-                                                                       procedureType:=CategoryContactsProcedureType, idRole:=SearchInRoleContacts, roleType:=RoleContactsProcedureType, currentTenant:=currentUserTenant)
+                                                                       procedureType:=CategoryContactsProcedureType, idRole:=SearchInRoleContacts, roleType:=RoleContactsProcedureType)
         End If
 
         PopulateTreeViewContacts(contactList.ToList())
@@ -913,20 +900,16 @@ Partial Public Class uscContatti
     Protected Sub LoadContacts(ByRef selNode As RadTreeNode)
         Dim contactsList As IList(Of Contact)
 
-        ' Get current user's tenant
-        Dim currentUserTenant As Tenant = GetCurrentTenant()
-
         If String.IsNullOrEmpty(selNode.Value) Then
-            contactsList = Facade.ContactFacade.GetRootContact(EditMode OrElse ShowAll, Not CommonShared.HasGroupTblContactRight(), EditMode,
+            contactsList = Facade.ContactFacade.GetRootContact(EditMode OrElse ShowAll, Not CommonShared.HasGroupTblContactRight(), EditMode, CurrentTenant.TenantAOO.UniqueId,
                                                                categoryFascicleRightRoles:=CurrentCategoryFascicleRightRoles, excludeParentId:=ExcludedContacts,
                                                                onlyParentId:=OnlyParentId, excludeRoleRoot:=ExcludeRoleRoot, procedureType:=CategoryContactsProcedureType,
-                                                               idRole:=SearchInRoleContacts, roleType:=RoleContactsProcedureType, currentTenant:=currentUserTenant
-                                                               )
+                                                               idRole:=SearchInRoleContacts)
         Else
             contactsList = Facade.ContactFacade.GetContactByParentId(Integer.Parse(selNode.Value), EditMode OrElse ShowAll,
                                                                      categoryFascicleRightRoles:=CurrentCategoryFascicleRightRoles, excludeParentIds:=ExcludedContacts,
                                                                      onlyParentId:=OnlyParentId, procedureType:=CategoryContactsProcedureType, idRole:=SearchInRoleContacts,
-                                                                     roleType:=RoleContactsProcedureType, currentTenant:=currentUserTenant)
+                                                                     roleType:=RoleContactsProcedureType)
         End If
 
         For Each contact As Contact In contactsList
@@ -938,10 +921,6 @@ Partial Public Class uscContatti
             selNode.Nodes.Add(node)
             If contact.RoleRootContact IsNot Nothing OrElse selNode.Attributes(RoleEnabledContactTag) IsNot Nothing Then
                 node.Attributes.Add(RoleEnabledContactTag, "true")
-            End If
-            If contact.IsChanged.Equals(1S) AndAlso contact.IsActive.Equals(Convert.ToInt16(True)) Then
-                node.Style.Add("color", "green")
-                node.Attributes.Add("Changed", "true")
             End If
             If contact.Parent Is Nothing Then
                 node.Font.Bold = True
@@ -969,15 +948,6 @@ Partial Public Class uscContatti
         Next
     End Sub
 
-    ''' <summary>
-    '''     If ProtocolEnv.MultiTenantEnabled returns the current users's Tenant
-    '''     otherwise returns Nothing
-    ''' </summary>
-    Private Function GetCurrentTenant() As Tenant
-        Dim currentUserTenant As Tenant = CType(Session("CurrentTenant"), Tenant)
-        Return currentUserTenant
-    End Function
-
     Private Function CreateContactNode(ByRef contact As Contact, Optional ByVal checkChildren As Boolean = True) As RadTreeNode
         Dim node As New RadTreeNode()
         node.Text = contact.FullDescription
@@ -996,7 +966,7 @@ Partial Public Class uscContatti
 
         node.Attributes.Add("ContactType", contact.ContactType.Id)
         ' Imposto il colore del nodo
-        If (contact.IsActive <> 1 OrElse Not contact.IsActiveRange()) Then
+        If (Not contact.IsActive OrElse Not contact.IsActiveRange()) Then
             node.Style.Add("color", "gray")
         Else
             node.Style.Remove("color")
@@ -1007,10 +977,10 @@ Partial Public Class uscContatti
             node.Attributes.Add("Recovery", "false")
         Else
             ' negli altri casi disabilito la selezione
-            If contact.IsActive <> 1 OrElse Not contact.IsActiveRange() Then
+            If Not contact.IsActive OrElse Not contact.IsActiveRange() Then
                 node.Checkable = False
             End If
-            node.Attributes.Add("Recovery", If(contact.IsActive <> 1, "true", "false"))
+            node.Attributes.Add("Recovery", If(Not contact.IsActive, "true", "false"))
         End If
         node.EnableContextMenu = EditMode
 
@@ -1118,23 +1088,11 @@ Partial Public Class uscContatti
                 node.Expanded = True
             End If
         End If
-
-        'CheckHistoryDetails(node.Value)
-
         InitializeDetails(node.Value)
-
         SetButtons(node)
-
         node.ExpandMode = TreeNodeExpandMode.ClientSide
 
     End Sub
-    Private Function CheckHistoryDetails(ByVal roleId As Integer) As Boolean
-        Dim currentContact As Contact = Facade.ContactFacade.GetById(roleId)
-        If currentContact Is Nothing OrElse currentContact.IsChanged.Equals(0S) Then
-            Return False
-        End If
-        Return True
-    End Function
     Private Sub InitializeDetails(ByVal contactId As String)
         Dim tmpId As Integer
         If Not Integer.TryParse(contactId, tmpId) Then
@@ -1158,7 +1116,7 @@ Partial Public Class uscContatti
             ' si è brutto, ma così si confonde meglio
             Dim activeWarn As New HtmlGenericControl("div")
             activeWarn.Attributes.Add("class", "warningArea")
-            activeWarn.InnerText = String.Format("Non abilitato: Valido da {0} a {1}", contact.ActiveFrom.DefaultString, contact.ActiveTo.DefaultString)
+            activeWarn.InnerText = "Non abilitato"
             contactDetailAjaxPanel.Controls.AddAt(0, activeWarn)
         End If
 
@@ -1228,8 +1186,9 @@ Partial Public Class uscContatti
         End If
 
         If contact.ContactType IsNot Nothing Then
-            Dim image As New Image()
-            image.ImageUrl = ImagePath.ContactTypeIcon(contact.ContactType.Id, contact.isLocked.HasValue AndAlso contact.isLocked.Value = 1)
+            Dim image As New Image With {
+                .ImageUrl = ImagePath.ContactTypeIcon(contact.ContactType.Id, contact.isLocked.HasValue AndAlso contact.isLocked.Value = 1)
+            }
             Dim text As New LiteralControl(Replace(contact.Description, "|", " "))
             contactDetailTable.Rows.AddRaw(0, Nothing, Nothing, {30, 70}, {image, text}, {"head", "head"})
         End If
@@ -1264,6 +1223,69 @@ Partial Public Class uscContatti
         End If
         Return True
     End Function
+
+    Private Sub ExportContactChildrenNodesToExcel(parentNode As RadTreeNode)
+        Dim dataTable As DataTable = New DataTable()
+        For Each column As String In _excelColumns
+            dataTable.Columns.Add(column)
+        Next
+
+        Dim contacts As ICollection(Of Contact)
+        If String.IsNullOrEmpty(parentNode.Value) Then
+            contacts = Facade.ContactFacade.GetRootContact(EditMode OrElse ShowAll, Not CommonShared.HasGroupTblContactRight(), EditMode, CurrentTenant.TenantAOO.UniqueId,
+                                                               categoryFascicleRightRoles:=CurrentCategoryFascicleRightRoles, excludeParentId:=ExcludedContacts,
+                                                               onlyParentId:=OnlyParentId, excludeRoleRoot:=ExcludeRoleRoot, procedureType:=CategoryContactsProcedureType,
+                                                               idRole:=SearchInRoleContacts)
+        Else
+            contacts = Facade.ContactFacade.GetContactByParentId(Integer.Parse(parentNode.Value), EditMode OrElse ShowAll,
+                                                                     categoryFascicleRightRoles:=CurrentCategoryFascicleRightRoles, excludeParentIds:=ExcludedContacts,
+                                                                     onlyParentId:=OnlyParentId, procedureType:=CategoryContactsProcedureType, idRole:=SearchInRoleContacts,
+                                                                     roleType:=RoleContactsProcedureType)
+        End If
+
+        Dim dataRow As DataRow
+        Dim splittedDescription As String()
+        For Each contact As Contact In contacts
+            If ExcludedContacts IsNot Nothing AndAlso ExcludedContacts.Contains(contact.Id) Then
+                Continue For
+            End If
+
+            dataRow = dataTable.NewRow()
+            If Not contact.ContactType.Id.Equals(ContactType.Person) Then
+                dataRow("RagioneSociale") = contact.Description
+            End If
+
+            If contact.ContactType.Id.Equals(ContactType.Person) Then
+                splittedDescription = contact.Description.Split("|"c)
+                dataRow("Cognome") = splittedDescription.First()
+                If splittedDescription.Length > 1 Then
+                    dataRow("Nome") = splittedDescription.Last()
+                End If
+            End If
+
+            dataRow("CodiceRicerca") = contact.SearchCode
+            dataRow("CodFisc/PIVA") = contact.FiscalCode
+            If contact.Address IsNot Nothing Then
+                If contact.Address.PlaceName IsNot Nothing Then
+                    dataRow("Via/Piazza/Corso") = contact.Address.PlaceName.Description
+                End If
+                dataRow("Indirizzo") = contact.Address.Address
+                dataRow("NCivico") = contact.Address.CivicNumber
+                dataRow("CAP") = contact.Address.ZipCode
+                dataRow("Citta") = contact.Address.City
+                dataRow("Provincia") = contact.Address.CityCode
+            End If
+            dataRow("Telefono") = contact.TelephoneNumber
+            dataRow("Fax") = contact.FaxNumber
+            dataRow("Note") = contact.Note
+            dataRow("e-mail") = contact.EmailAddress
+            dataRow("PEC") = contact.CertifiedMail
+
+            dataTable.Rows.Add(dataRow)
+        Next
+
+        dataTable.ExportToExcel(MyBase.Page, "export.xls")
+    End Sub
 #End Region
 
 End Class

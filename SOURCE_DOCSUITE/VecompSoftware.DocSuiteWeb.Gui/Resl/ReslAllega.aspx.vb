@@ -125,11 +125,11 @@ Public Class ReslAllega
 
     ''' <summary> Gestisce l'evento onclick del pulsante Allega originali. </summary>
     Private Sub BtnAddClick(ByVal sender As Object, ByVal e As EventArgs) Handles btnAdd.Click
-        Dim selected As New List(Of DocumentInfo)
+        Dim selected As New List(Of BiblosDocumentInfo)
         For Each item As GridDataItem In DocumentListGrid.MasterTableView.GetSelectedItems()
             Dim copiaConforme As RadButton = DirectCast(item.FindControl("CopiaConforme"), RadButton)
 
-            Dim documentInfo As DocumentInfo = DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(CType(item.GetDataKeyValue("Serialized"), String)))
+            Dim documentInfo As BiblosDocumentInfo = DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(CType(item.GetDataKeyValue("Serialized"), String)))
 
             If copiaConforme.Checked AndAlso TypeOf documentInfo Is BiblosDocumentInfo Then
                 documentInfo = New BiblosPdfDocumentInfo(DirectCast(documentInfo, BiblosDocumentInfo))
@@ -144,14 +144,6 @@ Public Class ReslAllega
             Exit Sub
         End If
         CloseWindowScript(selected)
-    End Sub
-
-    Protected Sub ImgAttachCommand(ByVal sender As Object, ByVal e As CommandEventArgs)
-        If e.CommandName = "OpenAttachment" Then
-            Dim url As String = "../Comm/CommFrameset.aspx?Pagina=../Temp/" & e.CommandArgument
-            Dim script As String = "if(window.parent){var oManager = window.parent.GetRadWindowManager(); var wnd = oManager.open ('" & url & "','windowPreviewDocument'); wnd.setSize(700,480);}"
-            ScriptManager.RegisterClientScriptBlock(Me, Me.GetType(), "openAttachWndw", script, True)
-        End If
     End Sub
 
 #End Region
@@ -285,24 +277,35 @@ Public Class ReslAllega
             End If
 
             ''Procedo poi ugualmente con gli altri documenti che non sono soggetti a privacy
+            Dim omissisMainDocuments As BiblosDocumentInfo() = Facade.ResolutionFacade.GetDocumentsOmissis(resl, incremental, False)
+            If omissisMainDocuments.Count > 0 Then
+                _allDocuments.AddRange(ToSeries.GetWithDummyParent("Documenti Omissis", omissisMainDocuments))
+            End If
+
             _allDocuments.AddRange(ToSeries.GetWithDummyParent("Allegati", Facade.ResolutionFacade.GetAttachments(resl, incremental, False)))
+
+            Dim omissisAttachmentDocuments As BiblosDocumentInfo() = Facade.ResolutionFacade.GetAttachmentsOmissis(resl, incremental, False)
+            If omissisAttachmentDocuments.Count > 0 Then
+                _allDocuments.AddRange(ToSeries.GetWithDummyParent("Allegati Omissis", omissisAttachmentDocuments))
+            End If
+
             _allDocuments.AddRange(ToSeries.GetWithDummyParent("Annessi", Facade.ResolutionFacade.GetAnnexes(resl, incremental)))
         End If
 
         Return _allDocuments
     End Function
 
-    Private Sub CloseWindowScript(documents As IList(Of DocumentInfo))
-        Dim list As List(Of String) = documents.Select(Function(s) HttpUtility.UrlEncode(s.ToQueryString().AsEncodedQueryString())).ToList()
+    Private Sub CloseWindowScript(documents As IList(Of BiblosDocumentInfo))
+        Dim list As New Dictionary(Of String, String)
+        For Each item As BiblosDocumentInfo In documents
+            list.Add(BiblosFacade.SaveUniqueToTemp(item).Name, item.Name)
+        Next
         'Imposto StringEscapeHandling = EscapeHtml per evitare i caratteri che possono generare errore (es. apostrofo)
         Dim serialized As String = JsonConvert.SerializeObject(list)
         Dim jsStringEncoded As String = HttpUtility.JavaScriptStringEncode(serialized)
 
         Dim closeWindow As String = String.Format("CloseWindow('{0}');", jsStringEncoded)
         MasterDocSuite.AjaxManager.ResponseScripts.Add(closeWindow)
-
-
-
     End Sub
 
 #End Region

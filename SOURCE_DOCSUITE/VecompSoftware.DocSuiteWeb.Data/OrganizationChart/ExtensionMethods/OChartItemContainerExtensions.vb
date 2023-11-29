@@ -8,10 +8,6 @@ Public Module OChartItemContainerExtensions
         Return source.Select(Function(c) New OChartItemContainer(c) With {.Item = item})
     End Function
     <Extension()>
-    Public Function ReplicateList(ByVal source As IEnumerable(Of OChartItemContainer)) As IEnumerable(Of OChartItemContainer)
-        Return source.ReplicateList(Nothing)
-    End Function
-    <Extension()>
     Public Function FindByResource(source As IEnumerable(Of OChartItemContainer), container As Container) As IEnumerable(Of OChartItemContainer)
         Return source.Where(Function(c) c.Container.Id.Equals(container.Id))
     End Function

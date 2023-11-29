@@ -10,6 +10,7 @@ Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports System.IO
 Imports Telerik.Web.UI
+Imports System.Text
 
 Namespace Prot.PosteWeb
     Partial Class Item
@@ -22,6 +23,7 @@ Namespace Prot.PosteWeb
         Public Const TypeTNotice As String = "SE"
         Public Const ExtendedInformationSercKey As String = "SercInformation"
         Private Const ViewStatePolAccDenKey As String = "polAccount[{0}].Denominazionni"
+        Private Const PROTOCOL_MERGED_DOCUMENT_NAME As String = "Documento principale.pdf"
 #End Region
 
 #Region " Properties "
@@ -114,187 +116,21 @@ Namespace Prot.PosteWeb
 
         Private Sub cmdSend_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdSend.Click
             Try
-                'Inizializzo una nuova POLRequest
-                Dim request As POLRequest = GetPOLRequestByType()
-                request.DocumentUnit = Facade.DocumentUnitFacade.GetById(CurrentProtocol.Id)
-                'Sending TNotice does involve getting the sender from the table PosteOnLineAccount. This is added as a drop down list option
-                'to the user. The sender (chosen in the first page when inserting a protocol) is not valid for TNotice
-
-                If CurrentType.Eq(TypeTNotice) Then
-
-                    Dim selPolAccId As Integer = CInt(ddlPolAccount.SelectedValue)
-
-                    If (selPolAccId = 0) Then
-                        AjaxAlert("Specificare un account TNotice per l'invio")
-                    End If
+                If (CurrentType.Eq(TypeTNotice)) Then
+                    SaveTNotice()
                 Else
-                    Dim selectedSender As ContactDTO = Nothing
-
-                    'Imposto i mittenti.
-                    Select Case uscProtocollo.ControlSenders.GetSelectedContacts.Count
-                        Case 0
-                            If (request.Account IsNot Nothing AndAlso request.Account.DefaultContact IsNot Nothing AndAlso request.Account.DefaultContact.Address IsNot Nothing AndAlso request.Account.DefaultContact.Address.IsValidAddress) Then
-                                selectedSender = New ContactDTO(request.Account.DefaultContact, request.Account.DefaultContact.Id)
-
-                            Else AjaxAlert("Specificare un mittente per l'invio")
-                                Exit Sub
-
-                            End If
-                            Exit Select
-                        Case 1
-                            selectedSender = uscProtocollo.ControlSenders.GetSelectedContacts.Single()
-                            Exit Select
-                        Case > 1
-                            If SelectedSenders.Count = 1 Then
-                                selectedSender = SelectedSenders.Single()
-                            Else
-                                AjaxAlert("Specifica un solo mittente")
-                                Exit Sub
-                            End If
-                            Exit Select
-                    End Select
-
-                    Try
-                        SetPOLRequestSender(request, selectedSender)
-                    Catch ex As Exception
-                        FileLogger.Warn(LoggerName, "Errore indirizzo mittente", ex)
-                        AjaxAlert(ex.Message)
-                        Exit Sub
-                    End Try
+                    SavePosteWeb()
                 End If
-
-                If uscProtocollo.ControlRecipients.TreeViewControl.Nodes(0).Nodes.Count > 0 AndAlso Not uscProtocollo.ControlRecipients.TreeViewControl.Nodes(0).Nodes(0).Checkable Then
-                    uscProtocollo.ControlRecipients.TreeViewControl.Nodes(0).Nodes(0).Checked = False
-                End If
-
-                ' Imposto i destinatari.
-                ' For TNotice the required fields are Name, Surname and Email
-                Select Case uscProtocollo.ControlRecipients.GetSelectedContacts.Count
-                    Case 0
-                        AjaxAlert("Specificare almeno un destinatario per l'invio")
-                        Exit Sub
-                        Exit Select
-
-                    Case > 0
-                        If CurrentType.Eq(TypeTNotice) Then
-
-                            Dim tnoticeSenderErrors As New List(Of String)
-                            For Each recipient As ContactDTO In uscProtocollo.ControlRecipients.GetSelectedContacts()
-
-                                If recipient.Contact Is Nothing Then
-                                    AjaxAlert("dati di contatto del mittente non trovati")
-                                    Exit Sub
-                                End If
-
-                                'determining if the contactType is a person or company
-                                Dim hasDescription As Boolean = Not recipient.Contact.Description.IsNullOrEmpty()
-
-                                Dim isPerson As Boolean = (hasDescription AndAlso recipient.Contact.Description.Contains("|"c) AndAlso recipient.Contact.ContactType.Equals(ContactType.Person)) OrElse Not hasDescription
-
-
-                                '2.8.5.1 Denominazione - Se compilato indica l'intestazione/ragione sociale del destinatario Obbligatorio se non è compilato il campo 2.8.5.3 e 2.8.5.4.
-                                '2.8.5.3 Nome - Se compilato è il Nome del destinatario (obbligatorio se non è compilato il campo 2.8.5.1). Se è compilato il campo 2.8.5.1 indica il Nome del referente.
-                                '2.8.5.4 Cognome - Se compilato è il Cognome del destinatario (obbligatorio se non è compilato il campo 2.8.5.1). Se è compilato il campo 2.8.5.1 indica il Cognome del referente.
-
-                                If recipient.Contact IsNot Nothing Then
-                                    If (isPerson) Then
-                                        If recipient.Contact.FirstName.IsNullOrEmpty() Then
-                                            tnoticeSenderErrors.Add("il nome")
-                                        End If
-
-                                        If recipient.Contact.LastName.IsNullOrEmpty() Then
-                                            tnoticeSenderErrors.Add("il cognome")
-                                        End If
-                                    Else
-                                        If recipient.Contact.Description.IsNullOrEmpty() Then
-                                            tnoticeSenderErrors.Add("la denominazione")
-                                        End If
-                                    End If
-
-                                    If (recipient.Contact.EmailAddress.IsNullOrEmpty()) Then
-                                        tnoticeSenderErrors.Add("l'e-mail")
-                                    End If
-
-                                    If tnoticeSenderErrors.Count > 0 Then
-                                        AjaxAlert($"Per il destinatario {recipient.Contact.Description} mancano i seguenti campi: {String.Join(", ", tnoticeSenderErrors)}")
-                                        Exit Sub
-                                    End If
-
-                                    If (tnoticeSenderErrors.IsNullOrEmpty) Then
-                                        SetPOLRequestRecipient(request, recipient)
-                                    End If
-                                End If
-
-                            Next
-
-                        Else
-                            Dim invalidAddressRecipient As String = ""
-                            For Each recipient As ContactDTO In uscProtocollo.ControlRecipients.GetSelectedContacts()
-                                If Not (recipient.Contact IsNot Nothing AndAlso recipient.Contact.Address IsNot Nothing AndAlso recipient.Contact.Address.IsValidAddress) Then
-                                    invalidAddressRecipient += ControlChars.CrLf + recipient.Contact.Description.ToString + "; "
-                                End If
-                            Next
-
-                            If Not (invalidAddressRecipient.IsNullOrEmpty) Then
-                                AjaxAlert("Errore indirizzo destinatario presente in: " + invalidAddressRecipient)
-                                Exit Sub
-                            End If
-                        End If
-
-                        Exit Select
-
-                End Select
-
-                If CurrentType.Eq(TypeLettera) OrElse CurrentType.Eq(TypeRaccomandata) OrElse CurrentType.Eq(TypeTNotice) Then
-                    Dim posteWebLocation As Location = Facade.LocationFacade.GetById(ProtocolEnv.PosteWebRequestLocation)
-                    If posteWebLocation Is Nothing Then
-                        AjaxAlert("Attenzione! Nessuna Location definita per la gestione delle PosteWebOnline")
-                        FileLogger.Warn(LoggerName, "Nessuna Location definita per la gestione delle PosteWebOnline")
-                        Exit Sub
-                    End If
-                    Dim rq As LOLRequest = DirectCast(request, LOLRequest)
-                    Dim mergedDocuments As MergeDocumentResult = Facade.ProtocolFacade.GetMergedDocuments(CurrentProtocol, uscProtAttachs.CheckedDocumentInfos.Cast(Of BiblosDocumentInfo).ToList(), New List(Of BiblosDocumentInfo))
-                    If mergedDocuments.HasErrors Then
-                        Dim errorMessage As String = String.Concat("Sono avvenuti degli errori nella gestione dei documenti da spedire:", Environment.NewLine)
-                        errorMessage += String.Join(Environment.NewLine, mergedDocuments.Errors.Select(Function(s) s))
-                        AjaxAlert(errorMessage)
-                        Exit Sub
-                    End If
-
-                    Dim protocolDocuments As List(Of DocumentInfo) = New List(Of DocumentInfo)
-                    protocolDocuments.Add(mergedDocuments.MergedDocument)
-
-                    Dim chain As BiblosChainInfo = New BiblosChainInfo(protocolDocuments)
-                    rq.IdArchiveChain = chain.ArchiveInBiblos(posteWebLocation.ProtBiblosDSDB)
-
-                    Dim md5Service As MD5CryptoServiceProvider = New MD5CryptoServiceProvider()
-                    rq.DocumentMD5 = BitConverter.ToString(md5Service.ComputeHash(mergedDocuments.MergedDocument.Stream)).Replace("-", String.Empty)
-                    rq.DocumentName = "Documento principale.pdf"
-                ElseIf CurrentType.Eq(TypeTelegramma) Then
-                    Dim rq As TOLRequest = DirectCast(request, TOLRequest)
-                    rq.Testo = txtMessage.Text
-                End If
-
-                If CurrentType.Eq(TypeTNotice) Then
-                    If Not InitializeSercExtraProperties(request) Then
-                        Return
-                    End If
-                End If
-
-                If CurrentType.Eq(TypeTNotice) Then
-                    'The true flag excludes saving the sender which is by default included in the request
-                    'in TNOtice context sender has null entries because it's not loaded 
-                    Facade.PosteOnLineRequestFacade.SaveAll(request, True)
-                Else
-                    Facade.PosteOnLineRequestFacade.SaveAll(request)
-                End If
-
                 Response.Redirect($"ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
             Catch ex As Exception
-                FileLogger.Warn(LoggerName, "Errore durante la fase di invio", ex)
+                FileLogger.Error(LoggerName, "Errore durante la fase di invio", ex)
                 AjaxAlert(String.Format("Errore durante la fase di invio: {0}", ex.Message))
                 Exit Sub
             End Try
+        End Sub
+
+        Protected Sub chkMultipleTNotice_CheckedChanged(sender As Object, e As EventArgs) Handles chkMultipleTNotice.CheckedChanged
+            uscProtocollo.ControlRecipients.SingleCheck = Not chkMultipleTNotice.Checked
         End Sub
 #End Region
 
@@ -305,6 +141,11 @@ Namespace Prot.PosteWeb
             uscProtAttachs.EnableCheckedDocumentSelection = Not CurrentType.Eq(TypeTelegramma)
 
             tblMessagge.Visible = CurrentType.Eq(TypeTelegramma)
+
+            pnlTNoticeMessage.Visible = CurrentType.Eq(TypeTNotice)
+            pnlTNoticeObject.Visible = CurrentType.Eq(TypeTNotice)
+            pnlTNoticeOptions.Visible = CurrentType.Eq(TypeTNotice)
+            txtTNoticeObject.Text = CurrentProtocol.ProtocolObject.Truncate(100) '100 is the limitation from TNotice
 
             'documenti
             uscProtDocument.LoadDocumentInfo(ProtocolFacade.GetDocument(CurrentProtocol), False, False, False, False)
@@ -323,6 +164,9 @@ Namespace Prot.PosteWeb
             AjaxManager.AjaxSettings.AddAjaxSetting(cmdSend, pnlContent, MasterDocSuite.AjaxDefaultLoadingPanel)
             AjaxManager.AjaxSettings.AddAjaxSetting(cmdSend, cmdSend, MasterDocSuite.AjaxFlatLoadingPanel)
             AjaxManager.AjaxSettings.AddAjaxSetting(ddlPolAccount, cmdSend, MasterDocSuite.AjaxFlatLoadingPanel)
+            If (CurrentType.Eq(TypeTNotice)) Then
+                AjaxManager.AjaxSettings.AddAjaxSetting(chkMultipleTNotice, uscProtocollo.ControlRecipients.TreeViewControl)
+            End If
         End Sub
 
         Private Sub InitializeProtocolControl()
@@ -363,7 +207,14 @@ Namespace Prot.PosteWeb
                 uscProtocollo.ControlSenders.EnableCheck = True
             End If
             uscProtocollo.ControlRecipients.EnableCheck = True
-            uscProtocollo.ControlRecipients.CheckAll()
+
+            If CurrentType.Eq(TypeTNotice) Then
+                Dim recipients As ICollection(Of ContactDTO) = CurrentProtocol.GetRecipients()
+                chkMultipleTNotice.Checked = recipients.Count > 1
+                uscProtocollo.ControlRecipients.SingleCheck = Not chkMultipleTNotice.Checked
+            Else
+                uscProtocollo.ControlRecipients.CheckAll()
+            End If
 
             uscProtocollo.VisibleOggetto = True
             ' uscProtocollo.VisiblePEC = False
@@ -377,11 +228,10 @@ Namespace Prot.PosteWeb
             uscProtocollo.VisibleAssegnatario = False
             uscProtocollo.VisibleScatolone = False
             uscProtocollo.VisibleHandler = False
-            uscProtocollo.VisibleMulticlassification = False
         End Sub
 
         Private Sub InitializePOLAccounts()
-            Dim accounts As IList(Of POLAccount) = Facade.PosteOnLineAccountFacade.GetUserAccounts()
+            Dim accounts As IList(Of POLAccount) = Facade.PosteOnLineAccountFacade.GetUserAccounts(CurrentTenant.TenantAOO.UniqueId)
             ddlPolAccount.DataSource = accounts
             ddlPolAccount.DataBind()
             cmdSend.Enabled = accounts.Any()
@@ -394,7 +244,7 @@ Namespace Prot.PosteWeb
         Private Sub InitializeTNoticeAccount()
             If CurrentType.Eq(TypeTNotice) Then
                 cmdSend.Enabled = False
-                Dim accounts As IList(Of POLAccount) = Facade.PosteOnLineAccountFacade.GetUserAccounts()
+                Dim accounts As IList(Of POLAccount) = Facade.PosteOnLineAccountFacade.GetUserAccounts(CurrentTenant.TenantAOO.UniqueId)
                 Dim filtered As IList(Of POLAccount) = New List(Of POLAccount)()
 
                 For Each polAcc As POLAccount In accounts
@@ -484,7 +334,7 @@ Namespace Prot.PosteWeb
             request.StatusDescrition = $"In attesa di invio a {requestStatusDescrition}"
             request.DocumentUnit = Facade.DocumentUnitFacade.GetById(CurrentProtocol.Id)
             request.Account = Facade.PosteOnLineAccountFacade.GetById(Integer.Parse(ddlPolAccount.SelectedValue))
-            request.RegistrationDate = Date.Now
+            request.RegistrationDate = Date.UtcNow
             request.RegistrationUser = DocSuiteContext.Current.User.FullUserName
 
             Return request
@@ -537,7 +387,8 @@ Namespace Prot.PosteWeb
             extendedSercProperties.Sede.Provincia = senderDto.Contact?.Address?.CityCode
 
             extendedSercProperties.ProtocolInfo = New PRCEProtocolInformation
-            extendedSercProperties.ProtocolInfo.Subject = CurrentProtocol.ProtocolObject
+            extendedSercProperties.ProtocolInfo.Subject = txtTNoticeObject.Text
+            extendedSercProperties.ProtocolInfo.Note = txtTNoticeMessage.GetHtml(EditorStripHtmlOptions.None)
 
             Dim extendedProperties As New POLRequestContactExtendedProperties
             extendedProperties.SercExtra = extendedSercProperties
@@ -546,6 +397,214 @@ Namespace Prot.PosteWeb
             receiver.LastChangedDate = DateTimeOffset.UtcNow
 
             Return receiver
+        End Function
+
+        Private Sub SaveTNotice()
+            If (String.IsNullOrEmpty(ddlPolAccount.SelectedValue)) Then
+                Throw New DocSuiteException("Specificare un account TNotice per l'invio")
+            End If
+
+            Dim selectedRecipients As ICollection(Of ContactDTO) = uscProtocollo.ControlRecipients.GetSelectedContacts()
+            If (selectedRecipients.Count = 0) Then
+                Throw New DocSuiteException("Specificare almeno un destinatario per l'invio")
+            End If
+
+            If (Not chkMultipleTNotice.Checked AndAlso selectedRecipients.Count > 1) Then
+                Throw New DocSuiteException("Non è stato specificato l'invio a più destinatari tra le opzioni di invio, è necessario quindi selezionare un unico destinatario")
+            End If
+
+            Dim posteWebLocation As Location = Facade.LocationFacade.GetById(ProtocolEnv.PosteWebRequestLocation)
+            If (posteWebLocation Is Nothing) Then
+                Throw New DocSuiteException("Attenzione! Nessuna Location definita per la gestione delle PosteWebOnline")
+            End If
+
+            Dim mergedDocument As DocumentInfo = CreateProtocolMergedDocument()
+            Dim mergedDocumentMD5 As String = String.Empty
+            Using md5Service As New MD5CryptoServiceProvider() 'Due to collision problems with MD5/SHA1, Microsoft recommends SHA256 or SHA512. Consider using the SHA256 class or the SHA512 class instead of the MD5 class.
+                mergedDocumentMD5 = BitConverter.ToString(md5Service.ComputeHash(mergedDocument.Stream)).Replace("-", String.Empty)
+            End Using
+
+            If (selectedRecipients.Any(Function(x) x.Contact Is Nothing)) Then
+                Throw New DocSuiteException("Errore nella verifica dei destinatari selezionati, alcuni elementi non hanno informazioni di contatto associate.")
+            End If
+
+            Dim request As SOLRequest = Nothing
+            Dim recipientValidationErrors As String = Nothing
+            Dim chain As BiblosChainInfo = Nothing
+            For Each recipient As ContactDTO In selectedRecipients
+                If (Not ValidateTNoticeRecipient(recipient, recipientValidationErrors)) Then
+                    Throw New DocSuiteException(recipientValidationErrors)
+                End If
+
+                request = DirectCast(GetPOLRequestByType(), SOLRequest)
+                request.DocumentUnit = Facade.DocumentUnitFacade.GetById(CurrentProtocol.Id)
+
+                SetPOLRequestRecipient(request, recipient)
+
+                chain = New BiblosChainInfo(New List(Of DocumentInfo) From {mergedDocument})
+                request.IdArchiveChain = chain.ArchiveInBiblos(posteWebLocation.ProtBiblosDSDB)
+                request.DocumentMD5 = mergedDocumentMD5
+                request.DocumentName = PROTOCOL_MERGED_DOCUMENT_NAME
+
+                If Not InitializeSercExtraProperties(request) Then
+                    Throw New DocSuiteException("E' avvenuto un errore nell'inizializzazione delle proprietà per la richiesta TNotice.")
+                End If
+
+                Facade.PosteOnLineRequestFacade.SaveAll(request, True)
+            Next
+        End Sub
+
+        Private Sub SavePosteWeb()
+            If (String.IsNullOrEmpty(ddlPolAccount.SelectedValue)) Then
+                Throw New DocSuiteException("Specificare un account per l'invio.")
+            End If
+
+            Dim selectedRecipients As ICollection(Of ContactDTO) = uscProtocollo.ControlRecipients.GetSelectedContacts()
+            If (selectedRecipients.Count = 0) Then
+                Throw New DocSuiteException("Specificare almeno un destinatario per l'invio")
+            End If
+
+            Dim posteWebLocation As Location = Facade.LocationFacade.GetById(ProtocolEnv.PosteWebRequestLocation)
+            If (posteWebLocation Is Nothing) Then
+                Throw New DocSuiteException("Attenzione! Nessuna Location definita per la gestione delle PosteWebOnline")
+            End If
+
+            'Inizializzo una nuova POLRequest
+            Dim request As POLRequest = GetPOLRequestByType()
+            request.DocumentUnit = Facade.DocumentUnitFacade.GetById(CurrentProtocol.Id)
+
+            Dim selectedSenders As ICollection(Of ContactDTO) = uscProtocollo.ControlSenders.GetSelectedContacts()
+            If (selectedSenders.IsNullOrEmpty() AndAlso (request.Account Is Nothing _
+                    OrElse request.Account.DefaultContact Is Nothing _
+                    OrElse request.Account.DefaultContact.Address Is Nothing _
+                    OrElse Not request.Account.DefaultContact.Address.IsValidAddress)) Then
+
+                Throw New DocSuiteException("Specificare un mittente valido per l'invio.")
+            End If
+
+            If (selectedSenders.Count > 1 AndAlso Me.SelectedSenders.Count > 1) Then
+                Throw New DocSuiteException("Specificare un singolo mittente valido per l'invio.")
+            End If
+
+            Dim selectedSender As ContactDTO = CreatePosteWebSenderDTO(request, selectedSenders)
+            SetPOLRequestSender(request, selectedSender)
+
+            If uscProtocollo.ControlRecipients.TreeViewControl.Nodes(0).Nodes.Count > 0 AndAlso Not uscProtocollo.ControlRecipients.TreeViewControl.Nodes(0).Nodes(0).Checkable Then
+                uscProtocollo.ControlRecipients.TreeViewControl.Nodes(0).Nodes(0).Checked = False
+            End If
+
+            Dim recipientValidationErrors As String = Nothing
+            If (Not ValidatePosteWebRecipients(selectedRecipients, recipientValidationErrors)) Then
+                Throw New DocSuiteException(recipientValidationErrors)
+            End If
+
+            For Each recipient As ContactDTO In selectedRecipients
+                SetPOLRequestRecipient(request, recipient)
+            Next
+
+            If CurrentType.Eq(TypeLettera) OrElse CurrentType.Eq(TypeRaccomandata) Then
+                Dim rq As LOLRequest = DirectCast(request, LOLRequest)
+                Dim mergedDocument As DocumentInfo = CreateProtocolMergedDocument()
+                Dim mergedDocumentMD5 As String = String.Empty
+                Using md5Service As New MD5CryptoServiceProvider() 'Due to collision problems with MD5/SHA1, Microsoft recommends SHA256 or SHA512. Consider using the SHA256 class or the SHA512 class instead of the MD5 class.
+                    mergedDocumentMD5 = BitConverter.ToString(md5Service.ComputeHash(mergedDocument.Stream)).Replace("-", String.Empty)
+                End Using
+                Dim chain As BiblosChainInfo = New BiblosChainInfo(New List(Of DocumentInfo) From {mergedDocument})
+                rq.IdArchiveChain = chain.ArchiveInBiblos(posteWebLocation.ProtBiblosDSDB)
+                rq.DocumentMD5 = mergedDocumentMD5
+                rq.DocumentName = PROTOCOL_MERGED_DOCUMENT_NAME
+            ElseIf CurrentType.Eq(TypeTelegramma) Then
+                Dim rq As TOLRequest = DirectCast(request, TOLRequest)
+                rq.Testo = txtMessage.Text
+            End If
+
+            Facade.PosteOnLineRequestFacade.SaveAll(request)
+        End Sub
+
+        Private Function CreateProtocolMergedDocument() As DocumentInfo
+            Dim mergedDocuments As MergeDocumentResult = Facade.ProtocolFacade.GetMergedDocuments(CurrentProtocol, uscProtAttachs.CheckedDocumentInfos.Cast(Of BiblosDocumentInfo).ToList(), New List(Of BiblosDocumentInfo))
+            If mergedDocuments.HasErrors Then
+                Dim errorBuilder As StringBuilder = New StringBuilder()
+                errorBuilder.AppendLine("Sono avvenuti degli errori nella gestione dei documenti da spedire:")
+                For Each errorMessage As String In mergedDocuments.Errors
+                    errorBuilder.AppendLine(errorMessage)
+                Next
+                Throw New DocSuiteException(errorBuilder.ToString())
+            End If
+
+            Return mergedDocuments.MergedDocument
+        End Function
+
+        Private Function ValidatePosteWebRecipients(selectedRecipients As ICollection(Of ContactDTO), ByRef errorMessage As String) As Boolean
+            Dim errorBuilder As StringBuilder = New StringBuilder("E' avvenuto un errore nella validazione dei destinatari:").AppendLine()
+            Dim hasError As Boolean = False
+            For Each recipient As ContactDTO In selectedRecipients
+                If (recipient.Contact Is Nothing OrElse recipient.Contact.Address Is Nothing OrElse Not recipient.Contact.Address.IsValidAddress) Then
+                    errorBuilder.AppendLine(recipient.Contact.Description)
+                    hasError = True
+                End If
+            Next
+
+            If (hasError) Then
+                errorMessage = errorBuilder.ToString()
+            End If
+            Return Not hasError
+        End Function
+
+        Private Function ValidateTNoticeRecipient(recipient As ContactDTO, ByRef errorMessage As String) As Boolean
+            If recipient.Contact Is Nothing Then
+                errorMessage = "Errore nella validazione del destinatario. Dati di contatto non trovati."
+                Return False
+            End If
+
+            'determining if the contactType is a person or company
+            Dim hasDescription As Boolean = Not recipient.Contact.Description.IsNullOrEmpty()
+            Dim isPerson As Boolean = (hasDescription AndAlso recipient.Contact.Description.Contains("|"c) AndAlso recipient.Contact.ContactType.Equals(ContactType.Person)) OrElse Not hasDescription
+
+
+            '2.8.5.1 Denominazione - Se compilato indica l'intestazione/ragione sociale del destinatario Obbligatorio se non è compilato il campo 2.8.5.3 e 2.8.5.4.
+            '2.8.5.3 Nome - Se compilato è il Nome del destinatario (obbligatorio se non è compilato il campo 2.8.5.1). Se è compilato il campo 2.8.5.1 indica il Nome del referente.
+            '2.8.5.4 Cognome - Se compilato è il Cognome del destinatario (obbligatorio se non è compilato il campo 2.8.5.1). Se è compilato il campo 2.8.5.1 indica il Cognome del referente.
+
+            Dim errorBuilder As StringBuilder = New StringBuilder($"Errore nella validazione del destinatario {recipient.Contact.Description}:").AppendLine()
+            Dim hasError As Boolean = False
+            If (isPerson) Then
+                If recipient.Contact.FirstName.IsNullOrEmpty() Then
+                    errorBuilder.AppendLine("-- Il campo nome è richiesto")
+                    hasError = True
+                End If
+
+                If recipient.Contact.LastName.IsNullOrEmpty() Then
+                    errorBuilder.AppendLine("-- Il campo cognome è richiesto")
+                    hasError = True
+                End If
+            Else
+                If recipient.Contact.Description.IsNullOrEmpty() Then
+                    errorBuilder.AppendLine("-- Il campo denominazione è richiesto")
+                    hasError = True
+                End If
+            End If
+
+            If (recipient.Contact.EmailAddress.IsNullOrEmpty()) Then
+                errorBuilder.AppendLine("-- Il campo e-mail è richiesto")
+                hasError = True
+            End If
+
+            If (hasError) Then
+                errorMessage = errorBuilder.ToString()
+            End If
+            Return Not hasError
+        End Function
+
+        Private Function CreatePosteWebSenderDTO(request As POLRequest, selectedSenders As ICollection(Of ContactDTO)) As ContactDTO
+            Select Case selectedSenders.Count
+                Case 0
+                    Return New ContactDTO(request.Account.DefaultContact, DirectCast(request.Account.DefaultContact.Id, ContactDTO.ContactType))
+                Case > 1
+                    Return Me.SelectedSenders.Single()
+                Case Else
+                    Return uscProtocollo.ControlSenders.GetSelectedContacts.Single()
+            End Select
         End Function
 #End Region
 

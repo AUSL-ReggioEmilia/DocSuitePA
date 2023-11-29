@@ -9,6 +9,7 @@ using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.DTO.WSSeries;
 using VecompSoftware.DocSuiteWeb.Facade;
 using VecompSoftware.DocSuiteWeb.Services.WSSeries.ErrorHandler;
+using VecompSoftware.DocSuiteWeb.Services.WSSeries.Helpers;
 using VecompSoftware.Helpers;
 using VecompSoftware.Helpers.ExtensionMethods;
 using VecompSoftware.NHibernateManager;
@@ -29,6 +30,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSSeries
         private const string AppSettingsExcludedExtensions = "ExcludedExtensions";
         private const string AppSettingsConsultationIncludeDocumentStream = "ConsultationIncludeDocumentStream";
         private const string AppSettingsHistoryConsultationEnable = "HistoryConsultationEnable";
+        private const string AmministrazioneTrasparenteSeriesHeaderLabel = "AmministrazioneTrasparenteSeriesHeaderLabel";
 
         #endregion
 
@@ -74,104 +76,113 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSSeries
 
         public string Insert(string xmlSeries)
         {
-            // Validazione
-            if (string.IsNullOrWhiteSpace(xmlSeries))
-                throw new ArgumentException("xml non valorizzato", "xmlSeries");
-
-            FileLogger.Debug(LoggerName, string.Format("Insert - xmlSeries: {0}", xmlSeries));
-
-            // Deserializzazione
-            DocumentSeriesItemWSO documentSeriesItemWSO = SerializationHelper.SerializeFromString<DocumentSeriesItemWSO>(xmlSeries);
-
-            DocumentSeries documentSeries = Facade.DocumentSeriesFacade.GetById(documentSeriesItemWSO.IdDocumentSeries);
-            if (documentSeries == null)
-                throw new ArgumentException("DocumentSeries non presente, verificare l'identificativo", "IdDocumentSeries");
-
-            DocumentSeriesSubsection documentSeriesSubsection = null;
-            if (documentSeriesItemWSO.IdDocumentSeriesSubsection.HasValue)
+            try
             {
-                documentSeriesSubsection = Facade.DocumentSeriesSubsectionFacade.GetById(documentSeriesItemWSO.IdDocumentSeriesSubsection.Value);
-                if (documentSeriesSubsection == null)
-                    throw new ArgumentException("DocumentSeriesSubsection non presente, verificare l'identificativo", "IdDocumentSeriesSubsection");
-            }
+                // Validazione
+                if (string.IsNullOrWhiteSpace(xmlSeries))
+                    throw new ArgumentException("xml non valorizzato", "xmlSeries");
 
-            if (documentSeriesItemWSO.MainDocs == null || documentSeriesItemWSO.MainDocs.Count < 1)
-                throw new ArgumentException("Attenzione inserire almeno un documento principale", "MainDocs");
+                FileLogger.Debug(LoggerName, string.Format("Insert - xmlSeries: {0}", xmlSeries));
 
-            // Preparazione dati per inserimento
+                // Deserializzazione
+                DocumentSeriesItemWSO documentSeriesItemWSO = SerializationHelper.SerializeFromString<DocumentSeriesItemWSO>(xmlSeries);
 
-            // MainDocuments
-            List<DocumentInfo> mainDocuments = documentSeriesItemWSO.MainDocs.Select(item => new MemoryDocumentInfo(Convert.FromBase64String(item.Stream), item.Name, string.Empty)).Cast<DocumentInfo>().ToList();
+                DocumentSeries documentSeries = Facade.DocumentSeriesFacade.GetById(documentSeriesItemWSO.IdDocumentSeries);
+                if (documentSeries == null)
+                    throw new ArgumentException("DocumentSeries non presente, verificare l'identificativo", "IdDocumentSeries");
 
-            // Metadati
-            BiblosChainInfo chain = new BiblosChainInfo();
-            chain.AddDocuments(mainDocuments);
-            foreach (AttributeWSO item in documentSeriesItemWSO.DynamicData)
-            {
-                chain.AddAttribute(item.Key, item.Value);
-            }
-
-            // Annessi
-            List<DocumentInfo> lstAnnexed = new List<DocumentInfo>();
-            if (documentSeriesItemWSO.AnnexedDocs != null && documentSeriesItemWSO.AnnexedDocs.Count > 0)
-            {
-                foreach (DocWSO item in documentSeriesItemWSO.AnnexedDocs)
+                DocumentSeriesSubsection documentSeriesSubsection = null;
+                if (documentSeriesItemWSO.IdDocumentSeriesSubsection.HasValue)
                 {
-                    lstAnnexed.Add(new MemoryDocumentInfo(Convert.FromBase64String(item.Stream), item.Name, string.Empty));
+                    documentSeriesSubsection = Facade.DocumentSeriesSubsectionFacade.GetById(documentSeriesItemWSO.IdDocumentSeriesSubsection.Value);
+                    if (documentSeriesSubsection == null)
+                        throw new ArgumentException("DocumentSeriesSubsection non presente, verificare l'identificativo", "IdDocumentSeriesSubsection");
                 }
-            }
 
-            //Non pubblicati 
-            List<DocumentInfo> lstUnPublished = new List<DocumentInfo>();
-            if (documentSeriesItemWSO.UnPublishedDocs != null && documentSeriesItemWSO.UnPublishedDocs.Count > 0)
-            {
-                foreach (DocWSO item in documentSeriesItemWSO.UnPublishedDocs)
+                // Preparazione dati per inserimento
+
+                // MainDocuments
+                List<DocumentInfo> mainDocuments = documentSeriesItemWSO.MainDocs.Select(item => new MemoryDocumentInfo(Convert.FromBase64String(item.Stream), item.Name, string.Empty)).Cast<DocumentInfo>().ToList();
+
+                // Metadati
+                BiblosChainInfo chain = new BiblosChainInfo();
+
+                if (documentSeriesItemWSO.MainDocs != null && documentSeriesItemWSO.MainDocs.Count > 0)
                 {
-                    lstUnPublished.Add(new MemoryDocumentInfo(Convert.FromBase64String(item.Stream), item.Name, string.Empty));
+                    chain.AddDocuments(mainDocuments);
                 }
+                
+                foreach (AttributeWSO item in documentSeriesItemWSO.DynamicData)
+                {
+                    chain.AddAttribute(item.Key, item.Value);
+                }
+
+                // Annessi
+                List<DocumentInfo> lstAnnexed = new List<DocumentInfo>();
+                if (documentSeriesItemWSO.AnnexedDocs != null && documentSeriesItemWSO.AnnexedDocs.Count > 0)
+                {
+                    foreach (DocWSO item in documentSeriesItemWSO.AnnexedDocs)
+                    {
+                        lstAnnexed.Add(new MemoryDocumentInfo(Convert.FromBase64String(item.Stream), item.Name, string.Empty));
+                    }
+                }
+
+                //Non pubblicati 
+                List<DocumentInfo> lstUnPublished = new List<DocumentInfo>();
+                if (documentSeriesItemWSO.UnPublishedDocs != null && documentSeriesItemWSO.UnPublishedDocs.Count > 0)
+                {
+                    foreach (DocWSO item in documentSeriesItemWSO.UnPublishedDocs)
+                    {
+                        lstUnPublished.Add(new MemoryDocumentInfo(Convert.FromBase64String(item.Stream), item.Name, string.Empty));
+                    }
+                }
+
+                // Mi ricavo le Categorie
+                Category category = null;
+                if (documentSeriesItemWSO.IdCategory.HasValue)
+                    category = Facade.CategoryFacade.GetById(documentSeriesItemWSO.IdCategory.Value);
+                Category subCategory = null;
+                if (documentSeriesItemWSO.IdSubCategory.HasValue)
+                    subCategory = Facade.CategoryFacade.GetById(documentSeriesItemWSO.IdSubCategory.Value);
+
+                // Inserisco la DocumentSeriesItem nel ecosistema Docsuite
+                var documentSeriesItem = new DocumentSeriesItem
+                {
+                    DocumentSeries = documentSeries,
+                    DocumentSeriesSubsection = documentSeriesSubsection,
+                    PublishingDate = documentSeriesItemWSO.PublishingDate,
+                    RegistrationUser = documentSeriesItemWSO.RegistrationUser,
+                    RetireDate = documentSeriesItemWSO.RetireDate,
+                    Subject = documentSeriesItemWSO.Subject,
+                    Category = category,
+                    SubCategory = subCategory
+                };
+
+                Facade.DocumentSeriesItemFacade.SaveDocumentSeriesItem(documentSeriesItem, chain, lstAnnexed, null, documentSeriesItemWSO.RegistrationUser);
+
+                return SerializationHelper.SerializeToStringWithoutNamespace(new DocumentSeriesItemWSO
+                {
+                    Id = documentSeriesItem.Id,
+                    IdDocumentSeries = documentSeriesItem.DocumentSeries.Id,
+                    IdDocumentSeriesSubsection = documentSeriesItem.DocumentSeriesSubsection != null ? documentSeriesItem.DocumentSeriesSubsection.Id : (int?)null,
+                    Year = documentSeriesItem.Year,
+                    Number = documentSeriesItem.Number,
+                    IdLocation = documentSeriesItem.DocumentSeries.Container.DocumentSeriesLocation.Id,
+                    IdLocationAnnexed = documentSeriesItem.DocumentSeries.Container.DocumentSeriesAnnexedLocation.Id,
+                    RegistrationUser = documentSeriesItem.RegistrationUser,
+                    RegistrationDate = documentSeriesItem.RegistrationDate.DateTime,
+                    PublishingDate = documentSeriesItemWSO.PublishingDate,
+                    RetireDate = documentSeriesItemWSO.RetireDate,
+                    Status = (short)documentSeriesItem.Status,
+                    Subject = documentSeriesItem.Subject,
+                    IdCategory = documentSeriesItem.Category != null ? documentSeriesItem.Category.Id : (int?)null,
+                    IdSubCategory = documentSeriesItem.SubCategory != null ? documentSeriesItem.SubCategory.Id : (int?)null
+                });
             }
-
-            // Mi ricavo le Categorie
-            Category category = null;
-            if (documentSeriesItemWSO.IdCategory.HasValue)
-                category = Facade.CategoryFacade.GetById(documentSeriesItemWSO.IdCategory.Value);
-            Category subCategory = null;
-            if (documentSeriesItemWSO.IdSubCategory.HasValue)
-                subCategory = Facade.CategoryFacade.GetById(documentSeriesItemWSO.IdSubCategory.Value);
-
-            // Inserisco la DocumentSeriesItem nel ecosistema Docsuite
-            var documentSeriesItem = new DocumentSeriesItem
+            finally
             {
-                DocumentSeries = documentSeries,
-                DocumentSeriesSubsection = documentSeriesSubsection,
-                PublishingDate = documentSeriesItemWSO.PublishingDate,
-                RegistrationUser = documentSeriesItemWSO.RegistrationUser,
-                RetireDate = documentSeriesItemWSO.RetireDate,
-                Subject = documentSeriesItemWSO.Subject,
-                Category = category,
-                SubCategory = subCategory
-            };
-
-            Facade.DocumentSeriesItemFacade.SaveDocumentSeriesItem(documentSeriesItem, chain, lstAnnexed, null, documentSeriesItemWSO.RegistrationUser);
-
-            return SerializationHelper.SerializeToStringWithoutNamespace(new DocumentSeriesItemWSO
-            {
-                Id = documentSeriesItem.Id,
-                IdDocumentSeries = documentSeriesItem.DocumentSeries.Id,
-                IdDocumentSeriesSubsection = documentSeriesItem.DocumentSeriesSubsection != null ? documentSeriesItem.DocumentSeriesSubsection.Id : (int?)null,
-                Year = documentSeriesItem.Year,
-                Number = documentSeriesItem.Number,
-                IdLocation = documentSeriesItem.DocumentSeries.Container.DocumentSeriesLocation.Id,
-                IdLocationAnnexed = documentSeriesItem.DocumentSeries.Container.DocumentSeriesAnnexedLocation.Id,
-                RegistrationUser = documentSeriesItem.RegistrationUser,
-                RegistrationDate = documentSeriesItem.RegistrationDate.DateTime,
-                PublishingDate = documentSeriesItemWSO.PublishingDate,
-                RetireDate = documentSeriesItemWSO.RetireDate,
-                Status = (short)documentSeriesItem.Status,
-                Subject = documentSeriesItem.Subject,
-                IdCategory = documentSeriesItem.Category != null ? documentSeriesItem.Category.Id : (int?)null,
-                IdSubCategory = documentSeriesItem.SubCategory != null ? documentSeriesItem.SubCategory.Id : (int?)null
-            });
+                NHibernateSessionManager.Instance.CloseTransactionAndSessions();
+            }
         }
 
         public string GetSeriesItem(int idDocumentSeriesItem, bool includeDocuments, bool includeAnnexedDocuments, bool includeUnPublishedDocuments, bool includeStream, bool pdf)
@@ -181,122 +192,129 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSSeries
 
         public string GetSeriesItem(int idDocumentSeriesItem, bool includeDocuments, bool includeAnnexedDocuments, bool includeUnPublishedDocuments, bool includeStream, bool pdf, bool onlyPublished)
         {
+            try
+            {
 #if DEBUG
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
 #endif
 
-            // Recupero l'Item da elaborare
-            DocumentSeriesItem item = Facade.DocumentSeriesItemFacade.GetById(idDocumentSeriesItem);
-            DateTime? datetimeNull = null;
-            if (item == null)
-                throw new ArgumentException(string.Format("DocumentSerieItem con id {0} non presente", idDocumentSeriesItem), "idDocumentSeriesItem");
+                // Recupero l'Item da elaborare
+                DocumentSeriesItem item = Facade.DocumentSeriesItemFacade.GetById(idDocumentSeriesItem);
+                DateTime? datetimeNull = null;
+                if (item == null)
+                    throw new ArgumentException(string.Format("DocumentSerieItem con id {0} non presente", idDocumentSeriesItem), "idDocumentSeriesItem");
 
-            if (onlyPublished && !item.IsPublished())
-                throw new InvalidOperationException(string.Format("Attenzione DocumentSeriesItem con id {0} non pubblicata, verificare identificativo passato", idDocumentSeriesItem));
+                if (onlyPublished && !item.IsPublished())
+                    throw new InvalidOperationException(string.Format("Attenzione DocumentSeriesItem con id {0} non pubblicata, verificare identificativo passato", idDocumentSeriesItem));
 
-            FileLogger.Debug(LoggerName, string.Format("Consultation - id: {0} withDocument: {1} withAnnexed: {2}", idDocumentSeriesItem, includeDocuments, includeAnnexedDocuments));
+                FileLogger.Debug(LoggerName, string.Format("Consultation - id: {0} withDocument: {1} withAnnexed: {2}", idDocumentSeriesItem, includeDocuments, includeAnnexedDocuments));
 
-            DocumentSeriesItemWSO tor = new DocumentSeriesItemWSO
-            {
-                Id = item.Id,
-                IdDocumentSeries = item.DocumentSeries.Id,
-                Year = item.Year,
-                Number = item.Number,
-                IdLocation = item.DocumentSeries.Container.DocumentSeriesLocation.Id,
-                RegistrationUser = item.RegistrationUser,
-                RegistrationDate = item.RegistrationDate.DateTime,
-                PublishingDate = item.PublishingDate,
-                LastChangedDate = item.LastChangedDate.HasValue ? item.LastChangedDate.Value.DateTime : datetimeNull,
-                LastChangedUser = item.LastChangedUser,
-                RetireDate = item.RetireDate,
-                Status = (short)item.Status,
-                Subject = item.Subject
-            };
-
-            // Location per gli annessi
-            if (item.DocumentSeries.Container.DocumentSeriesAnnexedLocation != null)
-            {
-                tor.IdLocationAnnexed = item.DocumentSeries.Container.DocumentSeriesAnnexedLocation.Id;
-            }
-
-            // Contenitore
-            tor.Container = new ContainerWSO
-            {
-                Id = item.DocumentSeries.Container.Id,
-                Name = item.DocumentSeries.Container.Name
-            };
-
-            // Subsection. Se attiva e valorizzata
-            if (item.DocumentSeries.SubsectionEnabled.GetValueOrDefault(false)
-                && item.DocumentSeriesSubsection != null)
-            {
-                tor.IdDocumentSeriesSubsection = item.DocumentSeriesSubsection.Id;
-            }
-            // Classificazione
-            if (item.Category != null)
-            {
-                tor.IdCategory = item.Category.Id;
-            }
-            // Sottoclassificazione
-            if (item.SubCategory != null)
-            {
-                tor.IdSubCategory = item.SubCategory.Id;
-            }
-            // Documenti della catena principale
-            if (includeDocuments)
-            {
-                var chain = Facade.DocumentSeriesItemFacade.GetMainChainInfo(item);
-                if (!chain.Documents.IsNullOrEmpty())
+                DocumentSeriesItemWSO tor = new DocumentSeriesItemWSO
                 {
-                    tor.MainDocs = BiblosChainToWSO(chain, pdf, includeStream);
-                }
-            }
+                    Id = item.Id,
+                    IdDocumentSeries = item.DocumentSeries.Id,
+                    Year = item.Year,
+                    Number = item.Number,
+                    IdLocation = item.DocumentSeries.Container.DocumentSeriesLocation.Id,
+                    RegistrationUser = item.RegistrationUser,
+                    RegistrationDate = item.RegistrationDate.DateTime,
+                    PublishingDate = item.PublishingDate,
+                    LastChangedDate = item.LastChangedDate.HasValue ? item.LastChangedDate.Value.DateTime : datetimeNull,
+                    LastChangedUser = item.LastChangedUser,
+                    RetireDate = item.RetireDate,
+                    Status = (short)item.Status,
+                    Subject = item.Subject
+                };
 
-            // Documenti annessi
-            if (includeAnnexedDocuments)
-            {
-                var chain = Facade.DocumentSeriesItemFacade.GetAnnexedChainInfo(item);
-                if (!chain.Documents.IsNullOrEmpty())
+                // Location per gli annessi
+                if (item.DocumentSeries.Container.DocumentSeriesAnnexedLocation != null)
                 {
-                    tor.AnnexedDocs = BiblosChainToWSO(chain, pdf, includeStream);
+                    tor.IdLocationAnnexed = item.DocumentSeries.Container.DocumentSeriesAnnexedLocation.Id;
                 }
-            }
 
-            // Documenti non pubblicati 
-            if (includeUnPublishedDocuments)
-            {
-                var chain = Facade.DocumentSeriesItemFacade.GetAnnexedUnpublishedChainInfo(item);
-                if (!chain.Documents.IsNullOrEmpty())
+                // Contenitore
+                tor.Container = new ContainerWSO
                 {
-                    tor.UnPublishedDocs = BiblosChainToWSO(chain, pdf, includeStream);
-                }
-            }
+                    Id = item.DocumentSeries.Container.Id,
+                    Name = item.DocumentSeries.Container.Name
+                };
 
-            // Dati dinamici
-            ArchiveInfo archive = DocumentSeriesFacade.GetArchiveInfo(item.DocumentSeries);
-            IDictionary<string, string> dynamicData = Facade.DocumentSeriesItemFacade.GetAttributes(item) ?? new Dictionary<string, string>();
-
-            tor.DynamicData = new List<AttributeWSO>();
-            foreach (ArchiveAttribute archiveAttribute in archive.VisibleChainAttributes)
-            {
-                var a = new AttributeWSO { Key = archiveAttribute.Name };
-                // cerco il valore
-                if (dynamicData.Keys.Contains(archiveAttribute.Name))
+                // Subsection. Se attiva e valorizzata
+                if (item.DocumentSeries.SubsectionEnabled.GetValueOrDefault(false)
+                    && item.DocumentSeriesSubsection != null)
                 {
-                    a.Value = dynamicData[archiveAttribute.Name];
+                    tor.IdDocumentSeriesSubsection = item.DocumentSeriesSubsection.Id;
                 }
-                tor.DynamicData.Add(a);
-            }
+                // Classificazione
+                if (item.Category != null)
+                {
+                    tor.IdCategory = item.Category.Id;
+                }
+                // Sottoclassificazione
+                if (item.SubCategory != null)
+                {
+                    tor.IdSubCategory = item.SubCategory.Id;
+                }
+                // Documenti della catena principale
+                if (includeDocuments)
+                {
+                    var chain = Facade.DocumentSeriesItemFacade.GetMainChainInfo(item);
+                    if (!chain.Documents.IsNullOrEmpty())
+                    {
+                        tor.MainDocs = BiblosChainToWSO(chain, pdf, includeStream);
+                    }
+                }
 
-            string x = SerializationHelper.SerializeToStringWithoutNamespace(tor);
+                // Documenti annessi
+                if (includeAnnexedDocuments)
+                {
+                    var chain = Facade.DocumentSeriesItemFacade.GetAnnexedChainInfo(item);
+                    if (!chain.Documents.IsNullOrEmpty())
+                    {
+                        tor.AnnexedDocs = BiblosChainToWSO(chain, pdf, includeStream);
+                    }
+                }
+
+                // Documenti non pubblicati 
+                if (includeUnPublishedDocuments)
+                {
+                    var chain = Facade.DocumentSeriesItemFacade.GetAnnexedUnpublishedChainInfo(item);
+                    if (!chain.Documents.IsNullOrEmpty())
+                    {
+                        tor.UnPublishedDocs = BiblosChainToWSO(chain, pdf, includeStream);
+                    }
+                }
+
+                // Dati dinamici
+                ArchiveInfo archive = DocumentSeriesFacade.GetArchiveInfo(item.DocumentSeries);
+                IDictionary<string, string> dynamicData = Facade.DocumentSeriesItemFacade.GetAttributes(item) ?? new Dictionary<string, string>();
+
+                tor.DynamicData = new List<AttributeWSO>();
+                foreach (ArchiveAttribute archiveAttribute in archive.VisibleChainAttributes)
+                {
+                    var a = new AttributeWSO { Key = archiveAttribute.Name };
+                    // cerco il valore
+                    if (dynamicData.Keys.Contains(archiveAttribute.Name))
+                    {
+                        a.Value = dynamicData[archiveAttribute.Name];
+                    }
+                    tor.DynamicData.Add(a);
+                }
+
+                string x = SerializationHelper.SerializeToStringWithoutNamespace(tor);
 
 #if DEBUG
-            stopWatch.Stop();
-            FileLogger.Debug(LoggerName, string.Format("GetDocumentSeriesItem - Time elapsed: {0} ", stopWatch.Elapsed));
+                stopWatch.Stop();
+                FileLogger.Debug(LoggerName, string.Format("GetDocumentSeriesItem - Time elapsed: {0} ", stopWatch.Elapsed));
 #endif
 
-            return x;
+                return x;
+            }
+            finally
+            {
+                NHibernateSessionManager.Instance.CloseTransactionAndSessions();
+            }
         }
 
         public string ConsultationItem(int idDocumentSeriesItem, bool includeDocuments, bool includeAnnexedDocuments, bool includeUnPublishedDocuments, bool pdf)
@@ -338,85 +356,99 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSSeries
 
         public void Update(string xmlSeries)
         {
-            //Validazione
-            if (string.IsNullOrEmpty(xmlSeries))
-                throw new ArgumentException("Xml non valorizzato", "xmlSeries");
-
-            FileLogger.Debug(LoggerName, string.Format("Update - xmlSeries: {0} ", xmlSeries));
-
-            DocumentSeriesItemWSO itemDTO = SerializationHelper.SerializeFromString<DocumentSeriesItemWSO>(xmlSeries);
-            DocumentSeriesItem item = Facade.DocumentSeriesItemFacade.GetById(itemDTO.Id);
-            if (item == null)
-                throw new ArgumentException("Non è stata trovata alcuna documentSeriesItem, verificare identificativo passato", "xmlSeries");
-
-            //Update Static Property
-            if (itemDTO.RetireDate.HasValue)
-                item.RetireDate = itemDTO.RetireDate;
-            if (itemDTO.PublishingDate.HasValue)
-                item.PublishingDate = itemDTO.PublishingDate;
-            if (itemDTO.Status.HasValue)
-                item.Status = (DocumentSeriesItemStatus)itemDTO.Status.Value;
-            if (itemDTO.IdDocumentSeries > 0)
-                item.DocumentSeries = Facade.DocumentSeriesFacade.GetById(itemDTO.IdDocumentSeries);
-            if (itemDTO.IdCategory.HasValue)
-                item.Category = Facade.CategoryFacade.GetById(itemDTO.IdCategory.Value);
-            if (itemDTO.IdSubCategory.HasValue)
-                item.SubCategory = Facade.CategoryFacade.GetById(itemDTO.IdSubCategory.Value);
-            if (itemDTO.Subject != null)
-                item.Subject = itemDTO.Subject;
-            if (itemDTO.LastChangedUser != null)
-                item.LastChangedUser = itemDTO.LastChangedUser;
-            if (itemDTO.IdDocumentSeriesSubsection.HasValue)
-                item.DocumentSeriesSubsection = Facade.DocumentSeriesSubsectionFacade.GetById(itemDTO.IdDocumentSeriesSubsection.Value);
-
-            //Update Dynamic Property
-            BiblosChainInfo chain = Facade.DocumentSeriesItemFacade.GetMainChainInfo(item);
-            foreach (var attribute in itemDTO.DynamicData)
+            try
             {
-                chain.AddAttribute(attribute.Key, attribute.Value);
+                //Validazione
+                if (string.IsNullOrEmpty(xmlSeries))
+                    throw new ArgumentException("Xml non valorizzato", "xmlSeries");
+
+                FileLogger.Debug(LoggerName, string.Format("Update - xmlSeries: {0} ", xmlSeries));
+
+                DocumentSeriesItemWSO itemDTO = SerializationHelper.SerializeFromString<DocumentSeriesItemWSO>(xmlSeries);
+                DocumentSeriesItem item = Facade.DocumentSeriesItemFacade.GetById(itemDTO.Id);
+                if (item == null)
+                    throw new ArgumentException("Non è stata trovata alcuna documentSeriesItem, verificare identificativo passato", "xmlSeries");
+
+                //Update Static Property
+                if (itemDTO.RetireDate.HasValue)
+                    item.RetireDate = itemDTO.RetireDate;
+                if (itemDTO.PublishingDate.HasValue)
+                    item.PublishingDate = itemDTO.PublishingDate;
+                if (itemDTO.Status.HasValue)
+                    item.Status = (DocumentSeriesItemStatus)itemDTO.Status.Value;
+                if (itemDTO.IdDocumentSeries > 0)
+                    item.DocumentSeries = Facade.DocumentSeriesFacade.GetById(itemDTO.IdDocumentSeries);
+                if (itemDTO.IdCategory.HasValue)
+                    item.Category = Facade.CategoryFacade.GetById(itemDTO.IdCategory.Value);
+                if (itemDTO.IdSubCategory.HasValue)
+                    item.SubCategory = Facade.CategoryFacade.GetById(itemDTO.IdSubCategory.Value);
+                if (itemDTO.Subject != null)
+                    item.Subject = itemDTO.Subject;
+                if (itemDTO.LastChangedUser != null)
+                    item.LastChangedUser = itemDTO.LastChangedUser;
+                if (itemDTO.IdDocumentSeriesSubsection.HasValue)
+                    item.DocumentSeriesSubsection = Facade.DocumentSeriesSubsectionFacade.GetById(itemDTO.IdDocumentSeriesSubsection.Value);
+
+                //Update Dynamic Property
+                BiblosChainInfo chain = Facade.DocumentSeriesItemFacade.GetMainChainInfo(item);
+                foreach (var attribute in itemDTO.DynamicData)
+                {
+                    chain.AddAttribute(attribute.Key, attribute.Value);
+                }
+
+                // Aggiorno l'istanza di documentSeriesItem e il rispettivo mainDocument
+                Facade.DocumentSeriesItemFacade.UpdateDocumentSeriesItem(item, chain, $"Registrazione {item.Year:0000}/{item.Number:0000000} modificata da Web Service");
+
+                // é ridondante, ma la inserisco per sicurezza
+                Facade.DocumentSeriesItemFacade.ImpersonificatedUpdate(item, itemDTO.LastChangedUser);
+
+                // Invio comando di update alle WebApi
+                if (item.Status == DocumentSeriesItemStatus.Active)
+                {
+                    Facade.DocumentSeriesItemFacade.SendUpdateDocumentSeriesItemCommand(item);
+                }
             }
-
-            // Aggiorno l'istanza di documentSeriesItem e il rispettivo mainDocument
-            Facade.DocumentSeriesItemFacade.UpdateDocumentSeriesItem(item, chain, $"Registrazione {item.Year:0000}/{item.Number:0000000} modificata da Web Service");
-
-            // é ridondante, ma la inserisco per sicurezza
-            Facade.DocumentSeriesItemFacade.ImpersonificatedUpdate(item, itemDTO.LastChangedUser);
-
-            // Invio comando di update alle WebApi
-            if (item.Status == DocumentSeriesItemStatus.Active)
+            finally
             {
-                Facade.DocumentSeriesItemFacade.SendUpdateDocumentSeriesItemCommand(item);
+                NHibernateSessionManager.Instance.CloseTransactionAndSessions();
             }
         }
 
         public void AddAnnexed(int id, string nameDocument, string base64DocumentStream)
         {
-            // Validazione
-            DocumentSeriesItem documentSeriesItem = Facade.DocumentSeriesItemFacade.GetById(id);
-            if (documentSeriesItem == null)
-                throw new ArgumentException(string.Format("Attenzione DocumentSerieItem con id {0} non presente", id), "id");
-
-            if (string.IsNullOrEmpty(nameDocument))
-                throw new ArgumentException("Nome del documento non valorizzato", "nameDocument");
-
-            if (string.IsNullOrEmpty(base64DocumentStream))
-                throw new ArgumentException("Stream in base 64 del documento non valorizzato", "base64DocumentStream");
-
-            FileLogger.Debug(LoggerName, string.Format("AddAnnexed - id: {0} nameDocument: {1} base64DocumentStream: {2}", id, nameDocument, base64DocumentStream));
-
-            // Inserimento del documento nella catena degli annessi
-            Facade.DocumentSeriesItemFacade.AddAnnexed(documentSeriesItem, new MemoryDocumentInfo
+            try
             {
-                Name = nameDocument,
-                Signature = string.Empty,
-                Stream = Convert.FromBase64String(base64DocumentStream)
-            });
+                // Validazione
+                DocumentSeriesItem documentSeriesItem = Facade.DocumentSeriesItemFacade.GetById(id);
+                if (documentSeriesItem == null)
+                    throw new ArgumentException(string.Format("Attenzione DocumentSerieItem con id {0} non presente", id), "id");
 
-            Facade.DocumentSeriesItemFacade.Update(ref documentSeriesItem);
-            Facade.DocumentSeriesItemLogFacade.AddLog(documentSeriesItem, DocumentSeriesItemLogType.Retire, $"Registrazione {documentSeriesItem.Year:0000}/{documentSeriesItem.Number:0000000} modificata da Web Service");
+                if (string.IsNullOrEmpty(nameDocument))
+                    throw new ArgumentException("Nome del documento non valorizzato", "nameDocument");
 
-            // Invio comando di update alle WebApi
-            Facade.DocumentSeriesItemFacade.SendUpdateDocumentSeriesItemCommand(documentSeriesItem);
+                if (string.IsNullOrEmpty(base64DocumentStream))
+                    throw new ArgumentException("Stream in base 64 del documento non valorizzato", "base64DocumentStream");
+
+                FileLogger.Debug(LoggerName, string.Format("AddAnnexed - id: {0} nameDocument: {1} base64DocumentStream: {2}", id, nameDocument, base64DocumentStream));
+
+                // Inserimento del documento nella catena degli annessi
+                Facade.DocumentSeriesItemFacade.AddAnnexed(documentSeriesItem, new MemoryDocumentInfo
+                {
+                    Name = nameDocument,
+                    Signature = string.Empty,
+                    Stream = Convert.FromBase64String(base64DocumentStream)
+                });
+
+                Facade.DocumentSeriesItemFacade.Update(ref documentSeriesItem);
+                Facade.DocumentSeriesItemLogFacade.AddLog(documentSeriesItem, DocumentSeriesItemLogType.Retire, $"Registrazione {documentSeriesItem.Year:0000}/{documentSeriesItem.Number:0000000} modificata da Web Service");
+
+                // Invio comando di update alle WebApi
+                Facade.DocumentSeriesItemFacade.SendUpdateDocumentSeriesItemCommand(documentSeriesItem);
+            }
+            finally
+            {
+                NHibernateSessionManager.Instance.CloseTransactionAndSessions();
+            }
         }
 
         public string Search(string xmlFinder, bool pdf)
@@ -1217,7 +1249,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSSeries
                 stopWatch.Start();
 #endif
 
-                DocumentSeriesItemFinder finder = new DocumentSeriesItemFinder(true, impersonatingUser);
+                DocumentSeriesItemFinder finder = new DocumentSeriesItemFinder(true, impersonatingUser, ConfigurationHelper.CurrentTenantAOOId);
                 finder.EnablePaging = false;
                 finder.IdDocumentSeriesIn = new List<int> { idSeries };
                 finder.ItemStatusIn = new List<DocumentSeriesItemStatus> { DocumentSeriesItemStatus.Active };
@@ -1254,7 +1286,8 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSSeries
                 Id = series.Id,
                 Name = series.Container.Name,
                 IdContainer = series.Container.Id,
-                PublicationEnabled = series.PublicationEnabled
+                PublicationEnabled = series.PublicationEnabled,
+                SeriesHeader = series.Container.ContainerProperties?.SingleOrDefault(x => x.Name.Equals(AmministrazioneTrasparenteSeriesHeaderLabel))?.ValueString
             };
 
             // Se le sottosezioni sono attive new restituisco l'elenco
@@ -1544,7 +1577,7 @@ namespace VecompSoftware.DocSuiteWeb.Services.WSSeries
             if (currentSeries != null)
                 idDocumentSeriesIn.Add(currentSeries.Id);
 
-            DocumentSeriesItemFinder finder = new DocumentSeriesItemFinder(false, finderWSO.ImpersonatingUser)
+            DocumentSeriesItemFinder finder = new DocumentSeriesItemFinder(false, finderWSO.ImpersonatingUser, ConfigurationHelper.CurrentTenantAOOId)
             {
                 IdDocumentSeriesIn = idDocumentSeriesIn,
                 IdSubsectionIn = finderWSO.IdDocumentSeriesSubsections,

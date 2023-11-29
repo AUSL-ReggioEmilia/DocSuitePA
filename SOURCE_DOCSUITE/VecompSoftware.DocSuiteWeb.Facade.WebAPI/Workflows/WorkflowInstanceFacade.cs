@@ -23,6 +23,14 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows
         #endregion
 
         #region [ Methods ]
+        public WorkflowInstance GetByCollaborationReferenceId(int collaborationId)
+        {
+            return WebAPIImpersonatorFacade.ImpersonateDao<WorkflowInstanceDao, WorkflowInstance, WorkflowInstance>(this.CurrentTenantConfiguration.Dao,
+            (impersonationType, dao) =>
+            {
+                return dao.GetByCollaborationId(collaborationId);
+            });
+        }
         #endregion
     }
 }

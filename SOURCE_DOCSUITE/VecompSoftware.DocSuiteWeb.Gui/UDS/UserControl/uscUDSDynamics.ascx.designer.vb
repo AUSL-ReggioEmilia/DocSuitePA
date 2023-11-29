@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscUDSDynamics
-    
+
     '''<summary>
     '''frmDecorator control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscUDSDynamics
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents frmDecorator As Global.Telerik.Web.UI.RadFormDecorator
-    
+
     '''<summary>
     '''dynamicControls control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscUDSDynamics
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dynamicControls As Global.System.Web.UI.WebControls.PlaceHolder
-    
+
     '''<summary>
     '''hiddenLookup control.
     '''</summary>
@@ -39,4 +39,13 @@ Partial Public Class uscUDSDynamics
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents hiddenLookup As Global.System.Web.UI.HtmlControls.HtmlInputHidden
+
+    '''<summary>
+    '''hiddenFieldList control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents hiddenFieldList As Global.System.Web.UI.HtmlControls.HtmlInputHidden
 End Class

@@ -171,7 +171,9 @@ Public Class DeskInsert
         Dim documents As IList(Of DocumentInfo) = uscDeskDocument.GetDocuments()
         Dim deskLocation As Location = Facade.ContainerFacade.GetById(CurrentIdContainerSelected, False, "ProtDB").DeskLocation
 
-        CurrentDeskDocumentFacade.AddNewDeskDocuments(desk, documents, deskLocation)
+        Dim documentsVersion As Decimal = If(uscDeskDocument.DeskDocumentDataSourceExternal.FirstOrDefault().LastVersion.HasValue(), uscDeskDocument.DeskDocumentDataSourceExternal.FirstOrDefault().LastVersion.Value, Nothing)
+
+        MyBase.CurrentDeskDocumentFacade.AddNewDeskDocuments(desk, documents, deskLocation, documentsVersion)
     End Sub
 
     ''' <summary>
@@ -188,7 +190,7 @@ Public Class DeskInsert
         End If
 
         Dim documentDtos As IList(Of DeskDocumentResult) = New List(Of DeskDocumentResult)
-        For Each deskDocument As DeskDocument In desk.DeskDocuments.Where(Function(x) x.IsActive = 0)
+        For Each deskDocument As DeskDocument In desk.DeskDocuments.Where(Function(x) x.IsActive)
             Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(deskDocument.IdDocument.Value)
             If Not docInfos.Any() Then
                 Exit Sub
@@ -201,5 +203,19 @@ Public Class DeskInsert
 
         uscDeskDocument.BindDeskDocuments(documentDtos, False)
     End Sub
+
+    Private Sub UscDeskDocument_AddDocumentVersioning(sender As Object, e As DocumentEventArgs) Handles uscDeskDocument.DocumentVersioning
+        uscDeskDocument.NewDocumentsVersioningControl()
+
+    End Sub
+
+    Private Sub UscDeskDocument_AddDocument(sender As Object, e As DocumentEventArgs) Handles uscDeskDocument.DocumentUploaded
+        For Each doc As DeskDocumentResult In uscDeskDocument.DeskDocumentDataSourceExternal
+            doc.LastVersion = e.Version
+        Next
+
+        uscDeskDocument.BindDeskDocuments(uscDeskDocument.DeskDocumentDataSourceExternal, False)
+    End Sub
+
 #End Region
 End Class

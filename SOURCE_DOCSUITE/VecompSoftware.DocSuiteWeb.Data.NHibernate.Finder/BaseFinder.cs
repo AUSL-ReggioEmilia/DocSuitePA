@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.Linq.Expressions;
 using NHibernate;
 using NHibernate.Criterion;
@@ -250,7 +251,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder
             queryOver = ExecutePaging(queryOver);
             queryOver = AttachSortExpressions(queryOver);
             queryOver = AttachFilterExpressions(queryOver);
-            using (ITransaction transaction = NHibernateSession.BeginTransaction())
+            using (ITransaction transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 try
                 {
@@ -280,7 +281,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder
             queryOver = AttachSortExpressions(queryOver);
             queryOver = AttachFilterExpressions(queryOver);
             queryOver = SetProjectionsHeaders(queryOver);
-            using (ITransaction transaction = NHibernateSession.BeginTransaction())
+            using (ITransaction transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 try
                 {

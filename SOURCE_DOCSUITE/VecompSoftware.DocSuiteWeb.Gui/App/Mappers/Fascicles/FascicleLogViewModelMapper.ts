@@ -16,6 +16,7 @@ class FascicleLogViewModelMapper implements IMapper<FascicleLogViewModel>{
             return null;
         }
 
+        toMap.UniqueId = source.UniqueId;
         toMap.Computer = source.SystemComputer;
         toMap.Description = source.LogDescription;
         toMap.TypeDescription = this._enumHelper.getFascicleLogTypeDescription(source.LogType);

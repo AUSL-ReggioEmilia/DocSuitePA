@@ -4,10 +4,17 @@ Imports VecompSoftware.Helpers
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports System.IO
-Imports iTextSharp.text
-Imports iTextSharp.text.pdf
 Imports System.Globalization
 Imports VecompSoftware.DocSuiteWeb.Data.PEC.Finder
+Imports iText.Kernel.Geom
+Imports iText.Kernel.Pdf
+Imports iText.Layout.Element
+Imports iText.Kernel.Font
+Imports iText.Layout.Properties
+Imports iText.IO.Font
+Imports iText.Kernel.Colors
+Imports iText.Layout.Borders
+Imports iText.IO.Font.Constants
 
 Public Class ReportisticaPEC
     Inherits PECBasePage
@@ -15,9 +22,9 @@ Public Class ReportisticaPEC
 #Region " Fields "
 
     Dim _pdfData As New MemoryStream
-    Dim _doc As New iTextSharp.text.Document(PageSize.A4, 50, 50, 80, 50)
-    Dim _writer As PdfWriter = PdfWriter.GetInstance(_doc, _pdfData)
-
+    Dim _pdfWriter As PdfWriter = New PdfWriter(_pdfData)
+    Dim _writer As PdfDocument = New PdfDocument(_pdfWriter)
+    Dim _doc As iText.Layout.Document = New iText.Layout.Document(_writer, PageSize.A4)
     Private _mailboxes As IList(Of PECMailBox)
 
 #End Region
@@ -59,8 +66,13 @@ Public Class ReportisticaPEC
     Protected Sub cmdStampa_Click(sender As Object, e As EventArgs) Handles cmdStampa.Click
 
         If ddlMailbox.Items.Count >= 1 AndAlso ddlMailbox.SelectedValue <> "" AndAlso ddlMailbox.SelectedValue <> "--" Then
-            _writer.ViewerPreferences = PdfWriter.PageModeUseOutlines
-            _doc.Open()
+            _doc.SetMargins(50, 50, 80, 50)
+            Dim viewerPreferences As PdfViewerPreferences = New PdfViewerPreferences()
+            If viewerPreferences Is Nothing Then
+                _writer.GetCatalog().SetViewerPreferences(New PdfViewerPreferences())
+            End If
+            viewerPreferences.SetDuplex(PdfViewerPreferences.PdfViewerPreferencesConstants.USE_OUTLINES)
+            _writer.GetCatalog().SetViewerPreferences(viewerPreferences)
 
             Dim mails As IList(Of PECMail) = Nothing
             Dim mailsSpostate As IList(Of PECMail) = Nothing
@@ -117,7 +129,7 @@ Public Class ReportisticaPEC
 
     Private Sub DataBindMailboxes(ByVal ddlMBoxes As DropDownList)
         ddlMBoxes.Items.Clear()
-        For Each mailbox As PECMailBox In MailBoxes
+        For Each mailbox As PECMailBox In Mailboxes
             If Facade.PECMailboxFacade.IsRealPecMailBox(mailbox) Then
                 ddlMBoxes.Items.Add(New System.Web.UI.WebControls.ListItem(Facade.PECMailboxFacade.MailBoxRecipientLabel(mailbox), mailbox.Id.ToString()))
             End If
@@ -146,17 +158,30 @@ Public Class ReportisticaPEC
 
         Return retval
     End Function
-
+    Protected Function CreateCustomFont(fontName As String) As String
+        Return PdfFontFactory.CreateFont(fontName).ToString()
+    End Function
     Protected Function GetParPDFBold(testo As String) As Paragraph
-        Dim par As New Paragraph(testo, New Font(Font.FontFamily.HELVETICA, 10.0F, Font.BOLD))
-        Return par
+        Dim paragraph As Paragraph = New Paragraph()
+        paragraph.SetMultipliedLeading(10.0F).SetBold()
+        Return paragraph
     End Function
 
     Protected Function GetParPDFNormal(testo As String) As Paragraph
-        Dim par As New Paragraph(testo, New Font(Font.FontFamily.HELVETICA, 10.0F, Font.NORMAL))
-        Return par
+        Dim paragraph As Paragraph = New Paragraph()
+        paragraph.SetMultipliedLeading(10.0F)
+        Return paragraph
     End Function
-
+    Protected Function AddParagraph(doc As iText.Layout.Document, space As Single, isBold As Boolean, content As Text, additionalContent As Text) As iText.Layout.Document
+        Dim paragraph As Paragraph = New Paragraph()
+        paragraph.SetMultipliedLeading(space)
+        paragraph.SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA))
+        content = If(isBold, content.SetBold(), content)
+        paragraph.Add(content)
+        paragraph.Add(additionalContent)
+        Dim document As iText.Layout.Document = doc.Add(paragraph)
+        Return document
+    End Function
     Protected Sub PrintPDFMailBox(nameMBox As String, mails As IList(Of PECMail), mailsSpostate As IList(Of PECMail))
 
         Dim nPecTotali As Integer = 0
@@ -172,41 +197,21 @@ Public Class ReportisticaPEC
         Dim nInvDaProt As Integer = 0
         Dim nInvDaGest As Integer = 0
 
-        Dim bigBoldFont As New Font(Font.FontFamily.HELVETICA, 12.0F, Font.BOLD)
-        Dim boldFont As New Font(Font.FontFamily.HELVETICA, 10.0F, Font.BOLD)
-        Dim normalFont As New Font(Font.FontFamily.HELVETICA, 10.0F, Font.NORMAL)
-
-        If _pdfData.Length > 0 Then
-            _doc.NewPage()
-        End If
-
-        _doc.Add(New Paragraph("REPORTISTICA PEC", bigBoldFont))
-        _doc.Add(New Paragraph(" "))
+        AddParagraph(_doc, 4, True, New Text("REPORTISTICA PEC"), New Text(""))
         '"Casella di posta PEC: " + nameMBox
+        AddParagraph(_doc, 3, True, New Text("Casella di posta PEC: "), New Text(nameMBox))
 
-        Dim par As New Paragraph()
-        par.Add(New Phrase("Casella di posta PEC: ", boldFont))
-        par.Add(New Phrase(nameMBox, normalFont))
-        _doc.Add(par)
-
-        _doc.Add(New Paragraph(" "))
-
-        par = New Paragraph()
-        par.Add(New Phrase("Dal giorno: ", boldFont))
         'Anno e Mese selezionato
         Dim anno As Integer = Convert.ToInt32(Years.SelectedItem.Value)
         Dim mese As Integer = Convert.ToInt32(Months.SelectedIndex + 1)
         Dim dalGiorno As DateTime = New DateTime(anno, mese, 1)
-        par.Add(New Phrase(dalGiorno.ToString("dd/MM/yyyy"), normalFont))
-        par.Add("               ")
-        par.Add(New Phrase("Al giorno: ", boldFont))
+        AddParagraph(_doc, 3, True, New Text("Dal giorno: "), New Text(dalGiorno.ToString("dd/MM/yyyy")))
+
         Dim alGiorno As DateTime = New DateTime(anno, mese, DateTime.DaysInMonth(anno, mese))
-        par.Add(New Phrase(alGiorno.ToString("dd/MM/yyyy"), normalFont))
-        _doc.Add(par)
-        _doc.Add(New Paragraph(" "))
+        AddParagraph(_doc, 2, True, New Text("Al giorno: "), New Text(alGiorno.ToString("dd/MM/yyyy")))
+        AddParagraph(_doc, 3, True, New Text(""), New Text(""))
 
         For Each mail As PECMail In mails
-
             If mail.Direction = PECMailDirection.Ingoing Then
                 If mail.MailRecipients IsNot Nothing AndAlso mail.XTrasporto IsNot Nothing Then
                     nPecTotali += 1
@@ -252,102 +257,60 @@ Public Class ReportisticaPEC
 
         nInvDaGest = nPecInviate - nInvDaProt
 
-        Dim datatable As New PdfPTable(2)
+        Dim datatable As New Table(2)
+        datatable.SetPadding(2)
+        datatable.SetWidth(UnitValue.CreatePercentValue(100))
+        datatable.SetMarginTop(5)
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Numero totale di PEC ricevute")).SetBold().SetTextAlignment(TextAlignment.LEFT).SetWidth(UnitValue.CreatePercentValue(75)))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nPecTotali.ToString)).SetBold().SetTextAlignment(TextAlignment.RIGHT).SetWidth(UnitValue.CreatePercentValue(25)))
 
-        datatable.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.DefaultCell.Padding = 2
-        Dim columnWidths As Integer() = {75, 25}
-        datatable.SetWidths(columnWidths)
-        datatable.WidthPercentage = 100
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Dirette")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph((nPecValide + nAnomalie).ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.BorderWidth = 0.7F
-        datatable.DefaultCell.GrayFill = 1.0F
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Da inoltro")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nInoltrate.ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Numero totale di PEC inviate")).SetBold().SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nPecInviate.ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Da Protocoll")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nInvDaProt.ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFBold("Numero totale di PEC ricevute"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFBold(nPecTotali.ToString))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Da Gestione")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nInvDaGest.ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("Dirette"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal((nPecValide + nAnomalie).ToString))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("")).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("Da inoltro"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal(nInoltrate.ToString))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Categorie PEC ricevute")).SetBold().SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("")).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFBold("Numero totale di PEC inviate"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFBold(nPecInviate.ToString))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Anomalie")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nAnomalie.ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("Da Protocollo"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal(nInvDaProt.ToString))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("PEC Valide")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph((nPecValide - nInterOper).ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("Da Gestione"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal(nInvDaGest.ToString))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("PEC Interoperabili")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nInterOper.ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.AddCell(" ")
-        datatable.AddCell(" ")
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("   ")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("   ")).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFBold("Categorie PEC ricevute"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(" ")
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Esito PEC Ricevute")).SetBold().SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("")).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("Anomalie"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal(nAnomalie.ToString))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Protocollate")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nProtocollate.ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("PEC Valide"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal((nPecValide - nInterOper).ToString))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Gestite")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nGestite.ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("PEC Interoperabili"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal(nInterOper.ToString))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Cancellate")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nCancellate.ToString)).SetTextAlignment(TextAlignment.RIGHT))
 
-
-        datatable.AddCell(" ")
-        datatable.AddCell(" ")
-
-
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFBold("Esito PEC Ricevute"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(" ")
-
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("Protocollate"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal(nProtocollate.ToString))
-
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("Gestite"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal(nGestite.ToString))
-
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("Cancellate"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal(nCancellate.ToString))
-
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_LEFT
-        datatable.AddCell(GetParPDFNormal("Spostate"))
-        datatable.DefaultCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        datatable.AddCell(GetParPDFNormal(nSpostate.ToString))
-
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph("Spostate")).SetTextAlignment(TextAlignment.LEFT))
+        datatable.AddCell(New Cell().SetFont(PdfFontFactory.CreateFont(StandardFonts.HELVETICA)).Add(New Paragraph(nSpostate.ToString)).SetTextAlignment(TextAlignment.RIGHT))
         _doc.Add(datatable)
 
     End Sub

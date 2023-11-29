@@ -248,15 +248,6 @@ Partial Public Class uscProcessDetails
     Protected WithEvents rbFascicleVisibilityType As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
-    '''uscContattiSelRest control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscContattiSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelRest
-
-    '''<summary>
     '''uscResponsibleRoles control.
     '''</summary>
     '''<remarks>
@@ -264,6 +255,15 @@ Partial Public Class uscProcessDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscResponsibleRoles As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+
+    '''<summary>
+    '''uscContattiSelRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscContattiSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelRest
 
     '''<summary>
     '''uscAuthorizedRoles control.

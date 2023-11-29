@@ -22,11 +22,12 @@
                     <asp:Panel runat="server" ID="rowStaticData">
                         <table class="datatable 
                             
-                            DataTable" id="grdFinderStaticData">
+                            DataTable"
+                            id="grdFinderStaticData">
                             <tr>
                                 <th colspan="2">Dati</th>
                             </tr>
-                            <tr ID="rowYear" runat="server">
+                            <tr id="rowYear" runat="server">
                                 <td class="col-dsw-2 label">
                                     <label>Anno:</label>
                                 </td>
@@ -34,7 +35,7 @@
                                     <telerik:RadDateInput ID="txtYear" runat="server" Width="100px" DateFormat="yyyy"></telerik:RadDateInput>
                                 </td>
                             </tr>
-                            <tr  ID="rowNumber" runat="server">
+                            <tr id="rowNumber" runat="server">
                                 <td class="col-dsw-2 label">
                                     <label>Numero:</label>
                                 </td>
@@ -42,7 +43,7 @@
                                     <telerik:RadNumericTextBox ID="txtNumber" runat="server" NumberFormat-DecimalDigits="0" NumberFormat-GroupSeparator="" Width="150px"></telerik:RadNumericTextBox>
                                 </td>
                             </tr>
-                            <tr class="dsw-vertical-middle" >
+                            <tr class="dsw-vertical-middle">
                                 <td class="col-dsw-2 label">Data:
                                 </td>
                                 <td class="col-dsw-8">
@@ -74,12 +75,18 @@
                                     <telerik:RadTextBox ID="txtDocumentName" runat="server" Width="100%" TextMode="SingleLine"></telerik:RadTextBox>
                                 </td>
                             </tr>
-                              <tr>
+                            <tr>
                                 <td class="col-dsw-2 label" style="vertical-align: middle;">
                                     <label>Privo di documenti:</label>
                                 </td>
                                 <td class="col-dsw-8">
-                                    <asp:CheckBox runat="server" ID="chkGenericDocument" />
+                                    <telerik:RadDropDownList runat="server" ID="rddlGenericDocument" Width="140px" AutoPostBack="true">
+                                        <Items>
+                                            <telerik:DropDownListItem Selected="true" Text="Tutti" Value="0" />
+                                            <telerik:DropDownListItem Text="Si" Value="1" />
+                                            <telerik:DropDownListItem Text="No" Value="2" />
+                                        </Items>
+                                    </telerik:RadDropDownList>
                                 </td>
                             </tr>
                             <tr>
@@ -87,7 +94,13 @@
                                     <label>Archivi annullati:</label>
                                 </td>
                                 <td class="col-dsw-8">
-                                    <asp:CheckBox runat="server" ID="chkStatus" />
+                                    <telerik:RadDropDownList runat="server" ID="chkStatus" Width="140px" AutoPostBack="true">
+                                        <Items>
+                                            <telerik:DropDownListItem Selected="true" Text="Tutti" Value="0" />
+                                            <telerik:DropDownListItem Text="Si" Value="1" />
+                                            <telerik:DropDownListItem Text="No" Value="2" />
+                                        </Items>
+                                    </telerik:RadDropDownList>
                                 </td>
                             </tr>
                         </table>

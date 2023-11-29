@@ -12,7 +12,16 @@ Option Explicit On
 
 
 Partial Public Class uscSearchADUser
-    
+
+    '''<summary>
+    '''RadScriptBlock1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
+
     '''<summary>
     '''txtFilter control.
     '''</summary>
@@ -21,7 +30,7 @@ Partial Public Class uscSearchADUser
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtFilter As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''lbMultiDomain control.
     '''</summary>
@@ -30,7 +39,7 @@ Partial Public Class uscSearchADUser
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lbMultiDomain As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''btnSearch control.
     '''</summary>
@@ -39,7 +48,16 @@ Partial Public Class uscSearchADUser
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSearch As Global.Telerik.Web.UI.RadButton
-    
+
+    '''<summary>
+    '''RadToolTipManager control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents RadToolTipManager As Global.Telerik.Web.UI.RadToolTipManager
+
     '''<summary>
     '''tvwContactDomain control.
     '''</summary>

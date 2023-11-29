@@ -42,8 +42,8 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,19 +54,15 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VecompSoftware.Helpers, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.9.9.20267.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers, Version=9.22.23292.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.9.22.23292.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Json, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Json.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Json.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Json, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Json.9.22.23292.1\lib\net48\VecompSoftware.Helpers.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APIConnector.cs" />
-    <Compile Include="CollaborationConnector.cs" />
-    <Compile Include="dto\APIProviderDTO.cs" />
     <Compile Include="dto\OChartItemDTO.cs" />
-    <Compile Include="dto\OrgDeptDTO.cs" />
     <Compile Include="FastInvoiceProtocolConnector.cs" />
     <Compile Include="FastMergeConnector.cs" />
     <Compile Include="jsonconverter\OChartItemDTOConverter.cs" />
@@ -77,7 +73,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="OChartConnector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\CollaborationService\Reference.cs">
       <AutoGen>True</AutoGen>

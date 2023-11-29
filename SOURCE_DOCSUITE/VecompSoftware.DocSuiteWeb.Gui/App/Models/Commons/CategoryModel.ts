@@ -11,7 +11,7 @@ class CategoryModel {
     EntityShortId: number;
     IdCategory: number;
     Name: string;
-    IsActive: number;
+    IsActive: boolean;
     Code: number;
     FullIncrementalPath: string;
     FullCode: string;

@@ -116,7 +116,7 @@ Partial Public Class uscGroupDetails
         Dim dataItem As GridDataItem = DirectCast(e.DetailTableView.ParentItem, GridDataItem)
         Dim roleId As Integer = Integer.Parse(dataItem.Attributes.Item("IdRole"))
         Dim currentRole As Role = Facade.RoleFacade.GetById(roleId)
-        Dim defaultTitle As String = String.Concat(currentRole.Name, " (", currentRole.IdRoleTenant, ")")
+        Dim defaultTitle As String = String.Concat(currentRole.Name, " (", currentRole.Id, ")")
 
         Dim dt As DataTable = New DataTable()
         dt.Columns.Add("DocumentType")
@@ -276,7 +276,7 @@ Partial Public Class uscGroupDetails
             If Not String.IsNullOrEmpty(item.Role.Name) Then
                 row.Item("RoleName").Text = item.Role.Name
             End If
-            If item.Role.IsActive <> 1 Then
+            If Not item.Role.IsActive Then
                 row.Item("RoleName").ForeColor = Drawing.Color.LightSlateGray
                 row.Item("RoleName").ToolTip = "Settore disabilitato"
                 Dim documentImage As Image = DirectCast(e.Item.FindControl("roleDisabled"), Image)
@@ -384,7 +384,7 @@ Partial Public Class uscGroupDetails
         newNode.Font.Bold = True
         newNode.Expanded = True
 
-        If DocSuiteContext.Current.ProtocolEnv.IsSecurityGroupEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
+        If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
             Dim userDomain As String = user.UserDomain
             If String.IsNullOrEmpty(userDomain) Then
                 userDomain = DocSuiteContext.Current.CurrentDomainName

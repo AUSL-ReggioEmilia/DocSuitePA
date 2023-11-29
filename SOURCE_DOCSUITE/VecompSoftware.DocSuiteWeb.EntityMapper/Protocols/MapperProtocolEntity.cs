@@ -1,9 +1,10 @@
 ﻿using System;
-using DSW = VecompSoftware.DocSuiteWeb.Data;
-using APIProtocol = VecompSoftware.DocSuiteWeb.Entity.Protocols;
-using NHibernate;
-using VecompSoftware.DocSuiteWeb.EntityMapper.Commons;
 using System.Linq;
+using NHibernate;
+using VecompSoftware.DocSuiteWeb.Entity.Protocols;
+using VecompSoftware.DocSuiteWeb.EntityMapper.Commons;
+using APIProtocol = VecompSoftware.DocSuiteWeb.Entity.Protocols;
+using DSW = VecompSoftware.DocSuiteWeb.Data;
 
 namespace VecompSoftware.DocSuiteWeb.EntityMapper.Protocols
 {
@@ -14,6 +15,8 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Protocols
         private readonly MapperCategoryEntity _mapperCategory;
         private readonly MapperProtocolRoleEntity _mapperProtocolRoleEntity;
         private readonly MapperProtocolUserEntity _mapperProtocolUserEntity;
+        private readonly MapperProtocolContactEntity _mapperProtocolContactEntity;
+        private readonly MapperProtocolContactManualEntity _mapperProtocolContactManualEntity;
         #endregion
 
         #region [ Constructor ]
@@ -23,6 +26,8 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Protocols
             _mapperContainer = new MapperContainerEntity();
             _mapperProtocolRoleEntity = new MapperProtocolRoleEntity();
             _mapperProtocolUserEntity = new MapperProtocolUserEntity();
+            _mapperProtocolContactEntity = new MapperProtocolContactEntity();
+            _mapperProtocolContactManualEntity = new MapperProtocolContactManualEntity();
         }
         #endregion
 
@@ -56,8 +61,6 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Protocols
             apiProtocol.LastChangedReason = entity.LastChangedReason;
             apiProtocol.AlternativeRecipient = entity.AlternativeRecipient;
             apiProtocol.JournalDate = entity.JournalDate;
-            apiProtocol.LastConservationDate = entity.LastConservationDate;
-            apiProtocol.HasConservatedDocs = entity.HasConservatedDocs;
             apiProtocol.IdAnnexed = entity.IdAnnexed != Guid.Empty ? entity.IdAnnexed : (Guid?)null;
             apiProtocol.HandlerDate = entity.HandlerDate;
             apiProtocol.TDError = entity.TDError;
@@ -67,6 +70,9 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Protocols
             apiProtocol.Container = _mapperContainer.MappingDTO(entity.Container);
             apiProtocol.ProtocolRoles = entity.Roles.Select(s => _mapperProtocolRoleEntity.MappingDTO(s)).ToList();
             apiProtocol.ProtocolUsers = entity.Users.Select(u => _mapperProtocolUserEntity.MappingDTO(u)).ToList();
+            apiProtocol.ProtocolContacts = entity.Contacts.Where(f => f.Contact != null).Select(u => _mapperProtocolContactEntity.MappingDTO(u)).ToList();
+            apiProtocol.ProtocolContactManuals = entity.ManualContacts.Where(f => f.Contact != null).Select(u => _mapperProtocolContactManualEntity.MappingDTO(u)).ToList();
+            apiProtocol.ProtocolType = entity.Type != null ? new ProtocolType() { EntityShortId = (short)entity.Type.Id } : null;
             return apiProtocol;
         }
         #endregion

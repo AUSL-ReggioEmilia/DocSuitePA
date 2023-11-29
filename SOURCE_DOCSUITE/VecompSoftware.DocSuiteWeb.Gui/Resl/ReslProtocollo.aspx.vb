@@ -192,7 +192,7 @@ Partial Public Class ReslProtocollo
         finder.SortExpressions.Add("P.Number", "Desc")
 
         '' Aggiungo i check sulla sicurezza
-        CommonInstance.ApplyProtocolFinderSecurity(finder, SecurityType.Read, True)
+        CommonInstance.ApplyProtocolFinderSecurity(finder, SecurityType.Read, CurrentTenant.TenantAOO.UniqueId, True)
 
         Return finder
     End Function

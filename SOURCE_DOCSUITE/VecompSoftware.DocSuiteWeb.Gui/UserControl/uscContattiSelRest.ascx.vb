@@ -22,12 +22,6 @@ Public Class uscContattiSelRest
 
     Public Property FilterByParentId As Integer?
 
-    Public ReadOnly Property CurrentTenant As Tenant
-        Get
-            Return CType(Session("CurrentTenant"), Tenant)
-        End Get
-    End Property
-
     Public Property AddAllDataButtonVisibility As Boolean
 
     Public Property RemoveAllDataButtonVisibility As Boolean

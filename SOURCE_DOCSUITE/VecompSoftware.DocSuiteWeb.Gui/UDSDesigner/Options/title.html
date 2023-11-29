@@ -41,8 +41,8 @@
     <div class="form-group">
         <label class="control-label col-sm-3">Funzioni</label>
         <div class="controls col-sm-4">
-            <label for="enabledCQRSSync">
-                <input id="enabledCQRSSync" type="checkbox" rv-checked="ctrl.enabledCQRSSync"> Abilita fascicolazione
+            <label for="enabledConservation" rv-class-hidden="ctrl.enableConservationCheckBox">
+                <input id="enabledConservation" type="checkbox" rv-checked="ctrl.enabledConservation" rv-disabled="ctrl.enableConservationCheckBox"> Abilita conservazione
             </label>
             <label for="enabledWorkflow" rv-class-hidden="ctrl.enableWorkflowCheckBox">
                 <input id="enabledWorkflow" type="checkbox" rv-checked="ctrl.enabledWorkflow" rv-disabled="ctrl.enableWorkflowCheckBox"> Abilita workflow
@@ -59,7 +59,9 @@
             <label for="ShowArchiveInProtocolSummaryEnabled">
                 <input id="ShowArchiveInProtocolSummaryEnabled" type="checkbox" rv-checked="ctrl.showArchiveInProtocolSummaryEnabled"> Abilita visualizzazione archivio nel sommario del protocollo
             </label>
-
+            <label for="DocumentTypeCoherencyInArchivingCollaborationDisabled">
+                <input id="DocumentTypeCoherencyInArchivingCollaborationDisabled" type="checkbox" rv-checked="ctrl.documentTypeCoherencyInArchivingCollaborationDisabled"> Disabilita coerenza tipologia documenti in archiviazione collaborazione
+            </label>
         </div>
 
         <div class="controls col-sm-5">
@@ -91,7 +93,7 @@
         <div class="controls col-sm-4">
 
             <label for="enabledPECButton">
-                <input id="enabledPECButton" type="checkbox" rv-checked="ctrl.enabledPECButton" rv-disabled="true"> Invio PEC
+                <input id="enabledPECButton" type="checkbox" rv-checked="ctrl.enabledPECButton"> Invio PEC
             </label>
 
             <label for="enabledMailButton">

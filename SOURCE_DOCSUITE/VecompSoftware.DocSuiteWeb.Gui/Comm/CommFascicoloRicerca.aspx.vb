@@ -54,7 +54,7 @@ Partial Public Class CommFascicoloRicerca
         End If
 
         Dim contactActive As Boolean = Not CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContactRight
-        Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(txtSearchContact.Text, If(contactActive, 1S, 0S))
+        Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(txtSearchContact.Text, contactActive)
         If contacts.IsNullOrEmpty() Then
             AjaxAlert("Codice Inesistente.")
             Exit Sub
@@ -141,7 +141,7 @@ Partial Public Class CommFascicoloRicerca
         ' classificazioni figlie
         protocolfinder.IncludeChildClassifications = chbCategoryChild.Checked
         ' page size
-        If (CommonUtil.GetInstance().ApplyProtocolFinderSecurity(protocolfinder, SecurityType.Read, True)) AndAlso DocSuiteContext.Current.ProtocolEnv.SearchMaxRecords <> 0 Then
+        If (CommonUtil.GetInstance().ApplyProtocolFinderSecurity(protocolfinder, SecurityType.Read, CurrentTenant.TenantAOO.UniqueId, True)) AndAlso DocSuiteContext.Current.ProtocolEnv.SearchMaxRecords <> 0 Then
             protocolfinder.PageSize = DocSuiteContext.Current.ProtocolEnv.SearchMaxRecords
         End If
         Return protocolfinder
@@ -198,7 +198,7 @@ Partial Public Class CommFascicoloRicerca
         Dim docmFinder As NHibernateDocumentFinder
         If CommonInstance.DocmEnabled Then
             docmFinder = GetDocumentFinderByForm()
-            If Not CommonUtil.GetInstance().ApplyDocumentFinderSecurity(docmFinder) Then
+            If Not CommonUtil.GetInstance().ApplyDocumentFinderSecurity(docmFinder, CurrentTenant.TenantAOO.UniqueId) Then
                 Throw New DocSuiteException("Pratiche", "Diritti insufficienti per la ricerca nel modulo Pratiche")
             End If
             SessionSearchController.SaveSessionFinder(docmFinder, SessionSearchController.SessionFinderType.CommDocmFascFinderType)

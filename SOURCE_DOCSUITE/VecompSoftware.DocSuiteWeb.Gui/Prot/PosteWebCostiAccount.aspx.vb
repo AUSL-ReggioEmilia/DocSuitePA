@@ -34,6 +34,9 @@ Namespace Prot.PosteWeb
         End Sub
 
         Protected Sub BtnExcel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnExcel.Click
+            If ReportFacade.TenantModel Is Nothing Then
+                ReportFacade.TenantModel = DocSuiteContext.Current.CurrentTenant
+            End If
             Dim report As IReport(Of PolDtoCosti) = ReportFacade.GenerateReport(Of PolDtoCosti)(CType(dgPosteRequestContact.DataSource, IList(Of PolDtoCosti)), (From column As GridColumn In dgPosteRequestContact.Columns Select New Column(column)).ToList())
             Dim doc As DocumentInfo = report.ExportExcel("Costi_PosteOnLine.xls")
 

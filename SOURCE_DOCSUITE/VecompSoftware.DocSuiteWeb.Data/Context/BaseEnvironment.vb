@@ -9,6 +9,7 @@ Imports System.Data.SqlClient
 Imports System.Linq
 Imports VecompSoftware.Services.Logging
 Imports Newtonsoft.Json
+Imports VecompSoftware.Helpers.Security
 
 Public Class BaseEnvironment
 
@@ -167,7 +168,7 @@ Public Class BaseEnvironment
 
     ''' <summary> Ritorna il valore del parametro in memoria. </summary>
     ''' <returns> Se presente dà la precedenza al parametro d'istanza, altrimenti al parametro ufficiale. </returns>
-    Public Function GetParameter(ByVal key As String) As String
+    Public Function GetParameter(ByVal key As String, Optional ByVal isEncrypted As Boolean = True) As String
         Dim value As String = Nothing
 
         Dim hasInstanceParameter As Boolean = False
@@ -175,12 +176,18 @@ Public Class BaseEnvironment
             Dim instanceKey As String = DocSuiteContext.CustomInstanceName & key
             If Parameters.ContainsKey(instanceKey) Then
                 value = Parameters.Item(instanceKey)
+                If isEncrypted Then
+                    value = DecryptParameterToken(value)
+                End If
                 hasInstanceParameter = True
             End If
         End If
 
         If Not hasInstanceParameter AndAlso Parameters.ContainsKey(key) Then
             value = Parameters.Item(key)
+            If isEncrypted Then
+                value = DecryptParameterToken(value)
+            End If
         End If
 
         Return value
@@ -204,21 +211,21 @@ Public Class BaseEnvironment
 
         ElseIf _parameters.ContainsKey(realKey) Then
             ' modifica
-            _parameters(realKey) = value
+            _parameters(realKey) = BaseEnvironment.EncryptParameterToken(value)
 
             For i As Integer = 0 To _parametersList.Count - 1 Step 1
                 If _parametersList(i).Id.Eq(realKey) Then
-                    _parametersList(i).Value = value
+                    _parametersList(i).Value = BaseEnvironment.EncryptParameterToken(value)
                     Exit For
                 End If
             Next
         Else
             ' inserimento
-            _parameters.Add(realKey, value)
+            _parameters.Add(realKey, BaseEnvironment.EncryptParameterToken(value))
 
             Dim newParam As New ParameterEnv()
             newParam.Id = realKey
-            newParam.Value = value
+            newParam.Value = BaseEnvironment.EncryptParameterToken(value)
             _parametersList.Add(newParam)
         End If
     End Sub
@@ -386,6 +393,20 @@ Public Class BaseEnvironment
         End Using
 
         Return env
+    End Function
+
+    Public Shared Function EncryptParameterToken(ByVal parameterToken As String) As String
+        If String.IsNullOrEmpty(parameterToken) Then
+            Return Nothing
+        End If
+        Return EncryptionHelper.EncryptString(parameterToken, DocSuiteContext.PasswordEncryptionKey)
+    End Function
+
+    Public Shared Function DecryptParameterToken(ByVal parameterToken As String) As String
+        If String.IsNullOrEmpty(parameterToken) Then
+            Return Nothing
+        End If
+        Return EncryptionHelper.DecryptString(parameterToken, DocSuiteContext.PasswordEncryptionKey)
     End Function
 
 #End Region

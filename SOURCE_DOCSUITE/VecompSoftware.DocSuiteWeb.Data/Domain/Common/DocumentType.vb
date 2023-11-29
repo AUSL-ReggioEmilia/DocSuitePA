@@ -3,7 +3,7 @@ Imports System.Collections.Generic
 <Serializable()> _
 Public Class DocumentType
     Inherits DomainObject(Of Int32)
-    Implements IAuditable, ISupportLogicDelete
+    Implements IAuditable, ISupportBooleanLogicDelete
 
 #Region " Fields "
 
@@ -11,12 +11,11 @@ Public Class DocumentType
     Private _commonUser As String
     Private _needPackage As Boolean
     Private _description As String
-    Private _isActive As Short
+    Private _isActive As Boolean
     Private _registrationUser As String
     Private _registrationDate As DateTimeOffset
     Private _lastChangedUser As String
     Private _lastChangedDate As DateTimeOffset?
-    Private _containerDocTypes As IList(Of ContainerDocType)
     Private _hiddenFields As String
 
 #End Region
@@ -59,21 +58,12 @@ Public Class DocumentType
         End Set
     End Property
 
-    Public Overridable Property IsActive() As Short Implements ISupportLogicDelete.IsActive
+    Public Overridable Property IsActive() As Boolean Implements ISupportBooleanLogicDelete.IsActive
         Get
             Return _isActive
         End Get
-        Set(ByVal value As Short)
+        Set(ByVal value As Boolean)
             _isActive = value
-        End Set
-    End Property
-
-    Public Overridable Property ContainerDocTypes() As IList(Of ContainerDocType)
-        Get
-            Return _containerDocTypes
-        End Get
-        Set(ByVal value As IList(Of ContainerDocType))
-            _containerDocTypes = value
         End Set
     End Property
 

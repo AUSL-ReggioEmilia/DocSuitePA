@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscSettori
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''RadWindowManagerSettori control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerSettori As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowSelSettori control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelSettori As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''frmDecorator control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents frmDecorator As Global.Telerik.Web.UI.RadFormDecorator
-    
+
     '''<summary>
     '''tblSettori control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblSettori As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''tblHeader control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblHeader As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblCaption control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCaption As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''btnExpandRoles control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnExpandRoles As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''contentRow control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents contentRow As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''ToolBar control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ToolBar As Global.Telerik.Web.UI.RadToolBar
-    
+
     '''<summary>
     '''btnAdd control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAdd As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''btnADUser control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnADUser As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''btnDelete control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnDelete As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''btnViewMode control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnViewMode As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''btnViewManagers control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnViewManagers As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''btnCopiaConoscenza control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnCopiaConoscenza As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''btnPrivacy control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnPrivacy As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''btnFascicleVisibilityType control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnFascicleVisibilityType As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''btnPropagateAuthorizations control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnPropagateAuthorizations As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''fldCurrentTenant control.
     '''</summary>
@@ -192,16 +192,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents fldCurrentTenant As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
-    '''<summary>
-    '''lblCurrentTenant control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblCurrentTenant As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''RadTreeSettori control.
     '''</summary>
@@ -210,34 +201,7 @@ Partial Public Class uscSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadTreeSettori As Global.Telerik.Web.UI.RadTreeView
-    
-    '''<summary>
-    '''fldOtherTenant control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents fldOtherTenant As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
-    '''<summary>
-    '''lblOtherTenant control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblOtherTenant As Global.System.Web.UI.WebControls.Label
-    
-    '''<summary>
-    '''RadTreeRoleTenant control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents RadTreeRoleTenant As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''AnyNodeCheck control.
     '''</summary>

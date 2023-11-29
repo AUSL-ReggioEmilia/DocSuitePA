@@ -400,6 +400,13 @@ Public Class UserDiarioUnificato
                         btnLog.ToolTip = "Visualizza log protocollo"
                         lblLogType.Text = String.Format("{0}", dataSourceRow.Protocol.FullNumber)
                         hfId.Value = dataSourceRow.Protocol.Id.ToString()
+
+                        With DirectCast(e.Item.FindControl("hfYear"), HiddenField)
+                            .Value = dataSourceRow.Protocol.Year
+                        End With
+                        With DirectCast(e.Item.FindControl("hfNumber"), HiddenField)
+                            .Value = dataSourceRow.Protocol.Number
+                        End With
                     End If
 
 

@@ -173,6 +173,7 @@ Public Class NHPosteOnlineRequestFinder
         proj.Add(Projections.Property("DataSpedizione"), "DataSpedizione")
         proj.Add(Projections.Property("StatusDescrition"), "StatusDescrition")
         proj.Add(Projections.Property("IdRicevuta"), "IdRicevuta")
+        proj.Add(Projections.Property("Numero"), "Numero")
         proj.Add(Projections.Property("Costo"), "Costo")
 
         criteria.SetProjection(Projections.Distinct(proj))

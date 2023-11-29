@@ -12,6 +12,7 @@ Imports VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Commons
 Imports VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports EntityUDS = VecompSoftware.DocSuiteWeb.Entity.UDS
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.Commons
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.UDS
 Imports VecompSoftware.DocSuiteWeb.Facade
@@ -74,8 +75,8 @@ Public Class DesignerService
 
     Public Overloads Shared ReadOnly Property CurrentTenant As Tenant
         Get
-            If HttpContext.Current.Session("CurrentTenant") IsNot Nothing Then
-                Return DirectCast(HttpContext.Current.Session("CurrentTenant"), Tenant)
+            If HttpContext.Current.Session(CommonShared.USER_CURRENT_TENANT) IsNot Nothing Then
+                Return DirectCast(HttpContext.Current.Session(CommonShared.USER_CURRENT_TENANT), Tenant)
             End If
             Return Nothing
         End Get
@@ -84,6 +85,9 @@ Public Class DesignerService
 
 #Region "Constructor"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
 
     End Sub
 #End Region
@@ -94,6 +98,13 @@ Public Class DesignerService
         Dim UDS As UDSConverter = New UDSConverter()
         Dim contactTypeLabels As ICollection(Of String) = UDS.GetContactTypeDescriptionLabels()
         Return contactTypeLabels
+    End Function
+
+    <WebMethod>
+    Public Shared Function LoadCustomActions() As Object
+        Dim UDS As UDSConverter = New UDSConverter()
+        Dim customActionsLabels As ICollection(Of String) = UDS.GetCustomActionDescriptionLabels()
+        Return customActionsLabels
     End Function
 
     <WebMethod>
@@ -194,7 +205,7 @@ Public Class DesignerService
     End Function
 
     <WebMethod>
-    Public Shared Function SaveModel(jsModel As JsModel, activeDate As DateTimeOffset, publish As Boolean) As String
+    Public Shared Function SaveModel(jsModel As JsModel, idUDSRepositoryToSave As Guid?, activeDate As DateTimeOffset, publish As Boolean) As String
         Try
             Dim converter As UDSConverter = New UDSConverter()
             Dim udsModel As UDSModel = converter.ConvertFromJson(jsModel)
@@ -212,8 +223,11 @@ Public Class DesignerService
                 Throw New DocSuiteException("VecompSoftware.DocSuiteWeb.Gui.UdsDesigner.DesignerService [ERROR]: Deve essere inserito un contenitore valido")
             End If
 
-            UDSRepositoryWebAPIFacade.SaveRepository(udsModel, activeDate, titleCtrl.idRepository, publish)
-            Return "ok"
+            If idUDSRepositoryToSave.HasValue AndAlso titleCtrl.idRepository.Equals(Guid.Empty) Then
+                titleCtrl.idRepository = idUDSRepositoryToSave.Value
+            End If
+            Dim idUDSRepository As Guid = UDSRepositoryWebAPIFacade.SaveRepository(udsModel, activeDate, titleCtrl.idRepository, publish)
+            Return idUDSRepository.ToString()
         Catch ex As Exception
             FileLogger.Error(LoggerName, ex.Message, ex)
             Throw New Exception(ex.Message)
@@ -238,7 +252,7 @@ Public Class DesignerService
         If String.IsNullOrEmpty(description) Then
             Return LoadRootCategories()
         End If
-        Dim categories As IList(Of Data.Category) = FacadeFactory.Instance.CategoryFacade.GetCategoryByDescription(description, 1)
+        Dim categories As IList(Of Data.Category) = FacadeFactory.Instance.CategoryFacade.GetCategoryByDescription(description, True)
         If Not categories.Any() Then
             Return String.Empty
         End If
@@ -302,7 +316,7 @@ Public Class DesignerService
         If String.IsNullOrEmpty(description) Then
             Return LoadContainers()
         End If
-        Dim containers As IList(Of Data.Container) = FacadeFactory.Instance.ContainerFacade.GetAllRightsDistinct("UDS", 1)
+        Dim containers As IList(Of Data.Container) = FacadeFactory.Instance.ContainerFacade.GetAllRightsDistinct("UDS", True)
         containers = FacadeFactory.Instance.ContainerFacade.FilterContainers(containers, description)
         If Not containers.Any() Then
             Return String.Empty
@@ -322,7 +336,7 @@ Public Class DesignerService
 
     <WebMethod>
     Public Shared Function LoadContainers() As Object
-        Dim containers As IList(Of Data.Container) = FacadeFactory.Instance.ContainerFacade.GetAllRightsDistinct("UDS", 1)
+        Dim containers As IList(Of Data.Container) = FacadeFactory.Instance.ContainerFacade.GetAllRightsDistinct("UDS", True)
         If Not containers.Any() Then
             Return String.Empty
         End If
@@ -494,6 +508,17 @@ Public Class DesignerService
             }
     End Function
 
+    <WebMethod>
+    Public Shared Function AddUDSFieldListCtrlNode(idUDSRepository As Guid, name As String) As EntityUDS.UDSFieldList
+        Dim udsFieldListCtrlNode As EntityUDS.UDSFieldList = UDSRepositoryWebAPIFacade.AddUDSFieldListCtrlNode(idUDSRepository, name)
+        Return udsFieldListCtrlNode
+    End Function
+
+    <WebMethod>
+    Public Shared Function UpdateUDSFieldListRootNode(idUDSFieldList As Guid, name As String) As EntityUDS.UDSFieldList
+        Dim udsFieldListCtrlNode As EntityUDS.UDSFieldList = UDSRepositoryWebAPIFacade.UpdateUDSFieldListRootNode(idUDSFieldList, name)
+        Return udsFieldListCtrlNode
+    End Function
 #End Region
 
 End Class

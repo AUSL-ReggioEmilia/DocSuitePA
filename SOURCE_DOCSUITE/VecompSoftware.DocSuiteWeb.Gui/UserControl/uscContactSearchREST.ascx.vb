@@ -51,10 +51,10 @@ Public Class uscContactSearchRest
             Return pnlMainContent
         End Get
     End Property
-    Public ReadOnly Property IdTenant() As String
+    Public ReadOnly Property IdTenant As String
         Get
             If FilterByTenantEnabled Then
-                Return DirectCast(Session("CurrentTenant"), Tenant).UniqueId.ToString()
+                Return CurrentTenant.UniqueId.ToString()
             Else
                 Return String.Empty
             End If

@@ -65,9 +65,27 @@
                     workflowReferenceBiblos.push(obj)
                 });
 
-                workflowReferenceBiblos = JSON.stringify(workflowReferenceBiblos);
+                var startModel = { "Documents": workflowReferenceBiblos };
+                var serializedModel = JSON.stringify(startModel);
 
-                dswSignalR.sendServerMessages(serverFunction, correlationId, workflowReferenceBiblos, 'workflow_integration', 'AutomaticInvoiceDelete',
+                var workflowName = "Fatturazione elettronica - Elimina fattura";
+                var evt = {
+                    "WorkflowName": workflowName, "WorkflowAutoComplete": true, "EventModel": { "CustomProperties": {} }
+                };
+                evt.EventModel.CustomProperties["DocumentManagementRequestModel"] = serializedModel;
+
+                var referenceModel = { "ReferenceId": correlationId, "ReferenceModel": JSON.stringify(evt) };
+
+                var workflowStartModel = {};
+                workflowStartModel.WorkflowName = workflowName;
+                workflowStartModel.Arguments = {};
+                workflowStartModel.Arguments["_dsw_p_ActivityName"] = { "PropertyType": 8, "Name": "_dsw_p_ActivityName", "ValueString": "Elimina fattura" };
+                workflowStartModel.Arguments["_dsw_p_TenantId"] = { "PropertyType": 256, "Name": "_dsw_p_TenantId", "ValueGuid": "<%= CurrentUserTenantId %>" };
+                workflowStartModel.Arguments["_dsw_p_TenantAOOId"] = { "PropertyType": 256, "Name": "_dsw_p_TenantAOOId", "ValueGuid": "<%= CurrentUserTenantAOOId %>" };
+                workflowStartModel.Arguments["_dsw_p_TenantName"] = { "PropertyType": 8, "Name": "_dsw_p_TenantName", "ValueString": "<%= CurrentUserTenantName %>" };
+                workflowStartModel.Arguments["_dsw_p_ReferenceModel"] = { "PropertyType": 1, "Name": "_dsw_p_ReferenceModel", "ValueString": JSON.stringify(referenceModel) };
+
+                dswSignalR.sendServerMessages(serverFunction, correlationId, JSON.stringify(workflowStartModel),
                     onDoneSignalRSubscriptionCallback, onErrorSignalRCallback);
             }
 

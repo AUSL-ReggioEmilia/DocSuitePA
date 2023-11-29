@@ -12,7 +12,52 @@ Option Explicit On
 
 
 Partial Public Class UserScrivaniaD
-    
+
+    '''<summary>
+    '''radWindowManagerUserScrivania control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents radWindowManagerUserScrivania As Global.Telerik.Web.UI.RadWindowManager
+
+    '''<summary>
+    '''windowDistributionRejectNote control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents windowDistributionRejectNote As Global.Telerik.Web.UI.RadWindow
+
+    '''<summary>
+    '''txtDistributionRejectNote control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtDistributionRejectNote As Global.Telerik.Web.UI.RadTextBox
+
+    '''<summary>
+    '''txtDistributionRejectNoteValidator control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtDistributionRejectNoteValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
+    '''<summary>
+    '''btnDistributionRejectConfirm control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnDistributionRejectConfirm As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''ajaxHeader control.
     '''</summary>
@@ -21,7 +66,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ajaxHeader As Global.Telerik.Web.UI.RadAjaxPanel
-    
+
     '''<summary>
     '''divTitolo control.
     '''</summary>
@@ -30,7 +75,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents divTitolo As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-    
+
     '''<summary>
     '''lblHeader control.
     '''</summary>
@@ -39,7 +84,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblHeader As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''headerTable control.
     '''</summary>
@@ -48,7 +93,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents headerTable As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''pnlCC control.
     '''</summary>
@@ -57,7 +102,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlCC As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''rbCC control.
     '''</summary>
@@ -66,7 +111,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rbCC As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''rowProtocolType control.
     '''</summary>
@@ -75,7 +120,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowProtocolType As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''ddlProtocolTypes control.
     '''</summary>
@@ -84,7 +129,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlProtocolTypes As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''rowResolutionTypes control.
     '''</summary>
@@ -93,7 +138,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowResolutionTypes As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''pnlResolutionType control.
     '''</summary>
@@ -102,7 +147,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlResolutionType As Global.Telerik.Web.UI.RadAjaxPanel
-    
+
     '''<summary>
     '''rblResolutionTypes control.
     '''</summary>
@@ -111,7 +156,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rblResolutionTypes As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''pnlContainer control.
     '''</summary>
@@ -120,7 +165,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlContainer As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''ddlProtContainer control.
     '''</summary>
@@ -129,7 +174,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlProtContainer As Global.Telerik.Web.UI.RadDropDownList
-    
+
     '''<summary>
     '''ddlDocmContainer control.
     '''</summary>
@@ -138,7 +183,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlDocmContainer As Global.Telerik.Web.UI.RadDropDownList
-    
+
     '''<summary>
     '''ddlReslContainer control.
     '''</summary>
@@ -147,7 +192,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlReslContainer As Global.Telerik.Web.UI.RadDropDownList
-    
+
     '''<summary>
     '''rowRoles control.
     '''</summary>
@@ -156,7 +201,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowRoles As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''ddlRoles control.
     '''</summary>
@@ -165,7 +210,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlRoles As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''pnlCalendar control.
     '''</summary>
@@ -174,7 +219,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlCalendar As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''lblCalendar control.
     '''</summary>
@@ -183,7 +228,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCalendar As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rdpCalendar control.
     '''</summary>
@@ -192,7 +237,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpCalendar As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''pnlDateFilter control.
     '''</summary>
@@ -201,7 +246,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDateFilter As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''rdpDateFilterFrom control.
     '''</summary>
@@ -210,7 +255,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpDateFilterFrom As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''rdpDateFilterTo control.
     '''</summary>
@@ -219,7 +264,25 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpDateFilterTo As Global.Telerik.Web.UI.RadDatePicker
-    
+
+    '''<summary>
+    '''pnlChargeToMe control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlChargeToMe As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''chkChargeToMe control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents chkChargeToMe As Global.System.Web.UI.WebControls.CheckBox
+
     '''<summary>
     '''pnlAlert control.
     '''</summary>
@@ -228,7 +291,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAlert As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblAlert control.
     '''</summary>
@@ -237,7 +300,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblAlert As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''pnlProtocollo control.
     '''</summary>
@@ -246,7 +309,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlProtocollo As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscProtocolGrid control.
     '''</summary>
@@ -255,7 +318,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscProtocolGrid As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtGrid
-    
+
     '''<summary>
     '''pnlPratiche control.
     '''</summary>
@@ -264,7 +327,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlPratiche As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscDocmGrid control.
     '''</summary>
@@ -273,7 +336,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDocmGrid As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocmGrid
-    
+
     '''<summary>
     '''pnlAtti control.
     '''</summary>
@@ -282,7 +345,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAtti As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscReslGrid control.
     '''</summary>
@@ -291,7 +354,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscReslGrid As Global.VecompSoftware.DocSuiteWeb.Gui.uscReslGrid
-    
+
     '''<summary>
     '''pnlUpdate control.
     '''</summary>
@@ -300,7 +363,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlUpdate As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnUpdate control.
     '''</summary>
@@ -308,8 +371,8 @@ Partial Public Class UserScrivaniaD
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnUpdate As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnUpdate As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''pnlMultiAutorizza control.
     '''</summary>
@@ -318,7 +381,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlMultiAutorizza As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''cmdMultiAutorizza control.
     '''</summary>
@@ -326,8 +389,8 @@ Partial Public Class UserScrivaniaD
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents cmdMultiAutorizza As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents cmdMultiAutorizza As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''pnlMultiDistribuzione control.
     '''</summary>
@@ -336,7 +399,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlMultiDistribuzione As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''cmdMultiDistribuzione control.
     '''</summary>
@@ -344,8 +407,26 @@ Partial Public Class UserScrivaniaD
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents cmdMultiDistribuzione As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents cmdMultiDistribuzione As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''pnlDistributionReject control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlDistributionReject As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''cmdDistributionReject control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents cmdDistributionReject As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''pnlHighlight control.
     '''</summary>
@@ -354,7 +435,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlHighlight As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnRemoveHighlight control.
     '''</summary>
@@ -362,8 +443,8 @@ Partial Public Class UserScrivaniaD
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnRemoveHighlight As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnRemoveHighlight As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''pnlButtonBar control.
     '''</summary>
@@ -372,7 +453,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtonBar As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlGridBarProt control.
     '''</summary>
@@ -381,7 +462,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlGridBarProt As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscProtocolGridBar control.
     '''</summary>
@@ -390,7 +471,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscProtocolGridBar As Global.VecompSoftware.DocSuiteWeb.Gui.uscProtGridBar
-    
+
     '''<summary>
     '''pnlGridBarDocm control.
     '''</summary>
@@ -399,7 +480,7 @@ Partial Public Class UserScrivaniaD
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlGridBarDocm As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscDocumentGridBar control.
     '''</summary>

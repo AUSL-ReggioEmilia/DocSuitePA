@@ -140,24 +140,6 @@ Partial Public Class ProtRicerca
     Protected WithEvents ddlType As Global.System.Web.UI.WebControls.DropDownList
 
     '''<summary>
-    '''trLocazione control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents trLocazione As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''ddlLocation control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ddlLocation As Global.System.Web.UI.WebControls.DropDownList
-
-    '''<summary>
     '''rowContainer control.
     '''</summary>
     '''<remarks>

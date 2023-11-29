@@ -31,11 +31,13 @@
             
         </telerik:RadStyleSheetManager>
         <telerik:RadScriptBlock runat="server">  
-            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/jquery.signalR-2.4.1.min.js") %>"></script>
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/jquery.signalR-2.4.2.min.js") %>"></script>
             <script type="text/javascript" src="../signalr/hubs"></script>
             <!--[if lte IE 9]>
                 <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/jquery.xdomainrequest.min.js") %>"></script>
             <![endif]-->
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/signalr.min.js") %>"></script>
+            <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/pdf.js") %>"></script>
             <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/dsw.signalR.js") %>?version=<%= DSWVersion %>"></script>
             <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/dsw.extensions.js") %>?version=<%= DSWVersion %>"></script>
             <script type="text/javascript" src="<%= ResolveUrl("~/Scripts/dsw.browserutil.js") %>?version=<%= DSWVersion %>"></script>

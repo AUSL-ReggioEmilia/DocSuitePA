@@ -2,6 +2,7 @@
 Imports System.Linq
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
 Imports VecompSoftware.Helpers.ExtensionMethods
 
@@ -14,12 +15,11 @@ Public Class uscCategoryRest
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Public Delegate Sub CategoryAddedEventHandler(ByVal sender As Object, ByVal e As EventArgs)
-    Public Delegate Sub CategoryRemovedEventHandler(ByVal sender As Object, ByVal e As EventArgs)
-    Public Event CategoryAdded As CategoryAddedEventHandler
-    Public Event CategoryRemoved As CategoryRemovedEventHandler
+    Public Delegate Sub EntityAddedEventHandler(ByVal sender As Object, ByVal e As List(Of String))
+    Public Delegate Sub EntityRemovedEventHandler(ByVal sender As Object, ByVal e As List(Of String))
+    Public Event EntityAdded As EntityAddedEventHandler
+    Public Event EntityRemoved As EntityRemovedEventHandler
 #End Region
-
 #Region " Properties "
     Public ReadOnly Property MainContent As Control
         Get
@@ -36,6 +36,9 @@ Public Class uscCategoryRest
     Public Property FascicleType As FascicleType?
 
     Public Property ShowAuthorizedFascicolable As Boolean
+    Public Property ShowProcessFascicleTemplate As Boolean = False
+    Public Property ProcessNodeSelectable As Boolean = False
+    Public Property AjaxRequestEnabled As Boolean = False
 
     Public Property HideTitle As Boolean?
 
@@ -73,6 +76,8 @@ Public Class uscCategoryRest
             AnyNodeCheck.Enabled = value
         End Set
     End Property
+    Public Property DefaultCategoryId As Integer?
+    Public Property IsProcessActive As Boolean = False
 #End Region
 
 #Region " Events "
@@ -90,13 +95,19 @@ Public Class uscCategoryRest
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Protected Sub uscCategoryRest_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
-        Select Case e.Argument
-            Case "Add"
-                RaiseEvent CategoryAdded(Me, New EventArgs())
+        Dim ajaxModel As AjaxModel = Nothing
+        Try
+            ajaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument)
+            Select Case ajaxModel.ActionName
+                Case "CategoryAdded"
+                    RaiseEvent EntityAdded(Me, ajaxModel.Value)
+                Case "CategoryRemoved"
+                    RaiseEvent EntityRemoved(Me, ajaxModel.Value)
+            End Select
 
-            Case "Remove"
-                RaiseEvent CategoryRemoved(Me, New EventArgs())
-        End Select
+        Catch
+            Exit Sub
+        End Try
     End Sub
 #End Region
 

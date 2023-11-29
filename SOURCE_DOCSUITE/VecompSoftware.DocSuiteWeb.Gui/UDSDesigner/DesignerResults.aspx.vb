@@ -1,6 +1,7 @@
 ﻿Imports System.Collections.Generic
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.Web.RadGrid
 
 Public Class DesignerResults
@@ -27,6 +28,10 @@ Public Class DesignerResults
 
 #Region "Constructor"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         InitializeAjax()
         If Not IsPostBack Then
             Initialize()

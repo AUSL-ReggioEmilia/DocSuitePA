@@ -91,7 +91,7 @@ Public Class DeskViewer
         End If
 
         Dim documents As IList(Of DocumentInfo) = New List(Of DocumentInfo)
-        For Each deskDocument As DeskDocument In CurrentDesk.DeskDocuments.Where(Function(x) x.IsActive = 0)
+        For Each deskDocument As DeskDocument In CurrentDesk.DeskDocuments.Where(Function(x) x.IsActive)
             Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(deskDocument.IdDocument.Value)
             documents.Add(docInfos.OrderByDescending(Function(f) f.Version).FirstOrDefault())
         Next

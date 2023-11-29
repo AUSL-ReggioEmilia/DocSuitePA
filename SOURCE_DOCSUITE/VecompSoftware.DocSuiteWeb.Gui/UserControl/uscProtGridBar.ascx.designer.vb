@@ -92,7 +92,7 @@ Partial Public Class uscProtGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnExport As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnExport As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''btnDocuments control.
@@ -101,7 +101,7 @@ Partial Public Class uscProtGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnDocuments As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnDocuments As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''btnStampa control.
@@ -110,7 +110,7 @@ Partial Public Class uscProtGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnStampa As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnStampa As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''btnSelectAll control.
@@ -119,7 +119,7 @@ Partial Public Class uscProtGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnSelectAll As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnSelectAll As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''btnDeselectAll control.
@@ -128,7 +128,7 @@ Partial Public Class uscProtGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnDeselectAll As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnDeselectAll As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''btnSetRead control.
@@ -137,7 +137,7 @@ Partial Public Class uscProtGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnSetRead As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnSetRead As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''btnAssign control.
@@ -146,7 +146,7 @@ Partial Public Class uscProtGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnAssign As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnAssign As Global.Telerik.Web.UI.RadButton
 
     '''<summary>
     '''btnChangeContainer control.
@@ -155,5 +155,5 @@ Partial Public Class uscProtGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnChangeContainer As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnChangeContainer As Global.Telerik.Web.UI.RadButton
 End Class

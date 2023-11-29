@@ -68,6 +68,15 @@ Partial Public Class ReslVisualizza
     Protected WithEvents windowLastPage As Global.Telerik.Web.UI.RadWindow
 
     '''<summary>
+    '''windowStartWorkflow control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents windowStartWorkflow As Global.Telerik.Web.UI.RadWindow
+
+    '''<summary>
     '''PageDiv control.
     '''</summary>
     '''<remarks>
@@ -102,6 +111,15 @@ Partial Public Class ReslVisualizza
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents TblButtons As Global.System.Web.UI.WebControls.Table
+
+    '''<summary>
+    '''uscNotification control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
 
     '''<summary>
     '''resolutionBottomBar control.

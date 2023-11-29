@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dgroove Srl")]
 [assembly: AssemblyProduct("VecompSoftware.DocSuiteWeb.DTO.WSSeries")]
-[assembly: AssemblyCopyright("Copyright © Dgroove 2020")]
+[assembly: AssemblyCopyright("Copyright © Dgroove 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyMetadata("tags", "VecompSoftware.DocSuiteWeb.DTO.WSSeries")]
@@ -17,5 +17,5 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("69b0ced4-2d0c-4d96-8fa2-3107170fe537")]
 
-[assembly: AssemblyVersion("9.09.0.0")]
-[assembly: AssemblyFileVersion("9.09.0.0")]
+[assembly: AssemblyVersion("9.25.0.0")]
+[assembly: AssemblyFileVersion("9.25.0.0")]

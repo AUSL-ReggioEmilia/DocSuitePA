@@ -8,8 +8,9 @@
 
     <link rel="stylesheet" href="<%=Page.ResolveUrl("~/Content/scanner.css")%>" />
 
-    <script type="text/javascript" src="<%=Page.ResolveUrl("~/Scripts/dynamsoft/v15/dynamsoft.webtwain.config.js")%>"></script>
-    <script type="text/javascript" src="<%=Page.ResolveUrl("~/Scripts/dynamsoft/v15/dynamsoft.webtwain.initiate.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/Scripts/dynamsoft/v" + ProtocolEnv.DynamsoftTwainVersion.ToString() + "/dynamsoft.webtwain.config.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/Scripts/dynamsoft/v" + ProtocolEnv.DynamsoftTwainVersion.ToString() + "/dynamsoft.webtwain.initiate.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/Scripts/dynamsoft/v" + ProtocolEnv.DynamsoftTwainVersion.ToString() + "/addon/dynamsoft.webtwain.addon.pdf.js")%>"></script>
     <script src="<%=Page.ResolveUrl("~/Scripts/jquery-3.5.1.js")%>"></script>
 
 </head>
@@ -18,121 +19,99 @@
     <div id="wrapper">
         <div id="demoContent">
             <div id="dwtScanDemo">
-                <div class="ct-top">
-
-                    <div id="DWTcontainer" class="container">
-                        <div id="DWTcontainerTop">
-                            <div id="divEdit">
-                                <ul class="operateGrp">
-                                    <li>
-                                        <img src="../App_Themes/DocSuite2008/Images/scanner/ShowEditor.png" title="Mostra l'editor di immagini" alt="Mostra l'editor di immagini" id="btnEditor" onclick="btnShowImageEditor_onclick()" />
-                                    </li>
-                                    <li>
-                                        <img src="../App_Themes/DocSuite2008/Images/scanner/RotateLeft.png" title="Gira a sinistra" alt="Gira a sinistra" id="btnRotateL" onclick="btnRotateLeft_onclick()" />
-                                    </li>
-                                    <li>
-                                        <img src="../App_Themes/DocSuite2008/Images/scanner/RotateRight.png" title="Girare a destra" alt="Girare a destra" id="btnRotateR" onclick="btnRotateRight_onclick()" />
-                                    </li>
-                                    <li>
-                                        <img src="../App_Themes/DocSuite2008/Images/scanner/Rotate180.png" alt="Turno 180" title="Rotate 180" onclick="btnRotate180_onclick()" />
-                                    </li>
-                                    <li>
-                                        <img src="../App_Themes/DocSuite2008/Images/scanner/Mirror.png" title="Specchio" alt="Mirror" id="btnMirror" onclick="btnMirror_onclick()" />
-                                    </li>
-                                    <li>
-                                        <img src="../App_Themes/DocSuite2008/Images/scanner/Flip.png" title="Flip" alt="Flip" id="btnFlip" onclick="btnFlip_onclick()" />
-                                    </li>
-                                    <li>
-                                        <img src="../App_Themes/DocSuite2008/Images/scanner/RemoveSelectedImages.png" title="Rimuovi le immagini selezionate" alt="Rimuovi le immagini selezionate" id="DW_btnRemoveCurrentImage" onclick="btnRemoveCurrentImage_onclick();" /></li>
-                                    <li>
-                                        <img src="../App_Themes/DocSuite2008/Images/scanner/RemoveAllImages.png" title="Rimuovi tutte le immagini" alt="Rimuovi tutte le immagini" id="DW_btnRemoveAllImages" onclick="btnRemoveAllImages_onclick();" /></li>
-                                    <li>
-                                        <img src="../App_Themes/DocSuite2008/Images/scanner/ChangeSize.png" title="Cambia dimensione immagine" alt="Cambia dimensione immagine" id="btnChangeImageSize" onclick="btnChangeImageSize_onclick();" />
-                                    </li>
-                                    <li>
-                                        <img src="../App_Themes/DocSuite2008/Images/scanner/Crop.png" title="Raccolto" alt="Raccolto" id="btnCrop" onclick="btnCrop_onclick();" /></li>
-                                </ul>
-                                <div id="ImgSizeEditor" style="visibility: hidden">
-                                    <ul>
-                                        <li>
-                                            <label for="img_height">
-                                                Nuova altezza :
-                                        <input type="text" id="img_height" style="width: 50%;" size="10" />
-                                                pixel</label>
-                                        </li>
-                                        <li>
-                                            <label for="img_width">
-                                                Nuova larghezza :&nbsp;
-                                        <input type="text" id="img_width" style="width: 50%;" size="10" />
-                                                pixel</label>
-                                        </li>
-                                        <li>Metodo di interpolazione:
-                                    <select size="1" id="InterpolationMethod">
-                                        <option value=""></option>
-                                    </select>
-                                        </li>
-                                        <li style="text-align: center;">
-                                            <input type="button" value="   OK   " id="btnChangeImageSizeOK" onclick="btnChangeImageSizeOK_onclick();" />
-                                            <input type="button" value=" Annulla " id="btnCancelChange" onclick="btnCancelChange_onclick();" />
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div id="dwtcontrolContainer"></div>
-                            <div id="btnGroupBtm" class="clearfix"></div>
+                <div id="DWTcontainer" class="container">
+                    <div id="DWTcontainerTop">
+                        <div id="divEdit">
+                            <ul class="operateGrp">
+                                <li><img class="menuIcon" style="margin-left: 5px;" src="../App_Themes/DocSuite2008/Images/scanner/RemoveSelectedImages.png" title="Rimuovi pagina corrente" alt="Rimuovi immagine corrente" id="DW_btnRemoveCurrentImage" onclick="btnRemoveCurrentImage_onclick();" /></li>
+                                <li><img class="menuIcon" src="../App_Themes/DocSuite2008/Images/scanner/RemoveAllImages.png" title="Rimuovi tutte le immagini" alt="Rimuovi tutte le immagini" id="DW_btnRemoveAllImages" onclick="btnRemoveAllImages_onclick();" /></li>
+                                <li style="width:90px;"></li>
+                                <li style="width:50px;line-height: 38px;"><input type="text" size="2" id="DW_CurrentImage" readonly="readonly" />/<input type="text" size="2" id="DW_TotalImage" readonly="readonly" /></li>
+                                <li style="width:110px;border-left: 1px solid #4A4A4A;border-right: solid 1px #4A4A4A;">
+                                    <img class="menuIcon" src="../App_Themes/DocSuite2008/Images/scanner/ZoomOut.png" title="ZoomOut" alt="Erase" id="btnZoomOut" onclick="btnZoomOut_onclick();" />
+                                    <input type="text" id="DW_spanZoom" readonly="readonly" />
+                                    <img class="menuIcon" src="../App_Themes/DocSuite2008/Images/scanner/ZoomIn.png" title="ZoomIn" alt="ZoomIn" id="btnZoomIn" onclick="btnZoomIn_onclick();" />
+                                </li>
+                                <li><img style="margin-left: 10px;" class="menuIcon" src="../App_Themes/DocSuite2008/Images/scanner/Orig_size.png" title="1:1" alt="1:1" id="btnOrigSize" onclick="btnOrigSize_onclick();" /><img class="menuIcon" src="../App_Themes/DocSuite2008/Images/scanner/FitWindow.png" title="Fit To Window" alt="Fit To Window" id="btnFitWindow" style="display:none" onclick="btnFitWindow_onclick()" /></li>
+                                <li style="width:50px;"></li>
+                                <li><img class="menuIcon" src="../App_Themes/DocSuite2008/Images/scanner/RotateLeft.png" title="Ruota a sinistra" alt="Ruota a sinistra" id="btnRotateL" onclick="btnRotateLeft_onclick()" /> </li>
+                                <li><img class="menuIcon grayimg" src="../App_Themes/DocSuite2008/Images/scanner/Crop.png" title="Selezionare l'area da ritagliare." alt="Selezionare l'area da ritagliare." id="btnCropGray" /><img class="menuIcon" src="../App_Themes/DocSuite2008/Images/scanner/Crop.png" title="Ritaglia" alt="Ritaglia" id="btnCrop" style="display:none" onclick="btnCrop_onclick();" /></li>
+                                <li><img class="menuIcon" src="../App_Themes/DocSuite2008/Images/scanner/ShowEditor.png" title="Visualizza editor immagine" alt="Visualizza editor immagine" id="btnShowImageEditor" onclick="btnShowImageEditor_onclick();" /></li>
+                                <li><img class="menuIcon" src="../App_Themes/DocSuite2008/Images/scanner/Select_selected.png" title="Seleziona" alt="Seleziona" id="btnSelect_selected" /><img class="menuIcon" style="display:none;" src="../App_Themes/DocSuite2008/Images/scanner/Select.png" title="Select" alt="Select" id="btnSelect" onclick="btnSelect_onclick();" /></li>
+                                <li><img class="menuIcon" style="display:none;" src="../App_Themes/DocSuite2008/Images/scanner/Hand_selected.png" title="Mano" alt="Mano" id="btnHand_selected" /><img class="menuIcon" src="../App_Themes/DocSuite2008/Images/scanner/Hand.png" title="Mano" alt="Mano" id="btnHand" onclick="btnHand_onclick();" /></li>
+                            </ul>
                         </div>
-                        <div id="ScanWrapper">
-                            <div id="divScanner" class="divinput">
-                                <ul class="PCollapse">
-                                    <li>
-                                        <div class="divType">
-                                            <div class="mark_arrow expanded"></div>
-                                            <p class="title-menu">
-                                                Scansione personalizzata
-                                            </p>
-
+                        <div id="dwtcontrolContainer"></div>
+                    </div>
+                    <div id="ScanWrapper">
+                        <div id="divScanner" class="divinput">
+                            <ul class="PCollapse">
+                                <li>
+                                    <div class="divType">
+                                        Scansione personalizzata
+                                    </div>
+                                    <div id="div_ScanImage" class="divTableStyle">
+                                        <ul id="ulScaneImageHIDE">
+                                            <li>
+                                                <label for="source">
+                                                    <p>Seleziona la fonte:</p>
+                                                </label>
+                                                <select size="1" id="source" style="position:relative;" onchange="source_onchange()">
+                                                    <option value=""></option>
+                                                </select>
+                                            </li>
+                                            <li id="divProductDetail"></li>
+                                            <li>
+                                                <input id="btnScan" class="btnScanGray" disabled="disabled" type="button" value="Scansiona" onclick="acquireImage();" />
+                                            </li>
+                                        </ul>
+                                        <div id="tblLoadImage" style="visibility:hidden;">
+                                            <a href="javascript: void(0)" class="ClosetblLoadImage"><img class="imgClose" src="../App_Themes/DocSuite2008/Images/scanner/Close.png" alt="Close tblLoadImage" /></a>
+                                            <img src="../App_Themes/DocSuite2008/Images/scanner/Warning.png" />
+                                            <span class="spanContent">
+                                                <p class="contentTitle">No TWAIN compatible drivers detected</p>
+                                                <p class="contentDetail">You can Install a Virtual Scanner:</p>
+                                                <p class="contentDetail"><a id="samplesource32bit" href="https://download.dynamsoft.com/tool/twainds.win32.installer.2.1.3.msi">32-bit Sample Source</a> <a id="samplesource64bit" style="display:none;" href="https://download.dynamsoft.com/tool/twainds.win64.installer.2.1.3.msi">64-bit Sample Source</a> from <a target="_blank" href="http://www.twain.org">TWG</a></p>
+                                            </span>
                                         </div>
-                                        <div id="div_ScanImage" class="divTableStyle">
-                                            <ul id="ulScaneImageHIDE">
-                                                <li>
-                                                    <label for="source">
-                                                        <p>Seleziona la fonte:</p>
-                                                    </label>
-                                                    <select size="1" id="source" style="position: relative;" onchange="source_onchange()">
-                                                        <option value=""></option>
-                                                    </select>
-                                                </li>
-                                                <li style="display: none;" id="pNoScanner"><a href="javascript: void(0)" class="ShowtblLoadImage" style="color: #fe8e14" id="aNoScanner">(No TWAIN compatible drivers detected)</a></li>
-                                                <li id="divProductDetail"></li>
-                                                <li class="tc">
-                                                    <input id="btnScan" disabled="disabled" type="button" value="Scansione" onclick="acquireImage();" />
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </li>
-
-                                </ul>
-                            </div>
-                            <div id="divUpload" class="divinput mt30" style="position: relative">
-                                <ul>
-                                    <li class="toggle title-menu">Documenti</li>
-                                    <li>
-                                        <p>Nome del file:</p>
-                                        <input type="text" size="20" id="txt_fileName" value="" />
-                                        <input type="hidden" id="txt_fileNameforSave" value="immagine_da_scanner" />
-                                    </li>
-                                    <li id="html_btnSave" style="display: none">
-                                        <input id="btnSave" class="btnOrg" type="button" value="Memorizza scansione" onclick="encodeImages(false)" />
-                                    </li>
-                                </ul>
-                                <div id="scan-list" class="clearfix">
-                                    <ul id="scan-items">
-                                    </ul>
-                                </div>
-                            </div>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
-                        <div id="DWTcontainerBtm" class="clearfix">
-                            <button id="btnConferma" class="btn-confirm" onclick="OnClientClose()" runat="server">Conferma</button>
+                        <div id="divUpload" class="divinput">
+                            <ul class="PCollapse">
+                                <li>
+                                    <div class="divType">
+                                        Documenti
+                                    </div>
+                                    <div  id="divSaveDetail" class="divTableStyle">
+                                        <ul>
+                                            <li>
+                                                <p>Nome del file:</p>
+                                                <input type="text" size="20" id="txt_fileName" /><span> . </span>
+                                                <select size="1" id="fileType" style="position:relative;width: 25%;" onchange="fileType_onchange();">
+                                                    <option value=""></option>
+                                                </select>
+                                            </li>
+                                            <li>
+                                                Pagine:
+                                                <label for='CurrentPage' style='margin-left:5px;'><input type='radio' id='CurrentPage' name='Pages' />Pagina corrente</label>
+                                                <label for='AllPages'><input type='radio' id='AllPages' name='Pages' />Tutte le pagine</label>
+                                            </li>
+                                            <li id="html_btnSave" style="display: none">
+                                                <input id="btnSave" class="btnScanGray" type="button" value="Memorizza" onclick="encodeImages(false)" />
+                                                <div id="scan-list" class="clearfix">
+                                                    <ul id="scan-items">
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <input id="btnConferma" class="btnScanGray" type="button" value="Conferma" onclick="OnClientClose()" />
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -147,16 +126,16 @@
         var fileExtension = ".pdf";
         var DWObject;            // The DWT Object
         var DWTSourceCount = 0;
-        var _strTempStr = "";       // Store the temp string for display
-        var _iLeft, _iTop, _iRight, _iBottom; //These variables are used to remember the selected area
+        var _iLeft, _iTop, _iRight, _iBottom, bNotShowMessageAgain = false; //These variables are used to remember the selected area
+        var dynamsoftTwainVersion = <%=ProtocolEnv.DynamsoftTwainVersion%>;
 
         function OnClientClose() {
-            if (!IsMultipleUpload()) {
-                encodeImages(true);
-                return false;
-            } else {
-                CloseWindow();
-            }
+            encodeImages(true);
+            return false;
+        }
+
+        function IsMultipleUpload() {
+            return multipleEnabled && (multipleEnabled === "true" || multipleEnabled === "True");
         }
 
         function encodeImages(needClose) {
@@ -174,13 +153,14 @@
                     return false;
                 }
             }
-            var totalimg = DWObject.HowManyImagesInBuffer;      
+            var totalimg = DWObject.HowManyImagesInBuffer;
             var imagesToScan = [];
-            for (var i = 0; i <= totalimg-1; i++) {
+            for (var i = 0; i <= totalimg - 1; i++) {
                 imagesToScan.push(i);
             }
 
-            DWObject.ConvertToBase64(imagesToScan, EnumDWT_ImageType.IT_PDF, function (result) {
+            var ImageType_IT_PDF = dynamsoftTwainVersion == 17 ? Dynamsoft.DWT.EnumDWT_ImageType.IT_PDF : EnumDWT_ImageType.IT_PDF;
+            DWObject.ConvertToBase64(imagesToScan, ImageType_IT_PDF, function (result) {
                 this.encodeResult(result, needClose);
             }, this.asyncFailureFunc);
         }
@@ -255,16 +235,10 @@
             else if (window.frameElement.radWindow) oWindow = window.frameElement.radWindow;
             return oWindow;
         }
-    </script>
-
-    <script>
         // Assign the page onload fucntion.
         $(function () {
             pageonload();
         });
-    </script>
-
-    <script>
         //--------------------------------------------------------------------------------------
         //************************** Import Image*****************************
         //--------------------------------------------------------------------------------------
@@ -294,6 +268,8 @@
                     DWObject.SelectSourceByIndex(cIndex);
             }
         }
+
+
         function mediaType_onchange() {
             var MediaType = document.getElementById("MediaType");
             if (MediaType && MediaType.options.length > 0) {
@@ -316,70 +292,99 @@
             }
         }
         /*-----------------Acquire Image---------------------*/
+
         function acquireImage() {
-            currentIndex++;
-            var cIndex = document.getElementById("source").selectedIndex;
+            var cIndex = document.getElementById('source').selectedIndex;
             if (cIndex < 0)
                 return;
 
             DWObject.SelectSourceByIndex(cIndex);
             DWObject.CloseSource();
             DWObject.OpenSource();
-            DWObject.IfShowUI = document.getElementById("ShowUI").checked;
 
-            var i;
+            var i, iPixelType = 0;
             for (i = 0; i < 3; i++) {
-                if (document.getElementsByName("PixelType").item(i).checked == true)
-                    DWObject.PixelType = i;
+                if (document.getElementsByName('PixelType').item(i).checked == true)
+                    iPixelType = i;
             }
+            var deviceConfiguration = {
+                IfShowUI: document.getElementById('ShowUI').checked, //false,
+                PixelType: iPixelType,
+                Resolution: document.getElementById('Resolution').value,
+                IfFeederEnabled: document.getElementById('ADF').checked,
+                IfDuplexEnabled: document.getElementById('Duplex').checked,
+                IfAutoDiscardBlankpages: document.getElementById('DiscardBlankPage').checked,
+                IfDisableSourceAfterAcquire: true
+            };
 
-            DWObject.Resolution = document.getElementById("Resolution").value;
-
-            var bADFChecked = document.getElementById("ADF").checked;
-            DWObject.IfFeederEnabled = bADFChecked;
-
-            var bDuplexChecked = document.getElementById("Duplex").checked;
-            DWObject.IfDuplexEnabled = bDuplexChecked;
-
-            DWObject.IfDisableSourceAfterAcquire = true;
-            DWObject.AcquireImage();
-            if (IsMultipleUpload()) {
-                $("#txt_fileName").val("immagine_da_scanner_" + encodedScans.length);
-            }
+            DWObject.AcquireImage(deviceConfiguration, function () {
+                checkErrorStringWithErrorCode(0, 'Successful.'); //checkErrorString();
+            }, function (obj, errorCode, errorString) {
+                checkErrorStringWithErrorCode(errorCode, errorString);
+            });
         }
+
+        /*-----------------Download Image---------------------*/
+        function btnDownloadImages_onclick() {
+            var OnSuccess = function () {
+                checkErrorString();
+
+                var divLoadAndDownload = document.getElementById("divLoadAndDownload");
+                if (divLoadAndDownload)
+                    divLoadAndDownload.parentNode.removeChild(divLoadAndDownload);
+            };
+
+            var OnFailure = function (errorCode, errorString) {
+                checkErrorStringWithErrorCode(errorCode, errorString);
+            };
+
+
+            DWObject.IfSSL = Dynamsoft.Lib.detect.ssl;
+            var _strPort = location.port == "" ? 80 : location.port;
+            if (Dynamsoft.Lib.detect.ssl == true)
+                _strPort = location.port == "" ? 443 : location.port;
+            DWObject.HTTPPort = _strPort;
+            var CurrentPathName = unescape(location.pathname); // get current PathName in plain ASCII	
+            var CurrentPath = CurrentPathName.substring(0, CurrentPathName.lastIndexOf("/") + 1);
+            var strDownloadFile = CurrentPath + "Images/DynamsoftSample.pdf";
+
+            DWObject.HTTPDownload(location.hostname, strDownloadFile, OnSuccess, OnFailure);
+        }
+
+
         /*-----------------Load Image---------------------*/
         function btnLoadImagesOrPDFs_onclick() {
+
             var OnPDFSuccess = function () {
-                updatePageInfo();
+
+                checkErrorString();
+
+                var divLoadAndDownload = document.getElementById('divLoadAndDownload');
+                if (divLoadAndDownload)
+                    divLoadAndDownload.parentNode.removeChild(divLoadAndDownload);
             };
 
             var OnPDFFailure = function (errorCode, errorString) {
                 checkErrorStringWithErrorCode(errorCode, errorString);
             };
-
             DWObject.IfShowFileDialog = true;
             DWObject.Addon.PDF.SetResolution(200);
-            DWObject.Addon.PDF.SetConvertMode(EnumDWT_ConvertMode.CM_RENDERALL);
-            DWObject.LoadImageEx("", EnumDWT_ImageType.IT_ALL, OnPDFSuccess, OnPDFFailure);
+            DWObject.Addon.PDF.SetConvertMode(Dynamsoft.DWT.EnumDWT_ConvertMode.CM_AUTO);
+            DWObject.LoadImageEx('', Dynamsoft.DWT.EnumDWT_ImageType.IT_ALL, OnPDFSuccess, OnPDFFailure);
         }
         //--------------------------------------------------------------------------------------
         //************************** Edit Image ******************************
+
         //--------------------------------------------------------------------------------------
         function btnShowImageEditor_onclick() {
             if (!checkIfImagesInBuffer()) {
                 return;
             }
-            DWObject.ShowImageEditor();
+            var imageEditor = DWObject.Viewer.createImageEditor();
+            imageEditor.show();
         }
-        function btnRotateRight_onclick() {
-            if (!checkIfImagesInBuffer()) {
-                return;
-            }
-            DWObject.RotateRight(DWObject.CurrentImageIndexInBuffer);
-            if (checkErrorString()) {
-                return;
-            }
-        }
+
+        /*----------------------RotateLeft Method---------------------*/
         function btnRotateLeft_onclick() {
             if (!checkIfImagesInBuffer()) {
                 return;
@@ -389,33 +394,7 @@
                 return;
             }
         }
-        function btnRotate180_onclick() {
-            if (!checkIfImagesInBuffer()) {
-                return;
-            }
-            DWObject.Rotate(DWObject.CurrentImageIndexInBuffer, 180, true);
-            if (checkErrorString()) {
-                return;
-            }
-        }
-        function btnMirror_onclick() {
-            if (!checkIfImagesInBuffer()) {
-                return;
-            }
-            DWObject.Mirror(DWObject.CurrentImageIndexInBuffer);
-            if (checkErrorString()) {
-                return;
-            }
-        }
-        function btnFlip_onclick() {
-            if (!checkIfImagesInBuffer()) {
-                return;
-            }
-            DWObject.Flip(DWObject.CurrentImageIndexInBuffer);
-            if (checkErrorString()) {
-                return;
-            }
-        }
+
         /*----------------------Crop Method---------------------*/
         function btnCrop_onclick() {
             if (!checkIfImagesInBuffer()) {
@@ -430,202 +409,336 @@
                 _iTop = 0;
                 _iRight = 0;
                 _iBottom = 0;
+
+                if (DWObject.isUsingActiveX())
+                    DWObject.SetSelectedImageArea(DWObject.CurrentImageIndexInBuffer, 0, 0, 0, 0);
+
                 if (checkErrorString()) {
                     return;
                 }
                 return;
             }
         }
-        /*----------------Change Image Size--------------------*/
-        function btnChangeImageSize_onclick() {
+
+        /*----------------------Select Method---------------------*/
+        function btnSelect_onclick() {
+            handAndSelectSelected(false);
+
+            DWObject.Viewer.cursor = "crosshair";
+        }
+
+        function handAndSelectSelected(bHandSelected) {
+            var btnHand = document.getElementById("btnHand");
+            var btnHand_selected = document.getElementById("btnHand_selected");
+            var btnSelect = document.getElementById("btnSelect");
+            var btnSelect_selected = document.getElementById("btnSelect_selected");
+            if (bHandSelected) {
+                if (btnHand)
+                    btnHand.style.display = "none";
+                if (btnHand_selected)
+                    btnHand_selected.style.display = "";
+                if (btnSelect)
+                    btnSelect.style.display = "";
+                if (btnSelect_selected)
+                    btnSelect_selected.style.display = "none";
+            } else {
+                if (btnHand)
+                    btnHand.style.display = "";
+                if (btnHand_selected)
+                    btnHand_selected.style.display = "none";
+                if (btnSelect)
+                    btnSelect.style.display = "none";
+                if (btnSelect_selected)
+                    btnSelect_selected.style.display = "";
+            }
+        }
+
+        /*----------------------Hand Method---------------------*/
+        function btnHand_onclick() {
+            handAndSelectSelected(true);
+            DWObject.Viewer.cursor = "pointer";
+        }
+
+        /*----------------------orig_size Method---------------------*/
+        function btnOrigSize_onclick() {
             if (!checkIfImagesInBuffer()) {
                 return;
             }
-            switch (document.getElementById("ImgSizeEditor").style.visibility) {
-                case "visible": document.getElementById("ImgSizeEditor").style.visibility = "hidden"; break;
-                case "hidden": document.getElementById("ImgSizeEditor").style.visibility = "visible"; break;
-                default: break;
-            }
-            //document.getElementById("ImgSizeEditor").style.top = ds_gettop(document.getElementById("btnChangeImageSize")) + document.getElementById("btnChangeImageSize").offsetHeight + 15 + "px";
-            //document.getElementById("ImgSizeEditor").style.left = ds_getleft(document.getElementById("btnChangeImageSize")) - 14 + "px";
 
-            var iWidth = DWObject.GetImageWidth(DWObject.CurrentImageIndexInBuffer);
-            if (iWidth != -1)
-                document.getElementById("img_width").value = iWidth;
-            var iHeight = DWObject.GetImageHeight(DWObject.CurrentImageIndexInBuffer);
-            if (iHeight != -1)
-                document.getElementById("img_height").value = iHeight;
+            var btnOrigSize = document.getElementById("btnOrigSize");
+            if (btnOrigSize)
+                btnOrigSize.style.display = "none";
+            var btnFitWindow = document.getElementById("btnFitWindow");
+            if (btnFitWindow)
+                btnFitWindow.style.display = "";
+
+            DWObject.Viewer.zoom = 1;
+            updateZoomInfo();
+            enableButtonForZoomInAndOut();
         }
-        function btnCancelChange_onclick() {
-            document.getElementById("ImgSizeEditor").style.visibility = "hidden";
-        }
-        function btnChangeImageSizeOK_onclick() {
-            document.getElementById("img_height").className = "";
-            document.getElementById("img_width").className = "";
-            if (!re.test(document.getElementById("img_height").value)) {
-                document.getElementById("img_height").className += " invalid";
-                document.getElementById("img_height").focus();
+
+        /*----------------------FitWindow Method---------------------*/
+        function btnFitWindow_onclick() {
+            if (!checkIfImagesInBuffer()) {
                 return;
             }
-            if (!re.test(document.getElementById("img_width").value)) {
-                document.getElementById("img_width").className += " invalid";
-                document.getElementById("img_width").focus();
+
+            var btnOrigSize = document.getElementById("btnOrigSize");
+            if (btnOrigSize)
+                btnOrigSize.style.display = "";
+            var btnFitWindow = document.getElementById("btnFitWindow");
+            if (btnFitWindow)
+                btnFitWindow.style.display = "none";
+
+            DWObject.Viewer.fitWindow();
+            updateZoomInfo();
+            enableButtonForZoomInAndOut();
+        }
+
+
+        /*----------------------ZoomIn Method---------------------*/
+        function enableButtonForZoomInAndOut() {
+            var btnZoomIn = $("#btnZoomIn");
+            var zoom = Math.round(DWObject.Viewer.zoom * 100);
+
+            if (zoom >= 6500) {
+                if (btnZoomIn)
+                    btnZoomIn.addClass('grayimg');
                 return;
-            }
-            DWObject.ChangeImageSize(
-                DWObject.CurrentImageIndexInBuffer,
-                document.getElementById("img_width").value,
-                document.getElementById("img_height").value,
-                document.getElementById("InterpolationMethod").selectedIndex + 1
-            );
-            if (checkErrorString()) {
-                document.getElementById("ImgSizeEditor").style.visibility = "hidden";
-                return;
+            } else {
+                if (btnZoomIn)
+                    btnZoomIn.removeClass('grayimg');
+
+                var btnZoomOut = $("#btnZoomOut");
+                if (zoom <= 2) {
+                    if (btnZoomOut)
+                        btnZoomOut.addClass('grayimg');
+                    return;
+                } else {
+                    if (btnZoomOut)
+                        btnZoomOut.removeClass('grayimg');
+                }
             }
         }
+
+        function btnZoomIn_onclick() {
+            if (!checkIfImagesInBuffer()) {
+                return;
+            }
+
+            var zoom = Math.round(DWObject.Viewer.zoom * 100);
+            if (zoom >= 6500)
+                return;
+
+            var zoomInStep = 5;
+            DWObject.Viewer.zoom = (DWObject.Viewer.zoom * 100 + zoomInStep) / 100.0;
+            updateZoomInfo();
+            enableButtonForZoomInAndOut();
+        }
+
+        /*----------------------ZoomOut Method---------------------*/
+        function btnZoomOut_onclick() {
+            if (!checkIfImagesInBuffer()) {
+                return;
+            }
+
+            var zoom = Math.round(DWObject.Viewer.zoom * 100);
+            if (zoom <= 2)
+                return;
+
+            var zoomOutStep = 5;
+            DWObject.Viewer.zoom = (DWObject.Viewer.zoom * 100 - zoomOutStep) / 100.0;
+            updateZoomInfo();
+            enableButtonForZoomInAndOut();
+        }
+
         //--------------------------------------------------------------------------------------
         //************************** Navigator functions***********************************
         //--------------------------------------------------------------------------------------
-        function btnFirstImage_onclick() {
-            if (!checkIfImagesInBuffer()) {
-                return;
-            }
-            DWObject.CurrentImageIndexInBuffer = 0;
-            updatePageInfo();
-        }
         function btnPreImage_wheel() {
             if (DWObject.HowManyImagesInBuffer != 0)
                 btnPreImage_onclick()
         }
+
         function btnNextImage_wheel() {
             if (DWObject.HowManyImagesInBuffer != 0)
                 btnNextImage_onclick()
         }
+
         function btnPreImage_onclick() {
             if (!checkIfImagesInBuffer()) {
                 return;
             }
-            else if (DWObject.CurrentImageIndexInBuffer == 0) {
-                return;
-            }
-            DWObject.CurrentImageIndexInBuffer = DWObject.CurrentImageIndexInBuffer - 1;
+            DWObject.Viewer.previous();
             updatePageInfo();
         }
         function btnNextImage_onclick() {
             if (!checkIfImagesInBuffer()) {
                 return;
             }
-            else if (DWObject.CurrentImageIndexInBuffer == DWObject.HowManyImagesInBuffer - 1) {
-                return;
-            }
-            DWObject.CurrentImageIndexInBuffer = DWObject.CurrentImageIndexInBuffer + 1;
+            DWObject.Viewer.next();
             updatePageInfo();
         }
-        function btnLastImage_onclick() {
-            if (!checkIfImagesInBuffer()) {
-                return;
-            }
-            DWObject.CurrentImageIndexInBuffer = DWObject.HowManyImagesInBuffer - 1;
-            updatePageInfo();
-        }
+
+
         function btnRemoveCurrentImage_onclick() {
             if (!checkIfImagesInBuffer()) {
                 return;
             }
-            DWObject.RemoveAllSelectedImages();
-            if (DWObject.HowManyImagesInBuffer == 0) {
-                document.getElementById("DW_TotalImage").value = DWObject.HowManyImagesInBuffer;
-                document.getElementById("DW_CurrentImage").value = "";
-                return;
+            if (bNotShowMessageAgain) {
+                RemoveCurrentImage();
+            } else {
+                var title = 'Sei sicuro di voler eliminare la pagina selezionata?';
+                var ObjString = [
+                    '<div class="dynamsoft-dwt-header"></div>',
+                    '<div class="dynamsoft-dwt-dlg-title">',
+                    title,
+                    '</div>'];
+
+                ObjString.push("<div class='dynamsoft-dwt-showMessage'><label class='dynamsoft-dwt-showMessage-detail' for = 'showMessage'><input type='checkbox' id='showMessage'/>Non mostrare più questo messaggio.&nbsp;</label></div>");
+                ObjString.push('<div class="dynamsoft-dwt-installdlg-buttons"><input id="btnDelete" class="button-yes" type="button" value="Sì" onclick ="RemoveCurrentImage()"/><input id="btnCancel" class="button-no" type="button" value="No" onclick ="btnCancel_click()"/> </div>');
+                Dynamsoft.DWT.ShowDialog(500, 0, ObjString.join(''), true);
             }
-            else {
-                updatePageInfo();
-            }
-            currentIndex--;
         }
+
+        function RemoveCurrentImage() {
+            DWObject.RemoveImage(DWObject.CurrentImageIndexInBuffer);
+            if (DWObject.HowManyImagesInBuffer == 0)
+                DWObject.RemoveImage(0);
+            var showMessage = document.getElementById("showMessage");
+            if (showMessage && showMessage.checked)
+                bNotShowMessageAgain = true;
+
+            updatePageInfo();
+            Dynamsoft.DWT.CloseDialog();
+        }
+
+        function btnCancel_click() {
+            var showMessage = document.getElementById("showMessage");
+            if (showMessage && showMessage.checked)
+                bNotShowMessageAgain = true;
+            Dynamsoft.DWT.CloseDialog();
+        }
+
+        function RemoveAllImages() {
+            DWObject.RemoveAllImages();
+            DWObject.RemoveImage(0);
+
+            Dynamsoft.DWT.CloseDialog();
+        }
+
         function btnRemoveAllImages_onclick() {
             if (!checkIfImagesInBuffer()) {
                 return;
             }
-            DWObject.RemoveAllImages();
-            document.getElementById("DW_TotalImage").value = "0";
-            document.getElementById("DW_CurrentImage").value = "";
-            currentIndex = -1;
-        }
-        function setlPreviewMode() {
-            var varNum = parseInt(document.getElementById("DW_PreviewMode").selectedIndex + 1);
-            var btnCrop = document.getElementById("btnCrop");
-            if (btnCrop) {
-                var tmpstr = btnCrop.src;
-                if (varNum > 1) {
-                    tmpstr = tmpstr.replace('Crop.', 'Crop_gray.');
-                    btnCrop.src = tmpstr;
-                    btnCrop.onclick = function () { };
-                }
-                else {
-                    tmpstr = tmpstr.replace('Crop_gray.', 'Crop.');
-                    btnCrop.src = tmpstr;
-                    btnCrop.onclick = function () { btnCrop_onclick(); };
-                }
-            }
 
-            DWObject.SetViewMode(varNum, varNum);
-            if (Dynamsoft.Lib.env.bMac || Dynamsoft.Lib.env.bLinux) {
-                return;
-            }
-            else if (document.getElementById("DW_PreviewMode").selectedIndex != 0) {
-                DWObject.MouseShape = true;
-            }
-            else {
-                DWObject.MouseShape = false;
-            }
+            var title = 'Sei sicuro di voler eliminare tutte le immagini?';
+            var ObjString = [
+                '<div class="dynamsoft-dwt-header"></div>',
+                '<div class="dynamsoft-dwt-dlg-title">',
+                title,
+                '</div>'];
+
+            ObjString.push('<div class="dynamsoft-dwt-installdlg-iconholder"><input id="btnDelete" class="button-yes" type="button" value="Sì" onclick ="RemoveAllImages()"/><input id="btnCancel" class="button-no" type="button" value="No" onclick ="btnCancel_click()"/> </div>');
+            Dynamsoft.DWT.ShowDialog(500, 0, ObjString.join(''), true);
         }
+
         //--------------------------------------------------------------------------------------
         //************************** Dynamic Web TWAIN Events***********************************
         //--------------------------------------------------------------------------------------
+        function Dynamsoft_CloseImageEditorUI() {
+            updatePageInfo();
+        }
+
+        function Dynamsoft_OnBitmapChanged(aryIndex, type) {
+            if (type == 3) {
+                updatePageInfo();
+            }
+
+            if (type == 4)
+                updateZoomInfo();
+
+            if (type == 5)  //only ActiveX
+                Dynamsoft_OnImageAreaDeselected();
+        }
+
         function Dynamsoft_OnPostTransfer() {
             updatePageInfo();
         }
+
         function Dynamsoft_OnPostLoadfunction(path, name, type) {
             updatePageInfo();
         }
+
         function Dynamsoft_OnPostAllTransfers() {
             DWObject.CloseSource();
             updatePageInfo();
-            checkErrorString();
         }
-        function Dynamsoft_OnMouseClick(index) {
+
+        function Dynamsoft_OnMouseClick() {
             updatePageInfo();
         }
-        function Dynamsoft_OnMouseRightClick(index) {
-            // To add
+
+        function Dynamsoft_OnMouseWheel() {
+            updatePageInfo();
         }
-        function Dynamsoft_OnImageAreaSelected(index, left, top, right, bottom) {
-            _iLeft = left;
-            _iTop = top;
-            _iRight = right;
-            _iBottom = bottom;
+
+        function Dynamsoft_OnImageAreaSelected(index, rect) {
+            if (rect.length > 0) {
+                var currentRect = rect[rect.length - 1];
+                _iLeft = currentRect.x;
+                _iTop = currentRect.y;
+                _iRight = currentRect.x + currentRect.width;
+                _iBottom = currentRect.y + currentRect.height;
+
+                enableButtonForCrop(true);
+            }
         }
+
         function Dynamsoft_OnImageAreaDeselected(index) {
             _iLeft = 0;
             _iTop = 0;
             _iRight = 0;
             _iBottom = 0;
+
+            enableButtonForCrop(false);
         }
-        function Dynamsoft_OnMouseDoubleClick() {
-            return;
+
+        function Dynamsoft_OnGetFilePath(bSave, count, index, path, name) {
+
         }
-        function Dynamsoft_OnTopImageInTheViewChanged(index) {
-            _iLeft = 0;
-            _iTop = 0;
-            _iRight = 0;
-            _iBottom = 0;
-            DWObject.CurrentImageIndexInBuffer = index;
+
+        function Dynamsoft_OnIndexChangeDragDropDone(event) {
             updatePageInfo();
         }
-        function Dynamsoft_OnGetFilePath(bSave, count, index, path, name) {
+
+        function Dynamsoft_OnKeyDown() {
+            updatePageInfo();
         }
+
+        function showUploadedFiles(bShow) {
+            var tabSave = document.getElementById("tabSave");
+            var tabUploadedFiles = document.getElementById("tabUploadedFiles");
+            var divSaveDetail = document.getElementById("divSaveDetail");
+            var divUploadedFiles = document.getElementById("divUploadedFiles");
+            if (tabSave && tabUploadedFiles && divSaveDetail && divUploadedFiles) {
+                if (bShow) {
+                    tabSave.className = "tabList unselectTab";
+                    tabUploadedFiles.className = "tabList selectTab";
+                    divSaveDetail.style.display = "none";
+                    divUploadedFiles.style.display = "block";
+                } else {
+
+                    tabSave.className = "tabList selectTab";
+                    tabUploadedFiles.className = "tabList unselectTab";
+                    divSaveDetail.style.display = "block";
+                    divUploadedFiles.style.display = "none";
+                }
+            }
+        }
+
         function pageonload() {
+            Dynamsoft.DWT.ProductKey = "<%=ProtocolEnv.DynamsoftTwainProductKey%>";
 
             if (sessionStorage.getItem("component.scanner.upload.scan") != null) {
                 var scans = JSON.parse(sessionStorage.getItem("component.scanner.upload.scan"));
@@ -642,129 +755,48 @@
             }
 
             HideLoadImageForLinux();
-
-            InitBtnGroupBtm(false);
             initCustomScan();
 
             var twainsource = document.getElementById("source");
             if (twainsource) {
                 twainsource.options.length = 0;
-                twainsource.options.add(new Option("Looking for devices.Please wait.", 0));
+                twainsource.options.add(new Option("Ricerca dispositivi. Si prega di attendere...", 0));
                 twainsource.options[0].selected = true;
             }
 
             initiateInputs();
         }
         function HideLoadImageForLinux() {
-            var o = document.getElementById("liLoadImage");
-            if (o) {
+            var btnLoad = document.getElementById("btnLoad");
+            if (btnLoad) {
                 if (Dynamsoft.Lib.env.bLinux)
-                    o.style.display = "none";
+                    btnLoad.style.display = "none";
                 else
-                    o.style.display = "";
+                    btnLoad.style.display = "";
+            }
+
+            var btnSave = document.getElementById("btnSave");
+            if (btnSave) {
+                if (Dynamsoft.Lib.env.bLinux)
+                    btnSave.style.display = "none";
+                else
+                    btnSave.style.display = "";
             }
         }
-        function InitBtnGroupBtm(bNeebBack) {
-            var btnGroupBtm = document.getElementById("btnGroupBtm");
-            if (btnGroupBtm) {
-                var objString = "";
-                objString += "<div class='ct-lt'>Page: ";
-                objString += "<input id='DW_btnFirstImage' onclick='btnFirstImage_onclick()' type='button' value=' |&lt; '/>&nbsp;";
-                objString += "<input id='DW_btnPreImage' onclick='btnPreImage_onclick()' type='button' value=' &lt; '/>&nbsp;&nbsp;";
-                objString += "<input type='text' size='2' id='DW_CurrentImage' readonly='readonly'/> / ";
-                objString += "<input type='text' size='2' id='DW_TotalImage' readonly='readonly'/>&nbsp;&nbsp;";
-                objString += "<input id='DW_btnNextImage' onclick='btnNextImage_onclick()' type='button' value=' &gt; '/>&nbsp;";
-                objString += "<input id='DW_btnLastImage' onclick='btnLastImage_onclick()' type='button' value=' &gt;| '/></div>";
-                objString += "<div class='ct-rt'>Preview Mode: ";
-                objString += "<select size='1' id='DW_PreviewMode' onchange ='setlPreviewMode();'>";
-                objString += "    <option value='0'>1X1</option>";
-                objString += "</select><br /></div>";
-                if (bNeebBack) {
-                    objString += "<div class='removeImage'><input id='DW_btnRemoveCurrentImage' onclick='btnRemoveCurrentImage_onclick()' type='button' value='Rimuovi le immagini selezionate'/>";
-                    objString += "<input id='DW_btnRemoveAllImages' onclick='btnRemoveAllImages_onclick()' type='button' value='Rimuovi tutte le immagini'/></div>";
-                }
 
-                // btnGroupBtm.style.display = "";
-                btnGroupBtm.innerHTML = objString;
-
-                // Fill the init data for preview mode selection
-                var varPreviewMode = document.getElementById("DW_PreviewMode");
-                varPreviewMode.options.length = 0;
-                varPreviewMode.options.add(new Option("1X1", 0));
-                varPreviewMode.options.add(new Option("2X2", 1));
-                varPreviewMode.options.add(new Option("3X3", 2));
-                varPreviewMode.options.add(new Option("4X4", 3));
-                varPreviewMode.options.add(new Option("5X5", 4));
-                varPreviewMode.selectedIndex = 0;
-
-            }
-        }
-        // split this function
-        function initMessageBox(bNeebBack) {
-            var objString = "";
-
-            // The container for navigator, view mode and remove button
-            objString += "<div style='text-align:center; width:580px; background-color:#FFFFFF;display:block'>";
-            objString += "<div style='position:relative; background:white; float:left; width:422px; height:35px;'>";
-            objString += "<input id='DW_btnFirstImage' onclick='btnFirstImage_onclick()' type='button' value=' |&lt; '/>&nbsp;";
-            objString += "<input id='DW_btnPreImage' onclick='btnPreImage_onclick()' type='button' value=' &lt; '/>&nbsp;&nbsp;";
-            objString += "<input type='text' size='2' id='DW_CurrentImage' readonly='readonly'/>/";
-            objString += "<input type='text' size='2' id='DW_TotalImage' readonly='readonly'/>&nbsp;&nbsp;";
-            objString += "<input id='DW_btnNextImage' onclick='btnNextImage_onclick()' type='button' value=' &gt; '/>&nbsp;";
-            objString += "<input id='DW_btnLastImage' onclick='btnLastImage_onclick()' type='button' value=' &gt;| '/></div>";
-            objString += "<div style='position:relative; background:white; float:left; width:150px; height:35px;'>Modalita anteprima";
-            objString += "<select size='1' id='DW_PreviewMode' onchange ='setlPreviewMode();'>";
-            objString += "    <option value='0'>1X1</option>";
-            objString += "</select><br /></div>";
-            objString += "<div><input id='DW_btnRemoveCurrentImage' onclick='btnRemoveCurrentImage_onclick()' type='button' value='Rimuovi le immagini selezionate'/>";
-            if (bNeebBack) {
-                objString += "<input id='DW_btnRemoveAllImages' onclick='btnRemoveAllImages_onclick()' type='button' value='Rimuovi tutte le immagini'/><br /><br />";
-                objString += "<span style=\"font-size:larger\"><a href =\"online_demo_list.aspx\"><b>Back</b></a></span><br /></div>";
-            }
-            else {
-                objString += "<input id='DW_btnRemoveAllImages' onclick='btnRemoveAllImages_onclick()' type='button' value='Rimuovi tutte le immagini'/><br /></div>";
-            }
-            objString += "</div>";
-
-            // The container for the error message
-            objString += "<div id='DWTdivMsg' style='width:580px;display:inline;'>";
-            objString += "Message:<br/>"
-            objString += "<div id='DWTemessage' style='width:560px; padding:30px 0 0 3px; height:80px; margin-top:5px; overflow:auto; background-color:#ffffff; border:1px #303030; border-style:solid; text-align:left; position:relative' >";
-            objString += "</div></div>";
-
-            var DWTemessageContainer = document.getElementById("DWTemessageContainer");
-            DWTemessageContainer.innerHTML = objString;
-
-            // Fill the init data for preview mode selection
-            var varPreviewMode = document.getElementById("DW_PreviewMode");
-            varPreviewMode.options.length = 0;
-            varPreviewMode.options.add(new Option("1X1", 0));
-            varPreviewMode.options.add(new Option("2X2", 1));
-            varPreviewMode.options.add(new Option("3X3", 2));
-            varPreviewMode.options.add(new Option("4X4", 3));
-            varPreviewMode.options.add(new Option("5X5", 4));
-            varPreviewMode.selectedIndex = 0;
-
-            var _divMessageContainer = document.getElementById("DWTemessage");
-            _divMessageContainer.ondblclick = function () {
-                this.innerHTML = "";
-                _strTempStr = "";
-            }
-
-        }
         function initCustomScan() {
             var ObjString = "";
             ObjString += "<ul id='divTwainType'> ";
+            ObjString += "<li><label style='width: 220px;' id ='lblShowUI' for = 'ShowUI'><input type='checkbox' id='ShowUI' />Visualizza interfaccia scanner &nbsp;</label></li>";
+            ObjString += "<li><label style='width: 220px;' for = 'DiscardBlankPage'><input type='checkbox' id='DiscardBlankPage'/>Rimozione automatica pagine vuote</label></li>";
+            ObjString += "<li><label for = 'ADF'><input type='checkbox' id='ADF' />AutoFeeder&nbsp;</label></li>";
+            ObjString += "<li><label for = 'Duplex'><input type='checkbox' id='Duplex'/>Duplex</label></li>";
+            ObjString += "<li>Colore:";
+            ObjString += "<label for='BW' style='margin-left:5px;' class='lblPixelType'><input type='radio' id='BW' name='PixelType'/>B&amp;N </label>";
+            ObjString += "<label for='Gray' class='lblPixelType'><input type='radio' id='Gray' name='PixelType'/>Grigio</label>";
+            ObjString += "<label for='RGB' class='lblPixelType'><input type='radio' id='RGB' name='PixelType'/>Colore</label></li>";
             ObjString += "<li>";
-            ObjString += "<label id ='lblShowUI' for = 'ShowUI'><input type='checkbox' id='ShowUI' />Show UI&nbsp;</label>";
-            ObjString += "<label for = 'ADF'><input type='checkbox' id='ADF' />AutoFeeder&nbsp;</label>";
-            ObjString += "<label for = 'Duplex'><input type='checkbox' id='Duplex'/>Duplex</label></li>";
-            ObjString += "<li id='pixel-type'>Tipo di pixel:";
-            ObjString += "<label for='BW' style='margin-left:5px;'><input type='radio' id='B&W' name='PixelType'/>B&amp;W </label>";
-            ObjString += "<label for='Gray'><input type='radio' id='Gray' name='PixelType'/>Grigio</label>";
-            ObjString += "<label for='RGB'><input type='radio' id='RGB' name='PixelType'/>Colore</label></li>";
-            ObjString += "<li>";
-            ObjString += "<span id='resolution'>Risoluzione:</span><select size='1' id='Resolution'><option value = ''></option></select></li>";
+            ObjString += "<span>Risoluzione:</span><select size='1' id='Resolution'><option value = ''></option></select></li>";
             ObjString += "</ul>";
 
             if (document.getElementById("divProductDetail"))
@@ -780,15 +812,11 @@
 
                 vResolution.options[3].selected = true;
             }
-
-        }
-        function IsMultipleUpload() {
-            return multipleEnabled && (multipleEnabled === "true" || multipleEnabled === "True");
         }
 
         function initiateInputs() {
             if (IsMultipleUpload()) {
-                $('#html_btnSave').show();
+                $('#html_btnSave').hide();
             }
 
             var allinputs = document.getElementsByTagName("input");
@@ -801,7 +829,6 @@
                 }
             }
 
-
             if (Dynamsoft.Lib.env.bIE == true && Dynamsoft.Lib.env.bWin64 == true) {
                 var o = document.getElementById("samplesource64bit");
                 if (o)
@@ -812,19 +839,11 @@
                     o.style.display = "none";
             }
         }
-        function initDllForChangeImageSize() {
 
-            var vInterpolationMethod = document.getElementById("InterpolationMethod");
-            vInterpolationMethod.options.length = 0;
-            vInterpolationMethod.options.add(new Option("NearestNeighbor", 1));
-            vInterpolationMethod.options.add(new Option("Bilinear", 2));
-            vInterpolationMethod.options.add(new Option("Bicubic", 3));
-
-        }
         function setDefaultValue() {
-            var vGray = document.getElementById("Gray");
-            if (vGray)
-                vGray.checked = true;
+            var vBW = document.getElementById("BW");
+            if (vBW)
+                vBW.checked = true;
 
             var varImgTypepng2 = document.getElementById("imgTypepng2");
             if (varImgTypepng2)
@@ -842,36 +861,56 @@
             if (_txtFileName)
                 _txtFileName.value = _strDefaultSaveImageName;
 
-            var _chkMultiPageTIFF_save = document.getElementById("MultiPageTIFF_save");
-            if (_chkMultiPageTIFF_save)
-                _chkMultiPageTIFF_save.disabled = true;
-            var _chkMultiPagePDF_save = document.getElementById("MultiPagePDF_save");
-            if (_chkMultiPagePDF_save)
-                _chkMultiPagePDF_save.disabled = true;
-            var _chkMultiPageTIFF = document.getElementById("MultiPageTIFF");
-            if (_chkMultiPageTIFF)
-                _chkMultiPageTIFF.disabled = true;
-            var _chkMultiPagePDF = document.getElementById("MultiPagePDF");
-            if (_chkMultiPagePDF)
-                _chkMultiPagePDF.disabled = true;
+            if (document.getElementById("ADF"))
+                document.getElementById("ADF").checked = true;
         }
+
+        function initFileType() {
+            var fileType = document.getElementById("fileType");
+            fileType.options.length = 0;
+            fileType.options.add(new Option("pdf", "pdf"));
+            //fileType.options.add(new Option("tif", "tif"));
+            //fileType.options.add(new Option("jpg", "jpg"));
+            //fileType.options.add(new Option("png", "png"));
+            //fileType.options.add(new Option("bmp", "bmp"));
+
+            fileType.selectedIndex = 0;
+            fileType.style.visibility = "hidden"
+            var vAllPages = document.getElementById("AllPages");
+            if (vAllPages)
+                vAllPages.checked = true;
+        }
+
         // Check if the control is fully loaded.
         function Dynamsoft_OnReady() {
 
             var liNoScanner = document.getElementById("pNoScanner");
             // If the ErrorCode is 0, it means everything is fine for the control. It is fully loaded.
-            DWObject = Dynamsoft.WebTwainEnv.GetWebTwain('dwtcontrolContainer');
+            DWObject = Dynamsoft.DWT.GetWebTwain('dwtcontrolContainer');
             if (DWObject) {
                 if (DWObject.ErrorCode == 0) {
+                    var thumbnailViewer = DWObject.Viewer.createThumbnailViewer();
+                    thumbnailViewer.size = "180px";
+                    thumbnailViewer.showPageNumber = true;
+                    thumbnailViewer.selectedPageBackground = thumbnailViewer.background;
+                    thumbnailViewer.selectedPageBorder = "solid 2px #FE8E14";
+                    thumbnailViewer.hoverPageBorder = "solid 2px #FE8E14";
+                    thumbnailViewer.placeholderBackground = "#D1D1D1";
+                    thumbnailViewer.show();
+                    thumbnailViewer.hoverPageBackground = thumbnailViewer.background;
+                    thumbnailViewer.on("click", Dynamsoft_OnMouseClick);
+                    thumbnailViewer.on('dragdone', Dynamsoft_OnIndexChangeDragDropDone);
+                    thumbnailViewer.on("keydown", Dynamsoft_OnKeyDown);
+                    DWObject.Viewer.on("wheel", Dynamsoft_OnMouseWheel);  //H5 only
+                    DWObject.Viewer.on("OnPaintDone", Dynamsoft_OnMouseWheel);   //ActiveX only
+
+                    DWObject.Viewer.allowSlide = false;
                     $('#DWTNonInstallContainerID').hide();
 
-                    DWObject.LogLevel = 0;
                     DWObject.IfAllowLocalCache = true;
                     DWObject.ImageCaptureDriverType = 4;
                     setDefaultValue();
-
-                    DWObject.RegisterEvent("OnTopImageInTheViewChanged", Dynamsoft_OnTopImageInTheViewChanged);
-                    DWObject.RegisterEvent("OnMouseClick", Dynamsoft_OnMouseClick);
+                    initFileType();
 
                     var twainsource = document.getElementById("source");
                     if (!twainsource) {
@@ -880,12 +919,24 @@
 
                     var vCount = DWObject.SourceCount;
                     DWTSourceCount = vCount;
+                    var strSourceName = "";
 
                     if (twainsource) {
                         twainsource.options.length = 0;
                         for (var i = 0; i < vCount; i++) {
                             twainsource.options.add(new Option(DWObject.GetSourceNameItems(i), i));
+                            if (i > 0)
+                                strSourceName = strSourceName + ";" + DWObject.GetSourceNameItems(i);
+                            else
+                                strSourceName = DWObject.GetSourceNameItems(i);
                         }
+                    }
+
+                    ua = (navigator.userAgent.toLowerCase());
+                    if (vCount == 0) {
+                        var mips64 = (/mips64/g).test(ua);
+                        if (!mips64)
+                            btnDownloadImages_onclick();
                     }
 
                     // If source list need to be displayed, fill in the source items.
@@ -905,18 +956,23 @@
                         source_onchange(false);
                     }
 
-                    if (Dynamsoft.Lib.env.bWin)
-                        DWObject.MouseShape = false;
-
                     var btnScan = document.getElementById("btnScan");
                     if (btnScan) {
                         if (vCount == 0)
                             document.getElementById("btnScan").disabled = true;
                         else {
                             document.getElementById("btnScan").disabled = false;
-                            document.getElementById("btnScan").style.color = "#fff";
-                            document.getElementById("btnScan").style.backgroundColor = "#50a8e1";
-                            document.getElementById("btnScan").style.cursor = "pointer";
+                            var btnScan = $("#btnScan");
+                            if (btnScan)
+                                btnScan.addClass('btnScanActive');
+
+                            var btnConferma = $("#btnConferma");
+                            if (btnConferma)
+                                btnConferma.addClass('btnScanActive');
+
+                            var btnSave = $("#btnSave");
+                            if (btnSave)
+                                btnSave.addClass('btnScanActive');
                         }
                     }
 
@@ -934,8 +990,6 @@
                             document.getElementById("ShowUI").style.display = "";
                     }
 
-                    initDllForChangeImageSize();
-
                     if (document.getElementById("ddl_barcodeFormat")) {
                         for (var index = 0; index < BarcodeInfo.length; index++)
                             document.getElementById("ddl_barcodeFormat").options.add(new Option(BarcodeInfo[index].desc, index));
@@ -952,9 +1006,6 @@
                     _iBottom = 0;
 
                     for (var i = 0; i < document.links.length; i++) {
-                        if (document.links[i].className == "ShowtblLoadImage") {
-                            document.links[i].onclick = showtblLoadImage_onclick;
-                        }
                         if (document.links[i].className == "ClosetblLoadImage") {
                             document.links[i].onclick = closetblLoadImage_onclick;
                         }
@@ -962,7 +1013,7 @@
                     if (vCount == 0) {
                         if (Dynamsoft.Lib.env.bWin) {
 
-                            if (document.getElementById("aNoScanner") && window['bDWTOnlineDemo']) {
+                            if (window['bDWTOnlineDemo']) {
                                 if (document.getElementById("div_ScanImage").style.display == "")
                                     showtblLoadImage_onclick();
                             }
@@ -970,7 +1021,6 @@
                                 document.getElementById("Resolution").style.display = "none";
 
                         }
-
                     }
                     else {
                         var divBlank = document.getElementById("divBlank");
@@ -979,17 +1029,18 @@
                     }
 
                     updatePageInfo();
-                    ua = (navigator.userAgent.toLowerCase());
                     if (!ua.indexOf("msie 6.0")) {
                         ShowSiteTour();
                     }
 
+                    DWObject.RegisterEvent('CloseImageEditorUI', Dynamsoft_CloseImageEditorUI);
+                    DWObject.RegisterEvent('OnBitmapChanged', Dynamsoft_OnBitmapChanged);
                     DWObject.RegisterEvent("OnPostTransfer", Dynamsoft_OnPostTransfer);
                     DWObject.RegisterEvent("OnPostLoad", Dynamsoft_OnPostLoadfunction);
                     DWObject.RegisterEvent("OnPostAllTransfers", Dynamsoft_OnPostAllTransfers);
-                    DWObject.RegisterEvent("OnImageAreaSelected", Dynamsoft_OnImageAreaSelected);
-                    DWObject.RegisterEvent("OnImageAreaDeSelected", Dynamsoft_OnImageAreaDeselected);
                     DWObject.RegisterEvent("OnGetFilePath", Dynamsoft_OnGetFilePath);
+                    DWObject.Viewer.on("pageAreaSelected", Dynamsoft_OnImageAreaSelected);
+                    DWObject.Viewer.on("pageAreaUnselected", Dynamsoft_OnImageAreaDeselected);
                 }
             }
 
@@ -997,6 +1048,8 @@
                 window['start_init_dcs']();
             }
         }
+
+
         function showtblLoadImage_onclick() {
             switch (document.getElementById("tblLoadImage").style.visibility) {
                 case "hidden": document.getElementById("tblLoadImage").style.visibility = "visible";
@@ -1008,17 +1061,16 @@
                     break;
                 default: break;
             }
-            if (document.getElementById("pNoScanner")) {
-                //document.getElementById("tblLoadImage").style.top = ds_gettop(document.getElementById("pNoScanner")) + pNoScanner.offsetHeight + "px";
-                //document.getElementById("tblLoadImage").style.left = ds_getleft(document.getElementById("pNoScanner")) + 0 + "px";
-            }
+
             return false;
         }
+
         function closetblLoadImage_onclick() {
             document.getElementById("tblLoadImage").style.visibility = "hidden";
             document.getElementById("Resolution").style.visibility = "visible";
             return false;
         }
+
         //--------------------------------------------------------------------------------------
         //************************** Used a lot *****************************
         //--------------------------------------------------------------------------------------
@@ -1027,7 +1079,18 @@
                 document.getElementById("DW_TotalImage").value = DWObject.HowManyImagesInBuffer;
             if (document.getElementById("DW_CurrentImage"))
                 document.getElementById("DW_CurrentImage").value = DWObject.CurrentImageIndexInBuffer + 1;
+            updateZoomInfo();
         }
+
+        function updateZoomInfo() {
+            if (document.getElementById("DW_spanZoom")) {
+                if (DWObject.HowManyImagesInBuffer == 0)
+                    document.getElementById("DW_spanZoom").value = "100%";
+                else
+                    document.getElementById("DW_spanZoom").value = Math.round(DWObject.Viewer.zoom * 100) + "%";
+            }
+        }
+
         function checkIfImagesInBuffer() {
             if (DWObject.HowManyImagesInBuffer == 0) {
                 return false;
@@ -1035,12 +1098,13 @@
             else
                 return true;
         }
+
         function checkErrorString() {
             return checkErrorStringWithErrorCode(DWObject.ErrorCode, DWObject.ErrorString);
         }
+
         function checkErrorStringWithErrorCode(errorCode, errorString, responseString) {
             if (errorCode == 0) {
-
                 return true;
             }
             if (errorCode == -2115) //Cancel file dialog
@@ -1052,6 +1116,44 @@
                 }
                 return false;
             }
+        }
+
+        function enableButtonForCrop(bEnable) {
+            if (bEnable) {
+                var btnCrop = document.getElementById("btnCrop");
+                if (btnCrop)
+                    btnCrop.style.display = "";
+                var btnCropGray = document.getElementById("btnCropGray");
+                if (btnCropGray)
+                    btnCropGray.style.display = "none";
+            } else {
+                var btnCrop = document.getElementById("btnCrop");
+                if (btnCrop)
+                    btnCrop.style.display = "none";
+                var btnCropGray = document.getElementById("btnCropGray");
+                if (btnCropGray)
+                    btnCropGray.style.display = "";
+            }
+        }
+
+        function showCustomInfo() {
+            var customDetail = document.getElementById("customDetail");
+            customDetail.style.display = "";
+        }
+
+        function hideCustomInfo() {
+            var customDetail = document.getElementById("customDetail");
+            customDetail.style.display = "none";
+        }
+
+        function showUploadedFilesDetail() {
+            var customDetail = document.getElementById("uploadedFilesDetail");
+            customDetail.style.display = "";
+        }
+
+        function hideUploadedFilesDetail() {
+            var customDetail = document.getElementById("uploadedFilesDetail");
+            customDetail.style.display = "none";
         }
         //--------------------------------------------------------------------------------------
         //************************** Used a lot *****************************
@@ -1065,6 +1167,7 @@
             }
             return tmp;
         }
+
         function ds_gettop(el) {
             var tmp = el.offsetTop;
             el = el.offsetParent
@@ -1074,9 +1177,11 @@
             }
             return tmp;
         }
+
         function Over_Out_DemoImage(obj, url) {
             obj.src = url;
         }
+
 
     </script>
 </body>

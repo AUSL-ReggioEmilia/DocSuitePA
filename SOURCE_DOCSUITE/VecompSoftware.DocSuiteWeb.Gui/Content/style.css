@@ -1412,9 +1412,9 @@ tr.titolo {
         padding-bottom: 25px;
     }
 
-    .intro-panel {
-        margin-bottom: 20px;
-    }
+.intro-panel {
+    margin-bottom: 20px;
+}
 
 .intro-button {
     position: absolute;
@@ -1601,13 +1601,14 @@ table.monitorLog td.label {
     color: black !important;
 }
 
-.text-red{
+.text-red {
     color: red !important;
 }
 
 div.RadTreeView_Office2007 .rtIn.font_node {
     font-weight: bold;
 }
+
 
 /*
     README: Evitare di posizionare a caso o di creare stili non generici. Controllare come funziona la pagina di stile.

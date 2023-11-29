@@ -1,6 +1,5 @@
 ﻿<%@ Page Title="Attività" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="WorkflowActivitySummary.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.WorkflowActivitySummary" %>
 
-<%@ Register Src="~/UserControl/uscDocumentUpload.ascx" TagName="documentupload" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="ContattiSel" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscUploadDocumentRest.ascx" TagName="uscUploadDocumentRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
@@ -45,6 +44,8 @@
                     workflowActivitySummary.currentUser = <%= CurrentUser %>;
                     workflowActivitySummary.managerWindowsId = "<%= manager.ClientID %>";
                     workflowActivitySummary.uscUploadDocumentiId = "<%=uscUploadDocumenti.ClientID%>";
+                    workflowActivitySummary.uscAddDocumentsRestId = "<%=addDocumentsRest.uploadDocumentComponent.ClientID%>";
+                    workflowActivitySummary.addDocumentsSection = document.getElementById("addDocuments");
                     workflowActivitySummary.bindDocument = "<%=uscUploadDocumenti.uploadDocumentComponent.ClientID%>";
                     workflowActivitySummary.documentSection = document.getElementById("docUpload");
                     workflowActivitySummary.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
@@ -115,7 +116,7 @@
                     <Content>
                         <div class="dsw-panel">
                             <div class="dsw-panel-title">
-                                Richiedente
+                                Mittente
                             </div>
                             <div class="dsw-panel-content">
                                 <telerik:RadPageLayout runat="server" HtmlTag="Div">
@@ -123,10 +124,10 @@
                                         <telerik:LayoutRow HtmlTag="Div">
                                             <Columns>
                                                 <telerik:LayoutColumn Span="3" CssClass="dsw-text-right" Style="margin-top: 5px;">
-                                                    <b>Richiedente/Mittente:</b>
+                                                    <b>Mittenti:</b>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="6" CssClass="t-col-left-padding" Style="margin-top: 5px;">
-                                                    <usc:ContattiSel IsEnable="false" ButtonSelectDomainVisible="false" ButtonDeleteVisible="false" ButtonImportVisible="false" ButtonIPAVisible="false" ButtonManualVisible="false" ButtonPropertiesVisible="false" ButtonRoleVisible="false" ButtonSelectOChartVisible="false" ButtonSelectVisible="false" EnableCheck="False" EnableViewState="true" HeaderVisible="false" ID="uscProponente" IsRequired="true" Multiple="true" runat="server" TreeViewCaption="Richiedente" UseAD="true" />
+                                                    <usc:ContattiSel IsEnable="false" ButtonSelectDomainVisible="false" ButtonDeleteVisible="false" ButtonImportVisible="false" ButtonIPAVisible="false" ButtonManualVisible="false" ButtonPropertiesVisible="false" ButtonRoleVisible="false" ButtonSelectOChartVisible="false" ButtonSelectVisible="false" EnableCheck="False" EnableViewState="true" HeaderVisible="false" ID="uscProponente" IsRequired="true" Multiple="true" runat="server" TreeViewCaption="Mittenti" UseAD="true" />
                                                 </telerik:LayoutColumn>
                                             </Columns>
                                         </telerik:LayoutRow>
@@ -168,7 +169,7 @@
             </Rows>
         </telerik:RadPageLayout>
 
-        <div id="docUpload">
+        <div id="docUpload" style="display:none">
             <telerik:RadPageLayout runat="server" ID="documentUpload" Width="100%" HtmlTag="Div">
                 <Rows>
                     <telerik:LayoutRow ID="doc">
@@ -187,6 +188,38 @@
                                                     </telerik:LayoutColumn>
                                                     <telerik:LayoutColumn Span="6" CssClass="t-col-left-padding" Style="margin-top: 5px;">
                                                         <usc:uscUploadDocumentRest ID="uscUploadDocumenti" runat="server" MultipleUploadEnabled="false" />
+                                                    </telerik:LayoutColumn>
+                                                </Columns>
+                                            </telerik:LayoutRow>
+                                        </Rows>
+                                    </telerik:RadPageLayout>
+                                </div>
+                            </div>
+                        </Content>
+                    </telerik:LayoutRow>
+                </Rows>
+            </telerik:RadPageLayout>
+        </div>
+
+        <div id="addDocuments">
+            <telerik:RadPageLayout runat="server" Width="100%" HtmlTag="Div">
+                <Rows>
+                    <telerik:LayoutRow>
+                        <Content>
+                            <div class="dsw-panel">
+                                <div class="dsw-panel-title">
+                                    Documenti
+                                </div>
+                                <div class="dsw-panel-content">
+                                    <telerik:RadPageLayout runat="server" HtmlTag="Div">
+                                        <Rows>
+                                            <telerik:LayoutRow HtmlTag="Div">
+                                                <Columns>
+                                                    <telerik:LayoutColumn Span="3" CssClass="dsw-text-right" Style="margin-top: 5px;">
+                                                        <b>Documenti:</b>
+                                                    </telerik:LayoutColumn>
+                                                    <telerik:LayoutColumn Span="6" CssClass="t-col-left-padding" Style="margin-top: 5px;">
+                                                        <usc:uscUploadDocumentRest ID="addDocumentsRest" runat="server" MultipleUploadEnabled="true" />
                                                     </telerik:LayoutColumn>
                                                 </Columns>
                                             </telerik:LayoutRow>
@@ -225,7 +258,7 @@
                                         <telerik:LayoutRow HtmlTag="Div">
                                             <Columns>
                                                 <telerik:LayoutColumn Span="3" CssClass="dsw-text-right" Style="margin-top: 5px;">
-                                                    <b>Oggetto:</b>
+                                                    <b>Note:</b>
                                                 </telerik:LayoutColumn>
                                                 <telerik:LayoutColumn Span="8" CssClass="t-col-left-padding" Style="margin-top: 5px;">
                                                     <telerik:RadTextBox ID="txtNote" ReadOnly="true" runat="server" TextMode="MultiLine" Rows="3" Width="100%" />

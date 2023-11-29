@@ -1,19 +1,21 @@
-﻿Imports System
-Imports System.Text
+﻿Imports System.Linq
+Imports VecompSoftware.Core.Command
+Imports VecompSoftware.Core.Command.CQRS.Commands.Entities.Commons
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.EntityMapper.Commons
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
-Imports NHibernate
-Imports VecompSoftware.NHibernateManager
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports System.Linq
+Imports VecompSoftware.Services.Command.CQRS.Commands.Entities.Commons
 Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Helpers.Web
+Imports APICommons = VecompSoftware.DocSuiteWeb.Entity.Commons
 
 <ComponentModel.DataObject()>
 Public Class RoleFacade
     Inherits CommonFacade(Of Role, Integer, NHibernateRoleDao)
 #Region " Fields "
     Private _defaultAllUserRole As Role
+    Private _commandInsertFacade As CommandFacade(Of ICommandCreateRole)
+    Private _commandUpdateFacade As CommandFacade(Of ICommandUpdateRole)
 
 #End Region
 
@@ -25,6 +27,24 @@ Public Class RoleFacade
                 _defaultAllUserRole = GetByUniqueID(Guid.Empty)
             End If
             Return _defaultAllUserRole
+        End Get
+    End Property
+
+    Private ReadOnly Property CommandInsertFacade As CommandFacade(Of ICommandCreateRole)
+        Get
+            If _commandInsertFacade Is Nothing Then
+                _commandInsertFacade = New CommandFacade(Of ICommandCreateRole)()
+            End If
+            Return _commandInsertFacade
+        End Get
+    End Property
+
+    Private ReadOnly Property CommandUpdateFacade As CommandFacade(Of ICommandUpdateRole)
+        Get
+            If _commandUpdateFacade Is Nothing Then
+                _commandUpdateFacade = New CommandFacade(Of ICommandUpdateRole)()
+            End If
+            Return _commandUpdateFacade
         End Get
     End Property
 #End Region
@@ -43,10 +63,39 @@ Public Class RoleFacade
 
 #Region " Methods "
 
-    Public Function AlreadyExists(name As String) As Boolean
-        Return Me._dao.AlreadyExists(name)
+    Public Function AlreadyExists(name As String, idTenantAOO As Guid) As Boolean
+        Return Me._dao.AlreadyExists(name, idTenantAOO)
     End Function
 
+    Public Function SendUpdateRoleCommand(role As Role) As Guid?
+        Try
+            Dim identity As IdentityContext = New IdentityContext(DocSuiteContext.Current.User.FullUserName)
+            Dim roleEntityMapper As MapperRoleEntity = New MapperRoleEntity()
+            Dim apiRoleEntity As APICommons.Role = roleEntityMapper.MappingDTO(role)
+
+            Dim commandUpdateRole As ICommandUpdateRole = New CommandUpdateRole(CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, identity, apiRoleEntity)
+            CommandUpdateFacade.Push(commandUpdateRole)
+            Return commandUpdateRole.Id
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, String.Concat("SendUpdateRoleCommand => ", ex.Message), ex)
+        End Try
+        Return Nothing
+    End Function
+
+    Public Function SendCreateRoleCommand(role As Role) As Guid?
+        Try
+            Dim identity As IdentityContext = New IdentityContext(DocSuiteContext.Current.User.FullUserName)
+            Dim roleEntityMapper As MapperRoleEntity = New MapperRoleEntity()
+            Dim apiRoleEntity As APICommons.Role = roleEntityMapper.MappingDTO(role)
+
+            Dim commandCreateRole As ICommandCreateRole = New CommandCreateRole(CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, identity, apiRoleEntity)
+            CommandInsertFacade.Push(commandCreateRole)
+            Return commandCreateRole.Id
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, String.Concat("SendCreateRoleCommand => ", ex.Message), ex)
+        End Try
+        Return Nothing
+    End Function
 
 #End Region
     Public Sub Move(toMoveRole As Role, destinationRole As Role)
@@ -69,9 +118,9 @@ Public Class RoleFacade
 
     Private Sub CalculateFullIncremental(ByRef role As Role)
         If role.Father Is Nothing Then
-            role.FullIncrementalPath = role.IdRoleTenant.ToString()
+            role.FullIncrementalPath = role.Id.ToString()
         Else
-            role.FullIncrementalPath = String.Format("{0}|{1}", role.Father.FullIncrementalPath, role.IdRoleTenant.ToString())
+            role.FullIncrementalPath = String.Format("{0}|{1}", role.Father.FullIncrementalPath, role.Id.ToString())
         End If
     End Sub
     Private Sub CalculateFullIncremental(ByRef childs As IList(Of Role))
@@ -92,8 +141,7 @@ Public Class RoleFacade
         Dim pf As New ParameterFacade(_dbName)
         Dim parameter As Parameter = pf.GetAll()(0)
         role.Id = parameter.LastUsedIdRole + 1
-        role.IdRoleTenant = role.Id
-        role.IsActive = 1
+        role.IsActive = True
         If (pf.UpdateReplicateLastIdRole(parameter.LastUsedIdRole + 1, parameter.LastUsedIdRole)) Then
             CalculateFullIncremental(role)
             MyBase.Save(role)
@@ -108,14 +156,8 @@ Public Class RoleFacade
         Return _dao.GetById(id)
     End Function
 
-    Public Function GetByName(name As String) As IList(Of Role)
-        Return _dao.GetByName(name)
-    End Function
     Public Function GetByUniqueID(UniqueID As Guid) As Role
         Return _dao.GetByUniqueID(UniqueID)
-    End Function
-    Public Function GetByIdAndTenant(id As Integer, tenantId As Guid) As Role
-        Return _dao.GetByIdAndTenant(id, tenantId)
     End Function
 
     Public Overrides Function IsUsed(ByRef obj As Role) As Boolean
@@ -136,13 +178,8 @@ Public Class RoleFacade
         Return False
     End Function
 
-    Public Function GetManageableRoles(ByVal manageableRoles As IList(Of Role)) As IList(Of Role)
-        Dim ids As List(Of Integer) = manageableRoles.Select(Function(r) Convert.ToInt32(r.IdRoleTenant)).ToList()
-        Return GetManageableRoles(ids, True)
-    End Function
-
-    Public Function GetManageableRoles(ByVal manageableRoleIds As IList(Of Integer), ByVal isActive As Boolean?, Optional tenantId As Guid? = Nothing) As IList(Of Role)
-        Return _dao.GetManageableRoles(manageableRoleIds, isActive, tenantId)
+    Public Function GetManageableRoles(manageableRoleIds As IList(Of Integer), isActive As Boolean?, idTenantAOO As Guid) As IList(Of Role)
+        Return _dao.GetManageableRoles(manageableRoleIds, isActive, idTenantAOO)
     End Function
 
     Public Function GetUserRights(ByVal type As String, ByVal role As Role, ByVal rights As String) As IList(Of Role)
@@ -153,25 +190,22 @@ Public Class RoleFacade
     ''' <param name="parentId">Id settore padre.</param>
     ''' <param name="onlyWithPECAddress">Se includere solo i settori con indirizzo PEC associato.</param>
     ''' <returns>True se il settore è padre di un altro settore, false altrimenti.</returns>
-    Public Function GetItemsByParentId(ByVal parentId As Integer, Optional ByVal onlyWithPECAddress As Boolean = False, Optional tenantId As Guid? = Nothing, Optional ByVal isActive As Boolean? = Nothing, Optional multitenantEnabled As Boolean = False) As IList(Of Role)
+    Public Function GetItemsByParentId(ByVal parentId As Integer, Optional ByVal onlyWithPECAddress As Boolean = False, Optional ByVal isActive As Boolean? = Nothing) As IList(Of Role)
         If onlyWithPECAddress Then
-            Return _dao.GetRolesWithPECMailboxByParentId(parentId, tenantId, multitenantEnabled:=multitenantEnabled)
+            Return _dao.GetRolesWithPECMailboxByParentId(parentId)
         Else
-            Return _dao.GetRolesByParentId(parentId, tenantId, isActive, multitenantEnabled:=multitenantEnabled)
+            Return _dao.GetRolesByParentId(parentId, isActive)
         End If
     End Function
 
     ''' <summary> Restituisce tutti i ruoli che non hanno alcun padre. </summary>
     ''' <param name="isActive">Se solo quelli attivi</param>
     ''' <param name="withPECMailbox">Se includere solo i settori con indirizzo PEC associato.</param>
-    Public Function GetRootItems(Optional isActive As Boolean? = Nothing, Optional withPECMailbox As Boolean = False, Optional tenantId As Guid? = Nothing, Optional multiTenantEnabled As Boolean = False) As IList(Of Role)
-        If Not multiTenantEnabled Then
-            tenantId = DocSuiteContext.Current.CurrentTenant.TenantId
-        End If
+    Public Function GetRootItems(idTenantAOO As Guid, Optional isActive As Boolean? = Nothing, Optional withPECMailbox As Boolean = False) As IList(Of Role)
         If withPECMailbox Then
-            Return _dao.GetRootRolesWithPECMailbox()
+            Return _dao.GetRootRolesWithPECMailbox(idTenantAOO)
         Else
-            Return _dao.GetRootRoles(tenantId, isActive, multiTenantEnabled:=multiTenantEnabled)
+            Return _dao.GetRootRoles(idTenantAOO, isActive)
         End If
     End Function
 
@@ -181,74 +215,23 @@ Public Class RoleFacade
     ''' <param name="Role">Settore padre</param>
     ''' <param name="Groups">Lista di gruppi che devono appartenere ai settori</param>
     ''' <returns>True se il settore è padre di un altro settore, false altrimenti</returns>
-    Public Function GetChildren(ByVal role As Role, ByVal groups As String) As IList(Of Role)
-        Return _dao.GetChildren(role, groups)
+    Public Function GetChildren(ByVal role As Role, ByVal groups As String, idTenantAOO As Guid) As IList(Of Role)
+        Return _dao.GetChildren(role, groups, idTenantAOO)
     End Function
 
-    ''' <summary> Restituisce la lista di ruoli sui quali l'utente ha i diritti specificati. </summary>
-    ''' <param name="Groups">Gruppi a cui appartiene l'utente</param>
-    ''' <param name="Rights">Diritti da verificare</param>
-    ''' <param name="OnlyActive">True: Solo i settori attivi</param> 
-    ''' <returns>Id di Ruoli seprarati da virgola</returns>
-    <Obsolete("Usare GetUserRoleList")>
-    Public Function GetUserRoleIds(ByVal type As String, ByVal groups As String, ByVal rights As String, Optional ByVal onlyActive As Boolean = True) As String
-        Return _dao.GetUserRoleIds(type, groups, rights, onlyActive)
+
+    Public Function GetByIds(ByVal roleIds As ICollection(Of Integer)) As IList(Of Role)
+        Return _dao.GetByIds(roleIds)
     End Function
 
-    Public Function GetUserRoleList(ByVal type As String, ByVal groups As String, ByVal rights As String, Optional ByVal onlyActive As Boolean = True) As IList(Of Role)
-        Return _dao.GetUserRoleList(type, groups, rights, onlyActive)
-    End Function
-
-    ''' <summary> Verifica l'esatezza e correge i FullIncrementalPath di tutte le roles. </summary>
-    Public Function FullIncrementalUtility() As String
-        Dim report As New StringBuilder
-        Dim transaction As ITransaction = NHibernateSessionManager.Instance().GetSessionFrom("ProtDB").BeginTransaction()
-        Try
-            Dim roles As IList(Of Role) = GetAll()
-            For Each role As Role In roles
-                ' Calcolo path
-                Dim path As New StringBuilder()
-                _dao.GetFullIncrementalPath(role.Father, path)
-                If path.Length <> 0 Then
-                    path.Append("|")
-                End If
-                path.Append(role.Id)
-                Dim newPath As String = path.ToString()
-                ' Aggiornamento settore e aggiunta nel report
-                If role.FullIncrementalPath <> newPath Then
-                    role.FullIncrementalPath = newPath
-                    Update(role)
-                    If report.Length <> 0 Then
-                        report.Append(WebHelper.Br)
-                    End If
-                    report.AppendFormat("{0} ({1})", role.Name, role.Id)
-                End If
-            Next
-            transaction.Commit()
-        Catch ex As Exception
-            transaction.Rollback()
-            Throw New DocSuiteException("Errore", "Problema nel calcolo del path dei Ruoli", ex)
-        End Try
-
-        Return report.ToString()
-    End Function
-
-    Public Function GetByIds(ByVal roleIds As ICollection(Of Integer), Optional tenantId As Guid? = Nothing) As IList(Of Role)
-        Return _dao.GetByIds(roleIds, tenantId)
-    End Function
-
-    Public Function GetByPecMailBoxes(ByVal pecMailBoxes As ICollection(Of PECMailBox)) As IList(Of Role)
-        Return _dao.GetByPecMailBoxes(pecMailBoxes)
-    End Function
-
-    Public Function GetByServiceCode(ByVal serviceCode As String, tenantId As Guid, roleIds As IList(Of Integer), Optional roleUserType As RoleUserType? = Nothing, Optional env As DSWEnvironment? = Nothing) As Role
-        Dim roles As IList(Of Role) = _dao.GetByServiceCode(serviceCode, tenantId)
+    Public Function GetByServiceCode(ByVal serviceCode As String, idTenantAOO As Guid, roleIds As IList(Of Integer), Optional roleUserType As RoleUserType? = Nothing, Optional env As DSWEnvironment? = Nothing) As Role
+        Dim roles As IList(Of Role) = _dao.GetByServiceCode(serviceCode, idTenantAOO)
         If roles.IsNullOrEmpty() Then
             Return Nothing
         End If
 
         If roleIds IsNot Nothing AndAlso env.HasValue Then
-            Dim userRoles As IList(Of Role) = GetUserRolesByCategory(env.Value, roleIds, Nothing, Nothing, Nothing, False, tenantId, roleUserType)
+            Dim userRoles As IList(Of Role) = GetUserRolesByCategory(env.Value, roleIds, Nothing, Nothing, Nothing, False, idTenantAOO, roleUserType)
             If Not userRoles.Contains(roles(0)) Then
                 Return Nothing
             End If
@@ -272,8 +255,13 @@ Public Class RoleFacade
     ''' <param name="roles"> Settore che a cui si vuole verificare l'appartenenza </param>
     ''' <returns> Restituisce true se l'operatore appartiene al Settore </returns>
     ''' <remarks> Gestisce internamente anche i Security Groups </remarks>
-    Public Function CurrentUserBelongsToRoles(env As DSWEnvironment, ByVal roles As IList(Of Role)) As Boolean
-        Dim targetRoles As IList(Of Role) = GetUserRoles(env, 1, True)
+    Public Function CurrentUserBelongsToRoles(env As DSWEnvironment, roles As IList(Of Role)) As Boolean
+        If roles.IsNullOrEmpty() Then
+            Return False
+        End If
+
+        Dim idTenantAOO As Guid = roles.First().IdTenantAOO
+        Dim targetRoles As IList(Of Role) = GetUserRoles(env, 1, True, idTenantAOO)
 
         Dim belongs As Boolean = False
         If Not targetRoles.IsNullOrEmpty() Then
@@ -301,8 +289,8 @@ Public Class RoleFacade
     ''' </summary>
     ''' <param name="env">Ambiente di verifica</param>
     ''' <param name="role">Settore da verificare</param>
-    Public Function CurrentUserHierarchicalCheck(env As DSWEnvironment, role As Role) As Boolean
-        Dim tor As Boolean = HierarchicalCheck(GetUserRoles(env, 1, True), role)
+    Public Function CurrentUserHierarchicalCheck(env As DSWEnvironment, role As Role, idTenantAOO As Guid) As Boolean
+        Dim tor As Boolean = HierarchicalCheck(GetUserRoles(env, 1, True, idTenantAOO), role)
         Return tor
     End Function
 
@@ -325,22 +313,19 @@ Public Class RoleFacade
     ''' Verifica se il settore è uno dei rami dei settori figli dell'utente corrente
     ''' </summary>
     Public Function CurrentUserIsRoleChildCheck(env As DSWEnvironment, role As Role) As Boolean
-        Return Me.IsRoleChildCheck(GetUserRoles(env, 1, True), role)
-    End Function
-
-    Public Function UserBelongsToRoles(domain As String, username As String, env As DSWEnvironment, role As Role) As Boolean
-        Return UserBelongsToRoles(domain, username, env, New List(Of Role) From {role})
+        Return Me.IsRoleChildCheck(GetUserRoles(env, 1, True, role.IdTenantAOO), role)
     End Function
 
     Public Function UserBelongsToRoles(domain As String, username As String, env As DSWEnvironment, ByVal roles As IList(Of Role)) As Boolean
-        Dim targetRoles As IList(Of Role) = GetUserRoles(domain, username, env, 1, True)
+        Dim idTenantAOO As Guid = roles.First().IdTenantAOO
+        Dim targetRoles As IList(Of Role) = GetUserRoles(domain, username, env, 1, True, idTenantAOO)
         Return roles.Any(Function(role) targetRoles.Contains(role))
     End Function
 
     ''' <summary> Verifica se l'utente corrente è manager di distribuzione di un determinato settore. </summary>
     ''' <param name="idRole">Id del settore da verificare</param>
-    Public Function IsRoleDistributionManager(ByVal idRole As Integer, Optional tenantId As Guid? = Nothing) As Boolean
-        Return _dao.HasRoleRights("ProtDB", idRole, CommonShared.GetArrayUserFromString, "11", tenantId)
+    Public Function IsRoleDistributionManager(ByVal idRole As Integer, idTenantAOO As Guid) As Boolean
+        Return _dao.HasRoleRights("ProtDB", idRole, CommonShared.GetArrayUserFromString, "11", idTenantAOO)
     End Function
 
     ''' <summary>
@@ -361,23 +346,10 @@ Public Class RoleFacade
     ''' <param name="active">Indica se restituire solo Settori Attivi (true), sono Disattivati (false) o entrambi (NULL)</param>
     ''' <returns>Lista dei Settori che soddisfano i filtri</returns>
     ''' <remarks>Lavora sia per AD che per SG</remarks>
-    Public Function GetUserRoles(env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, Optional tenantId As Guid? = Nothing) As IList(Of Role)
-        Return GetUserRoles(env, rightPosition, active, Nothing, Nothing, Nothing, tenantId)
+    Public Function GetUserRoles(env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, idTenantAOO As Guid) As IList(Of Role)
+        Return GetUserRoles(env, rightPosition, active, Nothing, Nothing, Nothing, idTenantAOO)
     End Function
 
-    ''' <summary>
-    ''' Restituisce l'elenco dei Settori a cui appartiene l'utente corrente
-    ''' </summary>
-    ''' <param name="env">Ambiente di riferimento</param>
-    ''' <param name="rightPosition">Diritto necessario per includere il settore</param>
-    ''' <param name="active">Indica se restituire solo Settori Attivi (true), sono Disattivati (false) o entrambi (NULL)</param>
-    ''' <param name="name">String per il filtro per nome del Settore.</param>
-    ''' <param name="root">Indica se si vogliono solo Settori radice.</param>
-    ''' <returns>Lista dei Settori che soddisfano i filtri</returns>
-    ''' <remarks>Lavora sia per AD che per SG</remarks>
-    Public Function GetUserRoles(env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, name As String, root As Boolean?) As IList(Of Role)
-        Return GetUserRoles(env, rightPosition, active, name, root, Nothing)
-    End Function
     ''' <summary>
     ''' Restituisce il numero dei Settori a cui appartiene l'utente corrente
     ''' </summary>
@@ -386,15 +358,15 @@ Public Class RoleFacade
     ''' <param name="active">Indica se restituire solo Settori Attivi (true), sono Disattivati (false) o entrambi (NULL)</param>
     ''' <returns>Lista dei Settori che soddisfano i filtri</returns>
     ''' <remarks>Lavora sia per AD che per SG</remarks>
-    Public Function GetUserRolesCount(env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, Optional tenantId As Guid? = Nothing) As Integer
-        Return GetUserRolesCount(env, rightPosition, active, Nothing, Nothing, Nothing, tenantId)
+    Public Function GetUserRolesCount(env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, idTenantAOO As Guid) As Integer
+        Return GetUserRolesCount(env, rightPosition, active, Nothing, Nothing, Nothing, idTenantAOO)
     End Function
 
 
     ''' <summary>
     ''' Restituisce l'elenco dei Settori a cui appartiene l'utente specificato
     ''' </summary>
-    Public Function GetRolesFromUserName(env As DSWEnvironment, userName As String, Optional tenantId As Guid? = Nothing) As IList(Of Role)
+    Public Function GetRolesFromUserName(env As DSWEnvironment, userName As String, idTenantAOO As Guid) As IList(Of Role)
         Dim account As String = userName
         Dim domain As String = CommonShared.UserDomain
 
@@ -409,9 +381,18 @@ Public Class RoleFacade
         If groups.IsNullOrEmpty() Then
             Return Nothing
         End If
-        Return _dao.GetRolesBySG(groups.Select(Function(g) g.Id).ToList(), env, 1, True, String.Empty, Nothing, Nothing, tenantId)
+        Return _dao.GetRolesBySG(groups.Select(Function(g) g.Id).ToList(), env, 1, True, String.Empty, Nothing, Nothing, idTenantAOO)
 
     End Function
+
+    Public Function GetUserRolesCount(env As DSWEnvironment, rightPosition As Integer?, isActive As Boolean?, name As String, root As Boolean?, parent As Role, idTenantAOO As Guid) As Integer
+        Dim groups As IList(Of SecurityGroups) = Factory.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName)
+        If groups.IsNullOrEmpty() Then
+            Return Nothing
+        End If
+        Return _dao.GetRolesCountBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, isActive, name, root, parent, idTenantAOO)
+    End Function
+
     ''' <summary>
     ''' Restituisce l'elenco dei Settori a cui appartiene l'utente corrente
     ''' </summary>
@@ -422,21 +403,12 @@ Public Class RoleFacade
     ''' <param name="root">Indica se si vogliono solo Settori radice.</param>
     ''' <returns>Lista dei Settori che soddisfano i filtri</returns>
     ''' <remarks>Lavora sia per AD che per SG</remarks>
-    Public Function GetUserRoles(env As DSWEnvironment, rightPosition As Integer?, isActive As Boolean?, name As String, root As Boolean?, parent As Role, Optional tenantId As Guid? = Nothing, Optional multitenantEnabled As Boolean = False) As IList(Of Role)
+    Public Function GetUserRoles(env As DSWEnvironment, rightPosition As Integer?, isActive As Boolean?, name As String, root As Boolean?, parent As Role, idTenantAOO As Guid) As IList(Of Role)
         Dim groups As IList(Of SecurityGroups) = Factory.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName)
         If groups.IsNullOrEmpty() Then
             Return Nothing
         End If
-        Return _dao.GetRolesBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, isActive, name, root, parent, tenantId, multitenantEnabled:=multitenantEnabled)
-    End Function
-
-
-    Public Function GetUserRolesCount(env As DSWEnvironment, rightPosition As Integer?, isActive As Boolean?, name As String, root As Boolean?, parent As Role, Optional tenantId As Guid? = Nothing) As Integer
-        Dim groups As IList(Of SecurityGroups) = Factory.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName)
-        If groups.IsNullOrEmpty() Then
-            Return Nothing
-        End If
-        Return _dao.GetRolesCountBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, isActive, name, root, parent, tenantId)
+        Return _dao.GetRolesBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, isActive, name, root, parent, idTenantAOO)
     End Function
 
     ''' <summary>
@@ -449,8 +421,8 @@ Public Class RoleFacade
     ''' <param name="active">Indica se restituire solo Settori Attivi (true), sono Disattivati (false) o entrambi (NULL)</param>
     ''' <returns>Lista dei Settori che soddisfano i filtri</returns>
     ''' <remarks>Lavora sia per AD che per SG</remarks>
-    Public Function GetUserRoles(domain As String, userName As String, env As DSWEnvironment, rightPosition As Integer?, active As Boolean?) As IList(Of Role)
-        Return GetUserRoles(domain, userName, env, rightPosition, active, Nothing, Nothing, Nothing)
+    Public Function GetUserRoles(domain As String, userName As String, env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, idTenantAOO As Guid) As IList(Of Role)
+        Return GetUserRoles(domain, userName, env, rightPosition, active, Nothing, Nothing, Nothing, idTenantAOO)
     End Function
 
     ''' <summary>
@@ -465,51 +437,40 @@ Public Class RoleFacade
     ''' <param name="root">Indica se si vogliono solo Settori radice.</param>
     ''' <returns>Lista dei Settori che soddisfano i filtri</returns>
     ''' <remarks>Lavora sia per AD che per SG</remarks>
-    Public Function GetUserRoles(domain As String, userName As String, env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, name As String, root As Boolean?, parent As Role) As IList(Of Role)
+    Public Function GetUserRoles(domain As String, userName As String, env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, name As String, root As Boolean?, parent As Role, idTenantAOO As Guid) As IList(Of Role)
         Dim groups As IList(Of SecurityGroups) = Factory.SecurityUsersFacade.GetGroupsByAccount(userName)
         If groups.IsNullOrEmpty() Then
             Return Nothing
         End If
-        Return _dao.GetRolesBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, active, name, root, parent)
+        Return _dao.GetRolesBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, active, name, root, parent, idTenantAOO)
     End Function
 
-    Public Function GetUserRolesCount(domain As String, userName As String, env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, name As String, root As Boolean?, parent As Role) As Integer
-        Dim groups As IList(Of SecurityGroups) = Factory.SecurityUsersFacade.GetGroupsByAccount(userName)
-        If groups.IsNullOrEmpty() Then
-            Return Nothing
-        End If
-        Return _dao.GetRolesCountBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, active, name, root, parent)
+    Public Function GetRolesBySG(env As DSWEnvironment, groups As IList(Of SecurityGroups), rightPosition As Integer?, active As Boolean?, name As String, root As Boolean?, idTenantAOO As Guid) As IList(Of Role)
+        Return _dao.GetRolesBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, active, name, root, Nothing, idTenantAOO)
     End Function
 
-    Public Function GetRolesBySG(env As DSWEnvironment, groups As IList(Of SecurityGroups), rightPosition As Integer?, active As Boolean?, name As String, root As Boolean?) As IList(Of Role)
-        Return _dao.GetRolesBySG(groups.Select(Function(g) g.Id).ToList(), env, rightPosition, active, name, root, Nothing)
-    End Function
-
-    Public Function GetRoles(env As DSWEnvironment, rightPosition As Integer?, isActive As Boolean?, name As String, root As Boolean?, parent As Role, Optional tenantId As Guid? = Nothing, Optional multitenantEnabled As Boolean = False) As IList(Of Role)
-        Return _dao.GetRoles(env, rightPosition, isActive, name, root, parent, tenantId, multitenantEnabled:=multitenantEnabled)
+    Public Function GetRoles(env As DSWEnvironment, rightPosition As Integer?, isActive As Boolean?, name As String, root As Boolean?, parent As Role, idTenantAOO As Guid) As IList(Of Role)
+        Return _dao.GetRoles(env, rightPosition, isActive, name, root, parent, idTenantAOO)
     End Function
 
     ''' <summary> Insieme di settori senza controllo sicurezza </summary>
     ''' <remarks> Ottimizzato per caricare i <see cref="SecurityGroups" />. </remarks>
-    Public Function GetNoSecurityRoles(env As DSWEnvironment, name As String, Optional isActive As Boolean? = Nothing, Optional tenantId As Guid? = Nothing, Optional multiTenantEnabled As Boolean = False) As IList(Of Role)
-        If Not multiTenantEnabled Then
-            tenantId = DocSuiteContext.Current.CurrentTenant.TenantId
-        End If
-        Return _dao.GetNoSecurityRoles(env, name, isActive, tenantId)
+    Public Function GetNoSecurityRoles(env As DSWEnvironment, name As String, idTenantAOO As Guid, Optional isActive As Boolean? = Nothing) As IList(Of Role)
+        Return _dao.GetNoSecurityRoles(env, name, idTenantAOO, isActive)
     End Function
 
-    Public Function GetRolesCount(env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, name As String, root As Boolean?, parent As Role) As Integer
-        Return _dao.GetRolesCount(env, rightPosition, active, name, root, parent)
+    Public Function GetRolesCount(env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, name As String, root As Boolean?, parent As Role, idTenantAOO As Guid) As Integer
+        Return _dao.GetRolesCount(env, rightPosition, active, name, root, parent, idTenantAOO)
     End Function
 
-    Public Function GetCurrentUserRoles(env As DSWEnvironment) As Dictionary(Of ProtocolRoleRightPositions, IList(Of Integer))
-        Return GetCurrentUserRoles(env, Nothing)
+    Public Function GetCurrentUserRoles(env As DSWEnvironment, idTenantAOO As Guid) As Dictionary(Of ProtocolRoleRightPositions, IList(Of Integer))
+        Return GetCurrentUserRoles(env, Nothing, idTenantAOO)
     End Function
 
-    Public Function GetCurrentUserRoles(env As DSWEnvironment, active As Boolean?) As Dictionary(Of ProtocolRoleRightPositions, IList(Of Integer))
+    Public Function GetCurrentUserRoles(env As DSWEnvironment, active As Boolean?, idTenantAOO As Guid) As Dictionary(Of ProtocolRoleRightPositions, IList(Of Integer))
         Dim tor As New Dictionary(Of ProtocolRoleRightPositions, IList(Of Integer))
         For Each val As ProtocolRoleRightPositions In [Enum].GetValues(GetType(ProtocolRoleRightPositions))
-            Dim temp As IList(Of Integer) = GetUserRoles(env, val, active).Select(Function(r) r.Id).ToList()
+            Dim temp As IList(Of Integer) = GetUserRoles(env, val, active, idTenantAOO).Select(Function(r) r.Id).ToList()
             If Not temp.IsNullOrEmpty() Then
                 tor.Add(val, temp)
             End If
@@ -584,8 +545,8 @@ Public Class RoleFacade
         Return _dao.GetUserRolesByIds(roleIds, env, right)
     End Function
 
-    Public Function GetUserRolesByCategory(env As DSWEnvironment, roleIds As IList(Of Integer), rightPosition As Integer?, active As Boolean?, name As String, root As Boolean?, Optional tenantId As Guid? = Nothing, Optional roleUserType As RoleUserType? = Nothing) As IList(Of Role)
-        Return _dao.GetRolesByCategoryFascicleRights(roleIds, env, rightPosition, active, name, root, Nothing, tenantId, roleUserType)
+    Public Function GetUserRolesByCategory(env As DSWEnvironment, roleIds As IList(Of Integer), rightPosition As Integer?, active As Boolean?, name As String, root As Boolean?, idTenantAOO As Guid, Optional roleUserType As RoleUserType? = Nothing) As IList(Of Role)
+        Return _dao.GetRolesByCategoryFascicleRights(roleIds, env, rightPosition, active, name, root, Nothing, idTenantAOO, roleUserType)
     End Function
 
     Public Function GetRolesBySecurityGroups(securityGroups As IList(Of SecurityGroups)) As IList(Of Role)
@@ -631,7 +592,7 @@ Public Class RoleFacade
 
         Dim roleSaved As Role
         Dim ochartRole As OChartItemRole
-        For Each roleToClone As Role In rolesToClone.Where(Function(f) f.IsActive = 1)
+        For Each roleToClone As Role In rolesToClone.Where(Function(f) f.IsActive)
             roleSaved = CloneRoleRelations(roleToClone, parentRole, newName)
             Dim ochartRoleItems As ICollection(Of OChartItem) = FacadeFactory.Instance.OChartItemFacade.GetByRole(roleToClone)
             If Not ochartRoleItems.IsNullOrEmpty() Then
@@ -650,7 +611,6 @@ Public Class RoleFacade
         Dim lastUsedIdRoleUser As Short = FacadeFactory.Instance.ParameterFacade.GetLastUsedIdRoleUser()
         Dim roleToSave As Role = InitializeNewInstanceFromExistingRole(roleToClone)
         roleToSave.Id = lastUsedIdRole + 1
-        roleToSave.IdRoleTenant = Convert.ToInt16(roleToSave.Id)
         If Not String.IsNullOrEmpty(newName) Then
             roleToSave.Name = newName
         End If
@@ -681,7 +641,7 @@ Public Class RoleFacade
         End If
 
         Dim roleUsers As IList(Of RoleUser) = FacadeFactory.Instance.RoleUserFacade.GetByRoleId(roleToClone.Id)
-        Dim tmpLastUsedIdRoleUser As Short = lastUsedIdRoleUser
+        Dim tmpLastUsedIdRoleUser As Integer = lastUsedIdRoleUser
         If Not roleUsers.IsNullOrEmpty() Then
             Dim roleUserToSave As RoleUser
             For Each roleUser As RoleUser In roleUsers
@@ -698,13 +658,11 @@ Public Class RoleFacade
 
     Public Shared Function InitializeNewInstanceFromExistingRole(role As Role) As Role
         Dim newInstanceRole As Role = New Role With {
-            .IsActive = Convert.ToInt16(False),
-            .ActiveFrom = role.ActiveFrom,
-            .ActiveTo = role.ActiveTo,
+            .IsActive = False,
             .Collapsed = role.Collapsed,
             .EMailAddress = role.EMailAddress,
             .ServiceCode = role.ServiceCode,
-            .TenantId = role.TenantId,
+            .IdTenantAOO = role.IdTenantAOO,
             .UriSharepoint = role.UriSharepoint,
             .Name = role.Name
         }

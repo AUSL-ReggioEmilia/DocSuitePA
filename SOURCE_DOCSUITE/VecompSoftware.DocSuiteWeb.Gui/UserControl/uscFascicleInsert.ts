@@ -12,11 +12,9 @@ import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import FascicleBase = require('Fasc/FascBase');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
 import UscCategoryRest = require('UserControl/uscCategoryRest');
-import UscSettori = require('UserControl/uscSettori');
-import UscOggetto = require('UserControl/uscOggetto');
 import UscContattiSel = require('UserControl/uscContattiSel');
 import UscMetadataRepositorySel = require('UserControl/uscMetadataRepositorySel');
-import UscDynamicMetadata = require('UserControl/uscDynamicMetadata');
+import uscDynamicMetadataRest = require('UserControl/uscDynamicMetadataRest');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import EnumHelper = require('App/Helpers/EnumHelper');
 import ContainerService = require('App/Services/Commons/ContainerService');
@@ -29,6 +27,8 @@ import UscRoleRestEventType = require('App/Models/Commons/UscRoleRestEventType')
 import AjaxModel = require('App/Models/AjaxModel');
 import AuthorizationRoleType = require('App/Models/Commons/AuthorizationRoleType');
 import UscRoleRestConfiguration = require('App/Models/Commons/UscRoleRestConfiguration');
+import ExternalSourceActionEnum = require('App/Helpers/ExternalSourceActionEnum');
+import MetadataDesignerViewModel = require('App/ViewModels/Metadata/MetadataDesignerViewModel');
 
 declare var Page_IsValid: any;
 declare var ValidatorEnable: any;
@@ -44,13 +44,14 @@ class uscFascicleInsert extends FascicleBase {
     contattiRespRowId: string;
     activityFascicleEnabled: boolean;
     isMasterRowId: string;
+    isRoleRowId: string;
     uscClassificatoreId: string;
     uscRoleMasterId: string;
     uscRoleId: string;
     uscContattiRespId: string;
     fascicleTypologyRowId: string;
     txtNoteId: string;
-    uscOggettoId: string;
+    txtObjectId: string;
     txtConservationId: string;
     pnlConservationId: string;
     fasciclesPanelVisibilities: { [key: string]: boolean };
@@ -60,7 +61,7 @@ class uscFascicleInsert extends FascicleBase {
     metadataRepositoryEnabled: boolean;
     metadataRepositoryRowId: string;
     uscMetadataRepositorySelId: string;
-    uscDynamicMetadataId: string;
+    uscDynamicMetadataRestId: string;
     containerRowId: string;
     ddlContainerId: string;
     fascicleContainerEnabled: boolean;
@@ -71,6 +72,8 @@ class uscFascicleInsert extends FascicleBase {
     private _serviceConfigurations: ServiceConfiguration[];
     private _rdlFascicleType: Telerik.Web.UI.RadDropDownList;
     private _txtNote: Telerik.Web.UI.RadTextBox;
+    private _txtConservation: Telerik.Web.UI.RadTextBox;
+    private _txtObject: Telerik.Web.UI.RadTextBox;
     private _radStartDate: Telerik.Web.UI.RadDatePicker;
     private _deferredInitializeActions: JQueryDeferred<void>[] = [];
     private _deferredFascicleSelectedTypeActions: JQueryDeferred<void>[] = [];
@@ -80,6 +83,7 @@ class uscFascicleInsert extends FascicleBase {
 
     private _selectedResponsibleRole: RoleModel;
     private _fascicleVisibilityType: VisibilityType;
+    private _needRolesFromExternalSource_eventArgs: string[];
 
     public static LOADED_EVENT: string = "onLoaded";
     public static FASCICLE_TYPE_CHANGED_EVENT: string = "onFascicleTypeChanged";
@@ -108,6 +112,10 @@ class uscFascicleInsert extends FascicleBase {
 
     private isMasterRow(): JQuery {
         return $(`#${this.isMasterRowId}`);
+    }
+
+    private isRoleRow(): JQuery {
+        return $(`#${this.isRoleRowId}`);
     }
 
     private startDateRow(): JQuery {
@@ -142,16 +150,21 @@ class uscFascicleInsert extends FascicleBase {
      */
     initialize(): void {
         super.initialize();
+        PageClassHelper.callUserControlFunctionSafe<UscCategoryRest>(this.uscClassificatoreId)
+            .done((instance) => instance.setFascicleTypeParam(FascicleType.Procedure));
 
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._rdlFascicleType = <Telerik.Web.UI.RadDropDownList>$find(this.rdlFascicleTypeId);
         this._rdlFascicleType.add_selectedIndexChanged(this.rdlFascicleType_onSelectedIndexChanged);
         this._txtNote = <Telerik.Web.UI.RadTextBox>$find(this.txtNoteId);
+        this._txtConservation = $find(this.txtConservationId) as Telerik.Web.UI.RadTextBox;
+        this._txtObject = $find(this.txtObjectId) as Telerik.Web.UI.RadTextBox;
         this._radStartDate = <Telerik.Web.UI.RadDatePicker>$find(this.radStartDateId);
         this._radStartDate.set_selectedDate(moment().toDate());
         this._enumHelper = new EnumHelper();
         this._ddlContainer = $find(this.ddlContainerId) as Telerik.Web.UI.RadDropDownList;
         this._ddlContainer.add_selectedIndexChanged(this.ddlContainer_onSelectedIndexChanged);
+        this._rdlFascicleType.findItemByValue(String(FascicleType.Procedure))?.select();
 
         let containerServiceConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Container");
         this._containerService = new ContainerService(containerServiceConfiguration);
@@ -163,7 +176,7 @@ class uscFascicleInsert extends FascicleBase {
 
         this.metadataRepositoryRow().hide();
 
-        if (this.selectedFascicleType && this.selectedFascicleType == FascicleType.Period) {
+        if (this.selectedFascicleType && this._rdlFascicleType.findItemByValue(String(FascicleType.Period))) {
             this.initializeFasciclePeriodic();
         }
 
@@ -223,7 +236,6 @@ class uscFascicleInsert extends FascicleBase {
                         if (!this.activityFascicleEnabled && (!this.selectedFascicleType || this.selectedFascicleType != FascicleType.Period)) {
                             this.setProcedureTypeSelected();
                         }
-                        this.bindLoaded();
                         this._loadingPanel.hide(this.fasciclePageContentId);
                     });
             })
@@ -231,8 +243,24 @@ class uscFascicleInsert extends FascicleBase {
                 this._loadingPanel.hide(this.fasciclePageContentId);
                 this.showNotificationException(this.uscNotificationId, exception);
             });
+
+        this.bindLoaded();
     }
 
+    /**
+ * Callback da code-behind per l'inizializzazione
+ * @param isInitialized
+ */
+    initializeCallback = (): void => {
+        if (this.selectedFascicleType) {
+            let uscClassificatore: UscCategoryRest = <UscCategoryRest>$("#".concat(this.uscClassificatoreId)).data();
+            if (!jQuery.isEmptyObject(uscClassificatore)) {
+                uscClassificatore.setFascicleTypeParam(this.selectedFascicleType);
+            }
+        }
+
+        this._deferredInitializeActions.forEach(x => x.resolve());
+    }
     /**
      *------------------------- Events -----------------------------
      */
@@ -256,20 +284,6 @@ class uscFascicleInsert extends FascicleBase {
                 .fail((exception: ExceptionDTO) => this.showNotificationException(this.uscNotificationId, exception));
         }
 
-        if (this.metadataRepositoryEnabled) {
-            let uscMetadataRepositorySel: UscMetadataRepositorySel = <UscMetadataRepositorySel>$("#".concat(this.uscMetadataRepositorySelId)).data();
-            if (!jQuery.isEmptyObject(uscMetadataRepositorySel)) {
-                this.setMetadataRepositorySelectedIndexEvent();
-                uscMetadataRepositorySel.clearComboboxText();
-                if (!!idMetadataRepository) {
-                    uscMetadataRepositorySel.setComboboxText(idMetadataRepository);
-                    let uscDynamicMetadata: UscDynamicMetadata = <UscDynamicMetadata>$("#".concat(this.uscDynamicMetadataId)).data();
-                    if (!jQuery.isEmptyObject(uscDynamicMetadata)) {
-                        uscDynamicMetadata.loadDynamicMetadata(idMetadataRepository);
-                    }
-                }
-            }
-        }
 
         if (customActionsJson !== "") {
             PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
@@ -300,21 +314,19 @@ class uscFascicleInsert extends FascicleBase {
 
         PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
             .done((instance) => {
-                instance.forceBehaviourValidationState(this.selectedFascicleType === FascicleType.Procedure);
-                instance.enableValidators(this.selectedFascicleType === FascicleType.Procedure);
+                instance.forceBehaviourValidationState(true);
+                instance.enableValidators(true);
             });
 
         PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
             .done((instance) => {
-                instance.forceBehaviourValidationState(this.selectedFascicleType !== FascicleType.Procedure);
-                instance.enableValidators(this.selectedFascicleType !== FascicleType.Procedure);
-                instance.disableRaciRoleButton();
+                instance.forceBehaviourValidationState(false);
+                instance.enableValidators(false);
             });
 
         PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
             .done((instance) => {
                 instance.loadItems(<FascicleCustomActionModel>{
-                    AutoClose: false,
                     AutoCloseAndClone: false
                 });
             });
@@ -388,35 +400,10 @@ class uscFascicleInsert extends FascicleBase {
     }
 
     /**
-     * Callback da code-behind per l'inizializzazione
-     * @param isInitialized
-     */
-    initializeCallback(): void {
-        if (this.selectedFascicleType) {
-            let uscClassificatore: UscCategoryRest = <UscCategoryRest>$("#".concat(this.uscClassificatoreId)).data();
-            if (!jQuery.isEmptyObject(uscClassificatore)) {
-                uscClassificatore.setFascicleTypeParam(this.selectedFascicleType);
-            }
-        }
-
-        this._deferredInitializeActions.forEach((item: JQueryDeferred<void>) => item.resolve());
-    }
-
-    /**
  * Metodo di validazione della pagina
  */
     isPageValid(): boolean {
 
-        let uscOggetto: UscOggetto = <UscOggetto>$("#".concat(this.uscOggettoId)).data();
-        if (!jQuery.isEmptyObject(uscOggetto)) {
-            let txtOggetto: string = uscOggetto.getText();
-
-            if (!uscOggetto.isValid()) {
-                this.showNotificationMessage(this.uscNotificationId, "Impossibile salvare.\nIl campo Oggetto ha superato i caratteri disponibili.<br />(Caratteri ".concat(txtOggetto.length.toString(),
-                    " Disponibili ", uscOggetto.getMaxLength().toString(), ")"));
-                return false;
-            }
-        }
 
         let fascicleTypeSelected: number = Number(this._rdlFascicleType.get_selectedItem().get_value());
         if (fascicleTypeSelected == FascicleType.Procedure) {
@@ -500,50 +487,19 @@ class uscFascicleInsert extends FascicleBase {
     }
 
     fascicleTypeSelectedCallback(): void {
-        switch (+this._rdlFascicleType.get_selectedItem().get_value()) {
-            case FascicleType.Activity: {
-                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
-                    .done((instance) => {
-                        instance.requiredValidationEnabled = "true";
-                        instance.multipleRoles = "false";
-                        instance.onlyMyRoles = "true";
-                        instance.setConfiguration(<UscRoleRestConfiguration>{
-                            isReadOnlyMode: false
-                        });
-                    });
-                break;
-            }
-            case FascicleType.Procedure: {
-                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
-                    .done((instance) => {
-                        instance.multipleRoles = "true";
-                        instance.onlyMyRoles = "false";
-                        instance.setConfiguration(<UscRoleRestConfiguration>{
-                            isReadOnlyMode: true
-                        });
-                    });
-                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
-                    .done((instance) => {
-                        instance.multipleRoles = "false";
-                        instance.onlyMyRoles = "true";
-                    });
-                break;
-            }
-            case FascicleType.Period: {
-                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
-                    .done((instance) => {
-                        instance.multipleRoles = "true";
-                        instance.onlyMyRoles = "false";
-                    });
-                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
-                    .done((instance) => {
-                        instance.requiredValidationEnabled = `${!this.fascicleContainerEnabled}`;
-                        instance.multipleRoles = "false";
-                        instance.onlyMyRoles = "true";
-                    });
-                break;
-            }
-        }
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
+            .done((instance) => {
+                instance.multipleRoles = "true";
+                instance.onlyMyRoles = false;
+                instance.setConfiguration(<UscRoleRestConfiguration>{
+                    isReadOnlyMode: true
+                });
+            });
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
+            .done((instance) => {
+                instance.multipleRoles = "false";
+                instance.onlyMyRoles = true;
+            });
         this._deferredFascicleSelectedTypeActions.forEach((item: JQueryDeferred<void>) => item.resolve());
     }
 
@@ -565,6 +521,7 @@ class uscFascicleInsert extends FascicleBase {
         this.fascicleDataRow().show();
         this.contattiRespRow().show();
         this.isMasterRow().show();
+        this.isRoleRow().show();
         this.startDateRow().hide();
 
         if (!String.isNullOrEmpty(this.pnlConservationId)) {
@@ -578,8 +535,8 @@ class uscFascicleInsert extends FascicleBase {
         this.containerRow().hide();
         this.fascicleDataRow().show();
         this.contattiRespRow().hide();
-        this.isMasterRow().hide();
         this.startDateRow().hide();
+        this.isRoleRow().hide();
 
         if (!String.isNullOrEmpty(this.pnlConservationId)) {
             $("#".concat(this.pnlConservationId)).hide();
@@ -587,6 +544,7 @@ class uscFascicleInsert extends FascicleBase {
     }
 
     private initializeFasciclePeriodic(): void {
+        this._rdlFascicleType.findItemByValue(String(FascicleType.Period)).select();
         if (this.fascicleContainerEnabled) {
             this.containerRow().show();
             ValidatorEnable($get(this.rfvContainerId), true);
@@ -597,6 +555,7 @@ class uscFascicleInsert extends FascicleBase {
             $(`#${this.rfvContainerId}`).hide();
             this.isMasterRow().show();
         }
+        this.isRoleRow().show();
         this.fascicleDataRow().show();
         this.contattiRespRow().hide();
         this.fascicleTypologyRow().hide();
@@ -621,6 +580,7 @@ class uscFascicleInsert extends FascicleBase {
             fascicleModel.VisibilityType = VisibilityType.Confidential;
         }
         fascicleModel.FascicleType = this.selectedFascicleType;
+        fascicleModel.FascicleObject = this._txtObject.get_textBoxValue();
         fascicleModel.StartDate = this._radStartDate.get_selectedDate();
         fascicleModel.Note = this._txtNote.get_value();
 
@@ -628,11 +588,6 @@ class uscFascicleInsert extends FascicleBase {
             || this.selectedFascicleType == FascicleType.Procedure)) {
             fascicleModel.Container = {} as ContainerModel;
             fascicleModel.Container.EntityShortId = this.selectedContainer;
-        }
-
-        let uscOggetto: UscOggetto = <UscOggetto>$("#".concat(this.uscOggettoId)).data();
-        if (!jQuery.isEmptyObject(uscOggetto)) {
-            fascicleModel.FascicleObject = uscOggetto.getText();
         }
 
         let uscClassificatore: UscCategoryRest = <UscCategoryRest>$("#".concat(this.uscClassificatoreId)).data();
@@ -643,15 +598,14 @@ class uscFascicleInsert extends FascicleBase {
             }
         }
 
-        //TO DO: quando lo user control dei contatti sarà client side si potrà chiamare come i settori ed il classificatore
-        //if (fascicleModel.FascicleType != FascicleType.Activity) {
-        //    let contactModel: ContactModel = <ContactModel>{};
-        //    contactModel.EntityId = contact;
-        //    fascicleModel.Contacts.push(contactModel);
-        //}
-
         fascicleModel.VisibilityType = this._fascicleVisibilityType;
         fascicleModel.FascicleRoles = this.populateFascicleRoles();
+
+        PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
+            .done((instance) => {
+                let customActions: FascicleCustomActionModel = instance.getCustomActions<FascicleCustomActionModel>();
+                fascicleModel.CustomActions = JSON.stringify(customActions);
+            });
         return fascicleModel;
     }
     /**
@@ -666,14 +620,24 @@ class uscFascicleInsert extends FascicleBase {
         return this._rdlFascicleType.get_selectedItem().get_value();
     }
 
+    fillMetadataModel(): JQueryPromise<[string, string]> {
+        let promise: JQueryDeferred<[string, string]> = $.Deferred<[string, string]>();
+        PageClassHelper.callUserControlFunctionSafe<uscDynamicMetadataRest>(this.uscDynamicMetadataRestId)
+            .done((instance) => {
+                let metadataRepository = instance.getMetadataRepository();
+                let setiIntegrationEnabledField: boolean = false;
+                if (metadataRepository && metadataRepository.JsonMetadata) {
+                    let metadataJson: MetadataDesignerViewModel = JSON.parse(metadataRepository.JsonMetadata);
+                    setiIntegrationEnabledField = metadataJson.SETIFieldEnabled;
+                }
+
+                promise.resolve(instance.bindModelFormPage(setiIntegrationEnabledField));
+            });
+        return promise.promise();
+    }
+
     enableValidators = (enabled: boolean) => {
         ValidatorEnable($get(this.rfvConservationId), enabled);
-
-
-        let uscOggetto: UscOggetto = <UscOggetto>$("#".concat(this.uscOggettoId)).data();
-        if (!jQuery.isEmptyObject(uscOggetto)) {
-            uscOggetto.enableVaidators(enabled);
-        }
 
         let uscContattiResp: UscContattiSel = <UscContattiSel>$("#".concat(this.uscContattiRespId)).data();
         if (!jQuery.isEmptyObject(uscContattiResp)) {
@@ -687,11 +651,6 @@ class uscFascicleInsert extends FascicleBase {
         if (String.isNullOrEmpty(selectedType)) {
             this.enableValidators(true);
             return;
-        }
-
-        let uscOggetto: UscOggetto = <UscOggetto>$("#".concat(this.uscOggettoId)).data();
-        if (!jQuery.isEmptyObject(uscOggetto)) {
-            uscOggetto.enableVaidators(true);
         }
 
         let isProcedure: boolean = false;
@@ -716,16 +675,16 @@ class uscFascicleInsert extends FascicleBase {
     }
 
     private setMetadataRepositorySelectedIndexEvent() {
-        $("#".concat(this.uscMetadataRepositorySelId)).off(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT);
-        $("#".concat(this.uscMetadataRepositorySelId)).on(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, (args, data) => {
-            if (data) {
-                let uscDynamicMetadata: UscDynamicMetadata = <UscDynamicMetadata>$("#".concat(this.uscDynamicMetadataId)).data();
-                if (!jQuery.isEmptyObject(uscDynamicMetadata)) {
-                    setTimeout(() => {
-                        uscDynamicMetadata.loadDynamicMetadata(data);
-                    }, 500);
-                }
-            }
+        $(`#${this.uscMetadataRepositorySelId}`).off(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT);
+        $(`#${this.uscMetadataRepositorySelId}`).on(UscMetadataRepositorySel.SELECTED_REPOSITORY_EVENT, (args, data) => {
+            PageClassHelper.callUserControlFunctionSafe<uscDynamicMetadataRest>(this.uscDynamicMetadataRestId)
+                .done((instance) => {
+                    if (data) {
+                        instance.loadMetadataRepository(data);
+                    } else {
+                        instance.clearPage();
+                    }
+                });
         });
     }
 
@@ -759,6 +718,10 @@ class uscFascicleInsert extends FascicleBase {
                     });
                     return $.Deferred<RoleModel>().resolve(existedRole);
                 });
+                instance.registerEventHandler(UscRoleRestEventType.SetFascicleVisibilityType, (visibilityType: VisibilityType) => {
+                    this._fascicleVisibilityType = visibilityType;
+                    return $.Deferred<void>().resolve();
+                });
             });
 
         PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
@@ -776,10 +739,6 @@ class uscFascicleInsert extends FascicleBase {
                         this._selectedResponsibleRole = newAddedRoles[0];
                     }
                     return $.Deferred<RoleModel>().resolve(existedRole, true);
-                });
-                instance.registerEventHandler(UscRoleRestEventType.SetFascicleVisibilityType, (visibilityType: VisibilityType) => {
-                    this._fascicleVisibilityType = visibilityType;
-                    return $.Deferred<void>().resolve();
                 });
             });
     }
@@ -867,5 +826,141 @@ class uscFascicleInsert extends FascicleBase {
         }
         return fascicleRoles;
     }
+
+    private loadMetadataRepository(id: string, generateMetadataInputs: boolean) {
+        PageClassHelper.callUserControlFunctionSafe<UscMetadataRepositorySel>(this.uscMetadataRepositorySelId).done((instance) => instance.setComboboxText(id, generateMetadataInputs));
+    }
+
+    private loadRoles(items: FascicleRoleModel[]) {
+        let rolesModel: RoleModel[] = [];
+        let masterRolesModel: RoleModel[] = [];
+        let raciRoles: RoleModel[] = [];
+
+        let fascicleRoles: FascicleRoleModel[] = this.getFascicleRolesToAdd() || [];
+
+        for (let fascicleRole of items) {
+            if (fascicleRole.IsMaster) {
+                masterRolesModel.push(fascicleRole.Role);
+            }
+            else {
+                if (fascicleRole.AuthorizationRoleType === AuthorizationRoleType.Responsible) {
+                    raciRoles.push(fascicleRole.Role);
+                }
+                rolesModel.push(fascicleRole.Role);
+            }
+            fascicleRoles.push(fascicleRole);
+        }
+
+        this.setFascicleRolesToSession(fascicleRoles);
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId).done((instance) => {
+            if (raciRoles) {
+                instance.setRaciRoles(raciRoles);
+            }
+            instance.renderRolesTree(rolesModel);
+        });
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((instance) => instance.renderRolesTree(masterRolesModel));
+    }
+
+    loadActivityFascicleFields(fascicleTemplateModel: FascicleModel, generateMetadataInputs: boolean = true): void {
+        this._txtObject.set_value(fascicleTemplateModel.FascicleObject);
+
+        if (fascicleTemplateModel.MetadataRepository && fascicleTemplateModel.MetadataRepository.UniqueId) {
+            this.loadMetadataRepository(fascicleTemplateModel.MetadataRepository.UniqueId, generateMetadataInputs);
+        }
+
+        else {
+            PageClassHelper.callUserControlFunctionSafe<UscMetadataRepositorySel>(this.uscMetadataRepositorySelId).done((instance) => instance.clearComboboxText());
+        }
+
+        this.loadRoles(fascicleTemplateModel.FascicleRoles);
+
+        if (fascicleTemplateModel.CustomActions) {
+            PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
+                .done((instance) => {
+                    instance.loadItems(<FascicleCustomActionModel>JSON.parse(fascicleTemplateModel.CustomActions));
+                });
+        }
+    }
+
+    loadProcedureFascicleFields(fascicleTemplateModel: FascicleModel, generateMetadataInputs: boolean = true): void {
+        this._txtObject.set_value(fascicleTemplateModel.FascicleObject);
+
+        if (fascicleTemplateModel.MetadataRepository && fascicleTemplateModel.MetadataRepository.UniqueId) {
+            this.loadMetadataRepository(fascicleTemplateModel.MetadataRepository.UniqueId, generateMetadataInputs);
+        }
+        else {
+            PageClassHelper.callUserControlFunctionSafe<UscMetadataRepositorySel>(this.uscMetadataRepositorySelId).done((instance) => instance.clearComboboxText());
+        }
+
+        if (fascicleTemplateModel.FascicleRoles.filter(x => x.IsMaster)[0]) {
+            PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((instance) => instance.setToolbarVisibility(false));
+        }
+        else {
+            PageClassHelper.callUserControlFunctionSafe<UscCategoryRest>(this.uscClassificatoreId).done((instance) => {
+                //set popup roles source
+                this._needRolesFromExternalSource_eventArgs = [ExternalSourceActionEnum.DossierFolder.toString(), instance.getProcessFascicleTemplateFolderId()];
+                $(`#${this.uscRoleMasterId}`).triggerHandler(uscRoleRest.NEED_ROLES_FROM_EXTERNAL_SOURCE, this._needRolesFromExternalSource_eventArgs);
+            });
+        }
+
+        if (fascicleTemplateModel.Contacts.length > 0) {
+            let ajaxModel: AjaxModel = <AjaxModel>{
+                ActionName: "SetDefaultContact",
+                Value: [fascicleTemplateModel.Contacts[0].EntityId.toString()]
+            };
+
+            const ajaxManager: Telerik.Web.UI.RadAjaxManager = $find(this.ajaxManagerId) as Telerik.Web.UI.RadAjaxManager;
+            if (ajaxManager) {
+                // Workaround solution for updating VB contact user control
+                setTimeout(() => {
+                    console.log(JSON.stringify(ajaxModel));
+                    ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+                }, 500);
+            }
+        }
+
+        this.loadRoles(fascicleTemplateModel.FascicleRoles);
+
+        if (fascicleTemplateModel.CustomActions) {
+            PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
+                .done((instance) => {
+                    instance.loadItems(<FascicleCustomActionModel>JSON.parse(fascicleTemplateModel.CustomActions));
+                });
+        }
+    }
+
+    populateInputs(fascicleTemplateModel: FascicleModel) {
+        PageClassHelper.callUserControlFunctionSafe<UscCategoryRest>(this.uscClassificatoreId).done((instance) => {
+            instance.addDefaultCategory(fascicleTemplateModel.Category.EntityShortId, false, false)
+                .done(() => {
+                    if (fascicleTemplateModel.FascicleType === FascicleType.Activity) {
+                        this.loadActivityFascicleFields(fascicleTemplateModel, false);
+                    }
+                    else {
+                        this.loadProcedureFascicleFields(fascicleTemplateModel, false);
+                    }
+                })
+        });
+
+        if (fascicleTemplateModel.FascicleType) {
+            this._rdlFascicleType.findItemByValue(String(fascicleTemplateModel.FascicleType))?.select();
+        }
+
+        if (fascicleTemplateModel.Note) {
+            this._txtNote.set_value(fascicleTemplateModel.Note);
+        }
+
+        if (fascicleTemplateModel.Conservation) {
+            this._txtConservation.set_value(fascicleTemplateModel.Conservation.toString());
+        }
+
+        if (fascicleTemplateModel.MetadataDesigner && fascicleTemplateModel.MetadataValues) {
+            PageClassHelper.callUserControlFunctionSafe<uscDynamicMetadataRest>(this.uscDynamicMetadataRestId)
+                .done((instance) => {
+                    instance.loadPageItems(fascicleTemplateModel.MetadataDesigner, fascicleTemplateModel.MetadataValues);
+                });
+        }
+    }
+
 }
 export = uscFascicleInsert;

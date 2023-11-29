@@ -84,10 +84,11 @@ Public Class ErrorPage
                     message.Appendformat("{0}#########{0}", "<br/>")
                 End If
 
-                message.AppendFormat("{0}Eccezione [{4}]{1}{0}Message:{1}{0}{2}{1}{0}StackTrace:{1}{0}{3}", level, "<br/>", tmpEx.Message, tmpEx.StackTrace, tmpEx.GetType.Name)
+                message.AppendFormat("{0}Eccezione [{4}]{1}{0}Message:{1}{0}{2}{1}{0}StackTrace:{1}{0}{3}", Server.HtmlEncode(level), "<br/>", Server.HtmlEncode(tmpEx.Message), Server.HtmlEncode(tmpEx.StackTrace), tmpEx.GetType.Name)
                 If tmpEx.Data.Count > 0 Then
                     For Each key As Object In tmpEx.Data.Keys
-                        message.AppendFormat("{0}{1}Data [{2}]: {3}", "<br/>", level, key, tmpEx.Data(key))
+                        message.Append("<br/>")
+                        message.Append(Server.HtmlEncode(String.Format("{0}Data [{1}]: {2}", level, key, tmpEx.Data(key))))
                     Next
                 End If
 

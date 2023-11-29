@@ -4,6 +4,7 @@ Imports Telerik.Web.UI
 Imports Newtonsoft.Json
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Partial Public Class TbltContactListsGes
     Inherits CommonBasePage
@@ -43,6 +44,10 @@ Partial Public Class TbltContactListsGes
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma)
 
         If Not IsPostBack Then

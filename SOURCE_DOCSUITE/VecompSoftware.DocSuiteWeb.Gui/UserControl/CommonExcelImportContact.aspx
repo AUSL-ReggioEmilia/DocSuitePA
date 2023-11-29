@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Importazione contatti da Excel" Language="vb" ValidateRequest="false" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="CommonExcelImportContact.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.CommonExcelImportContact" %>
+﻿<%@ Page Title="Importazione contatti da Excel" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="CommonExcelImportContact.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.CommonExcelImportContact" %>
 <asp:Content ContentPlaceHolderID="cphHeader" runat="server">
     <telerik:RadScriptBlock runat="server" EnableViewState="false">
         <script type="text/javascript">

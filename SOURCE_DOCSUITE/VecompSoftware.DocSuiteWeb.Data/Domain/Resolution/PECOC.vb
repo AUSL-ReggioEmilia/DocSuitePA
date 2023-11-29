@@ -3,7 +3,7 @@
 <Serializable()> _
 Public Class PECOC
     Inherits DomainObject(Of Int32)
-    Implements IAuditable, ISupportLogicDelete
+    Implements IAuditable, ISupportBooleanLogicDelete
 
 #Region " Fields "
     Private _resolutionType As ResolutionType
@@ -135,13 +135,13 @@ Public Class PECOC
     End Property
 #End Region
 
-#Region " ISupportLogicDelete "
-    Private _isActive As Short
-    Public Overridable Property IsActive As Short Implements ISupportLogicDelete.IsActive
+#Region " ISupportBooleanLogicDelete "
+    Private _isActive As Boolean
+    Public Overridable Property IsActive As Boolean Implements ISupportBooleanLogicDelete.IsActive
         Get
             Return _isActive
         End Get
-        Set(value As Short)
+        Set(value As Boolean)
             _isActive = value
         End Set
     End Property

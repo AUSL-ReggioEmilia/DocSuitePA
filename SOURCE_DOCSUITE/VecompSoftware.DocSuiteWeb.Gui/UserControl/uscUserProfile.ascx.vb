@@ -1,7 +1,5 @@
 ﻿Imports System.Collections.Generic
 Imports System.Linq
-Imports System.Security.Principal
-Imports System.Threading
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
@@ -10,7 +8,6 @@ Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Tenants
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Model.Documents.Signs
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Analytics.Models.AdaptiveSearches
@@ -73,18 +70,6 @@ Public Class uscUserProfile
             Dim userTab As RadTab = radTabStrip.FindTabByValue(USER_CONFIGURATION_TAB_NAME)
             Return If(userTab.Selected, USER_CONFIGURATION_TAB_NAME, ADAPTIVE_PROTOCOL_SEARCH_TAB_NAME)
         End Get
-    End Property
-
-    Public Property CurrentTenant As Tenant
-        Get
-            If Session("CurrentTenant") IsNot Nothing Then
-                Return DirectCast(Session("CurrentTenant"), Tenant)
-            End If
-            Return Nothing
-        End Get
-        Set(value As Tenant)
-            Session("CurrentTenant") = value
-        End Set
     End Property
 
     Public Shadows ReadOnly Property MasterDocSuite() As DocSuite2008
@@ -168,7 +153,7 @@ Public Class uscUserProfile
                                                                                             .Select(Function(s) New With {.Key = s.Key, .Value = s.Value}) _
                                                                                             .ToDictionary(Function(d) d.Key, Function(d) d.Value)
 
-                        evaluatedModel(UserLogFacade.PROTOCOL_ADAPTIVE_SEARCH_KEY).CreatedDate = DateTime.UtcNow.Date
+                        evaluatedModel(UserLogFacade.PROTOCOL_ADAPTIVE_SEARCH_KEY).CreatedDate = Date.UtcNow.Date
                         CurrentUserLog.AdaptiveSearchEvaluated = JsonConvert.SerializeObject(evaluatedModel)
                     End If
                 End If
@@ -206,28 +191,6 @@ Public Class uscUserProfile
         End Try
     End Sub
 
-    Protected Sub btnChangePassword_Click(sender As Object, e As EventArgs) Handles btnChangePassword.Click
-        Page.Validate("changePassordValidatorGroup")
-        If Not Page.IsValid Then AjaxAlert("Errore nella validazione dei dati")
-        Try
-            Dim domain As String = DocSuiteContext.Current.CurrentDomainName
-            Dim username As String = Account
-            If Account.Contains("\"c) Then
-                domain = Account.Split("\"c)(0)
-                username = Account.Split("\"c)(1)
-            End If
-            Dim pwdChanged As Boolean = CommonAD.ChangeAdUserPassword(username, domain, txtOldPassword.Text, txtNewPassword.Text)
-            If pwdChanged Then
-                AjaxAlert("Password modificata con successo. Eseguire nuovamente l'accesso al PC.")
-            Else
-                AjaxAlert("Errore in modifica password.")
-            End If
-        Catch ex As Exception
-            FileLogger.Error(LoggerName, "Errore in modifica password.", ex)
-            AjaxAlert("Errore in modifica password.")
-        End Try
-    End Sub
-
     Protected Sub treeControls_NodeCheck(sender As Object, e As RadTreeNodeEventArgs) Handles treeControls.NodeCheck
         uscProtRicerca.ChangeControlEnable(e.Node.Value, e.Node.Checked)
     End Sub
@@ -261,7 +224,7 @@ Public Class uscUserProfile
         txtEmail.ReadOnly = mailExist AndAlso Not ProtocolEnv.EnableUserProfile
 
         btnRetrieveADEmail.Visible = ProtocolEnv.EnableUserProfile
-        btnSalva.Enabled = (Not mailExist OrElse ProtocolEnv.EnableUserProfile) OrElse ProtocolEnv.SMSPecNotificationEnabled OrElse ProtocolEnv.ProtocolSearchAdaptiveEnabled
+        btnSalva.Enabled = (Not mailExist OrElse ProtocolEnv.EnableUserProfile) OrElse ProtocolEnv.SMSPecNotificationEnabled OrElse ProtocolEnv.ProtocolSearchAdaptiveEnabled OrElse ProtocolEnv.RemoteSignEnabled
 
         If ProtocolEnv.SMSPecNotificationEnabled Then
             Dim domain As String = DocSuiteContext.Current.CurrentDomainName
@@ -272,8 +235,6 @@ Public Class uscUserProfile
             End If
             txtMobilePhone.Text = Facade.UserLogFacade.MobilePhoneOfUser(username, domain)
         End If
-
-        pnlPasswordChange.Visible = ProtocolEnv.UserChangePasswordEnabled
 
         radTabStrip.FindTabByValue("AdaptiveProtSearchConfigurationTab").Visible = False
         If ProtocolEnv.ProtocolSearchAdaptiveEnabled Then
@@ -290,14 +251,20 @@ Public Class uscUserProfile
             If Not DocSuiteContext.Current.HasInfocertProxySign Then
                 rlbSignType.FindItemByValue("2").Remove()
                 rlbSignType.FindItemByValue("4").Remove()
+                rlbSignType.FindItemByValue("5").Remove()
             End If
             If Not DocSuiteContext.Current.HasArubaActalisSign Then
                 rlbSignType.FindItemByValue("1").Remove()
                 rlbSignType.FindItemByValue("3").Remove()
             End If
+            If Not DocSuiteContext.Current.HasInfocertProxySignLocal Then
+                If (Not rlbSignType.FindItemByValue("5") Is Nothing) Then
+                    rlbSignType.FindItemByValue("5").Remove()
+                End If
+            End If
         End If
 
-        If Not ProtocolEnv.EnableUserProfile Then
+            If Not ProtocolEnv.EnableUserProfile Then
             If mailExist Then
                 BindWarningPanel("Utente con mail presente in AD - modifica e-mail non possibile", "warningAreaLow")
             Else
@@ -410,7 +377,7 @@ Public Class uscUserProfile
                     Dim delegateUser As UserLog = Facade.UserLogFacade.GetByUser(contactDelegate.Key)
                     Dim delegateUserProfile As Model.Documents.Signs.UserProfile
                     Dim delegateUserprovider As ProviderSignType = CType(Convert.ToInt32(rlbSignType.SelectedValue), ProviderSignType)
-                    If Not String.IsNullOrEmpty(delegateUser.UserProfile) Then
+                    If delegateUser IsNot Nothing AndAlso Not String.IsNullOrEmpty(delegateUser.UserProfile) Then
                         delegateUserProfile = JsonConvert.DeserializeObject(Of Model.Documents.Signs.UserProfile)(delegateUser.UserProfile)
                         If delegateUserProfile.Value.Any(Function(x) x.Key = delegateUserprovider) Then
                             existingSignOption = delegateUserProfile.Value.First(Function(x) x.Key = delegateUserprovider)
@@ -432,9 +399,12 @@ Public Class uscUserProfile
     End Sub
 
     Private Function RemoteBeenDelegated() As IDictionary(Of String, DelegateUser)
+        Dim remoteSingFromDelegate As IDictionary(Of String, DelegateUser) = Nothing
+        If CurrentUserLog Is Nothing OrElse String.IsNullOrWhiteSpace(CurrentUserLog.UserProfile) Then
+            Return remoteSingFromDelegate
+        End If
         Dim userProfile As Model.Documents.Signs.UserProfile = JsonConvert.DeserializeObject(Of Model.Documents.Signs.UserProfile)(CurrentUserLog.UserProfile)
         Dim provider As ProviderSignType = CType(Convert.ToInt32(rlbSignType.SelectedValue), ProviderSignType)
-        Dim remoteSingFromDelegate As IDictionary(Of String, DelegateUser) = Nothing
         Dim existingSignOption As KeyValuePair(Of ProviderSignType, RemoteSignProperty)? = Nothing
         If userProfile.Value.Any(Function(x) x.Key = provider) Then
             existingSignOption = userProfile.Value.First(Function(x) x.Key = provider)
@@ -460,6 +430,11 @@ Public Class uscUserProfile
             dicDelegateUser.Add(contact.Contact.Code, contactDelegateModel)
 
             Dim delegateUser As UserLog = Facade.UserLogFacade.GetByUser(contact.Contact.Code)
+
+            If delegateUser Is Nothing Then
+                Continue For
+            End If
+
             Dim delegateUserProfile As Model.Documents.Signs.UserProfile
             Dim delegateUserprovider As ProviderSignType = CType(Convert.ToInt32(rlbSignType.SelectedValue), ProviderSignType)
             Dim existingSignOption As KeyValuePair(Of ProviderSignType, RemoteSignProperty)? = Nothing
@@ -660,7 +635,6 @@ Public Class uscUserProfile
     Private Sub InitializeAjax()
         AjaxManager.AjaxSettings.AddAjaxSetting(btnSalva, pnlConsoleUserContainer, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnSalva, btnSalva, MasterDocSuite.AjaxFlatLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnChangePassword, pnlConsoleUserContainer, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(radTabStrip, radMultiPage, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(treeControls, uscProtRicerca)
         AjaxManager.AjaxSettings.AddAjaxSetting(rlbSignType, rlbSignSaveModality)
@@ -674,7 +648,6 @@ Public Class uscUserProfile
     Public Function GetAdaptiveSearchControls() As ICollection(Of AdaptiveSearchMappingControl)
         Dim controls As ICollection(Of AdaptiveSearchMappingControl) = DocSuiteContext.Current.ProtocolDefaultAdaptiveSearchConfigurations
         controls = controls.Where(Function(x) Not x.Id.Eq("chbContactChild") AndAlso Not x.Id.Eq("chbCategoryChild")) _
-            .Where(Function(x) (Not ProtocolEnv.ProtocolSearchLocationEnabled AndAlso Not x.Id.Eq("ddlLocation")) OrElse ProtocolEnv.ProtocolSearchLocationEnabled) _
             .Where(Function(x) (Not ProtocolEnv.RolesUserProfileEnabled AndAlso Not x.Id.Eq("uscSettore")) OrElse ProtocolEnv.RolesUserProfileEnabled) _
             .Where(Function(x) (Not ProtocolEnv.ProtParzialeEnabled AndAlso Not x.Id.Eq("cbIncomplete")) OrElse ProtocolEnv.ProtParzialeEnabled) _
             .Where(Function(x) (Not ProtocolEnv.IsClaimEnabled AndAlso Not x.Id.Eq("rblClaim")) OrElse ProtocolEnv.IsClaimEnabled) _

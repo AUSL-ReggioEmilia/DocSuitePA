@@ -24,7 +24,6 @@ Public Class NHibernateProtocolFinder
     Private _protocolNotReaded As Boolean
 
     Private _idType As ICollection(Of Integer)
-    Private _idLocation As Integer?
     Private _idContainer As String
     Private _idDocType As Integer?
     Private _documentProtocol As String
@@ -43,7 +42,7 @@ Public Class NHibernateProtocolFinder
     Private _idattachement As Integer
     Private _iddocument As Integer
     Private _documentName As String
-    Private _protocolOnlyLastChanged**REMOVE**d As Boolean
+    Private _protocolOnlyLastChangedandRead As Boolean
     Private _lastChangedDateFrom As Date?
     Private _lastChangedDateTo As Date?
 
@@ -88,10 +87,6 @@ Public Class NHibernateProtocolFinder
     Private flgProtocolType As Boolean = False
     Private flgContainer As Boolean = False
 
-    'CONSERVATION
-    Private _conservation As Boolean = False
-    Private _conservationStatus As String = String.Empty
-
     'Paginazione
     Private _enablePaging As Boolean = True
 
@@ -99,8 +94,6 @@ Public Class NHibernateProtocolFinder
     Private _topMaxRecords As Integer = 0
 
     Private _includeIncomplete As Boolean
-
-    Private _protocolParerConservationStatus As IList(Of Integer) = New List(Of Integer)()
 
     Private _idProtocolKind As Short
     Private _applyProtocolKindCriteria As Boolean
@@ -198,12 +191,12 @@ Public Class NHibernateProtocolFinder
         End Set
     End Property
 
-    Property ProtocolOnlyLastChanged**REMOVE**d() As Boolean
+    Property ProtocolOnlyLastChangedandRead() As Boolean
         Get
-            Return _protocolOnlyLastChanged**REMOVE**d
+            Return _protocolOnlyLastChangedandRead
         End Get
         Set(ByVal value As Boolean)
-            _protocolOnlyLastChanged**REMOVE**d = value
+            _protocolOnlyLastChangedandRead = value
         End Set
     End Property
 
@@ -213,15 +206,6 @@ Public Class NHibernateProtocolFinder
         End Get
         Set(ByVal value As ICollection(Of Integer))
             _idType = value
-        End Set
-    End Property
-
-    Property IdLocation() As String
-        Get
-            Return _idLocation.ToString()
-        End Get
-        Set(ByVal value As String)
-            _idLocation = ConvertToInteger(value)
         End Set
     End Property
 
@@ -656,45 +640,10 @@ Public Class NHibernateProtocolFinder
         End Set
     End Property
 
-    Public Property Conservation() As Boolean
-        Get
-            Return _conservation
-        End Get
-        Set(ByVal value As Boolean)
-            _conservation = value
-            If (_conservation) Then
-                _enableTableJoin = True
-                _enablePaging = False
-            End If
-        End Set
-    End Property
-
-    Public Property ConservationStatus() As String
-        Get
-            Return _conservationStatus
-        End Get
-        Set(ByVal value As String)
-            _conservationStatus = value
-            If (Not String.IsNullOrEmpty(value)) Then
-                _enableTableJoin = True
-                _enablePaging = False
-            End If
-        End Set
-    End Property
-
     ''' <summary> Reclami </summary>
     Public Property IsClaim() As Nullable(Of Boolean)
 
     Public Property HasJournalLog As Boolean?
-
-    Public Property ProtocolParerConservationStatus As IList(Of Integer)
-        Get
-            Return _protocolParerConservationStatus
-        End Get
-        Set(value As IList(Of Integer))
-            _protocolParerConservationStatus = value
-        End Set
-    End Property
 
     Public Property HasIngoingPecMails As Boolean?
 
@@ -775,6 +724,10 @@ Public Class NHibernateProtocolFinder
     End Property
 
     Public Property IdTenantAOO As Guid?
+
+    Public Property IncludeCountRead As Boolean = False
+
+    Public Property NeverDistributed As Boolean
 #End Region
 
 #Region "NHibernate Properties"
@@ -877,7 +830,7 @@ Public Class NHibernateProtocolFinder
             criteria.Add(Subqueries.Exists(GetByLogTypes(ProtocolLogType)))
         End If
 
-        If ProtocolOnlyLastChanged**REMOVE**d Then
+        If ProtocolOnlyLastChangedandRead Then
             criteria.Add(Restrictions.IsNotNull("LastChangedDate"))
             'Filtro Data ultima modifica da
             If LastChangedDateFrom.HasValue Then
@@ -897,14 +850,6 @@ Public Class NHibernateProtocolFinder
             criteria.Add(Restrictions.In("Type.Id", IdTypes.ToList()))
         Else
             MyBase.AddJoinAlias(criteria, "P.Type", "Type", JoinType.LeftOuterJoin)
-        End If
-
-        'Filtro Locazione
-        If Not String.IsNullOrEmpty(IdLocation) Then
-            criteria.CreateAlias("P.Location", "Location", JoinType.InnerJoin)
-            criteria.Add(Restrictions.Eq("Location.Id", _idLocation))
-        Else
-            MyBase.AddJoinAlias(criteria, "P.Location", "Location", JoinType.InnerJoin)
         End If
 
         'Container
@@ -1105,38 +1050,28 @@ Public Class NHibernateProtocolFinder
 
                     Dim recipientMatchMode As MatchMode = If(EnableRecipientContains, MatchMode.Anywhere, MatchMode.Start)
 
-                    Dim dcRec As DetachedCriteria = DetachedCriteria.For(GetType(Recipient))
-                    _recipient = _recipient.Replace("_", "%")
-                    dcRec.Add(Expression.Like("FullName", _recipient, recipientMatchMode))
-                    dcRec.CreateCriteria("Protocols").Add([Property].ForName("Id").EqProperty("P.Id"))
-                    dcRec.SetProjection(Projections.Id())
-
                     Dim dcCon As DetachedCriteria = DetachedCriteria.For(GetType(Contact))
                     dcCon.CreateCriteria("Protocols").Add([Property].ForName("Protocol.Id").EqProperty("P.Id"))
-                    dcCon.CreateCriteria("ContactNames", "CN")
                     Dim orClause As Disjunction = New Disjunction()
-                    orClause.Add(Expression.Like("CN.Name", _recipient, recipientMatchMode))
-                    orClause.Add(Expression.Like("Description", _recipient, recipientMatchMode))
+                    orClause.Add(Restrictions.Like("Description", _recipient, recipientMatchMode))
                     dcCon.Add(orClause)
                     dcCon.SetProjection(Projections.Id())
 
                     Dim dcConMan As DetachedCriteria = DetachedCriteria.For(GetType(ProtocolContactManual))
-                    dcConMan.Add(Expression.Like("Contact.Description", _recipient, recipientMatchMode))
+                    dcConMan.Add(Restrictions.Like("Contact.Description", _recipient, recipientMatchMode))
                     dcConMan.Add(Restrictions.EqProperty("Protocol.Id", "P.Id"))
                     dcConMan.SetProjection(Projections.Id())
 
                     Dim dcConIss As DetachedCriteria = DetachedCriteria.For(GetType(ProtocolContactIssue))
                     dcConIss.CreateCriteria("Contact", "C")
-                    dcConIss.Add(Expression.Like("C.Description", _recipient, recipientMatchMode))
+                    dcConIss.Add(Restrictions.Like("C.Description", _recipient, recipientMatchMode))
                     dcConIss.Add(Restrictions.EqProperty("Protocol.Id", "P.Id"))
                     dcConIss.SetProjection(Projections.Id())
 
-                    Dim disj As Disjunction = Expression.Disjunction()
-                    disj.Add(Expression.Like("P.AlternativeRecipient", _recipient, recipientMatchMode))
-                    disj.Add(Subqueries.Exists(dcRec))
+                    Dim disj As Disjunction = Restrictions.Disjunction()
+                    disj.Add(Restrictions.Like("P.AlternativeRecipient", _recipient, recipientMatchMode))
                     disj.Add(Subqueries.Exists(dcCon))
                     disj.Add(Subqueries.Exists(dcConMan))
-
 
                     If DocSuiteContext.Current.ProtocolEnv.IsIssueEnabled Then
                         disj.Add(Subqueries.Exists(dcConIss))
@@ -1408,95 +1343,6 @@ Public Class NHibernateProtocolFinder
             criteria.Add(conjProtocolRejectedRole)
         End If
 
-        If DocSuiteContext.Current.ProtocolEnv.ParerEnabled Then
-            'Ricerca per status PARER
-            '' Se non richiedo un particolare status oppure richiedo proprio lo status -1 (Nothing) ovvero i non soggetti
-            '' ovvero quelli che non hanno presenza in tabella ProtocolParer
-            '' allora faccio un LeftOuterJoin in modo da prendere anche i valori NULL
-            If ProtocolParerConservationStatus.Count = 0 OrElse ProtocolParerConservationStatus(0) = -1 Then
-                criteria.CreateAlias("ProtocolParer", "PP", JoinType.LeftOuterJoin)
-            Else
-                '' In tutti gli altri casi voglio invece solo i protocolli effettivamente processati
-                criteria.CreateAlias("ProtocolParer", "PP", JoinType.InnerJoin)
-            End If
-
-            '' A prescindere poi, se richiedo un particolare ConservationStatus faccio le dovute ricerche
-            '' compatibilmente con quanto utilizzato in ProtocolParerFacade
-            If ProtocolParerConservationStatus.Count > 0 AndAlso ProtocolParerConservationStatus.Count < 5 Then
-                Dim statusesDisj As New Disjunction()
-                For Each protocolParerConservationStatusItem As Integer In ProtocolParerConservationStatus
-                    Select Case protocolParerConservationStatusItem
-                        Case -1
-                            ''Nothing --> Ipotesi LEFTOUTERJOIN (Year/Number misti)
-                            ''Devo escludere i record che esistono nella Tabella ProtocolParer (e che quindi hanno un valore Year/Number)
-                            Dim case1 As New Conjunction
-                            case1.Add(Restrictions.IsNull("PP.Year")).Add(Restrictions.IsNull("PP.Number"))
-                            statusesDisj.Add(case1)
-                        Case 0
-                            ''Undefined --> Ipotesi INNERJOIN (Year/Number già valorizzati)
-                            ''Devo prendere in considerazione solo i record che non rientrano nelle altre casistiche, ovvero definisco:
-                            ''1. Uri vuoto [0] | Uri non vuoro [1]
-                            ''2. Error False [0] | Error True [1]
-                            ''3. LastError vuoto [0] | LastError non vuoto [1]
-                            ''Le possibili combinazioni binarie su 3 posizioni sono 2^3 ovvero:
-                            ''______________|__URI__|_ERROR_|_LSTER_|
-                            ''0			    |	0	|	0	|	0	|
-                            ''1			    |	0	|	0	|	1	|
-                            ''2			    |	0	|	1	|	0	|
-                            ''ERROR     -> 	|	0	|	1	|	1	|
-                            ''CORRECT   ->	|	1	|	0	|	0	|
-                            ''WARNING   ->	|	1	|	0	|	1	|
-                            ''3			    |	1	|	1	|	0	|
-                            ''4		    	|	1	|	1	|	1	|
-                            ''
-                            ''Devono pertanto essere mappate le combinazioni rimanenti (0,1,2,3,4) che sono quelle inconsistenti
-                            ''
-                            Dim disj As New Disjunction()
-                            Dim case0 As New Conjunction()
-                            case0.Add(Restrictions.IsNull("PP.ParerUri")).Add(Restrictions.Eq("PP.HasError", False)).Add(Restrictions.IsNull("PP.LastError"))
-                            Dim case1 As New Conjunction()
-                            case1.Add(Restrictions.IsNull("PP.ParerUri")).Add(Restrictions.Eq("PP.HasError", False)).Add(Restrictions.IsNotNull("PP.LastError"))
-                            Dim case2 As New Conjunction()
-                            case2.Add(Restrictions.IsNull("PP.ParerUri")).Add(Restrictions.Eq("PP.HasError", True)).Add(Restrictions.IsNull("PP.LastError"))
-                            Dim case3 As New Conjunction()
-                            case3.Add(Restrictions.IsNotNull("PP.ParerUri")).Add(Restrictions.Eq("PP.HasError", True)).Add(Restrictions.IsNull("PP.LastError"))
-                            Dim case4 As New Conjunction()
-                            case4.Add(Restrictions.IsNotNull("PP.ParerUri")).Add(Restrictions.Eq("PP.HasError", True)).Add(Restrictions.IsNotNull("PP.LastError"))
-                            disj.Add(case0).Add(case1).Add(case2).Add(case3).Add(case4)
-                            statusesDisj.Add(disj)
-                        Case 1
-                            ''Correct --> Ipotesi INNERJOIN (Year/Number già valorizzati)
-                            ''Devo prendere in considerazione solo i record con:
-                            ''1. Uri non vuoto [1]
-                            ''2. Error == False [0]
-                            ''3. LastError vuoto [0]
-                            Dim case1 As New Conjunction
-                            case1.Add(Restrictions.IsNotNull("PP.ParerUri")).Add(Restrictions.Eq("PP.HasError", False)).Add(Restrictions.IsNull("PP.LastError"))
-                            statusesDisj.Add(case1)
-                        Case 2
-                            ''Warning --> Ipotesi INNERJOIN (Year/Number già valorizzati)
-                            ''Devo prendere in considerazione solo i record con:
-                            ''1. Uri non vuoto [1]
-                            ''2. Error == False [0]
-                            ''3. LastError non vuoto [1]
-                            Dim case2 As New Conjunction
-                            case2.Add(Restrictions.IsNotNull("PP.ParerUri")).Add(Restrictions.Eq("PP.HasError", False)).Add(Restrictions.IsNotNull("PP.LastError"))
-                            statusesDisj.Add(case2)
-                        Case 3
-                            ''Error --> Ipotesi INNERJOIN (Year/Number già valorizzati)
-                            ''Devo prendere in considerazione solo i record con:
-                            ''1. Uri vuoto [0]
-                            ''2. Error == True [1]
-                            ''3. LastError non vuoto [1]
-                            Dim case3 As New Conjunction
-                            case3.Add(Restrictions.IsNull("PP.ParerUri")).Add(Restrictions.Eq("PP.HasError", True)).Add(Restrictions.IsNotNull("PP.LastError"))
-                            statusesDisj.Add(case3)
-                    End Select
-                Next
-                criteria.Add(statusesDisj)
-            End If
-        End If
-
         If NotDistributed Then
             criteria.Add(CriteriaToDitribute())
             'criteria.Add(CriteriaUserCanDistributeByContainers)
@@ -1537,22 +1383,6 @@ Public Class NHibernateProtocolFinder
             criteria.Add(Restrictions.Eq("AP.Status.Id", AdvancedStatus))
         End If
 
-        'CONSERVATION
-        If DocSuiteContext.Current.ProtocolEnv.IsConservationEnabled Then
-            If Conservation Then
-                criteria.Add(Restrictions.Eq("ConservationStatus", "M"c))
-                criteria.Add(Restrictions.Eq("Container.Conservation", CType(1, Byte)))
-            End If
-
-            If Not String.IsNullOrEmpty(ConservationStatus) Then
-                Dim disju As New Disjunction
-                For Each c As Char In ConservationStatus.ToCharArray()
-                    disju.Add(Restrictions.Eq("ConservationStatus", c))
-                Next
-                criteria.Add(disju)
-            End If
-        End If
-
         If IdAttachement <> 0 And IdDocument <> 0 Then
             criteria.Add(Restrictions.Or(Restrictions.Eq("IdAttachments", IdAttachement), Restrictions.Eq("IdDocument", IdDocument)))
         End If
@@ -1581,9 +1411,16 @@ Public Class NHibernateProtocolFinder
 
         If IsFascicolated Then
             Dim dcFascicleDocumentUnit As DetachedCriteria = DetachedCriteria.For(GetType(FascicleDocumentUnit), "FDU")
-            dcFascicleDocumentUnit.Add(Restrictions.EqProperty("FDU.IdDocumentUnit", "P.UniqueId"))
+            dcFascicleDocumentUnit.Add(Restrictions.EqProperty("FDU.IdDocumentUnit", "P.Id"))
             dcFascicleDocumentUnit.SetProjection(Projections.Id)
             criteria.Add(Subqueries.Exists(dcFascicleDocumentUnit))
+        End If
+
+        If (NeverDistributed) Then
+            Dim dcProtocolRoleUser As DetachedCriteria = DetachedCriteria.For(GetType(ProtocolRoleUser), "PRU")
+            dcProtocolRoleUser.Add(Restrictions.EqProperty("PRU.Protocol.Id", "P.Id"))
+            dcProtocolRoleUser.SetProjection(Projections.Id)
+            criteria.Add(Subqueries.NotExists(dcProtocolRoleUser))
         End If
 
         AddAvancedProtocolCriteria(criteria)
@@ -1806,9 +1643,18 @@ Public Class NHibernateProtocolFinder
 
     Public Overrides Function Count() As Integer
         Dim criteria As ICriteria = CreateCriteria()
-
         criteria.SetProjection(Projections.RowCount())
-        Dim countRecords As Integer = criteria.UniqueResult(Of Integer)()
+
+        Dim countRecords As Integer
+        Using transaction As ITransaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadUncommitted)
+            Try
+                countRecords = criteria.UniqueResult(Of Integer)()
+                transaction.Commit()
+            Catch ex As Exception
+                transaction.Rollback()
+                Throw
+            End Try
+        End Using
 
         If TopMaxRecords > 0 Then
             Return Math.Min(countRecords, TopMaxRecords)
@@ -1881,8 +1727,18 @@ Public Class NHibernateProtocolFinder
         DecorateCriteria(criteria)
         'Crea le eventuali proiezioni
         CreateProjections(criteria)
+        Dim result As IList(Of Protocol)
+        Using transaction As ITransaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadUncommitted)
+            Try
+                result = criteria.List(Of Protocol)()
+                transaction.Commit()
+            Catch ex As Exception
+                transaction.Rollback()
+                Throw
+            End Try
+        End Using
 
-        Return criteria.List(Of Protocol)()
+        Return result
     End Function
 
     ''' <summary> Decora un DetachedCriteria per conteggiare i collegamenti per protocollo. </summary>
@@ -1916,12 +1772,24 @@ Public Class NHibernateProtocolFinder
         SetPaging(criteria)
         SetProjectionHeaders(criteria)
         AttachSortExpressions(criteria)
-        Dim result As IList(Of ProtocolHeader) = criteria.List(Of ProtocolHeader)()
+        Dim result As IList(Of ProtocolHeader)
+
+        Using transaction As ITransaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadUncommitted)
+            Try
+                result = criteria.List(Of ProtocolHeader)()
+                transaction.Commit()
+            Catch ex As Exception
+                transaction.Rollback()
+                Throw
+            End Try
+        End Using
+
         Dim conversion As IList(Of ProtocolHeader) = New List(Of ProtocolHeader)(result.Count)
         For Each a As ProtocolHeader In result
             a.RegistrationDate = a.RegistrationDate.ToLocalTime()
             conversion.Add(a)
         Next
+
         Return conversion
     End Function
 
@@ -2119,8 +1987,6 @@ Public Class NHibernateProtocolFinder
         proj.Add(Projections.Property("Category.FullCode"), "CategoryFullCode")
         proj.Add(Projections.Property("Category.Name"), "CategoryName")
 
-        proj.Add(Projections.Property("Location.Id"), "LocationId")
-        proj.Add(Projections.Property("Location.ProtBiblosDSDB"), "LocationProtBiblosDSDB")
         proj.Add(Projections.Property("P.DocumentProtocol"), "DocumentProtocol")
 
         If DocSuiteContext.Current.ProtocolEnv.IsStatusEnabled Then
@@ -2131,17 +1997,12 @@ Public Class NHibernateProtocolFinder
 
         'Conteggia i collegamenti per protocollo.
         proj.Add(Projections.SubQuery(detachedProtocolLinkRowCount), "Links")
-        If DocSuiteContext.Current.ProtocolEnv.IsLogStatusEnabled Then
+        If DocSuiteContext.Current.ProtocolEnv.IsLogStatusEnabled AndAlso IncludeCountRead Then
             ' Conteggia le letture per protocollo.
             proj.Add(Projections.SubQuery(detachedReadRowCount), "ReadCount")
         End If
         If DocSuiteContext.Current.ProtocolEnv.IsProtocolAttachLocationEnabled Then
             proj.Add(Projections.Property("P.AttachLocation"), "AttachLocation")
-        End If
-        If DocSuiteContext.Current.ProtocolEnv.ParerEnabled Then
-            proj.Add(Projections.Property("PP.ParerUri"), "ParerUri")
-            proj.Add(Projections.Property("PP.HasError"), "ParerHasError")
-            proj.Add(Projections.Property("PP.LastError"), "ParerLastError")
         End If
         If DocSuiteContext.Current.ProtocolEnv.IsPECEnabled Then
             Dim dcIngoingPecId As DetachedCriteria = DetachedCriteria.For(Of PECMail)("SPM")

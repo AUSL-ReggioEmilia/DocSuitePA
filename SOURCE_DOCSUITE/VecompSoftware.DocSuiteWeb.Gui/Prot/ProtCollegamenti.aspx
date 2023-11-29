@@ -175,7 +175,6 @@
 	        <input type="button" id="btnDelete" disabled="disabled" value="Cancella" onclick="DeleteProtocol();" class="button" />
 		</div>
 		<div class="yui-u right">
-		    <asp:button id="btnMail" runat="server" Text="Invia" Visible="false"  />
 			<asp:button id="btnStampa" runat="server" Text="Stampa" Visible="false"  />
 		</div>
 	</div>

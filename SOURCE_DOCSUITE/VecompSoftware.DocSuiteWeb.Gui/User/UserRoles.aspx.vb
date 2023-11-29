@@ -57,7 +57,7 @@ Partial Public Class UserRoles
         ' Carico i settori dove l'utente è direttore
         Dim roles As IList(Of RoleUser) = New List(Of RoleUser)()
         If Not String.IsNullOrEmpty(Account) Then
-            roles = Facade.RoleUserFacade.GetByUserType(RoleUserType.D, DocSuiteContext.Current.User.FullUserName, False, Nothing)
+            roles = Facade.RoleUserFacade.GetByUserType(RoleUserType.D, DocSuiteContext.Current.User.FullUserName, False, Nothing, CurrentTenant.TenantAOO.UniqueId)
         End If
         If roles.IsNullOrEmpty() Then
             AjaxAlert("Nessun Settore disponibile.")

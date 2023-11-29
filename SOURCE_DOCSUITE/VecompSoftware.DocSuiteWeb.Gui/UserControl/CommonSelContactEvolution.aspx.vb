@@ -150,7 +150,7 @@ Partial Public Class CommonSelContactEvolution
             c.Description = If(String.IsNullOrEmpty(name), email, _mailDescritionExp.Replace(name, String.Empty))
             c.EmailAddress = email
             c.CertifiedMail = email
-            c.IsActive = Convert.ToInt16(1)
+            c.IsActive = True
             c.Parent = Nothing
 
             c.ContactType = New ContactType()

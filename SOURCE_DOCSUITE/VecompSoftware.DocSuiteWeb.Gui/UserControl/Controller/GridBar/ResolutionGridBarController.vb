@@ -13,6 +13,7 @@ Public Class ResolutionGridBarController
         Pubblicazione = 10
         StampaUltimaPagina = 11
         DaAffariGenerali = 12
+        AssegnateAffariGenerali = 13
     End Enum
 
 #Region "Configurations"

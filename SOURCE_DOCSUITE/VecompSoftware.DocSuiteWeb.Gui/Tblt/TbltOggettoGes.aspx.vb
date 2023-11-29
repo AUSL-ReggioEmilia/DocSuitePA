@@ -1,6 +1,7 @@
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Partial Class TbltOggettoGes
     Inherits CommonBasePage
@@ -44,6 +45,10 @@ Partial Class TbltOggettoGes
 #Region " Event "
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         MasterDocSuite.TitleVisible = False
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma)
         If Not Page.IsPostBack Then

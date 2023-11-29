@@ -80,11 +80,6 @@ Public Class Resolution
 
     Private _ultimaPaginaDate As DateTimeOffset?
 
-    'Conservation
-    Private _conservationStatus As Char = "M"c
-    Private _lastConservationDate As Date?
-    Private _hasConservatedDocs As Boolean = False
-
     'Pubblicazione
     Private _webPublicationDate As Date?
     Private _webState As Nullable(Of WebStateEnum)
@@ -104,7 +99,6 @@ Public Class Resolution
     Private _resolutionContactsManagers As IList(Of ResolutionContact)
     Private _resolutionLogs As IList(Of ResolutionLog)
     Private _resolutionWorkflows As IList(Of ResolutionWorkflow)
-    Private _resolutionRecipients As IList(Of ResolutionRecipient)
 #End Region
 
 #Region "ASL-TO2"
@@ -724,35 +718,6 @@ Public Class Resolution
         End Get
     End Property
 
-    Public Overridable Property ConservationStatus() As Nullable(Of Char)
-        Get
-            Return _conservationStatus
-        End Get
-        Set(ByVal value As Nullable(Of Char))
-            If value.HasValue Then
-                _conservationStatus = value.Value
-            End If
-        End Set
-    End Property
-
-    Public Overridable Property LastConservationDate() As Date?
-        Get
-            Return _lastConservationDate
-        End Get
-        Set(ByVal value As Date?)
-            _lastConservationDate = value
-        End Set
-    End Property
-
-    Public Overridable Property HasConservatedDocs() As Boolean
-        Get
-            Return _hasConservatedDocs
-        End Get
-        Set(ByVal value As Boolean)
-            _hasConservatedDocs = value
-        End Set
-    End Property
-
     ''' <summary>
     ''' Data di pubblicazione web
     ''' </summary>
@@ -848,8 +813,6 @@ Public Class Resolution
         End Set
     End Property
 
-    Public Overridable Property ResolutionParer As ResolutionParer
-
     Public Overridable Property WebPublications As IList(Of WebPublication)
 
     Public Overridable Property AdoptionRoleId As Short?
@@ -924,15 +887,6 @@ Public Class Resolution
         End Get
         Set(ByVal value As IList(Of ResolutionWorkflow))
             _resolutionWorkflows = value
-        End Set
-    End Property
-
-    Public Overridable Property ResolutionRecipients() As IList(Of ResolutionRecipient)
-        Get
-            Return _resolutionRecipients
-        End Get
-        Set(ByVal value As IList(Of ResolutionRecipient))
-            _resolutionRecipients = value
         End Set
     End Property
 
@@ -1217,6 +1171,7 @@ Public Class Resolution
 
 #End Region
 
+    Public Overridable Property Amount As Single?
 #Region " Constructor "
 
     Public Sub New()
@@ -1233,7 +1188,6 @@ Public Class Resolution
         _resolutionLogs = New List(Of ResolutionLog)
         _ResolutionRoles = New List(Of ResolutionRole)
         _resolutionWorkflows = New List(Of ResolutionWorkflow)
-        _resolutionRecipients = New List(Of ResolutionRecipient)
         ResolutionActivities = New List(Of ResolutionActivity)
         Messages = New List(Of ResolutionMessage)
         UniqueId = Guid.NewGuid()

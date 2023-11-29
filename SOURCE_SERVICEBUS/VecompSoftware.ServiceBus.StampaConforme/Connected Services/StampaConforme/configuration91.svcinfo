@@ -112,10 +112,10 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="BiblosDSConvSoap" contract="StampaConforme.BiblosDSConvSoap" bindingType="basicHttpBinding" address="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx" bindingConfiguration="BiblosDSConvSoap">
+    <endpoint name="BiblosDSConvSoap" contract="StampaConforme.BiblosDSConvSoap" bindingType="basicHttpBinding" address="http://./StampaConforme/BiblosDSConv.asmx" bindingConfiguration="BiblosDSConvSoap">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx</serializedValue>
+          <serializedValue>http://./StampaConforme/BiblosDSConv.asmx</serializedValue>
         </property>
         <property path="/behaviorConfiguration" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

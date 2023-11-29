@@ -48,7 +48,7 @@ Public Class PECFix
         pecToUpdate.MailSubject = HttpUtility.HtmlDecode(txtMailSubject)
         pecToUpdate.MailRecipients = HttpUtility.HtmlDecode(txtMailTo)
         pecToUpdate.MailRecipientsCc = HttpUtility.HtmlDecode(txtMailCC)
-        pecToUpdate.MailBody = txtMailBody.Text
+        pecToUpdate.MailBody = txtMailBody.GetHtml(EditorStripHtmlOptions.None)
         FacadeFactory.Instance.PECMailFacade.UpdateOnly(pecToUpdate)
     End Sub
 

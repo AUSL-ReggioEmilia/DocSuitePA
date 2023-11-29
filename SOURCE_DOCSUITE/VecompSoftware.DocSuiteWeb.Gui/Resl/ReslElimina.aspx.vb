@@ -4,6 +4,9 @@ Imports VecompSoftware.DocSuiteWeb.Data
 Partial Public Class ReslElimina
     Inherits ReslBasePage
 
+#Region " Fields "
+#End Region
+
 #Region " Properties "
 
     Public ReadOnly Property AjaxDefaultLoadingPanel() As RadAjaxLoadingPanel
@@ -18,6 +21,11 @@ Partial Public Class ReslElimina
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, pnlMain, AjaxDefaultLoadingPanel)
+
+        If CurrentResolutionRight.IsConservated Then
+            Throw New DocSuiteException($"Atto n. {CurrentResolution.InclusiveNumber}", "Atto è conservato e non può essere annullato")
+        End If
+
         If Not IsPostBack Then
             Initialize()
         End If

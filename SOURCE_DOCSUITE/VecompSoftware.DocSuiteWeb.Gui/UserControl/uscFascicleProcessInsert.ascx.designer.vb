@@ -77,6 +77,24 @@ Partial Public Class uscFascicleProcessInsert
     Protected WithEvents fasciclePageContent As Global.Telerik.Web.UI.RadPageLayout
 
     '''<summary>
+    '''pnlRoleMaster control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlRoleMaster As Global.Telerik.Web.UI.LayoutRow
+
+    '''<summary>
+    '''uscRoleMaster control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscRoleMaster As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+
+    '''<summary>
     '''pnlContact control.
     '''</summary>
     '''<remarks>
@@ -95,22 +113,13 @@ Partial Public Class uscFascicleProcessInsert
     Protected WithEvents uscContact As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelRest
 
     '''<summary>
-    '''pnlRoleMaster control.
+    '''pnlRole control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents pnlRoleMaster As Global.Telerik.Web.UI.LayoutRow
-
-    '''<summary>
-    '''uscRoleMaster control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscRoleMaster As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+    Protected WithEvents pnlRole As Global.Telerik.Web.UI.LayoutRow
 
     '''<summary>
     '''uscRole control.

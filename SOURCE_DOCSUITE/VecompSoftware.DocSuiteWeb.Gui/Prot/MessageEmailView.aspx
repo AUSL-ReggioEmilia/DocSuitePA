@@ -1,4 +1,4 @@
-﻿<%@ Page AutoEventWireup="false" CodeBehind="MessageEmailView.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.MessageEmailView" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" ValidateRequest="false" %>
+﻿<%@ Page AutoEventWireup="false" CodeBehind="MessageEmailView.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.MessageEmailView" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" %>
 
 <%@ Register Src="~/Viewers/ViewerLight.ascx" TagName="uscViewerLight" TagPrefix="uc1" %>
 

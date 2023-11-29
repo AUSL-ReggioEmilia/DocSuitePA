@@ -286,6 +286,7 @@ Partial Public Class CommPrint
         pnlNoPrintDate.Visible = False
 
         Try
+            report.LocalReport.SetBasePermissionsForSandboxAppDomain(New System.Security.PermissionSet(System.Security.Permissions.PermissionState.Unrestricted))
 
             Dim parameters As New List(Of ReportParameter)(2)
             parameters.Add(New ReportParameter("Azienda", ProtocolEnv.CorporateName))

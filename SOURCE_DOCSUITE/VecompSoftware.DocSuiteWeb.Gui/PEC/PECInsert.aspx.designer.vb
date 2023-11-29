@@ -41,24 +41,6 @@ Partial Public Class PECInsert
     Protected WithEvents WarningLabel As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''HFcorrelatedCommandId control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents HFcorrelatedCommandId As Global.System.Web.UI.WebControls.HiddenField
-
-    '''<summary>
-    '''udsNotification control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents udsNotification As Global.Telerik.Web.UI.RadNotification
-
-    '''<summary>
     '''responseNotificationError control.
     '''</summary>
     '''<remarks>

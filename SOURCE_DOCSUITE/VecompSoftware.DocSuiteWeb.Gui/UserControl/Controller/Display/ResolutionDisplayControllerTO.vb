@@ -1,10 +1,17 @@
+Imports System.Collections.Generic
+Imports System.Linq
 Imports System.Web
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Services.Logging
 
 Public Class ResolutionDisplayControllerTO
     Inherits ResolutionDisplayController
+
+#Region " Fields "
+
+#End Region
 
 #Region " Constructors "
 
@@ -47,13 +54,48 @@ Public Class ResolutionDisplayControllerTO
         _uscReslBar.ButtonUltimaPagina.Visible = False
     End Sub
 
+    Protected Sub ButtonTakeChargeHandler(sender As Object, args As EventArgs)
+        Try
+            Dim workflowUsers As ICollection(Of ResolutionWorkflowUser) = Facade.ResolutionWorkflowUserFacade.GetUsersByResolution(_uscReslDisplay.CurrentResolution)
+            Dim logDescription As String
+            For Each itemToRemove As ResolutionWorkflowUser In workflowUsers.ToList()
+                logDescription = $"Rimossa presa in carico per l'utente {itemToRemove.Account}"
+                Facade.ResolutionWorkflowUserFacade.Delete(itemToRemove)
+                Facade.ResolutionLogFacade.Insert(_uscReslDisplay.CurrentResolution.Id, ResolutionLogType.RM, logDescription)
+            Next
+
+            If _uscReslBar.ButtonTakeCharge.CommandArgument.Eq("RemoveTakeCharge") Then
+                _uscReslDisplay.SetTakeChargeVisibility(False, Nothing)
+                _uscReslBar.ButtonTakeCharge.CommandArgument = "AddTakeCharge"
+                _uscReslBar.ButtonTakeCharge.Text = "Conferma visione"
+            Else
+                Dim itemToInsert As ResolutionWorkflowUser = New ResolutionWorkflowUser()
+                itemToInsert.Account = DocSuiteContext.Current.User.FullUserName
+                itemToInsert.AuthorizationType = AuthorizationRoleType.Responsible
+                itemToInsert.ResolutionWorkflow = Facade.ResolutionWorkflowFacade.GetAllByResolution(_uscReslDisplay.CurrentResolution.Id, True).Single()
+                Facade.ResolutionWorkflowUserFacade.Save(itemToInsert)
+                Facade.ResolutionLogFacade.Insert(_uscReslDisplay.CurrentResolution.Id, ResolutionLogType.RM, $"Determina presa in carico dall'utente {DocSuiteContext.Current.User.FullUserName}")
+
+                _uscReslDisplay.SetTakeChargeVisibility(True, itemToInsert)
+                _uscReslBar.ButtonTakeCharge.CommandArgument = "RemoveTakeCharge"
+                _uscReslBar.ButtonTakeCharge.Text = "Rimuovi conferma visione"
+            End If
+            _uscReslDisplay.ResolutionWorkflow.SetWorkflow()
+        Catch ex As Exception
+            FileLogger.Error(LogName.FileLog, $"Error on take charge action: {ex.Message}", ex)
+            _uscReslBar.BasePage.AjaxAlert($"Errore nell'esecuzione dell'attività di {_uscReslBar.ButtonTakeCharge.Text}")
+        Finally
+            _uscReslBar.BasePage.AjaxManager.ResponseScripts.Add("endTakeChargeAction();")
+        End Try
+    End Sub
+
 #End Region
 
 #Region " Methods "
 
     Public Overrides Sub Initialize()
         MyBase.Initialize()
-        _uscReslDisplay.VisibleImmediatelyExecutive = True
+        _uscReslDisplay.VisibleImmediatelyExecutive = ResolutionEnv.ImmediatelyExecutiveEnabled
         _uscReslDisplay.VisibleProposerProtocolLink = True
         _uscReslDisplay.ResolutionOC.Visible = True
         _uscReslDisplay.VisibleCheckWebPublish = DocSuiteContext.Current.ResolutionEnv.WebPublishEnabled
@@ -78,6 +120,7 @@ Public Class ResolutionDisplayControllerTO
 
         AddHandler _uscReslBar.ButtonDeleteFrontespizio.Click, AddressOf ButtonDeleteFrontespizioHandler
         AddHandler _uscReslBar.ButtonDeleteUltimaPagina.Click, AddressOf ButtonDeleteUltimaPaginaHandler
+        AddHandler _uscReslBar.ButtonTakeCharge.Click, AddressOf ButtonTakeChargeHandler
 
     End Sub
 
@@ -92,15 +135,15 @@ Public Class ResolutionDisplayControllerTO
         _uscReslBar.ButtonPrint.Visible = False
         _uscReslBar.ButtonDuplicate.Visible = False
         _uscReslBar.ButtonConfirmView.Visible = False
+        _uscReslBar.ButtonTakeCharge.Visible = False
 
         _uscReslBar.ButtonLog.Visible = ResolutionEnv.IsLogEnabled AndAlso (CommonShared.HasGroupAdministratorRight() OrElse (If(String.IsNullOrEmpty(DocSuiteContext.Current.ProtocolEnv.EnvGroupLogView), False, CommonShared.HasGroupLogViewRight())))
 
         Dim currentResolution As Resolution = _uscReslDisplay.CurrentResolution
 
         If Not _uscReslBar.ButtonChange.Visible Then
-            Dim currentResolutionRights As ResolutionRights = New ResolutionRights(currentResolution)
-            _uscReslBar.ButtonChange.Visible = (currentResolutionRights.CanInsertInContainer AndAlso Not currentResolution.AdoptionDate.HasValue AndAlso String.IsNullOrEmpty(currentResolution.AdoptionUser)) OrElse
-                                               currentResolutionRights.CanExecutiveModifyOC
+            _uscReslBar.ButtonChange.Visible = (CurrentResolutionRights.CanInsertInContainer AndAlso Not currentResolution.AdoptionDate.HasValue AndAlso String.IsNullOrEmpty(currentResolution.AdoptionUser)) OrElse
+                                               CurrentResolutionRights.CanExecutiveModifyOC
         End If
         If Not _uscReslBar.ButtonChange.Enabled Then
             _uscReslBar.ButtonChange.Enabled = CurrentResolutionRights.CanExecutiveModifyOC
@@ -108,12 +151,26 @@ Public Class ResolutionDisplayControllerTO
 
 
         If (currentResolution.Status.Id = ResolutionStatusId.Attivo) Then
-            _uscReslBar.ButtonCancel.Visible = ((Not currentResolution.AdoptionDate.HasValue) And ResolutionRights.CheckIsCancelable(currentResolution))
+            _uscReslBar.ButtonCancel.Visible = (Not currentResolution.AdoptionDate.HasValue) AndAlso ResolutionRights.CheckIsCancelable(currentResolution)
 
-            If (currentResolution.Type.Id = ResolutionType.IdentifierDelibera AndAlso (Facade.ResolutionWorkflowFacade.GetActiveStep(currentResolution.Id) = 2S OrElse Facade.ResolutionWorkflowFacade.GetActiveStep(currentResolution.Id) = 3S)) Then
-                Dim isbtnVisible As Boolean = ResolutionRights.CheckIsExecutive(currentResolution)
-                _uscReslBar.ButtonCancel.Visible = isbtnVisible
-                _uscReslBar.ButtonConfirmView.Visible = isbtnVisible
+            If ResolutionEnv.ResolutionConfirmViewingRequiredEnabled Then
+                Dim currentResolutionStep As TabWorkflow = Facade.TabWorkflowFacade.GetActive(currentResolution)
+                Dim confirmViewResponsabilityGroups As ICollection(Of Integer) = Facade.TabWorkflowFacade.GetOperationStepConfirmViewResponsabilityGroups(currentResolutionStep)
+                Dim securityGroups As ICollection(Of SecurityGroups) = Facade.SecurityGroupsFacade.GetByUser(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
+                Dim alreadyConfirmed As Boolean = Facade.ResolutionLogFacade.GetlastResolutionLog(currentResolution.Id, ResolutionLogType.CV) IsNot Nothing
+                If securityGroups.Any(Function(x) confirmViewResponsabilityGroups.Any(Function(xx) xx.Equals(x.Id))) Then
+                    _uscReslBar.ButtonConfirmView.Visible = True
+                    _uscReslBar.ButtonConfirmView.Enabled = Not alreadyConfirmed
+                    If alreadyConfirmed Then
+                        _uscReslBar.ButtonConfirmView.Text = "Presa visione"
+                    End If
+                End If
+            Else
+                If (currentResolution.Type.Id = ResolutionType.IdentifierDelibera AndAlso (Facade.ResolutionWorkflowFacade.GetActiveStep(currentResolution.Id) = 2S OrElse Facade.ResolutionWorkflowFacade.GetActiveStep(currentResolution.Id) = 3S)) Then
+                    Dim isbtnVisible As Boolean = ResolutionRights.CheckIsExecutive(currentResolution)
+                    _uscReslBar.ButtonCancel.Visible = isbtnVisible
+                    _uscReslBar.ButtonConfirmView.Visible = isbtnVisible
+                End If
             End If
 
             If _uscReslBar.ButtonCancel.Visible Then
@@ -121,7 +178,7 @@ Public Class ResolutionDisplayControllerTO
                 _uscReslBar.ButtonCancel.Attributes.Add("onclick", script)
                 _uscReslBar.ButtonCancel.Text = "Annullamento"
             Else
-                _uscReslBar.ButtonCancel.Visible = (Not currentResolution.PublishingDate.HasValue And ResolutionRights.CheckIsCancelable(currentResolution))
+                _uscReslBar.ButtonCancel.Visible = Not currentResolution.PublishingDate.HasValue AndAlso ResolutionRights.CheckIsCancelable(currentResolution)
 
                 If _uscReslBar.ButtonCancel.Visible Then
                     Dim script As String = "OpenWindowAnnulla('../Resl/ReslElimina.aspx?Titolo=Annulla Adozione&" & CommonShared.AppendSecurityCheck("&Type=Resl&idResolution=" & currentResolution.Id & "&Action=Ado") & "')"
@@ -131,6 +188,23 @@ Public Class ResolutionDisplayControllerTO
             End If
         Else
             _uscReslBar.ButtonCancel.Visible = False
+        End If
+
+        If currentResolution.Type.Id.Equals(ResolutionType.IdentifierDetermina) AndAlso currentResolution.Status.Id = ResolutionStatusId.Attivo AndAlso Not ResolutionEnv.ResolutionConfirmViewingRequiredEnabled Then
+            Dim currentResolutionStep As TabWorkflow = Facade.TabWorkflowFacade.GetActive(currentResolution)
+            If currentResolutionStep.Description.Eq(WorkflowStep.AFF_GEN_CHECK_STEP_DESCRIPTION) Then
+                Dim flowResponsabilityRoles As ICollection(Of Integer) = Facade.TabWorkflowFacade.GetOperationStepFlowResponsabilityRoles(currentResolutionStep)
+                _uscReslBar.ButtonTakeCharge.Visible = flowResponsabilityRoles.Count > 0 AndAlso CurrentResolutionRights.HasCurrentStepFlowResponsabilityRights
+                _uscReslBar.ButtonCancel.Visible = _uscReslBar.ButtonCancel.Visible AndAlso CurrentResolutionRights.HasCurrentStepFlowResponsabilityRights
+                _uscReslBar.ButtonChange.Visible = _uscReslBar.ButtonChange.Visible AndAlso CurrentResolutionRights.HasCurrentStepFlowResponsabilityRights
+                _uscReslBar.ButtonDelete.Visible = _uscReslBar.ButtonDelete.Visible AndAlso CurrentResolutionRights.HasCurrentStepFlowResponsabilityRights
+                _uscReslBar.ButtonTakeCharge.Text = "Conferma visione"
+                _uscReslBar.ButtonTakeCharge.CommandArgument = "AddTakeCharge"
+                If CurrentResolutionRights.IsResponsibleUser Then
+                    _uscReslBar.ButtonTakeCharge.Text = "Rimuovi conferma visione"
+                    _uscReslBar.ButtonTakeCharge.CommandArgument = "RemoveTakeCharge"
+                End If
+            End If
         End If
 
         ' Visualizzazione Frontespizio e Ultima Pagina
@@ -173,36 +247,38 @@ Public Class ResolutionDisplayControllerTO
             _uscReslDisplay.ResolutionOC.LoadOCList()
         End If
 
-        'Organo di Controllo: Collegio Sindacale
-        If Facade.ResolutionFacade.IsManagedProperty("OCData", _uscReslDisplay.CurrentResolution.Type.Id, "CS") Then
-            _uscReslDisplay.ResolutionOC.InitializeOCSupervisoryBoard()
-        End If
-
-        'Organo di Controllo: Corte dei Conti
-        If Facade.ResolutionFacade.IsManagedProperty("OCData", _uscReslDisplay.CurrentResolution.Type.Id, "CC") Then
-            If _uscReslDisplay.CurrentResolution.OCCorteConti.GetValueOrDefault(False) Then
-                _uscReslDisplay.ResolutionOC.LoadOCCorteDeiConti()
+        If DocSuiteContext.Current.ResolutionEnv.CheckOCValidations Then
+            'Organo di Controllo: Collegio Sindacale
+            If Facade.ResolutionFacade.IsManagedProperty("OCData", _uscReslDisplay.CurrentResolution.Type.Id, "CS") Then
+                _uscReslDisplay.ResolutionOC.InitializeOCSupervisoryBoard()
             End If
-        End If
 
-        'Organo di Controllo: Regione
-        If Facade.ResolutionFacade.IsManagedProperty("OCData", _uscReslDisplay.CurrentResolution.Type.Id, "REG") Then
-            If _uscReslDisplay.CurrentResolution.OCRegion.GetValueOrDefault(False) Then
-                _uscReslDisplay.ResolutionOC.InitializeOCRegion()
+            'Organo di Controllo: Corte dei Conti
+            If Facade.ResolutionFacade.IsManagedProperty("OCData", _uscReslDisplay.CurrentResolution.Type.Id, "CC") Then
+                If _uscReslDisplay.CurrentResolution.OCCorteConti.GetValueOrDefault(False) Then
+                    _uscReslDisplay.ResolutionOC.LoadOCCorteDeiConti()
+                End If
             End If
-        End If
 
-        'Organo di Controllo: Gestione
-        If Facade.ResolutionFacade.IsManagedProperty("OCData", _uscReslDisplay.CurrentResolution.Type.Id, "GEST") Then
-            If _uscReslDisplay.CurrentResolution.OCManagement.GetValueOrDefault(False) Then
-                _uscReslDisplay.ResolutionOC.LoadOCManagement()
+            'Organo di Controllo: Regione
+            If Facade.ResolutionFacade.IsManagedProperty("OCData", _uscReslDisplay.CurrentResolution.Type.Id, "REG") Then
+                If _uscReslDisplay.CurrentResolution.OCRegion.GetValueOrDefault(False) Then
+                    _uscReslDisplay.ResolutionOC.InitializeOCRegion()
+                End If
             End If
-        End If
 
-        'Organo di Controllo: Altro
-        If Facade.ResolutionFacade.IsManagedProperty("OCData", _uscReslDisplay.CurrentResolution.Type.Id, "ALTRO") Then
-            If _uscReslDisplay.CurrentResolution.OCOther.GetValueOrDefault(False) Then
-                _uscReslDisplay.ResolutionOC.LoadOCOther()
+            'Organo di Controllo: Gestione
+            If Facade.ResolutionFacade.IsManagedProperty("OCData", _uscReslDisplay.CurrentResolution.Type.Id, "GEST") Then
+                If _uscReslDisplay.CurrentResolution.OCManagement.GetValueOrDefault(False) Then
+                    _uscReslDisplay.ResolutionOC.LoadOCManagement()
+                End If
+            End If
+
+            'Organo di Controllo: Altro
+            If Facade.ResolutionFacade.IsManagedProperty("OCData", _uscReslDisplay.CurrentResolution.Type.Id, "ALTRO") Then
+                If _uscReslDisplay.CurrentResolution.OCOther.GetValueOrDefault(False) Then
+                    _uscReslDisplay.ResolutionOC.LoadOCOther()
+                End If
             End If
         End If
 
@@ -247,8 +323,16 @@ Public Class ResolutionDisplayControllerTO
         'Carica Autorizzazioni
         _uscReslDisplay.LoadRoles()
 
-        _uscReslBar.ButtonPublishWeb.Visible = False
-        _uscReslBar.ButtonRevokeWeb.Visible = False
+        _uscReslDisplay.SetTakeChargeVisibility(False, Nothing)
+        If _uscReslDisplay.CurrentResolution.Type.Id.Equals(ResolutionType.IdentifierDetermina) Then
+            Dim currentResolutionStep As TabWorkflow = Facade.TabWorkflowFacade.GetActive(_uscReslDisplay.CurrentResolution)
+            If currentResolutionStep.Description.Eq(WorkflowStep.AFF_GEN_CHECK_STEP_DESCRIPTION) Then
+                Dim currentResponsibleUser As ResolutionWorkflowUser = Facade.ResolutionWorkflowUserFacade.GetUsersByResolution(_uscReslDisplay.CurrentResolution).FirstOrDefault()
+                If (currentResponsibleUser IsNot Nothing) Then
+                    _uscReslDisplay.SetTakeChargeVisibility(True, currentResponsibleUser)
+                End If
+            End If
+        End If
     End Sub
 
 #End Region

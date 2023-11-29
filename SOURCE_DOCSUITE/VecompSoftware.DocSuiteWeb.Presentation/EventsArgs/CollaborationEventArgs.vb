@@ -14,6 +14,4 @@ Public Class CollaborationEventArgs
 
     Public Property DocumentType As String
 
-    Public Property TenantName As String
-
 End Class

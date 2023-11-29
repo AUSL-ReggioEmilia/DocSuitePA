@@ -1,8 +1,7 @@
-﻿Imports System.Collections.Generic
-Imports VecompSoftware.NHibernateManager.Dao
+﻿Imports System.Linq
 Imports NHibernate
 Imports NHibernate.Criterion
-Imports System.Linq
+Imports VecompSoftware.NHibernateManager.Dao
 
 Public Class NHibernateContainerResolutionTypeDao
     Inherits BaseNHibernateDao(Of ContainerResolutionType)
@@ -28,7 +27,7 @@ Public Class NHibernateContainerResolutionTypeDao
         Return criteria.List(Of ContainerResolutionType)()
     End Function
 
-    Function GetAllowedContainers(resolutionTypeId As Short, ByVal groups As String(), ByVal isActive As Short, ByVal rights As ResolutionRightPositions?) As IList(Of ContainerResolutionType)
+    Function GetAllowedContainers(resolutionTypeId As Short, ByVal groups As String(), ByVal isActive As Short, ByVal rights As ResolutionRightPositions?, accounting As Boolean?) As IList(Of ContainerResolutionType)
         criteria = NHibernateSession.CreateCriteria(persitentType, "CRT")
         criteria.CreateAlias("CRT.container", "C", SqlCommand.JoinType.InnerJoin)
         criteria.CreateAlias("C.ContainerGroups", "CG", SqlCommand.JoinType.LeftOuterJoin)
@@ -42,20 +41,25 @@ Public Class NHibernateContainerResolutionTypeDao
 
         Select Case isActive
             Case 1
-                criteria.Add(Restrictions.Eq("C.IsActive", 1S))
-                Dim disj As New Disjunction()
-                disj.Add(Restrictions.And(Restrictions.IsNull("C.ActiveFrom"), Restrictions.IsNull("C.ActiveTo")))
-                disj.Add(Restrictions.And(Restrictions.Ge("C.ActiveTo", DateTime.Now), Restrictions.Le("C.ActiveFrom", DateTime.Now)))
-                criteria.Add(disj)
+                criteria.Add(Restrictions.Eq("C.IsActive", True))
             Case 0
-                Dim disj As New Disjunction()
-                disj.Add(Restrictions.Eq("C.IsActive", 0S))
-                disj.Add(Restrictions.Le("C.ActiveTo", DateTime.Now))
-                disj.Add(Restrictions.Ge("C.ActiveFrom", DateTime.Now))
-                criteria.Add(disj)
+                criteria.Add(Restrictions.Eq("C.IsActive", False))
             Case 3
                 criteria.Add(Expression.Lt("C.IsActive", isActive))
         End Select
+
+        If accounting IsNot Nothing Then
+            Dim existContainerProp As DetachedCriteria = DetachedCriteria.For(GetType(ContainerProperty), "CP")
+            existContainerProp.Add(Restrictions.EqProperty("CP.Container.Id", "C.Id"))
+            existContainerProp.Add(Restrictions.Eq("CP.ValueBoolean", True))
+            existContainerProp.Add(Restrictions.Eq("CP.Name", ContainerPropertiesName.ResolutionAccountingEnabled))
+            existContainerProp.SetProjection(Projections.Constant(1))
+            If accounting Then
+                criteria.Add(Subqueries.Exists(existContainerProp))
+            Else
+                criteria.Add(Subqueries.NotExists(existContainerProp))
+            End If
+        End If
 
         'Il gruppo dell'utente deve possedere diritti 
         If rights.HasValue Then

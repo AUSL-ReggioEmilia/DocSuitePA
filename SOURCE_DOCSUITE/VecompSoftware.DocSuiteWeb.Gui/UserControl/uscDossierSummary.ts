@@ -17,6 +17,9 @@ class uscDossierSummary {
     uscNotificationId: string;
     currentDossierId: string;
     pageId: string;
+    lcDossierStatusKeyId: string;
+    lcDossierStatusValueId: string;
+    dossierStatusEnabled: boolean;
 
     private _lblDossierSubject: JQuery;
     private _lblStartDate: JQuery;
@@ -46,6 +49,9 @@ class uscDossierSummary {
         this._lblDossierType = $(`#${this.lblDossierTypeId}`);
         this._lblDossierStatus = $(`#${this.lblDossierStatusId}`);
 
+        $(`#${this.lcDossierStatusKeyId}`).hide();
+        $(`#${this.lcDossierStatusValueId}`).hide();
+
         let serviceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "Dossier");
         this._dossierService = new DossierService(serviceConfiguration);
 
@@ -64,8 +70,11 @@ class uscDossierSummary {
                 this._lblYear.html(this._DossierModel.Year.toString());
                 this._lblNumber.html(this._DossierModel.Number);
                 this._lblStartDate.html(this._DossierModel.FormattedStartDate);
-                this._lblDossierType.html(this._enumHelper.getDossierTypeDescription(this._DossierModel.DossierType));
-                this._lblDossierStatus.html(this._enumHelper.getDossierStatusDescription(this._DossierModel.Status));
+                this._lblDossierType.html(this._enumHelper.getDossierTypeDescription(this._DossierModel.DossierType)); if (this.dossierStatusEnabled) {
+                    $(`#${this.lcDossierStatusKeyId}`).show();
+                    $(`#${this.lcDossierStatusValueId}`).show();
+                    this._lblDossierStatus.html(this._enumHelper.getDossierStatusDescription(this._DossierModel.Status));
+                }
                 promise.resolve();
             },
             (exception: ExceptionDTO): void => {

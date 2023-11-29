@@ -1,6 +1,4 @@
-﻿Imports System.Collections.Generic
-Imports System.Text
-Imports VecompSoftware.Services.Logging
+﻿Imports System.Text
 Imports VecompSoftware.DocSuiteWeb.Data
 
 Public Class SecurityGroupsFacade
@@ -22,9 +20,6 @@ Public Class SecurityGroupsFacade
 
     Public Overrides Sub Save(ByRef obj As SecurityGroups)
         obj.Id = _dao.GetMaxId() + 1
-        obj.IdSecurityGroupTenant = obj.Id
-        obj.TenantId = DocSuiteContext.Current.CurrentTenant.TenantId
-        CalculateFullIncremental(obj)
         MyBase.Save(obj)
     End Sub
 
@@ -51,13 +46,13 @@ Public Class SecurityGroupsFacade
         End If
 
         ' Controllo che non sia legato a settori
-        Dim roles As New List(Of Role)(Factory.RoleFacade.GetRolesBySG(DSWEnvironment.Protocol, {securityGroups}, Nothing, Nothing, String.Empty, Nothing))
+        Dim roles As New List(Of Role)(Factory.RoleFacade.GetRolesBySG(DSWEnvironment.Protocol, {securityGroups}, Nothing, Nothing, String.Empty, Nothing, CommonShared.CurrentUserTenant.TenantAOO.UniqueId))
 
         If DocSuiteContext.Current.IsDocumentEnabled Then
-            roles.AddRange(Factory.RoleFacade.GetRolesBySG(DSWEnvironment.Document, {securityGroups}, Nothing, Nothing, String.Empty, Nothing))
+            roles.AddRange(Factory.RoleFacade.GetRolesBySG(DSWEnvironment.Document, {securityGroups}, Nothing, Nothing, String.Empty, Nothing, CommonShared.CurrentUserTenant.TenantAOO.UniqueId))
         End If
         If DocSuiteContext.Current.IsResolutionEnabled Then
-            roles.AddRange(Factory.RoleFacade.GetRolesBySG(DSWEnvironment.Resolution, {securityGroups}, Nothing, Nothing, String.Empty, Nothing))
+            roles.AddRange(Factory.RoleFacade.GetRolesBySG(DSWEnvironment.Resolution, {securityGroups}, Nothing, Nothing, String.Empty, Nothing, CommonShared.CurrentUserTenant.TenantAOO.UniqueId))
         End If
 
         If (roles.Count > 0) Then
@@ -110,15 +105,6 @@ Public Class SecurityGroupsFacade
     End Sub
 
 #End Region
-
-    ''' <summary> Calcola e imposta il FullIncrementalPath di un oggetto SecurityGroups. </summary>
-    Private Shared Sub CalculateFullIncremental(ByRef obj As SecurityGroups)
-        If obj.Parent Is Nothing Then
-            obj.FullIncrementalPath = obj.IdSecurityGroupTenant.ToString()
-        Else
-            obj.FullIncrementalPath = String.Format("{0}|{1}", obj.Parent.FullIncrementalPath, obj.IdSecurityGroupTenant)
-        End If
-    End Sub
 
     Public Function GetGroupByName(groupName As String) As SecurityGroups
         Return _dao.GetGroupByName(groupName)

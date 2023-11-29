@@ -28,6 +28,7 @@ class ProtVisualizza {
     }
 
     initialize() {
+        this.cleanWorkflowSessionStorage();
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._notificationInfo = <Telerik.Web.UI.RadNotification>$find(this.radNotificationInfoId);
         this._radWindowManager = $find(this.radWindowManagerId) as Telerik.Web.UI.RadWindowManager;
@@ -36,28 +37,30 @@ class ProtVisualizza {
         this._documentUnitService = new DocumentUnitService(documentUnitConfiguration);
 
         this._documentUnitService.getDocumentUnitById(this.currentDocumentUnitId, (data: DocumentUnitModel) => {
+            if (!data) {
+                this._btnWorkflow = <JQuery>$(`#${this.btnWorkflowId}`);
+                this._btnWorkflow.prop('disabled', true);
+            }
             this._documentUnitModel = data;
         });
-
-        if (this.btnWorkflowId && this.btnWorkflowId !== "") {
-            this._btnWorkflow = <JQuery>$(`#${this.btnWorkflowId}`);
-            this._btnWorkflow.click(this.btnWorkflow_onClick);
-            this._radWindowManager.add_close((this.onWorkflowCloseWindow));
-
-        }
     }
 
-    btnWorkflow_onClick = (sender: any) => {
+    btnWorkflow_onClick() {
         this.setSessionVariables();
 
         var url = `../Workflows/StartWorkflow.aspx?Type=Prot&ManagerID=${this.radWindowManagerId}&DSWEnvironment=Protocol&Callback${window.location.href}`;
-        return this.openWindow(url, "windowStartWorkflow", 730, 550);
+        return this.openWindow(url, "windowStartWorkflow", 730, 550, this.onWorkflowCloseWindow);
     }
 
     setSessionVariables() {
         sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL, JSON.stringify(this._documentUnitModel));
         sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID, this._documentUnitModel.UniqueId);
         sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_TITLE, `${this._documentUnitModel.Title} - ${this._documentUnitModel.Subject}`);
+    }
+
+    cleanWorkflowSessionStorage() {
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
+        sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENT_UNITS_REFERENCE_MODEL);
     }
 
     onWorkflowCloseWindow = (sender: Telerik.Web.UI.RadWindow, args: Telerik.Web.UI.WindowCloseEventArgs) => {
@@ -71,12 +74,15 @@ class ProtVisualizza {
         }
     }
 
-    openWindow(url, name, width, height): boolean {
+    openWindow(url, name, width, height, onCloseCallback?): boolean {
         let manager: Telerik.Web.UI.RadWindowManager = <Telerik.Web.UI.RadWindowManager>$find(this.radWindowManagerId);
         let wnd: Telerik.Web.UI.RadWindow = manager.open(url, name, null);
         wnd.setSize(width, height);
         wnd.set_modal(true);
         wnd.center();
+        if (onCloseCallback) {
+            wnd.add_close(onCloseCallback);
+        }
         return false;
     }
 

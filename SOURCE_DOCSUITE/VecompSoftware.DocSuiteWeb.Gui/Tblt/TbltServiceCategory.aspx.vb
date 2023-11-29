@@ -14,6 +14,10 @@ Partial Class TbltServiceCategory
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         InitializeAjaxSettings()
 
         If Not Page.IsPostBack Then

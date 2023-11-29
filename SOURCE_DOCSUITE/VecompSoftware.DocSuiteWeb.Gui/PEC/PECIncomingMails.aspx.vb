@@ -1,18 +1,21 @@
-﻿Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
-Imports Newtonsoft.Json
-Imports System.Collections.Generic
+﻿Imports System.Collections.Generic
 Imports System.Linq
 Imports System.Text
-Imports VecompSoftware.DocSuiteWeb.Facade.PEC
+Imports System.Web
+Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
+Imports VecompSoftware.DocSuiteWeb.Facade.PEC
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Services.Logging
 Imports VecompSoftware.Helpers.Web
-Imports System.Web
 Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Services.Logging
+Imports VecompSoftware.DocSuiteWeb.DTO.WorkflowsElsa
+Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI
 
 Partial Public Class PECIncomingMails
     Inherits PECBasePage
@@ -217,6 +220,7 @@ Partial Public Class PECIncomingMails
 
             InitializeExternalTrashbin()
             SetColumnVisibility("PECIncomingMails", ProtocolEnv.PECInOutColumnsVisibility, dgMail)
+            InitializePECMailBoxIncluded()
             InitializeMailboxes()
             Initialize()
             SetFinderInForm()
@@ -226,6 +230,11 @@ Partial Public Class PECIncomingMails
             InitializeCollapsedSection()
             InitializeHandling()
             UpdatePECMailBoxInputColor()
+
+            If ProtocolEnv.PECMailInsertAuthorizationEnabled AndAlso Not Facade.DomainUserFacade.HasCurrentRight(CurrentDomainUser, DSWEnvironmentType.Protocol, DomainUserFacade.HasPECSendableRight) Then
+                cmdNewMail.Visible = False
+                cmdForward.Visible = False
+            End If
         End If
     End Sub
 
@@ -247,7 +256,7 @@ Partial Public Class PECIncomingMails
         chkDestinati.Style.Add("display", "none")
         chkDestinati.Checked = False
         ddlMailbox.InputCssClass = If(CurrentMailBox IsNot Nothing AndAlso CurrentMailBox.LoginError, "text-red", "text-black")
-
+        ddlPECMailBoxIncluded.Visible = "ALL".Eq(ddlMailbox.SelectedValue)
         InitializeCurrentMailBox()
         InitializeHandling()
         InitializeDestination()
@@ -262,6 +271,10 @@ Partial Public Class PECIncomingMails
         If selectedItem.ForeColor = Drawing.Color.Red Then
             ddlMailbox.InputCssClass = "text-red"
         End If
+    End Sub
+    Protected Sub ddlPECMailBoxIncluded_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles ddlPECMailBoxIncluded.SelectedIndexChanged
+        dgMail.DiscardFinder()
+        DataBindMailGrid()
     End Sub
 
     Private Sub dgMail_Init(sender As Object, e As EventArgs) Handles dgMail.Init
@@ -385,8 +398,12 @@ Partial Public Class PECIncomingMails
         With DirectCast(e.Item.FindControl("cmdViewDocs"), RadButton)
             .CommandArgument = item.Id.ToString()
             If ProtocolEnv.PECGridCheckActiveDocumentsEnabled Then
-                Dim chain As BiblosChainInfo = New BiblosChainInfo(entityItem.IDAttachments)
-                .Enabled = chain.HasActiveDocuments()
+                If entityItem.ProcessStatus <> PECMailProcessStatus.StoredInDocumentManager Then
+                    Dim chain As BiblosChainInfo = New BiblosChainInfo(entityItem.IDAttachments)
+                    .Enabled = chain.HasActiveDocuments()
+                Else
+                    .Enabled = True
+                End If
             End If
             If item.HasAttachments Then
                 .Image.ImageUrl = ImagePath.SmallEmailDocumentsAttach
@@ -400,10 +417,10 @@ Partial Public Class PECIncomingMails
             If item.Direction.HasValue Then
                 .Visible = True
                 If item.Direction.Value = PECMailDirection.Ingoing Then
-                    .ImageUrl = "../Prot/Images/Mail16_I.gif"
+                    .ImageUrl = "../App_Themes/DocSuite2008/imgset16/receiveMail.png"
                     .AlternateText = "Mail in ingresso"
                 ElseIf item.Direction.Value = PECMailDirection.Outgoing Then
-                    .ImageUrl = "../Prot/Images/Mail16_U.gif"
+                    .ImageUrl = "../App_Themes/DocSuite2008/imgset16/sendEmail.png"
                     .AlternateText = "Mail in uscita"
                 End If
             Else
@@ -671,7 +688,6 @@ Partial Public Class PECIncomingMails
 
 
     Protected Sub cmdDocuments_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdDocuments.Click
-        Dim selectedPecMails As IList(Of PECMail)
         If Not GetSelectedPecMail(Of Integer)(Function(f) GetSelectedPecMailIds(f), dgMail, CurrentPecMailIdList) Then
             Exit Sub
         End If
@@ -830,6 +846,7 @@ Partial Public Class PECIncomingMails
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, tblFilterDestinati)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlFilterLeft)
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlMailbox, pnlFilterRight)
+        AjaxManager.AjaxSettings.AddAjaxSetting(ddlPECMailBoxIncluded, dgMail, MasterDocSuite.AjaxDefaultLoadingPanel)
 
         AjaxManager.AjaxSettings.AddAjaxSetting(dgMail, dgMail, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(ddlMailbox, dgMail, MasterDocSuite.AjaxDefaultLoadingPanel)
@@ -896,6 +913,14 @@ Partial Public Class PECIncomingMails
 
     End Sub
 
+    Private Sub InitializePECMailBoxIncluded()
+        ddlPECMailBoxIncluded.Items.Clear()
+
+        ddlPECMailBoxIncluded.Items.Add(New RadComboBoxItem(EnumHelper.GetDescription(IncludedPECTypes.Unmanaged), CType(IncludedPECTypes.Unmanaged, Short).ToString()))
+        ddlPECMailBoxIncluded.Items.Add(New RadComboBoxItem(EnumHelper.GetDescription(IncludedPECTypes.Managed), CType(IncludedPECTypes.Managed, Short).ToString()) With {.Selected = True})
+        ddlPECMailBoxIncluded.Items.Add(New RadComboBoxItem(EnumHelper.GetDescription(IncludedPECTypes.Both), CType(IncludedPECTypes.Both, Short).ToString()))
+        ddlPECMailBoxIncluded.Visible = False
+    End Sub
     Private Sub InitializeCollapsedSection()
         If ProtocolEnv.CollapsePECHeaderEnabled Then
             collapseSection.Visible = True
@@ -916,7 +941,8 @@ Partial Public Class PECIncomingMails
             End If
             ddlMailbox.Items.Add(comboboxItem)
         Next
-        ddlMailbox.Items.Add(New RadComboBoxItem("Tutte", "ALL"))
+        ddlMailbox.Items.Add(New RadComboBoxItem("Tutte", "ALL") With {.Selected = CommonShared.HasGroupAdministratorRight})
+        ddlPECMailBoxIncluded.Visible = CommonShared.HasGroupAdministratorRight
 
         'Definisco il titolo in modo personalizzato
         ddlMailBoxLabel.InnerText = String.Format("Casella {0}", If(ProtocolBoxEnabled, "e-mail:", "PEC:"))
@@ -1007,9 +1033,11 @@ Partial Public Class PECIncomingMails
             If finder.MailboxIds.Length = 1 Then
                 ' una sola casella selezionata
                 ddlMailbox.SelectedValue = finder.MailboxIds(0).ToString()
+                ddlPECMailBoxIncluded.Visible = False
             Else
                 ' ALL
                 ddlMailbox.SelectedValue = "ALL"
+                ddlPECMailBoxIncluded.Visible = True
             End If
 
             If finder.Actives IsNot Nothing Then
@@ -1120,6 +1148,12 @@ Partial Public Class PECIncomingMails
         '' Imposta i filtri sulle caselle in modo coerente con le caselle di protocollazione
         If ddlMailbox.SelectedValue.Eq("ALL") Then
             Dim query As IEnumerable(Of PECMailBox) = MailBoxes.Where(Function(b) Facade.PECMailboxFacade.IsRealPecMailBox(b))
+            If ddlPECMailBoxIncluded.SelectedIndex = 1 Then
+                query = query.Where(Function(b) Not String.IsNullOrWhiteSpace(b.IncomingServerName))
+            End If
+            If ddlPECMailBoxIncluded.SelectedIndex = 0 Then
+                query = query.Where(Function(b) String.IsNullOrWhiteSpace(b.IncomingServerName))
+            End If
             If rdbShowRecorded.SelectedIndex = 1 AndAlso Not DocSuiteContext.Current.ProtocolEnv.VirtualPECMailBoxProtocolableEnabled Then
                 query = query.Where(Function(x) Not String.IsNullOrEmpty(x.IncomingServerName))
             End If

@@ -253,7 +253,7 @@ class TbltWorkflowStepGes {
         //items will be moved from datasource to combobox at first drop down select. This makes it impossible to set the 
         //current selection.
 
-        let keys: number[] = Object.keys(WorkflowAuthorizationType).filter(x => parseInt(x) >= 1).map(x => parseInt(x));
+        let keys: number[] = Object.keys(WorkflowAuthorizationType).filter(x => parseInt(x) >= 0).map(x => parseInt(x));
 
         for (let key of keys) {
             var item = new Telerik.Web.UI.RadComboBoxItem();

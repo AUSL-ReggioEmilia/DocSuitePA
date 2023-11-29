@@ -37,20 +37,20 @@
 </telerik:RadWindowManager>
 
 <asp:Panel runat="server" ID="pnlGridBarWorkflow">
-    <asp:Button runat="server" ID="btnWorkflow" Text="Prossimo Passo" />
+    <telerik:RadButton runat="server" ID="btnWorkflow" Text="Prossimo Passo" />
 </asp:Panel>
 <asp:Panel runat="server" ID="pnlGridBar">
     <DocSuite:PromptClickOnceButton id="btnAdd" runat="server" width="120px" text="Aggiungi" visible="False" />
     <DocSuite:PromptClickOnceButton id="btnRemove" runat="server" width="120px" text="Rimuovi" visible="False" />
-    <asp:button id="btnStampa" runat="server" width="120px" text="Stampa selezione" visible="False"></asp:button>
-    <asp:Button ID="btnDocuments" runat="server" Text="Visualizza documenti" Visible="False" Width="130px" />
-	<asp:button id="btnSelectAll" runat="server" width="120px" text="Seleziona tutti" visible="False" CausesValidation="false"></asp:button>
-	<asp:button id="btnDeselectAll" runat="server" width="120px" text="Annulla selezione" visible="False" CausesValidation="false"></asp:button>
-	<asp:button id="btnSetRead" runat="server" width="120px" text="Segna come letti" visible="False"></asp:button>
-    <asp:Button runat="server" ID="btnPubblicaWeb" Text="Pubblicazione Web" width="120px" Visible="False"  />&nbsp;
+    <telerik:RadButton id="btnStampa" runat="server" width="120px" text="Stampa selezione" visible="False"/>
+    <telerik:RadButton ID="btnDocuments" runat="server" Text="Visualizza documenti" Visible="False" Width="130px" />
+	<telerik:RadButton id="btnSelectAll" runat="server" width="120px" text="Seleziona tutti" visible="False" CausesValidation="false"/>
+	<telerik:RadButton id="btnDeselectAll" runat="server" width="120px" text="Annulla selezione" visible="False" CausesValidation="false"/>
+	<telerik:RadButton id="btnSetRead" runat="server" width="120px" text="Segna come letti" visible="False"/>
+    <telerik:RadButton runat="server" ID="btnPubblicaWeb" Text="Pubblicazione Web" width="120px" Visible="False"  />&nbsp;
 	<DocSuite:PromptClickOnceButton id="btnValida" runat="server" width="150px" text="Affari Generali parziale" visible="False" DisableAfterClick="True" ConfirmationMessage="Confermi L'Elenco Atti parziale?"/>
 </asp:Panel> 
 <asp:Panel runat="server" ID="pnlGridBarRegion">
-    <asp:Button runat="server" ID="btnShowRegion" Text="Solo Regioni" width="120px"  />
-    <asp:Button runat="server" ID="btnShowAll" Text="Tutti" width="120px" />&nbsp;
+    <telerik:RadButton runat="server" ID="btnShowRegion" Text="Solo Regioni" width="120px"  />
+    <telerik:RadButton runat="server" ID="btnShowAll" Text="Tutti" width="120px" />&nbsp;
 </asp:Panel>

@@ -3,66 +3,21 @@
 <Serializable()>
 Public Class Contact
     Inherits DomainObject(Of Int32)
-    Implements IAuditable, ISupportLogicDelete, ISupportRangeDelete, ISupportChanged
+    Implements IAuditable, ISupportBooleanLogicDelete, ISupportRangeDelete
 
 #Region " Fields "
-
-    Private _parent As Contact
-    Private _description As String
-    Private _code As String
-    Private _searchCode As String
-    Private _note As String
-    Private _isLocked As Nullable(Of Short)
-    Private _isNotExpandable As Nullable(Of Short)
-    Private _role As Role
-    Private _fullIncrementalPath As String
-    Private _registrationUser As String
-    Private _registrationDate As DateTimeOffset
-    Private _lastChangedUser As String
-    Private _lastChangedDate As DateTimeOffset?
-    Private _documents As IList(Of DocumentContact)
-    Private _protocols As IList(Of ProtocolContact)
-    Private _birthDate As Date?
-    Private _birthPlace As String
-    Private _contactTitle As ContactTitle
-    Private _address As Address
-    Private _fiscalCode As String
-    Private _telephoneNumber As String
-    Private _faxNumber As String
     Private _emailAddress As String
     Private _certifiedMail As String
-    Private _children As IList(Of Contact)
-    Private _roleUserIdRole As String
-    Private _roleRootContact As Role
-    Private _contactNames As IList(Of ContactName)
-    Private _sdiIdentification As String
-    Private _tenantContacts As IList(Of TenantContact)
-
-
 #End Region
 
 #Region " Properties "
 
-    Public Overridable Property ContactType() As ContactType
+    Public Overridable Property ContactType As ContactType
 
     <JsonIgnore()>
-    Public Overridable Property Parent() As Contact
-        Get
-            Return _parent
-        End Get
-        Set(ByVal value As Contact)
-            _parent = value
-        End Set
-    End Property
+    Public Overridable Property Parent As Contact
 
-    Public Overridable Property Description() As String
-        Get
-            Return _description
-        End Get
-        Set(ByVal value As String)
-            _description = value
-        End Set
-    End Property
+    Public Overridable Property Description As String
 
     Public Overridable ReadOnly Property DescriptionFormatByContactType() As String
         Get
@@ -136,50 +91,15 @@ Public Class Contact
         End Get
     End Property
 
-    Public Overridable Property Code() As String
-        Get
-            Return _code
-        End Get
-        Set(ByVal value As String)
-            _code = value
-        End Set
-    End Property
+    Public Overridable Property Code As String
 
-    Public Overridable Property SearchCode() As String
-        Get
-            Return _searchCode
-        End Get
-        Set(ByVal value As String)
-            _searchCode = value
-        End Set
-    End Property
+    Public Overridable Property SearchCode As String
 
-    Public Overridable Property FiscalCode() As String
-        Get
-            Return _fiscalCode
-        End Get
-        Set(ByVal value As String)
-            _fiscalCode = value
-        End Set
-    End Property
+    Public Overridable Property FiscalCode As String
 
-    Public Overridable Property TelephoneNumber() As String
-        Get
-            Return _telephoneNumber
-        End Get
-        Set(ByVal value As String)
-            _telephoneNumber = value
-        End Set
-    End Property
+    Public Overridable Property TelephoneNumber As String
 
-    Public Overridable Property FaxNumber() As String
-        Get
-            Return _faxNumber
-        End Get
-        Set(ByVal value As String)
-            _faxNumber = value
-        End Set
-    End Property
+    Public Overridable Property FaxNumber As String
 
     Public Overridable Property EmailAddress As String
         Get
@@ -200,181 +120,53 @@ Public Class Contact
         End Set
     End Property
 
-    Public Overridable Property Note() As String
-        Get
-            Return _note
-        End Get
-        Set(ByVal value As String)
-            _note = value
-        End Set
-    End Property
+    Public Overridable Property Note As String
 
-    Public Overridable Property IsActive() As Short Implements ISupportLogicDelete.IsActive
-    <JsonIgnore()> _
-    Public Overridable Property IsChanged As Short Implements ISupportChanged.IsChanged
+    Public Overridable Property IsActive As Boolean Implements ISupportBooleanLogicDelete.IsActive
 
-    Public Overridable Property ActiveFrom() As DateTime? Implements ISupportRangeDelete.ActiveFrom
+    Public Overridable Property isLocked As Short?
 
-    Public Overridable Property ActiveTo() As DateTime? Implements ISupportRangeDelete.ActiveTo
+    Public Overridable Property isNotExpandable As Short?
 
-    Public Overridable Property isLocked() As Nullable(Of Short)
-        Get
-            Return _isLocked
-        End Get
-        Set(ByVal value As Nullable(Of Short))
-            _isLocked = value
-        End Set
-    End Property
+    Public Overridable Property FullIncrementalPath As String
 
-    Public Overridable Property isNotExpandable() As Nullable(Of Short)
-        Get
-            Return _isNotExpandable
-        End Get
-        Set(ByVal value As Nullable(Of Short))
-            _isNotExpandable = value
-        End Set
-    End Property
-
-    Public Overridable Property FullIncrementalPath() As String
-        Get
-            Return _fullIncrementalPath
-        End Get
-        Set(ByVal value As String)
-            _fullIncrementalPath = value
-        End Set
-    End Property
-
-    <JsonIgnore()> _
-    Public Overridable ReadOnly Property Level() As String
+    <JsonIgnore()>
+    Public Overridable ReadOnly Property Level As String
         Get
             Dim array As String() = Split(FullIncrementalPath, "|")
             Return CType((array.Length - 1), String)
         End Get
     End Property
 
-    Public Overridable Property RegistrationUser() As String Implements IAuditable.RegistrationUser
-        Get
-            Return _registrationUser
-        End Get
-        Set(ByVal value As String)
-            _registrationUser = value
-        End Set
-    End Property
+    Public Overridable Property RegistrationUser As String Implements IAuditable.RegistrationUser
 
-    Public Overridable Property RegistrationDate() As DateTimeOffset Implements IAuditable.RegistrationDate
-        Get
-            Return _registrationDate
-        End Get
-        Set(ByVal value As DateTimeOffset)
-            _registrationDate = value
-        End Set
-    End Property
+    Public Overridable Property RegistrationDate As DateTimeOffset Implements IAuditable.RegistrationDate
 
     Public Overridable Property LastChangedUser As String Implements IAuditable.LastChangedUser
-        Get
-            Return _lastChangedUser
-        End Get
-        Set(ByVal value As String)
-            _lastChangedUser = value
-        End Set
-    End Property
 
     Public Overridable Property LastChangedDate As DateTimeOffset? Implements IAuditable.LastChangedDate
-        Get
-            Return _lastChangedDate
-        End Get
-        Set(ByVal value As DateTimeOffset?)
-            _lastChangedDate = value
-        End Set
-    End Property
 
-    Public Overridable Property Role() As Role
-        Get
-            Return _role
-        End Get
-        Set(ByVal value As Role)
-            _role = value
-        End Set
-    End Property
+    Public Overridable Property Role As Role
 
-    Public Overridable Property StudyTitle() As ContactTitle
-        Get
-            Return _contactTitle
-        End Get
-        Set(ByVal value As ContactTitle)
-            _contactTitle = value
-        End Set
-    End Property
+    Public Overridable Property StudyTitle As ContactTitle
 
-    Public Overridable Property BirthDate() As Date?
-        Get
-            Return _birthDate
-        End Get
-        Set(ByVal value As Date?)
-            _birthDate = value
-        End Set
-    End Property
+    Public Overridable Property BirthDate As Date?
 
-    Public Overridable Property BirthPlace() As String
-        Get
-            Return _birthPlace
-        End Get
-        Set(ByVal value As String)
-            _birthPlace = value
-        End Set
-    End Property
+    Public Overridable Property BirthPlace As String
 
-    Public Overridable Property Address() As Address
-        Get
-            Return _address
-        End Get
-        Set(ByVal value As Address)
-            _address = value
-        End Set
-    End Property
+    Public Overridable Property Address As Address
 
     <JsonIgnore()>
-    Public Overridable Property Protocols() As IList(Of ProtocolContact)
-        Get
-            Return _protocols
-        End Get
-        Set(ByVal value As IList(Of ProtocolContact))
-            _protocols = value
-        End Set
-    End Property
+    Public Overridable Property Protocols As IList(Of ProtocolContact)
 
     <JsonIgnore()>
-    Public Overridable Property TenantContacts() As IList(Of TenantContact)
-        Get
-            Return _tenantContacts
-        End Get
-        Set(ByVal value As IList(Of TenantContact))
-            _tenantContacts = value
-        End Set
-    End Property
+    Public Overridable Property Documents As IList(Of DocumentContact)
 
     <JsonIgnore()>
-    Public Overridable Property Documents() As IList(Of DocumentContact)
-        Get
-            Return _documents
-        End Get
-        Set(ByVal value As IList(Of DocumentContact))
-            _documents = value
-        End Set
-    End Property
+    Public Overridable Property Children As IList(Of Contact)
 
     <JsonIgnore()>
-    Public Overridable Property Children() As IList(Of Contact)
-        Get
-            Return _children
-        End Get
-        Set(ByVal value As IList(Of Contact))
-            _children = value
-        End Set
-    End Property
-
-    <JsonIgnore()>
-    Public Overridable ReadOnly Property HasChildren() As Boolean
+    Public Overridable ReadOnly Property HasChildren As Boolean
         Get
             If Children Is Nothing Then
                 Return False
@@ -383,43 +175,13 @@ Public Class Contact
         End Get
     End Property
 
-    Public Overridable Property RoleUserIdRole() As String
-        Get
-            Return _roleUserIdRole
-        End Get
-        Set(ByVal value As String)
-            _roleUserIdRole = value
-        End Set
-    End Property
-    Public Overridable Property RoleRootContact() As Role
-        Get
-            Return _roleRootContact
-        End Get
-        Set(ByVal value As Role)
-            _roleRootContact = value
-        End Set
-    End Property
+    Public Overridable Property RoleUserIdRole As String
 
-    <JsonIgnore()>
-    Public Overridable Property ContactNames() As IList(Of ContactName)
-        Get
-            Return _contactNames
-        End Get
-        Set(ByVal value As IList(Of ContactName))
-            _contactNames = value
-        End Set
-    End Property
+    Public Overridable Property RoleRootContact As Role
 
     <JsonIgnore()>
     Public Overridable Property ContactLists As IList(Of ContactList)
-    Public Overridable Property SDIIdentification() As String
-        Get
-            Return _sdiIdentification
-        End Get
-        Set(ByVal value As String)
-            _sdiIdentification = value
-        End Set
-    End Property
+    Public Overridable Property SDIIdentification As String
 #End Region
 
 #Region " Constructors "
@@ -476,7 +238,7 @@ Public Class Contact
     End Function
 
     Public Overridable Function IsActiveRange() As Boolean Implements ISupportRangeDelete.IsActiveRange
-        Return (Not ActiveFrom.HasValue AndAlso Not ActiveTo.HasValue) OrElse (ActiveFrom.Value < DateTime.Now AndAlso DateTime.Now < ActiveTo.Value)
+        Return IsActive = True
     End Function
 
     Public Shared Function EscapingJSON(contact As Contact, escaping As Func(Of String, String)) As Contact

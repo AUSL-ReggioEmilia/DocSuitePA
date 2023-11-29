@@ -11,7 +11,7 @@
     Error = UDDelete * 2,
     DocumentInsert = Error * 2,
     DocumentDelete = DocumentInsert * 2,
-    Workflow = DocumentInsert * 2,
+    Workflow = DocumentDelete * 2 ,
     Authorize = Workflow * 2,
     FolderInsert = Authorize * 2,
     FolderUpdate = FolderInsert * 2,

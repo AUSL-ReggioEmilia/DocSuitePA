@@ -29,7 +29,15 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows
         }
         #endregion
 
-        #region [ Methods ]        
+        #region [ Methods ]
+        public WorkflowProperty FindPropertyByActivityIdAndName(Guid idWorkflowActivity, string propertyName)
+        {
+            return WebAPIImpersonatorFacade.ImpersonateDao<WorkflowPropertyDao, WorkflowProperty, WorkflowProperty>(this.CurrentTenantConfiguration.Dao,
+            (impersonationType, dao) =>
+            {
+                return dao.FindPropertyByActivityIdAndName(idWorkflowActivity, propertyName);
+            });
+        }
         #endregion
     }
 }

@@ -11,8 +11,8 @@ Public Class IPARetriever
         FileLogger.Info(LogName.DirectoryServiceLog, String.Format("GetIpaEntities [{0}] [{1}]", ldapConnection, descriptionToFind))
         Dim listIpaEntities As New List(Of IPA)
         'Dim directoryEntry As New DirectoryEntry(ldapConnection, "", "", AuthenticationTypes.Anonymous)
-        ' **REMOVE** : dal Maggio 2012 l'autenticazione ai servizi ldap di DigitPA avviene viene utente e password 
-        ' DN:uid=assistenza**REMOVE**.it,o=utentildap  password: ZVACPNSDGQ()
+        ' Piccoli : dal Maggio 2012 l'autenticazione ai servizi ldap di DigitPA avviene viene utente e password 
+        ' DN:uid=assistenza@vecompsoftware.it,o=utentildap  password: ZVACPNSDGQ()
         Dim objectClassfilter As String = "(|(objectClass=amministrazione)(objectClass=organizationalUnit)(objectClass=aoo))"
         If Not objectClass Is Nothing Then
             Dim objectClassfilterTmp As String = ""
@@ -26,7 +26,7 @@ Public Class IPARetriever
         End If
         Dim directorySearcherFilter As String = String.Format("(&(description=*{0}*){1})", descriptionToFind, objectClassfilter)
         Try
-            Using directoryEntry As New DirectoryEntry(ldapConnection, "uid=assistenza**REMOVE**.it,o=utentildap", "ZVACPNSDGQ", AuthenticationTypes.None)
+            Using directoryEntry As New DirectoryEntry(ldapConnection, "uid=assistenza@vecompsoftware.it,o=utentildap", "ZVACPNSDGQ", AuthenticationTypes.None)
                 Using directorySearcher As New DirectorySearcher(directoryEntry)
                     If Not String.IsNullOrEmpty(descriptionToFind) Then
                         directorySearcher.Filter = directorySearcherFilter
@@ -76,7 +76,7 @@ Public Class IPARetriever
 
     Public Shared Function GetIpaChildEntities(ByVal ldappath As String) As List(Of IPA)
         Dim listIpaEntities As New List(Of IPA)
-        Using directoryEntry As New DirectoryEntry(ldappath, "uid=assistenza**REMOVE**.it,o=utentildap", "ZVACPNSDGQ", AuthenticationTypes.None)
+        Using directoryEntry As New DirectoryEntry(ldappath, "uid=assistenza@vecompsoftware.it,o=utentildap", "ZVACPNSDGQ", AuthenticationTypes.None)
             Using directorySearcher As New DirectorySearcher(directoryEntry)
                 directorySearcher.SearchScope = SearchScope.OneLevel
                 Using searchResults As SearchResultCollection = directorySearcher.FindAll()
@@ -95,7 +95,7 @@ Public Class IPARetriever
         FileLogger.Info(LogName.DirectoryServiceLog, String.Format("GetIpaEntities [{0}] [{1}]", ldapConnection, path))
         Dim ipaEnt As New IPA
         Try
-            Using directoryEntry As New DirectoryEntry(ldapConnection, "uid=assistenza**REMOVE**.it,o=utentildap", "ZVACPNSDGQ", AuthenticationTypes.None)
+            Using directoryEntry As New DirectoryEntry(ldapConnection, "uid=assistenza@vecompsoftware.it,o=utentildap", "ZVACPNSDGQ", AuthenticationTypes.None)
                 directoryEntry.Path = path
                 Using directorySearcher As New DirectorySearcher(directoryEntry)
                     Dim searchResults As SearchResult = directorySearcher.FindOne()

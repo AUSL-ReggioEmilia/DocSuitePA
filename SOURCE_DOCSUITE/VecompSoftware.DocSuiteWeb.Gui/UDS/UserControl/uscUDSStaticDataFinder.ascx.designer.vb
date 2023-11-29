@@ -104,13 +104,13 @@ Partial Public Class uscUDSStaticDataFinder
     Protected WithEvents txtDocumentName As Global.Telerik.Web.UI.RadTextBox
 
     '''<summary>
-    '''chkGenericDocument control.
+    '''rddlGenericDocument control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents chkGenericDocument As Global.System.Web.UI.WebControls.CheckBox
+    Protected WithEvents rddlGenericDocument As Global.Telerik.Web.UI.RadDropDownList
 
     '''<summary>
     '''chkStatus control.
@@ -119,5 +119,5 @@ Partial Public Class uscUDSStaticDataFinder
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents chkStatus As Global.System.Web.UI.WebControls.CheckBox
+    Protected WithEvents chkStatus As Global.Telerik.Web.UI.RadDropDownList
 End Class

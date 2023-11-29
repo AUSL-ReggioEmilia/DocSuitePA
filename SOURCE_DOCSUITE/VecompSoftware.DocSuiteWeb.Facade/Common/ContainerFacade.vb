@@ -29,7 +29,7 @@ Public Class ContainerFacade
         Dim pf As New ParameterFacade(_dbName)
         Dim parameter As Parameter = pf.GetAll()(0)
         container.Id = parameter.LastUsedIdContainer + 1
-        container.IsActive = 1
+        container.IsActive = True
         container.RegistrationDate = DateTimeOffset.UtcNow
         container.RegistrationUser = DocSuiteContext.Current.User.FullUserName
         If (pf.UpdateReplicateLastIdContainer(parameter.LastUsedIdContainer + 1, parameter.LastUsedIdContainer)) Then
@@ -97,7 +97,7 @@ Public Class ContainerFacade
         Return filtered
     End Function
 
-    Public Overloads Function GetSecurityGroupsContainerRights(ByVal type As String, ByVal securityGroups As IList(Of SecurityGroups), ByVal isActive As Short, ByVal rightPosition As DocumentContainerRightPositions, ByVal idContainer As Integer?) As IList(Of Container)
+    Public Overloads Function GetSecurityGroupsContainerRights(ByVal type As String, ByVal securityGroups As IList(Of SecurityGroups), ByVal isActive As Boolean, ByVal rightPosition As DocumentContainerRightPositions, ByVal idContainer As Integer?) As IList(Of Container)
         Return _dao.GetSecurityGroupsContainerRights(type, securityGroups, isActive, rightPosition, idContainer)
     End Function
 
@@ -106,7 +106,7 @@ Public Class ContainerFacade
         Return _dao.GetContainerExtensionRigths(type, groups, active, keyType, rights)
     End Function
 
-    Public Function GetAllRights(ByVal type As String, ByVal isActive As Short?) As IList(Of ContainerRightsDto)
+    Public Function GetAllRights(ByVal type As String, ByVal isActive As Boolean?) As IList(Of ContainerRightsDto)
         Return _dao.GetAllRights(type, isActive)
     End Function
 
@@ -115,15 +115,14 @@ Public Class ContainerFacade
     End Function
 
     Public Function GetContainerByName(ByVal description As String, ByVal isActive As Boolean) As IList(Of Container)
-        Dim status As Short = Convert.ToInt16(isActive)
-        Return _dao.GetContainerByName(description, status)
+        Return _dao.GetContainerByName(description, isActive)
     End Function
 
     Public Function IsAlmostOneConservationEnabled() As Boolean
         Return _dao.IsAlmostOneConservationEnabled()
     End Function
 
-    Public Function GetAllRightsDistinct(ByVal type As String, ByVal isActive As Short?) As IList(Of Container)
+    Public Function GetAllRightsDistinct(ByVal type As String, ByVal isActive As Boolean?) As IList(Of Container)
         Return _dao.GetAllRightsDistinct(type, isActive)
     End Function
 
@@ -132,22 +131,22 @@ Public Class ContainerFacade
         Return CommonShared.UserProtocolCheckRight(ProtocolContainerRightPositions.Insert) OrElse CommonShared.UserResolutionCheckRight(ResolutionRightPositions.Insert) OrElse CommonShared.UserUDSCheckRight(ProtocolContainerRightPositions.Insert)
     End Function
 
-    Public Function GetContainers(env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, Optional idProtocolType As Nullable(Of Short) = Nothing) As IList(Of Container)
+    Public Function GetContainers(env As DSWEnvironment, rightPosition As Integer?, active As Boolean?, Optional idProtocolType As Nullable(Of Short) = Nothing, Optional accounting As Boolean? = Nothing) As IList(Of Container)
         Dim rightPositions As List(Of Integer) = Nothing
         If rightPosition.HasValue Then
             rightPositions = New List(Of Integer)({rightPosition.Value})
         End If
-        Return GetContainers(env, rightPositions, active, idProtocolType)
+        Return GetContainers(env, rightPositions, active, idProtocolType, accounting)
     End Function
 
-    Public Function GetContainers(env As DSWEnvironment, rightPositions As List(Of Integer), active As Boolean?, Optional idProtocolType As Nullable(Of Short) = Nothing) As IList(Of Container)
+    Public Function GetContainers(env As DSWEnvironment, rightPositions As List(Of Integer), active As Boolean?, Optional idProtocolType As Nullable(Of Short) = Nothing, Optional accounting As Boolean? = Nothing) As IList(Of Container)
         Dim groups As IList(Of SecurityGroups) = FacadeFactory.Instance.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName)
         If groups.IsNullOrEmpty() Then
             Return Nothing
         End If
 
         Dim identifiers As List(Of Integer) = groups.Select(Function(g) g.Id).ToList()
-        Return _dao.GetContainersBySG(identifiers, env, rightPositions, active, idProtocolType)
+        Return _dao.GetContainersBySG(identifiers, env, rightPositions, active, idProtocolType, accounting)
     End Function
 
     Public Function GetContainers(domain As String, userName As String, env As DSWEnvironment, rightPosition As Integer?, active As Boolean?) As IList(Of Container)
@@ -209,19 +208,16 @@ Public Class ContainerFacade
         ' Recupero l'elenco dei contenitori su cui ho diritto di inserimento.
         Dim availableContainers As IList(Of Container) = GetContainers(DSWEnvironment.Protocol, ProtocolContainerRightPositions.Insert, True)
 
-        ' Recupero solo quelli ce non sono INVOICE.
-        Dim retval As IList(Of Container) = (From c In availableContainers Where Not c.IsInvoiceEnable).ToList()
-
         ' Se mancante aggiungo anche il contenitore corrente: è il caso di modifiche su protocolli in contenitori su cui non ho diritto di inserimento, ma solo di modifica.
-        If DocSuiteContext.Current.ProtocolEnv.EditLoadCurrentContainer AndAlso Not retval.Contains(currentContainer) Then
-            retval.Add(currentContainer)
+        If DocSuiteContext.Current.ProtocolEnv.EditLoadCurrentContainer AndAlso Not availableContainers.Contains(currentContainer) Then
+            availableContainers.Add(currentContainer)
         End If
 
         If Not String.IsNullOrEmpty(filter) Then
-            retval = FilterContainers(retval, filter)
+            availableContainers = FilterContainers(availableContainers, filter)
         End If
 
-        Return retval
+        Return availableContainers
     End Function
 
 

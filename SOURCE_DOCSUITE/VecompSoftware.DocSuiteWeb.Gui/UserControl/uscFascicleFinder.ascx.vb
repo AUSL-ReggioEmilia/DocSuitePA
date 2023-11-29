@@ -3,8 +3,10 @@ Imports System.Linq
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
+Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
 Imports VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders
+Imports VecompSoftware.Helpers.ExtensionMethods
 
 Partial Public Class uscFascicleFinder
     Inherits DocSuite2008BaseControl
@@ -107,6 +109,66 @@ Partial Public Class uscFascicleFinder
 
     Public Property CurrentMetadataValue As String
     Public Property CurrentMetadataValues As ICollection(Of MetadataFinderModel)
+
+    Public Property FinderCategoryId As Integer?
+        Get
+            If ViewState(String.Format("{0}_FinderCategoryId", ID)) IsNot Nothing Then
+                Return DirectCast(ViewState(String.Format("{0}_FinderCategoryId", ID)), Integer)
+            End If
+            Return Nothing
+        End Get
+        Set(ByVal value As Integer?)
+            ViewState(String.Format("{0}_FinderCategoryId", ID)) = value
+        End Set
+    End Property
+    Public Property FinderProcessId As Guid?
+        Get
+            If ViewState(String.Format("{0}_FinderProcessId", ID)) IsNot Nothing Then
+                Return DirectCast(ViewState(String.Format("{0}_FinderProcessId", ID)), Guid)
+            End If
+            Return Nothing
+        End Get
+        Set(ByVal value As Guid?)
+            ViewState(String.Format("{0}_FinderProcessId", ID)) = value
+        End Set
+    End Property
+
+    Public Property FinderProcessName As String
+        Get
+            If ViewState(String.Format("{0}_FinderProcessName", ID)) IsNot Nothing Then
+                Return DirectCast(ViewState(String.Format("{0}_FinderProcessName", ID)), String)
+            End If
+            Return Nothing
+        End Get
+        Set(ByVal value As String)
+            ViewState(String.Format("{0}_FinderProcessName", ID)) = value
+        End Set
+    End Property
+    Public Property FinderDossierFolderId As Guid?
+        Get
+            If ViewState(String.Format("{0}_FinderDossierFolderId", ID)) IsNot Nothing Then
+                Return DirectCast(ViewState(String.Format("{0}_FinderDossierFolderId", ID)), Guid)
+            End If
+            Return Nothing
+        End Get
+        Set(ByVal value As Guid?)
+            ViewState(String.Format("{0}_FinderDossierFolderId", ID)) = value
+        End Set
+    End Property
+
+    Public Property FinderDossierFolderName As String
+        Get
+            If ViewState(String.Format("{0}_FinderDossierFolderName", ID)) IsNot Nothing Then
+                Return DirectCast(ViewState(String.Format("{0}_FinderDossierFolderName", ID)), String)
+            End If
+            Return Nothing
+        End Get
+        Set(ByVal value As String)
+            ViewState(String.Format("{0}_FinderDossierFolderName", ID)) = value
+        End Set
+    End Property
+
+    Public Property DynamicMetadataEnabled As Boolean = False
 #End Region
 
 #Region "Events"
@@ -116,10 +178,18 @@ Partial Public Class uscFascicleFinder
             txtYear.Text = Date.Now.Year.ToString()
             rowContainer.Visible = False
 
+            uscCategoryRest.ShowProcesses = ProtocolEnv.ProcessEnabled
+            uscCategoryRest.HideTitle = True
+            uscCategoryRest.ProcessNodeSelectable = True
+            uscCategoryRest.AjaxRequestEnabled = True
+            uscCategoryRest.IsProcessActive = True
+            If ProtocolEnv.ProcessEnabled Then
+                uscCategoryRest.FascicleType = Model.Entities.Fascicles.FascicleType.Procedure
+                uscCategoryRest.ShowAuthorizedFascicolable = True
+            End If
             If DefaultCategoryId.HasValue Then
-                Dim currentCategory As Category = Facade.CategoryFacade.GetById(DefaultCategoryId.Value)
-                UscClassificatore1.DataSource = New List(Of Category) From {currentCategory}
-                UscClassificatore1.DataBind()
+                FinderCategoryId = DefaultCategoryId.Value
+                uscCategoryRest.DefaultCategoryId = DefaultCategoryId.Value
             End If
 
             If ProtocolEnv.FascicleContainerEnabled Then
@@ -136,51 +206,34 @@ Partial Public Class uscFascicleFinder
         uscMetadataRepositorySel.SetiContactVisibilityButton = False
     End Sub
 
-    Protected Sub OnCategoryAdded(ByVal sender As Object, ByVal e As EventArgs) Handles UscClassificatore1.CategoryAdded
-        VisibleCategorySearch = True
-        AjaxManager.ResponseScripts.Add("VisibleCategorySearch()")
+    Public Sub Category_EntityAdded(ByVal sender As Object, ByVal args As List(Of String)) Handles uscCategoryRest.EntityAdded
+        Dim entityType As String = args(0)
+        FinderCategoryId = Nothing
+        FinderProcessId = Nothing
+        FinderDossierFolderId = Nothing
+
+        Select Case entityType
+            Case "Category"
+                FinderCategoryId = Integer.Parse(args(1))
+            Case "Process"
+                FinderProcessId = Guid.Parse(args(1))
+                FinderProcessName = args(2)
+            Case "DossierFolder"
+                FinderDossierFolderId = Guid.Parse(args(1))
+                FinderDossierFolderName = args(2)
+        End Select
     End Sub
 
-    Protected Sub OnCategoryRemoved(ByVal sender As Object, ByVal e As EventArgs) Handles UscClassificatore1.CategoryRemoved
-        If Not UscClassificatore1.HasSelectedCategories Then
-            VisibleCategorySearch = False
-            AjaxManager.ResponseScripts.Add("HideCategorySearch()")
-        End If
-    End Sub
-
-    Protected Sub UscClassificatore1_CategoryAdding(sender As Object, args As EventArgs) Handles UscClassificatore1.CategoryAdding
-        UscClassificatore1.Year = Nothing
-        If Not String.IsNullOrEmpty(txtYear.Text) Then
-            UscClassificatore1.Year = Convert.ToInt32(txtYear.Text)
-        End If
-
-        UscClassificatore1.FromDate = Nothing
-        If txtStartDateFrom.SelectedDate.HasValue Then
-            UscClassificatore1.FromDate = txtStartDateFrom.SelectedDate.Value
-        End If
-
-        If txtEndDateFrom.SelectedDate.HasValue Then
-            If UscClassificatore1.FromDate Is Nothing OrElse UscClassificatore1.FromDate > txtEndDateFrom.SelectedDate Then
-                UscClassificatore1.FromDate = txtEndDateFrom.SelectedDate
-            End If
-        End If
-
-        UscClassificatore1.ToDate = Nothing
-        If txtStartDateTo.SelectedDate.HasValue Then
-            UscClassificatore1.ToDate = txtStartDateTo.SelectedDate.Value
-        End If
-
-        If txtEndDateTo.SelectedDate.HasValue Then
-            If UscClassificatore1.FromDate Is Nothing OrElse UscClassificatore1.ToDate > txtEndDateTo.SelectedDate Then
-                UscClassificatore1.ToDate = txtEndDateTo.SelectedDate
-            End If
-        End If
+    Public Sub Category_EntityRemoved(ByVal sender As Object, ByVal args As List(Of String)) Handles uscCategoryRest.EntityRemoved
+        FinderCategoryId = Nothing
+        FinderProcessId = Nothing
+        FinderDossierFolderId = Nothing
     End Sub
 #End Region
 
 #Region " Methods "
     Private Sub InitializeContainers()
-        Dim containers As ICollection(Of Container) = Facade.ContainerFacade.GetAllRightsDistinct("FASCICLE", Convert.ToInt16(True))
+        Dim containers As ICollection(Of Container) = Facade.ContainerFacade.GetAllRightsDistinct("FASCICLE", True)
         rdlContainers.DataSource = containers
         rdlContainers.DataBind()
         rdlContainers.Items.Insert(0, New DropDownListItem(String.Empty, String.Empty))
@@ -198,11 +251,15 @@ Partial Public Class uscFascicleFinder
 
         'Data Apertura
         finderModel.StartDateFrom = txtStartDateFrom.SelectedDate
-        finderModel.StartDateTo = txtStartDateTo.SelectedDate
+        If (txtStartDateTo.SelectedDate.HasValue) Then
+            finderModel.StartDateTo = txtStartDateTo.SelectedDate.Value.EndOfTheDay()
+        End If
         'Data chiusura
-        finderModel.EndDateFrom = txtEndDateFrom.SelectedDate
-        finderModel.EndDateTo = txtEndDateTo.SelectedDate
 
+        finderModel.EndDateFrom = txtEndDateFrom.SelectedDate
+        If (txtEndDateTo.SelectedDate.HasValue) Then
+            finderModel.EndDateTo = txtEndDateTo.SelectedDate.Value.EndOfTheDay()
+        End If
         'Oggetto
         finderModel.Subject = txtObjectProtocol.Text.Trim()
         Select Case rblClausola.SelectedValue
@@ -230,14 +287,28 @@ Partial Public Class uscFascicleFinder
         End If
 
         'Classificatore
-        If UscClassificatore1.HasSelectedCategories Then
-            finderModel.Classifications = UscClassificatore1.SelectedCategories.First().FullIncrementalPath
-            finderModel.IncludeChildClassifications = chbCategoryChild.Checked
+        If FinderCategoryId.HasValue Then
+            finderModel.Classifications = Facade.CategoryFacade.GetById(FinderCategoryId.Value).FullIncrementalPath
+        End If
+
+        If FinderProcessId.HasValue Then
+            finderModel.IdProcess = FinderProcessId.Value
+            finderModel.ProcessLabel = FinderProcessName
+        End If
+
+
+        If FinderDossierFolderId.HasValue Then
+            finderModel.IdDossierFolder = FinderDossierFolderId.Value
+            finderModel.DossierFolderLabel = FinderDossierFolderName
         End If
 
         'Settori
         If uscSettori.HasSelectedRole Then
             finderModel.Roles = uscSettori.RoleListAdded.ToList()
+        End If
+
+        If uscSettoriResp.HasSelectedRole Then
+            finderModel.MasterRole = uscSettoriResp.RoleListAdded.Single()
         End If
 
         ''INTEROP
@@ -254,6 +325,10 @@ Partial Public Class uscFascicleFinder
             finderModel.IdMetadataRepository = uscMetadataRepositorySel.CurrentMetadataRepository
             finderModel.MetadataValue = CurrentMetadataValue
             finderModel.MetadataValues = CurrentMetadataValues
+        End If
+
+        If uscMetadataRepositorySel.CurrentMetadataRepository IsNot Nothing Then
+            DynamicMetadataEnabled = True
         End If
 
         finderModel.ApplySecurity = ProtocolEnv.IsSecurityEnabled OrElse ProtocolEnv.SearchOnlyAuthorizedFasciclesEnabled

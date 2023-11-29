@@ -103,7 +103,7 @@ Public Class DocumentFacade
             Dim DocumentToken As DocumentToken = factory.DocumentTokenFacade.CreateDocumentToken(currentDocument.Year, currentDocument.Number)
             With DocumentToken
                 .IncrementalOrigin = 0
-                .IsActive = 0
+                .IsActive = False
                 .Response = String.Empty
                 .DocStep = documenttokens(0).DocStep
                 .SubStep = documenttokens(0).SubStep
@@ -135,7 +135,7 @@ Public Class DocumentFacade
             Dim documentToken As DocumentToken = factory.DocumentTokenFacade.CreateDocumentToken(currentDocument.Year, currentDocument.Number)
             With documentToken
                 .IncrementalOrigin = 0
-                .IsActive = 0
+                .IsActive = False
                 .Response = String.Empty
                 .DocStep = documenttokens(0).DocStep
                 .SubStep = documenttokens(0).SubStep

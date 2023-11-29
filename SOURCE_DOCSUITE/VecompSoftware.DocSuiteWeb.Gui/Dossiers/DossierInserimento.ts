@@ -69,6 +69,9 @@ class DossierInserimento extends DossierBase {
     rfvDossierTypeId: string;
     defaultCategoryId: number;
     _enumHelper: EnumHelper;
+    dossierTypologyEnabled: boolean;
+    rowDossierTypeKeyId: string;
+    rowDossierTypeValueId: string;
 
     private _serviceConfigurations: ServiceConfiguration[];
     private _dossierService: DossierService;
@@ -233,7 +236,13 @@ class DossierInserimento extends DossierBase {
         PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((instance) => instance.setToolbarVisibility(true));
 
         this._rcbDossierType = <Telerik.Web.UI.RadComboBox>$find(this.rcbDossierTypeId);
-        this.populateDossierTypeComboBox();
+        $(`#${this.rowDossierTypeKeyId}`).hide();
+        $(`#${this.rowDossierTypeValueId}`).hide();
+        if (this.dossierTypologyEnabled) {
+            this.populateDossierTypeComboBox();
+            $(`#${this.rowDossierTypeKeyId}`).show();
+            $(`#${this.rowDossierTypeValueId}`).show();
+        }
     }
 
     /**
@@ -448,7 +457,9 @@ class DossierInserimento extends DossierBase {
         containerModel.EntityShortId = Number(this._rdlContainer.get_selectedItem().get_value());
         model.Container = containerModel;
 
-        model.DossierType = DossierType[this._rcbDossierType.get_selectedItem().get_value()];
+        model.DossierType = this.dossierTypologyEnabled
+            ? DossierType[this._rcbDossierType.get_selectedItem().get_value()]
+            : DossierType[DossierType.Procedure];
 
         return model;
     }
@@ -461,7 +472,7 @@ class DossierInserimento extends DossierBase {
             let metadataJson: MetadataDesignerViewModel = JSON.parse(metadataRepository.JsonMetadata);
             setiIntegrationEnabledField = metadataJson.SETIFieldEnabled;
         }
-       
+
         if (!jQuery.isEmptyObject(uscDynamicMetadataRest)) {
             let metadatas: [string, string] = uscDynamicMetadataRest.bindModelFormPage(setiIntegrationEnabledField);
             if (!metadatas) {
@@ -531,13 +542,13 @@ class DossierInserimento extends DossierBase {
                     existedRoleCallback(existedRole);
                     newAddedRoles = newAddedRoles.filter(x => x.IdRole !== existedRole.IdRole);
                 }
-                    let dossierRoles: DossierRoleModel[] = newAddedRoles.map(x => <DossierRoleModel>{
-                        Role: x,
-                        IsMaster: toCheckControlId != this.uscRoleMasterId,
-                        AuthorizationRoleType: toCheckControlId != this.uscRoleMasterId
-                            ? AuthorizationRoleType.Responsible
-                            : AuthorizationRoleType.Accounted
-                    });
+                let dossierRoles: DossierRoleModel[] = newAddedRoles.map(x => <DossierRoleModel>{
+                    Role: x,
+                    IsMaster: toCheckControlId != this.uscRoleMasterId,
+                    AuthorizationRoleType: toCheckControlId != this.uscRoleMasterId
+                        ? AuthorizationRoleType.Responsible
+                        : AuthorizationRoleType.Accounted
+                });
                 for (let dossierRole of dossierRoles) {
                     this.dossierRolesList.push(dossierRole);
                 }

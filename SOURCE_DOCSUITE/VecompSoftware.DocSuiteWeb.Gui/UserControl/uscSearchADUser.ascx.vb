@@ -113,7 +113,7 @@ Public Class UscSearchADUser
         If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
             lbMultiDomain.Visible = True
 
-            Dim tenantModels As IList(Of TenantModel) = DocSuiteContext.Current.Tenants
+            Dim tenantModels As IList(Of TenantModel) = DocSuiteContext.Current.Tenants.ToList()
             lbMultiDomain.Items.Add(New ListItem("Tutti domini", "-"))
             For Each tenantModel As TenantModel In tenantModels
                 lbMultiDomain.Items.Add(New ListItem(tenantModel.DomainName, tenantModel.DomainAddress))
@@ -136,6 +136,19 @@ Public Class UscSearchADUser
         tvwContactDomain.Nodes(0).Selected = True
     End Sub
 
+    Protected Sub RadToolTipmanager_AjaxUpdate(sender As Object, e As ToolTipUpdateEventArgs)
+        Dim input As String = e.Value
+        Dim split = input.Split(New String() {"|"},
+                        StringSplitOptions.RemoveEmptyEntries)
+
+        For i As Integer = 0 To split.Length - 1
+            Dim htmlGenericControl As HtmlGenericControl = New HtmlGenericControl("SPAN")
+            htmlGenericControl.InnerText = split(i)
+            e.UpdatePanel.ContentTemplateContainer.Controls.Add(htmlGenericControl)
+            e.UpdatePanel.ContentTemplateContainer.Controls.Add(New HtmlGenericControl("HR"))
+        Next
+    End Sub
+
     Private Sub AddToTree(adUser As AccountModel)
         Dim node As New RadTreeNode()
         If String.IsNullOrEmpty(adUser.Email) Then
@@ -147,9 +160,21 @@ Public Class UscSearchADUser
         node.Attributes.Add("DisplayName", adUser.GetFullUserName())
         node.Attributes.Add("Description", adUser.Name)
         node.Attributes.Add("Domain", adUser.Domain)
+        node.Attributes.Add("TooltipText", GetTooltipText(adUser))
+        node.ImageUrl = "../App_Themes/DocSuite2008/imgset16/help.png"
+        RadToolTipManager.TargetControls.Add(node.ClientID, True)
 
         tvwContactDomain.Nodes(0).Nodes.Add(node)
     End Sub
+
+    Private Function GetTooltipText(adUser As AccountModel) As String
+        Dim firstName As String = $"Nome: {adUser.FirstName}"
+        Dim lastName As String = $"Cognome: {adUser.LastName}"
+        Dim email As String = $"Email: {adUser.Email}"
+        Dim principale As String = $"Principale: {adUser.UserPrincipalName}"
+
+        Return $"{firstName}|{lastName}|{email}|{principale}"
+    End Function
 
     Private Function GetCurrentUserEmail(account As String, domain As String, currentUserAdMail As String) As String
         Dim mail As String = String.Empty

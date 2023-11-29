@@ -42,7 +42,7 @@
 	}]
 }, {
 	"Description": "Protocollo",
-	"IconUrl": "../Comm/Images/DocSuite/Protocollo16.gif",
+	"IconUrl": "../Comm/Images/DocSuite/Protocollo16.png",
 	"Environment": 1,
 	"ItemType": 1,
 	"ReportItems": [{

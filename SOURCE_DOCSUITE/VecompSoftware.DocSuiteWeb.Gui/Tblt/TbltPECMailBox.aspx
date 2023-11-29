@@ -17,27 +17,51 @@
                         tbltPECMailBox.ToolBarSearchId = "<%= ToolBarSearch.ClientID %>";
                         tbltPECMailBox.rtvPECMailBoxesId = "<%=rtvPECMailBoxes.ClientID %>";
                         tbltPECMailBox.rpbDetailsId = "<%= rpbDetails.ClientID %>";
-                        tbltPECMailBox.lblPECMailBoxIdId = "<%= lblPECMailBoxId.ClientID %>";
                         tbltPECMailBox.lblMailBoxRecipientId = "<%= lblMailBoxRecipient.ClientID %>";
                         tbltPECMailBox.lblIncomingServerId = "<%= lblIncomingServer.ClientID %>";
                         tbltPECMailBox.lblOutgoingServerId = "<%= lblOutgoingServer.ClientID %>";
                         tbltPECMailBox.lblRulesetNameId = "<%= lblRulesetName.ClientID %>";
                         tbltPECMailBox.lblRulesetConditionId = "<%= lblRulesetCondition.ClientID %>";
                         tbltPECMailBox.lblRulesetTypeId = "<%= lblRulesetType.ClientID %>";
-                        tbltPECMailBox.btnPECMailBoxSetRuleId = "<%= btnPECMailBoxSetRule.ClientID %>";
                         tbltPECMailBox.windowSetRuleId = "<%= windowSetRule.ClientID %>";
+                        tbltPECMailBox.windowInsertId = "<%= windowInsert.ClientID %>";
                         tbltPECMailBox.txtRulesetNameId = "<%= txtRulesetName.ClientID %>";
                         tbltPECMailBox.txtSpecifySenderId = "<%= txtSpecifySender.ClientID %>";
                         tbltPECMailBox.rlbSpecifyPECMailBoxId = "<%= rlbSpecifyPECMailBox.ClientID %>";
                         tbltPECMailBox.btnPECMAilBoxSaveId = "<%= btnPECMAilBoxSave.ClientID %>";
-                        tbltPECMailBox.cmdUpdatePECId = "<%= cmdUpdatePEC.ClientID %>";
-                        tbltPECMailBox.cmdAddPECMailBoxId = "<%= cmdAddPECMailBox.ClientID %>";
                         tbltPECMailBox.uscPECMailBoxSettingsId = "<%= uscPECMailBoxSettings.PageContent.ClientID %>";
-                        tbltPECMailBox.hfPECMailBoxIdId = "<%= uscPECMailBoxSettings.PECMailBoxId.ClientID %>";
+                        tbltPECMailBox.uscPECMailBoxSettingsInsertId = "<%= uscPECMailBoxSettingsInsert.PageContent.ClientID %>";
+                        tbltPECMailBox.folderToolBarId = "<%= FolderToolBar.ClientID %>";
+                        tbltPECMailBox.lblUsernameId = "<%= lblUsername.ClientID %>";
+                        tbltPECMailBox.lblServerTypeId = "<%= lblServerType.ClientID %>";
+                        tbltPECMailBox.lblOUTPortId = "<%= lblOUTPort.ClientID %>";
+                        tbltPECMailBox.lblProfileId = "<%= lblProfile.ClientID %>";
+                        tbltPECMailBox.lblJeepServINId = "<%= lblJeepServIN.ClientID %>";
+                        tbltPECMailBox.lblJeepServOUTId = "<%= lblJeepServOUT.ClientID %>";
+                        tbltPECMailBox.lblElectronicTypeId = "<%= lblElectronicType.ClientID %>";
+                        tbltPECMailBox.lblINPortId = "<%= lblINPort.ClientID%>";
+                        tbltPECMailBox.lblLocationId = "<%= lblLocation.ClientID%>";
+                        tbltPECMailBox.lblIsInteropId = "<%=lblIsInterop.ClientID%>";
+                        tbltPECMailBox.lblIsProtocolId = "<%=lblIsProtocol.ClientID%>";
+                        tbltPECMailBox.lblIsPublicProtocolId = "<%=lblIsPublicProtocol.ClientID%>";
+                        tbltPECMailBox.lblINSSLId = "<%=lblINSSL.ClientID%>";
+                        tbltPECMailBox.lblOUTSSLId = "<%=lblOUTSSL.ClientID%>";
+                        tbltPECMailBox.lblIsManagedId = "<%=lblIsManaged.ClientID%>";
+                        tbltPECMailBox.lblIsNotManagedId = "<%=lblIsNotManaged.ClientID%>";
+                        tbltPECMailBox.lblIsHandleEnabledId = "<%=lblIsHandleEnabled.ClientID%>";
+                        tbltPECMailBox.treeViewNodesPageSize = <%= ProtocolEnv.TreeViewNodesPageSize %>;
+                        tbltPECMailBox.viewLoginError = "<%=ViewLoginError %>"
+
                         tbltPECMailBox.initialize();
                     });
                 });
         </script>
+
+        <style type="text/css">
+            #ctl00_cphContent_rtvPECMailBoxes {
+                height: 88%;
+            }
+        </style>
     </telerik:RadScriptBlock>
 </asp:Content>
 
@@ -94,6 +118,14 @@
                     </table>
                 </ContentTemplate>
             </telerik:RadWindow>
+
+            <telerik:RadWindow runat="server" ID="windowInsert" Title="Aggiungi PEC" Width="600" Height="600px" Behaviors="Maximize,Close,Resize">
+                <ContentTemplate>
+                    <div id="insertPEC">
+                        <usc:uscPECMailBoxSettings runat="server" ID="uscPECMailBoxSettingsInsert" />
+                    </div>
+                </ContentTemplate>
+            </telerik:RadWindow>
         </Windows>
     </telerik:RadWindowManager>
 
@@ -102,10 +134,10 @@
     <div class="splitterWrapper">
         <telerik:RadSplitter runat="server" ID="splitterMain" Width="100%" ResizeWithParentPane="False" Height="100%">
             <telerik:RadPane runat="server" ID="paneSelection" Width="50%" Height="100%" Scrolling="None">
-                <telerik:RadSplitter runat="server" Height="100%" Width="100%" Orientation="Horizontal">
-                    <telerik:RadPane runat="server" Height="100%" Width="100%" Scrolling="Y">
+                <telerik:RadSplitter runat="server" ID="RadSplitter1" Width="100%" Height="100%">
+                    <telerik:RadPane runat="server" Width="100%" Height="100%" Scrolling="None" ID="Pane1">
                         <%--OnButtonClick=""--%>
-                        <telerik:RadToolBar AutoPostBack="false" CssClass="ToolBarContainer" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" ID="ToolBarSearch" runat="server" Width="100%">
+                        <telerik:RadToolBar AutoPostBack="False" ID="ToolBarSearch" RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" runat="server" Width="100%">
                             <Items>
                                 <telerik:RadToolBarButton Value="searchName">
                                     <ItemTemplate>
@@ -113,10 +145,20 @@
                                     </ItemTemplate>
                                 </telerik:RadToolBarButton>
                                 <telerik:RadToolBarButton IsSeparator="true" />
-                                <telerik:RadToolBarButton Text="Cerca" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
+                                <telerik:RadToolBarButton Text="Caselle PEC in errore" CheckOnClick="true" Checked="false" Value="mailboxError" Group="mailboxErrorGroup" AllowSelfUnCheck ="true"/>
+                                <telerik:RadToolBarButton Text="Includi non gestite" CheckOnClick="true" Checked="false" Value="notHandled" Group="notHandledGroup" AllowSelfUnCheck ="true"/>
+                                <telerik:RadToolBarButton IsSeparator="true" />
+                                <telerik:RadToolBarButton Text="Cerca" Value="searchMailbox" ImageUrl="~/App_Themes/DocSuite2008/images/search-transparent.png" />
                             </Items>
                         </telerik:RadToolBar>
-                        <telerik:RadTreeView ID="rtvPECMailBoxes" runat="server" Style="margin-top: 10px;" Width="100%">
+
+                        <telerik:RadToolBar AutoPostBack="false" EnableRoundedCorners="False" EnableShadows="False" ID="FolderToolBar" runat="server" Width="100%" RenderMode="Lightweight">
+                            <Items>
+                                <telerik:RadToolBarButton ToolTip="Aggiungi" CheckOnClick="false" Checked="false" Value="create" Text="Aggiungi" ImageUrl="~/App_Themes/DocSuite2008/imgset16/Add_Folder.png" />
+                                <telerik:RadToolBarButton ToolTip="Modifica" CheckOnClick="false" Checked="false" Value="modify" Text="Modifica" ImageUrl="~/App_Themes/DocSuite2008/imgset16/modify_folder.png" />
+                            </Items>
+                        </telerik:RadToolBar>
+                        <telerik:RadTreeView ID="rtvPECMailBoxes" LoadingStatusPosition="BeforeNodeText" PersistLoadOnDemandNodes="false" runat="server" Style="margin-top: 10px;" Width="100%" Height="88%">
                             <Nodes>
                                 <telerik:RadTreeNode Expanded="true" NodeType="Root" Selected="true" runat="server" Font-Bold="true" Text="Caselle PEC" Value="" />
                             </Nodes>
@@ -134,73 +176,135 @@
                             <Items>
                                 <telerik:RadPanelItem Value="rpiDetails" Text="Dettagli" Expanded="true" runat="server">
                                     <ContentTemplate>
-                                        <table id="PECMailBoxWindowTable" class="datatable pec" style="height: 100%; margin-bottom: 0; table-layout: fixed">
-                                            <tr style="display: none">
-                                                <td>
-                                                    <asp:Label ID="lblPECMailBoxId" runat="server" Width="100%" ReadOnly="true"
-                                                        Visible="true" ClientIDMode="Static" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="label">Nome Casella PEC</td>
-                                                <td>
-                                                    <asp:Label ID="lblMailBoxRecipient" runat="server" Width="90%" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="label">Informazioni server ingoing</td>
-                                                <td>
-                                                    <asp:Label ID="lblIncomingServer" runat="server" Width="90%" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="label">Informazioni server outgoing</td>
-                                                <td>
-                                                    <asp:Label ID="lblOutgoingServer" runat="server" Width="90%" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="label">Nome regola</td>
-                                                <td>
-                                                    <asp:Label ID="lblRulesetName" runat="server" Width="90%" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="label">Condizione regola</td>
-                                                <td>
-                                                    <asp:Label ID="lblRulesetCondition" runat="server" Width="90%" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="label">Tipo di regola</td>
-                                                <td>
-                                                    <asp:Label ID="lblRulesetType" runat="server" Width="90%" />
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2" class="buttons">
-                                                    <telerik:RadButton ID="btnPECMailBoxSetRule" runat="server" Text="Imposta regola" Width="100px" AutoPostBack="false" Enabled="False" />
-                                                </td>
-                                            </tr>
-                                        </table>
+                                        <asp:Panel runat="server">
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>Nome Casella PEC:</b>
+                                                    <asp:Label runat="server" ID="lblMailBoxRecipient"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>Nome utente:</b>
+                                                    <asp:Label runat="server" ID="lblUsername"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>Casella interoperabile:</b>
+                                                    <asp:Label runat="server" ID="lblIsInterop"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>Casella di protocollazione:</b>
+                                                    <asp:Label runat="server" ID="lblIsProtocol"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-10 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>Casella di protocollazione pubblic:</b>
+                                                    <asp:Label runat="server" ID="lblIsPublicProtocol"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>Location:</b>
+                                                    <asp:Label runat="server" ID="lblLocation"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>Tipo server ingoing:</b>
+                                                    <asp:Label runat="server" ID="lblServerType"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>Informazioni server ingoing:</b>
+                                                    <asp:Label runat="server" ID="lblIncomingServer"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>Porta ingoing:</b>
+                                                    <asp:Label runat="server" ID="lblINPort"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>IN: SSL:</b>
+                                                    <asp:Label runat="server" ID="lblINSSL"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>OUT: SSL: </b>
+                                                    <asp:Label runat="server" ID="lblOUTSSL"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>Informazioni server outgoing:</b>
+                                                    <asp:Label runat="server" ID="lblOutgoingServer"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>Porta outgoing:</b>
+                                                    <asp:Label runat="server" ID="lblOUTPort"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>Gestita:</b>
+                                                    <asp:Label runat="server" ID="lblIsManaged"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>Non gestita: </b>
+                                                    <asp:Label runat="server" ID="lblIsNotManaged"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>Profilo:</b>
+                                                    <asp:Label runat="server" ID="lblProfile"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>Abilita presa in carico:</b>
+                                                    <asp:Label runat="server" ID="lblIsHandleEnabled"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>JeepService Associato ingoing:</b>
+                                                    <asp:Label runat="server" ID="lblJeepServIN"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>JeepService Associato outgoing:</b>
+                                                    <asp:Label runat="server" ID="lblJeepServOUT"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>Nome regola:</b>
+                                                    <asp:Label runat="server" ID="lblRulesetName"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>Condizione regola:</b>
+                                                    <asp:Label runat="server" ID="lblRulesetCondition"></asp:Label>
+                                                </div>
+                                            </div>
+                                            <div class="col-dsw-5 dsw-align-left">
+                                                <div class="col-dsw-10">
+                                                    <b>Tipologia di fatturazione elettronica:</b>
+                                                    <asp:Label runat="server" ID="lblElectronicType"></asp:Label>
+                                                </div>
+                                                <div class="col-dsw-10">
+                                                    <b>Tipo di regola:</b>
+                                                    <asp:Label runat="server" ID="lblRulesetType"></asp:Label>
+                                                </div>
+                                            </div>
+                                        </asp:Panel>
                                     </ContentTemplate>
                                 </telerik:RadPanelItem>
                             </Items>
                         </telerik:RadPanelBar>
                     </div>
                 </asp:Panel>
+                <asp:Panel runat="server">
+                    <usc:uscPECMailBoxSettings runat="server" ID="uscPECMailBoxSettings" />
+                </asp:Panel>
             </telerik:RadPane>
         </telerik:RadSplitter>
     </div>
 
-</asp:Content>
-
-<asp:Content runat="server" ContentPlaceHolderID="cphFooter">
-    <asp:Panel ID="pnlButtons" runat="server">
-        <asp:Button ID="cmdUpdatePEC" runat="server" Text="Modifica casella PEC" Width="150" />
-        <asp:Button ID="cmdAddPECMailBox" runat="server" Text="Aggiungi casella PEC" Width="150" />
-    </asp:Panel>
-    <asp:Panel runat="server" ID="pnlPECMailBoxSettings">
-        <usc:uscPECMailBoxSettings runat="server" ID="uscPECMailBoxSettings" />
-    </asp:Panel>
 </asp:Content>

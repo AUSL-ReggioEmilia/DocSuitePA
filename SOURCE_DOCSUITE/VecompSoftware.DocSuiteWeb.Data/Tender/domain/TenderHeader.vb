@@ -2,9 +2,21 @@
     Inherits DomainObject(Of Guid)
     Implements IAuditable
 
+    Private _documentSeriesItem As DocumentSeriesItem
+
     Public Overridable Property IdResolution As Integer?
 
     Public Overridable Property DocumentSeriesItem As DocumentSeriesItem
+        Get
+            Return _documentSeriesItem
+        End Get
+        Set(value As DocumentSeriesItem)
+            _documentSeriesItem = value
+            UniqueIdDocumentSeriesItem = value.UniqueId
+        End Set
+    End Property
+
+    Public Overridable Property UniqueIdDocumentSeriesItem As Guid?
 
     Public Overridable Property Title As String
 

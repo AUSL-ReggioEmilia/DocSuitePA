@@ -22,12 +22,6 @@ Partial Class CommUtenti
         End Get
     End Property
 
-    Private ReadOnly Property CurrentTenantId As Guid?
-        Get
-            Return Request.QueryString.GetValueOrDefault(Of Guid?)("TenantId", Nothing)
-        End Get
-    End Property
-
     Private ReadOnly Property TablePrint() As DSTable
         Get
             If _tablePrint Is Nothing Then
@@ -59,12 +53,7 @@ Partial Class CommUtenti
         End If
 
         'Recupero tutti i gruppi del ruolo
-        Dim role As Role
-        If CurrentTenantId.HasValue Then
-            role = Facade.RoleFacade.GetByIdAndTenant(IDRole.Value, CurrentTenantId.Value)
-        Else
-            role = Facade.RoleFacade.GetById(IDRole.Value)
-        End If
+        Dim role As Role = Facade.RoleFacade.GetById(IDRole.Value)
 
         If role IsNot Nothing Then
             For Each roleGroup As RoleGroup In role.RoleGroups

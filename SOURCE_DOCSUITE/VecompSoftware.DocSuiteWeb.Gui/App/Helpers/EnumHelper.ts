@@ -23,6 +23,7 @@ import WorkflowAuthorizationType = require("App/Models/Workflows/WorkflowAuthori
 import DossierType = require("App/Models/Dossiers/DossierType");
 import DossierStatus = require("App/Models/Dossiers/DossierStatus");
 import WorkflowValidationRulesType = require("App/Models/Commons/WorkflowValidationRulesType");
+import RoleUserType = require("App/Models/RoleUsers/RoleUserType");
 
 class EnumHelper {
 
@@ -297,6 +298,18 @@ class EnumHelper {
                 return "";
             }
         }
+    }
+
+    getPECMailDirection(direction: string): PECMailDirection {
+        if (direction) {
+            if (direction == "Incoming") {
+                return PECMailDirection.Incoming;
+            }
+            if (direction == "Outgoing") {
+                return PECMailDirection.Outgoing;
+            }
+        }
+        return null;
     }
 
     getInvoiceTypeDescription(invoiceType: string, pecInvoiceDirection: PECMailDirection): string {
@@ -619,6 +632,10 @@ class EnumHelper {
                 return "GenerateReport";
             case ActivityAction.CopyFascicleContents:
                 return "CopyFascicleContents";
+            case ActivityAction.UpdateProtocol:
+                return "UpdateProtocol";
+            case ActivityAction.Authorize:
+                return "Authorize";
             default: {
                 return "";
             }
@@ -668,6 +685,8 @@ class EnumHelper {
 
     getWorkflowAuthorizationType(type: WorkflowAuthorizationType): string {
         switch (type) {
+            case WorkflowAuthorizationType.None:
+                return "Nessuno";
             case WorkflowAuthorizationType.AllRoleUser:
                 return "AllRoleUser";
             case WorkflowAuthorizationType.AllSecretary:
@@ -690,6 +709,12 @@ class EnumHelper {
                 return "MappingTags";
             case WorkflowAuthorizationType.AllDematerialisationManager:
                 return "AllDematerialisationManager";
+            case WorkflowAuthorizationType.AllProtocolSecurityUsers:
+                return "AllProtocolSecurityUsers";
+            case WorkflowAuthorizationType.AllUDSSecurityUsers:
+                return "AllUDSSecurityUsers";
+            case WorkflowAuthorizationType.AllPECMailBoxRoleUser:
+                return "AllPECMailBoxRoleUser";
             default:
                 return "";
         }
@@ -831,6 +856,42 @@ class EnumHelper {
             }
         }
     }
+
+    getRoleUserTypeDescription(type: string): string {
+        switch (<RoleUserType>RoleUserType[type.toString()]) {
+            case RoleUserType.RP: {
+                return "Responsabile di procedimento";
+            }
+            case RoleUserType.SP: {
+                return "Segreteria di procedimento";
+            }
+            case RoleUserType.M: {
+                return "Manager di protocollo";
+            }
+            case RoleUserType.U: {
+                return "Utente di protocollo";
+            }
+            case RoleUserType.D: {
+                return "Direttori";
+            }
+            case RoleUserType.V: {
+                return "Vice-Direttori";
+            }
+            case RoleUserType.S: {
+                return "Segreteria";
+            }
+            case RoleUserType.X: {
+                return "Nessun ruolo in collaborazione";
+            }
+            case RoleUserType.MP: {
+                return "Responsabili privacy";
+            }
+            default: {
+                return type;
+            }
+        }
+    }
+
 
     /**
      * Returns the correct enum value as number from input of type number | string | misspelled-string | number-as-string

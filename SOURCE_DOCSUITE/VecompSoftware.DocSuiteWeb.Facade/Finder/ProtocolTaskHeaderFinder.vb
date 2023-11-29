@@ -50,7 +50,16 @@ Public Class ProtocolTaskHeaderFinder
         DecorateCriteria(criteria)
         SetProjectionHeaders(criteria)
         AttachSortExpressions(criteria)
-        result = criteria.List(Of ProtocolHeader)()
+        Using transaction As ITransaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadUncommitted)
+            Try
+                result = criteria.List(Of ProtocolHeader)()
+                transaction.Commit()
+            Catch ex As Exception
+                transaction.Rollback()
+                Throw
+            End Try
+        End Using
+
         Dim conversion As IList(Of ProtocolHeader) = New List(Of ProtocolHeader)(result.Count)
         For Each a As ProtocolHeader In result
             a.RegistrationDate = a.RegistrationDate.ToLocalTime()

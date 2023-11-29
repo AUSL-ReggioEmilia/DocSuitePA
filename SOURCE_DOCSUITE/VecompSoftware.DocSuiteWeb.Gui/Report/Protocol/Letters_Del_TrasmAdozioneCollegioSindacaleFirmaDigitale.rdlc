@@ -389,7 +389,7 @@
                   <Paragraph>
                     <TextRuns>
                       <TextRun>
-                        <Value>="OGGETTO: Trasmissione delle &lt;B&gt;deliberazioni&lt;/B&gt; adottate da " &amp; Parameters!HeadingLetter.Value &amp; " con funzioni di Direttore Generale, in data &lt;B&gt;" &amp; Parameters!DataAdozioneDa.Value &amp; "&lt;/B&gt;."</Value>
+                        <Value>="OGGETTO: Trasmissione delle &lt;B&gt;deliberazioni&lt;/B&gt; adottate in data &lt;B&gt;" &amp; Parameters!DataAdozioneDa.Value &amp; "&lt;/B&gt;."</Value>
                         <MarkupType>HTML</MarkupType>
                         <Style>
                           <FontFamily>Calibri</FontFamily>
@@ -983,6 +983,9 @@ ASL Città di Torino</Value>
                     <GroupExpressions>
                       <GroupExpression>=Fields!Container_ID.Value</GroupExpression>
                     </GroupExpressions>
+                    <PageBreak>
+                      <BreakLocation>Between</BreakLocation>
+                    </PageBreak>
                   </Group>
                   <SortExpressions>
                     <SortExpression>

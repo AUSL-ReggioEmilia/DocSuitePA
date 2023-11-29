@@ -28,7 +28,7 @@ Public Class NHibernatePosteOnlineAccountDao
             rolesId(i) = roles(i).Id
         Next
         criteria.Add(Expression.In("R.Id", rolesId))
-        criteria.Add(Restrictions.Eq("R.IsActive", 1S))
+        criteria.Add(Restrictions.Eq("R.IsActive", True))
 
         Return criteria.List(Of POLAccount)()
     End Function

@@ -6,7 +6,7 @@
 <%@ Register Src="~/UserControl/uscRoleRest.ascx" TagName="uscRoleRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscMetadataRepositorySel.ascx" TagName="uscMetadataRepositorySel" TagPrefix="usc" %>
-<%@ Register Src="~/UserControl/uscDynamicMetadata.ascx" TagName="uscDynamicMetadata" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscDynamicMetadataRest.ascx" TagName="uscDynamicMetadataRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscCustomActionsRest.ascx" TagName="uscCustomActionsRest" TagPrefix="usc" %>
 
 <telerik:RadScriptBlock runat="server" EnableViewState="false">
@@ -26,6 +26,7 @@
                 uscFascicleInsert.contattiRespRowId = "<%= contattiRespRow.ClientID %>";
                 uscFascicleInsert.activityFascicleEnabled = JSON.parse("<%=ProtocolEnv.ActivityFascicleEnabled%>".toLowerCase());
                 uscFascicleInsert.isMasterRowId = "<%= isMasterRow.ClientID %>";
+                uscFascicleInsert.isRoleRowId = "<%= isRoleRow.ClientID %>";
                 uscFascicleInsert.uscClassificatoreId = "<%= uscClassificatore.MainContent.ClientID%>";
                 uscFascicleInsert.uscRoleMasterId = "<%= uscRoleMaster.TableContentControl.ClientID %>";
                 uscFascicleInsert.uscRoleId = "<%= uscRole.TableContentControl.ClientID %>";
@@ -33,7 +34,7 @@
                 uscFascicleInsert.txtNoteId = "<%= txtNote.ClientID %>";
                 uscFascicleInsert.radStartDateId = "<%= radStartDate.ClientID%>";
                 uscFascicleInsert.txtConservationId = "<%= txtConservation.ClientID %>";
-                uscFascicleInsert.uscOggettoId = "<%= uscObject.PanelControl.ClientID %>";
+                uscFascicleInsert.txtObjectId = "<%= txtObject.ClientID%>";
                 uscFascicleInsert.pnlConservationId = "<%= pnlConservation.ClientID%>";
                 uscFascicleInsert.fasciclesPanelVisibilities = <%=FasciclesPanelVisibilities%>;
                 uscFascicleInsert.rowStartDateId = "<%= rowStartDate.ClientID %>";
@@ -42,7 +43,7 @@
                 uscFascicleInsert.metadataRepositoryEnabled = JSON.parse("<%=ProtocolEnv.MetadataRepositoryEnabled%>".toLowerCase());
                 uscFascicleInsert.metadataRepositoryRowId = "<%= metadataRepositoryRow.ClientID%>";
                 uscFascicleInsert.uscMetadataRepositorySelId = "<%= uscMetadataRepositorySel.PageContentDiv.ClientID %>";
-                uscFascicleInsert.uscDynamicMetadataId = "<%= uscDynamicMetadata.PageContentDiv.ClientID %>";
+                uscFascicleInsert.uscDynamicMetadataRestId = "<%= uscDynamicMetadataRest.PageContent.ClientID %>";
                 uscFascicleInsert.containerRowId = "<%= containerRow.ClientID %>";
                 uscFascicleInsert.ddlContainerId = "<%= ddlContainer.ClientID %>";
                 uscFascicleInsert.fascicleContainerEnabled = <%= ProtocolEnv.FascicleContainerEnabled.ToString().ToLower() %>;
@@ -112,12 +113,12 @@
                 </telerik:LayoutRow>
                 <telerik:LayoutRow runat="server" HtmlTag="Div" ID="isMasterRow">
                     <Content>
-                        <usc:uscRoleRest runat="server" ID="uscRoleMaster" Expanded="true" ReadOnlyMode="false" Caption="Settore responsabile" Required="true" OnlyMyRoles="true" Collapsable="true" RequiredMessage="Campo settore responsabile obbligatorio" FascicleVisibilityTypeButtonEnabled="true" />
+                        <usc:uscRoleRest runat="server" ID="uscRoleMaster" Expanded="true" ReadOnlyMode="false" Caption="Settore responsabile" Required="true" OnlyMyRoles="true" Collapsable="true" RequiredMessage="Campo settore responsabile obbligatorio" />
                     </Content>
                 </telerik:LayoutRow>
-                <telerik:LayoutRow runat="server" HtmlTag="Div">
+                <telerik:LayoutRow runat="server" HtmlTag="Div" ID="isRoleRow">
                     <Content>
-                        <usc:uscRoleRest runat="server" ID="uscRole" ReadOnlyMode="false" Expanded="true" MultipleRoles="true" Caption="Settori con autorizzazioni" Required="false" OnlyMyRoles="false" Collapsable="true" RequiredMessage="Campo settori con autorizzazioni obbligatorio" RACIButtonEnabled="true" />
+                        <usc:uscRoleRest runat="server" ID="uscRole" ReadOnlyMode="false" Expanded="true" MultipleRoles="true" Caption="Settori con autorizzazioni" Required="false" OnlyMyRoles="false" Collapsable="true" RequiredMessage="Campo settori con autorizzazioni obbligatorio" RACIButtonEnabled="true" FascicleVisibilityTypeButtonEnabled="true" />
                     </Content>
                 </telerik:LayoutRow>
 
@@ -135,8 +136,9 @@
                                                 <telerik:LayoutColumn Span="2" CssClass="dsw-text-right">
                                                     <b>Oggetto:</b>
                                                 </telerik:LayoutColumn>
-                                                <telerik:LayoutColumn Span="10" CssClass="t-col-left-padding t-col-right-padding">
-                                                    <usc:uscOggetto ID="uscObject" Required="true" RequiredMessage="Campo Oggetto Obbligatorio" MultiLine="True" runat="server" Type="Prot" />
+                                                <telerik:LayoutColumn Span="9" CssClass="t-col-left-padding">
+                                                    <telerik:RadTextBox ID="txtObject" TextMode="MultiLine" MaxLength="511" Rows="3" runat="server" Width="100%" />
+                                                    <asp:RequiredFieldValidator ControlToValidate="txtObject" Display="Dynamic" ErrorMessage="Campo Oggetto Obbligatorio" ID="rfvObject" runat="server" />
                                                 </telerik:LayoutColumn>
                                             </Columns>
                                         </telerik:LayoutRow>
@@ -199,7 +201,7 @@
                                         </telerik:LayoutRow>
                                     </Rows>
                                 </telerik:RadPageLayout>
-                                <usc:uscDynamicMetadata runat="server" ID="uscDynamicMetadata" Required="False" UseSessionStorage="true" />
+                                <usc:uscDynamicMetadataRest runat="server" ID="uscDynamicMetadataRest" />
                             </div>
                         </div>
                     </Content>

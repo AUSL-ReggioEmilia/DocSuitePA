@@ -25,8 +25,7 @@ Public Class DeskSummary
     Private Const ACTION_MODIFY_NAME As String = "Modify"
     Private Const PAGE_TITLE As String = "Tavoli - Gestione"
     Private Const APPROVE_MANAGER_PATH_FORMAT As String = "~/Desks/DeskApproveManager.aspx?Type=Desk&DeskId={0}"
-    Private Const TO_COLLABORATION_PATH_FORMAT As String = "~/Desks/DeskToCollaboration.aspx?Type=Desk&DeskId={0}"
-    Private Const TO_PROTOCOL_PATH_FORMAT As String = "~/Desks/DeskToProtocol.aspx?Type=Desk&DeskId={0}"
+    Private Const TO_DOCUMENTUNIT_PATH_FORMAT As String = "~/Desks/DeskToDocumentUnit.aspx?Type=Desk&DeskId={0}"
     Private Const DESK_SUMMARY_PATH As String = "~/Desks/DeskSummary.aspx?Type=Desk&Action=View&DeskId={0}"
     Private Const COLLABORATION_PATH_FORMAT As String = "~/User/UserCollGestione.aspx?Type={0}&Titolo=Visualizzazione&Action={1}&idCollaboration={2}&Action2={3}&Title2=Visualizzazione"
     Private _currentDeskCollaborationFacade As DeskCollaborationFacade
@@ -98,7 +97,7 @@ Public Class DeskSummary
         btnCloseDesk.Visible = False
         btnOpenDesk.Visible = Not btnCloseDesk.Visible AndAlso (CurrentDeskRigths.CurrentUserIsManager OrElse CurrentDeskRigths.CurrentUserIsOwner)
         btnApproveManager.Visible = False
-        btnCollaboration.Visible = False
+        btnManage.Visible = False
         btnViewDocument.Visible = False
     End Sub
 
@@ -174,17 +173,19 @@ Public Class DeskSummary
         Response.Redirect(String.Format(APPROVE_MANAGER_PATH_FORMAT, CurrentDesk.Id))
     End Sub
 
-    Protected Sub BtnCollaboration_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCollaboration.Click
-        Response.Redirect(String.Format(TO_COLLABORATION_PATH_FORMAT, CurrentDesk.Id))
-    End Sub
-    Protected Sub BtnProtocol_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnProtocol.Click
-        Response.Redirect(String.Format(TO_PROTOCOL_PATH_FORMAT, CurrentDesk.Id))
+    Protected Sub BtnCollaboration_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnManage.Click
+        Response.Redirect(String.Format(TO_DOCUMENTUNIT_PATH_FORMAT, CurrentDesk.Id))
     End Sub
     Private Sub UscDeskDocument_DocumentsDataSourceUpdate(sender As Object, e As DeskDocumentResultEventArgs) Handles uscDeskDocument.DocumentCheckIn, uscDeskDocument.DocumentCheckOut, uscDeskDocument.DocumentUndoCheckOut, uscDeskDocument.DocumentSigned
         InitializeDocuments()
     End Sub
+
+    Private Sub UscDeskDocument_AddDocumentVersioning(sender As Object, e As DocumentEventArgs) Handles uscDeskDocument.DocumentVersioning
+        uscDeskDocument.NewDocumentsVersioningControl()
+    End Sub
+
     Private Sub UscDeskDocument_AddDocument(sender As Object, e As DocumentEventArgs) Handles uscDeskDocument.DocumentUploaded
-        UpdateDocumentsFromPage()
+        UpdateDocumentsFromPage(e.Version)
         InitializeDocuments()
     End Sub
     Private Sub UscDeskDocument_ReloadAllDocument(sender As Object, e As DocumentEventArgs) Handles uscDeskDocument.DocumentReloaded
@@ -281,10 +282,8 @@ Public Class DeskSummary
         AjaxManager.AjaxSettings.AddAjaxSetting(btnModify, pnlDeskInformationExtended)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnModify, pnlDeskInformationRestricted)
 
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnCollaboration, deskContainer, MasterDocSuite.AjaxDefaultLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnCollaboration, pnlActionButtons)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnProtocol, deskContainer, MasterDocSuite.AjaxDefaultLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(btnProtocol, pnlActionButtons)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnManage, deskContainer, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnManage, pnlActionButtons)
 
         AjaxManager.AjaxSettings.AddAjaxSetting(btnApproveManager, deskContainer, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnViewDocument, deskContainer, MasterDocSuite.AjaxDefaultLoadingPanel)
@@ -437,8 +436,7 @@ Public Class DeskSummary
         btnOpenDesk.Visible = Not btnCloseDesk.Visible AndAlso (CurrentDeskRigths.CurrentUserIsManager OrElse CurrentDeskRigths.CurrentUserIsOwner)
         btnModify.Visible = CurrentDeskRigths.IsEditable
         btnApproveManager.Visible = CurrentDeskRigths.IsEditable
-        btnCollaboration.Visible = CurrentDeskRigths.IsProtocollable
-        btnProtocol.Visible = CurrentDeskRigths.IsProtocollable
+        btnManage.Visible = CurrentDeskRigths.IsProtocollable AndAlso CurrentDeskRigths.IsOpen
         btnViewDocument.Visible = CurrentDeskRigths.IsSummaryViewable
     End Sub
 
@@ -451,7 +449,7 @@ Public Class DeskSummary
     Private Sub InitializeDocuments()
         'Inizializzo user control documenti
         Dim documentDtos As IList(Of DeskDocumentResult) = New List(Of DeskDocumentResult)
-        For Each deskDocument As DeskDocument In CurrentDesk.DeskDocuments.Where(Function(x) x.IsActive = 0)
+        For Each deskDocument As DeskDocument In CurrentDesk.DeskDocuments.Where(Function(x) x.IsActive)
             Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(deskDocument.IdDocument.Value)
             If Not docInfos.Any() Then
                 Exit Sub
@@ -512,9 +510,9 @@ Public Class DeskSummary
         End Try
     End Sub
 
-    Private Sub UpdateDocumentsFromPage()
+    Private Sub UpdateDocumentsFromPage(Optional ByVal version As Decimal = 1)
         Dim documents As IList(Of DocumentInfo) = uscDeskDocument.GetAddedDocuments()
-        CurrentDeskDocumentFacade.AddNewDeskDocuments(CurrentDesk, documents, CurrentDesk.Container.DeskLocation)
+        CurrentDeskDocumentFacade.AddNewDeskDocuments(CurrentDesk, documents, CurrentDesk.Container.DeskLocation, version)
     End Sub
 
     Private Sub UpdateInvitedFromPage()

@@ -52,6 +52,10 @@ Public Class TbltSecurityUsers
 #Region " Events "
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         InitializeAjax()
         If Not IsPostBack Then
             Initialize()
@@ -60,12 +64,16 @@ Public Class TbltSecurityUsers
 
     Protected Sub ToolBarSearch_ButtonClick(ByVal sender As Object, ByVal e As RadToolBarEventArgs) Handles ToolBarSearch.ButtonClick
         Dim btn As RadToolBarButton = TryCast(e.Item, RadToolBarButton)
+        Dim commandName As String = String.Empty
 
         If btn.Value = "search" Then
+            commandName = "DeleteUser"
             LoadUsers()
         Else
+            commandName = "DeleteUnconfiguratedUser"
             LoadUsersFromUserlog()
         End If
+        AjaxManager.ResponseScripts.Add(String.Format("tbltSecurityUsers.setCommandNameForDelete('{0}');", commandName))
     End Sub
 
     Protected Sub TbltSecurityUsers_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
@@ -134,6 +142,13 @@ Public Class TbltSecurityUsers
                 If allUserGroups.Count() > 0 Then
                     RemoveUserFromGroups(allUserGroups.Select(Function(x) x.Id).ToList())
                     LoadUsers()
+                    SetDetailsPanelVisibility(False)
+                End If
+            Case "deleteunconfigureduser"
+                Dim userLog As UserLog = Facade.UserLogFacade.GetByUser(SelectedUser.Attributes("Account"), SelectedUser.Attributes("Domain"))
+                If userLog IsNot Nothing Then
+                    RemoveUserFromUserLog(userLog)
+                    LoadUsersFromUserlog()
                     SetDetailsPanelVisibility(False)
                 End If
             Case "users"
@@ -263,7 +278,7 @@ Public Class TbltSecurityUsers
         End If
         Dim row As GridDataItem = DirectCast(e.Item, GridDataItem)
         With DirectCast(e.Item.FindControl("Name"), Label)
-            If item.IsActive <> 1 Then
+            If Not item.IsActive Then
                 row.Item("Name").ForeColor = Drawing.Color.LightSlateGray
                 row.Item("Name").ToolTip = "Settore disabilitato"
                 Dim documentImage As Image = DirectCast(e.Item.FindControl("roleImage"), Image)
@@ -330,12 +345,12 @@ Public Class TbltSecurityUsers
 
     Private Sub LoadGroups(groups As IList(Of SecurityGroups))
         rtvGroups.Nodes.Clear()
+        SetDetailsPanelVisibility(True)
         If groups.Count = 0 Then
             rtvGroups.Nodes.Add(New RadTreeNode("Nessun gruppo definito"))
             Exit Sub
         End If
 
-        SetDetailsPanelVisibility(True)
         For Each group As SecurityGroups In groups
             Dim newNode As RadTreeNode = CreateNode(group.GroupName, group.Id.ToString, String.Empty)
             rtvGroups.Nodes.Add(newNode)
@@ -380,6 +395,10 @@ Public Class TbltSecurityUsers
                 Facade.SecurityUsersFacade.Delete(item)
             Next
         End If
+    End Sub
+
+    Private Sub RemoveUserFromUserLog(userLog As UserLog)
+        Facade.UserLogFacade.Delete(userLog)
     End Sub
 
     Private Sub SetDetailsPanelVisibility(visible As Boolean)

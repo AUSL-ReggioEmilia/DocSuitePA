@@ -18,7 +18,7 @@ Public Class RoleUserFacade
         MyBase.New()
     End Sub
 
-    Public Sub New(ByVal DbName As String)
+    Public Sub New(DbName As String)
         MyBase.New(DbName)
     End Sub
 
@@ -30,12 +30,12 @@ Public Class RoleUserFacade
 
     End Sub
 
-    Public Function GetByUserType(ByVal userType As RoleUserType?, ByVal account As String, ByVal onlyEnabled As Boolean, ByVal idRoles As List(Of Integer)) As IList(Of RoleUser)
-        Return _dao.GetByUserType(userType, account, onlyEnabled, idRoles, DocSuiteContext.Current.CurrentTenant.TenantId)
+    Public Function GetByUserType(userType As RoleUserType?, account As String, onlyEnabled As Boolean, idRoles As List(Of Integer), idTenantAOO As Guid) As IList(Of RoleUser)
+        Return _dao.GetByUserType(userType, account, onlyEnabled, idRoles, idTenantAOO)
     End Function
 
-    Public Function GetSecretaryRolesByAccount(ByVal account As String, environment As DSWEnvironment?) As IList(Of Role)
-        Return _dao.GetSecretaryRolesByAccount(account, environment)
+    Public Function GetSecretaryRolesByAccount(account As String, environment As DSWEnvironment?, idTenantAOO As Guid) As IList(Of Role)
+        Return _dao.GetSecretaryRolesByAccount(account, environment, idTenantAOO)
     End Function
 
     ''' <summary>
@@ -43,8 +43,8 @@ Public Class RoleUserFacade
     ''' </summary>
     ''' <returns>Restituisce una stringa rappresentante il livello (D, V, S, X)</returns>
     ''' <remarks>Utilizzare le costanti di RoleUserFacade per confrontare il valore restituito</remarks>
-    Public Function GetHighestUserType() As RoleUserType
-        Return GetHighestUserType(DocSuiteContext.Current.User.FullUserName)
+    Public Function GetHighestUserType(idTenantAOO As Guid) As RoleUserType
+        Return GetHighestUserType(DocSuiteContext.Current.User.FullUserName, idTenantAOO)
     End Function
 
     ''' <summary>
@@ -53,8 +53,8 @@ Public Class RoleUserFacade
     ''' <param name="userName">Identificativo dell'operatore</param>
     ''' <returns>Restituisce una stringa rappresentante il livello (D, V, S, X)</returns>
     ''' <remarks>Utilizzare le costanti di RoleUserFacade per confrontare il valore restituito</remarks>
-    Public Function GetHighestUserType(userName As String) As RoleUserType
-        Return GetHighestUserType(userName, True)
+    Public Function GetHighestUserType(userName As String, idTenantAOO As Guid) As RoleUserType
+        Return GetHighestUserType(userName, True, idTenantAOO)
     End Function
 
     ''' <summary>
@@ -64,19 +64,19 @@ Public Class RoleUserFacade
     ''' <param name="onlyActive">Indica se devono essere presi in considerazione solo i settori attivi</param>
     ''' <returns>Restituisce una stringa rappresentante il livello (D, V, S, X)</returns>
     ''' <remarks>Utilizzare le costanti di RoleUserFacade per confrontare il valore restituito</remarks>
-    Public Function GetHighestUserType(userName As String, onlyActive As Boolean) As RoleUserType
+    Public Function GetHighestUserType(userName As String, onlyActive As Boolean, idTenantAOO As Guid) As RoleUserType
 
-        Dim dType As IList(Of RoleUser) = GetByUserType(RoleUserType.D, userName, onlyActive, Nothing)
+        Dim dType As IList(Of RoleUser) = GetByUserType(RoleUserType.D, userName, onlyActive, Nothing, idTenantAOO)
         If Not dType.IsNullOrEmpty() Then
             Return RoleUserType.D
         End If
 
-        dType = GetByUserType(RoleUserType.V, userName, onlyActive, Nothing)
+        dType = GetByUserType(RoleUserType.V, userName, onlyActive, Nothing, idTenantAOO)
         If Not dType.IsNullOrEmpty() Then
             Return RoleUserType.V
         End If
 
-        dType = GetByUserType(RoleUserType.S, userName, onlyActive, Nothing)
+        dType = GetByUserType(RoleUserType.S, userName, onlyActive, Nothing, idTenantAOO)
         If Not dType.IsNullOrEmpty() Then
             Return RoleUserType.S
         End If
@@ -84,35 +84,35 @@ Public Class RoleUserFacade
         Return RoleUserType.X
     End Function
 
-    Public Function GetByType(ByVal type As RoleUserType, ByVal enabled As Boolean, roleNameFilter As String) As IList(Of RoleUser)
-        Return _dao.GetByType(type.ToString(), enabled, roleNameFilter)
+    Public Function GetByType(type As RoleUserType, enabled As Boolean, roleNameFilter As String, idTenantAOO As Guid) As IList(Of RoleUser)
+        Return _dao.GetByType(type.ToString(), enabled, roleNameFilter, idTenantAOO)
     End Function
 
-    Public Function GetByRoleId(ByVal roleId As Integer) As IList(Of RoleUser)
+    Public Function GetByRoleId(roleId As Integer) As IList(Of RoleUser)
         Return _dao.GetByRoleId(roleId)
     End Function
 
-    Public Function GetByRoleIdAndType(ByVal roleId As Integer, ByVal type As RoleUserType, onlyEnabled As Boolean?, ByVal mainRoleOnly As Boolean?) As IList(Of RoleUser)
+    Public Function GetByRoleIdAndType(roleId As Integer, type As RoleUserType, onlyEnabled As Boolean?, mainRoleOnly As Boolean?) As IList(Of RoleUser)
         Return _dao.GetByRoleIdAndType(roleId, type.ToString, onlyEnabled, mainRoleOnly)
     End Function
 
-    Public Function GetByRoleIdAndAccount(ByVal roleId As Integer, ByVal account As String, ByVal type As String) As IList(Of RoleUser)
+    Public Function GetByRoleIdAndAccount(roleId As Integer, account As String, type As String) As IList(Of RoleUser)
         Return _dao.GetByRoleIdAndAccount(roleId, account, type)
     End Function
 
-    Public Function GetByRoleIdAndAccount(ByVal roleId As Integer, ByVal account As String, ByVal type As RoleUserType) As IList(Of RoleUser)
+    Public Function GetByRoleIdAndAccount(roleId As Integer, account As String, type As RoleUserType) As IList(Of RoleUser)
         Return _dao.GetByRoleIdAndAccount(roleId, account, type.ToString())
     End Function
 
-    Public Function GetByRoleIdAndAccount(ByVal roleId As Integer, ByVal account As String, ByVal onlyEnabled As Boolean) As IList(Of RoleUser)
+    Public Function GetByRoleIdAndAccount(roleId As Integer, account As String, onlyEnabled As Boolean) As IList(Of RoleUser)
         Return _dao.GetByRoleIdAndAccount(roleId, account, onlyEnabled)
     End Function
 
-    Public Function GetByRoleIdsAndAccount(roleIds As List(Of Integer), account As String, ByVal type As String) As IList(Of RoleUser)
+    Public Function GetByRoleIdsAndAccount(roleIds As List(Of Integer), account As String, type As String) As IList(Of RoleUser)
         Return _dao.GetByRoleIdsAndAccount(roleIds, account, type)
     End Function
 
-    Public Function GetByAccountsAndNotType(ByVal userConnected As String, ByVal type As RoleUserType?, ByVal onlyEnabled As Boolean) As IList(Of RoleUser)
+    Public Function GetByAccountsAndNotType(userConnected As String, type As RoleUserType?, onlyEnabled As Boolean) As IList(Of RoleUser)
         Return _dao.GetByAccountsAndNotType(userConnected, type, onlyEnabled)
     End Function
 
@@ -124,16 +124,16 @@ Public Class RoleUserFacade
         Return _dao.IsCurrentUserPrivacyManager(roleIds)
     End Function
 
-    Public Function GetManagersByCollaboration(collaborationId As Integer, account As String) As IList(Of RoleUser)
-        Return _dao.GetManagersByCollaboration(collaborationId, account)
+    Public Function GetManagersByCollaboration(collaborationId As Integer, account As String, idTenantAOO As Guid) As IList(Of RoleUser)
+        Return _dao.GetManagersByCollaboration(collaborationId, account, idTenantAOO)
     End Function
 
-    Public Function GetCountManagersByPecMailBox(pecMailBoxId As Short, account As String) As Integer
-        Return _dao.GetCountManagersByPecMailBox(pecMailBoxId, account)
+    Public Function GetCountManagersByPecMailBox(pecMailBoxId As Short, account As String, idTenantAOO As Guid) As Integer
+        Return _dao.GetCountManagersByPecMailBox(pecMailBoxId, account, idTenantAOO)
     End Function
 
-    Public Function GetByCollaboration(ByVal collaborationId As Integer, ByVal roleUserType As RoleUserType?, ByVal destinationFirst As Boolean?, ByVal mainRoleOnly As Boolean?) As IList(Of RoleUser)
-        Return _dao.GetByCollaboration(collaborationId, roleUserType, destinationFirst, mainRoleOnly)
+    Public Function GetByCollaboration(collaborationId As Integer, roleUserType As RoleUserType?, destinationFirst As Boolean?, mainRoleOnly As Boolean?, idTenantAOO As Guid) As IList(Of RoleUser)
+        Return _dao.GetByCollaboration(collaborationId, roleUserType, destinationFirst, mainRoleOnly, idTenantAOO)
     End Function
 
     Public Overrides Sub Save(ByRef obj As RoleUser)
@@ -167,17 +167,31 @@ Public Class RoleUserFacade
     ''' <param name="mainRoleOnly">Definisce se ricercare solo per i disegni di collaborazione in cui l'utente è impostato come posizione principale</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function GetSecretaryRoles(ByVal account As String, ByVal mainRoleOnly As Boolean) As IList(Of Role)
+    Public Function GetSecretaryRoles(account As String, mainRoleOnly As Boolean, idTenantAOO As Guid) As IList(Of Role)
         Dim roles As New List(Of Role)
         ' Ruoli dove sono direttore
-        roles.AddRange((From roleUser In GetByUserType(RoleUserType.D, account, True, Nothing) Where roleUser.IsMainRole OrElse Not mainRoleOnly Select roleUser.Role).ToList())
+        roles.AddRange((From roleUser In GetByUserType(RoleUserType.D, account, True, Nothing, idTenantAOO) Where roleUser.IsMainRole OrElse Not mainRoleOnly Select roleUser.Role).ToList())
         ' Ruoli dove sono vice
-        roles.AddRange((From roleUser In GetByUserType(RoleUserType.V, account, True, Nothing) Where roleUser.IsMainRole OrElse Not mainRoleOnly Select roleUser.Role).ToList())
+        roles.AddRange((From roleUser In GetByUserType(RoleUserType.V, account, True, Nothing, idTenantAOO) Where roleUser.IsMainRole OrElse Not mainRoleOnly Select roleUser.Role).ToList())
         ' Effettuo un distinct sull'ID
         Return roles.GroupBy(Function(r) New With {Key r.Id}).Select(Function(c) c.First()).ToList()
     End Function
 
-    Public Function GetAccounts(ByVal userConnected As String, Optional ByVal onlyEnabled As Boolean = False) As IList(Of String)
+    Public Function GetAccountSecretaryRoles(account As String, environment As DSWEnvironment?, idTenantAOO As Guid, onlyActive As Boolean) As IList(Of Role)
+        Dim roleUsers As ICollection(Of RoleUser) = _dao.GetAccountSecretaryRoles(account, idTenantAOO, onlyActive, environment)
+        Return roleUsers.Select(Function(s) s.Role).ToList()
+    End Function
+
+    Public Function GetFirstParentWithSecretaryRoles(account As String, idTenantAOO As Guid, baseRole As Integer?, environment As DSWEnvironment?) As IList(Of Role)
+        Dim parentRoles As ICollection(Of Role) = _dao.GetParentWithSecretaryRoles(account, idTenantAOO, baseRole, environment)
+        If parentRoles.IsNullOrEmpty() Then
+            Return New List(Of Role)
+        End If
+
+        Return parentRoles.Where(Function(x) Not parentRoles.Any(Function(xx) xx.FullIncrementalPath.Contains(x.Id.ToString()) AndAlso xx.Id <> x.Id)).ToList()
+    End Function
+
+    Public Function GetAccounts(userConnected As String, Optional onlyEnabled As Boolean = False) As IList(Of String)
         Return _dao.GetAccounts(userConnected, onlyEnabled)
     End Function
 
@@ -191,7 +205,6 @@ Public Class RoleUserFacade
             .Enabled = roleUser.Enabled,
             .IdUDSRepository = roleUser.IdUDSRepository,
             .IsMainRole = roleUser.IsMainRole,
-            .OChartItemWorkflow = roleUser.OChartItemWorkflow,
             .Type = roleUser.Type
         }
         Return newInstanceRoleUser

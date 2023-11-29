@@ -1,58 +1,10 @@
-﻿<%@ Page AutoEventWireup="false" CodeBehind="PECInsert.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.PECInsert" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="PEC - Inserimento" ValidateRequest="false" %>
+﻿<%@ Page AutoEventWireup="false" CodeBehind="PECInsert.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.PECInsert" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="PEC - Inserimento" %>
 
 <%@ Register Src="~/UserControl/uscDocumentUpload.ascx" TagPrefix="usc" TagName="UploadDocument" %>
 <%@ Register Src="~/UserControl/uscContattiSel.ascx" TagPrefix="usc" TagName="SelContatti" %>
 <%@ Register Src="~/UserControl/uscDocumentList.ascx" TagPrefix="usc" TagName="UploadDocumentList" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
-    <script type="text/javascript" src="../Scripts/dsw.uds.hub.js"></script>
-    <telerik:RadScriptBlock runat="server">
-        <script type="text/javascript">
-            var udsScripts = (function () {
-                var currentFlatLoadingPanel = null;
-                var currentLoadingPanel = null;
-                var currentUpdatedControl = null;
-                var currentUpdatedToolbar = null;
-
-                function udsScripts() {
-                    currentFlatLoadingPanel = null;
-                    currentLoadingPanel = null;
-                    currentUpdatedControl = null;
-                    currentUpdatedToolbar = null;
-                }
-
-                udsScripts.prototype.showLoadingPanel = function () {
-                    setTimeout(function () {
-                        $find("<%= cmdSend.ClientID %>").set_enabled(true);
-                    }, 200);
-                    currentLoadingPanel = $find("<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>");
-                    currentFlatLoadingPanel = $find("<%= MasterDocSuite.AjaxFlatLoadingPanel.ClientID%>");
-                    currentUpdatedControl = "<%= pnlContent.ClientID%>";
-                    currentUpdatedToolbar = "<%= cmdSend.ClientID %>";
-                    currentLoadingPanel.show(currentUpdatedControl);
-                    currentFlatLoadingPanel.show(currentUpdatedToolbar);
-                };
-
-                udsScripts.prototype.hideLoadingPanel = function () {
-                    setTimeout(function () {
-                        $find("<%= cmdSend.ClientID %>").set_enabled(true);
-                    }, 200);
-                    if (currentLoadingPanel != null) {
-                        currentLoadingPanel.hide(currentUpdatedControl);
-                    }
-                    if (currentFlatLoadingPanel != null) {
-                        currentFlatLoadingPanel.hide(currentUpdatedToolbar);
-                    }
-                    currentUpdatedControl = null;
-                    currentUpdatedToolbar = null;
-                    currentLoadingPanel = null;
-                    currentFlatLoadingPanel = null;
-                };
-
-                return udsScripts;
-            })();
-        </script>
-    </telerik:RadScriptBlock>
     <telerik:RadCodeBlock ID="RadCodeBlock1" runat="server">
         <script type="text/javascript">
             window.onbeforeunload = function () {
@@ -99,36 +51,9 @@
                 $find("<%= RadAjaxManager.GetCurrent(Page).ClientID %>").ajaxRequest(operationName);
             }
 
-            var dswSignalR;
             var tentativeCount = 0;
-            var udsScripts = new udsScripts();
-
-            function confirmUds(sender, args) {
-                var validated = Page_ClientValidate();
-                if (validated) {
-                    var udsHub = new DSWUDSHub("<%= SignalRServerAddress %>",
-                        $find("<%= udsNotification.ClientID %>"),
-                        $find("<%= responseNotificationError.ClientID %>"),
-                        $find("<%= AjaxManager.ClientID %>"),
-                        $find("<%= cmdSend.ClientID %>"),
-                        $get("<%= HFcorrelatedCommandId.ClientID %>"),
-                        "<%= cmdSend.UniqueID %>", udsScripts
-                    );
-                    udsHub.start("Update", onSuccessCallback, onErrorCallback);
-                }
-            }
-
-            function onSuccessCallback(model) {
-                $find("<%= AjaxManager.ClientID %>").ajaxRequest("udsEditCallback|" + model.UniqueId + "|" + model.UDSRepository.Id);
-            }
-
-            function onErrorCallback() {
-                $find("<%= cmdSend.ClientID %>").set_enabled(true);
-            }
 
             function onError(message) {
-                var notification = $find("<%=udsNotification.ClientID %>");
-                notification.hide();
                 var responseNotificationError = $find("<%=responseNotificationError.ClientID %>");
                 responseNotificationError.set_updateInterval(0);
                 udsScripts.hideLoadingPanel();
@@ -186,11 +111,6 @@
 </asp:Content>
 
 <asp:Content ID="Content1" runat="server" ContentPlaceHolderID="cphContent">
-    <asp:HiddenField ID="HFcorrelatedCommandId" runat="server" Value="" />
-    <telerik:RadNotification ID="udsNotification" runat="server"
-        Width="400" Height="150" Animation="FlyIn" EnableRoundedCorners="true" EnableShadow="true"
-        Title="Notifica Archivio" OffsetX="-20" OffsetY="-20" AutoCloseDelay="0"
-        TitleIcon="none" Style="z-index: 100000;" />
 
     <telerik:RadNotification ID="responseNotificationError" runat="server"
         Width="400" Height="150" Animation="FlyIn" EnableRoundedCorners="true" EnableShadow="true"
@@ -301,7 +221,7 @@
             </tr>
             <tr>
                 <td>
-                    <usc:UploadDocument TreeViewCaption="Documenti" HeaderVisible="false" ID="uscAttachment" IsDocumentRequired="false" MultipleDocuments="true" runat="server" ShowDocumentsSize="true" />
+                    <usc:UploadDocument TreeViewCaption="Documenti" HeaderVisible="false" ID="uscAttachment" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" ShowDocumentsSize="true" />
                 </td>
             </tr>
         </table>

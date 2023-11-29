@@ -127,7 +127,6 @@ Public Class NHibernateResolutionDao
     End Function
 
     Public Function GetNextFreeServiceNumber(IdResl As Integer, Year As Short, ByVal RoleServiceNumber As String, type As Short?) As Integer
-        'SELECT TOP 1 ServiceNumber FROM AUSLPCAtti2.dbo.Resolution WHERE ServiceNumber IS NOT NULL AND Year=2012 AND idResolution <> 540 AND ServiceNumber LIKE 'CB/%' ORDER BY ServiceNumber DESC
 
         If String.IsNullOrEmpty(RoleServiceNumber) Then
             criteria = NHibernateSession.CreateCriteria(persitentType)
@@ -547,7 +546,7 @@ Public Class NHibernateResolutionDao
             Dim sqlStatement As String = String.Format("UPDATE Resolution SET {0}='{1}' WHERE idResolution IN ({2}) ", ProtocolLinkType, Protocol, IdResolutionList)
 
             SessionFactoryName = "ReslDB"
-            transaction = NHibernateSession.BeginTransaction()
+            transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted)
             NHibernateHelper.ExecuteNonQuery(sqlStatement, NHibernateSession.Connection, transaction)
             bRet = True
         Catch
@@ -578,7 +577,7 @@ Public Class NHibernateResolutionDao
                 sqlStatement = "UPDATE Resolution SET " & sql &
                       " WHERE idResolution IN (" & IdResolutionList & ") "
                 SessionFactoryName = "ReslDB"
-                transaction = NHibernateSession.BeginTransaction()
+                transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted)
                 NHibernateHelper.ExecuteNonQuery(sqlStatement, NHibernateSession.Connection, transaction)
             Else
                 bRet = False
@@ -602,7 +601,7 @@ Public Class NHibernateResolutionDao
 
         Try
             SessionFactoryName = "ReslDB"
-            transaction = NHibernateSession.BeginTransaction()
+            transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted)
 
             '-- Esecutività
             Dim command As IDbCommand = New SqlClient.SqlCommand()
@@ -696,7 +695,7 @@ Public Class NHibernateResolutionDao
 
         Try
             SessionFactoryName = "ReslDB"
-            transaction = NHibernateSession.BeginTransaction()
+            transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted)
 
             '-- Pubblicazione
             Dim command As IDbCommand = New SqlClient.SqlCommand()
@@ -798,7 +797,7 @@ Public Class NHibernateResolutionDao
 
         Try
             SessionFactoryName = "ReslDB"
-            transaction = NHibernateSession.BeginTransaction()
+            transaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted)
 
             '-- Spedizione Collegio Sindacale
             Dim command As DbCommand = New SqlClient.SqlCommand()

@@ -28,6 +28,14 @@
       <column name="idResolution" />
       <column name="IncrementalFather" />
     </many-to-one>
+
+	  <bag name="ResolutionWorkflowUsers" table="ResolutionWorkflowUsers" cascade="all-delete-orphan" inverse="true">
+		  <key>
+			  <column name="idResolution" />
+			  <column name="Incremental" />
+		  </key>
+		  <one-to-many class="ResolutionWorkflowUser" />
+	  </bag>
     
   </class>
 

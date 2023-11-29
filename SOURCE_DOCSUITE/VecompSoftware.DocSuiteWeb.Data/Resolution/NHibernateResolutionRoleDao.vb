@@ -67,9 +67,9 @@ Public Class NHibernateResolutionRoleDao
 
         If active.HasValue Then
             If active.Value Then
-                criteria.Add(Restrictions.Eq("R.IsActive", 1S))
+                criteria.Add(Restrictions.Eq("R.IsActive", True))
             Else
-                criteria.Add(Restrictions.Eq("R.IsActive", 0S))
+                criteria.Add(Restrictions.Eq("R.IsActive", False))
             End If
         End If
 

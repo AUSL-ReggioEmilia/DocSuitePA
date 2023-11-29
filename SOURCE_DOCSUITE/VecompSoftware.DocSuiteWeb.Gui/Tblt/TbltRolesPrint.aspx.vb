@@ -18,6 +18,10 @@ Partial Class PrintRoles
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblStampeSecurityRight OrElse CommonShared.HasGroupTblStampeRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         InitializeAjaxSettings()
         InitializeControls()
         If Not IsPostBack Then
@@ -61,7 +65,7 @@ Partial Class PrintRoles
 
     Private Sub Initialize()
 
-        Dim roles As IList(Of Role) = Facade.RoleFacade.GetRootItems(withPECMailbox:=False)
+        Dim roles As IList(Of Role) = Facade.RoleFacade.GetRootItems(CurrentTenant.TenantAOO.UniqueId, withPECMailbox:=False)
         If roles.Count <= 0 Then
             Exit Sub
         End If

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Administration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Administration.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:complexType name="Status">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q1="http://BiblosDS/2009/10/BiblosDSObject" base="q1:BiblosDSObject">

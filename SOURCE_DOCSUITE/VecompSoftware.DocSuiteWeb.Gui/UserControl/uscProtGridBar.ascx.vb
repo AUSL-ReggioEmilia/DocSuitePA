@@ -12,54 +12,54 @@ Partial Public Class uscProtGridBar
     Inherits BaseGridBar
 
 #Region " Fields "
-    Private changeContainerFunctionality As Boolean = False
+
 #End Region
 
 #Region " Properties "
 
-    Public Overrides ReadOnly Property DocumentsButton() As Button
+    Public Overrides ReadOnly Property DocumentsButton() As RadButton
         Get
             Return btnDocuments
         End Get
     End Property
 
-    Public ReadOnly Property ExportButton() As Button
+    Public ReadOnly Property ExportButton() As RadButton
         Get
             Return btnExport
         End Get
     End Property
 
-    Public Overrides ReadOnly Property DeselectButton() As Button
+    Public Overrides ReadOnly Property DeselectButton() As RadButton
         Get
             Return btnDeselectAll
         End Get
     End Property
 
-    Public Overrides ReadOnly Property PrintButton() As Button
+    Public Overrides ReadOnly Property PrintButton() As RadButton
         Get
             Return btnStampa
         End Get
     End Property
 
-    Public Overrides ReadOnly Property SelectButton() As Button
+    Public Overrides ReadOnly Property SelectButton() As RadButton
         Get
             Return btnSelectAll
         End Get
     End Property
 
-    Public ReadOnly Property SetAssignButton() As Button
+    Public ReadOnly Property SetAssignButton() As RadButton
         Get
             Return btnAssign
         End Get
     End Property
 
-    Public Overrides ReadOnly Property SetReadButton() As Button
+    Public Overrides ReadOnly Property SetReadButton() As RadButton
         Get
             Return btnSetRead
         End Get
     End Property
 
-    Public ReadOnly Property ChangeContainerButton() As Button
+    Public ReadOnly Property ChangeContainerButton() As RadButton
         Get
             Return btnChangeContainer
         End Get
@@ -89,7 +89,7 @@ Partial Public Class uscProtGridBar
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         Initialize()
-        If changeContainerFunctionality Then
+        If ChangeContainerButton.Visible Then
             InitializeChangeContainerDialog()
         End If
     End Sub
@@ -228,7 +228,7 @@ Partial Public Class uscProtGridBar
 
                 Dim protocolRights As ProtocolRights = New ProtocolRights(protocol)
 
-                If (protocol.Container IsNot Nothing AndAlso protocol.Container.Id = selectedContainerId) Then
+                If protocol.Container IsNot Nothing AndAlso protocol.Container.Id = selectedContainerId Then
                     'protocol already has this container selected
                     Continue For
                 End If
@@ -268,13 +268,13 @@ Partial Public Class uscProtGridBar
             Return
         End If
 
-        AjaxManager.ResponseScripts.Add("changeContainer.addCheckboxEvents();")
+        AjaxManager.ResponseScripts.Add("ccAddCheckboxEvents();")
 
         For Each avCont As Container In availableContainers
             ddlContainers.Items.Add(New RadComboBoxItem(avCont.Name, avCont.Id.ToString()))
         Next
 
-        btnChangeContainer.OnClientClick = $"changeContainer.showContainerChangeDialog();return false;"
+        btnChangeContainer.OnClientClicked = "ccShowContainerChangeDialog"
 
         'preinitialize value of hidden field
         hfSelectedContainer.Value = availableContainers(0).Id.ToString()
@@ -384,7 +384,6 @@ Partial Public Class uscProtGridBar
 
     Public Sub InitializeChangeContainerFunctionality()
         ChangeContainerButton.Visible = True
-        changeContainerFunctionality = True
     End Sub
 
     Protected Overrides Sub SetReadedSelectedItems()

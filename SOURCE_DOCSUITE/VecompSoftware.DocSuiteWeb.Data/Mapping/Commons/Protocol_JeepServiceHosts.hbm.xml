@@ -5,20 +5,31 @@
     <id name="Id" column="IdJeepServiceHost" >
       <generator class="guid.comb" />
     </id>
+
+    <version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+      <column name="Timestamp" not-null="true" sql-type="timestamp" />
+    </version>
+    
     <property name="Hostname">
-      <column name="Hostname" not-null="false" />
+      <column name="Hostname" not-null="true" />
     </property>
     <property name="IsActive">
-      <column name="IsActive" not-null="false" />
+      <column name="IsActive" not-null="true" />
     </property>
     <property name="IsDefault">
-      <column name="IsDefault" not-null="false" />
+      <column name="IsDefault" not-null="true" />
     </property>
     <property name="RegistrationUser">
       <column name="RegistrationUser" not-null="false" />
     </property>
     <property name="RegistrationDate">
-      <column name="RegistrationDate" not-null="false" />
+      <column name="RegistrationDate" not-null="true" />
+    </property>
+    <property name="LastChangedUser">
+      <column name="LastChangedUser" not-null="false" />
+    </property>
+    <property name="LastChangedDate">
+      <column name="LastChangedDate" not-null="false" />
     </property>
   </class>
 

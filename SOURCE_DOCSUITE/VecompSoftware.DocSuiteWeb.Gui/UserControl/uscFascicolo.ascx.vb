@@ -12,6 +12,7 @@ Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Model.DocumentGenerator
 Imports VecompSoftware.DocSuiteWeb.Model.DocumentGenerator.Parameters
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
 Imports VecompSoftware.DocSuiteWeb.Model.Metadata
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Biblos.Models
@@ -25,11 +26,10 @@ Partial Public Class uscFascicolo
     Private Const GRID_REFRESH_CALLBACK As String = "uscFascicolo.refreshGridUDCallback({0},{1});"
     Private Const INSERTS_DOCUMENTUNIT_NAME As String = "Inserto"
 
+    Private Const WORD_TABLE_COLUMN_FDU_YEARNUMBER As String = "Anno/Numero"
     Private Const WORD_TABLE_COLUMN_FDU_SUBJECT As String = "Oggetto"
     Private Const WORD_TABLE_COLUMN_FDU_CATEGORY As String = "Classificatore"
     Private Const WORD_TABLE_COLUMN_FDU_REGISTRATION_DATE As String = "Data di registrazione"
-    Private Const WORD_TABLE_COLUMN_FDU_FASCICLE_REGISTRATION_DATE As String = "Data di registrazione nel fascicolo"
-    Private Const WORD_TABLE_COLUMN_FDU_FASCICLE_REGISTRATION_USER As String = "Utente di registrazione nel fascicolo"
     Private Const WORD_TABLE_COLUMN_FD_DOCUMENT_NAME As String = "Nome file"
     Private Const WORD_TABLE_COLUMN_FD_DOCUMENT_CREATED_DATE As String = "Data di creazione"
     Private Const WORD_TABLE_COLUMN_FD_DOCUMENT_REGISTRATION_USER As String = "Utente di registrazione nel documento"
@@ -122,6 +122,7 @@ Partial Public Class uscFascicolo
         uscFascicleFolders.IsVisibile = Not IsEditPage AndAlso Not IsAuthorizePage
         uscResponsabili.TreeViewCaption = DocSuiteContext.Current.ProtocolEnv.FascicleRoleRPLabel
         uscCustomActionsRest.IsSummary = Not IsEditPage
+
         If Not IsPostBack Then
             grdUD.DataSource = New List(Of String)
             uscResponsabili.Visible = IsEditPage
@@ -162,7 +163,7 @@ Partial Public Class uscFascicolo
                             End If
 
                             uscRole.FascicleVisibilityTypeButtonEnabled = IsAuthorizePage AndAlso (fascicle.FascicleType = Entity.Fascicles.FascicleType.Procedure)
-                            LoadAuthorizations(fascicle, workflowHandler)
+                            LoadAuthorizations(fascicle, workflowHandler, isActiveWorkflow)
                             LoadRoles(fascicle)
                             If IsEditPage Then
                                 uscResponsabili.Visible = True
@@ -181,7 +182,8 @@ Partial Public Class uscFascicolo
                                     Next
                                 End If
                                 AddDocumentGeneratorParameters(metadata, fascicle)
-                                AjaxManager.ResponseScripts.Add(String.Concat("$(document).ready(function() {SetMetadataSessionStorage(`", JsonConvert.SerializeObject(metadata, DocSuiteContext.DefaultWebAPIJsonSerializerSettings), "`)});"))
+                                Dim script As String = String.Format("SetMetadataSessionStorage('{0}');", HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(metadata, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)))
+                                AjaxManager.ResponseScripts.Add(script)
                             End If
                             AjaxManager.ResponseScripts.Add(String.Format(EXTERNAL_DATA_INITIALIZE_CALLBACK, uscRole.FascicleVisibilityTypeButtonEnabled.ToString().ToLower()))
                         End If
@@ -190,16 +192,20 @@ Partial Public Class uscFascicolo
                         If ajaxModel.Value IsNot Nothing AndAlso ajaxModel.Value.Count > 1 Then
                             GrdUDFilters = JsonConvert.DeserializeObject(Of IDictionary(Of String, String))(ajaxModel.Value(1))
                             Dim insertsArchiveChains As ICollection(Of Guid) = JsonConvert.DeserializeObject(Of ICollection(Of Guid))(ajaxModel.Value(2))
-                            Dim documentUnits As IList(Of DocumentUnitModel) = JsonConvert.DeserializeObject(Of IList(Of DocumentUnitModel))(ajaxModel.Value(0))
+                            Dim documentUnits As IList(Of FascicleDocumentUnitModel) = JsonConvert.DeserializeObject(Of IList(Of FascicleDocumentUnitModel))(ajaxModel.Value(0))
                             Dim orders As ICollection(Of JObject) = JsonConvert.DeserializeObject(Of ICollection(Of JObject))(ajaxModel.Value(3))
-                            Dim docs As IList(Of DocumentUnitModel) = New List(Of DocumentUnitModel)()
-                            If (insertsArchiveChains IsNot Nothing AndAlso insertsArchiveChains.Count > 0) AndAlso GrdUDFilters IsNot Nothing _
-                                AndAlso (GrdUDFilters.Count = 0 OrElse
-                                            (GrdUDFilters.ContainsKey("DocumentUnitName") AndAlso (GrdUDFilters("DocumentUnitName").Equals(INSERTS_DOCUMENTUNIT_NAME) _
-                                             OrElse String.IsNullOrEmpty(GrdUDFilters("DocumentUnitName")))) OrElse GrdUDFilters.ContainsKey("Title")) Then
-                                docs = LoadDocuments(insertsArchiveChains)
+                            Dim docs As IList(Of FascicleDocumentUnitModel) = New List(Of FascicleDocumentUnitModel)()
+
+                            If (insertsArchiveChains IsNot Nothing AndAlso insertsArchiveChains.Count > 0) AndAlso GrdUDFilters IsNot Nothing AndAlso
+                                    (GrdUDFilters.Count = 0 OrElse
+                                    (GrdUDFilters.ContainsKey("DocumentUnitName") AndAlso
+                                    (String.IsNullOrEmpty(GrdUDFilters("DocumentUnitName")) OrElse
+                                    GrdUDFilters("DocumentUnitName").Equals(INSERTS_DOCUMENTUNIT_NAME))) OrElse
+                                    GrdUDFilters.ContainsKey("Title")) Then
+
+                                docs = LoadDocuments(insertsArchiveChains).Select(Function(d) New FascicleDocumentUnitModel() With {.UniqueId = d.UniqueId, .DocumentUnit = d}).ToList()
                                 If GrdUDFilters.ContainsKey("Title") Then
-                                    docs = docs.Where(Function(d) d.Subject.Contains(GrdUDFilters("Title"))).ToList()
+                                    docs = docs.Where(Function(d) d.DocumentUnit.Subject.IndexOf(GrdUDFilters("Title"), StringComparison.OrdinalIgnoreCase) >= 0).ToList()
                                 End If
                             End If
 
@@ -207,6 +213,9 @@ Partial Public Class uscFascicolo
                             Select Case orders.Count
                                 Case 0
                                     Dim defaultSorting As JObject = New JObject(New JProperty("FieldName", "RegistrationDate"), New JProperty("SortOrder", "2"))
+                                    If ProtocolEnv.ShowDocumentUnitSequenceNumberEnabled Then
+                                        defaultSorting = New JObject(New JProperty("FieldName", "SequenceNumber"), New JProperty("SortOrder", "2"))
+                                    End If
                                     documentUnits = OrderList(documentUnits, defaultSorting, Nothing)
                                 Case 1
                                     documentUnits = OrderList(documentUnits, orders(0), Nothing)
@@ -217,6 +226,7 @@ Partial Public Class uscFascicolo
                             End Select
 
                             LoadUD(documentUnits)
+                            UscDocumentReference.CallbackUpdateName(CurrentFascicleId.ToString())
                             AjaxManager.ResponseScripts.Add(String.Format(GRID_REFRESH_CALLBACK, ajaxModel.Value(1), ajaxModel.Value(3)))
                         End If
                 End Select
@@ -230,24 +240,32 @@ Partial Public Class uscFascicolo
 
     End Sub
 
-    Private Function OrderList(docs As IList(Of DocumentUnitModel), OrderBy As JObject, ThenBy As JObject) As IList(Of DocumentUnitModel)
-        If OrderBy("SortOrder").ToString() = "1" Then
-            docs = docs.OrderBy(Function(d) d.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d)).ToList()
+    Private Function OrderList(docs As IList(Of FascicleDocumentUnitModel), OrderBy As JObject, ThenBy As JObject) As IList(Of FascicleDocumentUnitModel)
+        If (OrderBy("FieldName").ToString() = "SequenceNumber") Then
+            If OrderBy("SortOrder").ToString() = "1" Then
+                docs = docs.OrderBy(Function(d) d.SequenceNumber).ToList()
+            Else
+                docs = docs.OrderByDescending(Function(d) d.SequenceNumber).ToList()
+            End If
         Else
-            docs = docs.OrderByDescending(Function(d) d.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d)).ToList()
+            If OrderBy("SortOrder").ToString() = "1" Then
+                docs = docs.OrderBy(Function(d) d.DocumentUnit.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d.DocumentUnit)).ToList()
+            Else
+                docs = docs.OrderByDescending(Function(d) d.DocumentUnit.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d.DocumentUnit)).ToList()
+            End If
         End If
         If ThenBy IsNot Nothing Then
             If OrderBy("SortOrder").ToString() = "1" Then
                 If ThenBy("SortOrder").ToString() = "1" Then
-                    docs = docs.OrderBy(Function(d) d.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d)).ThenBy(Function(d) d.GetType().GetProperty(ThenBy("FieldName").ToString()).GetValue(d)).ToList()
+                    docs = docs.OrderBy(Function(d) d.DocumentUnit.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d.DocumentUnit)).ThenBy(Function(d) d.DocumentUnit.GetType().GetProperty(ThenBy("FieldName").ToString()).GetValue(d.DocumentUnit)).ToList()
                 Else
-                    docs = docs.OrderBy(Function(d) d.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d)).ThenByDescending(Function(d) d.GetType().GetProperty(ThenBy("FieldName").ToString()).GetValue(d)).ToList()
+                    docs = docs.OrderBy(Function(d) d.DocumentUnit.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d.DocumentUnit)).ThenByDescending(Function(d) d.DocumentUnit.GetType().GetProperty(ThenBy("FieldName").ToString()).GetValue(d.DocumentUnit)).ToList()
                 End If
             Else
                 If ThenBy("SortOrder").ToString() = "1" Then
-                    docs = docs.OrderByDescending(Function(d) d.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d)).ThenBy(Function(d) d.GetType().GetProperty(ThenBy("FieldName").ToString()).GetValue(d)).ToList()
+                    docs = docs.OrderByDescending(Function(d) d.DocumentUnit.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d.DocumentUnit)).ThenBy(Function(d) d.DocumentUnit.GetType().GetProperty(ThenBy("FieldName").ToString()).GetValue(d.DocumentUnit)).ToList()
                 Else
-                    docs = docs.OrderByDescending(Function(d) d.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d)).ThenByDescending(Function(d) d.GetType().GetProperty(ThenBy("FieldName").ToString()).GetValue(d)).ToList()
+                    docs = docs.OrderByDescending(Function(d) d.DocumentUnit.GetType().GetProperty(OrderBy("FieldName").ToString()).GetValue(d.DocumentUnit)).ThenByDescending(Function(d) d.DocumentUnit.GetType().GetProperty(ThenBy("FieldName").ToString()).GetValue(d.DocumentUnit)).ToList()
                 End If
             End If
         End If
@@ -287,24 +305,24 @@ Partial Public Class uscFascicolo
             Exit Sub
         End If
 
-        Dim boundHeader As DocumentUnitModel = DirectCast(e.Item.DataItem, DocumentUnitModel)
+        Dim boundHeader As FascicleDocumentUnitModel = DirectCast(e.Item.DataItem, FascicleDocumentUnitModel)
         Dim btnUDLink As RadButton = DirectCast(e.Item.FindControl("btnUDLink"), RadButton)
-        btnUDLink.Attributes.Add("DocumentUnitName", boundHeader.DocumentUnitName)
-        Dim env As DSWEnvironment = DirectCast(If(boundHeader.Environment < 100, boundHeader.Environment, DSWEnvironment.UDS), DSWEnvironment)
+        btnUDLink.Attributes.Add("DocumentUnitName", boundHeader.DocumentUnit.DocumentUnitName)
+        Dim env As DSWEnvironment = DirectCast(If(boundHeader.DocumentUnit.Environment < 100, boundHeader.DocumentUnit.Environment, DSWEnvironment.UDS), DSWEnvironment)
         btnUDLink.Attributes.Add("Environment", Convert.ToInt32(env).ToString())
-        If env = DSWEnvironment.UDS AndAlso boundHeader.IdUDSRepository IsNot Nothing Then
-            btnUDLink.Attributes.Add("UDSRepositoryId", boundHeader.IdUDSRepository.ToString())
+        If env = DSWEnvironment.UDS AndAlso boundHeader.DocumentUnit.IdUDSRepository IsNot Nothing Then
+            btnUDLink.Attributes.Add("UDSRepositoryId", boundHeader.DocumentUnit.IdUDSRepository.ToString())
         End If
 
-        btnUDLink.Text = boundHeader.Title
+        btnUDLink.Text = boundHeader.DocumentUnit.Title
 
         Dim urlIcon As String = String.Empty
         Dim lblReferenceType As Image = DirectCast(e.Item.FindControl("imgReferenceType"), Image)
-        If Not boundHeader.DocumentUnitName.Equals(INSERTS_DOCUMENTUNIT_NAME) Then
+        If Not boundHeader.DocumentUnit.DocumentUnitName.Equals(INSERTS_DOCUMENTUNIT_NAME) Then
 
-            btnUDLink.Attributes.Add("EntityId", boundHeader.EntityId.ToString())
-            btnUDLink.Attributes.Add("Year", boundHeader.Year.ToString())
-            btnUDLink.Attributes.Add("Number", boundHeader.Number.ToString())
+            btnUDLink.Attributes.Add("EntityId", boundHeader.DocumentUnit.EntityId.ToString())
+            btnUDLink.Attributes.Add("Year", boundHeader.DocumentUnit.Year.ToString())
+            btnUDLink.Attributes.Add("Number", boundHeader.DocumentUnit.Number.ToString())
 
 
             If boundHeader.ReferenceType = Data.ReferenceType.Reference Then
@@ -316,26 +334,32 @@ Partial Public Class uscFascicolo
             End If
 
             Dim lblUDCategory As Label = DirectCast(e.Item.FindControl("lblCategory"), Label)
-            lblUDCategory.Text = boundHeader.Category.Name
+            lblUDCategory.Text = boundHeader.DocumentUnit.Category.Name
 
             urlIcon = GetIconUrl(env)
         Else
             lblReferenceType.ImageUrl = ImagePath.SmallDocument
-            urlIcon = boundHeader.Number
-            btnUDLink.Attributes.Add("SerializedDoc", boundHeader.MainDocumentName)
-            Dim results As NameValueCollection = HttpUtility.ParseQueryString(boundHeader.MainDocumentName)
+            urlIcon = boundHeader.DocumentUnit.Number
+            btnUDLink.Attributes.Add("SerializedDoc", boundHeader.DocumentUnit.MainDocumentName)
+            Dim results As NameValueCollection = HttpUtility.ParseQueryString(boundHeader.DocumentUnit.MainDocumentName)
             btnUDLink.Attributes.Add("BiblosChainId", results("ChainId"))
             btnUDLink.Attributes.Add("BiblosDocumentId", results("Guid"))
             btnUDLink.Attributes.Add("BiblosDocumentName", results("Name"))
         End If
 
-        btnUDLink.Attributes.Add("Title", boundHeader.Title.ToString())
-        btnUDLink.Attributes.Add("UniqueId", boundHeader.UniqueId.ToString())
+        btnUDLink.Attributes.Add("Title", boundHeader.DocumentUnit.Title.ToString())
+        btnUDLink.Attributes.Add("UniqueId", boundHeader.DocumentUnit.UniqueId.ToString())
         btnUDLink.Icon.PrimaryIconUrl = urlIcon
         btnUDLink.Icon.PrimaryIconHeight = Unit.Pixel(16)
         btnUDLink.Icon.PrimaryIconWidth = Unit.Pixel(16)
 
-        If ProtocolEnv.MultiAOOFascicleEnabled AndAlso boundHeader.TenantAOO IsNot Nothing AndAlso boundHeader.TenantAOO.IdTenantAOO <> CurrentTenant.TenantAOO.UniqueId Then
+        'Imposto i valori di default per aggiornare il ViewState
+        btnUDLink.Enabled = True
+        e.Item.BackColor = New Drawing.Color()
+        e.Item.SelectableMode = GridItemSelectableMode.ServerAndClientSide
+        e.Item.Enabled = True
+
+        If ProtocolEnv.MultiAOOFascicleEnabled AndAlso boundHeader.DocumentUnit.TenantAOO IsNot Nothing AndAlso boundHeader.DocumentUnit.TenantAOO.IdTenantAOO <> CurrentTenant.TenantAOO.UniqueId Then
             btnUDLink.Enabled = False
             e.Item.BackColor = Drawing.Color.LightGray
             e.Item.SelectableMode = GridItemSelectableMode.None
@@ -343,16 +367,24 @@ Partial Public Class uscFascicolo
         End If
 
         Dim lblUDRegistrationDate As Label = DirectCast(e.Item.FindControl("lblUDRegistrationDate"), Label)
-        If boundHeader.RegistrationDate.HasValue Then
-            lblUDRegistrationDate.Text = boundHeader.RegistrationDate.Value.Date.ToShortDateString()
+        If boundHeader.DocumentUnit.RegistrationDate.HasValue Then
+            lblUDRegistrationDate.Text = boundHeader.DocumentUnit.RegistrationDate.Value.Date.ToShortDateString()
         Else
             lblUDRegistrationDate.Text = String.Empty
         End If
 
+        If ProtocolEnv.ShowDocumentUnitSequenceNumberEnabled Then
+            grdUD.Columns.FindByUniqueName("UDSequenceNumber").Visible = True
+            Dim lblUDSequenceNumber As Label = DirectCast(e.Item.FindControl("lblUDSequenceNumber"), Label)
+            If boundHeader.SequenceNumber <> 0 Then
+                lblUDSequenceNumber.Text = boundHeader.SequenceNumber.ToString()
+            End If
+        End If
+
         Dim imgUDFascicle As RadButton = DirectCast(e.Item.FindControl("imgUDFascicle"), RadButton)
-        If boundHeader.IdFascicle.HasValue AndAlso Not boundHeader.IdFascicle.Value.Equals(CurrentFascicleId) Then
+        If boundHeader.DocumentUnit.IdFascicle.HasValue AndAlso Not boundHeader.DocumentUnit.IdFascicle.Value.Equals(CurrentFascicleId) Then
             imgUDFascicle.Visible = True
-            imgUDFascicle.Attributes.Add("IdFascicle", boundHeader.IdFascicle.Value.ToString())
+            imgUDFascicle.Attributes.Add("IdFascicle", boundHeader.DocumentUnit.IdFascicle.Value.ToString())
             imgUDFascicle.Image.EnableImageButton = True
             imgUDFascicle.Image.IsBackgroundImage = True
             imgUDFascicle.Image.ImageUrl = ImagePath.SmallLinkedFolder
@@ -362,7 +394,7 @@ Partial Public Class uscFascicolo
         End If
 
         Dim lblUDObject As Label = DirectCast(e.Item.FindControl("lblUDObject"), Label)
-        lblUDObject.Text = boundHeader.Subject
+        lblUDObject.Text = boundHeader.DocumentUnit.Subject
 
     End Sub
 
@@ -377,7 +409,7 @@ Partial Public Class uscFascicolo
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscAuthorizations)
     End Sub
 
-    Private Sub LoadUD(models As IList(Of DocumentUnitModel))
+    Private Sub LoadUD(models As IList(Of FascicleDocumentUnitModel))
         grdUD.DataSource = models
         grdUD.DataBind()
     End Sub
@@ -397,19 +429,18 @@ Partial Public Class uscFascicolo
         uscResponsabili.DataBind()
     End Sub
 
-    Private Sub LoadAuthorizations(fascicle As Entity.Fascicles.Fascicle, handler As String)
+    Private Sub LoadAuthorizations(fascicle As Entity.Fascicles.Fascicle, handler As String, isActiveWorkflow As Boolean)
         Dim roleCaption As String = "Settori autorizzati"
         uscAuthorizations.MasterRoles = New List(Of Data.Role)()
         If Not String.IsNullOrEmpty(handler) Then
             uscAuthorizations.WorkflowHandler = handler
         End If
-
         If (Not String.IsNullOrEmpty(ProtocolEnv.FascicleAuthorizedRoleCaption)) Then
             roleCaption = ProtocolEnv.FascicleAuthorizedRoleCaption.ToString()
         End If
         If fascicle.FascicleRoles IsNot Nothing AndAlso fascicle.FascicleRoles.Count > 0 Then
 
-            If (fascicle.VisibilityType.Equals(Entity.Fascicles.VisibilityType.Accessible)) Then
+            If fascicle.VisibilityType.Equals(Entity.Fascicles.VisibilityType.Accessible) Then
                 roleCaption = "Settori autorizzati (documenti disponibili ai settori autorizzati)"
             End If
 
@@ -417,6 +448,7 @@ Partial Public Class uscFascicolo
             Dim accountedRoles As List(Of Data.Role) = New List(Of Data.Role)
             Dim workflowRole As List(Of Data.Role) = New List(Of Data.Role)
             Dim role As Data.Role = New Data.Role()
+            uscAuthorizations.FascicleRoles = fascicle.FascicleRoles
             For Each item As Entity.Fascicles.FascicleRole In fascicle.FascicleRoles
                 role = Facade.RoleFacade.GetById(item.Role.EntityShortId)
                 If item.AuthorizationRoleType = Entity.Commons.AuthorizationRoleType.Accounted Then
@@ -432,10 +464,11 @@ Partial Public Class uscFascicolo
             If responsibleRoles.Any() Then
                 uscAuthorizations.ResponsibleRoles = responsibleRoles
             End If
-            If workflowRole.Any() Then
+            If workflowRole.Any() AndAlso isActiveWorkflow Then
                 uscAuthorizations.WorkflowRole = workflowRole
             End If
-            If accountedRoles.Any() Then
+            If accountedRoles.Any() OrElse workflowRole.Any() Then
+                accountedRoles.AddRange(workflowRole)
                 uscAuthorizations.AccountedRoleCaption = roleCaption
                 uscAuthorizations.AccountedRoles = accountedRoles.OrderBy(Function(x) x.Name).ToList()
             End If
@@ -466,9 +499,9 @@ Partial Public Class uscFascicolo
         Dim env As DSWEnvironment = DirectCast([Enum].Parse(GetType(DSWEnvironment), environment.ToString()), DSWEnvironment)
         Select Case env
             Case DSWEnvironment.Protocol
-                Return "../Comm/Images/DocSuite/Protocollo16.gif"
+                Return "../Comm/Images/DocSuite/Protocollo16.png"
             Case DSWEnvironment.Resolution
-                Return "../Comm/Images/DocSuite/Atti16.gif"
+                Return "../Comm/Images/DocSuite/Atti16.png"
             Case DSWEnvironment.DocumentSeries
                 Return "../App_Themes/DocSuite2008/imgset16/document_copies.png"
             Case DSWEnvironment.UDS
@@ -526,11 +559,17 @@ Partial Public Class uscFascicolo
         metadata.Add(New StringParameter("Title", fascicle.Title))
         metadata.Add(New StringParameter("FascicleObject", Server.HtmlEncode(fascicle.FascicleObject)))
         metadata.Add(New StringParameter("Contact", If(fascicle.Contacts.Any(), fascicle.Contacts.FirstOrDefault().Description, String.Empty)))
+        metadata.Add(New StringParameter("Note", fascicle.Note))
+        Dim masterRole As FascicleRole = fascicle.FascicleRoles?.FirstOrDefault(Function(x) x.IsMaster)
+        metadata.Add(New StringParameter("MasterRole", If(masterRole IsNot Nothing, masterRole.Role.Name, String.Empty)))
+        Dim serieVolume As String = If(String.IsNullOrEmpty(fascicle.ProcessLabel) OrElse String.IsNullOrEmpty(fascicle.DossierFolderLabel), String.Empty, String.Format("{0}/{1}", fascicle.ProcessLabel, fascicle.DossierFolderLabel))
+        metadata.Add(New StringParameter("Serie", serieVolume))
+        Dim category As String = If(fascicle.Category Is Nothing, String.Empty, String.Format("{0}.{1}", fascicle.Category.Code, fascicle.Category.Name))
+        metadata.Add(New StringParameter("Category", category))
+        metadata.Add(New StringParameter("FDU_YearNumber", WORD_TABLE_COLUMN_FDU_YEARNUMBER))
         metadata.Add(New StringParameter("FDU_Subject", WORD_TABLE_COLUMN_FDU_SUBJECT))
         metadata.Add(New StringParameter("FDU_Category", WORD_TABLE_COLUMN_FDU_CATEGORY))
         metadata.Add(New StringParameter("FDU_RegistrationDate", WORD_TABLE_COLUMN_FDU_REGISTRATION_DATE))
-        metadata.Add(New StringParameter("FDU_FascicleRegistrationDate", WORD_TABLE_COLUMN_FDU_FASCICLE_REGISTRATION_DATE))
-        metadata.Add(New StringParameter("FDU_FascicleRegistrationUser", WORD_TABLE_COLUMN_FDU_FASCICLE_REGISTRATION_USER))
         metadata.Add(New StringParameter("FD_DocumentName", WORD_TABLE_COLUMN_FD_DOCUMENT_NAME))
         metadata.Add(New StringParameter("FD_DocumentCreatedDate", WORD_TABLE_COLUMN_FD_DOCUMENT_CREATED_DATE))
         metadata.Add(New StringParameter("FD_DocumentRegistrationUser", WORD_TABLE_COLUMN_FD_DOCUMENT_REGISTRATION_USER))

@@ -1,8 +1,6 @@
-﻿Imports NHibernate
-Imports NHibernate.Criterion
-Imports System.Linq
+﻿Imports System.Linq
+Imports NHibernate
 Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.NHibernateManager
 Imports VecompSoftware.NHibernateManager.Dao
 
 Public Class NHibernateOChartDao
@@ -40,19 +38,6 @@ Public Class NHibernateOChartDao
         finder.IdIn = New List(Of Guid) From {id}
         Return finder.DoSearch().FirstOrDefault()
     End Function
-    Public Function GetHeader(header As OChart) As OChart
-        If Not header.Id.IsEmpty() Then
-            Return GetHeader(header.Id)
-        End If
-
-        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.Eq("StartDate", header.StartDate))
-        criteria.Add(Restrictions.Eq("EndDate", header.EndDate))
-        criteria.Add(Restrictions.Eq("Enabled", True))
-        criteria.AddOrder(Order.Desc("Id"))
-        criteria.SetMaxResults(1)
-        Return criteria.UniqueResult(Of OChart)()
-    End Function
 
     Public Function GetHierarchy(id As Guid) As OChart
         Dim finder As New NHibernateOChartFinder()
@@ -70,7 +55,7 @@ Public Class NHibernateOChartDao
         Dim missing As IEnumerable(Of OChart) = expected.Where(Function(e) Not hierarchies.Any(Function(a) a.IsSame(e)))
         Dim replicated As IEnumerable(Of OChart) = missing.Select(Function(m) m.CloneItems(hierarchies.PreviousOrDefault(m), DocSuiteContext.Current.User.FullUserName))
 
-        Using transaction As ITransaction = session.BeginTransaction()
+        Using transaction As ITransaction = session.BeginTransaction(IsolationLevel.ReadCommitted)
             Dim list As List(Of OChart) = hierarchies.ToList()
             If Not replicated.IsNullOrEmpty() Then
                 list.AddRange(replicated)

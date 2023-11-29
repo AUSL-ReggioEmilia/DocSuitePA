@@ -12,8 +12,10 @@ class uscTenantsSelRest {
     currentTenantId: string;
     uscNotificationId: string;
     tenants: TenantModelSelection[] = [];
+    pageContentId: string;
 
     private _rddtTenantTree: Telerik.Web.UI.RadDropDownTree;
+    private _rtvTenantTree: Telerik.Web.UI.RadTreeView;
     private _serviceConfigurations: ServiceConfiguration[];
     private _enumHelper: EnumHelper;
     protected _tenantAOOService: TenantAOOService;
@@ -22,6 +24,7 @@ class uscTenantsSelRest {
     public static SESSION_TENANT_SELECTION_MODEL;
     public static TenantAOO_Name = "TenantAOOName";
     public static TenantAOO_Id = "TenantAOOId";
+    public static TENANT_CHANGE_EVENT: string = "OnTenantChange";
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         this._serviceConfigurations = serviceConfigurations;
@@ -33,6 +36,9 @@ class uscTenantsSelRest {
         this._tenantAOOService = new TenantAOOService(tenantAOOConfiguration);
 
         this._rddtTenantTree = <Telerik.Web.UI.RadDropDownTree>$find(this.rddtTenantTreeId);
+        this._rtvTenantTree = this._rddtTenantTree.get_embeddedTree();
+        this._rtvTenantTree.add_nodeClicked(this.rtvTenantTree_OnClick);
+
         this._rddtTenantTree.add_entryAdded(this.add_entryAdded);
         this._rddtTenantTree.add_entryRemoved(this.add_entryRemoved);
 
@@ -42,13 +48,18 @@ class uscTenantsSelRest {
         $(`#${this.rddtTenantTreeId}`).data(this);
     }
 
-    public hasValue():boolean {
+    rtvTenantTree_OnClick = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs): void => {
+        let tenantaooId: string = args.get_node().get_level() == 1 ? args.get_node().get_parent().get_value() : null;
+        $(`#${this.pageContentId}`).triggerHandler(uscTenantsSelRest.TENANT_CHANGE_EVENT, tenantaooId);
+    }
+
+    public hasValue(): boolean {
         return this._rddtTenantTree.get_selectedValue() != "";
     }
 
     add_entryRemoved = (sender: Telerik.Web.UI.RadDropDownTree, args: Telerik.Web.UI.DropDownTreeEntryRemovedEventArgs) => {
         let selected = args.get_entry();
-                
+
         if (sessionStorage.getItem(uscTenantsSelRest.SESSION_TENANT_SELECTION_MODEL) == null ||
             sessionStorage.getItem(uscTenantsSelRest.SESSION_TENANT_SELECTION_MODEL).length == 0) {
             return
@@ -66,7 +77,7 @@ class uscTenantsSelRest {
 
     add_entryAdded = (sender: Telerik.Web.UI.RadDropDownTree, args: Telerik.Web.UI.DropDownTreeEntryAddedEventArgs) => {
         let selected = args.get_node();
-        
+
         if (selected.get_level() == 0) {
             selected.unselect();
             this._rddtTenantTree.get_entries().clear();

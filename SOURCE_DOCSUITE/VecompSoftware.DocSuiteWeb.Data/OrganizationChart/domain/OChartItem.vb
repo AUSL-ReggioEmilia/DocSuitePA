@@ -39,15 +39,8 @@ Public Class OChartItem
         If item.HasRoles Then
             Roles = item.Roles.Distinct().ReplicateList(Me).ToList()
         End If
-        If item.HasMailboxes Then
-            Mailboxes = item.Mailboxes.Distinct().ReplicateList(Me).ToList()
-        End If
         If item.HasContacts Then
             Contacts = item.Contacts.Distinct().ReplicateList(Me).ToList()
-        End If
-
-        If item.HasWorkflows Then
-            Workflows = item.Workflows.Distinct().ReplicateList(Me).ToList()
         End If
 
         If item.HasItems Then
@@ -94,9 +87,7 @@ Public Class OChartItem
     Public Overridable Property Items As IList(Of OChartItem)
     Public Overridable Property Contacts As IList(Of OChartItemContact)
     Public Overridable Property Containers As IList(Of OChartItemContainer)
-    Public Overridable Property Mailboxes As IList(Of OChartItemMailbox)
     Public Overridable Property Roles As IList(Of OChartItemRole)
-    Public Overridable Property Workflows As IList(Of OChartItemWorkflow)
 
     Public Overridable ReadOnly Property IsEnabled As Boolean
         Get
@@ -129,26 +120,15 @@ Public Class OChartItem
             Return Not Containers.IsNullOrEmpty()
         End Get
     End Property
-    Public Overridable ReadOnly Property HasMailboxes As Boolean
-        Get
-            Return Not Mailboxes.IsNullOrEmpty()
-        End Get
-    End Property
     Public Overridable ReadOnly Property HasRoles As Boolean
         Get
             Return Not Roles.IsNullOrEmpty()
         End Get
     End Property
 
-    Public Overridable ReadOnly Property HasWorkflows As Boolean
-        Get
-            Return Not Workflows.IsNullOrEmpty()
-        End Get
-    End Property
-
     Public Overridable ReadOnly Property HasResources As Boolean
         Get
-            Return HasContacts OrElse HasContainers OrElse HasMailboxes OrElse HasRoles
+            Return HasContacts OrElse HasContainers OrElse HasRoles
         End Get
     End Property
 
@@ -248,15 +228,6 @@ Public Class OChartItem
         End If
         Return False
     End Function
-    Public Overridable Function HasHierarchicalMailboxes() As Boolean
-        If HasMailboxes Then
-            Return True
-        End If
-        If HasItems Then
-            Return Items.Any(Function(i) i.HasHierarchicalMailboxes())
-        End If
-        Return False
-    End Function
     Public Overridable Function HasHierarchicalRoles() As Boolean
         If HasRoles Then
             Return True
@@ -295,20 +266,7 @@ Public Class OChartItem
         End If
         Return hierarchical
     End Function
-    Public Overridable Function GetHierarchicalMailboxes() As List(Of PECMailBox)
-        Dim hierarchical As New List(Of PECMailBox)
-        If HasContacts Then
-            hierarchical.AddRange(Mailboxes.Select(Function(m) m.Mailbox))
-        End If
-        If HasItems Then
-            For Each item As OChartItem In Items
-                Dim recursion As List(Of PECMailBox) = item.GetHierarchicalMailboxes()
-                Dim missing As IEnumerable(Of PECMailBox) = recursion.Where(Function(r) Not hierarchical.Any(Function(h) h.Id.Equals(r.Id)))
-                hierarchical.AddRange(missing)
-            Next
-        End If
-        Return hierarchical
-    End Function
+
     Public Overridable Function GetHierarchicalRoles() As List(Of Role)
         Dim hierarchical As New List(Of Role)
         If HasContacts Then
@@ -409,39 +367,6 @@ Public Class OChartItem
         RemoveContainers(New List(Of Container) From {resource})
     End Sub
 
-    ' Gestionre risorse Mailbox
-
-    Public Overridable Sub AddMailboxes(list As IEnumerable(Of PECMailBox))
-        Dim missing As IEnumerable(Of OChartItemMailbox) = list.Select(Function(c) New OChartItemMailbox() With {.Item = Me, .Mailbox = c})
-        If HasMailboxes Then
-            missing = missing.Where(Function(m) Not Mailboxes.Any(Function(c) c.Mailbox.Id.Equals(m.Mailbox.Id)))
-        End If
-
-        If Mailboxes Is Nothing Then
-            Mailboxes = New List(Of OChartItemMailbox)(missing)
-            Return
-        End If
-
-        For Each resource As OChartItemMailbox In missing
-            Mailboxes.Add(resource)
-        Next
-    End Sub
-    Public Overridable Sub AddMailbox(resource As PECMailBox)
-        AddMailboxes(New List(Of PECMailBox) From {resource})
-    End Sub
-    Public Overridable Sub RemoveMailboxes(list As IEnumerable(Of PECMailBox))
-        If Not HasMailboxes Then
-            Return
-        End If
-
-        For Each mailBox As PECMailBox In list
-            Mailboxes.Remove(Mailboxes.SingleOrDefault(Function(f) f.Mailbox.Id = mailBox.Id))
-        Next
-    End Sub
-    Public Overridable Sub RemoveMailbox(resource As PECMailBox)
-        RemoveMailboxes(New List(Of PECMailBox) From {resource})
-    End Sub
-
     ' Gestione risorse Role
 
     Public Overridable Sub AddRoles(list As IEnumerable(Of Role))
@@ -488,9 +413,6 @@ Public Class OChartItem
         If dto.HasContainers Then
             Me.AddContainers(dto.Containers)
         End If
-        If dto.HasMailboxes Then
-            Me.AddMailboxes(dto.Mailboxes)
-        End If
         If dto.HasRoles Then
             Me.AddRoles(dto.Roles)
         End If
@@ -505,9 +427,6 @@ Public Class OChartItem
         End If
         If dto.HasContainers Then
             Me.RemoveContainers(dto.Containers.Select(Function(c) c.Container))
-        End If
-        If dto.HasMailboxes Then
-            Me.RemoveMailboxes(dto.Mailboxes)
         End If
         If dto.HasRoles Then
             Me.RemoveRoles(dto.Roles)

@@ -3,6 +3,7 @@
 <%@ Register Src="~/UserControl/uscProtocolPreview.ascx" TagName="uscProtocolPreview" TagPrefix="uc" %>
 <%@ Register Src="~/PEC/uscInteropInfo.ascx" TagPrefix="usc" TagName="uscInteropInfo" %>
 <%@ Register Src="~/UserControl/uscPecHistory.ascx" TagName="PecHistory" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 
 <asp:Content ContentPlaceHolderID="cphHeader" runat="server">
     <telerik:RadCodeBlock ID="RadCodeBlock1" runat="server">
@@ -45,7 +46,7 @@
                 } else {
                     HideLoadingPanel()
                 }
-             }     
+            }
         </script>
         <style>
             #ctl00_DefaultLoadingPanelctl00_cphContent_pnlMainContent {
@@ -53,6 +54,26 @@
             }
             </style>
     </telerik:RadCodeBlock>
+    <telerik:RadScriptBlock runat="server" EnableViewState="false">
+        <script type="text/javascript">
+            var pecSummary;
+            require(["PEC/PECSummary"], function (PECSummary) {
+                $(function () {
+                    pecSummary = new PECSummary(tenantModelConfiguration.serviceConfiguration);
+                    pecSummary.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
+                    pecSummary.btnWorkflowId = "<%= btnWorkflow.ClientID %>";
+                    pecSummary.radWindowManagerPecId = "<%= RadWindowManagerPec.ClientID %>";
+                    pecSummary.pecMailId = <%= CurrentPecMail.Id %>;
+                    pecSummary.initialize();
+                });
+            });
+        </script>
+    </telerik:RadScriptBlock>
+    <telerik:RadWindowManager EnableViewState="False" ID="RadWindowManagerPec" runat="server">
+        <Windows>
+            <telerik:RadWindow Height="450" ID="windowStartWorkflow" runat="server" Title="Avvia attività" Width="600" />
+        </Windows>
+    </telerik:RadWindowManager>
     <asp:Panel runat="server" ID="pnlDestination" CssClass="hiddenField">
         <asp:Label ID="lblDestination" runat="server" />
     </asp:Panel>
@@ -120,6 +141,21 @@
                                 <asp:Label ID="lblInfo" runat="server" />
                             </td>
                         </tr>
+                        <tr id="trConservationStatus" runat="server">
+                            <td class="label" style="width: 15%">Stato conservazione:</td>
+                            <td style="width: 35%">
+                                <div style="margin: 5px">
+                                    <asp:Image runat="server" ID="conservationIcon" Style="vertical-align: middle" />
+                                    <asp:HyperLink ID="lblConservationStatus" runat="server" Target="_blank"></asp:HyperLink>
+                                </div>
+                            </td>
+                            <td class="label" style="width: 15%">
+                                <asp:Label ID="conservationUriLabel" Visible="false" runat="server">URI:</asp:Label>
+                            </td>
+                            <td style="width: 35%">
+                                <asp:Label ID="lblConservationUri" Visible="false" runat="server"></asp:Label>
+                            </td>
+                        </tr>
                     </table>
                     <table id="tblAnnullamento" class="datatable" runat="server">
                         <tr>
@@ -150,7 +186,7 @@
                         </tr>
                         <tr class="Chiaro">
                             <td>
-                                <telerik:RadEditor AutoResizeHeight="True" Enabled="false" ContentFilters="RemoveScripts,FixEnclosingP" EmptyMessage="Nessun testo trovato" runat="server" ID="lblBody" Style="overflow: auto; border: 0 none;" />
+                                 <telerik:RadEditor AutoResizeHeight="True" Enabled="false" ContentFilters="RemoveScripts,FixEnclosingP" EmptyMessage="Nessun testo trovato" runat="server" ID="lblBody" Style="overflow: auto; border: 0 none;" />
                             </td>
                         </tr>
                     </table>
@@ -188,6 +224,7 @@
             <asp:Button ID="btnMovePEC" OnClientClick="ShowLoadingPanel();" PostBackUrl="~/PEC/PECMoveMails.aspx" runat="server" Text="Sposta" Width="150" />
             <asp:Button ID="btnMail" OnClientClick="ShowLoadingPanel();" PostBackUrl="~/MailSenders/PecMailSender.aspx" runat="server" Text="Invia" Width="150" />
             <asp:Button ID="btnOriginalEml" runat="server" Width="150" Visible="False" />
+            <asp:Button ID="btnWorkflow" runat="server" Width="150" Text="Avvia attività" Visible="False" Enabled = "False" OnClientClick="pecSummary.btnWorkflow_onClick();"/>
         </div>
         <div>
             <asp:Button ID="cmdPECView" OnClientClick="ShowLoadingPanel();" runat="server" Text="Documenti" Width="150" />
@@ -204,4 +241,5 @@
             <asp:Button ID="cmdResend" runat="server" Width="150px" Text="Reinvia PEC" />
         </div>
     </asp:Panel>
+    <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
 </asp:Content>

@@ -365,7 +365,7 @@ Partial Public Class uscODATAProtGrid
                         parameters = String.Format("id={0}", header.Entity.EntityId)
                         Return String.Concat("~/Viewers/DocumentSeriesItemViewer.aspx?", CommonShared.AppendSecurityCheck(parameters))
                     Case DSWEnvironment.Resolution
-                        parameters = String.Format("IdResolution={0}&documents=true&attachments=true&annexes=true&documentsomissis=true&attachmentsomissis=true&previous=conditional", header.Entity.EntityId)
+                        parameters = String.Format("IdResolution={0}&documents=true&attachments=true&annexes=true&documentsomissis=true&attachmentsomissis=true&dematerialisation=true&metadata=true&previous=conditional", header.Entity.EntityId)
                         Return String.Concat("~/Viewers/ResolutionViewer.aspx?", CommonShared.AppendSecurityCheck(parameters))
                     Case > 100
                         parameters = String.Format("IdUDS={0}&IdUDSRepository={1}", header.Entity.UniqueId, header.Entity.IdUDSRepository)

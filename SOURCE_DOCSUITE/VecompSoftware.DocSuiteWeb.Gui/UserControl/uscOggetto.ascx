@@ -44,5 +44,5 @@
 </telerik:RadScriptBlock>
 <asp:Panel runat="server" ID="pnlId">
     <telerik:RadTextBox ID="txtObject" MaxLength="511" onBlur="javascript:ChangeStrWithValidCharacter(this);" Rows="3" runat="server" Width="100%" ShowButton="True" ButtonCssClass="searchButton" />
-    <asp:RequiredFieldValidator ControlToValidate="txtObject" Display="Dynamic" ErrorMessage="Campo Oggetto Obbligatorio" ID="rfvObject" runat="server" />
+    <asp:RequiredFieldValidator ControlToValidate="txtObject" Display="Dynamic" ErrorMessage="Campo oggetto obbligatorio" ID="rfvObject" runat="server" />
 </asp:Panel>

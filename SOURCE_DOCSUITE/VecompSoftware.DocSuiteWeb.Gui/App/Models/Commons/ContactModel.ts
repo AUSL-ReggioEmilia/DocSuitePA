@@ -23,12 +23,9 @@ interface ContactModel {
     Language: string;
     Nationality: string;
     SearchCode?: string;
-    isActive?: number;
+    isActive?: boolean;
     isLocked?: number;
     isNotExpandable?: number;
-    ActiveFrom?: Date;
-    ActiveTo?: Date;
-    isChanged?: number;
     IdContactType?: string;
     UniqueId?: string;
     Title?: ContactTitleModel;

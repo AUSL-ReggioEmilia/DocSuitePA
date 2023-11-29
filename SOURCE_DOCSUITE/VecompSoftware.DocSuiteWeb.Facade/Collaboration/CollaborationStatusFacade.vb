@@ -14,8 +14,8 @@ Public Class CollaborationStatusFacade
     ''' <param name="idCollaboration">Collaborazione di riferimento nella quale effettuare le ricerche</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function GetSender(ByVal collaborationStatus As CollaborationStatus, ByVal idCollaboration As Integer) As MessageContactEmail
-        Dim contacts As IList(Of Contact) = Factory.CollaborationStatusRecipientFacade.ResolveAddresses(collaborationStatus.MailSender, idCollaboration, True)
+    Public Function GetSender(collaborationStatus As CollaborationStatus, idCollaboration As Integer, idTenantAOO As Guid) As MessageContactEmail
+        Dim contacts As IList(Of Contact) = Factory.CollaborationStatusRecipientFacade.ResolveAddresses(collaborationStatus.MailSender, idCollaboration, True, idTenantAOO)
         If contacts.Count > 0 Then
             Return Factory.MessageContactEmailFacade.CreateEmailContact(contacts.FirstOrDefault().Description, DocSuiteContext.Current.User.FullUserName, contacts.FirstOrDefault().EmailAddress, MessageContact.ContactPositionEnum.Sender)
         End If
@@ -30,22 +30,22 @@ Public Class CollaborationStatusFacade
     ''' <param name="idCollaboration">Collaborazione di riferimento nella quale effettuare le ricerche</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function GetRecipients(ByVal collaborationStatus As CollaborationStatus, ByVal idCollaboration As Integer) As IList(Of MessageContactEmail)
+    Public Function GetRecipients(collaborationStatus As CollaborationStatus, idCollaboration As Integer, idTenantAOO As Guid) As IList(Of MessageContactEmail)
         Dim contacts As New List(Of MessageContactEmail)
         ''Carico i destinatari TO
-        contacts.AddRange(LoadContactsFromDefinition(collaborationStatus.MailRecipientsTo, idCollaboration, MessageContact.ContactPositionEnum.Recipient))
-        
+        contacts.AddRange(LoadContactsFromDefinition(collaborationStatus.MailRecipientsTo, idCollaboration, MessageContact.ContactPositionEnum.Recipient, idTenantAOO))
+
         ''Carico i destinatari CC
-        contacts.AddRange(LoadContactsFromDefinition(collaborationStatus.MailRecipientsCc, idCollaboration, MessageContact.ContactPositionEnum.RecipientCC))
+        contacts.AddRange(LoadContactsFromDefinition(collaborationStatus.MailRecipientsCc, idCollaboration, MessageContact.ContactPositionEnum.RecipientCc, idTenantAOO))
 
         ''Carico i destinatari CCN
-        contacts.AddRange(LoadContactsFromDefinition(collaborationStatus.MailRecipientsCcn, idCollaboration, MessageContact.ContactPositionEnum.RecipientBCC))
+        contacts.AddRange(LoadContactsFromDefinition(collaborationStatus.MailRecipientsCcn, idCollaboration, MessageContact.ContactPositionEnum.RecipientBcc, idTenantAOO))
 
         '' Corrisponde ad un distinct su tipologia di contatto e e-mail
         Return contacts.GroupBy(Function(mce) New With {Key mce.MessageContact.ContactPosition, Key mce.Email}).Select(Function(c) c.First()).ToList()
     End Function
 
-    Public Function LoadContactsFromDefinition(ByVal mailRecipientDefinition As String, ByVal idCollaboration As Integer, ByVal messageContactPosition As MessageContact.ContactPositionEnum) As IList(Of MessageContactEmail)
+    Public Function LoadContactsFromDefinition(mailRecipientDefinition As String, idCollaboration As Integer, messageContactPosition As MessageContact.ContactPositionEnum, idTenantAOO As Guid) As IList(Of MessageContactEmail)
         If String.IsNullOrEmpty(mailRecipientDefinition) Then
             Return New List(Of MessageContactEmail)
         End If
@@ -58,7 +58,7 @@ Public Class CollaborationStatusFacade
         Dim contacts As New List(Of MessageContactEmail)
         For Each mailRecipient As String In definitions
             For Each mr As String In mailRecipient.Split("_"c)
-                Dim statusRecipients As IList(Of Contact) = FacadeFactory.Instance.CollaborationStatusRecipientFacade.ResolveAddresses(mr, idCollaboration, True)
+                Dim statusRecipients As IList(Of Contact) = FacadeFactory.Instance.CollaborationStatusRecipientFacade.ResolveAddresses(mr, idCollaboration, True, idTenantAOO)
                 Dim available As IEnumerable(Of Contact) = statusRecipients.Where(Function(r) Not r.Description.Eq(DocSuiteContext.Current.User.UserName) _
                                                                                       AndAlso Not r.EmailAddress.Eq(CommonShared.DsUserMail))
 
@@ -70,7 +70,7 @@ Public Class CollaborationStatusFacade
                 contacts.AddRange(mailContacts)
             Next
         Next
-  
+
         Return contacts
     End Function
 

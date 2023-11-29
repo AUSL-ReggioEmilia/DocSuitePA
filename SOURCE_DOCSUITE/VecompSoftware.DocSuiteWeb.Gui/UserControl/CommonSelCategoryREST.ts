@@ -21,6 +21,7 @@ import ProcessFascicleTemplateModel = require("App/Models/Processes/ProcessFasci
 import TreeNodeModel = require("App/ViewModels/Commons/TreeNodeModel");
 import TbltProcess = require("Tblt/TbltProcess");
 import SessionStorageKeysHelper = require("App/Helpers/SessionStorageKeysHelper");
+import PageClassHelper = require("App/Helpers/PageClassHelper");
 
 class CommonSelCategoryRest {
 
@@ -47,6 +48,9 @@ class CommonSelCategoryRest {
     parentId?: number;
     currentTenantAOOId: string;
     showProcesses: boolean;
+    showProcessFascicleTemplate: boolean;
+    processNodeSelectable: boolean;
+    isProcessActive: boolean
 
     private _categoryService: CategoryService;
     private _processService: ProcessService;
@@ -58,6 +62,7 @@ class CommonSelCategoryRest {
 
     private static CATEGORYFULLCODE_MAXLENGTH = 4;
     private static NODETYPE_ATTRNAME: string = "NodeType";
+    private static NODE_CHILDREN_LOADED_ATTRIBUTE: string = "ChildrenLoaded";
 
     public static PROCESSES_AND_FOLDERS_TEXT = "Serie e volumi";
     public static NO_ITEMS_FOUND_TEXT = "Nessun elemento trovato";
@@ -114,34 +119,33 @@ class CommonSelCategoryRest {
     treeViewCategory_ClientNodeExpanding = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => {
         let node: Telerik.Web.UI.RadTreeNode = args.get_node();
         let expandedNodeType: ProcessNodeType = node.get_attributes().getAttribute(CommonSelCategoryRest.NODETYPE_ATTRNAME);
-        let hasFascicleInsertRights: boolean = this._btnSearchOnlyFascicolable.get_checked();
 
-        if (( this.showProcesses && hasFascicleInsertRights && expandedNodeType === ProcessNodeType.Category) || expandedNodeType === ProcessNodeType.TreeRootNode) {
+        if (this.nodeIsLoaded(node) || expandedNodeType === ProcessNodeType.TreeRootNode) {
+            //no lazy loading required
             return;
         }
 
+        args.set_cancel(true);
         node.get_nodes().clear();
         node.showLoadingStatus('', Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
-        if (expandedNodeType === ProcessNodeType.Root) {
-            this.findProcesses(node)
-                .fail((exception: ExceptionDTO) => this.showNotificationException(exception))
-                .always(() => node.hideLoadingStatus());
+        let func: JQueryPromise<void>;
+        switch (expandedNodeType) {
+            case ProcessNodeType.Root:
+                func = this.findProcesses(node);
+                break;
+            case ProcessNodeType.Process:
+                func = this.loadProcessDossierFolders(node);
+                break;
+            case ProcessNodeType.DossierFolder:
+                func = this.loadDossierFoldersChildren(node);
+                break;
+            default:
+                func = this.findCategories(node.get_value());
+                break;
         }
-        else if (expandedNodeType === ProcessNodeType.Process) {
-            this._loadProcessDossierFolders(node)
-                .fail((exception: ExceptionDTO) => this.showNotificationException(exception))
-                .always(() => node.hideLoadingStatus());
-        }
-        else if (expandedNodeType === ProcessNodeType.DossierFolder) {
-            this._loadDossierFoldersChildren(node)
-                .fail((exception: ExceptionDTO) => this.showNotificationException(exception))
-                .always(() => node.hideLoadingStatus());
-        }
-        else if (node.get_nodes().get_count() == 0) {
-            this.findCategories(node.get_value())
-                .fail((exception: ExceptionDTO) => this.showNotificationException(exception))
-                .always(() => node.hideLoadingStatus());
-        }
+
+        func.fail((exception: ExceptionDTO) => this.showNotificationException(exception))
+            .always(() => node.hideLoadingStatus());
     }
 
     /**
@@ -170,70 +174,13 @@ class CommonSelCategoryRest {
 
     btnConfirm_OnClick = (sender: any, args: any) => {
         sender.preventDefault();
-        let selectedNode: Telerik.Web.UI.RadTreeNode = this._treeViewCategory.get_selectedNode();
-        if (this.showProcesses) {
-            let processFascicleTemplateParents: TreeNodeModel[] = [
-                {
-                    text: selectedNode.get_text(),
-                    value: selectedNode.get_value(),
-                    icon: selectedNode.get_imageUrl(),
-                    cssClass: selectedNode.get_cssClass(),
-                    nodeType: selectedNode.get_attributes().getAttribute("NodeType")
-                }
-            ];
-            this.getAllParents(selectedNode.get_parent(), processFascicleTemplateParents);
-            this.closeWindow(processFascicleTemplateParents);
-        }
-        else {
-            if (!selectedNode || !selectedNode.get_value()) {
-                this.showNotificationException(null, "Selezionare almeno un classificatore");
-                return;
-            }
-
-            let category: CategoryTreeViewModel = this.getCategoryFromNode(selectedNode);
-            if (this.fascicleBehavioursEnabled && !category.HasFascicleDefinition) {
-                this.showNotificationException(null, "Non si dispongono i permessi per questa voce del piano di fascicolazione.");
-                return;
-            }
-
-            this.closeWindow(category);
-        }
-
-    }
-
-    private getAllParents(node: Telerik.Web.UI.RadTreeNode, treeNodeModel: TreeNodeModel[]): void {
-        if (!(node instanceof Telerik.Web.UI.RadTreeView)) {
-            treeNodeModel.push({
-                text: node.get_text(),
-                value: node.get_value(),
-                cssClass: node.get_cssClass(),
-                icon: node.get_imageUrl(),
-                nodeType: node.get_attributes().getAttribute("NodeType")
-            });
-            this.getAllParents(node.get_parent(), treeNodeModel);
-        }
-    }
-
-    private _validateSearchCode(fullCode: string): boolean {
-        if (!fullCode) {
-            return false;
-        }
-
-        let codeStringFragments: string[] = fullCode.split('.');
-        let invalidLengthFragments = codeStringFragments.some(stringFragment => stringFragment.length > CommonSelCategoryRest.CATEGORYFULLCODE_MAXLENGTH);
-        let fragmentsNotNumeric = codeStringFragments.some(stringFragment => isNaN(Number(stringFragment)));
-
-        if (invalidLengthFragments || fragmentsNotNumeric) {
-            return false;
-        }
-
-        return true;
+        this.confirmNodeSelection();
     }
 
     btnSearchCode_OnClick = (sender: any, args: any) => {
         sender.preventDefault();
 
-        let inputCodeIsValid: boolean = this._validateSearchCode(this.txtSearchCode.val());
+        let inputCodeIsValid: boolean = this.validateSearchCode(this.txtSearchCode.val());
 
         if (!inputCodeIsValid) {
             this.showNotificationException(null, "Il codice inserito non è formattato correttamente");
@@ -260,8 +207,19 @@ class CommonSelCategoryRest {
                     return;
                 }
 
+                let node = this._treeViewCategory.findNodeByAttribute("FullCode", categories[0].FullCode);
+
+                if (node === null) {
+                    this.showNotificationException(null, "Il codice cercato è inesistente");
+                    return;
+                }
+
                 sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_FOUND_CATEGORIES);
-                this.closeWindow(categories[0]);
+
+                this._treeViewCategory.trackChanges();
+                node.set_selected(true);
+                this._treeViewCategory.commitChanges();
+                this.confirmNodeSelection();
             })
             .fail((exception: ExceptionDTO) => this.showNotificationException(exception))
             .always(() => this._loadingPanel.hide(this.pnlMainContentId));
@@ -272,6 +230,15 @@ class CommonSelCategoryRest {
         this.findCategories()
             .fail((exception: ExceptionDTO) => this.showNotificationException(exception))
             .always(() => this._loadingPanel.hide(this.pnlMainContentId));
+    }
+
+    treeViewCategory_nodeClicked = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => {
+        let buttonDisabled: boolean =
+            args.get_node().get_text() === CommonSelCategoryRest.PROCESSES_AND_FOLDERS_TEXT
+            || args.get_node().get_text() === CommonSelCategoryRest.NO_ITEMS_FOUND_TEXT
+            || args.get_node().get_level() === 0
+            || (args.get_node().get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME) === ProcessNodeType.Process && !this.processNodeSelectable);
+        $(`#${this.btnConfermaId}`).prop('disabled', buttonDisabled);
     }
 
     /**
@@ -349,6 +316,37 @@ class CommonSelCategoryRest {
         return promise.promise();
     }
 
+    confirmNodeSelection() {
+        let selectedNode: Telerik.Web.UI.RadTreeNode = this._treeViewCategory.get_selectedNode();
+        if (this.showProcesses) {
+            let processFascicleTemplateParents: TreeNodeModel[] = [
+                {
+                    text: selectedNode.get_text(),
+                    value: selectedNode.get_value(),
+                    icon: selectedNode.get_imageUrl(),
+                    cssClass: selectedNode.get_cssClass(),
+                    nodeType: selectedNode.get_attributes().getAttribute("NodeType")
+                }
+            ];
+            this.getAllParents(selectedNode.get_parent(), processFascicleTemplateParents);
+            this.closeWindow(processFascicleTemplateParents);
+        }
+        else {
+            if (!selectedNode || !selectedNode.get_value()) {
+                this.showNotificationException(null, "Selezionare almeno un classificatore");
+                return;
+            }
+
+            let category: CategoryTreeViewModel = this.getCategoryFromNode(selectedNode);
+            if (this.fascicleBehavioursEnabled && !category.HasFascicleDefinition) {
+                this.showNotificationException(null, "Non si dispongono i permessi per questa voce del piano di fascicolazione.");
+                return;
+            }
+
+            this.closeWindow(category);
+        }
+    }
+
     findCategories(parentId?: number): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
         let finder: CategorySearchFilterDTO = this.prepareFinder(parentId);
@@ -380,7 +378,7 @@ class CommonSelCategoryRest {
                 finder.Manager = this.manager;
                 finder.Secretary = this.secretary;
             }
-            finder.FascicleType = this.fascicleType.toString();
+            finder.FascicleType = this.fascicleType ? this.fascicleType.toString() : null;
             finder.FascicleFilterEnabled = this._btnSearchOnlyFascicolable.get_checked();
         }
         return finder;
@@ -388,7 +386,7 @@ class CommonSelCategoryRest {
 
     private formatFullCode(fullCode: string): string {
 
-        let inputCodeIsValid: boolean = this._validateSearchCode(this.txtSearchCode.val());
+        let inputCodeIsValid: boolean = this.validateSearchCode(this.txtSearchCode.val());
 
         if (!inputCodeIsValid) {
             return '';
@@ -432,13 +430,14 @@ class CommonSelCategoryRest {
             .done(() => {
                 if (needClearItems) {
                     this.rootNode.get_nodes().clear();
-                    for (let node of nodeSource) {
-                        this.rootNode.get_nodes().add(node);
+                    nodeSource.forEach(n => this.rootNode.get_nodes().add(n));
+                }
 
-                        if (hasFascicleRights && this.showProcesses && node.get_nodes().get_count() === 0) {
-                            this.createProcessesNode(node);
-                        }
-                    }
+                if (hasFascicleRights && this.showProcesses) {
+                    this.rootNode.get_allNodes().forEach((nn) => {
+                        this.createProcessesNode(nn);
+                        nn.get_attributes().setAttribute(CommonSelCategoryRest.NODE_CHILDREN_LOADED_ATTRIBUTE, true);
+                    });
                 }
                 this.rootNode.expand();
                 this._treeViewCategory.commitChanges();
@@ -454,7 +453,6 @@ class CommonSelCategoryRest {
             return promise.resolve();
         }
 
-        let hasFascicleRights: boolean = this._btnSearchOnlyFascicolable.get_checked();
         let hasFilters: boolean = this.hasFilters();
         let currentCategory: CategoryTreeViewModel = categories.shift();
         this.createNode(currentCategory, nodeSource)
@@ -466,21 +464,14 @@ class CommonSelCategoryRest {
 
                 if (this.fascicleBehavioursEnabled) {
                     if (currentCategory.HasFascicleDefinition) {
-                        node.get_attributes().setAttribute("HasFascicleDefinition", true);
                         node.set_cssClass("node-tree-fascicle");
+                    } else {
+                        node.set_cssClass("node-disabled");
                     }
                 }
 
-                //if (categories.length == 0) {
-                //    return promise.resolve();
-                //}
                 this.createNodes(categories, nodeSource)
-                    .done(() => {
-                        if (hasFascicleRights && this.showProcesses) {
-                            this.createProcessesNode(node);
-                        }
-                        promise.resolve();
-                    })
+                    .done(() => promise.resolve())
                     .fail((exception: ExceptionDTO) => promise.reject(exception));
             })
         return promise.promise();
@@ -490,30 +481,22 @@ class CommonSelCategoryRest {
         let promise: JQueryDeferred<Telerik.Web.UI.RadTreeNode> = $.Deferred<Telerik.Web.UI.RadTreeNode>();
         let currentNode: Telerik.Web.UI.RadTreeNode = this.findNodeFromSource(nodeSource, category.IdCategory);
         if (currentNode) {
+            //node already exists, return it.
             return promise.resolve(currentNode);
         }
 
         currentNode = new Telerik.Web.UI.RadTreeNode();
         currentNode.set_text(`${category.Code}.${category.Name}`);
         currentNode.set_value(category.IdCategory);
+        currentNode.set_imageUrl("../Comm/images/Classificatore.gif");
         this.setNodeAttributes(currentNode, category);
         if (category.HasChildren) {
             if (!this._btnSearchOnlyFascicolable.get_checked()) {
-                this.createEmptyNode(currentNode);
+                //set webservice expand mode for node expansion logic
+                currentNode.set_expandMode(Telerik.Web.UI.TreeNodeExpandMode.WebService);
             }
-
             currentNode.set_imageUrl("../Comm/images/folderopen16.gif");
-        } else {
-            currentNode.set_imageUrl("../Comm/images/Classificatore.gif");
         }
-
-        if (this.fascicleBehavioursEnabled) {
-            if (!category.HasFascicleDefinition) {
-                currentNode.set_cssClass("node-disabled");
-            }
-        }
-
-        currentNode.get_attributes().setAttribute("NodeType", ProcessNodeType.Category);
 
         if (category.IdParent) {
             let parentNode: Telerik.Web.UI.RadTreeNode = this.findNodeFromSource(nodeSource, category.IdParent);
@@ -521,6 +504,7 @@ class CommonSelCategoryRest {
                 parentNode.get_nodes().add(currentNode);
                 parentNode.set_expandMode(Telerik.Web.UI.TreeNodeExpandMode.ClientSide);
                 parentNode.set_expanded(true);
+                parentNode.get_attributes().setAttribute(CommonSelCategoryRest.NODE_CHILDREN_LOADED_ATTRIBUTE, true);
                 return promise.resolve(currentNode);
             }
 
@@ -535,6 +519,7 @@ class CommonSelCategoryRest {
                     node.get_nodes().add(currentNode);
                     node.set_expandMode(Telerik.Web.UI.TreeNodeExpandMode.ClientSide);
                     node.set_expanded(true);
+                    node.get_attributes().setAttribute(CommonSelCategoryRest.NODE_CHILDREN_LOADED_ATTRIBUTE, true);
                     promise.resolve(currentNode);
                 })
                 .fail((exception: ExceptionDTO) => promise.reject(exception));
@@ -555,6 +540,7 @@ class CommonSelCategoryRest {
         node.get_attributes().setAttribute("FullIncrementalPath", category.FullIncrementalPath);
         node.get_attributes().setAttribute("HasChildren", category.HasChildren);
         node.get_attributes().setAttribute("IdParent", category.IdParent);
+        node.get_attributes().setAttribute("NodeType", ProcessNodeType.Category);
     }
 
     private getCategoryFromNode(node: Telerik.Web.UI.RadTreeNode): CategoryTreeViewModel {
@@ -569,13 +555,6 @@ class CommonSelCategoryRest {
         category.HasChildren = node.get_attributes().getAttribute("HasChildren");
         category.IdParent = node.get_attributes().getAttribute("IdParent");
         return category;
-    }
-
-    private getProcessFascicleTemplateFromNode(node: Telerik.Web.UI.RadTreeNode): ProcessFascicleTemplateModel {
-        let processFascicleTemplateModel: ProcessFascicleTemplateModel = {} as ProcessFascicleTemplateModel;
-        processFascicleTemplateModel.UniqueId = node.get_value();
-        processFascicleTemplateModel.Name = node.get_text();
-        return processFascicleTemplateModel;
     }
 
     private findNodeFromSource(nodeSource: Telerik.Web.UI.RadTreeNode[], idCategory: number): Telerik.Web.UI.RadTreeNode {
@@ -596,7 +575,7 @@ class CommonSelCategoryRest {
     }
 
     private hasFilters(): boolean {
-        return this.txtSearch.val() || this._validateSearchCode(this.txtSearchCode.val()) || this._btnSearchOnlyFascicolable.get_checked();
+        return this.txtSearch.val() || this.validateSearchCode(this.txtSearchCode.val()) || this._btnSearchOnlyFascicolable.get_checked();
     }
 
     getRadWindow(): Telerik.Web.UI.RadWindow {
@@ -612,14 +591,14 @@ class CommonSelCategoryRest {
     }
 
     protected showNotificationException(exception: ExceptionDTO, customMessage?: string) {
-        let uscNotification: UscErrorNotification = <UscErrorNotification>$(`#${this.uscNotificationId}`).data();
-        if (!jQuery.isEmptyObject(uscNotification)) {
-            if (exception) {
-                uscNotification.showNotification(exception);
-                return;
-            }
-            uscNotification.showWarningMessage(customMessage);
-        }
+        PageClassHelper.callUserControlFunctionSafe<UscErrorNotification>(this.uscNotificationId)
+            .done(control => {
+                if (exception) {
+                    control.showNotification(exception);
+                    return;
+                }
+                control.showWarningMessage(customMessage);
+            })
     }
 
     private createProcessesNode(parentNode: Telerik.Web.UI.RadTreeNode): void {
@@ -641,85 +620,85 @@ class CommonSelCategoryRest {
     findProcesses(node: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
 
-        this._processService.getAvailableProcesses(null, true, +node.get_parent().get_value(), null, (categoryProcesses: ProcessModel[]) => {
-            if (!categoryProcesses.length) {
-                this.createEmptyNode(node);
+        this._processService.getAvailableProcesses(null, true, Number(node.get_parent().get_value()), null, this.isProcessActive,
+            (categoryProcesses: ProcessModel[]) => {
+                if (!categoryProcesses.length) {
+                    this.createEmptyNode(node);
+                    node.set_expanded(true);
+                    node.get_attributes().setAttribute(CommonSelCategoryRest.NODE_CHILDREN_LOADED_ATTRIBUTE, true);
+                    promise.resolve();
+                    return;
+                }
+                categoryProcesses.map((process: ProcessModel) => {
+                    let currentProcessTreeNode: Telerik.Web.UI.RadTreeNode
+                        = this.createTreeNode(ProcessNodeType.Process, process.Name, process.UniqueId, "../App_Themes/DocSuite2008/imgset16/process.png");
+                    this.createEmptyNode(currentProcessTreeNode);
+                    return currentProcessTreeNode;
+                }).forEach((child: Telerik.Web.UI.RadTreeNode) => {
+                    node.get_nodes().add(child);
+                    node.set_expanded(true);
+                    node.get_attributes().setAttribute(CommonSelCategoryRest.NODE_CHILDREN_LOADED_ATTRIBUTE, true);
+                });
                 promise.resolve();
-                return;
-            }
-            categoryProcesses.map((process: ProcessModel) => {
-                let currentProcessTreeNode: Telerik.Web.UI.RadTreeNode
-                    = this._createTreeNode(ProcessNodeType.Process, process.Name, process.UniqueId, "../App_Themes/DocSuite2008/imgset16/process.png");
-                this.createEmptyNode(currentProcessTreeNode);
-                return currentProcessTreeNode;
-            }).forEach((child: Telerik.Web.UI.RadTreeNode) => {
-                node.get_nodes().add(child);
+            }, (exception: ExceptionDTO) => {
+                promise.reject(exception);
             });
-            promise.resolve();
-        }, (exception: ExceptionDTO) => {
-            promise.reject(exception);
-        });
         return promise.promise();
     }
 
-    private _loadProcessDossierFolders(parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
+    private loadProcessDossierFolders(parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
         let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
-        this._dossierFolderService.getProcessFolders(null, parentNode.get_value(), false, false, (processDossierFolders: any[]) => {
-            this.loadProcessFascicleTemplate(parentNode);
-            if (!processDossierFolders.length) {
+        this._dossierFolderService.getChildrenByParentProcess(parentNode.get_value(), false, false, (processDossierFolders: any[]) => {
+            if (this.showProcessFascicleTemplate) {
+                this.loadProcessFascicleTemplate(parentNode);
+            }
+            if (!processDossierFolders || processDossierFolders.length == 0) {
                 this.createEmptyNode(parentNode);
+                parentNode.set_expanded(true);
+                parentNode.get_attributes().setAttribute(CommonSelCategoryRest.NODE_CHILDREN_LOADED_ATTRIBUTE, true);
                 defferedRequest.resolve();
                 return;
             }
             let dossierSummaryFolderViewModelMapper: DossierSummaryFolderViewModelMapper = new DossierSummaryFolderViewModelMapper();
             let processDossierFoldersViewModels: DossierSummaryFolderViewModel[] = dossierSummaryFolderViewModelMapper.MapCollection(processDossierFolders);
-            this._addDossierFolderNodesRecursive(processDossierFoldersViewModels, parentNode);
+            this.addDossierFolderNodes(processDossierFoldersViewModels, parentNode);
+            parentNode.set_expanded(true);
+            parentNode.get_attributes().setAttribute(CommonSelCategoryRest.NODE_CHILDREN_LOADED_ATTRIBUTE, true);
             defferedRequest.resolve();
         }, (exception: ExceptionDTO) => defferedRequest.reject(exception));
 
         return defferedRequest.promise();
     }
 
-    private _addDossierFolderNodesRecursive(dossierFolders: DossierSummaryFolderViewModel[], parentNode: Telerik.Web.UI.RadTreeNode) {
+    private addDossierFolderNodes(dossierFolders: DossierSummaryFolderViewModel[], parentNode: Telerik.Web.UI.RadTreeNode): void {
         dossierFolders.forEach((dossierFolder: DossierSummaryFolderViewModel) => {
             let dossierFolderImageUrl: string = "../App_Themes/DocSuite2008/imgset16/folder_closed.png";
             let dossierFolderExpandedImageUrl: string = "../App_Themes/DocSuite2008/imgset16/folder_open.png";
             let dossierFolderNodeValue: string = dossierFolder.idFascicle ? dossierFolder.idFascicle : dossierFolder.UniqueId;
 
             let currentDossierFolderTreeNode: Telerik.Web.UI.RadTreeNode
-                = this._createTreeNode(ProcessNodeType.DossierFolder, dossierFolder.Name, dossierFolderNodeValue, dossierFolderImageUrl, parentNode, null, dossierFolderExpandedImageUrl);
+                = this.createTreeNode(ProcessNodeType.DossierFolder, dossierFolder.Name, dossierFolderNodeValue, dossierFolderImageUrl, parentNode, null, dossierFolderExpandedImageUrl);
 
-            if (dossierFolder.DossierFolders.length > 0) {
-                this._addDossierFolderNodesRecursive(dossierFolder.DossierFolders, currentDossierFolderTreeNode);
-            }
-            else {
-                this.createEmptyNode(currentDossierFolderTreeNode);
-            }
+            this.createEmptyNode(currentDossierFolderTreeNode);
         });
     }
 
-    private _loadDossierFoldersChildren(parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
+    private loadDossierFoldersChildren(parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
         let defferedRequest: JQueryDeferred<void> = $.Deferred<void>();
         this._dossierFolderService.getProcessFascicleChildren(parentNode.get_value(), 0, (dossierFolders: DossierSummaryFolderViewModel[]) => {
-            this.loadProcessFascicleTemplate(parentNode);
-            if (!dossierFolders.length) {
+            if (this.showProcessFascicleTemplate) {
+                this.loadProcessFascicleTemplate(parentNode);
+            }
+            if (!dossierFolders || dossierFolders.length == 0) {
                 this.createEmptyNode(parentNode);
+                parentNode.set_expanded(true);
+                parentNode.get_attributes().setAttribute(CommonSelCategoryRest.NODE_CHILDREN_LOADED_ATTRIBUTE, true);
                 defferedRequest.resolve();
                 return;
             }
-            dossierFolders.forEach((dossierFolder: DossierSummaryFolderViewModel) => {
-                let dossierFolderIsFascicle: boolean = !!dossierFolder.idFascicle;
-
-                let nodeType: ProcessNodeType = ProcessNodeType.DossierFolder;
-                let nodeValue: string = dossierFolderIsFascicle ? dossierFolder.idFascicle : dossierFolder.UniqueId;
-
-                let dossierFolderImageUrl: string = "../App_Themes/DocSuite2008/imgset16/folder_closed.png";
-                let dossierFolderExpandedImageUrl: string = "../App_Themes/DocSuite2008/imgset16/folder_open.png";
-
-                let currentDossierFolderTreeNode: Telerik.Web.UI.RadTreeNode
-                    = this._createTreeNode(nodeType, dossierFolder.Name, nodeValue, dossierFolderImageUrl, parentNode, null, dossierFolderExpandedImageUrl);
-                this.createEmptyNode(currentDossierFolderTreeNode);
-            });
+            this.addDossierFolderNodes(dossierFolders, parentNode);
+            parentNode.set_expanded(true);
+            parentNode.get_attributes().setAttribute(CommonSelCategoryRest.NODE_CHILDREN_LOADED_ATTRIBUTE, true);
             defferedRequest.resolve();
         }, (exception: ExceptionDTO) => defferedRequest.reject(exception));
 
@@ -728,7 +707,7 @@ class CommonSelCategoryRest {
 
     private loadProcessFascicleTemplate(parentNode: Telerik.Web.UI.RadTreeNode): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
-        this._dossierFolderService.getFascicleTemplatesByDossierFolderId(parentNode.get_value(),
+        this._processFascicleTemplateService.getActiveFascicleTemplatesByDossierFolderId(parentNode.get_value(),
             (data: any) => {
                 if (!data.length) {
                     promise.resolve();
@@ -739,17 +718,19 @@ class CommonSelCategoryRest {
                 }
                 data.map((processFascicleTemplate: ProcessFascicleTemplateModel) => {
                     let currentProcessTreeNode: Telerik.Web.UI.RadTreeNode
-                        = this._createTreeNode(ProcessNodeType.ProcessFascicleTemplate, processFascicleTemplate.Name, processFascicleTemplate.UniqueId, "../App_Themes/DocSuite2008/imgset16/fascicle_close.png");
+                        = this.createTreeNode(ProcessNodeType.ProcessFascicleTemplate, processFascicleTemplate.Name, processFascicleTemplate.UniqueId, "../App_Themes/DocSuite2008/imgset16/fascicle_close.png");
                     return currentProcessTreeNode;
                 }).forEach((child: Telerik.Web.UI.RadTreeNode) => {
                     parentNode.get_nodes().add(child);
+                    parentNode.set_expanded(true);
+                    parentNode.get_attributes().setAttribute(CommonSelCategoryRest.NODE_CHILDREN_LOADED_ATTRIBUTE, true);
                 });
                 promise.resolve();
             });
         return promise.promise();
     }
 
-    private _createTreeNode(nodeType: ProcessNodeType, nodeDescription: string, nodeValue: number | string, imageUrl: string, parentNode?: Telerik.Web.UI.RadTreeNode, tooltipText?: string, expandedImageUrl?: string): Telerik.Web.UI.RadTreeNode {
+    private createTreeNode(nodeType: ProcessNodeType, nodeDescription: string, nodeValue: number | string, imageUrl: string, parentNode?: Telerik.Web.UI.RadTreeNode, tooltipText?: string, expandedImageUrl?: string): Telerik.Web.UI.RadTreeNode {
         let treeNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
         treeNode.set_text(nodeDescription);
         treeNode.set_value(nodeValue);
@@ -774,13 +755,37 @@ class CommonSelCategoryRest {
         return treeNode;
     }
 
-    treeViewCategory_nodeClicked = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeEventArgs) => {
-        let buttonDisabled: boolean =
-            args.get_node().get_text() === CommonSelCategoryRest.PROCESSES_AND_FOLDERS_TEXT
-            || args.get_node().get_text() === CommonSelCategoryRest.NO_ITEMS_FOUND_TEXT
-            || args.get_node().get_level() === 0
-            || args.get_node().get_attributes().getAttribute(TbltProcess.NodeType_TYPE_NAME) === ProcessNodeType.Process;
-        $(`#${this.btnConfermaId}`).prop('disabled', buttonDisabled);
+    private getAllParents(node: Telerik.Web.UI.RadTreeNode, treeNodeModel: TreeNodeModel[]): void {
+        if (!(node instanceof Telerik.Web.UI.RadTreeView)) {
+            treeNodeModel.push({
+                text: node.get_text(),
+                value: node.get_value(),
+                cssClass: node.get_cssClass(),
+                icon: node.get_imageUrl(),
+                nodeType: node.get_attributes().getAttribute("NodeType")
+            });
+            this.getAllParents(node.get_parent(), treeNodeModel);
+        }
+    }
+
+    private validateSearchCode(fullCode: string): boolean {
+        if (!fullCode) {
+            return false;
+        }
+
+        let codeStringFragments: string[] = fullCode.split('.');
+        let invalidLengthFragments = codeStringFragments.some(stringFragment => stringFragment.length > CommonSelCategoryRest.CATEGORYFULLCODE_MAXLENGTH);
+        let fragmentsNotNumeric = codeStringFragments.some(stringFragment => isNaN(Number(stringFragment)));
+
+        if (invalidLengthFragments || fragmentsNotNumeric) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private nodeIsLoaded(node: Telerik.Web.UI.RadTreeNode): boolean {
+        return node.get_attributes().getAttribute("ChildrenLoaded") == true;
     }
 }
 

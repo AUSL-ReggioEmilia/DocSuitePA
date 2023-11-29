@@ -90,9 +90,7 @@ Public Class ProtocolMailSender
             For Each contact As MessageContact In destinatari
                 Dim item As MessageContactEmail = Facade.MessageContactEmailFacade.GetByContact(contact)
                 If contact.ContactType.Equals(MessageContact.ContactTypeEnum.Role) Then
-
                     Facade.ProtocolLogFacade.Log(CurrentProtocol, ProtocolLogEvent.PW, String.Format("Spedito al settore {0}({1}).", item.Description, item.Email))
-
                 Else
                     Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PO, String.Format("Spedito a {0}({1}).", item.Description, item.Email))
                 End If
@@ -138,14 +136,6 @@ Public Class ProtocolMailSender
                 End If
             End If
 
-            If DocSuiteContext.Current.PrivacyEnabled AndAlso FromViewer AndAlso previous.Documents.Count = 0 Then
-                Dim fullMessage As String = String.Concat("Attenzione: solo i documenti con un livello di ", PRIVACY_LABEL, " adeguato vengono allegati alla mail.\r\nL'utente non risulta avere un livello di ", PRIVACY_LABEL, " coerente con alcun documento.")
-                If DocSuiteContext.Current.SimplifiedPrivacyEnabled Then
-                    fullMessage = String.Concat("Attenzione: solo i documenti al quale l'utente è autorizzato vengono allegati alla mail.\r\nL'utente non risulta essere autorizzato al trattamento privacy per alcun documento.")
-                End If
-                AjaxManager.Alert(fullMessage)
-            End If
-
         ElseIf CurrentProtocol IsNot Nothing Then
             Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PO, "Aperta pagina di spedizione.")
             ' Se arriva da una pagina che non implementa ISendMail
@@ -158,7 +148,7 @@ Public Class ProtocolMailSender
             Throw New DocSuiteException("Errore pagina di invio mail", "Impossibile inizializzare la mail di invio")
         End If
 
-        If ProtocolEnv.DeleteMultipleMailRecipientPages.Contains(CURRENT_PAGE_NAME) Then
+        If ProtocolEnv.DeleteMultipleMailRecipientPages.Contains(CURRENT_PAGE_NAME) OrElse SendToRoles Then
             MailSenderControl.EnableCheckBoxRecipients = True
         End If
 
@@ -193,7 +183,7 @@ Public Class ProtocolMailSender
                     If role.RoleUsers IsNot Nothing Then
                         For Each privacyManager As RoleUser In role.RoleUsers.Where(Function(ru) ru.DSWEnvironment = DSWEnvironment.Protocol AndAlso ru.Type = RoleUserType.MP.ToString())
                             contact = New Contact()
-                            contact.IsActive = 1S
+                            contact.IsActive = True
                             contact.Description = privacyManager.Description
                             contact.EmailAddress = privacyManager.Email
                             contact.ContactType = New ContactType(ContactType.Person)
@@ -213,7 +203,7 @@ Public Class ProtocolMailSender
                     emailAddress = FacadeFactory.Instance.UserLogFacade.EmailOfUser(user.Account, True)
                     If Not String.IsNullOrEmpty(emailAddress) Then
                         contact = New Contact()
-                        contact.IsActive = 1S
+                        contact.IsActive = True
                         contact.Description = emailAddress
                         contact.EmailAddress = emailAddress
                         contact.ContactType = New ContactType(ContactType.Person)

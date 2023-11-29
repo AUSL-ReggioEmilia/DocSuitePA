@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
@@ -24,13 +25,14 @@ namespace VecompSoftware.DocSuiteWeb.Gui.WebComponent
             page.Response.Clear();
             page.Response.Buffer = true;
             page.Response.ContentType = contentType;
-            page.Response.Charset = "ISO-8859-1";
+            page.Response.ContentEncoding = Encoding.UTF8;
+            page.Response.BinaryWrite(Encoding.UTF8.GetPreamble());
             //UTF-8
             if (!string.IsNullOrEmpty(fileName))
             {
                 page.Response.AddHeader("content-disposition", string.Format("attachment;filename={0}", fileName));
             }
-            page.Response.Charset = "";
+            page.Response.Charset = "UTF-8";
             page.EnableViewState = false;
             StringWriter oStringWriter = new StringWriter();
             HtmlTextWriter oHtmlTextWriter = new HtmlTextWriter(oStringWriter);
@@ -174,7 +176,7 @@ namespace VecompSoftware.DocSuiteWeb.Gui.WebComponent
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        private static string ImageToString(string path)
+        public static string ImageToString(string path)
         {
             string sRet = string.Empty;
             string filename = System.IO.Path.GetFileNameWithoutExtension(path);
@@ -313,6 +315,9 @@ namespace VecompSoftware.DocSuiteWeb.Gui.WebComponent
                 case "XML16":
                 case "XML32":
                     sRet = "XML";
+                    break;
+                case "FASCICLE_PROCEDURE":
+                    sRet = "Fascicolo di procedimento";
                     break;
                 default:
                     sRet = filename;

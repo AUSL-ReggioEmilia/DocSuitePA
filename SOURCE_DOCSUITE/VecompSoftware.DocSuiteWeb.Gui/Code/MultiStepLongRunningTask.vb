@@ -1,5 +1,4 @@
 ﻿Imports System.Threading
-Imports System.Collections.Generic
 Imports System.Web
 
 Public Class MultiStepLongRunningTask
@@ -18,16 +17,11 @@ Public Class MultiStepLongRunningTask
     Private _task As MultiStepLongRunningTask.TaskToExec
     Private _setCurrent As MultiStepLongRunningTask.SetCurrentFileNameDelegate
     Private _updateControl As MultiStepLongRunningTask.UpdateControlDelegate
-    Private _taskCompleteHandler As MultiStepLongRunningTask.TaskCompleteDelegate
-    Private _taskSuccessfullyCompletedHandler As MultiStepLongRunningTask.TaskSuccessfullyCompletedDelegate
-    Private _allTasksCompletedHander As MultiStepLongRunningTask.AllTasksCompletedDelegate
-    Private _listTaskToExecHandler As MultiStepLongRunningTask.ListTaskToExecDelegate
 
     Private _running As Boolean = False
     Private _lastTaskSuccess As Boolean = True
     Private _exceptionOccured As Exception = Nothing
     Private _lastStartTime As DateTime = DateTime.MinValue
-    Private _lastFinishTime As DateTime = DateTime.MinValue
     Private _currentStep As Integer
     Private _currentFileName As String
     Private _stepsCount As Integer
@@ -35,15 +29,9 @@ Public Class MultiStepLongRunningTask
     Private _taskName As String = String.Empty
 
     Private _shouldStop As Boolean = False
-    Private _taskInterrupt As Boolean = False
 #End Region
 
 #Region "Properties"
-    Public ReadOnly Property TaskInterrupt() As Boolean
-        Get
-            Return _taskInterrupt
-        End Get
-    End Property
 
     Public Property TaskToExecute() As MultiStepLongRunningTask.TaskToExec
         Get
@@ -51,42 +39,6 @@ Public Class MultiStepLongRunningTask
         End Get
         Set(ByVal Value As MultiStepLongRunningTask.TaskToExec)
             _task = Value
-        End Set
-    End Property
-
-    Public Property TaskCompleteHandler() As MultiStepLongRunningTask.TaskCompleteDelegate
-        Get
-            Return _taskCompleteHandler
-        End Get
-        Set(ByVal Value As MultiStepLongRunningTask.TaskCompleteDelegate)
-            _taskCompleteHandler = Value
-        End Set
-    End Property
-
-    Public Property ListTaskToExecuteHandler() As MultiStepLongRunningTask.ListTaskToExecDelegate
-        Get
-            Return _listTaskToExecHandler
-        End Get
-        Set(ByVal Value As MultiStepLongRunningTask.ListTaskToExecDelegate)
-            _listTaskToExecHandler = Value
-        End Set
-    End Property
-
-    Public Property TaskSuccessfullyCompletedHandler() As MultiStepLongRunningTask.TaskSuccessfullyCompletedDelegate
-        Get
-            Return _taskSuccessfullyCompletedHandler
-        End Get
-        Set(ByVal Value As MultiStepLongRunningTask.TaskSuccessfullyCompletedDelegate)
-            _taskSuccessfullyCompletedHandler = Value
-        End Set
-    End Property
-
-    Public Property AllTasksCompletedHandler() As MultiStepLongRunningTask.AllTasksCompletedDelegate
-        Get
-            Return _allTasksCompletedHander
-        End Get
-        Set(ByVal Value As MultiStepLongRunningTask.AllTasksCompletedDelegate)
-            _allTasksCompletedHander = Value
         End Set
     End Property
 
@@ -117,14 +69,6 @@ Public Class MultiStepLongRunningTask
         End Get
     End Property
 
-    Public ReadOnly Property LastFinishTime() As DateTime
-        Get
-            If _lastFinishTime = DateTime.MinValue Then
-                Throw New InvalidOperationException("The task has never completed.")
-            End If
-            Return _lastFinishTime
-        End Get
-    End Property
 
     Public ReadOnly Property CurrentStep() As Integer
         Get
@@ -151,15 +95,6 @@ Public Class MultiStepLongRunningTask
         End Set
     End Property
 
-    Public Property TaskName() As String
-        Get
-            Return _taskName
-        End Get
-        Set(ByVal Value As String)
-            _taskName = Value
-        End Set
-    End Property
-
     Public Property SetCurrentFileName() As SetCurrentFileNameDelegate
         Get
             Return _setCurrent
@@ -177,15 +112,6 @@ Public Class MultiStepLongRunningTask
                 Return String.Empty
             End If
         End Get
-    End Property
-
-    Public Property UpdateControl() As UpdateControlDelegate
-        Get
-            Return _updateControl
-        End Get
-        Set(ByVal value As UpdateControlDelegate)
-            _updateControl = value
-        End Set
     End Property
 
 #End Region
@@ -214,37 +140,6 @@ Public Class MultiStepLongRunningTask
         End SyncLock
     End Sub
 
-    Public Sub RunTasks(ByVal lists As MultiStepLongRunningTask.ListToIterateDelegate())
-        SyncLock Me
-            If Not _running Then
-                _stepsCount = 0
-                _currentStep = 0
-
-                If lists IsNot Nothing AndAlso lists.Length > 0 Then
-                    _running = True
-                    _lastStartTime = DateTime.Now
-
-                    Dim index As Short
-                    Dim events As New List(Of AutoResetEvent)
-
-                    For Each listHandler As MultiStepLongRunningTask.ListToIterateDelegate In lists
-                        Dim resetEvent As New AutoResetEvent(False)
-                        Dim state As New TaskStateObject(index, listHandler, resetEvent) 'oggetto di stato passato al worker thread comprendente identificativo, delegate per ottenere la lista degli elementi su cui lavorare, evento di completamento
-                        Dim newThread As New Thread(New ParameterizedThreadStart(AddressOf GetListAndDoWork))
-                        newThread.Start(state)
-
-                        events.Add(resetEvent)
-                    Next
-
-                    ' thread di verifica completamento dei tasks
-                    Dim completeThread As New Thread(New ParameterizedThreadStart(AddressOf AllTasksCompleted))
-                    completeThread.Start(events)
-                End If
-            Else
-                Throw New InvalidOperationException("The task is already running!")
-            End If
-        End SyncLock
-    End Sub
 
     Private Sub DoWork()
 
@@ -253,7 +148,6 @@ Public Class MultiStepLongRunningTask
             For i = 0 To StepsCount - 1
                 If (_shouldStop) Then
                     _shouldStop = False
-                    _taskInterrupt = True
                     Exit For
                 End If
 
@@ -280,83 +174,8 @@ Public Class MultiStepLongRunningTask
             _exceptionOccured = e
         Finally
             _running = False
-            _lastFinishTime = DateTime.Now
         End Try
 
-    End Sub
-
-    Private Sub GetListAndDoWork(ByVal state As Object)
-
-        Dim thrdState As TaskStateObject
-        Try
-
-            If state IsNot Nothing AndAlso TypeOf state Is TaskStateObject Then
-
-                thrdState = DirectCast(state, TaskStateObject)
-                Dim listHandler As MultiStepLongRunningTask.ListToIterateDelegate = thrdState.ListHandler
-                Dim list As IList = listHandler() 'richiedo la lista di elementi da passare al delegate di esecuzione del task
-
-                If list IsNot Nothing AndAlso list.Count > 0 Then
-
-                    SyncLock Me
-                        Me.StepsCount += list.Count
-                    End SyncLock
-
-                    For Each item As Object In list
-
-                        If _listTaskToExecHandler IsNot Nothing Then
-                            _listTaskToExecHandler(item) 'chiamata al delegate di esecuzione del task
-
-                            SyncLock Me
-                                _currentStep = _currentStep + 1
-                            End SyncLock
-
-                            If _updateControl IsNot Nothing Then
-                                _updateControl()
-                            End If
-
-                            If _taskSuccessfullyCompletedHandler IsNot Nothing Then
-                                _taskSuccessfullyCompletedHandler()
-                            End If
-
-                            SyncLock Me
-                                _lastTaskSuccess = True
-                            End SyncLock
-
-                        End If
-                    Next
-
-                End If
-
-            End If
-
-        Catch e As Exception
-            SyncLock Me
-                _lastTaskSuccess = False
-                _exceptionOccured = e
-            End SyncLock
-        Finally
-            If thrdState IsNot Nothing Then thrdState.ResetEvent.Set()
-
-            If Not _taskCompleteHandler Is Nothing Then
-                _taskCompleteHandler()
-            End If
-        End Try
-
-    End Sub
-
-    Public Sub AllTasksCompleted(ByVal state As Object)
-        If state IsNot Nothing AndAlso TypeOf state Is List(Of AutoResetEvent) Then
-            Dim events As List(Of AutoResetEvent) = DirectCast(state, List(Of AutoResetEvent))
-            If events.Count > 0 AndAlso WaitHandle.WaitAll(events.ToArray()) Then 'aspetto tutti i worker threads
-                _running = False
-                _lastFinishTime = DateTime.Now
-
-                If _allTasksCompletedHander IsNot Nothing Then
-                    _allTasksCompletedHander()
-                End If
-            End If
-        End If
     End Sub
 
 End Class

@@ -15,6 +15,9 @@
                      singleSign.storageType = "<%=StorageInformationType%>";
                      singleSign.dswSignalR = "<%=SignalRAddress%>";
                      singleSign.currentUserDomain = "<%=CurrentUserDomain%>";
+                     singleSign.currentUserTenantName = ("<%= CurrentUserTenantName %>");
+                     singleSign.currentUserTenantId = ("<%= CurrentUserTenantId %>");
+                     singleSign.currentUserTenantAOOId = ("<%= CurrentUserTenantAOOId %>");
 
                      singleSign.initialize();
                  });

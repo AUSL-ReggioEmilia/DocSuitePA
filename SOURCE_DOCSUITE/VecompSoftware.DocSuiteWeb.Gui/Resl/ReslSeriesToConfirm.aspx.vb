@@ -17,6 +17,7 @@ Imports VecompSoftware.Services.Biblos
 Imports System.Web
 Imports VecompSoftware.Helpers.Web
 Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Commons.Interfaces.CQRS.Events
 
 Public Class ReslSeriesToConfirm
     Inherits ReslBasePage
@@ -294,7 +295,7 @@ Public Class ReslSeriesToConfirm
             Exit Sub
         End If
 
-        Dim incremental As Short = Facade.ResolutionWorkflowFacade.GetActiveIncremental(CurrentResolution.Id, 1)
+        Dim incremental As Short = Facade.ResolutionWorkflowFacade.GetActiveIncremental(CurrentResolution.Id, 1S)
         Dim resolutionDocuments As List(Of ResolutionDocument) = New List(Of ResolutionDocument)
 
         resolutionDocuments.AddRange(Facade.ResolutionFacade.GetResolutionMainDocumentDtos(CurrentResolution, MAIN_DOC, incremental))
@@ -594,7 +595,7 @@ Public Class ReslSeriesToConfirm
         Dim avcpChain As BiblosChainInfo = Facade.DocumentSeriesItemFacade.GetMainChainInfo(avcpSeriesItem)
         Facade.DocumentSeriesItemFacade.UpdateDocumentSeriesItem(avcpSeriesItem, avcpChain, Nothing, Nothing, $"Pubblicata registrazione AVCP {avcpSeriesItem.Year:0000}/{avcpSeriesItem.Number:0000000} in data {avcpSeriesItem.PublishingDate:dd/MM/yyyy}")
         Facade.DocumentSeriesItemFacade.AssignNumber(avcpSeriesItem)
-        Facade.DocumentSeriesItemFacade.SendInsertDocumentSeriesItemCommand(avcpSeriesItem)
+        Facade.DocumentSeriesItemFacade.SendInsertDocumentSeriesItemCommand(avcpSeriesItem, New List(Of IWorkflowAction))
     End Sub
 
     Public Sub ConfirmDraftSeriesItem()
@@ -636,7 +637,7 @@ Public Class ReslSeriesToConfirm
 
         ' Assegno anno e numero incrementali e confermo la serie documentale.
         Facade.DocumentSeriesItemFacade.AssignNumber(seriesItem)
-        Facade.DocumentSeriesItemFacade.SendInsertDocumentSeriesItemCommand(seriesItem)
+        Facade.DocumentSeriesItemFacade.SendInsertDocumentSeriesItemCommand(seriesItem, New List(Of IWorkflowAction))
         GoToView()
     End Sub
 

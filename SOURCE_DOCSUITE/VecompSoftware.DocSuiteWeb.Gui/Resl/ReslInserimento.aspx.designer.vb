@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class ReslInserimento
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''RadWindowManagerProtocollo control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerProtocollo As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowSelProtocollo control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelProtocollo As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowSelContact control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelContact As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowSelDraftSeries control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelDraftSeries As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''windowSelRoleCollaborationProposer control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelRoleCollaborationProposer As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''rtvRoles control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtvRoles As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''btnSelectRoleProposer control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSelectRoleProposer As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''pnlResolutionContainer control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlResolutionContainer As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''tblResolutionNumber control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblResolutionNumber As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''lblNumberLabel control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNumberLabel As Global.System.Web.UI.WebControls.Literal
-    
+
     '''<summary>
     '''lblNumber control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNumber As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''rblProposta control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rblProposta As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''lblDocumentCaption control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDocumentCaption As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscUploadDocumenti control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUploadDocumenti As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
     '''<summary>
     '''mainDocumentOmissisTr control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents mainDocumentOmissisTr As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblDocumentOmissisCaption control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblDocumentOmissisCaption As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscUploadDocumentiOmissis control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUploadDocumentiOmissis As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
     '''<summary>
     '''pnlAttach control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAttach As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblAttachmentsCaption control.
     '''</summary>
@@ -192,7 +192,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblAttachmentsCaption As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscUploadAttach control.
     '''</summary>
@@ -201,7 +201,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUploadAttach As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
     '''<summary>
     '''attachmentOmissisTr control.
     '''</summary>
@@ -210,7 +210,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents attachmentOmissisTr As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblAttachmentsOmissisCaption control.
     '''</summary>
@@ -219,7 +219,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblAttachmentsOmissisCaption As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscUploadAttachOmissis control.
     '''</summary>
@@ -228,7 +228,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUploadAttachOmissis As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
     '''<summary>
     '''pnlPrivacyAttachment control.
     '''</summary>
@@ -237,7 +237,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlPrivacyAttachment As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblPrivacyAttachmentCaption control.
     '''</summary>
@@ -246,7 +246,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblPrivacyAttachmentCaption As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscUploadPrivacyAttachment control.
     '''</summary>
@@ -255,7 +255,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUploadPrivacyAttachment As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
     '''<summary>
     '''lblAnnexedCaption control.
     '''</summary>
@@ -264,7 +264,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblAnnexedCaption As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscUploadAnnexed control.
     '''</summary>
@@ -273,7 +273,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUploadAnnexed As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
     '''<summary>
     '''pnlImmediatelyExecutive control.
     '''</summary>
@@ -282,7 +282,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlImmediatelyExecutive As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkImmediatelyExecutive control.
     '''</summary>
@@ -291,7 +291,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkImmediatelyExecutive As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlAUSLREOC control.
     '''</summary>
@@ -300,7 +300,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAUSLREOC As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkAUSLREOCNonSoggetta control.
     '''</summary>
@@ -309,7 +309,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkAUSLREOCNonSoggetta As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''chkAUSLREOCSoggetta control.
     '''</summary>
@@ -318,7 +318,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkAUSLREOCSoggetta As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''cvControllaAUSLREOC control.
     '''</summary>
@@ -327,7 +327,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cvControllaAUSLREOC As Global.System.Web.UI.WebControls.CustomValidator
-    
+
     '''<summary>
     '''idContainer control.
     '''</summary>
@@ -336,7 +336,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents idContainer As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''ContenitoreValidator control.
     '''</summary>
@@ -345,7 +345,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ContenitoreValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''pnlResolutionKind control.
     '''</summary>
@@ -354,7 +354,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlResolutionKind As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''ddlResolutionKind control.
     '''</summary>
@@ -363,7 +363,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlResolutionKind As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''ddlResolutionKindValidator control.
     '''</summary>
@@ -372,7 +372,34 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlResolutionKindValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
+    '''<summary>
+    '''pnlAccounting control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlAccounting As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''lblBidTypes control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblBidTypes As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''rlbBidTypes control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rlbBidTypes As Global.Telerik.Web.UI.RadDropDownList
+
     '''<summary>
     '''pnlAdozione control.
     '''</summary>
@@ -381,7 +408,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAdozione As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chbAdoption control.
     '''</summary>
@@ -390,7 +417,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chbAdoption As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlAdozioneData control.
     '''</summary>
@@ -399,7 +426,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAdozioneData As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''rdpDataAdozione control.
     '''</summary>
@@ -408,7 +435,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpDataAdozione As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''rfvData control.
     '''</summary>
@@ -417,7 +444,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvData As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''pnlAdozioneNumero control.
     '''</summary>
@@ -426,7 +453,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAdozioneNumero As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtServiceNumber control.
     '''</summary>
@@ -435,7 +462,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtServiceNumber As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''rfvServiceNumber control.
     '''</summary>
@@ -444,7 +471,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvServiceNumber As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''revNumero control.
     '''</summary>
@@ -453,7 +480,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents revNumero As Global.System.Web.UI.WebControls.CompareValidator
-    
+
     '''<summary>
     '''TblDestinatari control.
     '''</summary>
@@ -462,7 +489,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents TblDestinatari As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''pnlDestInterop control.
     '''</summary>
@@ -471,7 +498,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDestInterop As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscDestinatari control.
     '''</summary>
@@ -480,7 +507,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDestinatari As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''uscDestinatariAlt control.
     '''</summary>
@@ -489,7 +516,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDestinatariAlt As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelText
-    
+
     '''<summary>
     '''tblCollaborationAuthorize control.
     '''</summary>
@@ -498,7 +525,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblCollaborationAuthorize As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''collaborationAuthorizedRoles control.
     '''</summary>
@@ -507,7 +534,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents collaborationAuthorizedRoles As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''pnlProposer control.
     '''</summary>
@@ -516,7 +543,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlProposer As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlProponenteInterop control.
     '''</summary>
@@ -525,7 +552,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlProponenteInterop As Global.Telerik.Web.UI.RadAjaxPanel
-    
+
     '''<summary>
     '''SelProponente control.
     '''</summary>
@@ -534,7 +561,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents SelProponente As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''uscRoleProposer control.
     '''</summary>
@@ -543,7 +570,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscRoleProposer As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''SelProponenteAlt control.
     '''</summary>
@@ -552,7 +579,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents SelProponenteAlt As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelText
-    
+
     '''<summary>
     '''proposerGeneralValidator control.
     '''</summary>
@@ -561,7 +588,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents proposerGeneralValidator As Global.System.Web.UI.WebControls.CustomValidator
-    
+
     '''<summary>
     '''pnlAssegnatario control.
     '''</summary>
@@ -570,7 +597,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAssegnatario As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlAsseInterop control.
     '''</summary>
@@ -579,7 +606,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAsseInterop As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''SelAssegnatario control.
     '''</summary>
@@ -588,7 +615,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents SelAssegnatario As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''SelAssegnatarioAlt control.
     '''</summary>
@@ -597,7 +624,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents SelAssegnatarioAlt As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelText
-    
+
     '''<summary>
     '''pnlResponsabile control.
     '''</summary>
@@ -606,7 +633,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlResponsabile As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlRespInterop control.
     '''</summary>
@@ -615,7 +642,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlRespInterop As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''SelResponsabile control.
     '''</summary>
@@ -624,7 +651,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents SelResponsabile As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''SelResponsabileAlt control.
     '''</summary>
@@ -633,7 +660,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents SelResponsabileAlt As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelText
-    
+
     '''<summary>
     '''pnlObjectPrivacy control.
     '''</summary>
@@ -642,7 +669,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlObjectPrivacy As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblObjectPrivacy control.
     '''</summary>
@@ -651,7 +678,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblObjectPrivacy As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''SelOggettoPrivacy control.
     '''</summary>
@@ -660,7 +687,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents SelOggettoPrivacy As Global.VecompSoftware.DocSuiteWeb.Gui.uscOggetto
-    
+
     '''<summary>
     '''SelOggetto control.
     '''</summary>
@@ -669,16 +696,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents SelOggetto As Global.VecompSoftware.DocSuiteWeb.Gui.uscOggetto
-    
-    '''<summary>
-    '''uscPrivacyPanel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscPrivacyPanel As Global.VecompSoftware.DocSuiteWeb.Gui.uscPrivacyPanel
-    
+
     '''<summary>
     '''txtNote control.
     '''</summary>
@@ -687,7 +705,34 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
-    
+
+    '''<summary>
+    '''pnlAmount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlAmount As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''txtAmount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtAmount As Global.Telerik.Web.UI.RadNumericTextBox
+
+    '''<summary>
+    '''rfvAmount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rfvAmount As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
     '''<summary>
     '''pnlAutorizzazioni control.
     '''</summary>
@@ -696,7 +741,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAutorizzazioni As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscSettori control.
     '''</summary>
@@ -705,7 +750,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSettori As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''pnlOC control.
     '''</summary>
@@ -714,7 +759,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOC As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlOCSupervisoryBoard control.
     '''</summary>
@@ -723,7 +768,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCSupervisoryBoard As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCSupervisoryBoard control.
     '''</summary>
@@ -732,7 +777,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCSupervisoryBoard As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOCConfSindaci control.
     '''</summary>
@@ -741,7 +786,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCConfSindaci As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCConfSindaci control.
     '''</summary>
@@ -750,7 +795,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCConfSindaci As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOCRegion control.
     '''</summary>
@@ -759,7 +804,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCRegion As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCRegion control.
     '''</summary>
@@ -768,7 +813,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCRegion As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOCManagement control.
     '''</summary>
@@ -777,7 +822,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCManagement As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCManagement control.
     '''</summary>
@@ -786,7 +831,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCManagement As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOCCorteConti control.
     '''</summary>
@@ -795,7 +840,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCCorteConti As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCCorteConti control.
     '''</summary>
@@ -804,7 +849,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCCorteConti As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''pnlOCOther control.
     '''</summary>
@@ -813,7 +858,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlOCOther As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkOCOther control.
     '''</summary>
@@ -822,7 +867,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkOCOther As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''txtOCOtherDescription control.
     '''</summary>
@@ -831,7 +876,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOCOtherDescription As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''pnlCategory control.
     '''</summary>
@@ -840,7 +885,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlCategory As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscSelCategory control.
     '''</summary>
@@ -849,7 +894,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSelCategory As Global.VecompSoftware.DocSuiteWeb.Gui.uscClassificatore
-    
+
     '''<summary>
     '''pnlAmmTrasp control.
     '''</summary>
@@ -858,7 +903,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAmmTrasp As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''dgvResolutionKindDocumentSeries control.
     '''</summary>
@@ -867,7 +912,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dgvResolutionKindDocumentSeries As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''ValidationSummary1 control.
     '''</summary>
@@ -876,7 +921,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ValidationSummary1 As Global.System.Web.UI.WebControls.ValidationSummary
-    
+
     '''<summary>
     '''pnlButtons control.
     '''</summary>
@@ -885,7 +930,7 @@ Partial Public Class ReslInserimento
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnInserimento control.
     '''</summary>

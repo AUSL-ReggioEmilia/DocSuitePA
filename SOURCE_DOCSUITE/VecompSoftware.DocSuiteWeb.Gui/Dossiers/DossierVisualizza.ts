@@ -237,13 +237,13 @@ class DossierVisualizza extends DossierBase {
         this._ajaxManager = <Telerik.Web.UI.RadAjaxManager>$find(this.ajaxManagerId);
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._notificationInfo = <Telerik.Web.UI.RadNotification>$find(this.radNotificationId);
-        this._btnDocumenti = <Telerik.Web.UI.RadButton>$find(this.btnDocumentiId);
+        //this._btnDocumenti = <Telerik.Web.UI.RadButton>$find(this.btnDocumentiId);
         this._windowStartWorkflow = <Telerik.Web.UI.RadWindow>$find(this.windowStartWorkflowId);
         this._btnInserti = <Telerik.Web.UI.RadButton>$find(this.btnInsertiId);
         this._windowStartWorkflow.add_close((this.onWorkflowCloseWindow));
         this._windowCompleteWorkflow = <Telerik.Web.UI.RadWindow>$find(this.windowCompleteWorkflowId);
         this._windowCompleteWorkflow.add_close((this.onWorkflowCloseWindow));
-        this._btnDocumenti.add_clicked(this.btnDocumenti_OnClicked);
+        //this._btnDocumenti.add_clicked(this.btnDocumenti_OnClicked);
         this._btnClose = <Telerik.Web.UI.RadButton>$find(this.btnCloseId);
         this._btnModifica = <Telerik.Web.UI.RadButton>$find(this.btnModificaId);
         this._btnSendToSecretaries = <Telerik.Web.UI.RadButton>$find(this.btnSendToSecretariesId);
@@ -340,7 +340,7 @@ class DossierVisualizza extends DossierBase {
 
                 this.loadData();
                 this.setButtonVisibility(false);
-                this._btnDocumenti.set_visible(true);
+                //this._btnDocumenti.set_visible(true);
             },
             (exception: ExceptionDTO) => {
                 this._loadingPanel.hide(this.splContentId);
@@ -683,7 +683,7 @@ class DossierVisualizza extends DossierBase {
 
     private setButtonEnable(value: boolean): void {
         //this._btnWorkflow.set_enabled(value);
-        this._btnDocumenti.set_enabled(value);
+        //this._btnDocumenti.set_enabled(value);
         this._btnModifica.set_enabled(value);
         this._btnSendToSecretaries.set_enabled(value && this._isSendToSecretariesEnabled);
         this._btnSendToRoles.set_enabled(value);
@@ -710,7 +710,7 @@ class DossierVisualizza extends DossierBase {
     }
 
     private setButtonVisibility(value: boolean): void {
-        this._btnDocumenti.set_visible(value);
+        //this._btnDocumenti.set_visible(value);
         this._btnModifica.set_visible(value);
         this._btnAutorizza.set_visible(value);
         this._btnLog.set_visible(value);

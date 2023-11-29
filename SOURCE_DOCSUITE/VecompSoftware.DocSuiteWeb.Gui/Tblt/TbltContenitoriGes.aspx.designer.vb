@@ -131,24 +131,6 @@ Partial Public Class TbltContenitoriGes
     Protected WithEvents uscSeriesUnpublishedAnnexedLocation As Global.VecompSoftware.DocSuiteWeb.Gui.uscSelLocation
 
     '''<summary>
-    '''pnlConservation control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlConservation As Global.System.Web.UI.HtmlControls.HtmlTable
-
-    '''<summary>
-    '''chkConservation control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents chkConservation As Global.System.Web.UI.WebControls.CheckBox
-
-    '''<summary>
     '''pnlPrivacy control.
     '''</summary>
     '''<remarks>
@@ -183,6 +165,24 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlPrivacyLevel As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''pnlResolutionAccounting control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlResolutionAccounting As Global.System.Web.UI.HtmlControls.HtmlTable
+
+    '''<summary>
+    '''checkResolutionAccounting control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents checkResolutionAccounting As Global.System.Web.UI.WebControls.CheckBox
 
     '''<summary>
     '''pnlDocumentSeries control.
@@ -264,6 +264,24 @@ Partial Public Class TbltContenitoriGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlDocumentSeriesFamily As Global.System.Web.UI.WebControls.DropDownList
+
+    '''<summary>
+    '''labelSeriesHeader control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents labelSeriesHeader As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''txtSeriesHeader control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtSeriesHeader As Global.Telerik.Web.UI.RadEditor
 
     '''<summary>
     '''uscClassificatori control.

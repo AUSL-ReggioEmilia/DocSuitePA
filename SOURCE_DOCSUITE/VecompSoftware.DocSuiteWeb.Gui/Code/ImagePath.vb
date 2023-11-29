@@ -1,6 +1,5 @@
 ﻿Imports System.Text
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Biblos.Models
@@ -20,6 +19,7 @@ Public Class ImagePath
     Private Const PageError As String = "page_error"
     Private Const Excel As String = "file_extension_xls"
     Private Const Log As String = "file_extension_log"
+    Private Const EventLog As String = "logs"
     Private Const DocumentSeries As String = "document_copies"
     Private Const EmptyDocument As String = "document_empty"
     Private Const Reject As String = "copyleft"
@@ -45,6 +45,7 @@ Public Class ImagePath
     Private Const DocumentSignatureGreen As String = "document_signature_green"
     Private Const DocumentSignatureViolet As String = "document_signature_violet"
     Private Const DocumentCopies As String = "document_copies"
+    Private Const Clone As String = "clone"
     Private Const Tag As String = "tag"
     Private Const CodeGray As String = "code_gray"
     Private Const CodeGreen As String = "code_green"
@@ -76,6 +77,7 @@ Public Class ImagePath
     Private Const FlagRed As String = "flag_red"
     Private Const FlagYellow As String = "flag_yellow"
 
+    Private Const AddressEditor As String = "addressEditor"
     Private Const Edit As String = "pencil"
     Private Const Delete As String = "delete"
     Private Const Cancel As String = "cancel"
@@ -179,7 +181,7 @@ Public Class ImagePath
 
     Public Shared ReadOnly Property SmallLog As String
         Get
-            Return String.Format(ImageSetPath, SmallSet, Log)
+            Return String.Format(ImageSetPath, SmallSet, EventLog)
         End Get
     End Property
 
@@ -350,6 +352,13 @@ Public Class ImagePath
             Return String.Format(ImageSetPath, SmallSet, DocumentCopies)
         End Get
     End Property
+
+    Public Shared ReadOnly Property SmallClone() As String
+        Get
+            Return String.Format(ImageSetPath, SmallSet, Clone)
+        End Get
+    End Property
+
     Public Shared ReadOnly Property BigDocumentSignature() As String
         Get
             Return String.Format(ImageSetPath, BigSet, DocumentSignature)
@@ -701,6 +710,12 @@ Public Class ImagePath
     Public Shared ReadOnly Property BigFlagYellow As String
         Get
             Return String.Format(ImageSetPath, BigSet, FlagYellow)
+        End Get
+    End Property
+
+    Public Shared ReadOnly Property SmallAddressEditor As String
+        Get
+            Return String.Format(ImageSetPath, SmallSet, AddressEditor)
         End Get
     End Property
 

@@ -1,4 +1,6 @@
 ﻿import TemplateCollaborationService = require('App/Services/Templates/TemplateCollaborationService');
+import UscTemplateCollaborationSelRest = require('UserControl/uscTemplateCollaborationSelRest');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
 
 /*
  * UI handler for TbltWorkflowEvaluationPropertyGes.ts.
@@ -7,48 +9,48 @@
  */
 class UIHandlerEvalPropertyTemplateCollaboration {
     private _rtbValueString: Telerik.Web.UI.RadTextBox;
-    private _templateComboBox: Telerik.Web.UI.RadComboBox;
-    private _templateCollaborationService: TemplateCollaborationService;
+    private _templateSelectionControlId: string;
 
     private lastSelectedCollborationId: string = null;
+    private _controlInitialized: boolean = false;
 
     constructor(
         rtbValueString: Telerik.Web.UI.RadTextBox,
-        templateComboBox: Telerik.Web.UI.RadComboBox,
-        templateCollaborationService: TemplateCollaborationService) {
+        templateSelectionControlId: string) {
         this._rtbValueString = rtbValueString;
-        this._templateComboBox = templateComboBox;
-        this._templateCollaborationService = templateCollaborationService;
+        this._templateSelectionControlId = templateSelectionControlId;
     }
 
-    public LoadTemplateCollaborations = () => {
-        this._templateCollaborationService.getTemplates((data) => {
+    public InitializeTemplateTreeviewControl = (reloadTreeNodes: boolean = true) => {
+        if (this._controlInitialized) {
+            return;
+        }
+        PageClassHelper.callUserControlFunctionSafe<UscTemplateCollaborationSelRest>(this._templateSelectionControlId)
+            .then(controlInstance => {
+                this._controlInitialized = true;
 
-            let item: Telerik.Web.UI.RadComboBoxItem;
-            for (let templateCollaboration of data) {
-                item = new Telerik.Web.UI.RadComboBoxItem();
-                item.set_text(templateCollaboration.Name);
-                item.set_value(templateCollaboration.UniqueId);
-                this._templateComboBox.get_items().add(item);
-            }
+                if (reloadTreeNodes) {
+                    controlInstance.ReloadRoot();
+                }
 
-            this._templateComboBox.enable();
+                controlInstance.OnFixedTemplateClick(this._templateSelectionControlId, (fixedTemplate) => {
+                    this.SetSelectedItem(fixedTemplate.UniqueId);
+                });
 
-            this._templateComboBox.add_selectedIndexChanged((sender, args) => {
-                const templateId: string = args.get_item().get_value();
-                this.SetSelectedItem(templateId);
+                controlInstance.OnTemplateClick(this._templateSelectionControlId, (fixedTemplate, template) => {
+                    this.SetSelectedItem(template.UniqueId);
+                });
             });
-
-            //- loadTemplateCollaborations is asynronous.
-            //- When the evaluation property window opens both loadTemplateCollaborations() and getFirstNonNull()
-            //    are fired, creating a race between:
-            //      - loading the templates
-            //      - setting up the current Template Id in getFirstNonNull ().
-            //- Updating the selection again here makes sure that the saved template id is selected in cmbBox
-            this.UpdateSelection();
-        });
     }
 
+    public InitializeDisableButtonEvent(btnConfirm: Telerik.Web.UI.RadButton): void {
+        PageClassHelper.callUserControlFunctionSafe<UscTemplateCollaborationSelRest>(this._templateSelectionControlId)
+            .done((instance) => {
+                instance.OnFolderClick_DisableConfirmaButton(this._templateSelectionControlId, (disableButton) => {
+                    btnConfirm.set_enabled(!disableButton);
+                });
+            });
+    }
     /**
      * Will set the selected item field. Will not update the combobox selected item.
      * @param uniqueId
@@ -62,10 +64,10 @@ class UIHandlerEvalPropertyTemplateCollaboration {
      */
     public UpdateSelection() {
         if (this.lastSelectedCollborationId) {
-            let selectedItem: Telerik.Web.UI.RadComboBoxItem = this._templateComboBox.findItemByValue(this.lastSelectedCollborationId);
-            if (selectedItem) {
-                selectedItem.select();
-            }
+            PageClassHelper.callUserControlFunctionSafe<UscTemplateCollaborationSelRest>(this._templateSelectionControlId)
+                .then(controlInstance => {
+                    controlInstance.SelectAndForceLoadNode(this.lastSelectedCollborationId);
+                });
         }
     }
 

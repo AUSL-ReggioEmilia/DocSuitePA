@@ -51,6 +51,11 @@
                 onErrorCallback();
             }
 
+            function RemovePostbackSessionState() {
+                if (sessionStorage.getItem("FieldListPostbackState")) {
+                    sessionStorage.removeItem("FieldListPostbackState");
+                }
+            }
         </script>
     </telerik:RadScriptBlock>
 </asp:Content>

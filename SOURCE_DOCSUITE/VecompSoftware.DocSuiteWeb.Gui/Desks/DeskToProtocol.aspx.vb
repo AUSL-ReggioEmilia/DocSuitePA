@@ -138,11 +138,6 @@ Public Class DeskToProtocol
         End If
     End Sub
 
-    Protected Sub BtnToSign_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnToSign.Click
-        Dim url As String = GetProtocolToSignPostBackUrl()
-        Server.Transfer(url)
-    End Sub
-
     Protected Sub BtnCancel_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnCancel.Click
         Response.Redirect(String.Format(DESK_SUMMARY_PATH, CurrentDesk.Id))
     End Sub
@@ -178,7 +173,7 @@ Public Class DeskToProtocol
 
     Private Sub InitializeDocuments()
         Dim documentDtos As ICollection(Of DeskDocumentResult) = New Collection(Of DeskDocumentResult)
-        For Each deskDocument As DeskDocument In CurrentDesk.DeskDocuments.Where(Function(x) x.IsActive = 0)
+        For Each deskDocument As DeskDocument In CurrentDesk.DeskDocuments.Where(Function(x) x.IsActive)
             Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(deskDocument.IdDocument.Value)
             If Not docInfos.Any() Then
                 Exit Sub
@@ -199,6 +194,9 @@ Public Class DeskToProtocol
         If CurrentDesk.ExpirationDate.HasValue Then
             lblExpireDate.Text = CurrentDesk.ExpirationDate.Value.ToString("dd/MM/yyyy")
         End If
+
+        btnToSign.PostBackUrl = GetProtocolToSignPostBackUrl()
+        btnToSign.Visible = True
     End Sub
 
     'Setta i dto nella griglia di gestione documenti

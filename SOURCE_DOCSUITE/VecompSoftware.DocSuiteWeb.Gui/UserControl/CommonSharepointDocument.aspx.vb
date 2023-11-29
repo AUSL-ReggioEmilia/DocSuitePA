@@ -428,7 +428,7 @@ Public Class CommonSharepointDocument
     ''' <returns></returns>
     Private Sub InitializeSharepointUri()
         rddDocumentLibrary.Items.Clear()
-        Dim targetRoles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Any, Nothing, True)
+        Dim targetRoles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Any, Nothing, True, CurrentTenant.TenantAOO.UniqueId)
         Dim dropDownListItem As DropDownListItem = Nothing
         Dim coll As SortedDictionary(Of String, DropDownListItem) = New SortedDictionary(Of String, DropDownListItem)
         If targetRoles IsNot Nothing Then

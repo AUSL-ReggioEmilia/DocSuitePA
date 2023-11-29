@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="Atti - Pubblicazione" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="AuslPc_ReslPubblicaRevoca.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.AuslPc_ReslPubblicaRevoca" %>
 
 <%@ Register Src="~/UserControl/uscDocumentUpload.ascx" TagPrefix="usc" TagName="UploadDocument" %>
-<%@ Register TagPrefix="usc" TagName="PrivacyPanel" Src="~/UserControl/uscPrivacyPanel.ascx" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadAjaxPanel runat="server" ID="ajaxHeader">
@@ -101,7 +100,7 @@
                 <td class="label" style="width: 20%">Allegati:
                 </td>
                 <td style="width: 80%">
-                    <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAllegati" IsDocumentRequired="false" MultipleDocuments="true" runat="server" TreeViewCaption="Allegati" Type="Resl" WindowWidth="620" />
+                    <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAllegati" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" TreeViewCaption="Allegati" Type="Resl" WindowWidth="620" />
                 </td>
             </tr>
             <tr class="Spazio">
@@ -122,7 +121,7 @@
                 <td class="label" style="width: 20%">Allegati:
                 </td>
                 <td style="width: 80%">
-                    <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadPrivacyAttachment" IsDocumentRequired="false" MultipleDocuments="true" runat="server" TreeViewCaption="Allegati Riservati" Type="Resl" WindowWidth="620" />
+                    <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadPrivacyAttachment" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" TreeViewCaption="Allegati Riservati" Type="Resl" WindowWidth="620" />
                 </td>
             </tr>
             <tr class="Spazio">
@@ -144,7 +143,7 @@
                     Annessi (non parte integrante):
                 </td>
                 <td style="width: 80%">
-                    <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAnnexes" IsDocumentRequired="false" MultipleDocuments="true" runat="server" TreeViewCaption="Annessi (non parte integrante)" Type="Resl" WindowWidth="620" />
+                    <usc:UploadDocument ButtonFDQEnabled="false" ButtonFileEnabled="true" ButtonFrontespizioEnabled="false" ButtonPdfAndFDQEnabled="false" ButtonPreviewEnabled="false" ButtonRemoveEnabled="true" ButtonScannerEnabled="true" ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAnnexes" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" TreeViewCaption="Annessi (non parte integrante)" Type="Resl" WindowWidth="620" />
                 </td>
             </tr>
             <tr class="Spazio">
@@ -210,9 +209,7 @@
                 <td></td>
             </tr>
         </table>
-    </asp:Panel>
-    <%--Sezione Privacy--%>
-    <usc:PrivacyPanel ID="uscPrivacyPanel" runat="server" />
+    </asp:Panel>s
     <asp:Label ID="lblInfo" runat="server" Visible="False" ForeColor="Red">Manca la data di Ricezione in Regione. Impossibile rendere esecutiva la Delibera.</asp:Label>
     <asp:TextBox ID="txtLastWorkflowDate" runat="server" Width="16px"></asp:TextBox>
     <asp:TextBox ID="txtIdLocation" runat="server" Width="16px"></asp:TextBox>

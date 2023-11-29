@@ -1,15 +1,13 @@
 Imports System.Collections.Generic
-Imports System.Net.Mail
-Imports System.Text
 Imports System.Linq
+Imports System.Text
 Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.DTO.Protocols
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Helpers.Web
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
-Imports VecompSoftware.DocSuiteWeb.DTO.Protocols
 
 Public Class ProtAutorizza
     Inherits ProtBasePage
@@ -59,11 +57,9 @@ Public Class ProtAutorizza
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
-        InitializeAjax()
 
-        If ProtocolEnv.MultiDomainEnabled AndAlso ProtocolEnv.TenantAuthorizationEnabled Then
-            uscAutorizza.TenantEnabled = True
-        End If
+        InitializeAjax()
+        CheckRights()
 
         If Not IsPostBack Then
             InitializeTab()
@@ -92,10 +88,19 @@ Public Class ProtAutorizza
 
         ' Aggiungo i settori
         Facade.ProtocolFacade.AddRoleAuthorizations(CurrentProtocol, uscAutorizza.RoleListAdded(), Explicit)
-
-        If CanDeleteRole(CurrentProtocol.GetRoles()) Then
+        If CanDeleteRole() Then
+            Dim filteredRoles As IList(Of Role) = FacadeFactory.Instance.RoleFacade.GetByIds(uscAutorizza.RoleListRemoved())
+            If ProtocolEnv.RefusedProtocolAuthorizationEnabled AndAlso Not CurrentProtocolRights.IsEditable Then
+                Dim deletable As IList(Of Role) = New List(Of Role)()
+                For Each role As Role In filteredRoles.Where(Function(f) CurrentProtocol.Roles.Any(Function(k) k.Role.Id = f.Id AndAlso Not k.Status = ProtocolRoleStatus.Accepted))
+                    If FacadeFactory.Instance.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.Protocol, role) Then
+                        deletable.Add(role)
+                    End If
+                Next
+                filteredRoles = deletable
+            End If
             ' Rimuovo i settori
-            Facade.ProtocolFacade.RemoveRoleAuthorizations(CurrentProtocol, uscAutorizza.RoleListRemoved())
+            Facade.ProtocolFacade.RemoveRoleAuthorizations(CurrentProtocol, filteredRoles)
         End If
 
         'Aggiorno le autorizzazioni privacy
@@ -115,11 +120,23 @@ Public Class ProtAutorizza
             ' Prima devono essere gestiti i CC non selezionati, poi quelli selezionati per po
             Facade.ProtocolFacade.UpdateRoleAuthorization(CurrentProtocol, uscProtocolRoleUser.GetFullIncrementalPathAttribute(False, uscSettori.NodeTypeAttributeValue.Role), False)
             Facade.ProtocolFacade.UpdateRoleAuthorization(CurrentProtocol, uscProtocolRoleUser.GetFullIncrementalPathAttribute(True, uscSettori.NodeTypeAttributeValue.Role), True)
-        End If
 
-        ' Solo per protocolli in entrata o tra uffici, aggiungo gli Users
-        If CurrentProtocolRights.IsProtocolTypeDistributable Then
-            Facade.ProtocolFacade.AddRoleUserAuthorizations(CurrentProtocol, uscProtocolRoleUser.GetRoleValues(True, uscSettori.NodeTypeAttributeValue.RoleUser))
+            ' Solo per protocolli in entrata o tra uffici, aggiungo gli Users
+            If CurrentProtocolRights.IsProtocolTypeDistributable Then
+                Dim selectedUserRoles As IList(Of String) = uscProtocolRoleUser.GetRoleValues(True, uscSettori.NodeTypeAttributeValue.RoleUser)
+                Facade.ProtocolFacade.AddRoleUserAuthorizations(CurrentProtocol, selectedUserRoles)
+                If ProtocolEnv.DistributionRejectableEnabled AndAlso selectedUserRoles IsNot Nothing Then
+                    Dim roleUserNodeValue As String()
+                    Dim idRole As Integer
+                    Dim userRole As Role
+                    For Each selectedUserRole As String In selectedUserRoles
+                        roleUserNodeValue = selectedUserRole.Split("|"c)
+                        idRole = Integer.Parse(roleUserNodeValue(ProtocolRoleUserColumns.IdRole))
+                        userRole = Facade.RoleFacade.GetById(idRole)
+                        Facade.ProtocolFacade.UpdateRoleStatus(CurrentProtocol, userRole.FullIncrementalPathArray.Select(Function(x) Integer.Parse(x)).ToList(), ProtocolRoleStatus.Accepted)
+                    Next
+                End If
+            End If
         End If
 
         'TODO: modificare salvataggio 
@@ -156,9 +173,8 @@ Public Class ProtAutorizza
 
         If ProtocolEnv.RefusedProtocolAuthorizationEnabled AndAlso CommonShared.HasRefusedProtocolGroupsRight AndAlso CurrentProtocol.RejectedRoles.Any() Then
             Facade.ProtocolRejectedRoleFacade.FixRejectedRoles(CurrentProtocol.RejectedRoles)
-            Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PZ, String.Format("Prot. {0} - Corrette autorizzazioni", CurrentProtocol.FullNumber))
+            Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PZ, $"Prot. {CurrentProtocol.FullNumber} - Corrette autorizzazioni")
         End If
-
 
         Dim redirect As Boolean = True
         If ProtocolEnv.AuthorizMailSmtpEnabled.Eq("1"c) Then
@@ -244,6 +260,15 @@ Public Class ProtAutorizza
     End Sub
 
     Private Sub uscAutorizza_RoleRemoving(sender As Object, args As RoleEventArgs) Handles uscAutorizza.RoleRemoving
+        If (ProtocolEnv.IsDistributionEnabled AndAlso ProtocolEnv.DistributionRejectableEnabled _
+            AndAlso CurrentProtocol.Roles.Any(Function(x) x.Role.Id = args.Role.Id AndAlso x.Status = ProtocolRoleStatus.Accepted) _
+            AndAlso Not Facade.ContainerGroupFacade.HasContainerRight(CurrentProtocol.Container.Id, DocSuiteContext.Current.User.Domain,
+                                                                  DocSuiteContext.Current.User.UserName, ProtocolContainerRightPositions.Modify, DSWEnvironment.Protocol)) Then
+
+            args.Cancel = True
+            AjaxAlert($"Non è possibile eliminare il settore selezionato in quanto risulta accettato.")
+        End If
+
         If args.Role IsNot Nothing AndAlso CurrentProtocol.Roles.Any(Function(f) f.Type = ProtocolRoleTypes.Privacy AndAlso f.Role.Id = args.Role.Id) Then
             If Not Facade.ContainerGroupFacade.HasContainerRight(CurrentProtocol.Container.Id, DocSuiteContext.Current.User.Domain, DocSuiteContext.Current.User.UserName, ProtocolContainerRightPositions.Privacy, DSWEnvironment.Protocol) Then
                 args.Cancel = True
@@ -265,7 +290,7 @@ Public Class ProtAutorizza
     End Sub
 
     Protected Sub UscAutorizza_RoleSelected(ByVal sender As Object, ByVal e As RoleEventArgs) Handles uscAutorizza.RoleSelected
-        uscAutorizza.SetButtonsVisibility(CanDeleteRole(e.Role))
+        uscAutorizza.SetButtonsVisibility(CanDeleteRole())
     End Sub
 
     Private Sub ProtAutorizza_AjaxRequest(sender As Object, e As AjaxRequestEventArgs)
@@ -310,16 +335,11 @@ Public Class ProtAutorizza
         Dim userContainers As Dictionary(Of ProtocolContainerRightPositions, IList(Of Integer)) = Facade.ContainerFacade.GetCurrentUserContainers(DSWEnvironment.Protocol, True)
         Dim idContainer As Integer = CurrentProtocol.Container.Id
 
-        uscAutorizza.HideDeleteButton = Not CanDeleteRole(CurrentProtocol.GetRoles())
+        uscAutorizza.HideDeleteButton = Not CanDeleteRole()
         uscAutorizza.SearchByUserEnabled = DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled AndAlso Not DocSuiteContext.Current.ProtocolEnv.DistributionHierarchicalEnabled
 
         Dim roles As New List(Of Role)
         Dim rolesFull As New List(Of Role)
-
-        If ProtocolEnv.MultiDomainEnabled AndAlso ProtocolEnv.TenantAuthorizationEnabled Then
-            uscAutorizza.TenantEnabled = True
-            uscAutorizzaFull.TenantEnabled = True
-        End If
 
         uscAutorizza.CurrentProtocol = CurrentProtocol
         If CurrentProtocol.Roles.Count > 0 OrElse (DocSuiteContext.Current.SimplifiedPrivacyEnabled AndAlso CurrentProtocol.Users.Where(Function(u) u.Type = ProtocolUserType.Authorization).Count > 0) Then
@@ -374,6 +394,20 @@ Public Class ProtAutorizza
         End If
     End Sub
 
+    Private Function GetCurrentAuthRight() As Boolean
+        Dim right As Boolean = CurrentProtocolRights.IsAuthorizable
+        If ProtocolEnv.IsDistributionEnabled Then
+            right = CurrentProtocolRights.IsDistributable
+        End If
+        Return right
+    End Function
+
+    Private Sub CheckRights()
+        If Not GetCurrentAuthRight() Then
+            Throw New DocSuiteException($"Protocollo n. {CurrentProtocol.FullNumber} - Impossibile modificare le autorizzazioni, verificare se si dispongono delle sufficienti autorizzazioni.")
+        End If
+
+    End Sub
     Private Sub InitializeTab()
         'verifica Protocollo
         If CurrentProtocol Is Nothing Then
@@ -406,7 +440,7 @@ Public Class ProtAutorizza
                 results = CurrentProtocol.RejectedRoles.Where(Function(r) r.Status = ProtocolRoleStatus.Refused) _
                 .Select(Function(rejectedRole) New RejectedRoleModel() With {.Name = String.Format("{0} - {1} ( {2} )", rejectedRole.Role.Name,
                                                                                      String.Format(DocSuiteContext.Current.ProtocolEnv.ProtRegistrationDateFormat, rejectedRole.RegistrationDate.ToLocalTime.DateTime), rejectedRole.Note),
-                                                                             .UniqueId = rejectedRole.Id.ToString()}).ToList()
+                                                                             .UniqueID = rejectedRole.Id.ToString()}).ToList()
             End If
 
             TreeViewRefused.DataFieldID = "UniqueId"
@@ -481,11 +515,7 @@ Public Class ProtAutorizza
         End Try
     End Function
 
-    Private Function CanDeleteRole(role As Role) As Boolean
-        Return CanDeleteRole(New List(Of Role) From {role})
-    End Function
-
-    Private Function CanDeleteRole(roles As IList(Of Role)) As Boolean
+    Private Function CanDeleteRole() As Boolean
         If DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled Then
             Return True
         End If
@@ -496,6 +526,7 @@ Public Class ProtAutorizza
         Dim idContainer As Integer = CurrentProtocol.Container.Id
         Return userContainers.Item(ProtocolContainerRightPositions.Modify).Contains(idContainer)
     End Function
+
 
     Private Sub SavePreviousNodeOnViewState()
         If PreviousNodeSelected IsNot Nothing Then

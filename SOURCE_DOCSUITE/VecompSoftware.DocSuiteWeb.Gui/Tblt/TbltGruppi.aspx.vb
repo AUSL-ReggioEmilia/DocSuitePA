@@ -50,7 +50,11 @@ Partial Public Class TbltGruppi
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
-        InitializeAjaxSettings()
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
+        InitializeAjax()
         If Not IsPostBack Then
             InitializeControls()
         End If
@@ -65,7 +69,7 @@ Partial Public Class TbltGruppi
                     Case "Add"
                         Dim father As RadTreeNode = RadTreeViewGroups.SelectedNode
                         ' creo il nodo e lo seleziono
-                        Dim newNode As RadTreeNode = AddRecursiveNode(father, group)
+                        Dim newNode As RadTreeNode = AddRootNode(father, group)
                         newNode.Selected = True
                         groupDetails.SelectedGroupId = Integer.Parse(arguments(2))
                         groupDetails.LoadDetails()
@@ -138,7 +142,7 @@ Partial Public Class TbltGruppi
 
 #Region " Methods "
 
-    Private Sub InitializeAjaxSettings()
+    Private Sub InitializeAjax()
         AjaxManager.AjaxSettings.AddAjaxSetting(ToolBarSearch, RadTreeViewGroups, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, RadTreeViewGroups, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeViewGroups, ActionsToolbar)
@@ -162,32 +166,20 @@ Partial Public Class TbltGruppi
         End If
         RadTreeViewGroups.Nodes(0).Nodes.Clear()
         For Each group As SecurityGroups In groupList
-            AddRecursiveNode(RadTreeViewGroups.Nodes(0), group)
+            AddRootNode(RadTreeViewGroups.Nodes(0), group)
         Next
 
     End Sub
 
-    ''' <summary> Crea il nodo padre, lo valorizza e lo associa ai figli ricorsivamente </summary>
-    Private Function AddRecursiveNode(ByRef node As RadTreeNode, ByRef group As SecurityGroups) As RadTreeNode
-        Dim newNode As RadTreeNode = AddGroupNode(node, group)
-
-        Dim groups As IList(Of SecurityGroups) = group.Children
-        If (groups IsNot Nothing) AndAlso (groups.Count > 0) Then
-            For Each child As SecurityGroups In groups
-                AddRecursiveNode(newNode, child)
-            Next
-        End If
-        Return newNode
+    Private Function AddRootNode(ByRef node As RadTreeNode, ByRef group As SecurityGroups) As RadTreeNode
+        Return AddGroupNode(node, group)
     End Function
 
     ''' <summary> Crea un nodo col gruppo e lo associa al nodo padre </summary>
     Private Function AddGroupNode(ByRef father As RadTreeNode, ByRef group As SecurityGroups) As RadTreeNode
         Dim newNode As RadTreeNode = New RadTreeNode()
-
         SetNode(newNode, group)
-
         father.Nodes.Add(newNode)
-
         Return newNode
     End Function
 

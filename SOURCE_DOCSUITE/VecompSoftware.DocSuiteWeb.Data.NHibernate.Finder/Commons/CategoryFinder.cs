@@ -86,7 +86,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Commons
 
             if (IsActive.HasValue && IsActive.Value)
             {
-                query = query.Where(x => x.IsActive == Convert.ToInt16(IsActive.Value));
+                query = query.Where(x => x.IsActive == IsActive.Value);
             }
 
             if (CheckFascicolable.HasValue && CheckFascicolable.Value)

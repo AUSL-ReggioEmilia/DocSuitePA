@@ -86,15 +86,6 @@ Partial Public Class uscDossierFolders
     Protected WithEvents FolderToolBar As Global.Telerik.Web.UI.RadToolBar
 
     '''<summary>
-    '''StatusToolBar control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents StatusToolBar As Global.Telerik.Web.UI.RadToolBar
-
-    '''<summary>
     '''rtvDossierFolders control.
     '''</summary>
     '''<remarks>

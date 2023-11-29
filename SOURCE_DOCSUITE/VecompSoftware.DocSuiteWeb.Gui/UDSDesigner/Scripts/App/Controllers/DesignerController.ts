@@ -16,6 +16,7 @@ module UdsDesigner {
         constructor() {
             this.form_builder = new UdsDesigner.FormBuilder();
             this.form_builder.setup();
+            this.form_builder.idUDSRepository = new UdsDesigner.PathService().Querystring("IdUds");
             this.idRepository = new UdsDesigner.PathService().Querystring("IdUds");
             this.initializeEvents();
             this.initialize();
@@ -43,10 +44,14 @@ module UdsDesigner {
                     return;
                 }
 
-                UdsDesigner.Service.saveModel(this.form_builder.getModelJson(), false, (response) => {
+                UdsDesigner.Service.saveModel(this.form_builder.getModelJson(), this.idRepository ? `"${this.idRepository}"` : null, false, (response) => {
                     $("#alertSuccessMessage").show().delay(3000).fadeOut(1000);
                     rivets.bind($("#alertSuccessMessage"), { message: "Archivio salvato nelle bozze" });
-                    $("#menuNew").trigger("click");
+                    $("#treeListId").removeClass("hide");
+                    if (!this.idRepository && !this.form_builder.idUDSRepository) {
+                        this.idRepository = response.d;
+                        this.form_builder.idUDSRepository = response.d;
+                    }
                 }, moment());
             });
 
@@ -87,7 +92,7 @@ module UdsDesigner {
                     this.activeDateModal.modal("hide");
                     var duplicate: boolean = $("#chkDuplicate").is(':checked');
                     this.form_builder.updateRequiredRevisionUDSRepository(duplicate);
-                    UdsDesigner.Service.saveModel(this.form_builder.getModelJson(), true, (response) => {
+                    UdsDesigner.Service.saveModel(this.form_builder.getModelJson(), this.idRepository ? `"${this.idRepository}"` : null, true, (response) => {
                         $("#alertSuccessMessage").show().delay(3000).fadeOut(1000);
                         rivets.bind($("#alertSuccessMessage"), { message: "Messaggio di pubblicazione inviato. Attendere alcuni minuti per verificare l'esito di pubblicazione nella ricerca degli archivi" });
                         $("#menuNew").trigger("click");
@@ -109,6 +114,7 @@ module UdsDesigner {
                 UdsDesigner.Service.loadRepository(this.idRepository, (response) => {
                     if (response.d != null && response.d.elements != null) {
                         this.form_builder.renderModel(response.d.elements);
+                        this.form_builder.initializeTreeLists();
                     }
 
                     this.form_builder.resizeEditor();

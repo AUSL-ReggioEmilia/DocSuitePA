@@ -28,7 +28,7 @@ Partial Public Class Category
         End Get
     End Property
 
-    Public Overridable Property IsActive As Short
+    Public Overridable Property IsActive As Boolean
 
     Public Overridable Property Code As Integer
 

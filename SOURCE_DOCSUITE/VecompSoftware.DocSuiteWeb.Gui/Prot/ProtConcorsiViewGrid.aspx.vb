@@ -151,6 +151,9 @@ Namespace Prot
             finder.LoadFetchModeFascicleEnabled = False
             Dim reportName As String = senderButton.CommandArgument
             Dim protocols As IList(Of Protocol) = finder.DoSearch()
+            If ReportFacade.TenantModel Is Nothing Then
+                ReportFacade.TenantModel = DocSuiteContext.Current.CurrentTenant
+            End If
             Dim report As IReport(Of Protocol) = ReportFacade.GenerateReport(Of Protocol)(reportName, Nothing, protocols)
 
             Dim doc As DocumentInfo = report.ExportExcel()
@@ -173,6 +176,9 @@ Namespace Prot
         End Sub
         Private Sub btnExcel_Click(sender As Object, e As EventArgs) Handles btnExcel.Click
             'Test esportazione in modo automatico
+            If ReportFacade.TenantModel Is Nothing Then
+                ReportFacade.TenantModel = DocSuiteContext.Current.CurrentTenant
+            End If
             Dim report As IReport(Of BindGrid) = ReportFacade.GenerateReport(Of BindGrid)(New List(Of BindGrid) From {grdConcourse}, (From column As GridColumn In grdConcourse.Columns Select New Column(column)).ToList())
 
             Dim doc As DocumentInfo = report.ExportExcel()

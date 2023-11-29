@@ -37,7 +37,7 @@ Partial Public Class DocmRicerca
     End Sub
 
     Protected Sub Search_Click(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnSearch.Click
-        If Not CommonInstance.ApplyDocumentFinderSecurity(uscDocumentFinder.Finder) Then
+        If Not CommonInstance.ApplyDocumentFinderSecurity(uscDocumentFinder.Finder, CurrentTenant.TenantAOO.UniqueId) Then
             Throw New DocSuiteException("Ricerca Pratiche", "Diritti insufficienti per la ricerca nel modulo Pratiche")
         End If
 

@@ -7,7 +7,6 @@ Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.OData
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Tenants
-Imports VecompSoftware.DocSuiteWeb.Model.Securities
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.LongTimeTask
 Imports VecompSoftware.Services.Logging
@@ -49,11 +48,12 @@ Partial Public Class _default
     Private Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
         ' Attenzione! E' importante che la sessione sentinella sia inizializzata nell'init della pagina di avvio.
         Session("VecompSoftware.SessionActiveCheck") = True
-        If Session("CurrentTenant") Is Nothing Then
+        If Session(CommonShared.USER_CURRENT_TENANT) Is Nothing Then
+            UserLog(True)
             Dim TenantFacade As TenantFacade = New TenantFacade()
-            Session("CurrentTenant") = TenantFacade.GetCurrentTenant()
+            Session(CommonShared.USER_CURRENT_TENANT) = TenantFacade.GetCurrentTenant()
             Dim ODataFacade As ODataFacade = New ODataFacade()
-            Session("CurrentDomainUser") = ODataFacade.domainUserModel()
+            Session("CurrentDomainUser") = ODataFacade.GetDomainUserModel()
         End If
     End Sub
 
@@ -92,8 +92,6 @@ Partial Public Class _default
         Page.Response.Cache.SetNoStore()
         Page.Response.Cache.SetValidUntilExpires(True)
 
-        ' TODO: verificare relazione con CommonUtil.InitializePaths
-        ' Home
         Dim s As String = Request.ServerVariables("PATH_INFO")
         CommonUtil.GetInstance.HomeDirectory = Left(s, InStrRev(s, "/") - 1)
 
@@ -110,51 +108,50 @@ Partial Public Class _default
             Throw New DocSuiteException("Accesso utente", "Errore in accesso utente")
         End If
 
-        If DocSuiteContext.Current.ProtocolEnv.IsSecurityGroupEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.CheckSecurityUsersDomainEnabled Then
-            Dim securityUsers As IList(Of SecurityUsers) = Facade.SecurityUsersFacade.GetUsersByAccount(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
-            For Each item As SecurityUsers In securityUsers
-                item.UserDomain = DocSuiteContext.Current.User.Domain
-                Facade.SecurityUsersFacade.Update(item)
-            Next
+        'VECCHIA FUNZIONALITAì RICHIESTA DA TORINO DURANTE L'UNIONE ASL-CITTA' DI TORINO. DISMESSA
+        'If DocSuiteContext.Current.ProtocolEnv.CheckSecurityUsersDomainEnabled Then
+        '    Dim securityUsers As IList(Of SecurityUsers) = Facade.SecurityUsersFacade.GetUsersByAccount(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
+        '    For Each item As SecurityUsers In securityUsers
+        '        item.UserDomain = DocSuiteContext.Current.User.Domain
+        '        Facade.SecurityUsersFacade.Update(item)
+        '    Next
 
-            Dim roleUsers As IList(Of RoleUser) = Facade.RoleUserFacade.GetByAccount(DocSuiteContext.Current.User.UserName)
-            For Each item As RoleUser In roleUsers.Where(Function(x) Not x.Account.Equals(DocSuiteContext.Current.User.FullUserName))
-                item.Account = DocSuiteContext.Current.User.FullUserName
-                Facade.RoleUserFacade.Update(item)
-            Next
+        '    Dim roleUsers As IList(Of RoleUser) = Facade.RoleUserFacade.GetByAccount(DocSuiteContext.Current.User.UserName)
+        '    For Each item As RoleUser In roleUsers.Where(Function(x) Not x.Account.Equals(DocSuiteContext.Current.User.FullUserName))
+        '        item.Account = DocSuiteContext.Current.User.FullUserName
+        '        Facade.RoleUserFacade.Update(item)
+        '    Next
 
-            For Each item As CollaborationSign In Facade.CollaborationSignsFacade.GetByAccount(DocSuiteContext.Current.User.UserName).Where(Function(x) Not x.SignUser.Equals(DocSuiteContext.Current.User.FullUserName))
-                item.SignUser = DocSuiteContext.Current.User.FullUserName
-                Facade.CollaborationSignsFacade.Update(item)
-            Next
+        '    For Each item As CollaborationSign In Facade.CollaborationSignsFacade.GetByAccount(DocSuiteContext.Current.User.UserName).Where(Function(x) Not x.SignUser.Equals(DocSuiteContext.Current.User.FullUserName))
+        '        item.SignUser = DocSuiteContext.Current.User.FullUserName
+        '        Facade.CollaborationSignsFacade.Update(item)
+        '    Next
 
-            For Each item As CollaborationUser In Facade.CollaborationUsersFacade.GetByAccount(DocSuiteContext.Current.User.UserName).Where(Function(x) Not x.Account.Equals(DocSuiteContext.Current.User.FullUserName))
-                item.Account = DocSuiteContext.Current.User.FullUserName
-                Facade.CollaborationUsersFacade.Update(item)
-            Next
+        '    For Each item As CollaborationUser In Facade.CollaborationUsersFacade.GetByAccount(DocSuiteContext.Current.User.UserName).Where(Function(x) Not x.Account.Equals(DocSuiteContext.Current.User.FullUserName))
+        '        item.Account = DocSuiteContext.Current.User.FullUserName
+        '        Facade.CollaborationUsersFacade.Update(item)
+        '    Next
 
-            For Each item As Collaboration In Facade.CollaborationFacade.GetByAccount(DocSuiteContext.Current.User.UserName).Where(Function(x) Not x.RegistrationUser.Equals(DocSuiteContext.Current.User.FullUserName))
-                item.RegistrationUser = DocSuiteContext.Current.User.FullUserName
-                Facade.CollaborationFacade.Update(item)
-            Next
+        '    For Each item As Collaboration In Facade.CollaborationFacade.GetByAccount(DocSuiteContext.Current.User.UserName).Where(Function(x) Not x.RegistrationUser.Equals(DocSuiteContext.Current.User.FullUserName))
+        '        item.RegistrationUser = DocSuiteContext.Current.User.FullUserName
+        '        Facade.CollaborationFacade.Update(item)
+        '    Next
 
-            For Each item As CollaborationVersioning In Facade.CollaborationVersioningFacade.GetByAccount(DocSuiteContext.Current.User.UserName).Where(Function(x) Not x.CheckOutUser.Equals(DocSuiteContext.Current.User.FullUserName))
-                item.CheckOutUser = DocSuiteContext.Current.User.FullUserName
-                Facade.CollaborationVersioningFacade.Update(item)
-            Next
-        End If
+        '    For Each item As CollaborationVersioning In Facade.CollaborationVersioningFacade.GetByAccount(DocSuiteContext.Current.User.UserName).Where(Function(x) Not x.CheckOutUser.Equals(DocSuiteContext.Current.User.FullUserName))
+        '        item.CheckOutUser = DocSuiteContext.Current.User.FullUserName
+        '        Facade.CollaborationVersioningFacade.Update(item)
+        '    Next
+        'End If
 
-        CommonUtil.GetInstance.InitializeUser()
+        CommonUtil.GetInstance.InitializeUser(CType(Session(CommonShared.USER_CURRENT_TENANT), Tenant).TenantAOO.UniqueId)
 
         Dim currentUserName As String = DocSuiteContext.Current.User.UserName
         Dim longAction As Action = Function() CommonUtil.ClearTemporaryDirectory(CommonUtil.GetInstance.AppTempPath, currentUserName, DocSuiteContext.Current.ProtocolEnv.TimeIntervalForCleaningTemp)
         LongTimeTaskHelper.ImmediateOperation(longAction)
 
         InitializeSections()
-
-        'tabella utenti SqlLog/application
         ComputerLog()
-        UserLog()
+        UserLog(False)
 
         ' Pulizia dizionari 
         CommonShared.ClearRightDictionaries()
@@ -170,10 +167,11 @@ Partial Public Class _default
         CommonUtil.GetInstance.AppAccessOk = True
     End Sub
 
-    Public Sub UserLog()
+    Public Sub UserLog(incrementAccessNumber As Boolean)
         Try
-            Dim finder As NHibernateUserLogFinder = New NHibernateUserLogFinder()
-            finder.SystemUser = DocSuiteContext.Current.User.FullUserName
+            Dim finder As NHibernateUserLogFinder = New NHibernateUserLogFinder With {
+                .SystemUser = DocSuiteContext.Current.User.FullUserName
+            }
             Dim userLog As UserLog = finder.DoSearch().FirstOrDefault()
             If userLog Is Nothing Then
                 Dim authorizedTenant As Tenant = New TenantFacade().GetAuthorizedTenants().FirstOrDefault()
@@ -186,19 +184,23 @@ Partial Public Class _default
                 End If
                 Facade.UserLogFacade.Save(userLog)
             End If
-
-            Dim dayAccessNumber As Integer = 1
+            Dim account As AccountModel = CommonAD.GetAccount(DocSuiteContext.Current.User.FullUserName)
             Dim currentAccessDate As DateTimeOffset = DateTimeOffset.UtcNow
-            If userLog.LastOperationDate.HasValue AndAlso currentAccessDate.Date = userLog.LastOperationDate.Value.Date Then
-                dayAccessNumber = userLog.AccessNumber + 1
+
+            If (incrementAccessNumber) Then
+                Dim dayAccessNumber As Integer = 1
+                If userLog.LastOperationDate.HasValue AndAlso currentAccessDate.Date = userLog.LastOperationDate.Value.Date Then
+                    dayAccessNumber = userLog.AccessNumber + 1
+                End If
+                userLog.AccessNumber = dayAccessNumber
             End If
 
-            userLog.AccessNumber = dayAccessNumber
             userLog.LastOperationDate = currentAccessDate
             userLog.PrevOperationDate = userLog.LastOperationDate
             userLog.SystemComputer = CommonUtil.GetInstance.UserComputer
             userLog.SystemServer = CommonShared.MachineName
             userLog.SessionId = CommonShared.UserSessionId
+            userLog.UserPrincipalName = account.UserPrincipalName
 
             Facade.UserLogFacade.Update(userLog)
         Catch ex As Exception
@@ -211,15 +213,16 @@ Partial Public Class _default
             Dim cLog As ComputerLog = Facade.ComputerLogFacade.GetById(CommonShared.DSUserComputer)
 
             If cLog Is Nothing Then
-                cLog = New ComputerLog()
-                cLog.Id = CommonShared.DSUserComputer
-                cLog.AdvancedViewer = DocSuiteContext.Current.ProtocolEnv.DefaultAdvancedViewer
-                cLog.AdvancedScanner = DocSuiteContext.Current.ProtocolEnv.DefaultAdvancedScanner
+                cLog = New ComputerLog With {
+                    .Id = CommonShared.DSUserComputer,
+                    .AdvancedViewer = DocSuiteContext.Current.ProtocolEnv.DefaultAdvancedViewer,
+                    .AdvancedScanner = DocSuiteContext.Current.ProtocolEnv.DefaultAdvancedScanner
+                }
                 Facade.ComputerLogFacade.Save(cLog)
             End If
 
             Dim accn As Integer = 1
-            Dim serverDate As Date = DateTime.Now
+            Dim serverDate As Date = Date.Now
             If String.Format("{0:yyyyMMdd}", serverDate) = String.Format("{0:yyyyMMdd}", cLog.LastOperationDate) Then
                 accn = cLog.AccessNumber + 1
             End If
@@ -240,11 +243,7 @@ Partial Public Class _default
 
     ''' <summary> Inizializza le tre sezioni principali della DocSuite. </summary>
     Private Sub InitializeSections()
-        If Not String.IsNullOrEmpty(DocSuiteContext.LocalServerWorkgroup) Then
-            CommonUtil.GetInstance.AppAccessOk = True
-            Exit Sub
-        End If
-
+        CommonUtil.GetInstance.AppAccessOk = True
         If Not DocSuiteContext.Current.Tenants.Any(Function(x) x.DomainName.Eq(CommonShared.UserDomain)) Then
             CommonUtil.GetInstance.AppAccessOk = False
         End If

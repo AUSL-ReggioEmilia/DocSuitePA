@@ -6,7 +6,6 @@ Imports VecompSoftware.DocSuiteWeb.Data
 
 Public Class RoleControl
     Inherits ItemTreeControl(Of Role)
-    Public Property HistoricizeDate As Date?
 
     Protected Overrides Function GetSelectedNode() As RadTreeNode
         Return Tree.SelectedNode
@@ -31,11 +30,7 @@ Public Class RoleControl
     End Function
 
     Public Overrides Function GetItemDescription(ByVal item As Role) As String
-        Dim name As String = item.Name
-        If (HistoricizeDate.HasValue AndAlso item.RoleNames IsNot Nothing AndAlso item.RoleNames.Any()) Then
-            name = item.RoleNames.SingleOrDefault(Function(f) f.FromDate <= HistoricizeDate.Value AndAlso (Not f.ToDate.HasValue OrElse (f.ToDate.HasValue AndAlso HistoricizeDate.Value <= f.ToDate.Value))).Name
-        End If
-        Return name
+        Return item.Name
     End Function
 
     Public Overrides Function GetItemIcon(ByVal item As Role) As String

@@ -3,6 +3,7 @@ Imports System.Diagnostics
 Imports System.Linq
 Imports System.Reflection
 Imports System.Web
+Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
@@ -14,6 +15,7 @@ Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.OData
 Imports VecompSoftware.DocSuiteWeb.Facade.Interfaces
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
+Imports VecompSoftware.DocSuiteWeb.Model.Workflow
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Web
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
@@ -33,6 +35,7 @@ Public Class CommonBasePage
     Private _currentUDSRepositoryFacade As UDSRepositoryFacade = Nothing
     Private _currentODataFacade As ODataFacade = Nothing
     Public Const PRIVACY_LABEL As String = "Riservatezza/Privacy"
+    Private Const REDIRECT_ENABLED_PROPERTY As String = "_dsw_a_RedirectEnabled" 'TODO:// da rimuovere con il prossimo aggiornamento di VecompSoftware.Helpers.Workflow -> WorkflowPropertyHelper.DSW_ACTION_REDIRECT_ENABLED
     Private _currentWorkflowAuthorizationFinder As WorkflowAuthorizationFinder
     Private _currentWorkflowActivityFinder As WorkflowActivityFinder
     Private _currentWorkflowPropertyFinder As WorkflowPropertyFinder
@@ -41,6 +44,8 @@ Public Class CommonBasePage
     Private _workflowOperation As Boolean?
     Private _idWorkflowActivity As Guid?
     Private _isCurrentWorkflowActivityManualComplete As Boolean?
+    Private _isCurrentWorkflowActivityAutoComplete As Boolean?
+    Private _isRedirectEnabled As Boolean?
 
 
 #End Region
@@ -81,18 +86,6 @@ Public Class CommonBasePage
     Public ReadOnly Property PrivacyLabelTitle As String
         Get
             Return String.Concat(Char.ToUpper(PRIVACY_LABEL(0)), PRIVACY_LABEL.Substring(1))
-        End Get
-    End Property
-
-    Public ReadOnly Property TenantName As String
-        Get
-            Return DocSuiteContext.Current.ProtocolEnv.CorporateAcronym
-        End Get
-    End Property
-
-    Public ReadOnly Property TenantId As Guid
-        Get
-            Return DocSuiteContext.Current.CurrentTenant.TenantId
         End Get
     End Property
 
@@ -271,13 +264,13 @@ Public Class CommonBasePage
 
     Public Property CurrentTenant As Tenant
         Get
-            If Session("CurrentTenant") IsNot Nothing Then
-                Return DirectCast(Session("CurrentTenant"), Tenant)
+            If Session(CommonShared.USER_CURRENT_TENANT) IsNot Nothing Then
+                Return DirectCast(Session(CommonShared.USER_CURRENT_TENANT), Tenant)
             End If
             Return Nothing
         End Get
         Set(value As Tenant)
-            Session("CurrentTenant") = value
+            Session(CommonShared.USER_CURRENT_TENANT) = value
         End Set
     End Property
     Public Property CurrentDomainUser As Model.Securities.DomainUserModel
@@ -386,9 +379,52 @@ Public Class CommonBasePage
         End Get
     End Property
 
+    Protected ReadOnly Property IsCurrentWorkflowActivityAutoComplete As Boolean
+        Get
+            If Not _isCurrentWorkflowActivityAutoComplete.HasValue Then
+                _isCurrentWorkflowActivityAutoComplete = False
+                Dim activityAutoCompleteWorkflowStep As Model.Workflow.WorkflowStep = GetCurrentWorkflowStepProperty()
+                Dim activityAutoCompleteArgument As WorkflowArgument = activityAutoCompleteWorkflowStep.EvaluationArguments.SingleOrDefault(Function(x) x.Name = WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_AUTO_COMPLETE)
+                If activityAutoCompleteArgument?.ValueBoolean.HasValue Then
+                    _isCurrentWorkflowActivityAutoComplete = activityAutoCompleteArgument.ValueBoolean.Value
+                End If
+            End If
+            Return _isCurrentWorkflowActivityAutoComplete.Value
+        End Get
+    End Property
+
+    Protected ReadOnly Property IsRedirectEnabled As Boolean
+        Get
+            If Not _isRedirectEnabled.HasValue Then
+                _isRedirectEnabled = False
+                Dim redirectEnabledWorkflowStep As Model.Workflow.WorkflowStep = GetCurrentWorkflowStepProperty()
+                Dim redirectEnabledArgument As WorkflowArgument = redirectEnabledWorkflowStep.EvaluationArguments.SingleOrDefault(Function(x) x.Name = REDIRECT_ENABLED_PROPERTY)
+                If redirectEnabledArgument?.ValueBoolean.HasValue Then
+                    _isRedirectEnabled = redirectEnabledArgument.ValueBoolean.Value
+                End If
+            End If
+            Return _isRedirectEnabled.Value
+        End Get
+    End Property
+
+    Private ReadOnly Property GetCurrentWorkflowStepProperty As Model.Workflow.WorkflowStep
+        Get
+            Dim currentStepProperty As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_CURRENT_STEP, CurrentWorkflowActivity.UniqueId)
+            Return JsonConvert.DeserializeObject(Of Model.Workflow.WorkflowStep)(currentStepProperty.ValueString)
+        End Get
+    End Property
+
 #End Region
 
 #Region " Events "
+
+    Private Sub Iterate(ex As Exception)
+        If ex Is Nothing Then
+            Return
+        End If
+        Iterate(ex.InnerException)
+        FileLogger.Error(LoggerName, ex.Message, ex)
+    End Sub
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         Try
@@ -404,7 +440,7 @@ Public Class CommonBasePage
             End If
 
         Catch ex As Exception
-            FileLogger.Error(LoggerName, ex.Message, ex)
+            Iterate(ex)
             Throw ex
         End Try
 
@@ -557,7 +593,7 @@ Public Class CommonBasePage
     End Function
 
     Public Function GetLabel(user As SecurityUsers) As String
-        If DocSuiteContext.Current.ProtocolEnv.IsSecurityGroupEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
+        If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
             Return String.Format("{0}\{1} - ({2})", user.UserDomain, user.Account, user.Description)
         End If
         Return String.Format("{0} - ({1})", user.Account, user.Description)

@@ -2,9 +2,11 @@
 Imports System.IO
 Imports System.Linq
 Imports System.Text
+Imports System.Web
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
@@ -12,6 +14,9 @@ Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Interfaces
 Imports VecompSoftware.DocSuiteWeb.Facade.Report
+Imports VecompSoftware.DocSuiteWeb.Model.DocumentGenerator
+Imports VecompSoftware.DocSuiteWeb.Model.DocumentGenerator.Parameters
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Workflow
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
@@ -278,9 +283,14 @@ Public Class ProtVisualizza
             End If
 
             InitializeProtocolControl()
+            SetProtocolGeneratorMetadata()
             InitializeHandler()
             Initialize()
             Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PS, "")
+
+            If ProtocolEnv.PECMailInsertAuthorizationEnabled AndAlso Not Facade.DomainUserFacade.HasCurrentRight(CurrentDomainUser, DSWEnvironmentType.Protocol, DomainUserFacade.HasPECSendableRight) Then
+                btnNewPecMail.Visible = False
+            End If
         End If
 
         AddHandler MasterDocSuite.OnWorkflowConfirmed, AddressOf WorkflowConfirmed
@@ -368,7 +378,7 @@ Public Class ProtVisualizza
     End Sub
 
     Private Sub BtnFascicleClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnFascicle.Click
-        Dim params As String = CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&CategoryId={1}&UDType={2}&FolderSelectionEnabled=True&Type=Fasc", CurrentProtocol.Id, CurrentProtocol.Category.Id, Convert.ToInt32(DSWEnvironment.Protocol)))
+        Dim params As String = CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&CategoryId={1}&UDType={2}&FolderSelectionEnabled=True&AuthorizedFasciclesEnabled=True&Type=Fasc", CurrentProtocol.Id, CurrentProtocol.Category.Id, Convert.ToInt32(DSWEnvironment.Protocol)))
         Response.Redirect(String.Concat("~/Fasc/FascUDManager.aspx?", params))
     End Sub
 
@@ -418,10 +428,27 @@ Public Class ProtVisualizza
     End Sub
     Private Sub BtnAutoAssegnaClick(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnAutoAssign.Click
         If CurrentManageableRoleId.HasValue Then
-            Dim protocolRoleGroup As ProtocolRole = Facade.ProtocolFacade.GetDistributionProtocolRole(CurrentProtocol)
-            Dim groupName As String = Facade.ProtocolFacade.GetDistributionGroupName(CurrentProtocol)
+            Dim role As Role = Facade.RoleFacade.GetById(CurrentManageableRoleId.Value)
+            Dim protocolRoleGroup As ProtocolRole = Facade.ProtocolFacade.GetDistributionProtocolRole(CurrentProtocol, role)
+
+            If protocolRoleGroup Is Nothing Then
+                AjaxAlert("Il protocollo non è autorizzato al settore abilitato. Verificare Utente>Settori abilitati.")
+                Return
+            End If
+
+            Dim groupName As String = role.RoleGroups.Where(Function(f) Not f.ProtocolRights.IsRoleManager).FirstOrDefault?.SecurityGroup.GroupName
+
+            If String.IsNullOrEmpty(groupName) Then
+                AjaxAlert("Il settore non ha gruppi non menager configurati.")
+                Return
+            End If
+
             Dim adUser As AccountModel = CommonAD.GetAccount(DocSuiteContext.Current.User.FullUserName)
             Facade.ProtocolFacade.AddRoleUserAuthorization(CurrentProtocol, protocolRoleGroup.Role.Id, groupName, adUser.DisplayName, DocSuiteContext.Current.User.FullUserName)
+            If ProtocolEnv.DistributionRejectableEnabled Then
+                Facade.ProtocolFacade.UpdateRoleStatus(CurrentProtocol, protocolRoleGroup.Role.FullIncrementalPathArray.Select(Function(x) Integer.Parse(x)).ToList(), ProtocolRoleStatus.Accepted)
+                Facade.ProtocolFacade.Update(CurrentProtocol)
+            End If
 
             InitializeProtocolControl()
             InitializeHandler()
@@ -466,7 +493,7 @@ Public Class ProtVisualizza
         Dim btn As Button = DirectCast(sender, Button)
         Dim reportName As String = btn.CommandArgument
 
-        Dim report As New ProtocolReport()
+        Dim report As New ProtocolReport(DocSuiteContext.Current.CurrentTenant)
         report.AddRange(New List(Of Protocol)({CurrentProtocol}))
 
         Dim fullPath As String = If(Directory.Exists(ProtocolEnv.ReportLibraryPath),
@@ -477,7 +504,7 @@ Public Class ProtVisualizza
         'TODO
         'Parametro richiesto dal Report --> ma cosa ci deve andare dentro??
         report.AddParameter("HeaderDescription", ProtocolEnv.ReportRicevutaHeaderDescription)
-        report.AddParameter("ParerEnabled", ProtocolEnv.ParerEnabled.ToString)
+        report.AddParameter("ConservationEnabled", ProtocolEnv.ConservationEnabled.ToString)
 
         Dim doc As DocumentInfo = report.DoPrint(String.Empty)
 
@@ -564,12 +591,9 @@ Public Class ProtVisualizza
         uscProtocollo.VisibleSettori = True
         uscProtocollo.VisibleStatoProtocollo = True
         uscProtocollo.VisibleTipoDocumento = True
-        ' Abilito il pannello assegnatario di protocollo **REMOVE**solo per i protocollo in ingresso
+        ' Abilito il pannello assegnatario di protocollo cliente solo per i protocollo in ingresso
         uscProtocollo.VisibleHandler = ProtocolEnv.ProtHandlerEnabled AndAlso CurrentProtocol.Type.Id = -1
-        uscProtocollo.VisibleRefusedTreeView = ProtocolEnv.RefusedProtocolAuthorizationEnabled AndAlso
-                                               CommonShared.HasRefusedProtocolGroupsRight AndAlso
-                                               CurrentProtocol.RejectedRoles.Any(Function(r) r.Status = ProtocolRoleStatus.Refused)
-        uscProtocollo.VisibleParer = ProtocolEnv.ParerEnabled
+        uscProtocollo.VisibleRefusedTreeView = CurrentProtocolRights.RefusedRolesViewable
         uscProtocollo.VisibleProtocolloMittente = True
         uscProtocollo.VisibleInvoicePA = ProtocolEnv.ProtocolKindEnabled AndAlso ProtocolEnv.IsInvoiceEnabled AndAlso ProtocolEnv.InvoicePAEnabled AndAlso CurrentProtocol.IdProtocolKind.Equals(ProtocolKind.FatturePA)
         uscProtocollo.VisiblePosteWeb = ProtocolEnv.IsPosteWebEnabled
@@ -579,7 +603,7 @@ Public Class ProtVisualizza
     End Sub
 
     ''' <summary> Inizializza le funzioni per assegnatario. </summary>
-    ''' <remarks> **REMOVE**</remarks>
+    ''' <remarks> cliente </remarks>
     Private Sub InitializeHandler()
         btnHandle.Visible = ProtocolEnv.ProtHandlerEnabled And Not CurrentProtocolRights.IsHighilightViewable
         btnHandle.Enabled = (String.IsNullOrEmpty(CurrentProtocol.Subject) OrElse Not DocSuiteContext.Current.User.FullUserName.Eq(CurrentProtocol.Subject)) AndAlso CurrentProtocol.Type.Id = -1
@@ -599,7 +623,7 @@ Public Class ProtVisualizza
         btnTNotice.Visible = False
 
         ' Se c'è almeno un account disponibile ed il Protocollo è in Uscita
-        Dim accounts As IList(Of POLAccount) = Facade.PosteOnLineAccountFacade.GetUserAccounts()
+        Dim accounts As IList(Of POLAccount) = Facade.PosteOnLineAccountFacade.GetUserAccounts(CurrentTenant.TenantAOO.UniqueId)
         If accounts.Count <= 0 OrElse Not CurrentProtocol.Type.ShortDescription.Eq("U") Then
             Exit Sub
         End If
@@ -714,7 +738,7 @@ Public Class ProtVisualizza
 
     Private Sub InitLogButton()
         btnLog.Visible = CurrentProtocolRights.EnableViewLog
-        btnRolesLog.Visible = ProtocolEnv.RefusedProtocolAuthorizationEnabled
+        btnRolesLog.Visible = ProtocolEnv.RefusedProtocolAuthorizationEnabled OrElse (ProtocolEnv.IsDistributionEnabled AndAlso ProtocolEnv.DistributionRejectableEnabled)
     End Sub
 
     Private Sub InitDocumentButtons()
@@ -898,6 +922,10 @@ Public Class ProtVisualizza
             VisibleDefaultButtonBar = False
             VisibleExtraButtonBar = False
         End If
+
+        If CurrentProtocolRights.IsConservated Then
+            SetConservationButtonVisibility()
+        End If
     End Sub
 
     Private Sub InitReportButtons()
@@ -970,6 +998,11 @@ Public Class ProtVisualizza
             MasterDocSuite.WizardActionColumn.Visible = True
             InitializeWorkflowWizard()
         End If
+
+        If IsWorkflowOperation AndAlso IsCurrentWorkflowActivityAutoComplete Then
+            WorkflowConfirmed(Me, EventArgs.Empty)
+        End If
+
         ' Verifica autorizzazione di accesso al protocollo
         If (Not CurrentProtocolRightsStatusCancel.IsPreviewable AndAlso Not CurrentProtocolRights.IsHighilightViewable AndAlso Not CurrentProtocolRights.IsUserAuthorized) Then
             Facade.ProtocolLogFacade.Log(CurrentProtocol, ProtocolLogEvent.PE, String.Format("Protocollo n. {0} - Non autorizzato alla visualizzazione.", CurrentProtocol.FullNumber))
@@ -985,7 +1018,7 @@ Public Class ProtVisualizza
             Else
                 errorMessage = "Non è possibile visualizzare il Protocollo richiesto. Verificare se si dispone di sufficienti autorizzazioni."
             End If
-            Throw New DocSuiteException("Protocollo n. " & CurrentProtocol.FullNumber, errorMessage)
+            Throw New DocSuiteException($"Protocollo n. {CurrentProtocol.FullNumber}", errorMessage)
         End If
 
         Me._isCyclable = New Lazy(Of Boolean)(Function() Me.GetIsCyclable())
@@ -1011,19 +1044,19 @@ Public Class ProtVisualizza
         End If
         ' Icona protocollo annullato
         If CurrentProtocol.IdStatus.HasValue AndAlso CurrentProtocol.IdStatus.Value = ProtocolStatusId.Annullato Then
-            AddIcon(c, "../comm/images/remove32.gif", "Protocollo Annullato")
+            AddIcon(c, "../comm/images/remove32.gif", "Protocollo annullato")
         End If
         ' Icona tipo protocollo
         Select Case CurrentProtocol.Type.Id
             Case -1
-                AddIcon(c, "images/mail32_i.gif", "Protocollo in Ingresso")
-                Title = "Protocollo in Ingresso - Visualizzazione"
+                AddIcon(c, "~/App_Themes/DocSuite2008/imgset32/ingoing32.png", "Protocollo in ingresso")
+                Title = "Protocollo in ingresso - Visualizzazione"
             Case 1
-                AddIcon(c, "images/mail32_u.gif", "Protocollo in Uscita")
-                Title = "Protocollo in Uscita - Visualizzazione"
+                AddIcon(c, "~/App_Themes/DocSuite2008/imgset32/outgoing32.png", "Protocollo in uscita")
+                Title = "Protocollo in uscita - Visualizzazione"
             Case 0
-                AddIcon(c, "images/mail32_iu.gif", "Protocollo Tra Uffici")
-                Title = "Protocollo Tra Uffici - Visualizzazione"
+                AddIcon(c, "~/App_Themes/DocSuite2008/imgset32/inout32.png", "Protocollo tra uffici")
+                Title = "Protocollo tra uffici - Visualizzazione"
         End Select
         ' Icona tipo documento di base
         Dim tooltip As String = "Tipologia spedizione"
@@ -1121,6 +1154,12 @@ Public Class ProtVisualizza
         If ProtocolEnv.ProtocolHighlightEnabled AndAlso CurrentProtocol.Users.Any(Function(x) x.Account.Eq(DocSuiteContext.Current.User.FullUserName) AndAlso x.Type = ProtocolUserType.Highlight) Then
             AddIcon(c, "~/App_Themes/DocSuite2008/imgset32/watch.png", "Protocollo in evidenza")
         End If
+
+        If ProtocolEnv.ConservationEnabled Then
+            If uscProtocollo.CurrentConservation IsNot Nothing Then
+                AddIcon(c, ConservationHelper.StatusBigIcon(uscProtocollo.CurrentConservation.Status), ConservationHelper.StatusDescription(uscProtocollo.CurrentConservation.Status))
+            End If
+        End If
     End Sub
 
     Private Sub AddIcon(ByVal cell As TableCell, ByVal imageUrl As String, ByVal toolTip As String)
@@ -1142,19 +1181,19 @@ Public Class ProtVisualizza
             Return
         End If
 
-        If Not (CollaborationRights.GetInserimentoAllaVisioneFirmaEnabled() OrElse CollaborationRights.GetInserimentoAlProtocolloSegreteriaEnabled()) Then
+        If Not (CollaborationRights.GetInserimentoAllaVisioneFirmaEnabled(CurrentTenant.TenantAOO.UniqueId) OrElse CollaborationRights.GetInserimentoAlProtocolloSegreteriaEnabled(CurrentTenant.TenantAOO.UniqueId)) Then
             Return
         End If
 
         Dim queryString As String = "Type=Prot&Titolo=Inserimento&Document=P&Title2={0}&Action={1}&Action2={2}&SourceUniqueIdProtocol={3}"
         Dim postBackUrl As String = "../User/UserCollGestione.aspx?"
-        If CollaborationRights.GetInserimentoAllaVisioneFirmaEnabled() Then
+        If CollaborationRights.GetInserimentoAllaVisioneFirmaEnabled(CurrentTenant.TenantAOO.UniqueId) Then
             Dim formatted As String = String.Format(queryString, "Alla Visione/Firma", "Add", "CI", Me.CurrentProtocol.Id)
             Dim allaVisioneFirmaUrl As String = postBackUrl & CommonShared.AppendSecurityCheck(formatted)
             Me.rblInsertCollaboration.Items.Add(New ListItem("Inserimento Alla Visione/Firma", allaVisioneFirmaUrl))
         End If
 
-        If CollaborationRights.GetInserimentoAlProtocolloSegreteriaEnabled() Then
+        If CollaborationRights.GetInserimentoAlProtocolloSegreteriaEnabled(CurrentTenant.TenantAOO.UniqueId) Then
             Dim formatted As String = String.Format(queryString, "Al Protocollo/Segreteria", "Apt", "CA", Me.CurrentProtocol.Id)
             Dim alProtocolloSegreteriaUrl As String = postBackUrl & CommonShared.AppendSecurityCheck(formatted)
             Me.rblInsertCollaboration.Items.Add(New ListItem("Inserimento Al Protocollo/Segreteria", alProtocolloSegreteriaUrl))
@@ -1233,12 +1272,42 @@ Public Class ProtVisualizza
                 FileLogger.Warn(LoggerName, "ProtocolWorkflowConfirmed is not correctly evaluated from WebAPI. See specific error in WebAPI logger")
             End If
         End If
-        Response.Redirect("../User/UserWorkflow.aspx?Type=Comm")
+
+        If IsRedirectEnabled Then
+            Response.Redirect("../User/UserWorkflow.aspx?Type=Comm")
+        End If
     End Sub
 
     Private Sub InitAutoAssegnoButton()
         btnAutoAssign.Visible = False
-        btnAutoAssign.Visible = ProtocolEnv.IsDistributionEnabled AndAlso CurrentProtocolRights.IsCurrentUserDistributionManager.Value AndAlso Not CurrentProtocolRights.IsCurrentUserDistributionCc.Value AndAlso Not CurrentProtocolRights.IsDistributionAssigned AndAlso Not CurrentProtocolRights.IsHighilightViewable
+
+        btnAutoAssign.Visible = ProtocolEnv.IsDistributionEnabled AndAlso CurrentProtocolRights.IsCurrentUserDistributionManager.Value AndAlso Not CurrentProtocolRights.IsCurrentUserDistributionCc.Value AndAlso (Not CurrentProtocolRights.IsDistributionAssigned OrElse ProtocolEnv.DistributionRejectableEnabled) AndAlso Not CurrentProtocolRights.IsHighilightViewable
+    End Sub
+
+    Private Sub SetConservationButtonVisibility()
+        btnFlushAnnexed.Visible = False
+        btnReject.Visible = False
+        btnForzaBiblos.Visible = False
+    End Sub
+
+    Private Sub SetProtocolGeneratorMetadata()
+        Dim metadata As List(Of BaseDocumentGeneratorParameter) = New List(Of BaseDocumentGeneratorParameter)()
+        AddDocumentGeneratorParameters(metadata, CurrentProtocol)
+        Dim script As String = String.Format("SetMetadataSessionStorage('{0}');", HttpUtility.JavaScriptStringEncode(JsonConvert.SerializeObject(metadata, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)))
+        AjaxManager.ResponseScripts.Add(script)
+    End Sub
+
+    Private Sub AddDocumentGeneratorParameters(metadata As List(Of BaseDocumentGeneratorParameter), protocol As Protocol)
+        metadata.Add(New StringParameter("_filename", protocol.DocumentCode.Replace(".", "_").Replace("-", "_")))
+        metadata.Add(New IntParameter("Year", protocol.Year))
+        metadata.Add(New IntParameter("Number", protocol.Number))
+        metadata.Add(New DateTimeParameter("RegistrationDate", protocol.RegistrationDate.Date))
+        metadata.Add(New StringParameter("User", DocSuiteContext.Current.User.FullUserName.Replace("\", "\\")))
+        metadata.Add(New StringParameter("Date", Date.Now.ToString()))
+        metadata.Add(New StringParameter("Object", Server.HtmlEncode(protocol.ProtocolObject)))
+        metadata.Add(New StringParameter("Note", Server.HtmlEncode(protocol.Note)))
+        metadata.Add(New StringParameter("Direction", protocol.Type.Description))
+        metadata.Add(New BooleanParameter("Documents", True))
     End Sub
 #End Region
 

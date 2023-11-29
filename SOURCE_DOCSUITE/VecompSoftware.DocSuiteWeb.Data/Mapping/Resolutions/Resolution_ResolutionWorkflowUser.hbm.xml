@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" schema="dbo" assembly="VecompSoftware.DocSuiteWeb.Data" namespace="VecompSoftware.DocSuiteWeb.Data">
+
+	<class name="ResolutionWorkflowUser" table="ResolutionWorkflowUsers">
+
+		<id name="Id" column="IdResolutionWorkflowUser" >
+			<generator class="guid.comb" />
+		</id>
+
+		<version name="Timestamp" generated="always" unsaved-value="null" type="BinaryBlob">
+			<column name="Timestamp" not-null="true" sql-type="timestamp" />
+		</version>
+
+		<property name="Account" column="Account" />
+		<property name="AuthorizationType" column="AuthorizationType" />
+		<property name="RegistrationUser" column="RegistrationUser" />
+		<property name="RegistrationDate" column="RegistrationDate" />
+
+		<many-to-one name="ResolutionWorkflow" class="ResolutionWorkflow" insert="true" update="false">
+			<column name="idResolution" />
+			<column name="Incremental" />
+		</many-to-one>
+
+	</class>
+
+</hibernate-mapping>

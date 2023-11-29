@@ -211,7 +211,7 @@
                         <Paragraph>
                           <TextRuns>
                             <TextRun>
-                              <Value>="**REMOVE**/" &amp; Fields!Protocol_Number.Value &amp; "/" &amp; Format(Fields!Protocol_RegistrationDate.Value,"dd-MM-yyyy") &amp; "/" &amp; Fields!Protocol_TypeName.Value &amp; "/" &amp; Fields!Container_Description.Value</Value>
+                              <Value>="cliente/" &amp; Fields!Protocol_Number.Value &amp; "/" &amp; Format(Fields!Protocol_RegistrationDate.Value,"dd-MM-yyyy") &amp; "/" &amp; Fields!Protocol_TypeName.Value &amp; "/" &amp; Fields!Container_Description.Value</Value>
                               <Style>
                                 <FontSize>8pt</FontSize>
                               </Style>
@@ -495,7 +495,7 @@
             <Paragraph>
               <TextRuns>
                 <TextRun>
-                  <Value>**REMOVE**S.p.A.</Value>
+                  <Value>cliente S.p.A.</Value>
                   <Style>
                     <FontWeight>Bold</FontWeight>
                   </Style>

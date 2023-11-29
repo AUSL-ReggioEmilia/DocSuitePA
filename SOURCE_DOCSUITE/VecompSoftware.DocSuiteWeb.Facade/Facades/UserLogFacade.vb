@@ -19,7 +19,6 @@ Public Class UserLogFacade
 #End Region
 
 #Region " Properties "
-
 #End Region
 
 #Region " Constructors "
@@ -250,6 +249,19 @@ Public Class UserLogFacade
         End If
         Return listDeletagions
     End Function
+
+    Public Overrides Sub Save(ByRef obj As UserLog)
+        If Not String.IsNullOrEmpty(obj.UserProfile) Then
+            obj.UserProfile = Helpers.Security.EncryptionHelper.EncryptString(obj.UserProfile, DocSuiteContext.PasswordEncryptionKey)
+        End If
+        MyBase.Save(obj)
+    End Sub
+    Public Overrides Sub Update(ByRef obj As UserLog)
+        If Not String.IsNullOrEmpty(obj.UserProfile) Then
+            obj.UserProfile = Helpers.Security.EncryptionHelper.EncryptString(obj.UserProfile, DocSuiteContext.PasswordEncryptionKey)
+        End If
+        MyBase.Update(obj)
+    End Sub
 #End Region
 
 End Class

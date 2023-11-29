@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class TbltSettoreGes
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''RadTreeViewSelectedRole control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadTreeViewSelectedRole As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''RadWindowManagerRoleGes control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerRoleGes As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''pnlRinomina control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlRinomina As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblOldName control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblOldName As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtOldName control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOldName As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''lblOldMail control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblOldMail As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtOldEmail control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOldEmail As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''lblOldServ control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblOldServ As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtOldServ control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOldServ As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''lblNewNome control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNewNome As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtNewNome control.
     '''</summary>
@@ -120,25 +120,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNewNome As Global.Telerik.Web.UI.RadTextBox
-    
-    '''<summary>
-    '''Label1 control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents Label1 As Global.System.Web.UI.WebControls.Label
-    
-    '''<summary>
-    '''txtHistoryDate control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtHistoryDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''lblNewMail control.
     '''</summary>
@@ -147,7 +129,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNewMail As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtNewMail control.
     '''</summary>
@@ -156,7 +138,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNewMail As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''lblNewServ control.
     '''</summary>
@@ -165,7 +147,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNewServ As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtNewServ control.
     '''</summary>
@@ -174,7 +156,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNewServ As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''Label2 control.
     '''</summary>
@@ -183,7 +165,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Label2 As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtOldSharepoint control.
     '''</summary>
@@ -192,7 +174,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtOldSharepoint As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''lblCollapsed control.
     '''</summary>
@@ -201,7 +183,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCollapsed As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''cbCollapsed control.
     '''</summary>
@@ -210,7 +192,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cbCollapsed As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''trPEC control.
     '''</summary>
@@ -219,7 +201,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trPEC As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblPECMails control.
     '''</summary>
@@ -228,7 +210,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblPECMails As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''grdMailboxes control.
     '''</summary>
@@ -237,7 +219,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents grdMailboxes As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''trProtocolBox control.
     '''</summary>
@@ -246,7 +228,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trProtocolBox As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblProtocolBoxes control.
     '''</summary>
@@ -255,7 +237,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblProtocolBoxes As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''grdProtocolBoxes control.
     '''</summary>
@@ -264,7 +246,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents grdProtocolBoxes As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''pnlInserimento control.
     '''</summary>
@@ -273,7 +255,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlInserimento As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblName control.
     '''</summary>
@@ -282,7 +264,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblName As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtName control.
     '''</summary>
@@ -291,7 +273,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtName As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trEmailNew control.
     '''</summary>
@@ -300,7 +282,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trEmailNew As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblEmail control.
     '''</summary>
@@ -309,7 +291,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblEmail As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtEmail control.
     '''</summary>
@@ -318,7 +300,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtEmail As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trServiceCodeNew control.
     '''</summary>
@@ -327,7 +309,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trServiceCodeNew As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblServiceCod control.
     '''</summary>
@@ -336,7 +318,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblServiceCod As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtServiceCod control.
     '''</summary>
@@ -345,7 +327,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtServiceCod As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trSharepointNew control.
     '''</summary>
@@ -354,7 +336,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trSharepointNew As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblUriSharepoint control.
     '''</summary>
@@ -363,7 +345,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblUriSharepoint As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtUriSharepoint control.
     '''</summary>
@@ -372,7 +354,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtUriSharepoint As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trCollapseNew control.
     '''</summary>
@@ -381,7 +363,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trCollapseNew As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblNewCollapsed control.
     '''</summary>
@@ -390,7 +372,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNewCollapsed As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''cbNewCollapsed control.
     '''</summary>
@@ -399,7 +381,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cbNewCollapsed As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''trNewPEC control.
     '''</summary>
@@ -408,7 +390,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trNewPEC As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblNewPECMails control.
     '''</summary>
@@ -417,7 +399,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNewPECMails As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''grdMailboxesNew control.
     '''</summary>
@@ -426,7 +408,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents grdMailboxesNew As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''trProtocolBoxNew control.
     '''</summary>
@@ -435,7 +417,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trProtocolBoxNew As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''lblProtocolBoxesNew control.
     '''</summary>
@@ -444,7 +426,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblProtocolBoxesNew As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''grdProtocolBoxesNew control.
     '''</summary>
@@ -453,7 +435,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents grdProtocolBoxesNew As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''btnConferma control.
     '''</summary>
@@ -462,7 +444,7 @@ Partial Public Class TbltSettoreGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConferma As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''ErrLabel control.
     '''</summary>

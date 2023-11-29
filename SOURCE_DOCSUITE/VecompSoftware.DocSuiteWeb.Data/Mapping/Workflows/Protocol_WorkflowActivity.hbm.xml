@@ -29,6 +29,9 @@
     <property name="Subject">
       <column name="Subject" not-null="false" />
     </property>
+    <property name="IsVisible">
+      <column name="IsVisible" not-null="true" />
+    </property>
     <property name="DocumentUnitReferencedId">
       <column name="DocumentUnitReferencedId" not-null="false" />
     </property>

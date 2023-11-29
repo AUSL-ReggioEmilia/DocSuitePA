@@ -1,13 +1,13 @@
 Imports System.Collections.Generic
 Imports VecompSoftware.Helpers.PDF
 Imports VecompSoftware.Helpers
-Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Services.Logging
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports System.IO
-Imports VecompSoftware.DocSuiteWeb.Services.CMVGroup
 Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.DocSuiteWeb.Services.CMVGroup
+Imports VecompSoftware.DocSuiteWeb.Services.DromedianWeb
 
 Partial Public Class ReslPubblicaWeb
     Inherits ReslBasePage
@@ -185,9 +185,16 @@ Partial Public Class ReslPubblicaWeb
 
                             Try
                                 Dim tempDocument As New MemoryDocumentInfo(content, fileName)
-                                Dim cmvGroup As New CmvGroup()
-                                If Not cmvGroup.Publish(document.Resolution, tempDocument, result) Then
-                                    Throw New InvalidOperationException(result)
+                                If ResolutionEnv.CMVGroupEnabled Then
+                                    Dim cmvGroup As New CMVGroup()
+                                    If Not cmvGroup.Publish(document.Resolution, tempDocument, result) Then
+                                        Throw New InvalidOperationException(result)
+                                    End If
+                                Else
+                                    Dim dromedianWeb As New DromedianWeb()
+                                    If Not dromedianWeb.Publish(document.Resolution, tempDocument, result) Then
+                                        Throw New InvalidOperationException(result)
+                                    End If
                                 End If
                             Catch ex As Exception
                                 Dim message As String = "Errore in fase di invio documento al portale: {0} - {1}"

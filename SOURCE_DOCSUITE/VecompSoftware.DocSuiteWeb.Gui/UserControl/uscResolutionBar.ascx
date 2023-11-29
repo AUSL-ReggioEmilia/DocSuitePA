@@ -11,6 +11,26 @@
                 return true;
             }
         }
+
+        function takeChargeButtonClicked() {
+            if (!confirm("Confermi l'esecuzione dell'attività di <%= btnTakeCharge.Text %>")) {
+                return false;
+            } else {
+                var currentFlatLoadingPanel = $find("<%= BasePage.MasterDocSuite.AjaxFlatLoadingPanel.ClientID%>");
+                currentFlatLoadingPanel.show("<%= btnTakeCharge.ClientID %>");
+                return true;
+            }
+        }
+
+        function endTakeChargeAction() {
+            var currentFlatLoadingPanel = $find("<%= BasePage.MasterDocSuite.AjaxFlatLoadingPanel.ClientID%>");
+            currentFlatLoadingPanel.hide("<%= btnTakeCharge.ClientID %>");
+            location.reload();
+        }
+
+        function endConfirmViewAction() {
+            location.reload();
+        }
     </script>
 </telerik:RadScriptBlock>
 <asp:Table ID="tblButtons" runat="server" CssClass="noPrint">
@@ -32,11 +52,6 @@
                 <asp:Button ID="btnDeleteUltimaPagina" runat="server" Text="Elimina ultima pagina" Visible="False" Width="120px" />
                 <asp:Button ID="btnLastPageUpload" runat="server" Text="Carica ultima pagina" Visible="False" Width="140px" />
             </asp:Panel>
-            <asp:Panel ID="pnlWebPublication" runat="server" Visible="false" CssClass="dsw-display-inline">
-                <asp:Button ID="bntPubblicaInternet" OnClientClick="javascript:if (webButtonClicked(this, 'Confermare la pubblicazione del documento?') == false) return false;" runat="server" Text="Pubblica int." ToolTip="Pubblica internet" Visible="False" Width="120px" />
-                <asp:Button ID="bntRitiraInternet" OnClientClick="javascript:if (webButtonClicked(this, 'Confermare il ritiro del documento?') == false) return false;" runat="server" Text="Ritira int." ToolTip="Ritira internet" Width="120px" />
-                <img alt="Wait please" id="WebPubWait" src="../Resl/Images/wait.gif" style="display: none" />
-            </asp:Panel>
             <asp:Panel runat="server" ID="pnlButtonsDefault" CssClass="dsw-display-inline">
                 <asp:Repeater runat="server" ID="btnRolesRepeater">
                     <ItemTemplate>
@@ -47,7 +62,8 @@
                 <asp:Button ID="btnMailSettori" PostBackUrl="~/MailSenders/ResolutionMailSender.aspx?selectRoles=true&Type=Resl" runat="server" Text="Invia settori" Width="120px" />
                 <asp:Button ID="btnStampa" runat="server" Text="Stampa" Width="120px" />
                 <asp:Button CausesValidation="false" ID="btnDuplica" OnClientClick="return OpenWindowDuplica();" runat="server" Text="Duplica" value="Duplica" Width="120px" />
-                <asp:Button ID="btnConfirmView" runat="server" Text="Conferma visione" Width="120px"  Visible="False"/>
+                <asp:Button ID="btnConfirmView" runat="server" Text="Conferma visione" Width="120px" Visible="False" />
+                <asp:Button ID="btnTakeCharge" runat="server" Text="Conferma visione" OnClientClick="if (!takeChargeButtonClicked()) return false;" Width="150px" Visible="false" />
             </asp:Panel>
         </asp:TableCell>
     </asp:TableRow>
@@ -62,6 +78,7 @@
                 <input causesvalidation="false" id="inputElimina" onclick="OpenWindowElimina();" runat="server" style="width: 120px" type="button" value="Elimina" />
                 <asp:Button CausesValidation="false" ID="btnAnnulla" runat="server" Text="Annullamento" Width="120px" />
                 <asp:Button ID="btnLog" runat="server" Text="Log" Width="120px" />
+                <asp:Button ID="btnWorkflow" runat="server" Text="Avvia attività" Width="120px" OnClientClick="return btnWorkflow_OnClick();" />
             </asp:Panel>
             <asp:Panel ID="pnlToolbarPreView" runat="server">
                 <asp:Button ID="btnRegistrazione" runat="server" Text="Registrazione" Width="120px" />

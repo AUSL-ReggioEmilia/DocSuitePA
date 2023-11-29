@@ -1,12 +1,12 @@
 <Serializable()> _
 Public Class DocumentTokenUser
     Inherits DomainObject(Of YearNumberIncrCompositeKey)
-    Implements IAuditable, ISupportLogicDelete
+    Implements IAuditable, ISupportBooleanLogicDelete
 
 #Region "private data"
     Private _step As Short
     Private _subStep As Short
-    Private _isActive As Short
+    Private _isActive As Boolean
     Private _idRoleDestination As Short
     Private _userRole As String
     Private _userName As String
@@ -102,11 +102,11 @@ Public Class DocumentTokenUser
         End Get
     End Property
 
-    Public Overridable Property IsActive() As Short Implements ISupportLogicDelete.IsActive
+    Public Overridable Property IsActive() As Boolean Implements ISupportBooleanLogicDelete.IsActive
         Get
             Return _isActive
         End Get
-        Set(ByVal value As Short)
+        Set(ByVal value As Boolean)
             _isActive = value
         End Set
     End Property

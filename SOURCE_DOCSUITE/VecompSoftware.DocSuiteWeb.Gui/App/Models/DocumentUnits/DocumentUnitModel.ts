@@ -15,6 +15,7 @@ class DocumentUnitModel {
     Number: string;
     Title: string;
     ReferenceType: FascicleReferenceType;
+    SequenceNumber: number;
     RegistrationDate: Date;
     RegistrationUser: string;
     Subject: string;

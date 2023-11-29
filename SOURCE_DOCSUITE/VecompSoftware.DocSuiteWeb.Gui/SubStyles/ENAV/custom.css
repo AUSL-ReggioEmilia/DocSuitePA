@@ -1,0 +1,11 @@
+﻿
+table.bodyFrameHeader td.leftHead
+{
+    background: transparent url(Titolo.gif) 10px 2px no-repeat;
+    width: 95px;
+}
+
+    table.bodyFrameHeader td.leftHead #applicationTitle
+    {
+        display: none;
+    }

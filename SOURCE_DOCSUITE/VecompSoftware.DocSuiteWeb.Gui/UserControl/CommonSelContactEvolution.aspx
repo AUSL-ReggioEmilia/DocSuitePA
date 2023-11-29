@@ -1,4 +1,4 @@
-﻿<%@ Page AutoEventWireup="false" ValidateRequest="false" CodeBehind="CommonSelContactEvolution.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.CommonSelContactEvolution" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="Inserimento Contatti e Liste di Distribuzione" %>
+﻿<%@ Page AutoEventWireup="false" CodeBehind="CommonSelContactEvolution.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.CommonSelContactEvolution" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="Inserimento Contatti e Liste di Distribuzione" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadScriptBlock runat="server" EnableViewState="false">

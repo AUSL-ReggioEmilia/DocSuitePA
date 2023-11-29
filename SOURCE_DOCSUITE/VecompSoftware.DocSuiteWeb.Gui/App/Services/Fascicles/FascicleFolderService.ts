@@ -7,6 +7,7 @@ import InsertActionType = require("App/Models/InsertActionType");
 import FascicleFolderModel = require('App/Models/Fascicles/FascicleFolderModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import FascicleSummaryFolderViewModelMapper = require('App/Mappers/Fascicles/FascicleSummaryFolderViewModelMapper');
+import PaginationModel = require('App/Models/Commons/PaginationModel');
 
 class FascicleFolderService extends BaseService {
     private _configuration: ServiceConfiguration;
@@ -42,18 +43,20 @@ class FascicleFolderService extends BaseService {
     }
 
     getChildren(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.concat("/FascicleFolderService.GetChildrenByParent(idFascicleFolder=", uniqueId, ")")
-        let data: string = "$orderby=Name asc";
-        this.getRequest(url, data,
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/FascicleFolderService.GetChildrenByParent(idFascicleFolder=${uniqueId})?$orderby=Name asc`;
+
+        this.getRequest(odataQuery, null,
             (response: any) => {
                 if (callback) {
-                    let mapper = new FascicleSummaryFolderViewModelMapper();
-                    let dossierFolders: FascicleSummaryFolderViewModel[] = [];
-                    if (response) {
-                        dossierFolders = mapper.MapCollection(response.value);
 
-                        callback(dossierFolders)
+                    let mapper = new FascicleSummaryFolderViewModelMapper();
+                    let fascicleFolders: FascicleSummaryFolderViewModel[] = [];
+                    if (response && response.value) {
+                        fascicleFolders = mapper.MapCollection(response.value);
                     }
+
+                    callback(fascicleFolders);
                 }
             }, error);
     }
@@ -99,5 +102,36 @@ class FascicleFolderService extends BaseService {
             url = url.concat("?actionType=", updateAction.toString())
         }
         this.putRequest(url, JSON.stringify(fascicleFolder), callback, error);
+    }
+
+    countFascicleFolderChildren(fascicleFolderId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/FascicleFolderService.CountFascicleFolderChildren(idFascicleFolder=${fascicleFolderId})`;
+
+        this.getRequest(odataQuery, null, (response: any) => {
+            if (callback && response) {
+                callback(response.value);
+            }
+        }, error);
+    }
+
+    getFascicleFolderChildren(fascicleFolderId: string, paginationModel: PaginationModel, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/FascicleFolderService.GetChildren(idFascicleFolder=${fascicleFolderId}, skip=${paginationModel.Skip}, top=${paginationModel.Take})`;
+
+        this.getRequest(odataQuery, null,
+            (response: any) => {
+                if (!callback) {
+                    return;
+                }
+
+                let mapper = new FascicleSummaryFolderViewModelMapper();
+                let fascicleFolders: FascicleSummaryFolderViewModel[] = [];
+                if (response && response.value) {
+                    fascicleFolders = mapper.MapCollection(response.value);
+                }
+
+                callback(fascicleFolders);
+            }, error);
     }
 } export = FascicleFolderService;

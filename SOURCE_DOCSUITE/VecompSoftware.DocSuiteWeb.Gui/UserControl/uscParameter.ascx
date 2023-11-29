@@ -44,7 +44,7 @@
                 </tr>
             </table>
             <div class="titolo">Nuovo Valore</div>
-            <telerik:RadEditor AutoResizeHeight="true" EditModes="Html" EnableResize="true" Height="150px" ID="txtEditValue" runat="server" Width="100%">
+            <telerik:RadEditor AutoResizeHeight="true" EditModes="Html" ContentFilters="RemoveScripts,FixEnclosingP,StripDomEventAttributes,StripCssExpressions" EnableResize="true" Height="150px" ID="txtEditValue" runat="server" Width="100%">
                 <Tools>
                     <telerik:EditorToolGroup>
                     </telerik:EditorToolGroup>

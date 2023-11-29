@@ -87,7 +87,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 Dim cloneable As ICloneable = entity
                 Dim protocolEntity As ICloneable = cloneable.Clone()
                 sessionOfProtocol = NHibernateSessionManager.Instance.GetSessionFrom(ProtDB)
-                sessionOfProtocol.BeginTransaction()
+                sessionOfProtocol.BeginTransaction(IsolationLevel.ReadCommitted)
                 uow.DbName = ProtDB
                 uow.Clear()
                 c_step = "NHibernateSessionManager.Instance.GetSessionFrom(ProtDB)"
@@ -96,7 +96,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 If DocSuiteContext.Current.IsResolutionEnabled Then
                     Dim resolutionEntity As ICloneable = cloneable.Clone()
                     sessionOfResolution = NHibernateSessionManager.Instance.GetSessionFrom(ReslDB)
-                    sessionOfResolution.BeginTransaction()
+                    sessionOfResolution.BeginTransaction(IsolationLevel.ReadCommitted)
                     uow.DbName = ReslDB
                     uow.Clear()
                     c_step = "NHibernateSessionManager.Instance.GetSessionFrom(ReslDB)"
@@ -106,7 +106,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 If DocSuiteContext.Current.IsDocumentEnabled Then
                     Dim documentEntity As ICloneable = cloneable.Clone()
                     sessionOfDocument = NHibernateSessionManager.Instance.GetSessionFrom(DocmDB)
-                    sessionOfDocument.BeginTransaction()
+                    sessionOfDocument.BeginTransaction(IsolationLevel.ReadCommitted)
                     uow.DbName = DocmDB
                     uow.Clear()
                     c_step = "NHibernateSessionManager.Instance.GetSessionFrom(DocmDB)"
@@ -147,7 +147,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 Dim cloneable As ICloneable = entity
                 Dim protocolEntity As ICloneable = cloneable.Clone()
                 sessionOfProtocol = NHibernateSessionManager.Instance.GetSessionFrom(ProtDB)
-                sessionOfProtocol.BeginTransaction()
+                sessionOfProtocol.BeginTransaction(IsolationLevel.ReadCommitted)
                 uow.DbName = ProtDB
                 uow.Clear()
                 Update(protocolEntity, ProtDB)
@@ -155,7 +155,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 If DocSuiteContext.Current.IsResolutionEnabled Then
                     Dim resolutionEntity As ICloneable = cloneable.Clone()
                     sessionOfResolution = NHibernateSessionManager.Instance.GetSessionFrom(ReslDB)
-                    sessionOfResolution.BeginTransaction()
+                    sessionOfResolution.BeginTransaction(IsolationLevel.ReadCommitted)
                     uow.DbName = ReslDB
                     uow.Clear()
                     Update(resolutionEntity, ReslDB)
@@ -164,7 +164,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 If DocSuiteContext.Current.IsDocumentEnabled Then
                     Dim documentEntity As ICloneable = cloneable.Clone()
                     sessionOfDocument = NHibernateSessionManager.Instance.GetSessionFrom(DocmDB)
-                    sessionOfDocument.BeginTransaction()
+                    sessionOfDocument.BeginTransaction(IsolationLevel.ReadCommitted)
                     uow.DbName = DocmDB
                     uow.Clear()
                     Update(documentEntity, DocmDB)
@@ -201,7 +201,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 Dim cloneable As ICloneable = entity
                 Dim protocolEntity As ICloneable = cloneable.Clone()
                 sessionOfProtocol = NHibernateSessionManager.Instance.GetSessionFrom(ProtDB)
-                sessionOfProtocol.BeginTransaction()
+                sessionOfProtocol.BeginTransaction(IsolationLevel.ReadCommitted)
                 uow.DbName = ProtDB
                 uow.Clear()
                 UpdateOnly(protocolEntity, ProtDB)
@@ -209,7 +209,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 If DocSuiteContext.Current.IsResolutionEnabled Then
                     Dim resolutionEntity As ICloneable = cloneable.Clone()
                     sessionOfResolution = NHibernateSessionManager.Instance.GetSessionFrom(ReslDB)
-                    sessionOfResolution.BeginTransaction()
+                    sessionOfResolution.BeginTransaction(IsolationLevel.ReadCommitted)
                     uow.DbName = ReslDB
                     uow.Clear()
                     UpdateOnly(resolutionEntity, ReslDB)
@@ -218,7 +218,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 If DocSuiteContext.Current.IsDocumentEnabled Then
                     Dim documentEntity As ICloneable = cloneable.Clone()
                     sessionOfDocument = NHibernateSessionManager.Instance.GetSessionFrom(DocmDB)
-                    sessionOfDocument.BeginTransaction()
+                    sessionOfDocument.BeginTransaction(IsolationLevel.ReadCommitted)
                     uow.DbName = DocmDB
                     uow.Clear()
                     UpdateOnly(documentEntity, DocmDB)
@@ -253,9 +253,17 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 'Delete(entity, getDbNameFromStackTrace())
             Else
                 Dim isEntityUsed As Boolean = IsUsed(entity)
-                If GetType(T).GetInterface("ISupportLogicDelete") IsNot Nothing AndAlso isEntityUsed Then
-                    Dim deletion As ISupportLogicDelete = entity
-                    deletion.IsActive = 0
+
+                If GetType(T).GetInterface("ISupportShortLogicDelete") IsNot Nothing AndAlso isEntityUsed Then
+                    Dim deletion As ISupportShortLogicDelete = entity
+                    deletion.IsActive = 0S
+                    UpdateOnly(deletion)
+                    Return False
+                End If
+
+                If GetType(T).GetInterface("ISupportBooleanLogicDelete") IsNot Nothing AndAlso isEntityUsed Then
+                    Dim deletion As ISupportBooleanLogicDelete = entity
+                    deletion.IsActive = False
                     UpdateOnly(deletion)
                     Return False
                 End If
@@ -264,7 +272,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 Dim cloneable As ICloneable = entity
                 Dim protocolEntity As ICloneable = cloneable.Clone()
                 sessionOfProtocol = NHibernateSessionManager.Instance.GetSessionFrom(ProtDB)
-                sessionOfProtocol.BeginTransaction()
+                sessionOfProtocol.BeginTransaction(IsolationLevel.ReadCommitted)
                 uow.DbName = ProtDB
                 uow.Clear()
                 Delete(protocolEntity, ProtDB)
@@ -272,7 +280,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 If DocSuiteContext.Current.IsResolutionEnabled Then
                     Dim resolutionEntity As ICloneable = cloneable.Clone()
                     sessionOfResolution = NHibernateSessionManager.Instance.GetSessionFrom(ReslDB)
-                    sessionOfResolution.BeginTransaction()
+                    sessionOfResolution.BeginTransaction(IsolationLevel.ReadCommitted)
                     uow.DbName = ReslDB
                     uow.Clear()
                     Delete(resolutionEntity, ReslDB)
@@ -281,7 +289,7 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
                 If DocSuiteContext.Current.IsDocumentEnabled Then
                     Dim documentEntity As ICloneable = cloneable.Clone()
                     sessionOfDocument = NHibernateSessionManager.Instance.GetSessionFrom(DocmDB)
-                    sessionOfDocument.BeginTransaction()
+                    sessionOfDocument.BeginTransaction(IsolationLevel.ReadCommitted)
                     uow.DbName = DocmDB
                     uow.Clear()
                     Delete(documentEntity, DocmDB)
@@ -339,17 +347,17 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
         Try
             If protocolAction IsNot Nothing Then
                 sessionProtocol = NHibernateSessionManager.Instance.GetSessionFrom(ProtDB)
-                sessionProtocol.BeginTransaction()
+                sessionProtocol.BeginTransaction(IsolationLevel.ReadCommitted)
                 protocolAction()
             End If
             If DocSuiteContext.Current.IsResolutionEnabled AndAlso resolutionAction IsNot Nothing Then
                 sessionResolution = NHibernateSessionManager.Instance.GetSessionFrom(ReslDB)
-                sessionResolution.BeginTransaction()
+                sessionResolution.BeginTransaction(IsolationLevel.ReadCommitted)
                 resolutionAction()
             End If
             If DocSuiteContext.Current.IsDocumentEnabled AndAlso documentAction IsNot Nothing Then
                 sessionDocument = NHibernateSessionManager.Instance.GetSessionFrom(DocmDB)
-                sessionDocument.BeginTransaction()
+                sessionDocument.BeginTransaction(IsolationLevel.ReadCommitted)
                 documentAction()
             End If
             SafeCommitTransaction(sessionProtocol)
@@ -374,14 +382,14 @@ Public MustInherit Class CommonFacade(Of T, IdT, DaoType As INHibernateDao(Of T)
         Dim sessionDocument As ISession = Nothing
         Try
             sessionProtocol = NHibernateSessionManager.Instance.GetSessionFrom(ProtDB)
-            sessionProtocol.BeginTransaction()
+            sessionProtocol.BeginTransaction(IsolationLevel.ReadCommitted)
             If DocSuiteContext.Current.IsResolutionEnabled Then
                 sessionResolution = NHibernateSessionManager.Instance.GetSessionFrom(ReslDB)
-                sessionResolution.BeginTransaction()
+                sessionResolution.BeginTransaction(IsolationLevel.ReadCommitted)
             End If
             If DocSuiteContext.Current.IsDocumentEnabled Then
                 sessionDocument = NHibernateSessionManager.Instance.GetSessionFrom(DocmDB)
-                sessionDocument.BeginTransaction()
+                sessionDocument.BeginTransaction(IsolationLevel.ReadCommitted)
             End If
 
             transactionalAction()

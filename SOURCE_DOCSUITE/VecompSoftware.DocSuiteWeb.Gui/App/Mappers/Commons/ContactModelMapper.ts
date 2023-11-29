@@ -13,8 +13,6 @@ class ContactModelMapper extends BaseMapper<ContactModel>{
             return null;
         }
 
-        toMap.ActiveFrom = source.ActiveFrom;
-        toMap.ActiveTo = source.ActiveTo;
         toMap.Address = source.Address;
         toMap.BirthDate = source.BirthDate;
         toMap.CertifiedMail = source.CertifiedMail;
@@ -31,7 +29,6 @@ class ContactModelMapper extends BaseMapper<ContactModel>{
         toMap.IdContactType = source.IdContactType;
         toMap.IncrementalFather = source.IncrementalFather;
         toMap.isActive = source.isActive;
-        toMap.isChanged = source.isChanged;
         toMap.isLocked = source.isLocked;
         toMap.isNotExpandable = source.isNotExpandable;
         toMap.Note = source.Note;

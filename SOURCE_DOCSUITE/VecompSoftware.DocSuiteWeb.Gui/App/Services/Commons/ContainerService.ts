@@ -9,6 +9,7 @@ import EnumHelper = require('App/Helpers/EnumHelper');
 import ODATAResponseModel = require('App/Models/ODATAResponseModel');
 import FascicleType = require('App/Models/Fascicles/FascicleType');
 import ContainerViewModelMapper = require('App/Mappers/Commons/ContainerViewModelMapper');
+import PaginationModel = require('App/Models/Commons/PaginationModel');
 
 class ContainerService extends BaseService {
     _configuration: ServiceConfiguration;
@@ -38,7 +39,7 @@ class ContainerService extends BaseService {
 
     getContainers(location?: LocationTypeEnum, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        url = url.concat("?$orderby=Name&$filter=isActive eq 1");
+        url = url.concat("?$orderby=Name&$filter=isActive eq true");
         if (location || location == 0) {
             let loc: string = new EnumHelper().getLocationTypeDescription(location);
             url = url.concat(" and not(", loc, " eq null)");
@@ -53,7 +54,7 @@ class ContainerService extends BaseService {
 
     getContainersByName(name: string,location?: LocationTypeEnum, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        url = url.concat("?$orderby=Name&$filter=contains(Name,'".concat(name, "') and isActive eq 1"));
+        url = url.concat("?$orderby=Name&$filter=contains(Name,'".concat(name, "') and isActive eq true"));
 
         if (location || location == 0) {
             let loc: string = new EnumHelper().getLocationTypeDescription(location);
@@ -70,7 +71,7 @@ class ContainerService extends BaseService {
 
     getContainersByNameFascicleRights(name: string, location?: LocationTypeEnum, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        url = url.concat("?$orderby=Name&$filter=contains(Name,'".concat(name, "') and isActive eq 1 and ContainerGroups/any(cg:cg/FascicleRights ne null and cg/FascicleRights ne '00000000000000000000')"));
+        url = url.concat("?$orderby=Name&$filter=contains(Name,'".concat(name, "') and isActive eq true and ContainerGroups/any(cg:cg/FascicleRights ne null and cg/FascicleRights ne '00000000000000000000')"));
 
         if (location || location == 0) {
             let loc: string = new EnumHelper().getLocationTypeDescription(location);
@@ -105,7 +106,7 @@ class ContainerService extends BaseService {
 
     getAllContainers(name: string, topElement: string, skipElement: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
-        let qs: string = "$filter=contains(Name,'".concat(name, "') and isActive eq 1 &$orderby=Name&$count=true&$top=", topElement, "&$skip=", skipElement.toString());
+        let qs: string = "$filter=contains(Name,'".concat(name, "') and isActive eq true &$orderby=Name&$count=true&$top=", topElement, "&$skip=", skipElement.toString());
 
         this.getRequest(url, qs, (response: any) => {
             if (callback) {
@@ -128,7 +129,7 @@ class ContainerService extends BaseService {
         } else {
             qs = qs.concat("(ProtLocation ne null or ReslLocation ne null or UDSLocation ne null)");
         }
-        qs = qs.concat(" and contains(Name,'".concat(name, "') and isActive eq 1 &$orderby=Name&$count=true&$top=", topElement, "&$skip=", skipElement.toString()));
+        qs = qs.concat(" and contains(Name,'".concat(name, "') and isActive eq true &$orderby=Name&$count=true&$top=", topElement, "&$skip=", skipElement.toString()));
 
         this.getRequest(url, qs, (response: any) => {
             if (callback) {
@@ -167,6 +168,39 @@ class ContainerService extends BaseService {
                 let responseModel: ContainerModel[] = mapper.MapCollection(response.value);
                 callback(responseModel);
             }
+        }, error);
+    }
+
+    getTenantContainers(tenantId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, paginationModel?: PaginationModel, searchText?: string): void {
+        let baseOdataURL: string = this._configuration.ODATAUrl;
+        let odataFilterQuery: string = `$filter=Tenants/any(t: t/UniqueId eq ${tenantId})`;
+
+        odataFilterQuery = searchText
+            ? `${odataFilterQuery} and contains(Name, '${searchText}')`
+            : odataFilterQuery;
+
+        let url: string = paginationModel
+            ? `${baseOdataURL}?${odataFilterQuery}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}&$count=true`
+            : `${baseOdataURL}?${odataFilterQuery}`;
+
+        this.getRequest(url, null, (response: any) => {
+            if (!callback) {
+                return;
+            }
+            let tenantContainers: ContainerModel[] = [];
+            if (response.value) {
+                let modelMapper = new ContainerModelMapper();
+                tenantContainers = modelMapper.MapCollection(response.value);
+            }
+
+            if (!paginationModel) {
+                callback(tenantContainers);
+                return;
+            }
+
+            const odataResult: ODATAResponseModel<ContainerModel> = new ODATAResponseModel<ContainerModel>(response);
+            odataResult.value = tenantContainers;
+            callback(odataResult);
         }, error);
     }
 }

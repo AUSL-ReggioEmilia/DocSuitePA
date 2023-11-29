@@ -26,7 +26,7 @@ namespace VecompSoftware.JeepService.SignEngine.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://srvbiblos/ESignEngine/eSignEngine.asmx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://./ESignEngine/eSignEngine.asmx")]
         public string VecompSoftware_JeepService_SignEngineFacade_SignEngineService_eSignEngine {
             get {
                 return ((string)(this["VecompSoftware_JeepService_SignEngineFacade_SignEngineService_eSignEngine"]));

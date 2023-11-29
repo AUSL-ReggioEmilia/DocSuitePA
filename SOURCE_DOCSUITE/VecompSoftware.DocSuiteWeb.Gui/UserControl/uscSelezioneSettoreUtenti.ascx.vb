@@ -207,7 +207,7 @@ Partial Public Class uscSelezioneSettoreUtenti
 
         role = Facade.RoleFacade.GetById(idRoleDestination)
 
-        If Not role Is Nothing And role.IsActive = 1 Then
+        If Not role Is Nothing And role.IsActive Then
             roleList = Facade.RoleFacade.GetUserRights(BasePage.Type, role, "1__0000000")
             If roleList.Count > 0 Then
                 Tvw.Nodes(0).Text = roleList(0).Name
@@ -258,9 +258,9 @@ Partial Public Class uscSelezioneSettoreUtenti
 
                                 If docTokenUserFound IsNot Nothing Then
                                     Select Case docTokenUserFound.IsActive
-                                        Case 0
+                                        Case False
                                             tnUser.Style.Add("color", NODETEXTCOLOR_DEL)
-                                        Case 1
+                                        Case True
                                             tnUser.Style.Add("color", NODETEXTCOLOR_BLU)
                                             tnUser.Checked = True
                                     End Select
@@ -334,7 +334,7 @@ Partial Public Class uscSelezioneSettoreUtenti
                                     With docTokenUser(0)
                                         .LastStep = StepI
                                         .LastSubStep = SubStepI
-                                        .IsActive = 1
+                                        .IsActive = True
                                         .LastChangedUser = DocSuiteContext.Current.User.FullUserName
                                         .LastChangedDate = serverDate
                                     End With
@@ -345,7 +345,7 @@ Partial Public Class uscSelezioneSettoreUtenti
                                 With docTokenUser
                                     .DocStep = StepI
                                     .SubStep = SubStepI
-                                    .IsActive = 1
+                                    .IsActive = True
                                     .Role = Facade.RoleFacade.GetById(idRoleDestination)
                                     .UserRole = UserRole
                                     .UserName = userName
@@ -366,7 +366,7 @@ Partial Public Class uscSelezioneSettoreUtenti
                                     With docTokenUser(0)
                                         .LastStep = StepI
                                         .LastSubStep = SubStepI
-                                        .IsActive = 0
+                                        .IsActive = False
                                         .LastChangedUser = DocSuiteContext.Current.User.FullUserName
                                         .LastChangedDate = serverDate
                                     End With

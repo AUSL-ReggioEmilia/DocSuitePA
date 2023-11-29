@@ -468,12 +468,12 @@ Partial Public Class uscDocumentFinder
         'SFRUTTANDO IL METODO ITEMS.INSERT SI POTREBBE FARE TUTTO CON UN CICLO SOLO... 
         'MA VISTO CHE I CONTENITORI NON SONO TANTISSIMI, PER IL MOMENTO FACCIO COSI'
         For Each container As Container In containers
-            If container.IsActive = 1 AndAlso container.IsActiveRange() Then
+            If container.IsActive AndAlso container.IsActiveRange() Then
                 ddlIdContainer.Items.Add(New ListItem(container.Name, container.Id.ToString()))
             End If
         Next
         For Each container As Container In containers
-            If container.IsActive = 0 OrElse Not container.IsActiveRange() Then
+            If Not container.IsActive OrElse Not container.IsActiveRange() Then
                 Dim li As New ListItem(container.Name, container.Id.ToString())
                 li.Attributes.Add("class", "disabled")
                 ddlIdContainer.Items.Add(li)

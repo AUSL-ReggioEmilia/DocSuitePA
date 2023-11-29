@@ -187,6 +187,10 @@ Partial Class TbltClassificatore
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         InitializeAjax()
         If Not IsPostBack Then
             InitializeButtons()
@@ -432,7 +436,7 @@ Partial Class TbltClassificatore
             btnModifica.Visible = True
             btnElimina.Visible = True
             btnLog.Visible = CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight
-
+            uscSettori.ReadOnly = Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight)
             SearchOnlyFascicolable.Visible = DocSuiteContext.Current.ProtocolEnv.FascicleEnabled
             btnMassimari.Visible = True
             btnMetadata.Visible = ProtocolEnv.MetadataRepositoryEnabled
@@ -558,9 +562,9 @@ Partial Class TbltClassificatore
         Dim schemaEndDate As DateTimeOffset = If(categorySchema.EndDate.HasValue, categorySchema.EndDate.Value, DateTimeOffset.MaxValue)
         Dim categoryActive As Boolean = False
         If categorySchema.StartDate > DateTimeOffset.UtcNow Then
-            categoryActive = category.IsActive = 1 AndAlso (category.EndDate Is Nothing OrElse category.EndDate.Value > schemaEndDate)
+            categoryActive = category.IsActive AndAlso (category.EndDate Is Nothing OrElse category.EndDate.Value > schemaEndDate)
         Else
-            categoryActive = Facade.CategoryFacade.IsCategoryActive(category) AndAlso category.IsActive = 1
+            categoryActive = Facade.CategoryFacade.IsCategoryActive(category) AndAlso category.IsActive
         End If
 
         Dim categoryFuture As Boolean = category.StartDate > DateTimeOffset.UtcNow
@@ -685,14 +689,22 @@ Partial Class TbltClassificatore
 
         Dim selectedCategory As Category = Facade.CategoryFacade.GetById(CurrentCategorySelected.Value)
         Dim categories As ICollection(Of CategoryFascicle) = CurrentCategoryFascicleFacade.GetByIdCategory(selectedCategory.Id)
-        Dim roles As List(Of Role) = New List(Of Role)
-        Dim role As Role = New Role()
+        Dim children As List(Of Role) = New List(Of Role)
+        RecursiveAddChildren(children, idRole)
+
         Dim categoryFascicle As CategoryFascicle = categories.Where(Function(x) x.FascicleType = FascicleType.Procedure AndAlso x.DSWEnvironment = 0).FirstOrDefault()
+        Dim categoryRight As ICollection(Of CategoryFascicleRight) = Nothing
         If categoryFascicle IsNot Nothing Then
-            Dim categoryRight As ICollection(Of CategoryFascicleRight) = CurrentCategoryFascicleRightFacade.GetByIdCategoryRole(categoryFascicle.Id, idRole)
+            categoryRight = CurrentCategoryFascicleRightFacade.GetByIdCategoryRole(categoryFascicle.Id, idRole)
             If categoryRight.Count > 0 Then
                 CurrentCategoryFascicleRightFacade.Delete(categoryRight.First())
             End If
+            For Each childrenRole As Role In children
+                categoryRight = CurrentCategoryFascicleRightFacade.GetByIdCategoryRole(categoryFascicle.Id, childrenRole.Id)
+                If categoryRight.Count > 0 Then
+                    CurrentCategoryFascicleRightFacade.Delete(categoryRight.First())
+                End If
+            Next
         End If
 
         Dim periodicFascicles As ICollection(Of CategoryFascicle) = categories.Where(Function(x) x.FascicleType = FascicleType.Period).ToList()
@@ -702,8 +714,25 @@ Partial Class TbltClassificatore
             If periodicCategoryRights.Count > 0 Then
                 CurrentCategoryFascicleRightFacade.Delete(periodicCategoryRights.First())
             End If
+            For Each childrenRole As Role In children
+                periodicCategoryRights = CurrentCategoryFascicleRightFacade.GetByIdCategoryRole(categoryFascicle.Id, childrenRole.Id)
+                If periodicCategoryRights.Count > 0 Then
+                    CurrentCategoryFascicleRightFacade.Delete(periodicCategoryRights.First())
+                End If
+            Next
         Next
     End Sub
+
+    Private Sub RecursiveAddChildren(ByRef node As List(Of Role), ByRef idrole As Integer)
+        Dim children As IList(Of Role) = Facade.RoleFacade.GetItemsByParentId(idrole)
+        If children.Count > 0 Then
+            For Each child As Role In children
+                node.Add(child)
+                RecursiveAddChildren(node, child.Id)
+            Next
+        End If
+    End Sub
+
 
     Private Sub SetDefaultAllUserRole()
         If ProtocolEnv.FascicleContainerEnabled Then

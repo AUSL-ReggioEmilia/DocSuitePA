@@ -13,9 +13,15 @@
                     dossierRisultati.uscDossierGridId = "<%= uscDossierGrid.PageContentDiv.ClientID %>";
                     dossierRisultati.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                     dossierRisultati.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
+                    dossierRisultati.ajaxManagerId = "<%= AjaxManager.ClientID %>";
+                    dossierRisultati.dynamicMetadataEnabled = <%= DynamicMetadataEnabled.ToString().ToLower() %>;
                     dossierRisultati.initialize();
                 });
             });
+
+            function generateColumnsCallback() {
+                dossierRisultati.generateColumnsCallback();
+            }
         </script>
     </telerik:RadScriptBlock>
 

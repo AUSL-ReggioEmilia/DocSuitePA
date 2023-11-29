@@ -9,6 +9,7 @@
     <property name="Abstract" />
     <property name="Year" />
     <property name="IdResolution"  />
+	<property name="UniqueIdDocumentSeriesItem"  />
     <property name="LastChangedUser" />
     <property name="LastChangedDate" />
     <property name="RegistrationUser" />

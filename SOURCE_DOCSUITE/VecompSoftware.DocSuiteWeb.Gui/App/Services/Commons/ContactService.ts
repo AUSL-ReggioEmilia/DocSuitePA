@@ -60,8 +60,8 @@ class ContactService extends BaseService {
         }, error);
     }
 
-    getByParentId(contactParentId: number, top?: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = `${this._configuration.ODATAUrl}/ContactService.GetContactsByParentId(idContact=${contactParentId})`;
+    getByParentId(contactParentId: number, idRole: number, top?: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = `${this._configuration.ODATAUrl}/ContactService.GetContactsByParentId(idContact=${contactParentId},idRole=${idRole})`;
         if (top && top > 0) {
             url = `${url}?$top=${top}`;
         }

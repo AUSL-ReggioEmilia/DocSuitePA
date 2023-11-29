@@ -21,11 +21,11 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://./StampaConforme/BiblosDSConv.asmx" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="BiblosDSConv.disco" MetadataType="Disco" ID="530f78c8-5278-4582-a5b4-6adac515ac49" SourceId="1" SourceUrl="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx?disco" />
-    <MetadataFile FileName="BiblosDSConv.wsdl" MetadataType="Wsdl" ID="adf17587-1287-4e96-9bad-3cd167b777fb" SourceId="1" SourceUrl="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx?wsdl" />
+    <MetadataFile FileName="BiblosDSConv.disco" MetadataType="Disco" ID="530f78c8-5278-4582-a5b4-6adac515ac49" SourceId="1" SourceUrl="http://./StampaConforme/BiblosDSConv.asmx?disco" />
+    <MetadataFile FileName="BiblosDSConv.wsdl" MetadataType="Wsdl" ID="adf17587-1287-4e96-9bad-3cd167b777fb" SourceId="1" SourceUrl="http://./StampaConforme/BiblosDSConv.asmx?wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

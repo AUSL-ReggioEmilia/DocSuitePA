@@ -335,6 +335,10 @@ Public Class ProtocolToUDS
         Next
         Return documents
     End Function
+
+    Private Function GetIdFascicle() As Guid? Implements IUDSInitializer.GetIdFascicle
+        Return Nothing
+    End Function
 #End Region
 
 End Class

@@ -78,7 +78,7 @@ class uscDynamicMetadataSummaryRest extends MetadataRepositoryBase {
         let metadataModel: MetadataDesignerViewModel = JSON.parse(jsonDesignerMetadata);
         let metadataValues: MetadataValueViewModel[] = [];
         if (jsonValueMetadataModels) {
-            metadataValues = JSON.parse(jsonValueMetadataModels);
+            metadataValues = JSON.parse(jsonValueMetadataModels.replace(/\r?\n|\r/g, ""));
         }
 
         this.clearPage();
@@ -131,7 +131,7 @@ class uscDynamicMetadataSummaryRest extends MetadataRepositoryBase {
                     break;
                 case MetadataRepositoryBase.CONTROL_DATE_FIELD:
                     if (currentValue) {
-                        currentValue = moment(currentValue).format("DD/MM/YYYY");
+                        currentValue = moment(currentValue, "YYYY-MM-DD").format("DD/MM/YYYY");
                     }
                     this.fillHTMLGenericElement(this.componentDateId, this.controlsCounter, metadataField, currentValue);
                     this.controlsCounter++;
@@ -172,6 +172,10 @@ class uscDynamicMetadataSummaryRest extends MetadataRepositoryBase {
         if (currentValue) {
             valueField.textContent = currentValue;
         }
+        if (model.HiddenField) {
+            labelField.hidden = true;
+            valueField.hidden = true;
+        }
     }
 
     fillHTMLCheckBox(idComponent: string, incrementalInteger: number, model: BaseFieldViewModel, currentValue: string) {
@@ -180,6 +184,10 @@ class uscDynamicMetadataSummaryRest extends MetadataRepositoryBase {
         let inputCheckBox: HTMLInputElement = this.findStandardInputElement(idCloned, 0);
         inputCheckBox.checked = (currentValue.toLowerCase() == "true");
         labelField.textContent = model.Label.concat(": ");
+        if (model.HiddenField) {
+            labelField.hidden = true;
+            inputCheckBox.parentElement.hidden = true;
+        }
     }
 
     fillHTMLComment(idComponent: string, incrementalInteger: number, model: DiscussionFieldViewModel) {
@@ -209,6 +217,11 @@ class uscDynamicMetadataSummaryRest extends MetadataRepositoryBase {
             }
         }
         labelField.textContent = model.Label.concat(": ");
+
+        if (model.HiddenField) {
+            labelField.hidden = true;
+            imgButton.parentElement.hidden = true;
+        }
     }
 
     openCommentsWindow(event) {

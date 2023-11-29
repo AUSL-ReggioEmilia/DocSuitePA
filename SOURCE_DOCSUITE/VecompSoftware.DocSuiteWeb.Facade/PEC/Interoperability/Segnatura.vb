@@ -801,7 +801,7 @@ Public Class Segnatura
         End If
 
         If newContact AndAlso retContact IsNot Nothing Then
-            retContact.IsActive = 1
+            retContact.IsActive = True
             retContact.isLocked = 0
         End If
 
@@ -826,7 +826,7 @@ Public Class Segnatura
         End If
 
         If newContact AndAlso retContact IsNot Nothing Then
-            retContact.IsActive = 1
+            retContact.IsActive = True
             retContact.isLocked = 0
         End If
 

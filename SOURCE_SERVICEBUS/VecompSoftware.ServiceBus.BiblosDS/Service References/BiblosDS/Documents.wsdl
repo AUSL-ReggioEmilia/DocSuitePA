@@ -4907,7 +4907,7 @@
   </wsdl:binding>
   <wsdl:service name="Documents">
     <wsdl:port name="BasicHttpBinding_IDocuments" binding="tns:BasicHttpBinding_IDocuments">
-      <soap:address location="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc" />
+      <soap:address location="http://localhost/BiblosDS2010WCF/Documents.svc" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

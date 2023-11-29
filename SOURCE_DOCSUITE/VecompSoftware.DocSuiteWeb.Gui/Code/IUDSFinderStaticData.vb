@@ -5,7 +5,7 @@
 
     ReadOnly Property DocumentName As String
 
-    ReadOnly Property GenericDocument As Boolean
+    ReadOnly Property GenericDocument As String
 
     ReadOnly Property Number As Double?
 
@@ -13,6 +13,6 @@
 
     ReadOnly Property RegistrationDateTo As DateTimeOffset?
 
-    ReadOnly Property ViewDeletedUDS As Boolean
+    ReadOnly Property ViewDeletedUDS As String
 
 End Interface

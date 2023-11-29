@@ -53,7 +53,7 @@ module UdsDesigner {
 
         static newDocument(callback: (data: any) => any) {
             if (callback != null) {
-                let initModel: TitleCtrl[] = [ new TitleCtrl() ];
+                let initModel: TitleCtrl[] = [new TitleCtrl()];
                 callback(initModel);
             }
         }
@@ -82,9 +82,17 @@ module UdsDesigner {
             });
         }
 
-
-
-
+        static loadCustomActions(callback: (data: any) => any) {
+            $.ajax({
+                type: "POST",
+                url: "DesignerService.aspx/LoadCustomActions",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    callback(data);
+                }
+            });
+        }
 
         static loadUDSRepositories(callback: (data: any) => any) {
             $.ajax({
@@ -118,11 +126,11 @@ module UdsDesigner {
             });
         }
 
-        static saveModel(model: any, publish: boolean, callback: (data: any) => any, activeDate?: Date) {
+        static saveModel(model: any, idUDSRepository: string, publish: boolean, callback: (data: any) => any, activeDate?: Date) {
             $.ajax({
                 type: "POST",
                 url: "DesignerService.aspx/SaveModel",
-                data: '{ "jsModel":'+JSON.stringify(model)+',"activeDate":'+JSON.stringify(activeDate)+',"publish":'+JSON.stringify(publish)+'}',
+                data: `{"jsModel":${JSON.stringify(model)},"idUDSRepositoryToSave":${idUDSRepository},"activeDate":${JSON.stringify(activeDate)},"publish":${JSON.stringify(publish)}}`,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
@@ -185,6 +193,67 @@ module UdsDesigner {
                 type: "POST",
                 url: "DesignerService.aspx/LoadRepositoryVersionByRepositoryId",
                 data: '{idRepository:"' + idRepository + '"}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    callback(data);
+                }
+            });
+        }
+
+        static getUDSFieldListById(odataPath: string, idUDSFieldList: string, callback: (data: any) => any) {
+            $.ajax({
+                type: "GET",
+                url: `${odataPath}/UDSFieldLists?$filter=UniqueId eq ${idUDSFieldList}`,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    callback(data);
+                }
+            });
+        }
+
+        static loadUDSFieldListChildren(odataPath: string, parentId: string, callback: (data: any) => any) {
+            $.ajax({
+                type: "GET",
+                url: `${odataPath}/UDSFieldLists/UDSFieldListService.GetChildrenByParent(parentId=${parentId})`,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    callback(data);
+                }
+            });
+        }
+
+        static addUDSFieldListCtrlNode(idUDSRepository: string, treeListName: string, callback: (data: any) => any) {
+            $.ajax({
+                type: "POST",
+                url: "DesignerService.aspx/AddUDSFieldListCtrlNode",
+                data: `{idUDSRepository:'${idUDSRepository}',name:'${treeListName}'}`,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    callback(data);
+                }
+            });
+        }
+
+        static removeUDSFieldListCtrlNode(restPath: string, model: any, callback: (data: any) => any) {
+            $.ajax({
+                type: "DELETE",
+                url: `${restPath}/UDSFieldList?actionType=128`,
+                data: JSON.stringify(model),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    callback(data);
+                }
+            });
+        }
+
+        static updateUDSFieldListRootNode(idUDSFieldList: string, treeListName: string, callback: (data: any) => any) {
+            $.ajax({
+                type: "POST",
+                url: "DesignerService.aspx/UpdateUDSFieldListRootNode",
+                data: `{idUDSFieldList:'${idUDSFieldList}',name:'${treeListName}'}`,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {

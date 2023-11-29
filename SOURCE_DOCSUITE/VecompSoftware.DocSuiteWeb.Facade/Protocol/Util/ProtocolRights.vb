@@ -1,6 +1,8 @@
 ﻿Imports System.Linq
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Entity.Conservations
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations
 
 Public Class ProtocolRights
 
@@ -43,6 +45,8 @@ Public Class ProtocolRights
     Private _hasPrivacyAuthorizations As Boolean?
     Private _isProtocolDistributableType As Boolean?
     Private _isArchivable As Boolean?
+    Private _currentConservation As Conservation
+    Private _refusedRolesViewable As Boolean?
 
 #End Region
 
@@ -558,6 +562,39 @@ Public Class ProtocolRights
                 _isArchivable = IsEditable OrElse HasHighlightRights OrElse IsRoleAuthorized
             End If
             Return _isArchivable.Value
+        End Get
+    End Property
+
+    Private ReadOnly Property CurrentConservation As Conservation
+        Get
+            If _currentConservation Is Nothing Then
+                Dim conservation As Conservation = WebAPIImpersonatorFacade.ImpersonateFinder(New ConservationFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.UniqueId = SourceProtocol.Id
+                        finder.EnablePaging = False
+                        Return finder.DoSearch().Select(Function(x) x.Entity).FirstOrDefault()
+                    End Function)
+
+                _currentConservation = conservation
+            End If
+            Return _currentConservation
+        End Get
+    End Property
+
+    Public ReadOnly Property IsConservated As Boolean
+        Get
+            Return CurrentConservation IsNot Nothing AndAlso CurrentConservation.Status = ConservationStatus.Conservated
+        End Get
+    End Property
+
+    Public ReadOnly Property RefusedRolesViewable As Boolean
+        Get
+            If Not _refusedRolesViewable.HasValue Then
+                _refusedRolesViewable = ((DocSuiteContext.Current.ProtocolEnv.RefusedProtocolAuthorizationEnabled AndAlso CommonShared.HasRefusedProtocolGroupsRight) OrElse
+                    (DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.DistributionRejectableEnabled)) AndAlso
+                    SourceProtocol.RejectedRoles.Any(Function(r) r.Status = ProtocolRoleStatus.Refused)
+            End If
+            Return _refusedRolesViewable.Value
         End Get
     End Property
 

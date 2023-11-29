@@ -6,6 +6,7 @@ Imports System.Runtime.Caching
 Imports System.Text
 Imports System.Web
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Logging
@@ -29,7 +30,7 @@ Public Class CommonShared
     Protected Const USER_GROUP_PROTOCOL_NOT_MANAGER_SELECTED As String = "GroupProtocolNotManagerSelected"
     Protected Const USER_GROUP_PAPERWORK_SELECTED As String = "GroupPaperworkSelected"
     Protected Const USER_GROUP_RESOLUTION_SELECTED As String = "GroupResolutionSelected"
-
+    Public Const USER_CURRENT_TENANT As String = "CurrentTenant"
 
     Protected Const USER_CONTAINER_RIGHT_DICTIONARY As String = "User.ContainerRightDictionary"
     Protected Const USER_ROLE_RIGHT_DICTIONARY As String = "User.RoleRightDictionary"
@@ -79,7 +80,7 @@ Public Class CommonShared
     Public Shared ReadOnly Property UserRoleRightDictionary() As Dictionary(Of ProtocolRoleRightPositions, IList(Of Integer))
         Get
             If GetContextValue(USER_ROLE_RIGHT_DICTIONARY) Is Nothing Then
-                Dim dic As Dictionary(Of ProtocolRoleRightPositions, IList(Of Integer)) = (New RoleFacade).GetCurrentUserRoles(DSWEnvironment.Protocol)
+                Dim dic As Dictionary(Of ProtocolRoleRightPositions, IList(Of Integer)) = (New RoleFacade).GetCurrentUserRoles(DSWEnvironment.Protocol, CurrentUserTenant.TenantAOO.UniqueId)
                 SetContextValue(USER_ROLE_RIGHT_DICTIONARY, dic)
             End If
             Return CType(GetContextValue(USER_ROLE_RIGHT_DICTIONARY), Dictionary(Of ProtocolRoleRightPositions, IList(Of Integer)))
@@ -97,7 +98,7 @@ Public Class CommonShared
     Shared Property UserFullName() As String
         Get
             ' TODO: spostare in DocSuiteUser
-            Dim user As String = GetContextValue(USER_FULLNAME_FIELD)
+            Dim user As String = DirectCast(GetContextValue(USER_FULLNAME_FIELD), String)
 
             If String.IsNullOrEmpty(user) Then
                 user = HttpContext.Current.User.Identity.Name
@@ -111,21 +112,30 @@ Public Class CommonShared
         End Set
     End Property
 
+    Shared Property CurrentUserTenant() As Tenant
+        Get
+            Return DirectCast(GetContextValue(USER_CURRENT_TENANT), Tenant)
+        End Get
+        Set(value As Tenant)
+            SetContextValue(USER_CURRENT_TENANT, value)
+        End Set
+    End Property
+
 
     Shared Property UserSessionId() As String
         Get
-            Return GetContextValue(USER_SESSIONID_FIELD)
+            Return DirectCast(GetContextValue(USER_SESSIONID_FIELD), String)
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             SetContextValue(USER_SESSIONID_FIELD, value)
         End Set
     End Property
 
     Shared Property DSUserDescription() As String
         Get
-            Return GetContextValue(USER_DESCRIPTION_FIELD)
+            Return DirectCast(GetContextValue(USER_DESCRIPTION_FIELD), String)
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             SetContextValue(USER_DESCRIPTION_FIELD, value)
         End Set
     End Property
@@ -134,7 +144,7 @@ Public Class CommonShared
         Get
             Return CType(GetContextValue(USER_MAIL_FIELD), String)
         End Get
-        Set(ByVal value As String)
+        Set(value As String)
             SetContextValue(USER_MAIL_FIELD, value)
         End Set
     End Property
@@ -277,6 +287,12 @@ Public Class CommonShared
             Return UserConnectedBelongsTo(DocSuiteContext.Current.ProtocolEnv.EnvGroupTblCategory)
         End Get
     End Property
+    Public Shared ReadOnly Property HasGroupOChartAdminRight As Boolean
+        Get
+            Return UserConnectedBelongsTo(DocSuiteContext.Current.ProtocolEnv.OChartAdminGroups)
+        End Get
+    End Property
+
 
     Public Shared ReadOnly Property HasGroupTblContainerRight As Boolean
         Get
@@ -372,12 +388,6 @@ Public Class CommonShared
             Return DocSuiteContext.Current.ProtocolEnv.IsPECEnabled AndAlso
                 DocSuiteContext.Current.ResolutionEnv.MailBoxCollegioSindacale IsNot Nothing AndAlso
                  UserConnectedBelongsTo(DocSuiteContext.Current.ResolutionEnv.GruppiCollegioSindacale)
-        End Get
-    End Property
-
-    Shared ReadOnly Property HasInvoiceGroupImportRight As Boolean
-        Get
-            Return UserConnectedBelongsTo(DocSuiteContext.Current.ProtocolEnv.InvoiceGroupImport)
         End Get
     End Property
 
@@ -813,7 +823,7 @@ Public Class CommonShared
 
     ''' <summary> Imposta un valore in sessione o nel dizionario. </summary>
     ''' <param name="fieldName">Nome della variabile in sessione</param>
-    Public Shared Sub SetContextValue(ByVal fieldName As String, ByVal value As Object, Optional ByVal needProcessContext As Boolean = False, Optional ByVal appendUserNameKeyName As Boolean = False)
+    Public Shared Sub SetContextValue(fieldName As String, value As Object, Optional ByVal needProcessContext As Boolean = False, Optional ByVal appendUserNameKeyName As Boolean = False)
         Dim sessionSaved As Boolean = False
         If (HttpContext.Current IsNot Nothing AndAlso HttpContext.Current.Session IsNot Nothing) Then
             HttpContext.Current.Session.Add(fieldName, value)

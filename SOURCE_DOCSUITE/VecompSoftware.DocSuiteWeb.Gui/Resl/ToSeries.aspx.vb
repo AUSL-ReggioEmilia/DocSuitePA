@@ -41,7 +41,7 @@ Namespace Resl
         ''' <remarks> Aggiunto come property casomai fosse necessario in futuro metterlo in querystring. </remarks>
         Private ReadOnly Property CurrentIncremental() As Short
             Get
-                Return Facade.ResolutionWorkflowFacade.GetActiveIncremental(IdResolution, 1)
+                Return Facade.ResolutionWorkflowFacade.GetActiveIncremental(IdResolution, 1S)
             End Get
         End Property
 

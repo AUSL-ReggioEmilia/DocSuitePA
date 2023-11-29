@@ -7,8 +7,8 @@
 <asp:Content runat="server" ContentPlaceHolderID="cphContent">
     <%--documenti--%>
     <uc:uscDocumentUpload ID="uscDocumento" IsDocumentRequired="false" ReadOnly="true" runat="server" Caption="Documento" TreeViewCaption="Documento" Type="Prot" />
-    <uc:uscDocumentUpload ID="uscAllegati" IsDocumentRequired="false" ReadOnly="true" MultipleDocuments="true" runat="server" Caption="Allegati (parte integrante)" TreeViewCaption="Allegati" />
-    <uc:uscDocumentUpload ID="uscAnnexes" IsDocumentRequired="false" MultipleDocuments="true" Prefix="" runat="server" Caption="Annessi (non parte integrante)" TreeViewCaption="Annessi" />
+    <uc:uscDocumentUpload ID="uscAllegati" IsDocumentRequired="false" ReadOnly="true" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" Caption="Allegati (parte integrante)" TreeViewCaption="Allegati" />
+    <uc:uscDocumentUpload ID="uscAnnexes" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" Prefix="" runat="server" Caption="Annessi (non parte integrante)" TreeViewCaption="Annessi" />
     <%--protocollo--%>
     <uc:uscProtocollo ID="uscProtocollo" runat="server" />
     <%--note--%>

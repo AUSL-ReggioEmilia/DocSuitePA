@@ -53,6 +53,10 @@ Partial Class TbltServiceCategoryGes
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma)
         MasterDocSuite.TitleVisible = False
         If Not Page.IsPostBack Then

@@ -18,7 +18,7 @@ Public Class DocumentFolderFacade
         Dim documentFolder As New DocumentFolder()
         documentFolder.Year = year
         documentFolder.Number = number
-        documentFolder.IsActive = 1
+        documentFolder.IsActive = True
         documentFolder.Incremental = GetMaxId(year, number)
 
         Return documentFolder
@@ -31,7 +31,7 @@ Public Class DocumentFolderFacade
     ''' <param name="contExtList">Lista di estensione del contenitore</param>
     ''' <returns>True se la creazione è andata a buon fine, false altrimenti.</returns>
     Public Function CreateFromContainerExtension(ByVal document As Document, ByVal contExtList As IList(Of ContainerExtension)) As Boolean
-        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom(Me._dbName).BeginTransaction()
+        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom(Me._dbName).BeginTransaction(IsolationLevel.ReadCommitted)
         Try
             Dim numberOfRole As Short = GetMaxId(document.Year, document.Number) - 1S
             For Each extension As ContainerExtension In contExtList
@@ -149,7 +149,7 @@ Public Class DocumentFolderFacade
     ''' <param name="folder"></param>
     ''' <remarks></remarks>
     Public Overloads Sub Delete(ByRef folder As DocumentFolder)
-        folder.IsActive = 0
+        folder.IsActive = False
         UpdateOnly(folder)
     End Sub
 

@@ -4,7 +4,6 @@
 <%@ Register Src="uscUDSStaticDataFinder.ascx" TagPrefix="usc" TagName="UDSDataFinder" %>
 <%@ Register Src="~/UserControl/uscDocumentUnitReferences.ascx" TagName="uscDocumentUnitReferences" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscMulticlassificationRest.ascx" TagName="uscMulticlassificationRest" TagPrefix="usc" %>
-<%@ Register Src="~/UserControl/uscDocumentUnitConservationRest.ascx" TagPrefix="usc" TagName="uscDocumentUnitConservationRest" %>
 
 <telerik:RadScriptBlock runat="server">
     <script type="text/javascript">
@@ -58,7 +57,7 @@
 
 <asp:Panel runat="server" ID="uscContent" Height="100%">
     <telerik:RadPageLayout runat="server" GridType="Fluid" HtmlTag="None">
-        <Rows>
+        <rows>
             <%--Selezione UDS--%>
             <telerik:LayoutRow CssClass="col-dsw-10" RowType="Container" HtmlTag="None">
                 <Columns>
@@ -205,17 +204,23 @@
                                         <asp:Label ID="lblLastChangedUser" CssClass="readValue" runat="server" />
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="trConservationStatus" runat="server">
+                                    <td class="label" style="width: 15%">Stato conservazione:</td>
+                                    <td style="width: 35%">
+                                        <div style="margin: 5px">
+                                            <asp:Image ID="imgConservationIcon" runat="server" Style="vertical-align: middle" />
+                                            <asp:HyperLink ID="lblConservationStatus" runat="server" Target="_blank"></asp:HyperLink>
+                                        </div>
+                                    </td>
                                     <td class="label" style="width: 15%">
-                                        <label class="label">Utenti autorizzati:</label>
+                                        <asp:Label ID="conservationUriLabel" Visible="false" runat="server">URI:</asp:Label>
                                     </td>
                                     <td style="width: 35%">
-                                        <asp:Label ID="lblAuthorized" CssClass="readValue" runat="server" Visible="false" />
+                                        <asp:Label ID="lblConservationUri" Visible="false" runat="server"></asp:Label>
                                     </td>
                                 </tr>
                             </table>
-
-
+                            
                         </asp:Panel>
                     </telerik:LayoutColumn>
                 </Columns>
@@ -257,8 +262,6 @@
                                     </td>
                                 </tr>
                             </table>
-                            <%-- PARER --%>
-                            <usc:uscDocumentUnitConservationRest runat="server" id="uscDocumentUnitConservationRest" Visible="false" />
                         </Content>
                     </telerik:CompositeLayoutColumn>
                 </Columns>
@@ -363,12 +366,12 @@
                                     ShowArchiveLinks="true" 
                                     ShowProtocolLinks="true" 
                                     ShowFascicleLinks="true" 
-                                    ShowActiveWorkflowActivities="true" />
+                                    ShowWorkflowActivities="true" />
                             </asp:Panel>
                         </Content>
                     </telerik:CompositeLayoutColumn>
                 </Columns>
             </telerik:LayoutRow>                          
-        </Rows>
+        </rows>
     </telerik:RadPageLayout>
 </asp:Panel>

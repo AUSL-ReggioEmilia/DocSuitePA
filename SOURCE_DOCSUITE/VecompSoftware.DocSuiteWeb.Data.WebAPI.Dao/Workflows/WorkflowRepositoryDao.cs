@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
 using VecompSoftware.WebAPIManager.Dao;
@@ -20,6 +21,12 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao.Workflows
         #endregion
 
         #region [ Methods ]
+        public ICollection<WorkflowEntities.WorkflowRepository> GetAllUserWorkflowRepository()
+        {
+            Finder.ResetDecoration();
+            Finder.OnlyUserWorkflow = true;
+            return Finder.DoSearch().Select(s => s.Entity).ToList();
+        }
         #endregion
     }
 }

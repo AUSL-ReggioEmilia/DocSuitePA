@@ -15,7 +15,6 @@ Partial Public Class uscContattiSelText
     Private _isMittDest As Boolean
     Private _forceAddressBook As Boolean
     Private _maxLunghezzaTesto As Integer?
-    Private Const SEL_MITTENTE_URL_FORMAT As String = "../UserControl/CommonSelMittDest.aspx?{0}"
     Private Const SEL_CONTACT_RUBRICA_FORMAT As String = "../UserControl/CommonSelContactRubrica.aspx?{0}"
     Private Const SEL_CONTACT_DOMAIN_FORMAT As String = "../UserControl/CommonSelContactDomain.aspx?Type={0}&ConfermaNuovoVisible=False&ParentID={1}"
     Private Const OPEN_WINDOW As String = "return {0}_OpenWindow('{1}', 'windowSelContact', {0}{2});"
@@ -44,15 +43,6 @@ Partial Public Class uscContattiSelText
         End Set
     End Property
 
-    ''' <summary> Indica se il controllo deve gestire la ricerca dei Mittenti/Destinatari. </summary>
-    Public Property IsMittDest() As Boolean
-        Get
-            Return _isMittDest
-        End Get
-        Set(ByVal value As Boolean)
-            _isMittDest = value
-        End Set
-    End Property
 
     Public Property TextBoxWidth() As Unit
         Get
@@ -145,13 +135,8 @@ Partial Public Class uscContattiSelText
 
         Dim url As String = String.Empty
         Dim closeFunction As String = String.Empty
-        If IsMittDest Then
-            url = String.Format(SEL_MITTENTE_URL_FORMAT, GetWindowParameters())
-            closeFunction = "_CloseMittDest"
-        Else
-            url = String.Format(SEL_CONTACT_RUBRICA_FORMAT, GetWindowParameters())
-            closeFunction = "_OnClose"
-        End If
+        url = String.Format(SEL_CONTACT_RUBRICA_FORMAT, GetWindowParameters())
+        closeFunction = "_OnClose"
         btnSelContact.OnClientClick = String.Format(OPEN_WINDOW, ID, url, closeFunction)
 
         Dim selAdContactUrl As String = String.Format(SEL_CONTACT_DOMAIN_FORMAT, BasePage.Type, ID)

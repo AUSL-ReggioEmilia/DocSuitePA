@@ -1,22 +1,19 @@
 ﻿Imports System.Collections.Generic
-Imports System.Linq
 Imports System.IO
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports Telerik.Web.UI.Calendar
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.DocSuiteWeb.Facade
+Imports System.Linq
+Imports System.Web
 Imports Telerik.Web.UI
+Imports Telerik.Web.UI.Calendar
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.Resolutions
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.Helpers.Web
-Imports System.Collections.ObjectModel
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Resolutions
-Imports System.Web
-Imports VecompSoftware.Services.Logging
+Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.Resolutions
+Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Services.Logging
 
 Partial Public Class uscResolutionChange
     Inherits DocSuite2008BaseControl
@@ -40,7 +37,8 @@ Partial Public Class uscResolutionChange
     Private _resolutionKindDocumentSeries As ResolutionKindDocumentSeriesFacade
     Private _resolutionKindFacade As ResolutionKindFacade
     Private _currentResolutionStatus As String
-
+    Private Const STATO_CONTABILITA_VISTATA As String = "VI"
+    Private Const STATO_CONTABILITA_NON_CONTABILE As String = "NC"
 #End Region
 
 #Region " Properties "
@@ -652,6 +650,18 @@ Partial Public Class uscResolutionChange
     End Property
 
     ''' <summary>
+    ''' Label della checkbox Collegio sindacale
+    ''' </summary>
+    Public Property LabelOCSupervisoryBoardCheckbox() As String
+        Get
+            Return chkOCSupervisoryBoard.Text
+        End Get
+        Set(ByVal value As String)
+            chkOCSupervisoryBoard.Text = value
+        End Set
+    End Property
+
+    ''' <summary>
     ''' Visualizza/Nasconde Pannello Organo di Controllo - Conferenza dei Sindaci (Checkbox)
     ''' </summary>
     Public Property VisibleOCConfSindaciCheckbox() As Boolean
@@ -660,6 +670,18 @@ Partial Public Class uscResolutionChange
         End Get
         Set(ByVal value As Boolean)
             pnlOCConfSindaci.Visible = value
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Label della checkbox Conferenza dei Sindaci
+    ''' </summary>
+    Public Property LabelOCConfSindaciCheckbox() As String
+        Get
+            Return chkOCConfSindaci.Text
+        End Get
+        Set(ByVal value As String)
+            chkOCConfSindaci.Text = value
         End Set
     End Property
 
@@ -676,6 +698,18 @@ Partial Public Class uscResolutionChange
     End Property
 
     ''' <summary>
+    ''' Label della checkbox Regione
+    ''' </summary>
+    Public Property LabelOCRegionCheckbox() As String
+        Get
+            Return chkOCRegion.Text
+        End Get
+        Set(ByVal value As String)
+            chkOCRegion.Text = value
+        End Set
+    End Property
+
+    ''' <summary>
     ''' Visualizza/Nasconde Pannello Organo di Controllo - Controllo di Gestione (Checkbox)
     ''' </summary>
     Public Property VisibleOCManagementCheckbox() As Boolean
@@ -684,6 +718,18 @@ Partial Public Class uscResolutionChange
         End Get
         Set(ByVal value As Boolean)
             pnlOCManagement.Visible = value
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Label della checkbox Controllo di Gestione 
+    ''' </summary>
+    Public Property LabelOCManagementCheckbox() As String
+        Get
+            Return chkOCManagement.Text
+        End Get
+        Set(ByVal value As String)
+            chkOCManagement.Text = value
         End Set
     End Property
 
@@ -700,6 +746,18 @@ Partial Public Class uscResolutionChange
     End Property
 
     ''' <summary>
+    ''' Label della checkbox Corte dei Conti
+    ''' </summary>
+    Public Property LabelOCCorteContiCheckbox() As String
+        Get
+            Return chkOCCorteConti.Text
+        End Get
+        Set(ByVal value As String)
+            chkOCCorteConti.Text = value
+        End Set
+    End Property
+
+    ''' <summary>
     ''' Visualizza/Nasconde Pannello Organo di Controllo - Altro (Checkbox)
     ''' </summary>
     Public Property VisibleOCOtherCheckbox() As Boolean
@@ -708,6 +766,18 @@ Partial Public Class uscResolutionChange
         End Get
         Set(ByVal value As Boolean)
             pnlOCOther.Visible = value
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Label della checkbox Altro
+    ''' </summary>
+    Public Property LabelOCOtherCheckbox() As String
+        Get
+            Return chkOCOther.Text
+        End Get
+        Set(ByVal value As String)
+            chkOCOther.Text = value
         End Set
     End Property
 
@@ -1032,6 +1102,56 @@ Partial Public Class uscResolutionChange
         End Get
     End Property
 
+    Public Property VisibleEconomicDataPosizione() As Boolean
+        Get
+            Return economicDataPosizione.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            economicDataPosizione.Visible = value
+        End Set
+    End Property
+
+    Public Property VisibleEconomicDataContratto() As Boolean
+        Get
+            Return economicDataContratto.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            economicDataContratto.Visible = value
+        End Set
+    End Property
+
+    Public Property VisibleEconomicDataFornitore() As Boolean
+        Get
+            Return economicDataFornitore.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            economicDataFornitore.Visible = value
+        End Set
+    End Property
+
+    Public Property LabelEconomicDataBidType() As String
+        Get
+            Return lblBidtype.InnerText
+        End Get
+        Set(ByVal value As String)
+            lblBidtype.InnerText = value
+        End Set
+    End Property
+
+    Public Property LabelEconomicDataTitle() As String
+        Get
+            Return lblEconomicDataTitle.Text
+        End Get
+        Set(ByVal value As String)
+            lblEconomicDataTitle.Text = value
+        End Set
+    End Property
+
+    Private ReadOnly Property UserGroups As IList(Of SecurityGroups)
+        Get
+            Return Facade.SecurityGroupsFacade.GetByUser(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
@@ -1058,7 +1178,7 @@ Partial Public Class uscResolutionChange
             Else
                 pnlResolutionKind.Visible = False
             End If
-
+            pnlOrganoControllo.Visible = DocSuiteContext.Current.ResolutionEnv.CheckOCValidations
         End If
     End Sub
 
@@ -1371,7 +1491,35 @@ Partial Public Class uscResolutionChange
         chkExecutive.Checked = CurrentResolution.ImmediatelyExecutive.HasValue AndAlso CurrentResolution.ImmediatelyExecutive.Value
     End Sub
 
+    Public Sub BindEconomicDataAccounting()
+        rlbBidTypes.Visible = True
+        ddlBidType.Visible = False
+
+        Dim changeableData As String = String.Empty
+        Facade.TabWorkflowFacade.GetChangeableData(CurrentResolution.Id, CurrentResolution.WorkflowType, 0, changeableData)
+        Dim idSecurityGroups As ICollection(Of Integer) = Facade.TabWorkflowFacade.GetOperationStepEconomicDataGroups(CurrentResolution)
+        Dim isEconomicDataEditable As Boolean = Not Facade.ResolutionFacade.ManagedDataTest(CurrentResolution, FieldName:="EconomicData", changeableData:=changeableData, FieldTest:=".READONLY.")
+        Dim isUserInAllowedSecurityGroups As Boolean = idSecurityGroups.Count = 0 OrElse UserGroups.Any(Function(group) idSecurityGroups.Contains(group.Id))
+        rlbBidTypes.Enabled = isEconomicDataEditable AndAlso isUserInAllowedSecurityGroups
+
+        Dim bidTypeList As IList(Of BidType) = Facade.BidTypeFacade.GetAll()
+        rlbBidTypes.Items.Clear()
+        For Each bidType As BidType In bidTypeList
+            Dim ddi As DropDownListItem = New DropDownListItem(bidType.Description, bidType.Id.ToString())
+            If bidType.Acronym.Trim().Equals(STATO_CONTABILITA_NON_CONTABILE) Then
+                ddi.Enabled = False
+            End If
+            If CurrentResolution.BidType IsNot Nothing AndAlso bidType.Equals(CurrentResolution.BidType) Then
+                ddi.Selected = True
+            End If
+            rlbBidTypes.Items.Add(ddi)
+        Next bidType
+    End Sub
+
     Public Sub BindEconomicData()
+        rlbBidTypes.Visible = False
+        ddlBidType.Visible = True
+
         txtPosition.Text = CurrentResolution.Position
         rdpValidityDateFrom.SelectedDate = CurrentResolution.ValidityDateFrom
         rdpValidityDateTo.SelectedDate = CurrentResolution.ValidityDateTo
@@ -1490,7 +1638,13 @@ Partial Public Class uscResolutionChange
 
         If useContainerResolutionType Then
             Dim crtf As New ContainerResolutionTypeFacade
-            Dim containerList As IList(Of ContainerResolutionType) = crtf.GetAllowedContainers(_resl.Type.Id, 1, ResolutionRightPositions.Insert)
+            Dim containerList As IList(Of ContainerResolutionType)
+
+            If DocSuiteContext.Current.ResolutionEnv.ResolutionAccountingEnabled Then
+                containerList = crtf.GetAllowedContainers(_resl.Type.Id, 1, ResolutionRightPositions.Insert, ContainerHasAccountingEnabled(_resl.Container))
+            Else
+                containerList = crtf.GetAllowedContainers(_resl.Type.Id, 1, ResolutionRightPositions.Insert)
+            End If
 
             Dim containerId As Integer
             Dim container As ContainerResolutionType
@@ -1516,7 +1670,13 @@ Partial Public Class uscResolutionChange
                 ddlIdContainer.SelectedIndex = ddlIdContainer.Items.Count - 1
             End If
         Else
-            Dim containerList As IList(Of Container) = Facade.ContainerFacade.GetContainers(DSWEnvironment.Resolution, ResolutionRightPositions.Insert, True)
+            Dim containerList As IList(Of Container)
+
+            If DocSuiteContext.Current.ResolutionEnv.ResolutionAccountingEnabled Then
+                containerList = Facade.ContainerFacade.GetContainers(DSWEnvironment.Resolution, ResolutionRightPositions.Insert, True, Nothing, ContainerHasAccountingEnabled(_resl.Container))
+            Else
+                containerList = Facade.ContainerFacade.GetContainers(DSWEnvironment.Resolution, ResolutionRightPositions.Insert, True)
+            End If
 
             For Each container As Container In containerList
                 ddlIdContainer.Items.Add(New ListItem(container.Name, container.Id.ToString()))
@@ -1684,8 +1844,8 @@ Partial Public Class uscResolutionChange
         resl.Position = txtPosition.Text
         resl.ValidityDateFrom = rdpValidityDateFrom.SelectedDate
         resl.ValidityDateTo = rdpValidityDateTo.SelectedDate
-        If Not String.IsNullOrEmpty(ddlBidType.SelectedValue) Then
-            resl.BidType = Facade.BidTypeFacade.GetById(Integer.Parse(ddlBidType.SelectedValue))
+        If ResolutionEnv.ResolutionAccountingEnabled AndAlso Not String.IsNullOrEmpty(rlbBidTypes.SelectedValue) Then
+            resl.BidType = Facade.BidTypeFacade.GetById(Integer.Parse(rlbBidTypes.SelectedValue))
         End If
         resl.SupplierCode = txtSupplierCode.Text
         resl.SupplierDescription = txtSupplierDescription.Text
@@ -2202,6 +2362,13 @@ Partial Public Class uscResolutionChange
 
     End Sub
 
+    Private Function ContainerHasAccountingEnabled(container As Container) As Boolean
+        Dim accountingProperty As ContainerProperty = container.ContainerProperties.FirstOrDefault(Function(x) x.Name.Equals(ContainerPropertiesName.ResolutionAccountingEnabled))
+        If accountingProperty Is Nothing Then
+            Return False
+        End If
+        Return accountingProperty.ValueBoolean.Value
+    End Function
 #End Region
 
 

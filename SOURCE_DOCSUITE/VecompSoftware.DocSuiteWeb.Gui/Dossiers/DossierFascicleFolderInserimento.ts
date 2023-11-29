@@ -14,7 +14,6 @@ import AjaxModel = require('App/Models/AjaxModel');
 import CategoryModel = require('App/Models/Commons/CategoryModel');
 import DossierModel = require('App/Models/Dossiers/DossierModel');
 import DomainUserModel = require('App/Models/Securities/DomainUserModel');
-import UscFascicleLink = require('UserControl/uscFascicleLink')
 import FascicleModel = require('App/Models/Fascicles/FascicleModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import UscErrorNotification = require('UserControl/uscErrorNotification');
@@ -140,10 +139,20 @@ class DossierFascicleFolderInserimento extends DossierBase {
                 }
                 else {
                     PageClassHelper.callUserControlFunctionSafe<UscFascicleInsert>(this.fascicleInsertControlId).done(instance => {
-                        let ajaxModel: AjaxModel = <AjaxModel>{};
-                        ajaxModel.Value = new Array<string>();
-                        ajaxModel.ActionName = "Insert";
-                        this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+                        instance.fillMetadataModel().done((metadatas: [string, string]) => {
+                            let ajaxModel: AjaxModel = <AjaxModel>{};
+                            ajaxModel.ActionName = "Insert";
+                            ajaxModel.Value = new Array<string>();
+
+                            if (metadatas) {
+                                ajaxModel.Value.push(metadatas[0]);
+                                ajaxModel.Value.push(metadatas[1]);
+                            } else {
+                                this._btnConferma.set_enabled(true);
+                            }
+
+                            this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+                        });
                     });
                 }
             });
@@ -263,11 +272,12 @@ class DossierFascicleFolderInserimento extends DossierBase {
 
                             if (this.actionType == DossierFascicleFolderInserimento.updateActionType) {
                                 let sessionModel: DossierFolderModel[] = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIERFOLDERS_SESSIONNAME));
-                                if (sessionModel.filter(x => x.Fascicle && x.Fascicle.UniqueId == this.fascicleId)[0] &&
-                                    sessionModel.filter(x => x.Fascicle && x.Fascicle.UniqueId == this.fascicleId)[0].Fascicle) {
-                                    fascicleUniqueId = sessionModel.filter(x => x.Fascicle && x.Fascicle.UniqueId == this.fascicleId)[0].Fascicle.UniqueId;
+                                let fascicleDossierFolder: DossierFolderModel = sessionModel.filter(x => x.Fascicle && x.Fascicle.UniqueId == this.fascicleId)[0];
 
-                                    dossierParentId = sessionModel.filter(x => x.Fascicle && x.Fascicle.UniqueId == this.fascicleId)[0].ParentInsertId;
+                                if (fascicleDossierFolder && fascicleDossierFolder.Fascicle) {
+                                    fascicleUniqueId = fascicleDossierFolder.Fascicle.UniqueId;
+
+                                    dossierParentId = fascicleDossierFolder.ParentInsertId;
                                     dossierFolder.ParentInsertId = dossierParentId;
 
                                     let arr: DossierFolderModel[] = [];
@@ -371,8 +381,7 @@ class DossierFascicleFolderInserimento extends DossierBase {
                         r.EntityShortId = role.EntityShortId;
                         r.IdRole = role.EntityShortId;
                         r.Name = role.Name;
-                        r.TenantId = role.TenantId;
-                        r.IdRoleTenant = role.IdRoleTenant;
+                        r.IdTenantAOO = role.IdTenantAOO;
 
                         dossierFolderRoleModel.Role = r;
                         dossierFolderRoleModel.AuthorizationRoleType = AuthorizationRoleType.Accounted;
@@ -408,9 +417,15 @@ class DossierFascicleFolderInserimento extends DossierBase {
     }
 
     private populateFascicleFields(fascicle: FascicleModel) {
-        PageClassHelper.callUserControlFunctionSafe<UscFascicleProcessInsert>(this.fascicleInsertControlId).done(instance => {
-            instance.populateInputs(fascicle);
-        });
+        if (this.processEnabled) {
+            PageClassHelper.callUserControlFunctionSafe<UscFascicleProcessInsert>(this.fascicleInsertControlId).done(instance => {
+                instance.populateInputs(fascicle);
+            });
+        } else {
+            PageClassHelper.callUserControlFunctionSafe<UscFascicleInsert>(this.fascicleInsertControlId).done(instance => {
+                instance.populateInputs(fascicle);
+            });
+        }
     }
 }
 

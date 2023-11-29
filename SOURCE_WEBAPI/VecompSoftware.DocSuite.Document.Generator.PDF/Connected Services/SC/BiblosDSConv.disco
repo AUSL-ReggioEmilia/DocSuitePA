@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
-  <contractRef ref="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx?wsdl" docRef="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
-  <soap address="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx" xmlns:q1="http://www.vecompsoftware.it/BiblosDSConv/" binding="q1:BiblosDSConvSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
-  <soap address="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx" xmlns:q2="http://www.vecompsoftware.it/BiblosDSConv/" binding="q2:BiblosDSConvSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <contractRef ref="http://./StampaConforme/BiblosDSConv.asmx?wsdl" docRef="http://./StampaConforme/BiblosDSConv.asmx" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <soap address="http://./StampaConforme/BiblosDSConv.asmx" xmlns:q1="http://www.vecompsoftware.it/BiblosDSConv/" binding="q1:BiblosDSConvSoap" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
+  <soap address="http://./StampaConforme/BiblosDSConv.asmx" xmlns:q2="http://www.vecompsoftware.it/BiblosDSConv/" binding="q2:BiblosDSConvSoap12" xmlns="http://schemas.xmlsoap.org/disco/soap/" />
 </discovery>

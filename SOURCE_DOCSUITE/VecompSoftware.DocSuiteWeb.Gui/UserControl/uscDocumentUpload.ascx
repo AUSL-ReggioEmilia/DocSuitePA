@@ -2,6 +2,10 @@
 
 <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1" EnableViewState="false">
     <script type="text/javascript">
+        $(function () {
+            sessionStorage.setItem("SignedDoc", "");
+            sessionStorage.setItem("DocsToSign", "");
+        });
         // richiamata quando la finestra viene chiusa
 
         function <%= Me.ID %>_CloseUploadDocumentProt(sender, args) {
@@ -68,6 +72,15 @@
             }
         }
 
+        // richiamata quando la finestra di firma viene chiusa (dgroove signer)
+        function <%= Me.ID %>_CloseDgrooveSignWindow(sender) {
+            if (!sessionStorage.getItem("SignedDoc")) {
+                return;
+            }
+            var argument = "<%= Me.ClientID %>|DGROOVESIGN|" + sessionStorage.getItem("SignedDoc");
+            $find("<%= AjaxManager.ClientID %>").ajaxRequest(argument);
+        }
+
         function <%= Me.ID %>_CloseSelectTemplateWindow(sender, args) {
             if (args.get_argument() !== null) {
                 var argument = "<%= Me.ClientID %>|TEMPLATEDOCUMENT|" + args.get_argument();
@@ -111,6 +124,17 @@
 
         function <%= Me.ID %>_OpenWindowSign(url, name, parameters) {
             var wnd = $find(name);
+            wnd.setUrl(url + "?" + parameters);
+            wnd.set_destroyOnClose(true);
+            wnd.set_behaviors(Telerik.Web.UI.WindowBehaviors.Resize + Telerik.Web.UI.WindowBehaviors.Maximize + Telerik.Web.UI.WindowBehaviors.Close);
+            wnd.show();
+            wnd.center();
+            return false;
+        }
+
+        function <%= Me.ID %>_OpenWindowDgrooveSign(url, name, parameters, documents) {
+            var wnd = $find(name);
+            sessionStorage.setItem("DocsToSign", documents);
             wnd.setUrl(url + "?" + parameters);
             wnd.set_destroyOnClose(true);
             wnd.set_behaviors(Telerik.Web.UI.WindowBehaviors.Resize + Telerik.Web.UI.WindowBehaviors.Maximize + Telerik.Web.UI.WindowBehaviors.Close);
@@ -253,12 +277,17 @@
                 $find("<%= AjaxManager.ClientID %>").ajaxRequest('<%= Me.ClientID %>|PRIVACYLEVELSET|'.concat(indexNode, "|", selectedValue));
             }
         }
+
+        function SaveToSessionStorageAndRedirect(documents) {
+            sessionStorage.setItem("DocsToSign", documents);
+            window.location.href = "../Comm/DgrooveSigns.aspx";
+        }
     </script>
 </telerik:RadScriptBlock>
 
 <telerik:RadWindowManager DestroyOnClose="True" ReloadOnShow="True" ID="RadWindowManagerUpload" runat="server">
     <Windows>
-        <telerik:RadWindow Behaviors="Close" DestroyOnClose="True" Height="500px" ID="signWindow" ReloadOnShow="true" runat="server" Title="Firma documento" Width="850px" />
+        <telerik:RadWindow Behaviors="Close" DestroyOnClose="True" Height="500px" ID="signWindow" Modal="true" ReloadOnShow="true" runat="server" Title="Firma documento" Width="850px" />
         <telerik:RadWindow Behaviors="Close" DestroyOnClose="true" Height="460px" ID="windowScannerDocument" ReloadOnShow="true" runat="server" Title="Scansione documento" Width="800px" />
         <telerik:RadWindow Behaviors="Close" ID="windowUploadDocument" ReloadOnShow="True" runat="server" Title="Selezione documento" />
         <telerik:RadWindow Behaviors="Maximize,Close,Resize,Reload" DestroyOnClose="True" ID="windowPreviewDocument" ReloadOnShow="false" runat="server" Title="Anteprima documento" />
@@ -310,11 +339,11 @@
                         <asp:ImageButton CausesValidation="False" ID="btnSignDocument" ImageUrl="~/App_Themes/DocSuite2008/imgset16/card_chip_gold.png" runat="server" ToolTip="Firma documento" />
                         <asp:ImageButton CausesValidation="False" ID="btnImportSharedFolder" ImageUrl="~/Comm/Images/FolderOpen16.gif" runat="server" ToolTip="Seleziona documento da cartella condivisa" />
                         <asp:ImageButton CausesValidation="False" ID="btnCopyProtocol" ImageUrl="~/Comm/Images/DocSuite/Link16.png" runat="server" ToolTip="Copia da protocollo" Visible="false" />
-                        <asp:ImageButton CausesValidation="False" ID="btnCopyResl" ImageUrl="~/Resl/Images/Delibera.gif" runat="server" ToolTip="Copia da atto/delibera" Visible="false" />
+                        <asp:ImageButton CausesValidation="False" ID="btnCopyResl" ImageUrl="~/Resl/Images/Delibera.png" runat="server" ToolTip="Copia da atto/delibera" Visible="false" />
                         <asp:ImageButton CausesValidation="False" ID="btnCopySeries" ImageUrl="~/App_Themes/DocSuite2008/imgset16/document_copies_add.png" runat="server" Visible="false" />
                         <asp:ImageButton CausesValidation="False" ID="btnCopyUDS" ImageUrl="~/App_Themes/DocSuite2008/imgset16/document_copies.png" runat="server" ToolTip="Copia da archivio" Visible="false" />
                         <asp:ImageButton CausesValidation="False" ID="btnImportContactManual" ImageUrl="~/App_Themes/DocSuite2008/imgset16/FromExcel.png" runat="server" ToolTip="Importazione contatti manuali destinatari/mittenti" Visible="false" />
-                        <asp:ImageButton CausesValidation="False" ID="btnSelectTemplate" ImageUrl="~/Comm/Images/Selezione16.gif" runat="server" ToolTip="Seleziona deposito documentale" Visible="false" />
+                        <asp:ImageButton CausesValidation="False" ID="btnSelectTemplate" ImageUrl="~/App_Themes/DocSuite2008/imgset16/template-selection.png" runat="server" ToolTip="Seleziona deposito documentale" Visible="false" />
                     </div>
                 </asp:Panel>
                 <div id="tblFrontespizio" runat="server" visible="false">

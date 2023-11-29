@@ -4,15 +4,13 @@ interface ContainerModel {
     EntityShortId: number;
     Name?: string;
     Note?: string;
-    isActive?: number;
+    isActive?: boolean;
     Massive?: number;
     Conservation?: number;
     DocumentSeriesAnnexedLocation?: LocationModel;
     DocumentSeriesLocation?: LocationModel;
     DocumentSeriesUnpublishedAnnexedLocation?: LocationModel;
     ProtocolRejection?: number;
-    ActiveFrom?: Date;
-    ActiveTo?: Date;
     idArchive?: number;
     Privacy?: number;
     HeadingFrontalino?: string;

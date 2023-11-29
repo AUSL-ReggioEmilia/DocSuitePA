@@ -132,7 +132,7 @@
                     </td>
                     <td style="vertical-align: top; width: 65%; white-space: nowrap;">
                         <!--Documenti del Tavolo -->
-                        <usc:DeskDocument ID="uscDeskDocument" MultipleDocuments="True" Type="Modify" IsReadOnly="True" runat="server" BindAsyncEnable="False" />
+                        <usc:DeskDocument ID="uscDeskDocument" MultipleDocuments="True" HideScannerMultipleDocumentButton="true" Type="Modify" IsReadOnly="True" runat="server" BindAsyncEnable="False" />
                     </td>
                 </tr>
             </table>
@@ -149,11 +149,10 @@
         <telerik:RadButton runat="server" ID="btnViewDocument" Width="150" Text="Documenti"></telerik:RadButton>
         <telerik:RadButton runat="server" ID="btnCancel" Width="150" Text="Annulla"></telerik:RadButton>
         <telerik:RadButton runat="server" ID="btnModify" Width="150" Text="Modifica"></telerik:RadButton>
-        <telerik:RadButton runat="server" ID="btnCloseDesk" Width="150" Text="Chiudi Tavolo"></telerik:RadButton>
-        <telerik:RadButton runat="server" ID="btnOpenDesk" Width="150" Text="Apri Tavolo"></telerik:RadButton>
-        <telerik:RadButton runat="server" ID="btnApprove" Width="150" Text="Richiedi Approvazione"></telerik:RadButton>
-        <telerik:RadButton runat="server" ID="btnApproveManager" Width="150" Text="Controlla Approvazioni"></telerik:RadButton>
-        <telerik:RadButton runat="server" ID="btnCollaboration" Width="150" Text="Collaborazione"></telerik:RadButton>
-        <telerik:RadButton runat="server" ID="btnProtocol" Width="150" Text="Protocollo"></telerik:RadButton>
+        <telerik:RadButton runat="server" ID="btnCloseDesk" Width="150" Text="Chiudi tavolo"></telerik:RadButton>
+        <telerik:RadButton runat="server" ID="btnOpenDesk" Width="150" Text="Apri tavolo"></telerik:RadButton>
+        <telerik:RadButton runat="server" ID="btnApprove" Width="150" Text="Richiedi approvazione"></telerik:RadButton>
+        <telerik:RadButton runat="server" ID="btnApproveManager" Width="150" Text="Controlla approvazioni"></telerik:RadButton>
+        <telerik:RadButton runat="server" ID="btnManage" Width="150" Text="Gestisci"></telerik:RadButton>
     </asp:Panel>
 </asp:Content>

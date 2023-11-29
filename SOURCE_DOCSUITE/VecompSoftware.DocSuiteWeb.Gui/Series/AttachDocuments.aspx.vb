@@ -224,7 +224,10 @@ Namespace Series
 
         Private Sub CloseWindowScript(documents As IList(Of DocumentInfo))
 
-            Dim list As List(Of String) = documents.Select(Function(s) HttpUtility.UrlEncode(s.ToQueryString().AsEncodedQueryString())).ToList()
+            Dim list As New Dictionary(Of String, String)
+            For Each item As BiblosDocumentInfo In documents
+                list.Add(BiblosFacade.SaveUniqueToTemp(item).Name, item.Name)
+            Next
             'Imposto StringEscapeHandling = EscapeHtml per evitare i caratteri che possono generare errore (es. apostrofo)
             Dim serialized As String = JsonConvert.SerializeObject(list)
             Dim jsStringEncoded As String = HttpUtility.JavaScriptStringEncode(serialized)

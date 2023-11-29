@@ -90,7 +90,7 @@ Public Class NHResolutionFinder2
         If InStepActive.GetValueOrDefault(False) Then
             tor.Add(Restrictions.Eq("RWF.IsActive", 1S))
         Else
-            tor.Add(Restrictions.Not(Restrictions.Eq("RWF.IsActive", 2S)))
+            tor.Add(Restrictions.Not(Restrictions.Eq("RWF.IsActive", 0S)))
         End If
         
         criteria.Add(tor)

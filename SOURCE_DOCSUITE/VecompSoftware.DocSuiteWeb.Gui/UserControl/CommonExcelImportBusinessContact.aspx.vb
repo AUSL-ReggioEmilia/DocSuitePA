@@ -1,15 +1,16 @@
-﻿Imports System.Linq
+﻿Imports System.Collections.Generic
+Imports System.Linq
 Imports System.Text
-Imports System.Collections.Generic
-Imports System.IO
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports System.Web
 Imports Newtonsoft.Json
+Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
-Imports Telerik.Web.UI
-Imports System.Web
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Services.Biblos.Models
 
 Public Class CommonExcelImportBusinessContact
@@ -217,14 +218,15 @@ Public Class CommonExcelImportBusinessContact
                 End If
 
                 contact.Parent = parentContact
-                contact.IsActive = 1
+                contact.IsActive = True
 
-                If Facade.ContactFacade.ContactDuplicationCheck(contact) Then
+                If Facade.ContactFacade.ContactDuplicationCheck(contact, CurrentTenant.TenantAOO.UniqueId) Then
                     AjaxManager.Alert("Sono presenti contatti Doppi")
                     Exit Sub
                 End If
 
                 Facade.ContactFacade.Save(contact)
+
                 'aggiungo il contatto
                 toInsert.Add(contact)
             Catch ex As DocSuiteException

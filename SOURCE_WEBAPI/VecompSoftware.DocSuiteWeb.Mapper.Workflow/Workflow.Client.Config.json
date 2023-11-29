@@ -1,5 +1,5 @@
 ﻿{
-    "RootScope": "https://srvazvsdev.cloudapp.net:12290",
+    "RootScope": "https://.:12290",
     /*
         Le cartelle seguenti devono essere specificate in ordine di pubblicazione.
         La prima cartella è quella base e sarà pubblicata per prima.

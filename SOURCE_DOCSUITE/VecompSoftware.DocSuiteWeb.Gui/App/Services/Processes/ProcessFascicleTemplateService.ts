@@ -3,6 +3,8 @@ import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import ExceptionDTO = require("App/DTOs/ExceptionDTO");
 import ProcessFascicleTemplateModelMapper = require("App/Mappers/Processes/ProcessFascicleTemplateModelMapper");
 import ProcessFascicleTemplateModel = require("App/Models/Processes/ProcessFascicleTemplateModel");
+import PaginationModel = require("App/Models/Commons/PaginationModel");
+import ODATAResponseModel = require("App/Models/ODATAResponseModel");
 
 class ProcessFascicleTemplateService extends BaseService {
     _configuration: ServiceConfiguration;
@@ -27,7 +29,7 @@ class ProcessFascicleTemplateService extends BaseService {
     }
 
     getById(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = `${this._configuration.ODATAUrl}?$filter=UniqueId eq ${uniqueId}`;
+        let url: string = `${this._configuration.ODATAUrl}?$filter=UniqueId eq ${uniqueId}&$expand=Process($expand=Category)`;
         this.getRequest(url, null, (response: any) => {
             if (callback && response) {
                 let modelMapper: ProcessFascicleTemplateModelMapper = new ProcessFascicleTemplateModelMapper();
@@ -37,12 +39,65 @@ class ProcessFascicleTemplateService extends BaseService {
         }, error);
     }
 
-    getFascicleTemplateByDossierFolderId(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl;
-        let data: string = `?$expand=DossierFolder&$filter=DossierFolder/UniqueId eq ${uniqueId}`;
-        this.getRequest(url, data, (response: any) => {
-            if (callback) callback(response.value);
+    countFascicleTemplatesByDossierFolderId(dossierFolderId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/$count?$filter=DossierFolder/UniqueId eq ${dossierFolderId}`;
+
+        this.getRequest(odataQuery, null, (response: any) => {
+            if (callback) {
+                callback(response);
+            }
         }, error);
+    }
+
+    getFascicleTemplateByDossierFolderId(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, paginationModel?: PaginationModel): void {
+        let url: string = this._configuration.ODATAUrl;
+        let data: string = `$filter=DossierFolder/UniqueId eq ${uniqueId}`;
+
+        if (paginationModel) {
+            data = `${data}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}&$count=true`;
+        }
+
+        this.getRequest(url, data, (response: any) => {
+            if (!callback) {
+                return;
+            }
+
+            let fascicleTemplates: ProcessFascicleTemplateModel[] = [];
+
+            if (response && response.value) {
+                let mapper: ProcessFascicleTemplateModelMapper = new ProcessFascicleTemplateModelMapper();
+                fascicleTemplates = mapper.MapCollection(response.value);
+            }
+
+            if (!paginationModel) {
+                callback(fascicleTemplates);
+                return;
+            }
+
+            const odataResult: ODATAResponseModel<ProcessFascicleTemplateModel> = new ODATAResponseModel<ProcessFascicleTemplateModel>(response);
+            odataResult.value = fascicleTemplates;
+            callback(odataResult);
+        }, error);
+    }
+
+    getActiveFascicleTemplatesByDossierFolderId(dossierFolderId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        let url: string = this._configuration.ODATAUrl;
+        let odataQuery: string = `$filter=DossierFolder/UniqueId eq ${dossierFolderId} and EndDate eq null&$orderby=Name`;
+
+        this.getRequest(url, odataQuery, (response: any) => {
+            if (!callback) {
+                return;
+            }
+
+            let fascicleTemplates: ProcessFascicleTemplateModel[] = [];
+            if (response && response.value) {
+                let mapper: ProcessFascicleTemplateModelMapper = new ProcessFascicleTemplateModelMapper();
+                fascicleTemplates = mapper.MapCollection(response.value);
+            }
+
+            callback(fascicleTemplates);
+        }, error)
     }
 
     insert(processFascicleTemplate: ProcessFascicleTemplateModel, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any) {

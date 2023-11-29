@@ -114,7 +114,7 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Desks
                 }
 
                 _isCheckInButtonVisible = false;
-                if (!CurrentDocument.IdDocumentBiblos.HasValue || CurrentDocument.IsSigned)
+                if (!CurrentDocument.IdDocumentBiblos.HasValue)
                 {
                     return _isCheckInButtonVisible.Value;
                 }
@@ -138,7 +138,7 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Desks
                 }
 
                 _isCheckOutButtonVisible = false;
-                if (!CurrentDocument.IdDocumentBiblos.HasValue || CurrentDocument.IsSigned)
+                if (!CurrentDocument.IdDocumentBiblos.HasValue)
                 {
                     return _isCheckOutButtonVisible.Value;
                 }
@@ -163,7 +163,7 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Desks
                 }
 
                 _isCheckInButtonEnable = false;
-                if (!CurrentDocument.IdDocumentBiblos.HasValue || CurrentDocument.IsSigned)
+                if (!CurrentDocument.IdDocumentBiblos.HasValue)
                 {
                     return _isCheckInButtonEnable.Value;
                 }
@@ -188,7 +188,7 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Desks
                 }
 
                 _isUndoCheckOutButtonVisible = false;
-                if (!CurrentDocument.IdDocumentBiblos.HasValue && CurrentDocument.IsSigned)
+                if (!CurrentDocument.IdDocumentBiblos.HasValue)
                 {
                     return _isUndoCheckOutButtonVisible.Value;
                 }
@@ -205,7 +205,7 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Desks
                 if (_canDeleteDocument.HasValue)
                     return _canDeleteDocument.Value;
 
-                _canDeleteDocument = (!IsDocumentCheckOut || CurrentDeskRight.CurrentUserIsOwner || CurrentDeskRight.CurrentUserIsManager) && !CurrentDocument.IsSigned;
+                _canDeleteDocument = (!IsDocumentCheckOut || CurrentDeskRight.CurrentUserIsOwner || CurrentDeskRight.CurrentUserIsManager);
                 return _canDeleteDocument.Value;
             }
         }
@@ -220,11 +220,11 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Desks
                     return _isRenameButtonEnable.Value;
                 }
                 _isRenameButtonEnable = false;
-                if (!CurrentDocument.IdDocumentBiblos.HasValue && CurrentDocument.IsSigned)
+                if (!CurrentDocument.IdDocumentBiblos.HasValue)
                 {
                     return _isRenameButtonEnable.Value;
                 }
-                _isRenameButtonEnable = (!IsDocumentCheckOut) && (CurrentDeskRight.CurrentUserIsOwner || CurrentDeskRight.CurrentUserIsManager || CurrentDeskRight.CurrentUserIsContributor) && !CurrentDocument.IsSigned;
+                _isRenameButtonEnable = (!IsDocumentCheckOut) && (CurrentDeskRight.CurrentUserIsOwner || CurrentDeskRight.CurrentUserIsManager || CurrentDeskRight.CurrentUserIsContributor);
                 return _isRenameButtonEnable.Value;
             }
         }

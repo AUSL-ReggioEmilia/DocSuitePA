@@ -42,6 +42,9 @@ class DossierRicerca extends DossierBase {
     rblDossierStatusId: string;
     dossierStatusEnabled: boolean;
     dossierStatusRowId: string;
+    dossierTypologyEnabled: boolean;
+    trDossierTypeId: string;
+    dynamicMetadataEnabled: boolean;
 
     private _btnSearch: Telerik.Web.UI.RadButton;
     private _txtYear: Telerik.Web.UI.RadTextBox;
@@ -101,8 +104,12 @@ class DossierRicerca extends DossierBase {
         this._btnClean.set_enabled(false);
         this._rowMetadataRepository = $("#".concat(this.rowMetadataRepositoryId));
         $(`#${this.metadataTableId}`).hide();
+        $(`#${this.trDossierTypeId}`).hide();
         this.loadContainers();
-        this.populateDossierTypeComboBox();
+        if (this.dossierTypologyEnabled) {
+            this.populateDossierTypeComboBox();
+            $(`#${this.trDossierTypeId}`).show();
+        }
 
         if (this.metadataRepositoryEnabled) {
             $(`#${this.metadataTableId}`).show();
@@ -121,7 +128,7 @@ class DossierRicerca extends DossierBase {
      */
 
     btnSearch_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
-
+        this.dynamicMetadataEnabled = false;
         let searchDTO: DossierSearchFilterDTO = new DossierSearchFilterDTO();
         let yearFilter: string = this._txtYear.get_value();
         let numberFilter: string = this._txtNumber.get_value();
@@ -174,11 +181,15 @@ class DossierRicerca extends DossierBase {
         searchDTO.StartDateTo = startDateToFilter;
         searchDTO.IdMetadataRepository = metadataRepositoryId ? metadataRepositoryId : null;
 
+        this.dynamicMetadataEnabled = searchDTO.IdMetadataRepository != null;
+
         let uscCategoryRest: uscCategoryRest = <uscCategoryRest>$(`#${this.uscCategoryRestId}`).data();
         let category: CategoryModel = uscCategoryRest.getSelectedCategory();
         searchDTO.IdCategory = category ? category.EntityShortId : null;
 
-        let dossierType: string = this._rcbDossierType.get_selectedItem().get_value();
+        let dossierType: string = this.dossierTypologyEnabled
+            ? this._rcbDossierType.get_selectedItem().get_value()
+            : null;
         searchDTO.DossierType = dossierType ? dossierType : null;
 
         if (!this.dossierStatusEnabled) {
@@ -197,6 +208,9 @@ class DossierRicerca extends DossierBase {
         }
         if (this.dossierStatusEnabled) {
             url = `${url}&DossierStatusEnabled=True`;
+        }
+        if (this.dynamicMetadataEnabled) {
+            url = `${url}&DynamicMetadataEnabled=True`;
         }
         window.location.href = url;
 
@@ -266,11 +280,13 @@ class DossierRicerca extends DossierBase {
         let uscCategoryRest: uscCategoryRest = <uscCategoryRest>$(`#${this.uscCategoryRestId}`).data();
         uscCategoryRest.clearTree();
 
-        this._rcbDossierType.get_items().getItem(0).select();
-
-        let openedCheckbox: any = $(`#${this.rblDossierStatusId} input:radio`)[1];
-        openedCheckbox.checked = "checked";
-
+        if (this.dossierTypologyEnabled) {
+            this._rcbDossierType.get_items().getItem(0).select();
+        }
+        if (this.dossierStatusEnabled) {
+            let openedCheckbox: any = $(`#${this.rblDossierStatusId} input:radio`)[1];
+            openedCheckbox.checked = "checked";
+        }
         sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_DOSSIER_SEARCH);
     }
 

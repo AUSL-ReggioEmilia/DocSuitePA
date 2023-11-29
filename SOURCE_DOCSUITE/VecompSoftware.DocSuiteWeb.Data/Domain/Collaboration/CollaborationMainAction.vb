@@ -68,9 +68,6 @@ Public Class CollaborationMainAction
     ''' <summary> Check In multiplo. </summary>
     Public Const CheckInMultiplo As String = "CCheckIn"
 
-    ''' <summary> Visualizzatore Offline. </summary>
-    Public Const VisualizzatoreOffline As String = "CO"
-
     ''' <summary> Inoltro Documento per Visione/Firma </summary>
     Public Const DaFirmareInDelega As String = "DFD"
 End Class

@@ -46,6 +46,15 @@
                         <asp:DropDownList runat="server" CausesValidation="false" ID="ddlDocumentSeries" AutoPostBack="True" Width="300px" />
                     </td>
                 </tr>
+
+                <tr id="tblSubsection" visible="False" runat="server">
+                    <td class="label" style="width: 30%;">Sotto-sezione:
+                    </td>
+                    <td style="width: 70%;">
+                        <asp:DropDownList runat="server" CausesValidation="false" ID="ddlSubsection" AutoPostBack="false" Visible="True" Width="300px" DataTextField="Description" DataValueField="Id" />
+                    </td>
+                </tr>
+
                 <tr>
                     <td class="label" style="width: 30%;">Anno:
                     </td>
@@ -113,19 +122,7 @@
                         <asp:CheckBox runat="server" Style="margin-left: 3px;" ID="chkPriority" />
                     </td>
                 </tr>
-            </table>
-
-            <asp:Panel runat="server" ID="pnlSubsectionArea">
-                <table class="dataform" runat="server" id="tblSubsection" visible="False">
-                    <tr>
-                        <td class="label" style="width: 30%;">Sotto-sezione:
-                        </td>
-                        <td style="width: 70%;">
-                            <asp:DropDownList runat="server" CausesValidation="false" ID="ddlSubsection" AutoPostBack="false" Visible="True" Width="300px" DataTextField="Description" DataValueField="Id" />
-                        </td>
-                    </tr>
-                </table>
-            </asp:Panel>
+            </table>            
 
             <asp:Panel runat="server" ID="pnlPublicationArea">
                 <table class="dataform" runat="server" id="tblPublication" visible="True">

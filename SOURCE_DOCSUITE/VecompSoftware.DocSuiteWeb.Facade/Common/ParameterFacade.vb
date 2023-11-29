@@ -36,22 +36,25 @@ Public Class ParameterFacade
     ''' <summary> Incrementa il valore del cambo LastUsedNumber su database e restituisce la riga aggiornata </summary>
     ''' <returns>Oggetto Parameter aggiornato</returns>
     Public Function GetDocumentYearNumber() As YearNumberCompositeKey
-        _dao.ConnectionName = "DocmDB"
-
-        Dim _parameter As Parameter = GetCurrent()
-        Dim yearNumberKey As New YearNumberCompositeKey(_parameter.LastUsedYear, _parameter.LastUsedNumber)
-        _dao.UpdateDocumentLastUsedNumber(_parameter.LastUsedNumber + 1)
-        Return yearNumberKey
+        SyncLock _dao.ConnectionName
+            _dao.ConnectionName = DocmDB
+            Dim _parameter As Parameter = GetCurrentAndRefresh()
+            Dim yearNumberKey As New YearNumberCompositeKey(_parameter.LastUsedYear, _parameter.LastUsedNumber)
+            _dao.UpdateDocumentLastUsedNumber(_parameter.LastUsedNumber + 1)
+            Return yearNumberKey
+        End SyncLock
     End Function
 
     ''' <summary> Incrementa il valore del cambo LastUsedidResolution su database e restituisce la riga aggiornata </summary>
     ''' <returns> Oggetto aggiornato, -1 in caso d'errore </returns>
     Public Function GetIdresolution() As Integer
-        _dao.ConnectionName = "ReslDB"
-        Dim _parameter As Parameter = GetCurrent()
-        Dim idResolution As Integer = _parameter.LastUsedIdResolution
-        _dao.UpdateLastUsedIdResolution(_parameter.LastUsedIdResolution + 1)
-        Return idResolution
+        SyncLock _dao.ConnectionName
+            _dao.ConnectionName = ReslDB
+            Dim _parameter As Parameter = GetCurrentAndRefresh()
+            Dim idResolution As Integer = _parameter.LastUsedIdResolution
+            _dao.UpdateLastUsedIdResolution(_parameter.LastUsedIdResolution + 1)
+            Return idResolution
+        End SyncLock
     End Function
 
     Public Sub UpdateSingleInstance(ByRef parameter As Parameter, ByVal DBName As String)
@@ -79,22 +82,27 @@ Public Class ParameterFacade
     End Function
 
     Public Sub UpdateProtocolLastUsedNumber(ByVal year As Integer)
+        _dao.ConnectionName = ProtDB
         _dao.UpdateProtocolLastUsedNumber(year)
     End Sub
 
     Public Sub UpdateResolutionLastUsedNumber(lastUsedNumber As Integer)
+        _dao.ConnectionName = ReslDB
         _dao.UpdateResolutionLastUsedNumber(lastUsedNumber)
     End Sub
 
     Public Sub UpdateResolutionLastUsedBillNumber(lastUsedBillNumber As Integer)
+        _dao.ConnectionName = ReslDB
         _dao.UpdateResolutionLastUsedBillNumber(lastUsedBillNumber)
     End Sub
 
     Public Sub ResetResolutionNumbers()
+        _dao.ConnectionName = ReslDB
         _dao.ResetResolutionNumbers()
     End Sub
 
     Public Sub ResetDocumentNumbers()
+        _dao.ConnectionName = DocmDB
         _dao.ResetDocumentNumbers()
     End Sub
 

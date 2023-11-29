@@ -10,17 +10,6 @@
     <script type="text/javascript">
         //<![CDATA[
 
-        function OpenParerDetail(uniqueIdProtocol) {
-            var wnd = window.radopen("<%=ProtocolParerDetailUrl() %>?Type=Prot&UniqueId=" + uniqueIdProtocol, "parerDetailWindow");
-            wnd.setSize(400, 300);
-            wnd.set_behaviors(Telerik.Web.UI.WindowBehaviors.Close);
-            wnd.set_visibleStatusbar(false);
-            wnd.set_modal(true);
-            wnd.add_close(OnClientClose);
-            wnd.center();
-            return false;
-        }
-
         function OnClientClose(sender, eventArgs) {
             var returnValue = sender.argument;
             if (returnValue) {
@@ -282,15 +271,22 @@
             </th>
         </tr>
         <tr>
-            <td class="label" style="width: 15%">Locazione:
-            </td>
-            <td style="width: 35%">
-                <asp:Label runat="server" ID="LocationName"></asp:Label>
-            </td>
             <td class="label" style="width: 15%">Contenitore:
             </td>
-            <td style="width: 35%">
+            <td colspan="3">
                 <asp:Label runat="server" ID="ContainerName"></asp:Label>
+            </td>
+        </tr>
+        <tr>
+            <td class="label" style="width: 15%">Creato da:
+            </td>
+            <td style="width: 35%">
+                <asp:Label ID="lblProtocolRegistrationUser" runat="server"></asp:Label>
+            </td>
+            <td class="label" style="width: 15%">Modificato da:
+            </td>
+            <td style="width: 15%">
+                <asp:Label ID="lblProtocolLastChangedUser" runat="server"></asp:Label>
             </td>
         </tr>
         <tr id="rowProponente" runat="server">
@@ -328,23 +324,17 @@
                 <asp:Label ID="lblCheckPublication" runat="server" />
             </td>
         </tr>
-        <tr>
-            <td class="label" style="width: 15%">Creato da:
+        <tr id="trConservationStatus" runat="server">
+            <td class="label" style="width: 15%">Stato conservazione:</td>
+            <td style="width: 35%">
+                <asp:Image ID="imgConservationIcon" runat="server"></asp:Image>
+                <asp:HyperLink ID="lblConservationStatus" runat="server" Target="_blank"></asp:HyperLink>
+            </td>
+            <td class="label" style="width: 15%">
+                <asp:Label ID="conservationUriLabel" Visible="false" runat="server">URI:</asp:Label>
             </td>
             <td style="width: 35%">
-                <asp:Label ID="lblProtocolRegistrationUser" runat="server"></asp:Label>
-            </td>
-            <td class="label" style="width: 15%">Modificato da:
-            </td>
-            <td style="width: 15%">
-                <asp:Label ID="lblProtocolLastChangedUser" runat="server"></asp:Label>
-            </td>
-        </tr>
-        <tr>
-            <td class="label" style="width: 15%">Protocolli collegati:
-            </td>
-            <td style="width: 15%">
-                <asp:Label ID="lblProtocolLink" runat="server"></asp:Label>
+                <asp:Label ID="lblConservationUri" Visible="false" runat="server"></asp:Label>
             </td>
         </tr>
         <tr id="trSourceCollaboration" runat="server">
@@ -407,22 +397,6 @@
             <td>
                 <asp:Image ID="imgReject" runat="server" Height="16px" Width="16px" />
                 <asp:Label runat="server" ID="lblReject" />
-            </td>
-        </tr>
-    </table>
-    <%-- PARER --%>
-    <table id="tblParer" class="datatable" runat="server" visible="false">
-        <tr>
-            <th>Stato di conservazione
-                <asp:ImageButton runat="server" CssClass="dsw-align-right" Style="margin-top: 1px; margin-right: 2px;" ID="parerInfo" />
-            </th>
-        </tr>
-        <tr>
-            <td>
-                <div style="margin: 5px">
-                    <asp:Image runat="server" ID="parerIcon" Style="vertical-align: middle" />
-                    <asp:Label runat="server" ID="parerLabel" Text=""></asp:Label>
-                </div>
             </td>
         </tr>
     </table>
@@ -490,7 +464,7 @@
                             </telerik:GridTemplateColumn>
                             <telerik:GridBoundColumn DataField="Name" HeaderText="Nome" HeaderStyle-Width="100px" />
                             <telerik:GridBoundColumn DataField="DataSpedizione" HeaderStyle-Width="105px" HeaderText="Data Sped." HeaderTooltip="Data Spedizione" ItemStyle-Width="105px" />
-                            <telerik:GridBoundColumn DataField="IdRicevuta" HeaderText="Ricevuta Nr." />
+                            <telerik:GridBoundColumn DataField="Numero" HeaderText="Ricevuta Nr." />
                             <telerik:GridBoundColumn DataField="RequestStatusDescrition" HeaderText="Stato richiesta" />
                             <telerik:GridBoundColumn DataField="StatusDescrition" HeaderText="Stato consegna" />
                             <telerik:GridBoundColumn DataField="ErrorMsg" HeaderText="Errore" />
@@ -506,12 +480,12 @@
             <telerik:CompositeLayoutColumn>
                 <Content>
                     <asp:Panel runat="server">
-                        <usc:uscDocumentUnitReferences Visible="true" ID="uscDocumentUnitReferences" runat="server" ShowFascicleLinks="true" ShowProtocolRelationLinks="true" 
+                        <usc:uscDocumentUnitReferences Visible="true" ID="uscDocumentUnitReferences" runat="server" ShowProtocolRelationLinks="true"
                             ShowProtocolDocumentSeriesLinks="true" ShowArchiveRelationLinks="true" ShowProtocolMessageLinks="true" ShowPECIncoming="true" ShowPECOutgoing="true"
-                            ShowActiveWorkflowActivities="true"/>                        
+                            ShowWorkflowActivities="true" />
                     </asp:Panel>
                 </Content>
             </telerik:CompositeLayoutColumn>
         </Columns>
-    </telerik:LayoutRow>    
+    </telerik:LayoutRow>
 </div>

@@ -47,11 +47,11 @@ Public MustInherit Class BaseGridBar
         End Set
     End Property
 
-    Public MustOverride ReadOnly Property DeselectButton() As Button Implements IGridBar.DeselectButton
-    Public MustOverride ReadOnly Property PrintButton() As Button Implements IGridBar.PrintButton
-    Public MustOverride ReadOnly Property DocumentsButton() As Button Implements IGridBar.DocumentsButton
-    Public MustOverride ReadOnly Property SelectButton() As Button Implements IGridBar.SelectButton
-    Public MustOverride ReadOnly Property SetReadButton() As Button Implements IGridBar.SetReadButton
+    Public MustOverride ReadOnly Property DeselectButton() As RadButton Implements IGridBar.DeselectButton
+    Public MustOverride ReadOnly Property PrintButton() As RadButton Implements IGridBar.PrintButton
+    Public MustOverride ReadOnly Property DocumentsButton() As RadButton Implements IGridBar.DocumentsButton
+    Public MustOverride ReadOnly Property SelectButton() As RadButton Implements IGridBar.SelectButton
+    Public MustOverride ReadOnly Property SetReadButton() As RadButton Implements IGridBar.SetReadButton
 
     Public MustOverride ReadOnly Property LeftPanel() As Panel Implements IGridBar.LeftPanel
     Public MustOverride ReadOnly Property MiddlePanel() As Panel Implements IGridBar.MiddlePanel
@@ -141,7 +141,7 @@ Public MustInherit Class BaseGridBar
         For Each item As GridDataItem In _grid.Items
             ' TODO: ma come è possibile? :(
             Dim cb As CheckBox = item.FindControl("cbSelect")
-            ' Deseleziono tutti, ma seleziono solo quelli visibili '**REMOVE**
+            ' Deseleziono tutti, ma seleziono solo quelli visibili 'MATTEO
             If cb.Enabled AndAlso (Not Selected OrElse cb.Visible) Then
                 cb.Checked = Selected
             End If

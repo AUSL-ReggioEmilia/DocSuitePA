@@ -3,6 +3,7 @@ Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports System.Collections.Generic
 Imports Telerik.Web.UI
+Imports NHibernate.Util
 
 Partial Public Class uscResolutionFinder
     Inherits DocSuite2008BaseControl
@@ -10,6 +11,7 @@ Partial Public Class uscResolutionFinder
     Public Delegate Sub BindComboBoxDelegate(ByRef combobox As DropDownList)
     Public BindContainersDelegate As BindComboBoxDelegate
     Public BindControllerStatusDelegate As BindComboBoxDelegate
+    Public BindBidTypeDelagate As BindComboBoxDelegate
 
 #Region " Fields "
 
@@ -19,7 +21,6 @@ Partial Public Class uscResolutionFinder
     Private _dateAdoptionFromValue As Date?
     Private _dateProposerToValue As Date?
     Private _dateProposerFromValue As Date?
-
 #End Region
 
 #Region "Properties"
@@ -155,6 +156,16 @@ Partial Public Class uscResolutionFinder
 
     End Property
 
+    Public Property ActiveStepSelected As Boolean
+        Get
+            Return StepAttivo.Checked
+        End Get
+        Set(ByVal value As Boolean)
+            StepAttivo.Checked = value
+        End Set
+
+    End Property
+
 #End Region
 
 #Region "Properties: Panels"
@@ -210,6 +221,16 @@ Partial Public Class uscResolutionFinder
         End Get
         Set(ByVal value As Boolean)
             trWorkflow.Visible = value
+            trActiveStep.Visible = value
+        End Set
+    End Property
+
+    Public Property VisibleWorkflowSearchableSteps() As Boolean
+        Get
+            Return trWorkflow.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            trWorkflowSearchableSteps.Visible = value
             trActiveStep.Visible = value
         End Set
     End Property
@@ -369,7 +390,15 @@ Partial Public Class uscResolutionFinder
         Set(value As Boolean)
             pnlSupervisoryBoard.Visible = value
         End Set
+    End Property
 
+    Public Property LabelOC_SupervisoryBoard() As String
+        Get
+            Return chkSupervisoryBoard.Text
+        End Get
+        Set(value As String)
+            chkSupervisoryBoard.Text = value
+        End Set
     End Property
 
     Public Property VisibileOC_ConfSind() As Boolean
@@ -379,7 +408,15 @@ Partial Public Class uscResolutionFinder
         Set(value As Boolean)
             pnlConfSind.Visible = value
         End Set
+    End Property
 
+    Public Property LabelOC_ConfSind() As String
+        Get
+            Return chkConfSind.Text
+        End Get
+        Set(value As String)
+            chkConfSind.Text = value
+        End Set
     End Property
 
     Public Property VisibileOC_Region() As Boolean
@@ -388,6 +425,15 @@ Partial Public Class uscResolutionFinder
         End Get
         Set(value As Boolean)
             pnlRegion.Visible = value
+        End Set
+    End Property
+
+    Public Property LabelOC_Region() As String
+        Get
+            Return chkRegion.Text
+        End Get
+        Set(value As String)
+            chkRegion.Text = value
         End Set
     End Property
 
@@ -400,6 +446,15 @@ Partial Public Class uscResolutionFinder
         End Set
     End Property
 
+    Public Property LabelOC_Management() As String
+        Get
+            Return chkManagement.Text
+        End Get
+        Set(value As String)
+            chkManagement.Text = value
+        End Set
+    End Property
+
     Public Property VisibileOC_CorteConti() As Boolean
         Get
             Return pnlCorteConti.Visible
@@ -409,12 +464,30 @@ Partial Public Class uscResolutionFinder
         End Set
     End Property
 
+    Public Property LabelOC_CorteConti() As String
+        Get
+            Return chkCorteConti.Text
+        End Get
+        Set(value As String)
+            chkCorteConti.Text = value
+        End Set
+    End Property
+
     Public Property VisibileOC_Other() As Boolean
         Get
             Return pnlOther.Visible
         End Get
         Set(value As Boolean)
             pnlOther.Visible = value
+        End Set
+    End Property
+
+    Public Property LabelOC_Other() As String
+        Get
+            Return chkOther.Text
+        End Get
+        Set(value As String)
+            chkOther.Text = value
         End Set
     End Property
 
@@ -442,6 +515,15 @@ Partial Public Class uscResolutionFinder
         End Get
         Set(value As Boolean)
             trPrivacyPublication.Visible = value
+        End Set
+    End Property
+
+    Public Property VisibleStatoContabilita() As Boolean
+        Get
+            Return trStatoContabilita.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            trStatoContabilita.Visible = value
         End Set
     End Property
 #End Region
@@ -512,6 +594,7 @@ Partial Public Class uscResolutionFinder
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Not Page.IsPostBack Then
+            SetWorkflowSearchableStep()
             If String.IsNullOrEmpty(txtYear.Text) Then
                 txtYear.Text = Date.Now.Year.ToString()
             End If
@@ -527,8 +610,7 @@ Partial Public Class uscResolutionFinder
             AddHandler Delibera.CheckedChanged, AddressOf Delibera_CheckedChanged
         End If
 
-
-        If ResolutionEnv.CheckOCValidations Then
+        If ResolutionEnv.CheckOCValidations OrElse (ResolutionEnv.ResolutionSearchableSteps IsNot Nothing AndAlso ResolutionEnv.ResolutionSearchableSteps.Count > 0) Then
             Delibera.AutoPostBack = True
             Determina.AutoPostBack = True
             AddHandler Delibera.CheckedChanged, AddressOf Delibera_CheckedChanged
@@ -539,6 +621,11 @@ Partial Public Class uscResolutionFinder
             AjaxManager.AjaxSettings.AddAjaxSetting(Determina, pnlSupervisoryBoard)
             AjaxManager.AjaxSettings.AddAjaxSetting(Determina, pnlConfSind)
             AjaxManager.AjaxSettings.AddAjaxSetting(Determina, pnlRegion)
+
+            If (ResolutionEnv.ResolutionSearchableSteps IsNot Nothing AndAlso ResolutionEnv.ResolutionSearchableSteps.Count > 0) Then
+                AjaxManager.AjaxSettings.AddAjaxSetting(CheckBoxListWorkflowSteps, DateFrom)
+                AjaxManager.AjaxSettings.AddAjaxSetting(CheckBoxListWorkflowSteps, DateTo)
+            End If
         End If
 
     End Sub
@@ -563,12 +650,16 @@ Partial Public Class uscResolutionFinder
         If ResolutionEnv.CheckOCValidations Then
             CheckOCVisibility()
         End If
+
+        SetWorkflowSearchableStep()
     End Sub
 
     Private Sub Determina_CheckedChangedEvent(ByVal sender As Object, ByVal e As EventArgs)
         If ResolutionEnv.CheckOCValidations Then
             CheckOCVisibility()
         End If
+
+        SetWorkflowSearchableStep()
     End Sub
     Protected Sub Proposta_CheckedChanged(sender As Object, E As EventArgs) Handles Proposta.CheckedChanged
         If (Proposta.Checked) Then
@@ -631,6 +722,14 @@ Partial Public Class uscResolutionFinder
         uscCategory.ToDate = DateTo.SelectedDate
     End Sub
 
+    Protected Sub checkBoxListWorkflowSteps_SelectedIndexChanged(sender As Object, args As EventArgs) Handles CheckBoxListWorkflowSteps.SelectedIndexChanged
+        If CheckBoxListWorkflowSteps.SelectedItem IsNot Nothing Then
+            EnableRangeDate()
+        Else
+            DisableRangeDate()
+        End If
+    End Sub
+
 #End Region
 
 #Region " Methods "
@@ -652,10 +751,36 @@ Partial Public Class uscResolutionFinder
         _finder.Scadenza = Scadenza.Checked
         _finder.Risposta = Risposta.Checked
 
-        _finder.Proposta = Proposta.Checked
-        _finder.Adottata = Adottata.Checked
-        _finder.Pubblicata = Pubblicata.Checked
-        _finder.Esecutiva = Esecutiva.Checked
+        If DocSuiteContext.Current.ResolutionEnv.ResolutionSearchableSteps IsNot Nothing AndAlso DocSuiteContext.Current.ResolutionEnv.ResolutionSearchableSteps.Count > 0 Then
+            Dim selectedStepLabels As List(Of String) = GetSelectedWorkflowStepLabels()
+            If selectedStepLabels.Any() AndAlso (Delibera.Checked OrElse Determina.Checked) Then
+                Dim selectedStepDescriptions As List(Of ResolutionStepDescription) = DocSuiteContext.Current.ResolutionEnv.ResolutionSearchableSteps.Where(Function(f) selectedStepLabels.Contains(f.Label)).SelectMany(Function(f) f.ResolutionStepDescription).ToList()
+                If Delibera.Checked Then
+                    Dim stepDelibera As IList(Of TabWorkflow) = Facade.TabWorkflowFacade.GetByResolutionType(ResolutionType.IdentifierDelibera)
+                    Dim descriptionsDelibera As List(Of ResolutionStepDescription) = selectedStepDescriptions.Where(Function(f) f.Type = ResolutionType.IdentifierDelibera).ToList()
+                    For Each descriptionDelibera As ResolutionStepDescription In descriptionsDelibera
+                        _finder.DescriptionSteps.Add(descriptionDelibera.Description)
+                        _finder.FieldDateNames.Add(stepDelibera.FirstOrDefault(Function(f) f.Description = descriptionDelibera.Description).FieldDate)
+                    Next
+                End If
+                If Determina.Checked Then
+                    Dim stepDetermina As IList(Of TabWorkflow) = Facade.TabWorkflowFacade.GetByResolutionType(ResolutionType.IdentifierDetermina)
+                    Dim descriptionsDetermina As List(Of ResolutionStepDescription) = selectedStepDescriptions.Where(Function(f) f.Type = ResolutionType.IdentifierDetermina).ToList()
+                    For Each descriptionDetermina As ResolutionStepDescription In descriptionsDetermina
+                        _finder.DescriptionSteps.Add(descriptionDetermina.Description)
+                        _finder.FieldDateNames.Add(stepDetermina.FirstOrDefault(Function(f) f.Description = descriptionDetermina.Description).FieldDate)
+                    Next
+                End If
+                _finder.FieldDateNames = _finder.FieldDateNames.Distinct().ToList()
+                _finder.DescriptionSteps = _finder.DescriptionSteps.Distinct().ToList()
+            End If
+        Else
+            _finder.Proposta = Proposta.Checked
+            _finder.Adottata = Adottata.Checked
+            _finder.Pubblicata = Pubblicata.Checked
+            _finder.Esecutiva = Esecutiva.Checked
+        End If
+
         _finder.StepAttivo = StepAttivo.Checked
 
         _finder.DateFrom = DateFrom.SelectedDate
@@ -755,6 +880,10 @@ Partial Public Class uscResolutionFinder
         If trPrivacyPublication.Visible Then
             _finder.PrivacyPublication = rblPrivacyPublication.SelectedValue
         End If
+
+        If ddlBidType.Visible Then
+            _finder.IdBidType = ddlBidType.SelectedItem.Value.Trim()
+        End If
     End Sub
 
     Protected Sub EnableRangeDate()
@@ -776,6 +905,8 @@ Partial Public Class uscResolutionFinder
         BindContainersDelegate.Invoke(ddlContainer)
         'ControllerStatus
         BindControllerStatusDelegate.Invoke(ddlControllerStatus)
+        'BidType
+        BindBidTypeDelagate.Invoke(ddlBidType)
     End Sub
 
     Private Sub CheckOCVisibility()
@@ -796,6 +927,37 @@ Partial Public Class uscResolutionFinder
         End If
     End Sub
 
+    Private Sub SetWorkflowSearchableStep()
+        If ResolutionEnv.ResolutionSearchableSteps IsNot Nothing Then
+            CheckBoxListWorkflowSteps.Items.Clear()
+            For Each [step] As ResolutionStep In ResolutionEnv.ResolutionSearchableSteps
+                If ResolutionStepVisibility([step]) Then
+                    CheckBoxListWorkflowSteps.Items.Add([step].Label)
+                End If
+            Next
+        End If
+    End Sub
+
+    Private Function ResolutionStepVisibility(resolutionStep As ResolutionStep) As Boolean
+        Dim visible As Boolean = False
+        If Delibera.Checked Then
+            visible = resolutionStep.ResolutionStepDescription.Any(Function(f) f.Type = ResolutionType.IdentifierDelibera)
+        End If
+        If Determina.Checked Then
+            visible = visible OrElse resolutionStep.ResolutionStepDescription.Any(Function(f) f.Type = ResolutionType.IdentifierDetermina)
+        End If
+        Return visible
+    End Function
+
+    Private Function GetSelectedWorkflowStepLabels() As List(Of String)
+        Dim selectedSteps As List(Of String) = New List(Of String)
+        For Each [step] As ListItem In CheckBoxListWorkflowSteps.Items
+            If [step].Selected Then
+                selectedSteps.Add([step].Text)
+            End If
+        Next
+        Return selectedSteps
+    End Function
 #End Region
 
 End Class

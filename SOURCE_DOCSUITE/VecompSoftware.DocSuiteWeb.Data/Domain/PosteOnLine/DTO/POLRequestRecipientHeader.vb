@@ -14,6 +14,7 @@
     Public Property Costo As Double?
     Public Property ErrorMsg As String
     Public Property IdRichiesta As String
+    Public Property Numero As String
     Public Property IdOrdine As String
     Public Property IdRicevuta As String
     Public Property RegistrationDate As DateTimeOffset

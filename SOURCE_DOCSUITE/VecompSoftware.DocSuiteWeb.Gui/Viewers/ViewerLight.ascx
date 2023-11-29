@@ -223,6 +223,15 @@
             }
         }
 
+        function LoadDocumentInViewer(viewLinkAttribute) {
+            $get("pdfViewer").src = viewLinkAttribute;
+            if (!hasReaderActiveX()) {
+                var object = $("#pdfViewer").clone();
+                object.attr("data", viewLinkAttribute);
+                $("#pdfViewer").replaceWith(object);
+            }
+        }
+
         function ClientNodeChecked(sender, eventArgs) {
             var node = eventArgs.get_node();
             var value = node.get_value();
@@ -243,12 +252,16 @@
                 var node = treeView.get_allNodes()[i];
 
                 if (node.get_checked() == true && node.get_value() === "DOCUMENT") {
-                    $find("<%= Button_StartWorklow %>").set_enabled(true);
-                    break;
+                    if ("<%= Button_StartWorklow %>"!="") {
+                        $find("<%= Button_StartWorklow %>").set_enabled(true);
+                        break;
+                    }
                 }
 
                 if (node.get_checked() == false && node.get_value() === "DOCUMENT") {
-                    $find("<%= Button_StartWorklow %>").set_enabled(false);
+                    if ("<%= Button_StartWorklow %>" != "") {
+                        $find("<%= Button_StartWorklow %>").set_enabled(false);
+                    }
                 }
             }
         }
@@ -428,12 +441,12 @@
                         </ItemTemplate>
                     </telerik:RadToolBarButton>
                     <telerik:RadToolBarButton Text="Lista documenti" ToolTip="Visualizza/Nascondi lista documenti" Value="ToggleDocuments" />
-                    <telerik:RadToolBarButton ImageUrl="../App_Themes/DocSuite2008/imgset16/printer.png" Text="Stampa" ToolTip="Stampa documento" Value="ViewerLight_Print" />
-                    <telerik:RadToolBarButton ImageUrl="../App_Themes/DocSuite2008/imgset16/move_to_folder.png" Text="Copie conformi" ToolTip="Copie conformi" Value="ViewerLight_Download" />
-                    <telerik:RadToolBarButton ImageUrl="../App_Themes/DocSuite2008/imgset16/move_to_folder.png" Text="Originali" ToolTip="Originali" Value="ViewerLight_Original" />
-                    <telerik:RadToolBarButton ImageUrl="../App_Themes/DocSuite2008/imgset16/view_history.png" Text="Visualizza versioni" ToolTip="Visualizza versioni" Value="ViewerLight_Version" />
-                    <telerik:RadToolBarButton ImageUrl="../App_Themes/DocSuite2008/imgset16/file_extension_pdf_signed.png" Text="Controlla firma" ToolTip="Controlla firma" Value="ViewerLight_CheckIsSigned" Enabled="false" />
-                    <telerik:RadToolBarButton ImageUrl="../App_Themes/DocSuite2008/imgset16/lock.png" Value="ViewerLight_ModifyPrivacy" />
+                    <telerik:RadToolBarButton ImageUrl="~/App_Themes/DocSuite2008/imgset16/printer.png" Text="Stampa" ToolTip="Stampa documento" Value="ViewerLight_Print" />
+                    <telerik:RadToolBarButton ImageUrl="~/App_Themes/DocSuite2008/imgset16/downloadPDF.png" Text="Copie conformi" ToolTip="Copie conformi" Value="ViewerLight_Download" />
+                    <telerik:RadToolBarButton ImageUrl="~/App_Themes/DocSuite2008/imgset16/downloadDocument.png" Text="Originali" ToolTip="Originali" Value="ViewerLight_Original" />
+                    <telerik:RadToolBarButton ImageUrl="~/App_Themes/DocSuite2008/imgset16/view_history.png" Text="Visualizza versioni" ToolTip="Visualizza versioni" Value="ViewerLight_Version" />
+                    <telerik:RadToolBarButton ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_pdf_signed.png" Text="Controlla firma" ToolTip="Controlla firma" Value="ViewerLight_CheckIsSigned" Enabled="false" />
+                    <telerik:RadToolBarButton ImageUrl="~/App_Themes/DocSuite2008/imgset16/lock.png" Value="ViewerLight_ModifyPrivacy" />
                 </Items>
             </telerik:RadToolBar>
         </div>

@@ -9,10 +9,38 @@
                 if (!eventArgs.get_isPartialLoad()) {                    
                     ExecuteAjaxRequest("InitialPageLoad");
                 }
+                setSignButtonsVisibility();
+            }
+
+            function setSignButtonsVisibility() {
+                if ("<%= HasDgrooveSigner %>" === "False") {
+                    return;
+                }
+
+                if (document.getElementById("<%= btnDgrooveSigns.ClientID %>") === null ||
+                    document.getElementById("<%= btnMultiSign.ClientID %>" === null) ) {
+                    return;
+                }
+
+                var currentBrowser = getBrowserType();
+
+                if (currentBrowser.startsWith("ie")) {
+                    document.getElementById("<%= btnDgrooveSigns.ClientID %>").style.display = 'none';
+                    document.getElementById("<%= btnMultiSign.ClientID %>").style.display = '';
+                }
+                else {
+                    document.getElementById("<%= btnDgrooveSigns.ClientID %>").style.display = '';
+                    document.getElementById("<%= btnMultiSign.ClientID %>").style.display = 'none';
+                }
             }
 
             function resizeGrid() {
                 $find("<%= uscCollaborationGrid.Grid.ClientID %>").repaint();
+            }
+
+            function SaveToSessionStorageAndRedirect(documents) {
+                sessionStorage.setItem("DocsToSign", documents);
+                window.location.href = "../Comm/DgrooveSigns.aspx";
             }
 
             function OpenWindowsChangeSigner(url) {
@@ -287,6 +315,7 @@
         <asp:Button ID="btnChangeSigner" runat="server" Text="Cambia Responsabile" Visible="false" Width="130px" />
         <asp:Button CausesValidation="False" ID="btnRoles" runat="server" Text="Autorizza" ToolTip="Modifica Autorizzazioni" Width="120px" />
         <asp:Button ID="btnMultiSign" runat="server" Text="Firma" OnClientClick="Sign();" Width="120px" />
+        <asp:Button ID="btnDgrooveSigns" runat="server" Text="Firma" Width="120px" />
         <asp:Button runat="server" ID="btnSignAndNext" Text="Firma e prosegui" Width="150px" OnClientClick="SignAndNext();" />
         <asp:Button ID="btnAbsence" runat="server" Text="Direttori Assenti" Visible="false" Width="150px" />
         <asp:Button runat="server" ID="btnUoia" Text="Collaborazione Unica" Width="150px" OnClientClick="if(!CheckUoiaCollaborationTypes()) return false;" ToolTip="Genera Collaborazione Unica" Visible="false" Enabled="false" />

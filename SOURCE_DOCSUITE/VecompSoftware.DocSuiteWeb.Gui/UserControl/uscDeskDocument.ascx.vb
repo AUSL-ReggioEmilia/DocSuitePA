@@ -31,6 +31,7 @@ Public Class uscDeskDocument
     Public Event DocumentSigned(sender As Object, e As DeskDocumentResultEventArgs)
     Public Event DocumentBeforeSingleSign(ByVal sender As Object, ByVal e As DocumentBeforeSignEventArgs)
     Public Event DocumentReloaded(ByVal sender As Object, ByVal e As DocumentEventArgs)
+    Public Event DocumentVersioning(ByVal sender As Object, ByVal e As DocumentEventArgs)
 #Region "Fields"
     Private _wndHeight As Integer?
     Private _wndWidth As Integer?
@@ -49,7 +50,7 @@ Public Class uscDeskDocument
     Private Const NEW_DOCUMENT_ATTRIBUTES As String = "ToPersistDocumentInfos"
     Public Const TYPE_INSERT_NAME As String = "Insert"
     Public Const TYPE_MODIFY_NAME As String = "Modify"
-
+    Private Const IS_UPLOAD_SOURCE_ATTRIBUTE As String = "IsFromUploadSource"
 
     Private _deskFacade As DeskFacade
     Private _allowedExtensions As List(Of String)
@@ -58,7 +59,6 @@ Public Class uscDeskDocument
     Private Property _deskDocumentVersionfacade As DeskDocumentVersionFacade
     Private Property _deskDocumentFacade As DeskDocumentFacade
     Private _currentDeskRigths As DeskRightsUtil
-    Private _CurrentDeskDocumentDto As DeskDocumentResult
     Private _currentDesk As Desk
 #End Region
 
@@ -107,6 +107,14 @@ Public Class uscDeskDocument
         End Set
     End Property
 
+    Public Property DeskDocumentDataSourceExternal As IList(Of DeskDocumentResult)
+        Get
+            Return DeskDocumentDataSource
+        End Get
+        Set(value As IList(Of DeskDocumentResult))
+            DeskDocumentDataSource = value
+        End Set
+    End Property
     Public Property ColumnLastCommentVisible As Boolean
         Get
             Return dgvDeskDocument.Columns.FindByUniqueName(COLUMN_LAST_COMMENT).Visible
@@ -320,15 +328,6 @@ Public Class uscDeskDocument
         End Get
     End Property
 
-    Public Property CurrentDeskDocumentDto As DeskDocumentResult
-        Get
-            Return _CurrentDeskDocumentDto
-        End Get
-        Set(ByVal value As DeskDocumentResult)
-            _CurrentDeskDocumentDto = value
-        End Set
-    End Property
-
     Public ReadOnly Property DocumentsToSign As IList(Of MultiSignDocumentInfo)
         Get
             Dim list As New List(Of MultiSignDocumentInfo)
@@ -409,6 +408,11 @@ Public Class uscDeskDocument
         End Set
     End Property
 
+    Private Property DocumentAttributes As Dictionary(Of String, String)
+
+    ''' <summary> Elenco dei documenti aggiunti dalla finestra : Inserisci Documento </summary>
+    Protected Property DeskDocumentNewDocumentUploadSource As IList(Of DeskDocumentResult) = New List(Of DeskDocumentResult)
+
 #End Region
 
 #Region "Events"
@@ -471,15 +475,19 @@ Public Class uscDeskDocument
             Select Case arguments(1)
                 Case "UPLOAD"
                     Dim deserialized As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(arguments(2))
+                    DocumentAttributes = deserialized
+
                     For Each item As KeyValuePair(Of String, String) In deserialized
                         Dim name As String = item.Value
                         Dim doc As New TempFileDocumentInfo(name, New FileInfo(Path.Combine(CommonUtil.GetInstance().AppTempPath, item.Key)))
 
                         If doc.Size > 0 OrElse ProtocolEnv.AllowZeroBytesUpload Then
                             LoadDocumentInfo(doc, True, Date.Today)
+                            DeskDocumentNewDocumentUploadSource.Add(New DeskDocumentResult() With {.Name = doc.Name, .IsSavedToBiblos = False, .BiblosSerializeKey = doc.ToQueryString().AsEncodedQueryString(), .Size = doc.Size, .RegistrationDate = Date.Today, .LastComment = String.Empty})
                         End If
                     Next
-                    RaiseEvent DocumentUploaded(Me, New DocumentEventArgs())
+
+                    RaiseEvent DocumentVersioning(Me, New DocumentEventArgs())
 
                 Case "SETCHECKINVERSION"
                     Dim deserialized As Dictionary(Of String, String) = JsonConvert.DeserializeObject(Of Dictionary(Of String, String))(arguments(2))
@@ -509,6 +517,7 @@ Public Class uscDeskDocument
                             RaiseEvent DocumentCheckIn(Me, New DeskDocumentResultEventArgs() With {.DeskDocumentResult = dto})
                         End If
                     End If
+
                 Case "SIGN"
                     Try
                         If Not String.IsNullOrEmpty(arguments(2)) Then
@@ -553,6 +562,11 @@ Public Class uscDeskDocument
 
                 Case "SAVENEWVERSION"
                     NewVersionDocument()
+
+                Case "UPLOADVERSIONING"
+                    Dim version As Decimal = Convert.ToDecimal(arguments(4))
+                    RaiseEvent DocumentUploaded(Me, New DocumentEventArgs() With {.Version = version})
+
             End Select
         End If
     End Sub
@@ -581,7 +595,9 @@ Public Class uscDeskDocument
 
         ' lblLastDate
         With DirectCast(e.Item.FindControl("lblLastDate"), Label)
-            If dto.RegistrationDate.HasValue Then
+            If dto.LastChangedDate.HasValue Then
+                .Text = dto.LastChangedDate.Value.ToString("dd/MM/yyyy")
+            ElseIf dto.RegistrationDate.HasValue Then
                 .Text = dto.RegistrationDate.Value.ToString("dd/MM/yyyy")
             End If
         End With
@@ -645,17 +661,12 @@ Public Class uscDeskDocument
         End With
 
         With DirectCast(e.Item.FindControl("btnSignSingleDocument"), RadButton)
-            If dto.IsSigned Then
+            If CurrentDeskRights IsNot Nothing Then
                 .Visible = True
-                .Enabled = False
+                .Enabled = True
             Else
-                If CurrentDeskRights IsNot Nothing Then
-                    .Visible = deskDocumentRightsUtil.IsCheckOutButtonVisible
-                    .Enabled = True
-                Else
-                    .Visible = False
-                    .Enabled = False
-                End If
+                .Visible = False
+                .Enabled = False
             End If
         End With
 
@@ -682,8 +693,8 @@ Public Class uscDeskDocument
         End With
     End Sub
 
-    Protected Sub OpenChangeVersionWindow(lastversion As Decimal, biblokey As String, newDocumentAttributes As Dictionary(Of String, String))
-        Dim newversion As Decimal = lastversion + 0.01D
+    Protected Sub OpenChangeVersionWindow(lastversion As Decimal, biblokey As String, newDocumentAttributes As Dictionary(Of String, String), Optional isFromUploadSource As Boolean = False)
+        Dim newversion As Decimal = lastversion + 0.00D
         Dim version As String() = Split(newversion.ToString("#,##0.00"), ",")
         txtVersionDocMax.Text = version(0)
         txtVersionDocMin.Text = version(1)
@@ -693,6 +704,8 @@ Public Class uscDeskDocument
         windowChangeVersionDocument.AddAttribute(BIBLOS_KEY, biblokey)
         windowChangeVersionDocument.AddAttribute(NEW_DOCUMENT_ATTRIBUTES, JsonConvert.SerializeObject(newDocumentAttributes))
         windowChangeVersionDocument.Height = Unit.Pixel(150)
+        windowChangeVersionDocument.AddAttribute(IS_UPLOAD_SOURCE_ATTRIBUTE, isFromUploadSource.ToString())
+
         AjaxManager.ResponseScripts.Add(String.Format(OPEN_WINDOW_CONTROL, ID, windowChangeVersionDocument.ClientID))
     End Sub
 
@@ -700,10 +713,9 @@ Public Class uscDeskDocument
         Dim rowItem As GridDataItem = DirectCast(e.Item, GridDataItem)
         Dim biblosSerializeKey As String = rowItem.GetDataKeyValue("BiblosSerializeKey").ToString()
         Dim dto As DeskDocumentResult = DeskDocumentDataSource.SingleOrDefault(Function(x) x.BiblosSerializeKey.Eq(biblosSerializeKey))
+
         Select Case e.CommandName
             Case "CheckIn"
-
-
                 If DocSuiteContext.Current.ProtocolEnv.DeskShareCheckOutEnabled Then
                     ' Check in da directory condivisa
                     Dim deskVersioning As DeskDocumentVersion = CurrentDeskDocumentVersionFacade.GetLastVersionByIdDeskDocument(dto.IdDeskDocument.Value)
@@ -729,7 +741,6 @@ Public Class uscDeskDocument
                     End If
                     AjaxManager.ResponseScripts.Add(String.Format(OPEN_WINDOW_CHECKIN_SCRIPT, ID, COMMON_UPLOAD_DOCUMENT_PATH, windowUploadDocument.ClientID, params.ToString(), dto.BiblosSerializeKey.ToString()))
                 End If
-
 
             Case "ReopenCheckOut"
                 Try
@@ -943,6 +954,7 @@ Public Class uscDeskDocument
         dgvDeskDocument.DataBind()
 
         DeskDocumentDataSource = clonedDataSourceToExt
+        AjaxManager.ResponseScripts.Add(String.Format("signBtnVisibility();"))
     End Sub
 
     ''' <summary>
@@ -1093,19 +1105,27 @@ Public Class uscDeskDocument
 
     Private Sub NewVersionDocument()
         Dim newStringVersion As String = String.Concat(txtVersionDocMax.Text, ",", txtVersionDocMin.Text)
-        Dim biblosSerializeKey As String = windowChangeVersionDocument.Attributes.Item(BIBLOS_KEY)
-        Dim dto As DeskDocumentResult = DeskDocumentDataSource.Where(Function(t) t.BiblosSerializeKey.Eq(biblosSerializeKey)).FirstOrDefault()
-        Dim lastVersion As Decimal = If(dto.LastVersion, 0D)
-        Dim newVersion As Decimal = Convert.ToDecimal(newStringVersion)
         Dim documentAttributes As String = windowChangeVersionDocument.Attributes.Item(NEW_DOCUMENT_ATTRIBUTES)
-        If newVersion <= lastVersion Then
+        Dim biblosSerializeKey As String = windowChangeVersionDocument.Attributes.Item(BIBLOS_KEY)
+
+        Dim dto As DeskDocumentResult = DeskDocumentDataSource.FirstOrDefault(Function(t) t.BiblosSerializeKey.Eq(biblosSerializeKey))
+        If Convert.ToDecimal(newStringVersion) <= If(dto.LastVersion, 0D) Then
             BasePage.AjaxAlert("La versione inserita è minore o uguale alla versione attuale. Inserire una versione di valore maggiore")
-        Else
-            AjaxManager.ResponseScripts.Add(String.Format("{0}_ExecuteCheckInDocument('{1}','{2}','{3}');", ID, documentAttributes, biblosSerializeKey, newVersion))
+            Return
         End If
+
+        If windowChangeVersionDocument.Attributes.Item(IS_UPLOAD_SOURCE_ATTRIBUTE) Then
+            AjaxManager.ResponseScripts.Add(String.Format("return {0}_UploadDocumentNewVersionOpenWindow('{1}','{2}','{3}');", ID, documentAttributes, biblosSerializeKey, Convert.ToDecimal(newStringVersion)))
+        Else
+            AjaxManager.ResponseScripts.Add(String.Format("{0}_ExecuteCheckInDocument('{1}','{2}','{3}');", ID, documentAttributes, biblosSerializeKey, Convert.ToDecimal(newStringVersion)))
+        End If
+
     End Sub
 
-
+    Public Sub NewDocumentsVersioningControl()
+        Dim dto As DeskDocumentResult = DeskDocumentNewDocumentUploadSource.LastOrDefault()
+        OpenChangeVersionWindow(1, dto.BiblosSerializeKey, DocumentAttributes, True)
+    End Sub
 
 #End Region
 

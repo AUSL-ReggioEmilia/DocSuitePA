@@ -899,7 +899,7 @@
                               <Width>5.14581cm</Width>
                               <ZIndex>22</ZIndex>
                               <Visibility>
-                                <Hidden>=Iif(Parameters!ParerEnabled.Value = "True", False, True)</Hidden>
+                                <Hidden>=Iif(Parameters!ConservationEnabled.Value = "True", False, True)</Hidden>
                               </Visibility>
                               <Style>
                                 <Border>
@@ -933,7 +933,7 @@
                               <Width>12.29296cm</Width>
                               <ZIndex>23</ZIndex>
                               <Visibility>
-                                <Hidden>=iif(Parameters!ParerEnabled.Value = "True", False, True)</Hidden>
+                                <Hidden>=iif(Parameters!ConservationEnabled.Value = "True", False, True)</Hidden>
                               </Visibility>
                               <Style>
                                 <Border>
@@ -1603,7 +1603,7 @@
       <AllowBlank>true</AllowBlank>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
-    <ReportParameter Name="ParerEnabled">
+    <ReportParameter Name="ConservationEnabled">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
       <AllowBlank>true</AllowBlank>

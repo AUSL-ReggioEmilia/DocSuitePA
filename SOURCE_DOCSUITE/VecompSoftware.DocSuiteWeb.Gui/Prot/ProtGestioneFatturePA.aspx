@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Gestione Fatture PA" Language="vb" ValidateRequest="false" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="ProtGestioneFatturePA.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.ProtGestioneFatturePA" %>
+﻿<%@ Page Title="Gestione Fatture PA" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="ProtGestioneFatturePA.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.ProtGestioneFatturePA" %>
 
 <%@ Register Src="../UserControl/uscProtGrid.ascx" TagName="uscProtGrid" TagPrefix="grdProt" %>
 

@@ -77,15 +77,6 @@
                     </asp:DropDownList>
                 </td>
             </tr>
-            <tr runat="server" id="trLocazione">
-                <td class="label">Locazione:
-                </td>
-                <td>
-                    <asp:DropDownList AppendDataBoundItems="True" DataSourceID="odsLocation" ID="ddlLocation" runat="server">
-                        <asp:ListItem />
-                    </asp:DropDownList>
-                </td>
-            </tr>
             <tr id="rowContainer" runat="server">
                 <td class="label">Contenitore:
                 </td>
@@ -176,7 +167,7 @@
                 <td class="label">Settore autorizzato:
                 </td>
                 <td style="width: 100%">
-                    <uc3:uscSettori HeaderVisible="false" ID="uscSettore" MultiSelect="false" Required="false" runat="server" />
+                    <uc3:uscSettori HeaderVisible="false" ID="uscSettore" MultiSelect="false" Required="false" runat="server" ShowActive="false"/>
                     <asp:CheckBox ID="chbRoleChild" runat="server" Text="Estendi ricerca ai sotto settori" />
                 </td>
             </tr>

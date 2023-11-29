@@ -159,6 +159,60 @@ Namespace Prot.PosteWeb
         Protected WithEvents txtMessage As Global.Telerik.Web.UI.RadTextBox
 
         '''<summary>
+        '''pnlTNoticeOptions control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents pnlTNoticeOptions As Global.System.Web.UI.WebControls.Panel
+
+        '''<summary>
+        '''chkMultipleTNotice control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents chkMultipleTNotice As Global.System.Web.UI.WebControls.CheckBox
+
+        '''<summary>
+        '''pnlTNoticeObject control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents pnlTNoticeObject As Global.System.Web.UI.WebControls.Panel
+
+        '''<summary>
+        '''txtTNoticeObject control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents txtTNoticeObject As Global.Telerik.Web.UI.RadTextBox
+
+        '''<summary>
+        '''pnlTNoticeMessage control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents pnlTNoticeMessage As Global.System.Web.UI.WebControls.Panel
+
+        '''<summary>
+        '''txtTNoticeMessage control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents txtTNoticeMessage As Global.Telerik.Web.UI.RadEditor
+
+        '''<summary>
         '''cmdSend control.
         '''</summary>
         '''<remarks>

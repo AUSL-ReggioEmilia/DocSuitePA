@@ -77,6 +77,10 @@ class PECDetails {
             let subjectName: string = this.pecMails.MailSubject;
             let url: string = `../PEC/PECSummary.aspx?Type=Pec&PECId=${this.pecMails.EntityId}`;
 
+            if (!subjectName) {
+                subjectName = '----------'
+            }
+
             this._nameId.text(subjectName);
             this._nameId.attr("href", url);
 
@@ -146,6 +150,10 @@ class PECDetails {
 
             let subjectName: string = this.pecMails.MailSubject;
             let url: string = `../PEC/PECSummary.aspx?Type=Pec&PECId=${this.pecMails.EntityId}`;
+
+            if (!subjectName) {
+                subjectName = '----------'
+            }
 
             this._nameId.text(subjectName);
             this._nameId.attr("href", url);

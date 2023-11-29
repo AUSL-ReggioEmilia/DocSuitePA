@@ -195,8 +195,7 @@ class DossierFolderModifica extends DossierBase {
                 let roleModel: RoleModel = <RoleModel>{};
                 roleModel.EntityShortId = role.Role.EntityShortId;
                 roleModel.IdRole = role.Role.EntityShortId;
-                roleModel.IdRoleTenant = role.Role.IdRoleTenant;
-                roleModel.TenantId = role.Role.TenantId;
+                roleModel.IdTenantAOO = role.Role.IdTenantAOO;
                 roleModel.Name = role.Role.Name;
                 roles.push(roleModel);
             }
@@ -253,7 +252,7 @@ class DossierFolderModifica extends DossierBase {
 
                     //devo mettere lo uniqueid ai settori che erano già presenti nel dossier
                     let roleFolder = this._dossierFolderRoles.filter(function (item) {
-                        if (item.Role.IdRole == s.EntityShortId && item.Role.TenantId == s.TenantId) {
+                        if (item.Role.IdRole == s.EntityShortId && item.Role.IdTenantAOO == s.IdTenantAOO) {
                             return item;
                         }
                     });
@@ -295,11 +294,9 @@ class DossierFolderModifica extends DossierBase {
                         r.EntityShortId = role.EntityShortId;
                         r.IdRole = role.EntityShortId;
                         r.Name = role.Name;
-                        r.TenantId = role.TenantId;
-                        r.IdRoleTenant = role.IdRoleTenant;
+                        r.IdTenantAOO = role.IdTenantAOO;
 
                         dossierFolderRoleModel.UniqueId = role.DossierFolderRoles[0].UniqueId;
-
                         dossierFolderRoleModel.Role = r;
                         dossierFolderRoleModel.AuthorizationRoleType = AuthorizationRoleType.Accounted;
                         dossierFolderRoleModel.Status = DossierRoleStatus.Active;

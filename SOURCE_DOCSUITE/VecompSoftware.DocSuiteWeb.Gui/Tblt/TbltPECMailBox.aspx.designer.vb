@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class TbltPECMailBox
-    
+
     '''<summary>
     '''RadWindowManagerGroups control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerGroups As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowSetRule control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSetRule As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''txtRulesetName control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtRulesetName As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''txtRulesetNameValidator control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtRulesetNameValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''txtSpecifySender control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtSpecifySender As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''txtSpecifySenderValidator control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtSpecifySenderValidator As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''rlbSpecifyPECMailBox control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rlbSpecifyPECMailBox As Global.Telerik.Web.UI.RadDropDownList
-    
+
     '''<summary>
     '''btnPECMAilBoxSave control.
     '''</summary>
@@ -84,7 +84,25 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnPECMAilBoxSave As Global.Telerik.Web.UI.RadButton
-    
+
+    '''<summary>
+    '''windowInsert control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents windowInsert As Global.Telerik.Web.UI.RadWindow
+
+    '''<summary>
+    '''uscPECMailBoxSettingsInsert control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscPECMailBoxSettingsInsert As Global.VecompSoftware.DocSuiteWeb.Gui.uscPECMailBoxSettings
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -93,7 +111,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
+
     '''<summary>
     '''splitterMain control.
     '''</summary>
@@ -102,7 +120,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents splitterMain As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''paneSelection control.
     '''</summary>
@@ -111,7 +129,25 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents paneSelection As Global.Telerik.Web.UI.RadPane
-    
+
+    '''<summary>
+    '''RadSplitter1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents RadSplitter1 As Global.Telerik.Web.UI.RadSplitter
+
+    '''<summary>
+    '''Pane1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents Pane1 As Global.Telerik.Web.UI.RadPane
+
     '''<summary>
     '''ToolBarSearch control.
     '''</summary>
@@ -120,7 +156,16 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ToolBarSearch As Global.Telerik.Web.UI.RadToolBar
-    
+
+    '''<summary>
+    '''FolderToolBar control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents FolderToolBar As Global.Telerik.Web.UI.RadToolBar
+
     '''<summary>
     '''rtvPECMailBoxes control.
     '''</summary>
@@ -129,7 +174,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtvPECMailBoxes As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''pnlDetails control.
     '''</summary>
@@ -138,7 +183,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDetails As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''rpbDetails control.
     '''</summary>
@@ -147,16 +192,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rpbDetails As Global.Telerik.Web.UI.RadPanelBar
-    
-    '''<summary>
-    '''lblPECMailBoxId control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblPECMailBoxId As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblMailBoxRecipient control.
     '''</summary>
@@ -165,7 +201,61 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblMailBoxRecipient As Global.System.Web.UI.WebControls.Label
-    
+
+    '''<summary>
+    '''lblUsername control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblUsername As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIsInterop control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIsInterop As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIsProtocol control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIsProtocol As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIsPublicProtocol control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIsPublicProtocol As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblLocation control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblLocation As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblServerType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblServerType As Global.System.Web.UI.WebControls.Label
+
     '''<summary>
     '''lblIncomingServer control.
     '''</summary>
@@ -174,7 +264,34 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblIncomingServer As Global.System.Web.UI.WebControls.Label
-    
+
+    '''<summary>
+    '''lblINPort control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblINPort As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblINSSL control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblINSSL As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblOUTSSL control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOUTSSL As Global.System.Web.UI.WebControls.Label
+
     '''<summary>
     '''lblOutgoingServer control.
     '''</summary>
@@ -183,7 +300,70 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblOutgoingServer As Global.System.Web.UI.WebControls.Label
-    
+
+    '''<summary>
+    '''lblOUTPort control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblOUTPort As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIsManaged control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIsManaged As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIsNotManaged control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIsNotManaged As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblProfile control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblProfile As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblIsHandleEnabled control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblIsHandleEnabled As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblJeepServIN control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblJeepServIN As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblJeepServOUT control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblJeepServOUT As Global.System.Web.UI.WebControls.Label
+
     '''<summary>
     '''lblRulesetName control.
     '''</summary>
@@ -192,7 +372,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRulesetName As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblRulesetCondition control.
     '''</summary>
@@ -201,7 +381,16 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRulesetCondition As Global.System.Web.UI.WebControls.Label
-    
+
+    '''<summary>
+    '''lblElectronicType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblElectronicType As Global.System.Web.UI.WebControls.Label
+
     '''<summary>
     '''lblRulesetType control.
     '''</summary>
@@ -210,52 +399,7 @@ Partial Public Class TbltPECMailBox
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRulesetType As Global.System.Web.UI.WebControls.Label
-    
-    '''<summary>
-    '''btnPECMailBoxSetRule control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnPECMailBoxSetRule As Global.Telerik.Web.UI.RadButton
-    
-    '''<summary>
-    '''pnlButtons control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
-    '''<summary>
-    '''cmdUpdatePEC control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cmdUpdatePEC As Global.System.Web.UI.WebControls.Button
-    
-    '''<summary>
-    '''cmdAddPECMailBox control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cmdAddPECMailBox As Global.System.Web.UI.WebControls.Button
-    
-    '''<summary>
-    '''pnlPECMailBoxSettings control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlPECMailBoxSettings As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscPECMailBoxSettings control.
     '''</summary>

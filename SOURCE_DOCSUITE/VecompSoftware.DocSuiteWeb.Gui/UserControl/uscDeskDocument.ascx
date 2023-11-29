@@ -3,6 +3,29 @@
 
 <telerik:RadScriptBlock runat="server">
     <script type="text/javascript">
+        $(function () {
+            signBtnVisibility();
+        });
+
+        function signBtnVisibility() {
+            var currentBrowser = getBrowserType();
+            if (currentBrowser.startsWith("ie")) {
+                return;
+            }
+
+            var grid = $find("<%=dgvDeskDocument.ClientID%>");
+            var masterTable = grid.get_masterTableView();
+            var items = masterTable.get_dataItems();
+
+            for (var i = 0; i < items.length; i++) {
+                var rowValues = items[i];
+                var signBtn = rowValues.findElement("btnSignSingleDocument");
+                if (signBtn) {
+                    signBtn.style.display = 'none';
+                }
+            }
+        }
+
         function <%= Me.ID %>_CloseDocument(sender, args, type) {
             sender.remove_close(<%= Me.ID %>_CloseDocument);
             if (args.get_argument() !== null) {
@@ -13,6 +36,7 @@
                 $find("<%= AjaxManager.ClientID %>").ajaxRequest(argument);
             }
         }
+
         function <%= Me.ID %>_OpenWindowBase(name) {
             var wnd = $find(name);
             wnd.set_destroyOnClose(true);
@@ -189,6 +213,15 @@
             oWindow.close();
         }
 
+        function <%= Me.ID %>_UploadDocumentNewVersionOpenWindow(docAttributes, biblosSerializeKey, version) {
+            var argument = "<%= Me.ClientID %>|UPLOADVERSIONING|" + docAttributes;
+            argument += "|" + biblosSerializeKey;
+            argument += '|' + version;
+            $find("<%= AjaxManager.ClientID %>").ajaxRequest(argument);
+            var oWindow = $find("<%= windowChangeVersionDocument.ClientID%>");
+            oWindow.close();
+        }
+   
         function btnSaveVersionClicked(args, e) {
             var argument = "<%= Me.ClientID %>|SAVENEWVERSION||||";
             $find("<%= AjaxManager.ClientID %>").ajaxRequest(argument);
@@ -218,22 +251,26 @@
                 </div>
             </ContentTemplate>
         </telerik:RadWindow>
-        <telerik:RadWindow Behaviors="Close" ID="windowChangeVersionDocument" ReloadOnShow="true" runat="server" Title="Cambio versione documento">
+        <telerik:RadWindow Behaviors="Close" ID="windowChangeVersionDocument" ReloadOnShow="true" runat="server" Title="Cambio versione documento" Height="150" Width="320">
             <ContentTemplate>
-                <asp:Panel runat="server" ID="pnlChangeVersion">
-                    <div class="col-dsw-10 DeskLabel">
+                <asp:Panel runat="server" ID="pnlChangeVersion" style="padding:5px 5px 0 5px;">
+                    <div class="col-dsw-10">
                         Versione attuale <b>
-                            <asp:Label ID="lblActualVersion" runat="server" Text="Label"></asp:Label></b>
+                            <asp:Label class="DeskLabel" ID="lblActualVersion" runat="server" Text="Label"></asp:Label></b>
                     </div>
-                    <div class="col-dsw-10 DeskLabel">Inserire nuova versione file:</div>
-                    <telerik:RadTextBox runat="server" ID="txtVersionDocMax" MaxLength="3" Width="50" CssClass="inputCommentText" InputType="Text" />.
-                    <telerik:RadTextBox runat="server" ID="txtVersionDocMin" MaxLength="2" Width="50" CssClass="inputCommentText" InputType="Text" />
+                    <br />
                     <div>
-                        <asp:RequiredFieldValidator runat="server" ValidationGroup="verdocValidation" ID="RequiredFieldValidator1" Display="Dynamic" ControlToValidate="txtVersionDocMax" ErrorMessage="Il valore è obbligatorio" />
-                        <asp:RegularExpressionValidator ControlToValidate="txtVersionDocMax" Display="Dynamic" ErrorMessage="Il Campo deve essere numerico" ID="Regularexpressionvalidator2" runat="server" ValidationExpression="^[0-9]+$" />
+                        <div class="col-dsw-10" style="display:inline;">Inserire nuova versione file:</div>
+                        <telerik:RadTextBox runat="server" ID="txtVersionDocMax" MaxLength="3" Width="50" CssClass="inputCommentText" InputType="Text" />.
+                        <telerik:RadTextBox runat="server" ID="txtVersionDocMin" MaxLength="2" Width="50" CssClass="inputCommentText" InputType="Text" />
+                       
+                        <div>
+                            <asp:RequiredFieldValidator runat="server" ValidationGroup="verdocValidation" ID="RequiredFieldValidator1" Display="Dynamic" ControlToValidate="txtVersionDocMax" ErrorMessage="Il valore è obbligatorio" />
+                            <asp:RegularExpressionValidator ControlToValidate="txtVersionDocMax" Display="Dynamic" ErrorMessage="Il Campo deve essere numerico" ID="Regularexpressionvalidator2" runat="server" ValidationExpression="^[0-9]+$" />
 
-                        <asp:RequiredFieldValidator runat="server" ValidationGroup="verdocValidation" ID="RequiredFieldValidator2" Display="Dynamic" ControlToValidate="txtVersionDocMin" ErrorMessage="Il valore è obbligatorio" />
-                        <asp:RegularExpressionValidator ControlToValidate="txtVersionDocMin" Display="Dynamic" ErrorMessage="Il Campo deve essere numerico" ID="Regularexpressionvalidator1" runat="server" ValidationExpression="^[0-9]+$" />
+                            <asp:RequiredFieldValidator runat="server" ValidationGroup="verdocValidation" ID="RequiredFieldValidator2" Display="Dynamic" ControlToValidate="txtVersionDocMin" ErrorMessage="Il valore è obbligatorio" />
+                            <asp:RegularExpressionValidator ControlToValidate="txtVersionDocMin" Display="Dynamic" ErrorMessage="Il Campo deve essere numerico" ID="Regularexpressionvalidator1" runat="server" ValidationExpression="^[0-9]+$" />
+                        </div>
                     </div>
                 </asp:Panel>
                 <div class="window-footer-wrapper">
@@ -254,7 +291,7 @@
                 <Items>
                     <telerik:RadToolBarButton runat="server" CausesValidation="False" Value="btnUploadDocument" CommandName="btnUploadDocument" ToolTip="Inserisci Documento" CssClass="DeskIcon" ImageUrl="~/App_Themes/DocSuite2008/imgset16/folder.png" />
                     <telerik:RadToolBarButton runat="server" CausesValidation="False" Value="btnScannerDocument" CommandName="btnScannerDocument" ToolTip="Inserisci Documento da Scanner" CssClass="DeskIcon" ImageUrl="~/App_Themes/DocSuite2008/imgset16/scanner.png" />
-                    <telerik:RadToolBarButton runat="server" CausesValidation="False" Value="btnSelectTemplate" CommandName="btnSelectTemplate" ToolTip="Seleziona deposito documentale" CssClass="DeskIcon" Visible="false" ImageUrl="~/Comm/Images/Selezione16.gif" />
+                    <telerik:RadToolBarButton runat="server" CausesValidation="False" Value="btnSelectTemplate" CommandName="btnSelectTemplate" ToolTip="Seleziona deposito documentale" CssClass="DeskIcon" Visible="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/template-selection.png" />
                     <telerik:RadToolBarButton runat="server" CausesValidation="False" Value="btnSignDocument" CommandName="btnSignDocument" ToolTip="Firma Documento" CssClass="DeskIcon" Visible="false" ImageUrl="~/App_Themes/DocSuite2008/imgset16/card_chip_gold.png" />
                 </Items>
             </telerik:RadToolBar>

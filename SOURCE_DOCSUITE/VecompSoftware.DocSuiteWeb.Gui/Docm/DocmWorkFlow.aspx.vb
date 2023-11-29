@@ -97,20 +97,20 @@ Partial Public Class DocmWorkFlow
                         Dim addUser As Boolean = True
                         nodoUser = New RadTreeNode
                         nodoUser.Text = documenttokenuser.UserName & " (" & documenttokenuser.DocStep & If(documenttokenuser.SubStep <> 0, "." & documenttokenuser.SubStep, "") & ")"
-                        Select Case documenttokenuser.IsActive
 
-                            Case 0
-                                Select Case True
-                                    Case documenttoken(Campi.iStep) = documenttokenuser.LastStep
-                                        nodoUser.ImageUrl = "../Comm/Images/Remove16.gif"
-                                    Case Else
-                                        nodoUser.ImageUrl = "../Comm/Images/User16.gif"
-                                End Select
-                                'NodoUser.ImageUrl = "../Comm/Images/Remove16.gif"
-                                If documenttoken(Campi.iStep) > documenttokenuser.LastStep Then addUser = False
-                            Case 1
-                                nodoUser.ImageUrl = "../Comm/Images/User16.gif"
-                        End Select
+                        If documenttokenuser.IsActive Then
+                            nodoUser.ImageUrl = "../Comm/Images/User16.gif"
+                        Else
+                            Select Case True
+                                Case documenttoken(Campi.iStep) = documenttokenuser.LastStep
+                                    nodoUser.ImageUrl = "../Comm/Images/Remove16.gif"
+                                Case Else
+                                    nodoUser.ImageUrl = "../Comm/Images/User16.gif"
+                            End Select
+                            'NodoUser.ImageUrl = "../Comm/Images/Remove16.gif"
+                            If documenttoken(Campi.iStep) > documenttokenuser.LastStep Then addUser = False
+                        End If
+
                         nodoUser.Expanded = True
                         If addUser Then nodo.Nodes.Add(nodoUser)
                     Next

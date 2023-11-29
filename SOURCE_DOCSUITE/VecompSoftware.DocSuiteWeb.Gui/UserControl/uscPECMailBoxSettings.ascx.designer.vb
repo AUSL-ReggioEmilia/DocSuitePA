@@ -14,13 +14,22 @@ Option Explicit On
 Partial Public Class uscPECMailBoxSettings
 
     '''<summary>
-    '''rwPECMailBoxSettings control.
+    '''pnlDetails control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents rwPECMailBoxSettings As Global.Telerik.Web.UI.RadWindow
+    Protected WithEvents pnlDetails As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
+    '''rpbDetails control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rpbDetails As Global.Telerik.Web.UI.RadPanelBar
 
     '''<summary>
     '''pnlPageContent control.
@@ -30,15 +39,6 @@ Partial Public Class uscPECMailBoxSettings
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlPageContent As Global.System.Web.UI.WebControls.Panel
-
-    '''<summary>
-    '''lblPECMailBoxId control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblPECMailBoxId As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
     '''txtMailboxName control.
@@ -299,5 +299,14 @@ Partial Public Class uscPECMailBoxSettings
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnSave As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnSave As Global.Telerik.Web.UI.RadButton
+
+    '''<summary>
+    '''uscNotification control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
 End Class

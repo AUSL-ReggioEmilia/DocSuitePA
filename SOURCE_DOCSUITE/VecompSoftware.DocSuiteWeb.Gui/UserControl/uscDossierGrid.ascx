@@ -34,7 +34,7 @@
 </telerik:RadScriptBlock>
 
 <telerik:RadAjaxPanel ClientEvents-OnRequestStart="onRequestStart" runat="server" CssClass="radGridWrapper" ID="pageContent">
-    <telerik:RadGrid runat="server" CssClass="dossierGrid" ID="dossierGrid" Skin="Office2010Blue" PageSize="30" GridLines="None" Height="100%" AllowPaging="True" AllowMultiRowSelection="True" AllowFilteringByColumn="False">
+    <telerik:RadGrid runat="server" CssClass="dossierGrid" ID="dossierGrid" Skin="Office2010Blue" PageSize="30" GridLines="None" Height="100%" AllowPaging="True" AllowMultiRowSelection="True" AllowFilteringByColumn="False" RenderMode="Lightweight">
         <ClientSettings>
             <Scrolling AllowScroll="true" UseStaticHeaders="true" ScrollHeight="100%" />
             <Resizing AllowColumnResize="false" />

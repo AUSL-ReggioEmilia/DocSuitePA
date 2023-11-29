@@ -364,7 +364,7 @@ Public Class ResolutionUtil
             fText = fText.Replace("[DATA]", resl.AdoptionDate.DefaultString())
             fText = fText.Replace("[OGGETTO]", HttpUtility.HtmlEncode(resl.ResolutionObject))
 
-            If pViewReslType = ResolutionType.IdentifierDetermina OrElse DocSuiteContext.Current.ResolutionEnv.UseSharepointPublication Then
+            If pViewReslType = ResolutionType.IdentifierDetermina Then
                 If String.IsNullOrEmpty(resl.Container.Note) Then
                     fText = fText.Replace("[CONTAINER]", HttpUtility.HtmlEncode(resl.Container.Name.ToUpper))
                 Else

@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscContattiSel
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''RadWindowManagerContacts control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerContacts As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowSelContact control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowSelContact As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''tableId control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tableId As Global.System.Web.UI.HtmlControls.HtmlTable
-    
+
     '''<summary>
     '''tblHeader control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tblHeader As Global.System.Web.UI.HtmlControls.HtmlTableCell
-    
+
     '''<summary>
     '''pnlIntestazione control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlIntestazione As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblCaption control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCaption As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''lblCount control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCount As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''btnContactMaxItems control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnContactMaxItems As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''chkCopia control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkCopia As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''RadTreeContact control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadTreeContact As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''panelOnlyContact control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents panelOnlyContact As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnSelContact2 control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSelContact2 As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''panelButtons control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents panelButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnAddMyself control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAddMyself As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnAddSdiContact control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAddSdiContact As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnSelContactDomain control.
     '''</summary>
@@ -165,16 +165,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSelContactDomain As Global.System.Web.UI.WebControls.ImageButton
-    
-    '''<summary>
-    '''ButtonSelContactOChart control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ButtonSelContactOChart As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnSelContact control.
     '''</summary>
@@ -183,7 +174,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSelContact As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnAddManualMulti control.
     '''</summary>
@@ -192,7 +183,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAddManualMulti As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnAddManual control.
     '''</summary>
@@ -201,7 +192,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAddManual As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnContactSmart control.
     '''</summary>
@@ -210,7 +201,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnContactSmart As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnRoleUser control.
     '''</summary>
@@ -219,7 +210,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnRoleUser As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnIPAContact control.
     '''</summary>
@@ -228,7 +219,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnIPAContact As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnDelContact control.
     '''</summary>
@@ -237,7 +228,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnDelContact As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''cmdDetails control.
     '''</summary>
@@ -246,7 +237,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cmdDetails As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnImportContact control.
     '''</summary>
@@ -255,7 +246,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnImportContact As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''btnImportContactManual control.
     '''</summary>
@@ -264,7 +255,7 @@ Partial Public Class uscContattiSel
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnImportContactManual As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''TreeValidator control.
     '''</summary>

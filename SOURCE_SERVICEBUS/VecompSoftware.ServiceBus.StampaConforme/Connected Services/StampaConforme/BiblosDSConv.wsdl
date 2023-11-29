@@ -588,10 +588,10 @@
   </wsdl:binding>
   <wsdl:service name="BiblosDSConv">
     <wsdl:port name="BiblosDSConvSoap" binding="tns:BiblosDSConvSoap">
-      <soap:address location="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx" />
+      <soap:address location="http://./StampaConforme/BiblosDSConv.asmx" />
     </wsdl:port>
     <wsdl:port name="BiblosDSConvSoap12" binding="tns:BiblosDSConvSoap12">
-      <soap12:address location="http://geddevsc.northeurope.cloudapp.azure.com/StampaConforme/BiblosDSConv.asmx" />
+      <soap12:address location="http://./StampaConforme/BiblosDSConv.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

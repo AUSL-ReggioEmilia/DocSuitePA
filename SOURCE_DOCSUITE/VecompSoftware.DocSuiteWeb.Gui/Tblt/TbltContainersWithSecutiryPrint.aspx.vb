@@ -18,6 +18,9 @@ Partial Class PrintContainersWithSecurity
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblStampeSecurityRight OrElse CommonShared.HasGroupTblStampeRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
         InitializeAjaxSettings()
         InitializeControls()
         If Not IsPostBack Then

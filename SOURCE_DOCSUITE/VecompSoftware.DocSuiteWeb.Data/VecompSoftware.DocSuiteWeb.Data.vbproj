@@ -102,12 +102,12 @@
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.9.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.9\lib\net45\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=5.1.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\NHibernate.5.1.3\lib\net461\NHibernate.dll</HintPath>
@@ -126,8 +126,8 @@
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.9\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -139,41 +139,44 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Telerik.Web.UI, Version=2020.1.114.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.Web.UI.2020.1.114.45\lib\net45\Telerik.Web.UI.dll</HintPath>
+    <Reference Include="Telerik.Web.UI, Version=2021.1.119.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Web.UI.2021.1.119.45\lib\net45\Telerik.Web.UI.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Clients.WebAPI, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Clients.WebAPI.9.9.20267.1\lib\net48\VecompSoftware.Clients.WebAPI.dll</HintPath>
+    <Reference Include="VecompSoftware.Clients.WebAPI, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Clients.WebAPI.9.22.23292.1\lib\net48\VecompSoftware.Clients.WebAPI.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.9.20254.2\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.22.23089.1\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.22.23089.1\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.9.20254.5, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.9.20254.5\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.22.23089.1\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.22.23089.1\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.9.9.20267.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers, Version=9.22.23292.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.9.22.23292.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Json, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Json.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Json.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Json, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Json.9.22.23292.1\lib\net48\VecompSoftware.Helpers.Json.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.NHibernate, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.NHibernate.9.9.20267.1\lib\net48\VecompSoftware.Helpers.NHibernate.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.NHibernate, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.NHibernate.9.22.23292.1\lib\net48\VecompSoftware.Helpers.NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Web, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Web.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Web.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Security, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Security.9.22.23292.1\lib\net48\VecompSoftware.Helpers.Security.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Web, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Web.9.22.23292.1\lib\net48\VecompSoftware.Helpers.Web.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Logging, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Logging.9.9.20267.1\lib\net48\VecompSoftware.Services.Logging.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.22.23292.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
+    </Reference>
+    <Reference Include="VecompSoftware.Services.Logging, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Logging.9.22.23292.1\lib\net48\VecompSoftware.Services.Logging.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -185,17 +188,12 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\dto\APIProviderDTO.vb" />
-    <Compile Include="API\NHibernateAPIProviderDao.vb" />
-    <Compile Include="API\domain\APIProvider.vb" />
     <Compile Include="Common\Finder\NHCategorySchemaFinder.vb" />
     <Compile Include="Common\Finder\NHRoleUserFinder.vb" />
     <Compile Include="Common\Finder\NHSecurityGroupFinder.vb" />
     <Compile Include="Common\Finder\NHSecurityUserFinder.vb" />
     <Compile Include="Common\NHibernateCategorySchemaDao.vb" />
-    <Compile Include="Common\NHibernateContactNameDao.vb" />
     <Compile Include="Common\NHibernateContainerPropertyDao.vb" />
-    <Compile Include="Common\NHibernateRoleNameDao.vb" />
     <Compile Include="Context\ContainerEnv.vb" />
     <Compile Include="Context\ProtocolEnv.vb" />
     <Compile Include="CustomizationSchemaApplyer\SessionFactory\MappingType.vb" />
@@ -218,10 +216,10 @@
     <Compile Include="Domain\Common\CategorySchema.vb" />
     <Compile Include="Domain\Common\Contact\ContactList.vb" />
     <Compile Include="Domain\Common\Contact\LanguageType.vb" />
-    <Compile Include="Domain\Common\Contact\TenantContact.vb" />
+    <Compile Include="Domain\Common\ContainerPropertiesName.vb" />
+    <Compile Include="Domain\Common\RoleTypology.vb" />
     <Compile Include="Domain\Common\DTO\ContactListDto.vb" />
     <Compile Include="Domain\Common\LogEvent.vb" />
-    <Compile Include="Domain\Common\TenantRole.vb" />
     <Compile Include="Domain\DocumentUnits\DocumentUnit.vb" />
     <Compile Include="Domain\DocumentUnits\DocumentUnitStatus.vb" />
     <Compile Include="Domain\Fascicle\FascicleDocumentUnit.vb" />
@@ -230,7 +228,10 @@
     <Compile Include="Domain\Fascicle\VisibilityType.vb" />
     <Compile Include="Domain\Fascicle\ReferenceType.vb" />
     <Compile Include="Domain\Fascicle\FascicleType.vb" />
+    <Compile Include="Domain\ISupportShortLogicDelete.vb" />
     <Compile Include="Domain\ISupportTenant.vb" />
+    <Compile Include="Domain\Outbox\Status.vb" />
+    <Compile Include="Domain\Outbox\MessageType.vb" />
     <Compile Include="Domain\PEC\InvoiceStatus.vb" />
     <Compile Include="Domain\PEC\InvoiceType.vb" />
     <Compile Include="Domain\PEC\PECMailReceiptType.vb" />
@@ -243,13 +244,10 @@
     <Compile Include="DocumentSeries\domain\DocumentSeriesItemMessage.vb" />
     <Compile Include="Domain\Collaboration\CollaborationAggregate.vb" />
     <Compile Include="Domain\Collaboration\CollaborationMainAction.vb" />
-    <Compile Include="Domain\Common\Contact\ContactName.vb" />
-    <Compile Include="Domain\Common\Contact\RoleName.vb" />
     <Compile Include="Domain\Common\ContainerProperty.vb" />
     <Compile Include="Domain\Common\DTO\ContainerRightsDto.vb" />
     <Compile Include="Domain\Common\UserDiary.vb" />
     <Compile Include="Domain\Document\DocumentLogType.vb" />
-    <Compile Include="Domain\ISupportChanged.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASEContattiTrasmittente.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASEContratto.vb" />
     <Compile Include="Domain\PosteOnLine\DTO\ExtentedPropertiesComponents\PASEDatiTrasmissione.vb" />
@@ -294,7 +292,6 @@
     <Compile Include="Domain\PEC\PECMailMultipleTypeEnum.vb" />
     <Compile Include="Domain\PEC\PECMailProcessStatus.vb" />
     <Compile Include="Domain\Protocol\Incremental.vb" />
-    <Compile Include="Domain\Protocol\Log\LogKind.vb" />
     <Compile Include="Domain\Protocol\Log\LogKindEnum.vb" />
     <Compile Include="Domain\Protocol\ProtocolDistributionType.vb" />
     <Compile Include="Domain\Protocol\ProtocolKind.vb" />
@@ -324,6 +321,7 @@
     <Compile Include="Domain\Resolution\ResolutionKindDocumentSeries.vb" />
     <Compile Include="Domain\Resolution\ResolutionMessage.vb" />
     <Compile Include="Domain\Resolution\PrintLetterRole.vb" />
+    <Compile Include="Domain\Resolution\ResolutionWorkflowUser.vb" />
     <Compile Include="Events\EventListenerUtil.vb" />
     <Compile Include="Events\TenantInsertEventListener.vb" />
     <Compile Include="ExtensionMethods\CategoryDTOEx.vb" />
@@ -353,8 +351,12 @@
     <Compile Include="Models\InvoiceResources.vb" />
     <Compile Include="Models\InvoiceResourcesFactory.vb" />
     <Compile Include="Models\InvoiceStylesheetNames.vb" />
+    <Compile Include="Models\OCOptionModel.vb" />
+    <Compile Include="Models\OCOptionsModel.vb" />
     <Compile Include="Models\PublicationResolutionDocumentModel.vb" />
     <Compile Include="Models\ResolutionActivityDocumentModel.vb" />
+    <Compile Include="Models\ResolutionStep.vb" />
+    <Compile Include="Models\ResolutionStepDescription.vb" />
     <Compile Include="Models\SignedIconRenderingModality.vb" />
     <Compile Include="Models\TenantEntityConfigurationEx.vb" />
     <Compile Include="Models\WebDoc.vb" />
@@ -363,9 +365,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="OrganizationChart\domain\OChartItemWorkflow.vb" />
-    <Compile Include="OrganizationChart\ExtensionMethods\OChartItemWorkflowExtensions.vb" />
-    <Compile Include="OrganizationChart\NHibernateOChartItemWorkflowDao.vb" />
+    <Compile Include="Domain\Outbox\OutboxMessage.vb" />
     <Compile Include="PEC\Finder\NHibernatePECMailBoxFinder.vb" />
     <Compile Include="PEC\Finder\PECTaskHeaderCriteria.vb" />
     <Compile Include="PEC\Finder\PECRegistrationUserCriteria.vb" />
@@ -377,6 +377,7 @@
     <Compile Include="Protocol\NHibenateIncrementalDao.vb" />
     <Compile Include="Protocol\NHibernateCollaborationAggregateDao.vb" />
     <Compile Include="Protocol\NHibernateContainerArchiveDao.vb" />
+    <Compile Include="Protocol\NHibernateOutboxDao.vb" />
     <Compile Include="Protocol\NHibernateProtocolRejectedRoleDao.vb" />
     <Compile Include="Protocol\NHibernateProtocolRoleUserDao.vb" />
     <Compile Include="Protocol\NHibernateProtocolUserDao.vb" />
@@ -387,6 +388,7 @@
     <Compile Include="Resolution\NHibernateResolutionMessageDao.vb" />
     <Compile Include="Resolution\NHibernatePrintLetterRoleDao.vb" />
     <Compile Include="Resolution\NHibernateResolutionActivityDao.vb" />
+    <Compile Include="Resolution\NHibernateResolutionWorkflowUserDao.vb" />
     <Compile Include="Resolution\SqlExceptionCodeError.vb" />
     <Compile Include="Task\Domain\TaskHeader.vb" />
     <Compile Include="Task\Domain\TaskDetail.vb" />
@@ -430,7 +432,6 @@
     <Compile Include="OrganizationChart\domain\OChart.vb" />
     <Compile Include="OrganizationChart\domain\OChartItemContact.vb" />
     <Compile Include="OrganizationChart\domain\OChartItemContainer.vb" />
-    <Compile Include="OrganizationChart\domain\OChartItemMailbox.vb" />
     <Compile Include="OrganizationChart\domain\OChartItemRole.vb" />
     <Compile Include="Domain\Protocol\FilterItem.vb" />
     <Compile Include="Domain\Common\RoleUserType.vb" />
@@ -441,7 +442,6 @@
     <Compile Include="Domain\Resolution\RoleRestictions.vb" />
     <Compile Include="DSWEnvironment.vb" />
     <Compile Include="Common\NHibernateContactTitleDao.vb" />
-    <Compile Include="Common\NHibernateContainerDocTypeDao.vb" />
     <Compile Include="Common\NHibernateContainerGroupDao.vb" />
     <Compile Include="Common\NHibernateParameterEnvDao.vb" />
     <Compile Include="Common\NHibernateResolutionDocumentSeriesDao.vb" />
@@ -450,10 +450,8 @@
     <Compile Include="Common\NHibernateSecurityGroupsDao.vb" />
     <Compile Include="Common\NHibernateSecurityUsersDao.vb" />
     <Compile Include="Common\NHibernateDocumentTypeDao.vb" />
-    <Compile Include="Common\NHibernateRecipientDao.vb" />
     <Compile Include="Common\NHibernateParameterDao.vb" />
     <Compile Include="Common\NHibernateObjectDao.vb" />
-    <Compile Include="Common\NHibernateDistributionListDao.vb" />
     <Compile Include="Common\NHibernateContactTypeDao.vb" />
     <Compile Include="Common\NHibernateContactPlaceNameDao.vb" />
     <Compile Include="Common\NHibernateContactDao.vb" />
@@ -486,7 +484,6 @@
     <Compile Include="DocumentSeries\NHibernateDocumentSeriesItemLogDao.vb" />
     <Compile Include="DocumentSeries\NHibernateDocumentSeriesItemRoleDao.vb" />
     <Compile Include="DocumentSeries\NHibernateDocumentSeriesSubsectionDao.vb" />
-    <Compile Include="Document\Collection\NHContainerExtensionCollection.vb" />
     <Compile Include="Document\NHibernateDocumentTabStatusDao.vb" />
     <Compile Include="Document\NHibernateDocumentTabTokenDao.vb" />
     <Compile Include="Document\NHibernateDocumentVersioningDao.vb" />
@@ -509,7 +506,6 @@
     <Compile Include="Domain\Collaboration\CollaborationUser.vb" />
     <Compile Include="Domain\Collaboration\CollaborationVersioning.vb" />
     <Compile Include="Domain\Collaboration\CollaborationXML.vb" />
-    <Compile Include="Domain\Collaboration\CollaborationStatusXML.vb" />
     <Compile Include="Domain\Collaboration\DTO\ChangeSignerDTO.vb" />
     <Compile Include="Domain\Collaboration\DTO\CollaborationHeader.vb" />
     <Compile Include="Domain\Collaboration\DTO\DocumentFDQDTO.vb" />
@@ -521,19 +517,14 @@
     <Compile Include="Domain\Common\Contact\ContactPlaceName.vb" />
     <Compile Include="Domain\Common\Contact\ContactTitle.vb" />
     <Compile Include="Domain\Common\Contact\ContactType.vb" />
-    <Compile Include="Domain\Common\Contact\DistributionList.vb" />
-    <Compile Include="Domain\Common\Contact\Recipient.vb" />
     <Compile Include="Domain\Common\Container.vb" />
-    <Compile Include="Domain\Common\ContainerExtensionCollection.vb" />
     <Compile Include="Domain\Common\ContainerExtensionType.vb" />
     <Compile Include="Domain\Common\DocumentRightPositions.vb" />
     <Compile Include="Domain\Common\ContainerExtension.vb" />
-    <Compile Include="Domain\Common\ContainerDocType.vb" />
     <Compile Include="Domain\Common\ContainerGroup.vb" />
     <Compile Include="Domain\Common\ContainerType.vb" />
     <Compile Include="Domain\Common\DocumentType.vb" />
     <Compile Include="Domain\Common\GroupRights.vb" />
-    <Compile Include="Domain\Common\IContainerExtensionCollection.vb" />
     <Compile Include="Domain\Common\Location.vb" />
     <Compile Include="Domain\Common\Parameter.vb" />
     <Compile Include="Domain\Common\ParameterEnv.vb" />
@@ -579,7 +570,7 @@
     <Compile Include="Domain\File\SharedFile.vb" />
     <Compile Include="Domain\IAuditable.vb" />
     <Compile Include="Domain\IPA\IPA.vb" />
-    <Compile Include="Domain\ISupportLogicDelete.vb" />
+    <Compile Include="Domain\ISupportBooleanLogicDelete.vb" />
     <Compile Include="Domain\Message\DSWMessage.vb" />
     <Compile Include="Domain\Message\MessageAttachment.vb" />
     <Compile Include="Domain\Message\MessageContact.vb" />
@@ -610,8 +601,7 @@
     <Compile Include="Domain\PosteOnLine\POLMessageContactEnum.vb" />
     <Compile Include="Domain\PosteOnLine\POLRequestStatusEnum.vb" />
     <Compile Include="Domain\Protocol\ProtocolContactCommunicationType.vb" />
-    <Compile Include="Domain\Protocol\ProtocolDraft.vb" />
-    <Compile Include="Domain\Protocol\ProtocolParer.vb" />
+    <Compile Include="Domain\Collaboration\CollaborationDraft.vb" />
     <Compile Include="Domain\Protocol\ProtocolPecXML.vb" />
     <Compile Include="Domain\Protocol\ProtocolXML.vb" />
     <Compile Include="Domain\Protocol\ScannerParameter.vb" />
@@ -630,7 +620,6 @@
     <Compile Include="Domain\Protocol\DocArea\DocAreaImportStatus.vb" />
     <Compile Include="Domain\Protocol\DocArea\ProtocolMetaData.vb" />
     <Compile Include="Domain\Protocol\DTO\ProtocolContactJournalDTO.vb" />
-    <Compile Include="Domain\Protocol\Log\ServiceLog.vb" />
     <Compile Include="Domain\Protocol\Log\TableLog.vb" />
     <Compile Include="Domain\Protocol\Log\UserError.vb" />
     <Compile Include="Domain\Protocol\Log\UserLog.vb" />
@@ -662,7 +651,6 @@
     <Compile Include="Domain\Resolution\FileResolution.vb" />
     <Compile Include="Domain\Resolution\Key\ContainerResolutionTypeCompositeKey.vb" />
     <Compile Include="Domain\Resolution\Key\ResolutionContactCompositeKey.vb" />
-    <Compile Include="Domain\Resolution\Key\ResolutionRecipientCompositeKey.vb" />
     <Compile Include="Domain\Resolution\Key\ResolutionWorkflowCompositeKey.vb" />
     <Compile Include="Domain\Resolution\Key\TabMasterCompositeKey.vb" />
     <Compile Include="Domain\Resolution\Key\TabWorkflowCompositeKey.vb" />
@@ -677,8 +665,6 @@
     <Compile Include="Domain\Resolution\ResolutionJournalTemplate.vb" />
     <Compile Include="Domain\Resolution\ResolutionJournalTemplateSpecification.vb" />
     <Compile Include="Domain\Resolution\ResolutionLog.vb" />
-    <Compile Include="Domain\Resolution\ResolutionParer.vb" />
-    <Compile Include="Domain\Resolution\ResolutionRecipient.vb" />
     <Compile Include="Domain\Resolution\ResolutionRole.vb" />
     <Compile Include="Domain\Resolution\ResolutionStatus.vb" />
     <Compile Include="Domain\Resolution\ResolutionType.vb" />
@@ -731,7 +717,6 @@
     <Compile Include="Finder\NHibernateDomainObjectFinder.vb" />
     <Compile Include="Protocol\Finder\NHibernateProtocolLogFinder.vb" />
     <Compile Include="Resolution\Finder\NHibernateResolutionLogFinder.vb" />
-    <Compile Include="Finder\NHibernateServiceLogFinder.vb" />
     <Compile Include="Finder\NHibernateTableLogFinder.vb" />
     <Compile Include="Finder\NHibernateUserErrorFinder.vb" />
     <Compile Include="Finder\NHibernateUserLogFinder.vb" />
@@ -763,24 +748,14 @@
     <Compile Include="OrganizationChart\ExtensionMethods\OChartExtensions.vb" />
     <Compile Include="OrganizationChart\ExtensionMethods\OChartItemContactExtensions.vb" />
     <Compile Include="OrganizationChart\ExtensionMethods\OChartItemExtensions.vb" />
-    <Compile Include="OrganizationChart\ExtensionMethods\OChartItemMailboxExtensions.vb" />
     <Compile Include="OrganizationChart\ExtensionMethods\OChartItemRoleExtensions.vb" />
     <Compile Include="OrganizationChart\ExtensionMethods\OChartItemContainerExtensions.vb" />
-    <Compile Include="OrganizationChart\interfaces\OChartCommunicationDataBase.vb" />
     <Compile Include="OrganizationChart\finder\NHibernateOChartFinder.vb" />
     <Compile Include="OrganizationChart\NHibernateOChartItemContactDao.vb" />
-    <Compile Include="OrganizationChart\NHibernateOChartItemMailboxDao.vb" />
     <Compile Include="OrganizationChart\NHibernateOChartDao.vb" />
     <Compile Include="OrganizationChart\NHibernateOChartItemContainerDao.vb" />
     <Compile Include="OrganizationChart\NHibernateOChartItemDao.vb" />
     <Compile Include="OrganizationChart\NHibernateOChartItemRoleDao.vb" />
-    <Compile Include="OrganizationChart\xml\DocumentTypeXml.vb" />
-    <Compile Include="OrganizationChart\xml\ProtocolTypeXml.vb" />
-    <Compile Include="OrganizationChart\xml\FullAuthorization.vb" />
-    <Compile Include="OrganizationChart\xml\FullCategory.vb" />
-    <Compile Include="OrganizationChart\xml\FullContact.vb" />
-    <Compile Include="OrganizationChart\xml\OChartProtocolXml.vb" />
-    <Compile Include="OrganizationChart\xml\ProtocolXmlData.vb" />
     <Compile Include="Predicates\ContactPredicate.vb" />
     <Compile Include="Protocol\Finder\NHProtocolFinder.vb" />
     <Compile Include="Protocol\NHibernateProtocolTransferDao.vb" />
@@ -788,8 +763,7 @@
     <Compile Include="PEC\NHibernatePECMailContentDao.vb" />
     <Compile Include="PEC\NHibernatePECMailReceiptDao.vb" />
     <Compile Include="Protocol\NHibernatePosteOnlineAccountDao.vb" />
-    <Compile Include="Protocol\NHibernateProtocolDraftDao.vb" />
-    <Compile Include="Protocol\NHibernateProtocolParerDao.vb" />
+    <Compile Include="Protocol\NHibernateCollaborationDraftDao.vb" />
     <Compile Include="Protocol\NHibernateScannerParameterDao.vb" />
     <Compile Include="Protocol\NHibernateScannerConfigurationDao.vb" />
     <Compile Include="Protocol\NHibernateZebraPrinterDao.vb" />
@@ -817,7 +791,6 @@
     <Compile Include="Protocol\NHibernateTableLogDao.vb" />
     <Compile Include="Protocol\NHibernateUserLogDao.vb" />
     <Compile Include="Protocol\NHibernateUserErrorDao.vb" />
-    <Compile Include="Protocol\NHibernateServiceLogDao.vb" />
     <Compile Include="Protocol\NHibernateFascicleDocumentUnitsDao.vb" />
     <Compile Include="Protocol\NHibernateFascicleDao.vb" />
     <Compile Include="Protocol\NHibernateCollaborationVersioningDao.vb" />
@@ -833,13 +806,11 @@
     <Compile Include="Resolution\NHibernateResolutionJournalTemplateSpecificationDao.vb" />
     <Compile Include="Resolution\NHibernateContainerResolutionTypeDao.vb" />
     <Compile Include="Resolution\NHibernateResolutionJournalTemplateDao.vb" />
-    <Compile Include="Resolution\NHibernateResolutionParerDao.vb" />
     <Compile Include="Resolution\NHibernateResolutionRoleTypeDao.vb" />
     <Compile Include="Resolution\NHibernateServiceCodeDescriptorDao.vb" />
     <Compile Include="Resolution\NHibernateTabMasterDao.vb" />
     <Compile Include="Resolution\NHibernateTabWorkflowDao.vb" />
     <Compile Include="Resolution\NHibernateResolutionWorkflowDao.vb" />
-    <Compile Include="Resolution\NHibernateResolutionRecipientDao.vb" />
     <Compile Include="Resolution\NHibernateResolutionRoleDao.vb" />
     <Compile Include="Resolution\NHibernateResolutionStatusDao.vb" />
     <Compile Include="Resolution\NHibernateResolutionTypeDao.vb" />
@@ -934,9 +905,6 @@
       <Project>{531372fd-aa62-4cd8-8d94-b5f3f835b185}</Project>
       <Name>VecompSoftware.NHibernateManager</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="OrganizationChart\interfaces\IOChartCommunicationData.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\Desks\Protocol_Desk.hbm.xml">
@@ -1115,16 +1083,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Mapping\OrganizationChart\Protocol_OChartItemMailbox.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Mapping\Commons\Protocol_APIProvider.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Mapping\Collaborations\Protocol_CollaborationSign.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1244,7 +1202,7 @@
     <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolLink.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolDraft.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Collaborations\Protocol_CollaborationDraft.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolRole.hbm.xml">
@@ -1285,9 +1243,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolMessage.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Mapping\Protocols\Protocol_ProtocolParer.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\PECMails\Protocol_PECMailViewDefault.hbm.xml" />
@@ -1362,18 +1317,12 @@
     <EmbeddedResource Include="Mapping\Commons\Protocol_Incremental.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Mapping\Commons\Protocol_LogKind.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Mapping\Commons\Protocol_ContainerArchive.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\Commons\Protocol_TableLog.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Mapping\Commons\Protocol_ServiceLog.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\Commons\Protocol_UserError.hbm.xml">
@@ -1412,11 +1361,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionRoleType.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionRecipient.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
@@ -1472,11 +1416,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mapping\Resolutions\Resolution_FileResolution.hbm.xml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionParer.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
@@ -1546,9 +1485,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Mapping\OrganizationChart\Protocol_OChartItemWorkflow.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Mapping\Fascicles\Protocol_FasciclePeriod.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -1560,9 +1496,14 @@
     <None Include="Resources\SearchProtocolRblDefaultValue.txt" />
     <None Include="Resources\FascicleRoleLabels.txt" />
     <EmbeddedResource Include="Mapping\DocumentUnits\Protocol_DocumentUnit.hbm.xml" />
-    <EmbeddedResource Include="Mapping\Tenants\Protocol_TenantRole.hbm.xml" />
-    <EmbeddedResource Include="Mapping\Tenants\Protocol_TenantContact.hbm.xml" />
     <Content Include="favicon.ico" />
+    <EmbeddedResource Include="Mapping\Workflows\Protocol_WorkflowProperty.hbm.xml" />
+    <EmbeddedResource Include="Mapping\Resolutions\Resolution_ResolutionWorkflowUser.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mapping\Outbox\Protocol_OutboxMessage.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <Content Include="Resources\WorkflowActivityImages.txt" />
     <None Include="Resources\ProtocolAdaptiveSearchMapping.txt" />
     <None Include="Resources\RadGridLocalizeConfig.txt" />

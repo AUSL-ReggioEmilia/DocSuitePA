@@ -5,6 +5,14 @@ using VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
 using VecompSoftware.WebAPIManager.Finder;
 using VecompSoftware.WebAPIManager;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using VecompSoftware.Services.Logging;
+using VecompSoftware.WebAPIManager.Exceptions;
+using VecompSoftware.Clients.WebAPI.Http;
+using VecompSoftware.DocSuiteWeb.DTO.OData;
+using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
+using System.Linq;
 
 namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Collaborations
 {
@@ -20,18 +28,14 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Collaborations
 
         public string Domain { get; set; }
 
-        public string DocumentType { get; set; }
-
-        public DateTimeOffset? DateFrom { get; set; }
-
-        public DateTimeOffset? DateTo { get; set; }
-
         public CollaborationFinderActionType? CollaborationFinderActionType { get; set; }
 
         public CollaborationFinderFilterType CollaborationFinderFilterType { get; set; }
 
-        public int? Incremental { get; set; }
+        public CollaborationFinderModel CollaborationFinderModel { get; set; }
 
+        public bool FromPostMethod { get; set; }
+        private bool FromFinderModel => CollaborationFinderModel != null;
         #endregion
 
         #region [ Constructor ]
@@ -52,29 +56,26 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Collaborations
 
         public override IODATAQueryManager DecorateFinder(IODATAQueryManager odataQuery)
         {
-            if (Incremental.HasValue)
+            EnablePaging = false;
+
+            if (CollaborationFinderModel.EntityId.HasValue)
             {
-                odataQuery = odataQuery.Filter($"EntityId eq {Incremental.Value}");
+                odataQuery = odataQuery.Filter($"EntityId eq {CollaborationFinderModel.EntityId}");
             }
 
-            //Tipologia documento
-            if (!string.IsNullOrEmpty(DocumentType))
-            {
-                string filter = $"DocumentType eq '{DocumentType}'";
-                if (DocumentType.Equals("UDS", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    filter = string.Concat(filter, " or (startswith(DocumentType, '1') and length(DocumentType) gt 2)");
-                }
-                odataQuery = odataQuery.Filter(filter);
-            }
+            return odataQuery;
+        }
 
+        public List<WebAPIDto<CollaborationModel>> GetFromPostMethod()
+        {
+            string odataFunction = string.Empty;
             if (CollaborationFinderActionType.HasValue)
             {
                 switch (CollaborationFinderActionType)
                 {
                     //Alla Visione/Firma
                     case Collaborations.CollaborationFinderActionType.AtVisionSign:
-                        odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetAtVisionSignCollaborations);
+                        odataFunction = CommonDefinition.OData.CollaborationService.FX_GetAtVisionSignCollaborations;
                         break;
 
                     //Da Visionare/Firmare
@@ -82,26 +83,27 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Collaborations
                         switch (CollaborationFinderFilterType)
                         {
                             case CollaborationFinderFilterType.AllCollaborations:
-                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetToVisionSignCollaborations);
+                                CollaborationFinderModel.IsRequired = null;
                                 break;
 
                             case CollaborationFinderFilterType.SignRequired:
-                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetToVisionSignRequiredCollaborations);
+                                CollaborationFinderModel.IsRequired = true;
                                 break;
 
                             case CollaborationFinderFilterType.OnlyVision:
-                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetToVisionSignNoRequiredCollaborations);
+                                CollaborationFinderModel.IsRequired = false;
                                 break;
                         }
+                        odataFunction = CommonDefinition.OData.CollaborationService.FX_GetToVisionSignCollaborations;
                         break;
                     //Deleghe
                     case Collaborations.CollaborationFinderActionType.ToDelegateVisionSign:
-                        odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetToVisionDelegateSignCollaborations);
+                        odataFunction = CommonDefinition.OData.CollaborationService.FX_GetToVisionDelegateSignCollaborations;
                         break;
 
                     //Al Protocollo/Segreteria
                     case Collaborations.CollaborationFinderActionType.AtProtocolAdmission:
-                        odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetAtProtocolAdmissionCollaborations);
+                        odataFunction = CommonDefinition.OData.CollaborationService.FX_GetAtProtocolAdmissionCollaborations;
                         break;
 
                     //Attività in corso
@@ -109,48 +111,187 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Collaborations
                         switch (CollaborationFinderFilterType)
                         {
                             case CollaborationFinderFilterType.AllCollaborations:
-                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesAllCollaborations);
+                                odataFunction = CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesAllCollaborations;
                                 break;
 
                             case CollaborationFinderFilterType.ActiveCollaborations:
-                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesActiveCollaborations);
-
+                                odataFunction = CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesActiveCollaborations;
                                 break;
 
                             case CollaborationFinderFilterType.PastCollaborations:
-                                odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesPastCollaborations);
+                                odataFunction = CommonDefinition.OData.CollaborationService.FX_GetCurrentActivitiesPastCollaborations;
                                 break;
                         }
                         break;
 
                     //Da Protocollare/Gestire
                     case Collaborations.CollaborationFinderActionType.ToManage:
-                        odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetToManageCollaborations);
+                        odataFunction = CommonDefinition.OData.CollaborationService.FX_GetToManageCollaborations;
                         break;
 
                     //Protocollati/Gestiti
                     case Collaborations.CollaborationFinderActionType.Registered:
-                        odataQuery = odataQuery.Function(string.Format(CommonDefinition.OData.CollaborationService.FX_GetRegisteredCollaborations, DateFrom.Value.ToString(ODataDateConversion), DateTo.Value.ToString(ODataDateConversion)));
+                        odataFunction = CommonDefinition.OData.CollaborationService.FX_GetRegisteredCollaborations;
                         break;
 
                     //Miei check out
                     case Collaborations.CollaborationFinderActionType.CheckedOut:
-                        odataQuery = odataQuery.Function(CommonDefinition.OData.CollaborationService.FX_GetMyCheckedOutCollaborations);
+                        odataFunction = CommonDefinition.OData.CollaborationService.FX_GetMyCheckedOutCollaborations;
                         break;
                 }
             }
 
-            return odataQuery;
+            WebApiHttpClient httpClient = GetWebAPIClient(CurrentTenant);
+            CollaborationFinderModel.Skip = PageIndex;
+            CollaborationFinderModel.Top = PageSize;
+            string bodyQuery = JsonConvert.SerializeObject(CollaborationFinderModel, new StringEnumConverter());
+            IEnumerable<CollaborationModel> results = httpClient.PostStringAsync<Collaboration>($"/{odataFunction}", bodyQuery).ResponseToModel<ODataModel<ICollection<CollaborationModel>>>().Value;
+            
+            return results.Select(collaborationModel => new WebAPIDto<CollaborationModel>
+            {
+                Entity = collaborationModel,
+                TenantModel = CurrentTenant
+            }).ToList();
+        }
+
+        public override int Count()
+        {
+            if (!FromFinderModel)
+            {
+                return base.Count();
+            }
+
+            return CurrentTenantExecutionWebAPI<Collaboration, int>((tenant) =>
+            {
+                string odataCountFunction = string.Empty;
+                if (CollaborationFinderActionType.HasValue)
+                {
+                    switch (CollaborationFinderActionType)
+                    {
+                        //Alla Visione/Firma
+                        case Collaborations.CollaborationFinderActionType.AtVisionSign:
+                            odataCountFunction = CommonDefinition.OData.CollaborationService.FX_CountAtVisionSignCollaborations;
+                            break;
+
+                        //Da Visionare/Firmare
+                        case Collaborations.CollaborationFinderActionType.ToVisionSign:
+                            switch (CollaborationFinderFilterType)
+                            {
+                                case CollaborationFinderFilterType.AllCollaborations:
+                                    CollaborationFinderModel.IsRequired = null;
+                                    break;
+
+                                case CollaborationFinderFilterType.SignRequired:
+                                    CollaborationFinderModel.IsRequired = true;
+                                    break;
+
+                                case CollaborationFinderFilterType.OnlyVision:
+                                    CollaborationFinderModel.IsRequired = false;
+                                    break;
+                            }
+                            odataCountFunction = CommonDefinition.OData.CollaborationService.FX_CountToVisionSignCollaborations;
+                            break;
+                        //Deleghe
+                        case Collaborations.CollaborationFinderActionType.ToDelegateVisionSign:
+                            odataCountFunction = CommonDefinition.OData.CollaborationService.FX_CountToVisionDelegateSignCollaborations;
+                            break;
+
+                        //Al Protocollo/Segreteria
+                        case Collaborations.CollaborationFinderActionType.AtProtocolAdmission:
+                            odataCountFunction = CommonDefinition.OData.CollaborationService.FX_CountAtProtocolAdmissionCollaborations;
+                            break;
+
+                        //Attività in corso
+                        case Collaborations.CollaborationFinderActionType.Running:
+                            switch (CollaborationFinderFilterType)
+                            {
+                                case CollaborationFinderFilterType.AllCollaborations:
+                                    odataCountFunction = CommonDefinition.OData.CollaborationService.FX_CountCurrentActivitiesAllCollaborations;
+                                    break;
+
+                                case CollaborationFinderFilterType.ActiveCollaborations:
+                                    odataCountFunction = CommonDefinition.OData.CollaborationService.FX_CountCurrentActivitiesActiveCollaborations;
+
+                                    break;
+
+                                case CollaborationFinderFilterType.PastCollaborations:
+                                    odataCountFunction = CommonDefinition.OData.CollaborationService.FX_CountCurrentActivitiesPastCollaborations;
+                                    break;
+                            }
+                            break;
+
+                        //Da Protocollare/Gestire
+                        case Collaborations.CollaborationFinderActionType.ToManage:
+                            odataCountFunction = CommonDefinition.OData.CollaborationService.FX_CountToManageCollaborations;
+                            break;
+
+                        //Protocollati/Gestiti
+                        case Collaborations.CollaborationFinderActionType.Registered:
+                            odataCountFunction = CommonDefinition.OData.CollaborationService.FX_CountRegisteredCollaborations;
+                            break;
+
+                        //Miei check out
+                        case Collaborations.CollaborationFinderActionType.CheckedOut:
+                            odataCountFunction = CommonDefinition.OData.CollaborationService.FX_CountMyCheckedOutCollaborations;
+                            break;
+                    }
+                }
+
+                WebApiHttpClient httpClient = GetWebAPIClient(CurrentTenant);
+                string bodyQuery = JsonConvert.SerializeObject(CollaborationFinderModel, new StringEnumConverter());
+                int result = httpClient.PostStringAsync<Collaboration>($"/{odataCountFunction}", bodyQuery).ResponseToModel<ODataModel<int>>().Value;
+                return result;
+            }, nameof(Count));
+        }
+
+        private TResult CurrentTenantExecutionWebAPI<TModel, TResult>(Func<TenantModel, TResult> func, string methodName)
+        {
+            string errorMessage = string.Concat("Errore nell'esecuzione del metodo ", methodName, " .");
+
+            try
+            {
+                return func(CurrentTenant);
+            }
+            catch (Exception ex)
+            {
+                FileLogger.Error(Logger, errorMessage, ex);
+                throw new WebAPIException<TResult>(ex.Message, ex);
+            }
+        }
+
+        public void PopulateFinderModel(string propertyName, object propertyValue)
+        {
+            switch (propertyName)
+            {
+                case nameof(CollaborationFinderModel.MemorandumDate):
+                    {
+                        CollaborationFinderModel.MemorandumDate = (DateTimeOffset)propertyValue;
+                        break;
+                    }
+                case nameof(CollaborationFinderModel.Object):
+                    {
+                        CollaborationFinderModel.Object = propertyValue.ToString();
+                        break;
+                    }
+                case nameof(CollaborationFinderModel.Note):
+                    {
+                        CollaborationFinderModel.Note = propertyValue.ToString();
+                        break;
+                    }
+                case nameof(CollaborationFinderModel.RegistrationName):
+                    {
+                        CollaborationFinderModel.RegistrationName = propertyValue.ToString();
+                        break;
+                    }
+            }
         }
 
         public override void ResetDecoration()
         {
             UserName = string.Empty;
             Domain = string.Empty;
-            DocumentType = string.Empty;
-            DateFrom = null;
-            DateTo = null;
             CollaborationFinderActionType = Collaborations.CollaborationFinderActionType.AtProtocolAdmission;
+            CollaborationFinderModel = new CollaborationFinderModel();
         }
 
         #endregion

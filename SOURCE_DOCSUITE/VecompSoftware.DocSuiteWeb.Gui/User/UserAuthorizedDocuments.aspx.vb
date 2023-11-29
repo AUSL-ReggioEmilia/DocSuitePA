@@ -101,7 +101,7 @@ Public Class UserAuthorizedDocuments
         _protocolFinder.RegistrationDateTo = rdpDateTo.SelectedDate.Value
 
         Dim commonUtil As CommonUtil = New CommonUtil()
-        commonUtil.ApplyProtocolFinderSecurity(_protocolFinder, SecurityType.Read)
+        commonUtil.ApplyProtocolFinderSecurity(_protocolFinder, SecurityType.Read, CurrentTenant.TenantAOO.UniqueId)
 
         If Not String.IsNullOrEmpty(ddlContainer.SelectedValue) Then
             _protocolFinder.IdContainer = ddlContainer.SelectedValue

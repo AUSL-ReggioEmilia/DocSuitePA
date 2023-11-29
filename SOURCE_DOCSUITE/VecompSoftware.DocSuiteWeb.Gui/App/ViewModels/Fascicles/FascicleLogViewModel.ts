@@ -1,5 +1,5 @@
 ﻿class FascicleLogViewModel {
-
+    UniqueId: string;
     Computer: string;
     Type: string;
     TypeDescription: string;

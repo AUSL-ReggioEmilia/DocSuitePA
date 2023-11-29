@@ -48,6 +48,8 @@
 \VecompSoftware.DocSuiteWeb.Gui\App\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Core\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Core\*.js.map
+\VecompSoftware.DocSuiteWeb.Gui\App\Core\UDS\*.js
+\VecompSoftware.DocSuiteWeb.Gui\App\Core\UDS\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Core\Extensions\*.js
 \VecompSoftware.DocSuiteWeb.Gui\App\Core\Extensions\*.js.map
 \VecompSoftware.DocSuiteWeb.Gui\App\Core\Serialization\*.js

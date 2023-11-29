@@ -84,12 +84,6 @@ Public Class ResolutionEnv
         End Get
     End Property
 
-    Public ReadOnly Property EnvObjectMinLength() As String
-        Get
-            Return GetString("ObjectMinLength", "1")
-        End Get
-    End Property
-
     ''' <summary> Numero di giorni da considerare a partire dall'attuale nelle viste per la scrivania. </summary>
     Public ReadOnly Property DesktopDayDiff() As Integer
         Get
@@ -153,28 +147,9 @@ Public Class ResolutionEnv
         End Get
     End Property
 
-
     Public ReadOnly Property IsUserErrorEnabled() As Boolean
         Get
             Return GetBoolean("UserErrorEnabled")
-        End Get
-    End Property
-
-    Public ReadOnly Property LogGroup() As String
-        Get
-            Return GetString("LogGroup")
-        End Get
-    End Property
-
-    Public ReadOnly Property InsertDuplicate() As Boolean
-        Get
-            Return GetBoolean("InsertDuplicate")
-        End Get
-    End Property
-
-    Public ReadOnly Property EnvRecipient() As Boolean
-        Get
-            Return GetBoolean("Recipient")
         End Get
     End Property
 
@@ -251,12 +226,6 @@ Public Class ResolutionEnv
         End Get
     End Property
 
-    Public ReadOnly Property ProposerMailTo() As String
-        Get
-            Return GetString("ProposerMailTo")
-        End Get
-    End Property
-
     ''' <summary> Contatto rubrica dal quale far partire le ricerche contatti per proponenti. </summary>
     Public ReadOnly Property ProposerContact() As Integer?
         Get
@@ -267,29 +236,6 @@ Public Class ResolutionEnv
     Public ReadOnly Property CategoryRoot() As Integer
         Get
             Return GetInteger("CategoryRoot")
-        End Get
-    End Property
-
-    Public ReadOnly Property IsConservationEnabled() As Boolean
-        Get
-            Return GetBoolean("ConservationEnabled")
-        End Get
-    End Property
-
-    Public ReadOnly Property ConservationExtensions() As String()
-        Get
-            Dim tmp As String = GetString("ConservationExtensions")
-            If String.IsNullOrEmpty(tmp) Then
-                Return New String() {}
-            Else
-                Return tmp.Split("|"c)
-            End If
-        End Get
-    End Property
-
-    Public ReadOnly Property ConservationMaxResults As Integer
-        Get
-            Return GetInteger("ConservationMaxResults")
         End Get
     End Property
 
@@ -305,38 +251,12 @@ Public Class ResolutionEnv
         End Get
     End Property
 
-    Public ReadOnly Property WebPublishEnabled(type As Integer) As Boolean
-        Get
-            Return WebPublishEnabled() AndAlso GetBoolean("WebPublishEnabled_" & type)
-        End Get
-    End Property
-
     Public ReadOnly Property WebPublishFolder() As String
         Get
             Return GetString("WebPublishFolder")
         End Get
     End Property
 
-    Public ReadOnly Property WebPublishHTMLOpen() As String
-        Get
-            Return GetString("WebPublishHTMLOpen")
-        End Get
-    End Property
-    Public ReadOnly Property WebPublishHTMLBody() As String
-        Get
-            Return GetString("WebPublishHTMLBody")
-        End Get
-    End Property
-    Public ReadOnly Property WebPublishHTMLClose() As String
-        Get
-            Return GetString("WebPublishHTMLClose")
-        End Get
-    End Property
-    Public ReadOnly Property WebPublishHTMLIndex() As String
-        Get
-            Return GetString("WebPublishHTMLIndex")
-        End Get
-    End Property
     Public ReadOnly Property WebPublishHTMLFile() As String
         Get
             Return GetString("WebPublishHTMLFile")
@@ -351,12 +271,6 @@ Public Class ResolutionEnv
     Public ReadOnly Property WebPublishSignTag() As String
         Get
             Return GetString("WebPublishSignTag")
-        End Get
-    End Property
-
-    Public ReadOnly Property WebAutoPublish() As Boolean
-        Get
-            Return GetBoolean("WebAutoPublish")
         End Get
     End Property
 
@@ -394,21 +308,21 @@ Public Class ResolutionEnv
         End Get
     End Property
 
-    Public ReadOnly Property PostToRemoteUrl() As String
+    Public ReadOnly Property CMVGroupEnabled() As Boolean
         Get
-            Return GetString("PostToRemoteUrl")
+            Return GetBoolean("CMVGroupEnabled", False)
         End Get
     End Property
 
-    Public ReadOnly Property PostToRemotePublicationTesterUrl() As String
+    Public ReadOnly Property DromedianWebParameters() As String
         Get
-            Return GetString("PostToRemotePublicationTesterUrl")
+            Return GetString("DromedianWebParameters")
         End Get
     End Property
 
-    Public ReadOnly Property PostToRemoteDisablePublicationTester() As Boolean
+    Public ReadOnly Property CmvGroupParameters() As String
         Get
-            Return GetBoolean("PostToRemoteDisablePublicationTester")
+            Return GetString("CmvGroupParameters")
         End Get
     End Property
 
@@ -416,13 +330,6 @@ Public Class ResolutionEnv
     Public ReadOnly Property HideAlternativeProposer() As Boolean
         Get
             Return GetBoolean("HideAlternativeProposer")
-        End Get
-    End Property
-
-    ''' <summary> Indica se c'è un unico pulsante da utilizzare negli atti. </summary>
-    Public ReadOnly Property SingleDocumentButton() As Boolean
-        Get
-            Return GetBoolean("SingleDocumentButton")
         End Get
     End Property
 
@@ -448,7 +355,6 @@ Public Class ResolutionEnv
                 For Each id As String In ids.Split(",|;".ToCharArray())
                     list.Add(Integer.Parse(id))
                 Next
-                ' TODO: come mai non si usa FacadeBase.GetListByIds ?
                 Return dao.GetByIds(list)
             End If
 
@@ -512,21 +418,9 @@ Public Class ResolutionEnv
         End Get
     End Property
 
-    Public ReadOnly Property ServiceCodeEnabled() As Boolean
-        Get
-            Return GetBoolean("ServiceCodeEnabled")
-        End Get
-    End Property
-
     Public ReadOnly Property UseContainerResolutionType() As Boolean
         Get
             Return GetBoolean("UseContainerResolutionType")
-        End Get
-    End Property
-
-    Public ReadOnly Property ConservationWorkflowStep() As String
-        Get
-            Return GetString("ConservationWorkflowStep", String.Empty)
         End Get
     End Property
 
@@ -622,19 +516,6 @@ Public Class ResolutionEnv
         End Get
     End Property
 
-    Public ReadOnly Property ParerEnabled() As Boolean
-        Get
-            Return GetBoolean("ParerEnabled")
-        End Get
-    End Property
-
-    ''' <summary> URL del web service di pubblicazione. </summary>
-    Public ReadOnly Property WebPubblicationServer() As String
-        Get
-            Return GetString("WebPubblicationServer", String.Empty)
-        End Get
-    End Property
-
     ''' <summary> Abilita la numerazione degli atti per gli anni antecedenti quello correntemente in gestione. </summary>
     Public ReadOnly Property PastYearsEnumerationEnabled() As Boolean
         Get
@@ -699,12 +580,6 @@ Public Class ResolutionEnv
         End Get
     End Property
 
-    Public ReadOnly Property SeriesTitle As String
-        Get
-            Return GetString("SeriesTitle", "Amministrazione Aperta")
-        End Get
-    End Property
-
     Public ReadOnly Property ButtonSeriesTitle As String
         Get
             Return GetString("ButtonSeriesTitle", "Aggiungi Amministrazione Trasparente")
@@ -714,12 +589,6 @@ Public Class ResolutionEnv
     Public ReadOnly Property RegistroProvvedimentiAdottatiLastSignOnly As Boolean
         Get
             Return GetBoolean("RegistroProvvedimentiAdottatiLastSignOnly", False)
-        End Get
-    End Property
-
-    Public ReadOnly Property UseSharepointPublication As Boolean
-        Get
-            Return GetBoolean("UseSharepointPublication", False)
         End Get
     End Property
 
@@ -770,19 +639,6 @@ Public Class ResolutionEnv
     Public ReadOnly Property DefaultResolutionRoleType() As Integer
         Get
             Return GetInteger("DefaultResolutionRoleType", 1)
-        End Get
-    End Property
-
-    Public ReadOnly Property DefaultSignersAdozioneServiziDigitale() As List(Of Signer)
-        Get
-            Dim collaborationSigners As New List(Of Signer)
-            Dim serializedCollaborationSigners As String = GetString("DefaultSignersAdozioneServiziDigitale", String.Empty)
-            If String.IsNullOrEmpty(serializedCollaborationSigners) Then Return collaborationSigners
-
-            'Separo per contatto tramite ';' e poi per componente '|'
-            collaborationSigners.AddRange(From signer In serializedCollaborationSigners.Split(";"c) Select splittedData = signer.Split("|"c) Where (splittedData.Length > 2) Select New Signer() With {.UserName = splittedData(0), .Role = Integer.Parse(splittedData(1)), .SignRequired = (splittedData(2) <> "0")})
-
-            Return collaborationSigners
         End Get
     End Property
 
@@ -943,12 +799,6 @@ Public Class ResolutionEnv
     Public ReadOnly Property ForceSharePointPublication As Boolean
         Get
             Return GetBoolean("ForceSharePointPublication", False)
-        End Get
-    End Property
-
-    Public ReadOnly Property IncludeAnnexesInPubblication As Boolean
-        Get
-            Return GetBoolean("IncludeAnnexesInPubblication", False)
         End Get
     End Property
 
@@ -1153,6 +1003,56 @@ Public Class ResolutionEnv
     Public ReadOnly Property ResolutionDeclineTextEnabled As Boolean
         Get
             Return GetBoolean("ResolutionDeclineTextEnabled", False)
+        End Get
+    End Property
+    Public ReadOnly Property ResolutionShowAlwaysAttachments As Boolean
+        Get
+            Return GetBoolean("ResolutionShowAlwaysAttachments", False)
+        End Get
+    End Property
+    Public ReadOnly Property UltimaPaginaReportSignEnabled As Boolean
+        Get
+            Return GetBoolean("UltimaPaginaReportSignEnabled", True)
+        End Get
+    End Property
+    Public ReadOnly Property UltimaPaginaRemoteSignInformation As String
+        Get
+            Return GetString("UltimaPaginaRemoteSignInformation", String.Empty)
+        End Get
+    End Property
+    Public ReadOnly Property ResolutionAccountingEnabled As Boolean
+        Get
+            Return GetBoolean("ResolutionAccountingEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property ImmediatelyExecutiveEnabled As Boolean
+        Get
+            Return GetBoolean("ImmediatelyExecutiveEnabled", True)
+        End Get
+    End Property
+
+    Public ReadOnly Property OCOptions As OCOptionsModel
+        Get
+            Return GetJson(Of OCOptionsModel)("OCOptions", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property ResolutionSearchableSteps As List(Of ResolutionStep)
+        Get
+            Return GetJson(Of List(Of ResolutionStep))("ResolutionSearchableSteps", String.Empty)
+        End Get
+    End Property
+
+    Public ReadOnly Property ResolutionConfirmViewingRequiredEnabled As Boolean
+        Get
+            Return GetBoolean("ResolutionConfirmViewingRequiredEnabled", False)
+        End Get
+    End Property
+
+    Public ReadOnly Property ActiveStepFilterSelectedEnabled As Boolean
+        Get
+            Return GetBoolean("ActiveStepFilterSelectedEnabled", False)
         End Get
     End Property
 End Class

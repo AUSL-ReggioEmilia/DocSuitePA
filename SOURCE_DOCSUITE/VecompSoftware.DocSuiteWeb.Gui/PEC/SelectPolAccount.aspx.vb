@@ -53,7 +53,7 @@ Public Class SelectPolAccount
                         check = False
                         script = "closeDialogWithError('Contenitore del protocollo errato o diritti insufficienti per l'utente')"
                     End If
-                    If check AndAlso Not New PECMailRightsUtil(pec, DocSuiteContext.Current.User.FullUserName).IsResendable Then
+                    If check AndAlso Not New PECMailRightsUtil(pec, DocSuiteContext.Current.User.FullUserName, CurrentTenant.TenantAOO.UniqueId).IsResendable Then
                         check = False
                         script = "closeDialogWithError('Impossibile inviare raccomandate se la PEC non ha avuto esiti negativi')"
                     End If
@@ -63,7 +63,7 @@ Public Class SelectPolAccount
                     End If
                 Next
 
-                Dim accounts As IList(Of POLAccount) = Facade.PosteOnLineAccountFacade.GetUserAccounts()
+                Dim accounts As IList(Of POLAccount) = Facade.PosteOnLineAccountFacade.GetUserAccounts(CurrentTenant.TenantAOO.UniqueId)
                 ddlPolAccount.DataSource = accounts
                 ddlPolAccount.DataBind()
                 If accounts.Count > 1 Then

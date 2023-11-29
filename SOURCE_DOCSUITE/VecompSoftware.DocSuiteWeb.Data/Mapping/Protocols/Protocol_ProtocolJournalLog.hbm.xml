@@ -22,6 +22,12 @@
     <property name="IdDocument" column="IdDocument" />
     <property name="LogDescription" column="LogDescription" />
     <property name="IdTenantAOO" column="IdTenantAOO" />
+    <property name="UniqueId" column="UniqueId" />
+
+    <property name="RegistrationDate" column="RegistrationDate" />
+    <property name="RegistrationUser" column="RegistrationUser" type="AnsiString" />
+    <property name="LastChangedDate" column="LastChangedDate" />
+    <property name="LastChangedUser" column="LastChangedUser" type="AnsiString" />
 
     <many-to-one name="Location" class="Location" column="idLocation" />
 

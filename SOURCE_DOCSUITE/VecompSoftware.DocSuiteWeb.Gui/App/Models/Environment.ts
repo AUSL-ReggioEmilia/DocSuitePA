@@ -9,7 +9,9 @@ enum Environment {
     Workflow = 6,
     UDS = 7,
     Fascicle = 8,
-    Dossier = 9
+    Dossier = 9,
+    Build = 10,
+    PECMail = 11
 }
 
 export = Environment;
@@ -33,6 +35,8 @@ namespace Environment {
                 return "Fascicoli";
             case Environment.Dossier:
                 return "Dossier";
+            case Environment.PECMail:
+                return "PEC";
             default:
                 return env.toString();
         }

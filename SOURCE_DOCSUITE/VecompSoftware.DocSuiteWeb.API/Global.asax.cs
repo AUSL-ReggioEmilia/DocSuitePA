@@ -2,6 +2,8 @@
 using System.Configuration;
 using System.Linq;
 using HibernatingRhinos.Profiler.Appender.NHibernate;
+using iText.License;
+using Limilabs.Mail.Licensing;
 using NHibernate;
 using VecompSoftware.DocSuiteWeb.API.Helpers;
 using VecompSoftware.DocSuiteWeb.Data;
@@ -40,6 +42,14 @@ namespace VecompSoftware.DocSuiteWeb.API
         protected void Application_Start(object sender, EventArgs e)
         {
             Services.StampaConforme.Service.InitializeSignatureTemplateXml(DocSuiteContext.Current.ProtocolEnv.SignatureTemplate);
+            
+            LicenseKey.LoadLicenseFile(Server.MapPath("itextkey.xml"));
+            string license = LicenseHelper.GetLicensePath();
+            LicenseStatus status = LicenseHelper.GetLicenseStatus();
+            if (status != LicenseStatus.Valid)
+            {
+                throw new Exception($"Licenza MailLicense.xml non valida {status} in {license}");
+            }
 
             NHibernateSessionUtil.ApplyFilterActions.Add((ISession session) => session.EnableFilter("TenantFilter").SetParameter("tenantAOOId", ConfigurationHelper.CurrentTenantAOOId));
             FacadeUtil.NeedTenantAction = (t) => t(CurrentTenant);

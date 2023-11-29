@@ -14,6 +14,9 @@ class uscDomainUserSelRest {
     btnDelContactId: string;
     radWindowManagerId: string;
     pageContentId: string;
+    currentUserDescription: string;
+    currentUser: string;
+    currentUserEmail: string;
     contactList: ContactModel[] = [];
 
     private _radTreeContact: Telerik.Web.UI.RadTreeView;
@@ -40,7 +43,8 @@ class uscDomainUserSelRest {
     }
 
     initialize(): void {
-        $(`#${this.pageContentId}`).data(this);
+        this.contactList = [];   
+        
         this._radWindowManager = $find(this.radWindowManagerId) as Telerik.Web.UI.RadWindowManager;
 
         this._radTreeContact = <Telerik.Web.UI.RadTreeView>$find(this.radTreeContactId);
@@ -50,6 +54,8 @@ class uscDomainUserSelRest {
         this._btnSelContactDomain.click(this.btnSelContactDomain_onClick);
         this._btnDelContact = <JQuery>$(`#${this.btnDelContactId}`);
         this._btnDelContact.click(this.btnDelContact_onClick);
+
+        $(`#${this.pageContentId}`).data(this);
     }
 
     btnSelContactDomain_onClick = (sender: any) => {
@@ -64,22 +70,21 @@ class uscDomainUserSelRest {
         //collect contacts to remove
         for (let checkedNode of this._radTreeContact.get_checkedNodes()) {
             removalNodes.push(checkedNode);
-            removalContacts.push(this.contactList.find(x => x.EmailAddress == checkedNode.get_value()));
+            removalContacts.push(this.contactList.find(x => x.Code == checkedNode.get_value()));
         }
 
         if (removalNodes.length > 0) {
-
             //removing contacts in the event.
             this.chainParentEventToAction(() => {
                 for (let i = 0; i < removalNodes.length; i++) {
-                    this.contactList = this.contactList.filter(x => x.EmailAddress != removalContacts[i].EmailAddress);
+                    this.contactList = this.contactList.filter(x => x.Code != removalContacts[i].Code);
                     this._radTreeContact.get_nodes().getNode(0).get_nodes().remove(removalNodes[i]);
                 }
+                //TODO: ragionare la soluzione migliore per aggiornare lo stato dello usercontrol all'interno di jQuery.data.
+                $(`#${this.pageContentId}`).data(this);
             }, UscDomainUserSelRestEvent.ContactsRemoved, removalContacts);
-
-            return true;
+            return false;
         }
-
         return false;
     }
 
@@ -92,6 +97,7 @@ class uscDomainUserSelRest {
 
         this.chainParentEventToAction(() => {
             this.createDomainUsersContactsTree(contacts);
+            $(`#${this.pageContentId}`).data(this);
         }, UscDomainUserSelRestEvent.ContactsAdded, contacts);
 
     }
@@ -113,24 +119,46 @@ class uscDomainUserSelRest {
         return this.contactList;
     }
 
+    setCurrentUser(isCurrentUser: boolean) {
+        if (isCurrentUser) {
+            this.setCurrentUserContact();
+        }
+    }
+
     createDomainUsersContactsTree = (contacts: ContactModel[]) => {
         this._radTreeContact.get_nodes().getNode(0).get_nodes().clear();
+        this.contactList = [];
 
         for (let contact of contacts) {
             this.contactList.push(contact);
             let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
             node.set_text(`${contact.Description} (${contact.Code.split("\\")[0] ? contact.Code.split("\\")[0] : contact.Code})`);
-            node.set_value(contact.EmailAddress);
+            node.set_value(contact.Code);
             node.set_cssClass("font_node");
-            node.set_imageUrl("../Comm/Images/Interop/Manuale.gif");
+            node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/contactManual.png");
             this._radTreeContact.get_nodes().getNode(0).set_checkable(false);
             this._radTreeContact.get_nodes().getNode(0).set_expanded(true);
             this._radTreeContact.get_nodes().getNode(0).get_nodes().add(node);
         }
+
+        $(`#${this.pageContentId}`).data(this);
+    }
+
+    setCurrentUserContact() {
+        let contact: ContactModel[] = [];
+        let docsuiteContactModel: ContactModel = <ContactModel>{
+            Description: this.currentUserDescription,
+            Code: this.currentUser,
+            EmailAddress: this.currentUserEmail    
+        };
+        contact.push(docsuiteContactModel);
+        this.createDomainUsersContactsTree(contact);
     }
 
     clearDomainUsersContactsTree = () => {
         this._radTreeContact.get_nodes().getNode(0).get_nodes().clear();
+        this.contactList = [];
+        $(`#${this.pageContentId}`).data(this);
     }
 
     setImageButtonsVisibility(isVisible: boolean) {

@@ -4,6 +4,10 @@ Public Class ProtocolType
 
 #Region "private data"
     Private _description As String
+
+    Public Const INCOMING As Integer = -1
+    Public Const OUTGOING As Integer = 1
+    Public Const INCOMING_OUTGOING As Integer = 0
 #End Region
 
 #Region "Properties"

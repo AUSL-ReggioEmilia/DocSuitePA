@@ -131,7 +131,7 @@ Partial Public Class DocmFile
             End Try
         Next
 
-        If CurrentDocument.Container.IsMailCCEnable AndAlso inserted IsNot Nothing AndAlso Not Multiple Then
+        If inserted IsNot Nothing AndAlso Not Multiple Then
             Dim tokensCC As IList(Of DocumentToken) = Facade.DocumentTokenFacade.GetTokenListCC(CurrentDocumentYear, CurrentDocumentNumber, True, , 1)
             If Not tokensCC.IsNullOrEmpty() Then
                 Dim url As String = String.Format("Type=Docm&Year={0}&Number={1}&Folder={2}&File={3}", CurrentDocumentYear, CurrentDocumentNumber, Server.UrlEncode(Session("FOLDER").ToString()), Server.UrlEncode(inserted.Description))
@@ -385,6 +385,7 @@ Partial Public Class DocmFile
                     UscDocumentDati1.HeaderText = "Informazioni (verranno applicate a tutti i documenti)"
                     UscDocumentDati1.DateLabel = "Data Documenti:"
                     UscDocumentUpload1.Caption = "Documenti"
+                    UscDocumentUpload1.HideScannerMultipleDocumentButton = True
                 End If
             Case "Modify"
                 If Add Then
@@ -471,11 +472,9 @@ Partial Public Class DocmFile
                     btnModifica.Visible = False
                 End If
 
-                If CurrentDocument.Container.IsMailCCEnable Then
-                    Dim cc As IList(Of DocumentToken) = Facade.DocumentTokenFacade.GetTokenListCC(CurrentDocumentYear, CurrentDocumentNumber, True, , 1)
-                    If cc.Count > 0 Then
-                        btnMailCC.Visible = True
-                    End If
+                Dim cc As IList(Of DocumentToken) = Facade.DocumentTokenFacade.GetTokenListCC(CurrentDocumentYear, CurrentDocumentNumber, True, , 1)
+                If cc.Count > 0 Then
+                    btnMailCC.Visible = True
                 End If
         End Select
 

@@ -30,6 +30,7 @@
                     templateUserCollGestione.rblPriorityId = "<%= rblPriority.ClientID %>";
                     templateUserCollGestione.action = "<%= Action %>";
                     templateUserCollGestione.templateId = "<%= TemplateId %>";
+                    templateUserCollGestione.parentId = "<%= ParentId %>";
                     templateUserCollGestione.pnlHeaderId = "<%= pnlHeader.ClientID %>";
                     templateUserCollGestione.pnlButtonsId = "<%= pnlButtons.ClientID %>";
                     templateUserCollGestione.selectSignerOrderId = "<%= selectSignerOrder.ClientID %>";

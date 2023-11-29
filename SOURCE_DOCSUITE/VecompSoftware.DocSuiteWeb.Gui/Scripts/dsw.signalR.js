@@ -65,8 +65,8 @@ var DSWSignalR = (function () {
         initializeCallback(invokedMethod, onDoneCallback, onErrorCallback);
     };
 
-    DSWSignalR.prototype.sendServerMessages = function (hubMethodName, correlationId, value, topicName, eventName, onDoneCallback, onErrorCallback) {
-        var invokedMethod = currentHubProxy.invoke(hubMethodName, correlationId, value, topicName, eventName);
+    DSWSignalR.prototype.sendServerMessages = function (hubMethodName, correlationId, value, onDoneCallback, onErrorCallback) {
+        var invokedMethod = currentHubProxy.invoke(hubMethodName, correlationId, value);
         initializeCallback(invokedMethod, onDoneCallback, onErrorCallback);
     };
 

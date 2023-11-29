@@ -20,6 +20,7 @@
                     fascicleFolderModifica.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID%>";
                     fascicleFolderModifica.ajaxManagerId = "<%= AjaxManager.ClientID %>";
                     fascicleFolderModifica.sessionUniqueKey = "<%= SessionUniqueKey %>";
+                    fascicleFolderModifica.doNotUpdateDatabase = "<%= DoNotUpdateDatabase %>";
                     fascicleFolderModifica.initialize();
                 });
             });

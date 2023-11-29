@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Microsoft.AspNet.SignalR;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Workflows;
 using VecompSoftware.DocSuiteWeb.DTO.Commons;
 using VecompSoftware.DocSuiteWeb.EntityMapper.Workflow;
 using VecompSoftware.DocSuiteWeb.Facade.Common.Hubs;
-using VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI;
 using VecompSoftware.Services.Logging;
 using WebAPIFinder = VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder;
 
@@ -114,9 +112,12 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
 
         private Notification GetProtocolNotRead()
         {
+            Notification model = new Notification
+            {
+                NotificationName = NotificationType.ProtocolliDaLeggere.ToString()
+            };
             try
             {
-                Notification model = new Notification();
                 CommonUtil cutil = new CommonUtil();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
                 _protocolFinder.IdTenantAOO = _idTenantAOO;
@@ -126,26 +127,28 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 _protocolFinder.TopMaxRecords = DocSuiteContext.Current.ProtocolEnv.DesktopMaxRecords;
                 DateTime dateFrom = DateTime.Today.AddDays(-DocSuiteContext.Current.ProtocolEnv.DesktopDayDiff);
                 _protocolFinder.RegistrationDateFrom = dateFrom;
-                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Read);
+                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Read, _idTenantAOO);
                 cutil.ExcludeInvoiceContainer(ref _protocolFinder);
                 _protocolFinder.ProtocolNotReaded = true;            
 
-                model.NotificationName = NotificationType.ProtocolliDaLeggere.ToString();
                 model.NotificationCount = _protocolFinder.Count();
-                return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
-        
+
         private Notification GetProtocolInvoiceNotRead()
         {
+            Notification model = new Notification
+            {
+                NotificationName = NotificationType.ProtocolliDifatturaDaLeggere.ToString()
+            };
             try
             {
-                Notification model = new Notification();
                 CommonUtil cutil = new CommonUtil();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
                 _protocolFinder.LoadFetchModeFascicleEnabled = false;
@@ -154,26 +157,26 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 _protocolFinder.TopMaxRecords = DocSuiteContext.Current.ProtocolEnv.DesktopMaxRecords;
                 DateTime dateFrom = DateTime.Today.AddDays(-DocSuiteContext.Current.ProtocolEnv.DesktopDayDiff);
                 _protocolFinder.RegistrationDateFrom = dateFrom;
-                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Read);
+                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Read, _idTenantAOO);
                 cutil.OnlyInvoiceContainer(ref _protocolFinder);
                 _protocolFinder.ProtocolNotReaded = true;
 
-                model.NotificationName = NotificationType.ProtocolliDifatturaDaLeggere.ToString();
                 model.NotificationCount = _protocolFinder.Count();
-                return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
 
         private Notification GetProtocolToAccept()
         {
+            Notification model = new Notification();
+            model.NotificationName = NotificationType.ProtocolliDaAccettare.ToString();
             try
             {
-                Notification model = new Notification();
                 CommonUtil cutil = new CommonUtil();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
                 _protocolFinder.IdTenantAOO = _idTenantAOO;
@@ -182,24 +185,24 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 _protocolFinder.ProtocolRoleStatus = ProtocolRoleStatus.ToEvaluate;
                 DateTime dateFrom = DateTime.Today.AddDays(-DocSuiteContext.Current.ProtocolEnv.DesktopDayDiff);
                 _protocolFinder.RegistrationDateFrom = dateFrom;
-                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Read);
+                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Read, _idTenantAOO);
 
-                model.NotificationName = NotificationType.ProtocolliDaAccettare.ToString();
                 model.NotificationCount = _protocolFinder.Count();
-                return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
 
         private Notification GetProtocolRefused()
         {
+            Notification model = new Notification();
+            model.NotificationName = NotificationType.ProtocolliRespinti.ToString();
             try
             {
-                Notification model = new Notification();
                 CommonUtil cutil = new CommonUtil();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
                 _protocolFinder.IdTenantAOO = _idTenantAOO;
@@ -207,24 +210,26 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 _protocolFinder.IsInRefusedProtocolRoleGroup = true;
                 DateTime dateFrom = DateTime.Today.AddDays(-DocSuiteContext.Current.ProtocolEnv.DesktopDayDiff);
                 _protocolFinder.RegistrationDateFrom = dateFrom;
-                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Read);
+                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Read, _idTenantAOO);
 
-                model.NotificationName = NotificationType.ProtocolliRespinti.ToString();
                 model.NotificationCount = _protocolFinder.Count();
-                return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
 
         private Notification GetProtocolToDistribute()
         {
+            Notification model = new Notification
+            {
+                NotificationName = NotificationType.ProtocolliDaDistribuire.ToString()
+            };
             try
             {
-                Notification model = new Notification();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
                 CommonUtil cutil = new CommonUtil();
                 _protocolFinder.IdTenantAOO = _idTenantAOO;
@@ -235,24 +240,26 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 _protocolFinder.IdStatus = (int)ProtocolStatusId.Attivo;
                 int dayDiff = DocSuiteContext.Current.ProtocolEnv.DesktopDayDiff;
                 _protocolFinder.RegistrationDateFrom = DateTime.Today.AddDays(-dayDiff);
-                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Distribute);
+                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Distribute, _idTenantAOO);
 
-                model.NotificationName = NotificationType.ProtocolliDaDistribuire.ToString();
                 model.NotificationCount = _protocolFinder.Count();
-                return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
 
         private Notification GetHighlightProtocols()
         {
+            Notification model = new Notification
+            {
+                NotificationName = NotificationType.ProtocolliInEvidenza.ToString()
+            };
             try
             {
-                Notification model = new Notification();
                 CommonUtil cutil = new CommonUtil();
                 NHibernateProtocolFinder _protocolFinder = new NHibernateProtocolFinder();
                 _protocolFinder.IdTenantAOO = _idTenantAOO;
@@ -264,15 +271,15 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 _protocolFinder.RegistrationDateFrom = dateFrom;
                 _protocolFinder.ProtocolHighlightToMe = true;
 
-                model.NotificationName = NotificationType.ProtocolliInEvidenza.ToString();
                 model.NotificationCount = _protocolFinder.Count();
                 return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
 
         private Notification GetProtocolRejected()
@@ -286,7 +293,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                 _protocolFinder.LoadFetchModeFascicleEnabled = false;
                 _protocolFinder.LoadFetchModeProtocolLogs = false;
                 _protocolFinder.IdStatus = (int)ProtocolStatusId.Rejected;
-                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Read);
+                cutil.ApplyProtocolFinderSecurity(ref _protocolFinder, SecurityType.Read, _idTenantAOO);
 
                 model.NotificationName = NotificationType.ProtocolliRigettati.ToString();
                 model.NotificationCount = _protocolFinder.Count();
@@ -323,9 +330,12 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
 
         private Notification GetCollaborationToProtocol()
         {
+            Notification model = new Notification
+            {
+                NotificationName = NotificationType.CollaborazioniDaProtocollare.ToString()
+            };
             try
             {
-                Notification model = new Notification();
                 WebAPIFinder.Collaborations.CollaborationFinder _collaborationFinder = InitCollaborationFinder();
 
                 WebAPIImpersonatorFacade.ImpersonateFinder(_collaborationFinder,
@@ -335,24 +345,26 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                         finder.Domain = DocSuiteContext.Current.User.Domain;
                         finder.CollaborationFinderActionType = WebAPIFinder.Collaborations.CollaborationFinderActionType.ToManage;
 
-                        model.NotificationName = NotificationType.CollaborazioniDaProtocollare.ToString();
                         finder.DoSearchHeader();
                         model.NotificationCount = finder.Count();
                     });
-                return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
 
         private Notification GetCollaborationToVision()
         {
+            Notification model = new Notification
+            {
+                NotificationName = NotificationType.CollaborazioniDaVisionare.ToString()
+            };
             try
             {
-                Notification model = new Notification();
                 WebAPIFinder.Collaborations.CollaborationFinder _collaborationFinder = InitCollaborationFinder();
 
                 WebAPIImpersonatorFacade.ImpersonateFinder(_collaborationFinder,
@@ -363,76 +375,85 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Commons
                         finder.CollaborationFinderActionType = WebAPIFinder.Collaborations.CollaborationFinderActionType.ToVisionSign;
                         finder.CollaborationFinderFilterType = WebAPIFinder.Collaborations.CollaborationFinderFilterType.AllCollaborations;
 
-                        model.NotificationName = NotificationType.CollaborazioniDaVisionare.ToString();
                         finder.DoSearchHeader();
                         model.NotificationCount = finder.Count();
                     });
-                return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
 
         private Notification GetWorkflowByUser()
         {
+            Notification model = new Notification
+            {
+                NotificationName = NotificationType.WorkflowUtenteCorrente.ToString()
+            };
             try
             {
-                Notification model = new Notification();
                 WorkflowActivityFinder _wfFinder = new WorkflowActivityFinder(new MapperWorkflowActivity(), DocSuiteContext.Current.User.FullUserName);
                 _wfFinder.WorkflowActivityStatus = new Collection<WorkflowStatus> { WorkflowStatus.Active, WorkflowStatus.Progress };
                 _wfFinder.IdTenant = FacadeFactory.Instance.UserLogFacade.GetByUser(DocSuiteContext.Current.User.FullUserName).CurrentTenantId;
-                model.NotificationName = NotificationType.WorkflowUtenteCorrente.ToString();
+                _wfFinder.IsVisible = true;
                 model.NotificationCount = _wfFinder.Count();
-                return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
+
         private Notification GetPECNotRead()
         {
+            Notification model = new Notification
+            {
+                NotificationName = NotificationType.PECDaLeggere.ToString()
+            };
             try
             {
-                Notification model = new Notification();
                 CommonUtil cutil = new CommonUtil();
-                NHibernatePECMailFinder _pecMailFinder = new NHibernatePECMailFinder();
-                _pecMailFinder.Actives = true;
-                _pecMailFinder.Direction = (short) PECMailDirection.Ingoing;
-                _pecMailFinder.NotRead = true;
-                _pecMailFinder.CheckSecurityRight = true;
-                cutil.ApplyPecMailFinderSecurity(ref _pecMailFinder);                                
+                NHibernatePECMailFinder _pecMailFinder = new NHibernatePECMailFinder
+                {
+                    Actives = true,
+                    Direction = (short)PECMailDirection.Ingoing,
+                    NotRead = true,
+                    CheckSecurityRight = true,
+                    OnlyProtocolBox = false
 
-                model.NotificationName = NotificationType.PECDaLeggere.ToString();
+                };
+                cutil.ApplyPecMailFinderSecurity(ref _pecMailFinder, _idTenantAOO);
                 model.NotificationCount = _pecMailFinder.Count();
-                return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
 
         private Notification GetLastPagesToSign()
         {
+            Notification model = new Notification
+            {
+                NotificationName = NotificationType.UltimePagineDaFirmare.ToString()
+            };
             try
             {
-                Notification model = new Notification();                
-
-                model.NotificationName = NotificationType.UltimePagineDaFirmare.ToString();
                 model.NotificationCount = new ResolutionFacade().GetPublicated(null, DateTime.Now, null, null, null, null).Count;
-                return model;
             }
             catch (Exception ex)
             {
                 FileLogger.Error(LogName.WebAPIClientLog, ex.Message, ex);
-                throw;
+                model.NotificationCount = -1;
             }
+            return model;
         }
     }
 }

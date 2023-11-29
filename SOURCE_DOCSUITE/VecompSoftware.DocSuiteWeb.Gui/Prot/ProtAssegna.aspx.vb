@@ -1,19 +1,12 @@
 ﻿Imports System.Collections.Generic
 Imports System.Linq
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports Telerik.Web.UI
-Imports VecompSoftware.DocSuiteWeb.Data.Formatter
-Imports VecompSoftware.Services.Biblos.Models
-Imports VecompSoftware.DocSuiteWeb.Model.Parameters
-Imports VecompSoftware.Services.Logging
 Imports System.Web
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Gui.Viewers
 Imports Newtonsoft.Json
-Imports System.Text
+Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class ProtAssegna
     Inherits ProtBasePage
@@ -71,6 +64,11 @@ Public Class ProtAssegna
             Return JsonConvert.SerializeObject(ProtocolEnv.ProtocolStatusConfirmRequest)
         End Get
     End Property
+    Private Overloads ReadOnly Property CurrentContainerControl As ContainerControl
+        Get
+            Return New ContainerControl(cmbProtocolContenitori, rcbContainer)
+        End Get
+    End Property
 #End Region
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
 
@@ -85,18 +83,34 @@ Public Class ProtAssegna
 
     ''' <summary> Inizializza gli oggetti della pagina </summary>
     Private Sub Initialize()
-        Dim node As RadTreeNode = Nothing
         For Each prot As Protocol In ProtocolsList
-            node = New RadTreeNode()
-            node.Text = String.Format("{0} del {1:dd/MM/yyyy} ({2})", prot.FullNumber, prot.RegistrationDate.ToLocalTime(), prot.ProtocolObject)
+            Dim node As RadTreeNode = New RadTreeNode With {
+                .Text = String.Format("{0} del {1:dd/MM/yyyy} ({2})", prot.FullNumber, prot.RegistrationDate.ToLocalTime(), prot.ProtocolObject)
+            }
             node.Font.Bold = True
-            node.ImageUrl = "~/Comm/Images/DocSuite/Protocollo16.gif"
+            node.ImageUrl = "~/Comm/Images/DocSuite/Protocollo16.png"
             rtvProtocol.Nodes.Add(node)
         Next
+        btnConfermaAssegna.Enabled = ProtocolsList.Count > 0
+        If Not btnConfermaAssegna.Enabled Then
+            btnConfermaAssegna.ToolTip = "E necessario selezionare almeno un protocollo prima di proseguire"
+        End If
         'status        
         cmbProtocolStatus.DataSource = Facade.ProtocolStatusFacade.GetByDescription("In lavorazione")
         cmbProtocolStatus.DataBind()
+        PopulateContainer()
+    End Sub
+    Private Sub PopulateContainer()
+        Dim availableContainers As List(Of Container) = Facade.ContainerFacade.GetContainers(DSWEnvironment.Protocol, ProtocolContainerRightPositions.Insert, True).ToList()
 
+        If availableContainers IsNot Nothing AndAlso availableContainers.Count > 0 Then
+            ' Visualizzo il risultato della ricerca
+            CurrentContainerControl.ClearItems()
+            CurrentContainerControl.AddItem(String.Empty, String.Empty)
+            For Each container As Container In availableContainers
+                CurrentContainerControl.AddItem(container.Name, container.Id.ToString())
+            Next
+        End If
     End Sub
 
     Private Sub InitializeAjax()
@@ -108,16 +122,35 @@ Public Class ProtAssegna
             Exit Sub
         End If
 
-        LogInsert()
         If uscSubject.GetContactText.IsNullOrEmpty Then
             AjaxAlert("Campo Assegnatario obbligatorio")
             Exit Sub
         End If
-        'Proponente e status
+
+        Dim idContainer As Integer
         For Each prot As Protocol In ProtocolsList
-            prot.Subject = uscSubject.GetContactText()
-            prot.Status = Facade.ProtocolStatusFacade.GetById(cmbProtocolStatus.SelectedValue)
-            Facade.ProtocolFacade.Update(prot)
+            Dim protocolRights As ProtocolRights = New ProtocolRights(prot)
+            If protocolRights.IsEditable Then
+                Dim changedContainer As Boolean = False
+                prot.Subject = uscSubject.GetContactText()
+                prot.Status = Facade.ProtocolStatusFacade.GetById(cmbProtocolStatus.SelectedValue)
+                If Not String.IsNullOrEmpty(CurrentContainerControl.SelectedValue) AndAlso Integer.TryParse(CurrentContainerControl.SelectedValue, idContainer) AndAlso prot.Container.Id <> idContainer Then
+                    prot.Container = Facade.ContainerFacade.GetById(idContainer)
+                    changedContainer = True
+                End If
+
+                Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, $"Assegn/Propon. (old): {prot.Subject}")
+                Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, $"Assegn/Propon. (new): {uscSubject.GetContactText()}")
+                If DocSuiteContext.Current.ProtocolEnv.IsStatusEnabled Then
+                    Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, $"Stato del protocollo (old): {prot.Status.Id}")
+                    Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, $"Stato del protocollo (new): {cmbProtocolStatus.SelectedValue}")
+                End If
+                If changedContainer Then
+                    Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, $"Contenitore del protocollo (old): {prot.Container.Name}")
+                    Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, $"Contenitore del protocollo (new): {CurrentContainerControl.SelectedText}")
+                End If
+                Facade.ProtocolFacade.Update(prot)
+            End If
         Next
         Dim result As List(Of Guid) = ProtocolsKeys.Except(SelectedProtocolsKeys).ToList()
         Dim redirectUrl As String = "~/viewers/ProtocolViewer.aspx?multiple=true&keys={0}"
@@ -135,19 +168,6 @@ Public Class ProtAssegna
 
 #Region " Methods "
 
-    Private Sub LogInsert()
-
-        For Each prot As Protocol In ProtocolsList
-            Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, "Assegn/Propon." & " (old): " & prot.Subject)
-            Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, "Assegn/Propon." & " (new): " & uscSubject.GetContactText())
-
-            If DocSuiteContext.Current.ProtocolEnv.IsStatusEnabled Then
-                Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, "Stato del protocollo" & " (old): " & prot.Status.Id)
-                Facade.ProtocolLogFacade.Insert(prot, ProtocolLogEvent.PM, "Stato del protocollo" & " (new): " & cmbProtocolStatus.SelectedValue)
-            End If
-
-        Next
-    End Sub
 
 #End Region
 

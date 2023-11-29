@@ -70,6 +70,7 @@ class FascUDManager extends FascicleBase {
     uscFascicleSearchId: string;
     processEnabled: boolean;
     folderSelectionEnabled: boolean;
+    authorizedFasciclesEnabled: boolean;
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _rgvAssociatedFascicles: Telerik.Web.UI.RadGrid;
@@ -677,26 +678,18 @@ class FascUDManager extends FascicleBase {
      * TODO: da togliere a favore di Signalr
      */
     private loadUDdata(model: any, done?: Function): void {
-        this.service.getAssociatedFascicles(model.UniqueId, this.documentUnitType, null,
-            (data: FascicleModel[]) => {
-                let uscFascicleSearch: uscFascicleSearch = $(`#${this.uscFascicleSearchId}`).data() as uscFascicleSearch;
-                if (!jQuery.isEmptyObject(uscFascicleSearch)) {
-                    uscFascicleSearch.clearSelections();
-                }
-
-                this.refreshAssociatedFascicles(data);
-                if (done) {
-                    done();
-                }
-            },
-            (exception: ExceptionDTO) => {
-                this.showNotificationMessage(this.uscNotificationId, 'Errore nella richiesta. Non è stato possibile recuperare i Fascicoli associati.');
-                this.setButtonEnable();
-                if (done) {
-                    done();
-                }
-            }
-        );
+        if (this.authorizedFasciclesEnabled) {
+            this.service.getAuthorizedFasciclesFromDocumentUnit(model.UniqueId,
+                (data: FascicleModel[]) => this.loadUDDataSuccessCallback(data, done),
+                (exception: ExceptionDTO) => this.loadUDDataErrorCallback(exception, done)
+            );
+        }
+        else {
+            this.service.getAssociatedFascicles(model.UniqueId, this.documentUnitType, null,
+                (data: FascicleModel[]) => this.loadUDDataSuccessCallback(data, done),
+                (exception: ExceptionDTO) => this.loadUDDataErrorCallback(exception, done)
+            );
+        }
     }
 
     /**
@@ -736,6 +729,26 @@ class FascUDManager extends FascicleBase {
         this._btnCategoryChange.set_visible(this.validationModel.CanChangeCategory);
         if ((<any>this._btnCategoryChange).get_visible()) {
             this._btnCategoryChange.set_enabled(true);
+        }
+    }
+
+    loadUDDataSuccessCallback(data: FascicleModel[], done?: Function) {
+        let uscFascicleSearch: uscFascicleSearch = $(`#${this.uscFascicleSearchId}`).data() as uscFascicleSearch;
+        if (!jQuery.isEmptyObject(uscFascicleSearch)) {
+            uscFascicleSearch.clearSelections();
+        }
+
+        this.refreshAssociatedFascicles(data);
+        if (done) {
+            done();
+        }
+    }
+
+    loadUDDataErrorCallback(exception: ExceptionDTO, done?: Function) {
+        this.showNotificationMessage(this.uscNotificationId, 'Errore nella richiesta. Non è stato possibile recuperare i Fascicoli associati.');
+        this.setButtonEnable();
+        if (done) {
+            done();
         }
     }
 }

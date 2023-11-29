@@ -11,7 +11,6 @@ namespace VecompSoftware.DocSuiteWeb.API
         string Title { get; set; }
         string Description { get; set; }
         string Acronym { get; set; }
-        string Mailboxes { get; set; }
 
         IOChartItemDTO Parent { get; set; }
         IOChartItemDTO[] Items { get; set; }

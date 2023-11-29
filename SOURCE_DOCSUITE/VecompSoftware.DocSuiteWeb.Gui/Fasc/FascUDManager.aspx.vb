@@ -103,6 +103,12 @@ Public Class FascUDManager
             Return Request.QueryString.Get("FascicleObject")
         End Get
     End Property
+
+    Public ReadOnly Property AuthorizedFasciclesEnabled As Boolean
+        Get
+            Return GetKeyValueOrDefault("AuthorizedFasciclesEnabled", False)
+        End Get
+    End Property
 #End Region
 
 #Region "Events"

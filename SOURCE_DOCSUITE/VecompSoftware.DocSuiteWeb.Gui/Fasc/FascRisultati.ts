@@ -10,6 +10,7 @@ class FascRisultati extends FascicleBase {
     btnDocumentsId: string;
     btnSelectAllId: string;
     btnDeselectAllId: string;
+    btnExportAllId: string;
     gridId: string;
     ajaxLoadingPanelId: string;
     selectableFasciclesThreshold: number;
@@ -21,6 +22,7 @@ class FascRisultati extends FascicleBase {
     private _btnSelectAll: Telerik.Web.UI.RadButton;
     private _btnDeselectAll: Telerik.Web.UI.RadButton;
     private _backBtn: Telerik.Web.UI.RadButton;
+    private _btnExportAll: Telerik.Web.UI.RadButton;
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
     private _grid: Telerik.Web.UI.RadGrid;
 
@@ -43,6 +45,7 @@ class FascRisultati extends FascicleBase {
         this._btnDocuments = <Telerik.Web.UI.RadButton>$find(this.btnDocumentsId);
         this._btnSelectAll = <Telerik.Web.UI.RadButton>$find(this.btnSelectAllId);
         this._btnDeselectAll = <Telerik.Web.UI.RadButton>$find(this.btnDeselectAllId);
+        this._btnExportAll = <Telerik.Web.UI.RadButton>$find(this.btnExportAllId);
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._grid = <Telerik.Web.UI.RadGrid>$find(this.gridId);
 

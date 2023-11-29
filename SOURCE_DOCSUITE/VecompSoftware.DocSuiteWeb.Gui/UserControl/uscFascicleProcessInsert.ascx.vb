@@ -27,6 +27,7 @@ Public Class uscFascicleProcessInsert
         uscDynamicMetadataRest.ValidationEnabled = Not ValidationDisabled
 
         uscCategory.ShowProcesses = ProtocolEnv.ProcessEnabled
+        uscCategory.ShowProcessFascicleTemplate = True
     End Sub
 #End Region
 

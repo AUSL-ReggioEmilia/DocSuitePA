@@ -136,6 +136,12 @@ Partial Public Class FrameSet
         End Get
     End Property
 
+    Protected ReadOnly Property DefaultDocumentId As Guid?
+        Get
+            Return Request.QueryString.GetValueOrDefault("DefaultDocumentId", Guid.Empty)
+        End Get
+    End Property
+
     Private ReadOnly Property OpenTargetDocument As Boolean
         Get
             Return Request.QueryString.GetValueOrDefault("ApriDocumento", String.Empty).Eq("si")
@@ -157,6 +163,12 @@ Partial Public Class FrameSet
     Private ReadOnly Property Fascicolo As String
         Get
             Return Request.QueryString("Fascicolo")
+        End Get
+    End Property
+
+    Private ReadOnly Property RepositoryName As String
+        Get
+            Return Request.QueryString.GetValueOrDefault("RepositoryName", String.Empty)
         End Get
     End Property
 
@@ -330,11 +342,9 @@ Partial Public Class FrameSet
     End Sub
 
     Private Sub ButtonRenew_Click(sender As Object, e As EventArgs) Handles btnReloadSessionTenant.Click
-        If DocSuiteContext.Current.ProtocolEnv.MultiTenantEnabled Then
-            Dim tenantFacade As Facade.Common.Tenants.TenantFacade = New Facade.Common.Tenants.TenantFacade()
-            Session("CurrentTenant") = tenantFacade.GetCurrentTenant()
-            ScriptManager.RegisterClientScriptBlock(Page, GetType(Page), "reloadSession", "reloadSession();", True)
-        End If
+        Dim tenantFacade As Facade.Common.Tenants.TenantFacade = New Facade.Common.Tenants.TenantFacade()
+        Session(CommonShared.USER_CURRENT_TENANT) = tenantFacade.GetCurrentTenant()
+        ScriptManager.RegisterClientScriptBlock(Page, GetType(Page), "reloadSession", "reloadSession();", True)
     End Sub
 
     Private Function SearchSelectedCompanyForTheCurrentUser() As String
@@ -490,7 +500,7 @@ Partial Public Class FrameSet
                     Case "Inserimento"
                         Return "Prot/ProtInserimento.aspx?" & CommonShared.AppendSecurityCheck("Action=Insert")
                     Case "InserimentoMail"
-                        ''**REMOVE**: azione inserimento protocollo da outlook.
+                        ''EMANUELE: azione inserimento protocollo da outlook.
                         Dim documento As String = Server.UrlEncode(Request.QueryString("Documento"))
                         Dim allegati As String = Server.UrlEncode(Request.QueryString("Allegati"))
                         Dim mittenti As String = Server.UrlEncode(Request.QueryString("Mittenti"))
@@ -617,6 +627,9 @@ Partial Public Class FrameSet
                 End Select
             Case "fasc"
                 Select Case customAzione
+                    Case "Documenti"
+                        Dim parameters As String = String.Format("Type=Fasc&IdFascicle={0}&DefaultDocumentId={1}", IdFascicle, DefaultDocumentId)
+                        Return String.Format("Viewers/FascicleViewer.aspx?{0}", CommonShared.AppendSecurityCheck(parameters))
                     Case "Inserimento"
                         Return String.Concat($"Fasc/{If(ProtocolEnv.ProcessEnabled, "FascProcessInserimento.aspx", "FascInserimento.aspx")}?", CommonShared.AppendSecurityCheck("Type=Fasc&Action=Insert"))
                     Case "Apri"
@@ -827,6 +840,18 @@ Partial Public Class FrameSet
                         End If
                 End Select
                 Return url
+            Case "workflow"
+                Select Case customAzione
+                    Case "Cerca"
+                        Dim parameters As New List(Of String) From {
+                            "Type=Comm"
+                        }
+                        If Not String.IsNullOrEmpty(RepositoryName) Then
+                            parameters.Add($"RepositoryName={RepositoryName}")
+                        End If
+                        Return $"User/UserWorkflow.aspx?{CommonShared.AppendSecurityCheck(String.Join("&", parameters))}"
+
+                End Select
         End Select
 
         Return String.Empty
@@ -892,14 +917,8 @@ Partial Public Class FrameSet
                     If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode1") Then
                         alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode1").Name, "Utlt/UtltParameter.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Parameter")))
                     End If
-                    If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode2") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode2").Name, "Utlt/UtltLocations.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Locations")))
-                    End If
                     If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode3") Then
                         alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode3").Name, "Utlt/UtltCheckDBMapping.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=CheckDBMapping")))
-                    End If
-                    If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode4") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode4").Name, "Utlt/UtltImpersonator.aspx", "Type=Prot"))
                     End If
                     If ProtocolEnv.EnvUtltRenderingEnabled AndAlso menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode6") Then
                         alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode6").Name, "Utlt/UtltRenderingDocument.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Document")))
@@ -910,17 +929,8 @@ Partial Public Class FrameSet
                     If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode8") Then
                         alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode8").Name, "Utlt/UtltTrace.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Trace")))
                     End If
-                    If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode9") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode9").Name, "Utlt/UtltWSImport.aspx", "Type=Prot"))
-                    End If
-                    If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode10") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode10").Name, "Utlt/TestWatermark.aspx", "Type=Prot"))
-                    End If
                     If menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode11") Then
                         alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode11").Name, "Utlt/UtltTestSignature.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                    End If
-                    If DocSuiteContext.Current.ProtocolEnv.APIEnabled AndAlso menu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode14") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode1").Nodes("SecondNode14").Name, "API/APIProviderTestPage.aspx", "Type=Prot"))
                     End If
                 End If
             End If
@@ -928,7 +938,7 @@ Partial Public Class FrameSet
 
             If menu.Nodes.Keys.Contains("FirstNode2") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode2").Name, "Utlt/UtltUserLog.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Users")))
-                alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode2").Name, "Utlt/UtltUsers.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Users")))
+                alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode3").Name, "Utlt/UtltUsers.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Users")))
             End If
             If menu.Nodes.Keys.Contains("FirstNode4") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode4").Name, "Utlt/UtltADProperties.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
@@ -945,9 +955,6 @@ Partial Public Class FrameSet
             If ProtocolEnv.IsPECEnabled Then
                 If menu.Nodes.Keys.Contains("FirstNode8") Then
                     alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, menu.Nodes("FirstNode8").Name))
-                    If menu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode1") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode8").Nodes("SecondNode1").Name, "PEC/PECMailBoxSettings.aspx", "Type=Pec"))
-                    End If
                     If menu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode2") Then
                         alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode8").Nodes("SecondNode2").Name, "PEC/PECMailBoxProfileSettings.aspx", "Type=Pec"))
                     End If
@@ -968,23 +975,14 @@ Partial Public Class FrameSet
 
             If menu.Nodes.Keys.Contains("FirstNode10") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, menu.Nodes("FirstNode10").Name))
-                If menu.Nodes("FirstNode10").Nodes.Keys.Contains("SecondNode1") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode10").Nodes("SecondNode1").Name, "Utlt/UtltVerify.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Verify")))
-                End If
                 If menu.Nodes("FirstNode10").Nodes.Keys.Contains("SecondNode2") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode10").Nodes("SecondNode2").Name, "Utlt/UtltContatori.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=Contatori")))
                 End If
                 If ProtocolEnv.ChangeYearDocumentSeriesEnabled AndAlso menu.Nodes("FirstNode10").Nodes.Keys.Contains("SecondNode3") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode10").Nodes("SecondNode3").Name, "Utlt/UtltDocumentSeries.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Page=ContatoriDocumentSeries")))
                 End If
-                If menu.Nodes("FirstNode10").Nodes.Keys.Contains("SecondNode4") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode10").Nodes("SecondNode4").Name, "Utlt/UtltProtRicerca.aspx", "Type=Comm&Action=Utlt"))
-                End If
             End If
 
-            If Not String.IsNullOrEmpty(ProtocolEnv.WSTopMediaParams) AndAlso menu.Nodes.Keys.Contains("FirstNode11") Then ' Da verificare in che modo renderla visibile. - FG
-                alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode11").Name, "Utlt/UtltProtSincronizza.aspx", "Type=Prot&Action=Utlt"))
-            End If
             If menu.Nodes.Keys.Contains("FirstNode12") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, menu.Nodes("FirstNode12").Name))
                 If DocSuiteContext.Current.IsProtocolEnabled AndAlso menu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode1") Then
@@ -998,9 +996,6 @@ Partial Public Class FrameSet
                 End If
                 If ProtocolEnv.EnvTableLogEnabled AndAlso menu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode3") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode12").Nodes("SecondNode3").Name, "Utlt/UtltLog.aspx", CommonShared.AppendSecurityCheck("Type=Comm&LogType=Tblt")))
-                End If
-                If ProtocolEnv.EnvServiceLogEnabled AndAlso menu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode4") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode12").Nodes("SecondNode4").Name, "Utlt/UtltServiceLog.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
                 End If
                 If ProtocolEnv.IsUserErrorEnabled AndAlso menu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode5") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode12").Nodes("SecondNode5").Name, "Utlt/UtltUserError.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
@@ -1027,9 +1022,6 @@ Partial Public Class FrameSet
                 If ProtocolEnv.ScannerConfigurationEnabled AndAlso menu.Nodes("FirstNode14").Nodes.Keys.Contains("SecondNode2") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode14").Nodes("SecondNode2").Name, "Utlt/ScannerManagement.aspx", "Type=Prot"))
                 End If
-                If menu.Nodes("FirstNode14").Nodes.Keys.Contains("SecondNode3") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode14").Nodes("SecondNode3").Name, "Utlt/AllineaProgressiviProtocollo.aspx", "Type=Prot"))
-                End If
                 If menu.Nodes("FirstNode14").Nodes.Keys.Contains("SecondNode4") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode14").Nodes("SecondNode4").Name, "Utlt/ResetParameters.aspx", "Type=Prot"))
                 End If
@@ -1053,52 +1045,76 @@ Partial Public Class FrameSet
             Dim tableMenu As MenuNodeModel = menuJson("Menu11")
             Dim tbltMenu As New List(Of NodeLink)
 
-            If DocSuiteContext.Current.ProtocolEnv.MultiTenantEnabled AndAlso tableMenu.Nodes.Keys.Contains("FirstNode27") AndAlso CommonShared.HasGroupAdministratorRight Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode27").Name))
-                If tableMenu.Nodes("FirstNode27").Nodes.Keys.Contains("SecondNode1") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode27").Nodes("SecondNode1").Name, "Tblt/TbltTenant.aspx", CommonUtil.AppendSecurityCheck("Type=Comm")))
-                End If
-            End If
+            If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerAdminRight OrElse CommonShared.HasGroupTblRoleAdminRight OrElse CommonShared.HasGroupTblRoleRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight OrElse CommonShared.HasGroupOChartAdminRight) AndAlso tableMenu.Nodes.Keys.Contains("FirstNode1") Then
+                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode1").Name))
 
-            If ProtocolEnv.IsSecurityGroupEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight) Then  'oppure responsabile privacy
-                If tableMenu.Nodes.Keys.Contains("FirstNode19") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode19").Name, "Tblt/TbltGruppi.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                End If
-                If tableMenu.Nodes.Keys.Contains("FirstNode24") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode24").Name, "Tblt/TbltSecurityUsers.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                End If
-            End If
-
-            If tableMenu.Nodes.Keys.Contains("FirstNode12") Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode12").Name))
-                If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerRight OrElse CommonShared.HasGroupTblContainerAdminRight) AndAlso tableMenu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode1") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode12").Nodes("SecondNode1").Name, "Tblt/TbltContenitori.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Action=Container")))
-                End If
-                If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerAdminRight) AndAlso tableMenu.Nodes("FirstNode12").Nodes.Keys.Contains("SecondNode2") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode12").Nodes("SecondNode2").Name, "Tblt/TbltLocation.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                End If
-
-                If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblRoleRight OrElse CommonShared.HasGroupTblRoleAdminRight) AndAlso tableMenu.Nodes.Keys.Contains("FirstNode11") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode11").Name, "Tblt/TbltSettore.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Action=Role")))
-                End If
-            End If
-
-            If tableMenu.Nodes.Keys.Contains("FirstNode8") Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode8").Name))
-                If ProtocolEnv.ProcessEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupProcessesViewsManageableRight) Then
-                    If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode4") Then
-                        tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode4").Name, "Tblt/TbltProcess.aspx", "Type=Comm"))
+                If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasSecurityGroupAdminRight OrElse CommonShared.HasSecurityGroupPowerUserRight) Then  'oppure responsabile privacy
+                    If tableMenu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode1") Then
+                        tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode1").Nodes("SecondNode1").Name, "Tblt/TbltSecurityUsers.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
+                    End If
+                    If tableMenu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode2") Then
+                        tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode1").Nodes("SecondNode2").Name, "Tblt/TbltGruppi.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
                     End If
                 End If
-                If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode1") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode1").Name, "Tblt/TbltClassificatore.aspx", "Type=Comm"))
+
+                If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblRoleRight OrElse CommonShared.HasGroupTblRoleAdminRight) Then
+                    If tableMenu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode3") Then
+                        tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode1").Nodes("SecondNode3").Name, "Tblt/TbltSettore.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Action=Role")))
+                    End If
                 End If
-                If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode2") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode2").Name, "Tblt/TbltMassimarioScartoGes.aspx", "Type=Comm"))
+
+                If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerRight OrElse CommonShared.HasGroupTblContainerAdminRight) Then
+                    If tableMenu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode4") Then
+                        tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode1").Nodes("SecondNode4").Name, "Tblt/TbltContenitori.aspx", CommonShared.AppendSecurityCheck("Type=Comm&Action=Container")))
+                    End If
                 End If
-                If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode3") AndAlso CommonShared.HasGroupTblCategoryRight Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode3").Name, "Tblt/TbltCategorySchema.aspx", "Type=Comm"))
+
+                If ProtocolEnv.OChartEnabled AndAlso CommonShared.HasGroupOChartAdminRight Then
+                    If tableMenu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode5") Then
+                        tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode1").Nodes("SecondNode5").Name, "Tblt/TbltOChart.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
+                    End If
                 End If
+
+                If (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerAdminRight) Then
+                    If tableMenu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode6") Then
+                        tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode1").Nodes("SecondNode6").Name, "Tblt/TbltLocation.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
+                    End If
+                End If
+
+            End If
+
+            If tableMenu.Nodes.Keys.Contains("FirstNode8") AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupProcessesViewsManageableRight OrElse CommonShared.HasGroupTblCategoryRight) Then
+                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode8").Name))
+                If DocSuiteContext.Current.ProtocolEnv.MultiTenantEnabled AndAlso CommonShared.HasGroupAdministratorRight Then
+                    If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode1") Then
+                        tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode1").Name, "Tblt/TbltTenant.aspx", CommonUtil.AppendSecurityCheck("Type=Comm")))
+                    End If
+                End If
+                If ProtocolEnv.ProcessEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupProcessesViewsManageableRight) Then
+                    If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode2") Then
+                        tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode2").Name, "Tblt/TbltProcess.aspx", "Type=Comm"))
+                    End If
+                End If
+                If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode3") AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight) Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode3").Name, "Tblt/TbltClassificatore.aspx", "Type=Comm"))
+                End If
+                If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode4") AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight) Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode4").Name, "Tblt/TbltMassimarioScartoGes.aspx", "Type=Comm"))
+                End If
+                If tableMenu.Nodes("FirstNode8").Nodes.Keys.Contains("SecondNode5") AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight) Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode8").Nodes("SecondNode5").Name, "Tblt/TbltCategorySchema.aspx", "Type=Comm"))
+                End If
+            End If
+
+            If tableMenu.Nodes.Keys.Contains("FirstNode26") AndAlso CommonShared.HasGroupAdministratorRight AndAlso ProtocolEnv.IsPECEnabled Then
+                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode26").Name))
+                If tableMenu.Nodes("FirstNode26").Nodes.Keys.Contains("SecondNode1") Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode26").Nodes("SecondNode1").Name, "Tblt/TbltPECMailBox.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
+                End If
+                If ProtocolEnv.SMSPecNotificationEnabled AndAlso tableMenu.Nodes("FirstNode26").Nodes.Keys.Contains("SecondNode2") Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode26").Nodes("SecondNode2").Name, "Tblt/TbltSMSPecNotification.aspx", CommonShared.AppendSecurityCheck("Type=Prot")))
+                End If
+
             End If
 
             If tableMenu.Nodes.Keys.Contains("FirstNode9") AndAlso ProtocolEnv.IsInteropEnabled Then
@@ -1106,12 +1122,22 @@ Partial Public Class FrameSet
                 If tableMenu.Nodes("FirstNode9").Nodes.Keys.Contains("SecondNode1") Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode9").Nodes("SecondNode1").Name, "Tblt/TbltContatti.aspx", "Type=Comm"))
                 End If
-                If ProtocolEnv.ContactListsEnabled AndAlso tableMenu.Nodes("FirstNode9").Nodes.Keys.Contains("SecondNode2") Then
+                If ProtocolEnv.ContactListsEnabled AndAlso tableMenu.Nodes("FirstNode9").Nodes.Keys.Contains("SecondNode2") AndAlso CommonShared.HasGroupAdministratorRight Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode9").Nodes("SecondNode2").Name, "Tblt/TbltContactLists.aspx", "Type=Comm"))
                 End If
-                If tableMenu.Nodes("FirstNode9").Nodes.Keys.Contains("SecondNode3") Then
+                If tableMenu.Nodes("FirstNode9").Nodes.Keys.Contains("SecondNode3") AndAlso CommonShared.HasGroupAdministratorRight Then
                     tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode9").Nodes("SecondNode3").Name, "Tblt/TbltTitoloStudio.aspx", CommonShared.AppendSecurityCheck("Type=Prot")))
                 End If
+                If tableMenu.Nodes("FirstNode9").Nodes.Keys.Contains("SecondNode4") AndAlso CommonShared.HasGroupAdministratorRight Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode9").Nodes("SecondNode4").Name, "Tblt/TbltOggetto.aspx", "Type=Comm"))
+                End If
+                If tableMenu.Nodes("FirstNode9").Nodes.Keys.Contains("SecondNode5") AndAlso CommonShared.HasGroupAdministratorRight Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode9").Nodes("SecondNode5").Name, "Tblt/TbltServiceCategory.aspx", "Type=Comm"))
+                End If
+                If ProtocolEnv.IsTableDocTypeEnabled AndAlso tableMenu.Nodes("FirstNode9").Nodes.Keys.Contains("SecondNode6") AndAlso CommonShared.HasGroupAdministratorRight Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode9").Nodes("SecondNode6").Name, "Tblt/TbltTipoDoc.aspx", "Type=Comm"))
+                End If
+
             End If
 
             If CommonShared.HasGroupAdministratorRight AndAlso ProtocolEnv.UDSEnabled AndAlso tableMenu.Nodes.Keys.Contains("FirstNode7") Then
@@ -1127,69 +1153,38 @@ Partial Public Class FrameSet
                 End If
             End If
 
-            If tableMenu.Nodes.Keys.Contains("FirstNode23") AndAlso ProtocolEnv.MetadataRepositoryEnabled AndAlso (CommonShared.UserConnectedBelongsTo(ProtocolEnv.MetadataRepositoryGroups) OrElse CommonShared.HasGroupTblCategoryRight) Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode23").Name, "Tblt/TbltMetadataRepository.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
+            If tableMenu.Nodes.Keys.Contains("FirstNode21") AndAlso (ProtocolEnv.TemplateProtocolEnable OrElse CommonShared.HasGroupAdministratorRight OrElse
+                CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateCollaborationGroups) OrElse CommonShared.HasGroupTblCategoryRight OrElse CommonShared.HasGroupTblRoleTypeResolutionRight OrElse
+                CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateDocumentGroups)) Then
+                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode21").Name))
+                If ProtocolEnv.WorkflowManagerEnabled AndAlso tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode1") AndAlso CommonShared.HasGroupAdministratorRight Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode1").Name, "Tblt/TbltWorkflowRepository.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
+                End If
+                If ProtocolEnv.TemplateProtocolEnable AndAlso tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode2") AndAlso CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateGroups) Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode2").Name, "Tblt/TbltTemplateProtocolManager.aspx", CommonShared.AppendSecurityCheck("Type=Prot")))
+                End If
+                If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode3") AndAlso CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateCollaborationGroups) Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode3").Name, "Tblt/TbltTemplateCollaboration.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
+                End If
+                If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode4") AndAlso DocSuiteContext.Current.IsResolutionEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblRoleTypeResolutionRight) Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode4").Name, "Resl/ReslTipologia.aspx", CommonShared.AppendSecurityCheck("Type=Resl")))
+                End If
+                If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode5") AndAlso (CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateDocumentGroups)) Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode5").Name, "Tblt/TbltTemplateDocumentRepository.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
+                End If
+                If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode6") AndAlso ProtocolEnv.MetadataRepositoryEnabled AndAlso CommonShared.UserConnectedBelongsTo(ProtocolEnv.MetadataRepositoryGroups) Then
+                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode6").Name, "Tblt/TbltMetadataRepository.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
+                End If
             End If
 
             If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblPrivacyLevelManagerGroupRight AndAlso tableMenu.Nodes.Keys.Contains("FirstNode25")) Then
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode25").Name, "Tblt/TbltPrivacyLevel.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
             End If
 
-            If tableMenu.Nodes.Keys.Contains("FirstNode26") AndAlso CommonShared.HasGroupAdministratorRight Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode26").Name))
-                If tableMenu.Nodes("FirstNode26").Nodes.Keys.Contains("SecondNode1") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode26").Nodes("SecondNode1").Name, "Tblt/TbltPECMailBox.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                End If
-
-            End If
-
-            If ProtocolEnv.OChartEnabled AndAlso tableMenu.Nodes.Keys.Contains("FirstNode1") Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode1").Name))
-                If CommonShared.UserConnectedBelongsTo(ProtocolEnv.OChartAdminGroups) AndAlso tableMenu.Nodes("FirstNode1").Nodes.Keys.Contains("SecondNode1") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode1").Nodes("SecondNode1").Name, "Tblt/TbltOChart.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                End If
-            End If
-            If tableMenu.Nodes.Keys.Contains("FirstNode2") Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode2").Name, "Tblt/TbltOggetto.aspx", "Type=Comm"))
-            End If
-            If tableMenu.Nodes.Keys.Contains("FirstNode3") Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode3").Name, "Tblt/TbltServiceCategory.aspx", "Type=Comm"))
-            End If
-            If ProtocolEnv.IsTableDocTypeEnabled AndAlso tableMenu.Nodes.Keys.Contains("FirstNode4") Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode4").Name, "Tblt/TbltTipoDoc.aspx", "Type=Comm"))
-            End If
-
-            If tableMenu.Nodes.Keys.Contains("FirstNode21") AndAlso (ProtocolEnv.TemplateProtocolEnable OrElse CommonShared.HasGroupAdministratorRight OrElse
-                CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateCollaborationGroups) OrElse CommonShared.HasGroupTblCategoryRight OrElse CommonShared.HasGroupTblRoleTypeResolutionRight OrElse
-                CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateDocumentGroups)) Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode21").Name))
-                If ProtocolEnv.TemplateProtocolEnable AndAlso tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode1") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode1").Name, "Tblt/TbltTemplateProtocolManager.aspx", CommonShared.AppendSecurityCheck("Type=Prot")))
-                End If
-                If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode2") AndAlso (CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateCollaborationGroups) OrElse CommonShared.HasGroupTblCategoryRight) Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode2").Name, "Tblt/TbltTemplateCollaborationManager.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                End If
-                If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode3") AndAlso DocSuiteContext.Current.IsResolutionEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblRoleTypeResolutionRight) Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode3").Name, "Resl/ReslTipologia.aspx", CommonShared.AppendSecurityCheck("Type=Resl")))
-                End If
-                If tableMenu.Nodes("FirstNode21").Nodes.Keys.Contains("SecondNode4") AndAlso (CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateDocumentGroups) OrElse CommonShared.HasGroupTblCategoryRight) Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, tableMenu.Nodes("FirstNode21").Nodes("SecondNode4").Name, "Tblt/TbltTemplateDocumentRepository.aspx", CommonShared.AppendSecurityCheck("Type=Comm")))
-                End If
-            End If
-
-            If ProtocolEnv.SMSPecNotificationEnabled AndAlso tableMenu.Nodes.Keys.Contains("FirstNode6") Then
-                tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode6").Name, "Tblt/TbltSMSPecNotification.aspx", CommonShared.AppendSecurityCheck("Type=Prot")))
-            End If
-
-            If DocSuiteContext.Current.ProtocolEnv.WorkflowManagerEnabled Then
-                If tableMenu.Nodes.Keys.Contains("FirstNode18") Then
-                    tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode18").Name, "Tblt/TbltWorkflowRepository.aspx", "Type=Comm"))
-                End If
-            End If
-
             If ProtocolEnv.IsPackageEnabled AndAlso (CommonShared.HasGroupAdministratorRight OrElse CommonShared.UserProtocolCheckRight(ProtocolContainerRightPositions.Insert)) AndAlso tableMenu.Nodes.Keys.Contains("FirstNode14") Then
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, tableMenu.Nodes("FirstNode14").Name, "Prot/ProtPackage.aspx", CommonShared.AppendSecurityCheck("Type=Prot")))
             End If
+
             If tableMenu.Nodes.Keys.Contains("FirstNode15") Then
                 tbltMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Line, tableMenu.Nodes("FirstNode15").Name))
                 If tableMenu.Nodes("FirstNode15").Nodes.Keys.Contains("SecondNode1") Then
@@ -1275,16 +1270,13 @@ Partial Public Class FrameSet
             If menu.Nodes.Keys.Contains("FirstNode2") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode2").Name, "Resl/ReslRicerca.aspx", "Type=Resl"))
             End If
-            If ResolutionEnv.ParerEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode3") Then
-                alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode3").Name, "PARER/ReslParerSearch.aspx", CommonShared.AppendSecurityCheck("Type=Resl")))
-            End If
             If CommonShared.ResolutionPECOCEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode5") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode5").Name, "Resl/ReslPecOc.aspx", CommonShared.AppendSecurityCheck("Type=Resl")))
             End If
             If ResolutionEnv.ShowMassiveResolutionSearchPageEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode6") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode6").Name, "Resl/ReslRicercaFlusso.aspx", "Type=Resl"))
             End If
-            If ResolutionEnv.ShowMassiveResolutionSearchPageEnabled AndAlso CommonShared.HasGroupDigitalLastPageRight AndAlso menu.Nodes.Keys.Contains("FirstNode7") Then
+            If ResolutionEnv.ShowMassiveResolutionSearchPageEnabled AndAlso CommonShared.HasGroupDigitalLastPageRight AndAlso ResolutionEnv.UltimaPaginaReportSignEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode7") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode7").Name, "Resl/ReslFirmaUltimaPagina.aspx", CommonShared.AppendSecurityCheck("Type=Resl")))
             End If
             If ResolutionEnv.ShowResolutionStatisticsEnabled AndAlso (CommonShared.HasGroupStatisticsReslolutionRight OrElse CommonShared.HasGroupAdministratorRight) AndAlso menu.Nodes.Keys.Contains("FirstNode8") Then
@@ -1378,10 +1370,10 @@ Partial Public Class FrameSet
                         If Not ResolutionEnv.ApplyGeneralistUserDeskRight Then
                             Dim resolutionContainers As IList(Of Container) = New ContainerFacade("ReslDB").GetContainers(DSWEnvironment.Resolution, ResolutionRightPositions.Insert, Nothing)
                             If resolutionContainers IsNot Nothing AndAlso resolutionContainers.Count() > 0 Then
-                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode3").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode3").Name, "RNC", UserDesktop.PageScrivania, "Resl")), ""))
+                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode3").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode3").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_NOT_COMPLIANT, UserDesktop.PageScrivania, "Resl")), ""))
                             End If
                         Else
-                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode3").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode3").Name, "RNC", UserDesktop.PageScrivania, "Resl")), ""))
+                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode3").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode3").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_NOT_COMPLIANT, UserDesktop.PageScrivania, "Resl")), ""))
                         End If
                     End If
 
@@ -1389,10 +1381,10 @@ Partial Public Class FrameSet
                         If Not ResolutionEnv.ApplyGeneralistUserDeskRight Then
                             Dim resolutionContainers As IList(Of Container) = New ContainerFacade("ReslDB").GetContainers(DSWEnvironment.Resolution, ResolutionRightPositions.Insert, Nothing)
                             If resolutionContainers IsNot Nothing AndAlso resolutionContainers.Count() > 0 Then
-                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode18").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode18").Name, "RAV", UserDesktop.PageScrivania, "Resl")), ""))
+                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode18").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode18").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_VERIFY, UserDesktop.PageScrivania, "Resl")), ""))
                             End If
                         Else
-                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode18").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode18").Name, "RAV", UserDesktop.PageScrivania, "Resl")), ""))
+                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode18").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode18").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_VERIFY, UserDesktop.PageScrivania, "Resl")), ""))
                         End If
                     End If
 
@@ -1400,10 +1392,10 @@ Partial Public Class FrameSet
                         If Not ResolutionEnv.ApplyGeneralistUserDeskRight Then
                             Dim resolutionContainers As IList(Of Container) = New ContainerFacade("ReslDB").GetContainers(DSWEnvironment.Resolution, ResolutionRightPositions.Executive, Nothing)
                             If resolutionContainers IsNot Nothing AndAlso resolutionContainers.Count() > 0 Then
-                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode4").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode4").Name, "RICC", UserDesktop.PageScrivania, "Resl")), ""))
+                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode4").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode4").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_CHECK_COMPLIANT, UserDesktop.PageScrivania, "Resl")), ""))
                             End If
                         Else
-                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode4").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode4").Name, "RICC", UserDesktop.PageScrivania, "Resl")), ""))
+                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode4").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode4").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_CHECK_COMPLIANT, UserDesktop.PageScrivania, "Resl")), ""))
                         End If
                     End If
 
@@ -1411,10 +1403,10 @@ Partial Public Class FrameSet
                         If Not ResolutionEnv.ApplyGeneralistUserDeskRight Then
                             Dim resolutionContainers As IList(Of Container) = New ContainerFacade("ReslDB").GetContainers(DSWEnvironment.Resolution, ResolutionRightPositions.Adoption, Nothing)
                             If resolutionContainers IsNot Nothing AndAlso resolutionContainers.Count() > 0 Then
-                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode5").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode5").Name, "RCDA", UserDesktop.PageScrivania, "Resl")), ""))
+                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode5").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode5").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_COMPLIANT_TO_ADOPTION, UserDesktop.PageScrivania, "Resl")), ""))
                             End If
                         Else
-                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode5").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode5").Name, "RCDA", UserDesktop.PageScrivania, "Resl")), ""))
+                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode5").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode5").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_COMPLIANT_TO_ADOPTION, UserDesktop.PageScrivania, "Resl")), ""))
                         End If
                     End If
 
@@ -1422,10 +1414,10 @@ Partial Public Class FrameSet
                         If Not ResolutionEnv.ApplyGeneralistUserDeskRight Then
                             Dim resolutionContainers As IList(Of Container) = New ContainerFacade("ReslDB").GetContainers(DSWEnvironment.Resolution, ResolutionRightPositions.Administration, Nothing)
                             If resolutionContainers IsNot Nothing AndAlso resolutionContainers.Count() > 0 Then
-                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode6").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode6").Name, "RA", UserDesktop.PageScrivania, "Resl")), ""))
+                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode6").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode6").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_ADOPTED, UserDesktop.PageScrivania, "Resl")), ""))
                             End If
                         Else
-                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode6").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode6").Name, "RA", UserDesktop.PageScrivania, "Resl")), ""))
+                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode6").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode6").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_ADOPTED, UserDesktop.PageScrivania, "Resl")), ""))
                         End If
                     End If
 
@@ -1437,41 +1429,48 @@ Partial Public Class FrameSet
                         If Not ResolutionEnv.ApplyGeneralistUserDeskRight Then
                             Dim resolutionContainers As IList(Of Container) = New ContainerFacade("ReslDB").GetContainers(DSWEnvironment.Resolution, ResolutionRightPositions.Administration, Nothing)
                             If resolutionContainers IsNot Nothing AndAlso resolutionContainers.Count() > 0 Then
-                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode8").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode8").Name, "RP", UserDesktop.PageScrivania, "Resl")), ""))
+                                alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode8").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode8").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_PUBLISHED, UserDesktop.PageScrivania, "Resl")), ""))
                             End If
                         Else
-                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode8").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode8").Name, "RP", UserDesktop.PageScrivania, "Resl")), ""))
+                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode8").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode8").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_PUBLISHED, UserDesktop.PageScrivania, "Resl")), ""))
                         End If
                     End If
 
                     If menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNode9") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode9").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode9").Name, "RE", UserDesktop.PageScrivania, "Resl")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode9").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode9").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_EXECUTIVE, UserDesktop.PageScrivania, "Resl")), ""))
                     End If
                 Else
                     If menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNode10") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode10").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode10").Name, "RA", UserDesktop.PageScrivania, "Resl")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode10").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode10").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_ADOPTED, UserDesktop.PageScrivania, "Resl")), ""))
                     End If
                     If menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNode11") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode11").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode11").Name, "RP", UserDesktop.PageScrivania, "Resl")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode11").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode11").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_PUBLISHED, UserDesktop.PageScrivania, "Resl")), ""))
                     End If
                     If menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNode12") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode12").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode12").Name, "RE", UserDesktop.PageScrivania, "Resl")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode12").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode12").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_EXECUTIVE, UserDesktop.PageScrivania, "Resl")), ""))
+                    End If
+                    If (menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNode19")) Then
+                        Dim currentDeterminaTabMaster As TabMaster = Facade.TabMasterFacade.GetByConfigurationAndType(DocSuiteContext.Current.ResolutionEnv.Configuration, ResolutionType.IdentifierDetermina)
+                        Dim affGenStep As TabWorkflow = Facade.TabWorkflowFacade.GetByDescription(WorkflowStep.AFF_GEN_CHECK_STEP_DESCRIPTION, currentDeterminaTabMaster.WorkflowType)
+                        If affGenStep IsNot Nothing Then
+                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode19").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode19").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_AFF_GEN, UserDesktop.PageScrivania, "Resl")), ""))
+                        End If
                     End If
                     If (ResolutionEnv.ResolutionKindEnabled) AndAlso menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNode13") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode13").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Atti per Amministrazione Trasparente", "Z", UserDesktop.PageScrivania, "Resl")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode13").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Atti per Amministrazione Trasparente", UserScrivaniaD.ACTION_NAME_RESOLUTION_AMM_TRASP, UserDesktop.PageScrivania, "Resl")), ""))
                     End If
                 End If
                 If ResolutionEnv.ViewResolutionProposedByRoleEnabled AndAlso menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNode14") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode14").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode14").Name, "ResolutionProposedByRole", UserDesktop.PageScrivania, "Resl")), ""))
                 End If
                 If menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNode15") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode15").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode15").Name, "RO", UserDesktop.PageScrivania, "Resl")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode15").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode15").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_INSERT_TODAY, UserDesktop.PageScrivania, "Resl")), ""))
                 End If
                 If menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNode16") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode16").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode16").Name, "RS", UserDesktop.PageScrivania, "Resl")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode16").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode16").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_INSERT_THIS_WEEK, UserDesktop.PageScrivania, "Resl")), ""))
                 End If
                 If menu.Nodes("FirstNode16").Nodes.Keys.Contains("SecondNod17") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode17").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode17").Name, "RM", UserDesktop.PageScrivania, "Resl")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode16").Nodes("SecondNode17").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode16").Nodes("SecondNode17").Name, UserScrivaniaD.ACTION_NAME_RESOLUTION_INSERT_THIS_MONTH, UserDesktop.PageScrivania, "Resl")), ""))
                 End If
             End If
             If ResolutionEnv.WebPublishEnabled And DocSuiteContext.Current.ResolutionEnv.AutomaticActivityStepEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode17") Then
@@ -1680,10 +1679,6 @@ Partial Public Class FrameSet
                 End If
             End If
 
-            If ProtocolEnv.ParerEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode7") Then
-                alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode7").Name, "PARER/ProtParerSearch.aspx?", CommonShared.AppendSecurityCheck("Type=Prot")))
-            End If
-
             If ProtocolEnv.IsProtocolRecoverEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode8") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode8").Name, "Prot/ProtRecupera.aspx", CommonShared.AppendSecurityCheck("Type=Prot")))
             End If
@@ -1697,9 +1692,6 @@ Partial Public Class FrameSet
             End If
             If ProtocolEnv.EnvExcelEnabled AndAlso CommonUtil.HasExcelGroupImportRight AndAlso menu.Nodes.Keys.Contains("FirstNode11") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode11").Name, "Prot/ProtImportLettera.aspx", CommonShared.AppendSecurityCheck("Type=Prot&Action=Import&ImportFile=Excel")))
-            End If
-            If CommonUtil.HasInvoiceGroupImportRight AndAlso menu.Nodes.Keys.Contains("FirstNode12") Then
-                alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode12").Name, "Prot/ProtImport.aspx", CommonShared.AppendSecurityCheck("Type=Prot&Action=Import")))
             End If
             If CommonUtil.HasGroupJournalRight AndAlso menu.Nodes.Keys.Contains("FirstNode14") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode14").Name, "Prot/ProtJournal.aspx", CommonShared.AppendSecurityCheck("Type=Prot&Action=Print")))
@@ -1742,30 +1734,35 @@ Partial Public Class FrameSet
                 End If
                 If ProtocolEnv.IsDistributionEnabled Then
                     If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode2") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode2").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode2").Name, "PL", UserDesktop.PageScrivania, "Prot")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode2").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode2").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_TO_READ, UserDesktop.PageScrivania, "Prot")), ""))
                     End If
                     If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode3") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode3").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode3").Name, "PD", UserDesktop.PageScrivania, "Prot")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode3").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode3").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_TO_DISTRIBUTE, UserDesktop.PageScrivania, "Prot")), ""))
                     End If
                     If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode4") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode4").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode4").Name, "PDL", UserDesktop.PageScrivania, "Prot")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode4").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode4").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_TO_WORK, UserDesktop.PageScrivania, "Prot")), ""))
                     End If
                     If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode5") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode5").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode5").Name, "PA", UserDesktop.PageScrivania, "Prot")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode5").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode5").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_IN_ASSIGNMENT, UserDesktop.PageScrivania, "Prot")), ""))
                     End If
                     If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode6") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode6").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode6").Name, "PR", UserDesktop.PageScrivania, "Prot")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode6").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode6").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_RECENT, UserDesktop.PageScrivania, "Prot")), ""))
+                    End If
+                    If (ProtocolEnv.DistributionRejectableEnabled) Then
+                        If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode15") Then
+                            alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode15").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode15").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_NEVER_DISTRIBUTED, UserDesktop.PageScrivania, "Prot")), ""))
+                        End If
                     End If
                 Else
                     If ProtocolEnv.IsLogStatusEnabled AndAlso menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode7") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode7").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode7").Name, "PL", UserDesktop.PageScrivania, "Prot")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode7").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode7").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_TO_READ, UserDesktop.PageScrivania, "Prot")), ""))
                     End If
 
                     If ProtocolEnv.RefusedProtocolAuthorizationEnabled Then
                         If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode12") Then
                             alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode12").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode12").Name, "PDA", UserDesktop.PageAuthorized, "Prot")), ""))
                         End If
-                        If ProtocolEnv.IsSecurityGroupEnabled AndAlso CommonShared.HasRefusedProtocolGroupsRight Then
+                        If CommonShared.HasRefusedProtocolGroupsRight Then
                             If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode13") Then
                                 alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode13").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode13").Name, "PANA", UserDesktop.PageAuthorized, "Prot")), ""))
                             End If
@@ -1776,17 +1773,17 @@ Partial Public Class FrameSet
                     End If
 
                     If ProtocolEnv.IsStatusEnabled AndAlso menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode8") Then
-                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode8").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode8").Name, "PV", UserDesktop.PageScrivania, "Prot")), ""))
+                        alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode8").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode8").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_ASSIGNED, UserDesktop.PageScrivania, "Prot")), ""))
                     End If
                 End If
                 If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode9") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode9").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode9").Name, "PO", UserDesktop.PageScrivania, "Prot")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode9").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode9").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_INSERT_TODAY, UserDesktop.PageScrivania, "Prot")), ""))
                 End If
                 If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode10") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode10").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode10").Name, "PS", UserDesktop.PageScrivania, "Prot")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode10").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode10").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_INSERT_THIS_WEEK, UserDesktop.PageScrivania, "Prot")), ""))
                 End If
                 If menu.Nodes("FirstNode18").Nodes.Keys.Contains("SecondNode11") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode11").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode11").Name, "PM", UserDesktop.PageScrivania, "Prot")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode18").Nodes("SecondNode11").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode18").Nodes("SecondNode11").Name, UserScrivaniaD.ACTION_NAME_PROTOCOL_INSERT_THIS_MONTH, UserDesktop.PageScrivania, "Prot")), ""))
                 End If
             End If
 
@@ -1834,7 +1831,7 @@ Partial Public Class FrameSet
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode2").Name, "Docm/DocmRicerca.aspx", "Type=Docm"))
             End If
 
-            '**REMOVE**
+            'cliente
             If ProtocolEnv.MoveScrivaniaMenu AndAlso DocSuiteContext.Current.ProtocolEnv.DiaryFullEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode3") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Desktop, menu.Nodes("FirstNode3").Name))
                 If DocumentEnv.IsEnvLogEnabled AndAlso menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode1") Then
@@ -1842,28 +1839,28 @@ Partial Public Class FrameSet
                 End If
 
                 If menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode2") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode2").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode2").Name, "DL", UserDesktop.PageScrivania, "Docm")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode2").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode2").Name, UserScrivaniaD.ACTION_NAME_DOCUMENT_TO_READ, UserDesktop.PageScrivania, "Docm")), ""))
                 End If
                 If menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode3") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode3").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode3").Name, "DAL", UserDesktop.PageScrivania, "Docm")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode3").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode3").Name, UserScrivaniaD.ACTION_NAME_DOCUMENT_OPEN_TO_READ, UserDesktop.PageScrivania, "Docm")), ""))
                 End If
                 If menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode4") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode4").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode4").Name, "DK", UserDesktop.PageScrivania, "Docm")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode4").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode4").Name, UserScrivaniaD.ACTION_NAME_DOCUMENT_CHECKOUT, UserDesktop.PageScrivania, "Docm")), ""))
                 End If
                 If menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode5") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode5").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode5").Name, "DR", UserDesktop.PageScrivania, "Docm")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode5").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode5").Name, UserScrivaniaD.ACTION_NAME_DOCUMENT_TAKE_IN_CHARGE, UserDesktop.PageScrivania, "Docm")), ""))
                 End If
                 If menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode6") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode6").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode6").Name, "DO", UserDesktop.PageScrivania, "Docm")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode6").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode6").Name, UserScrivaniaD.ACTION_NAME_DOCUMENT_INSERT_TODAY, UserDesktop.PageScrivania, "Docm")), ""))
                 End If
                 If menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode7") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode7").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode7").Name, "DS", UserDesktop.PageScrivania, "Docm")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode7").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode7").Name, UserScrivaniaD.ACTION_NAME_DOCUMENT_INSERT_THIS_WEEK, UserDesktop.PageScrivania, "Docm")), ""))
                 End If
                 If menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode8") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode8").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode8").Name, "DM", UserDesktop.PageScrivania, "Docm")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode8").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode8").Name, UserScrivaniaD.ACTION_NAME_DOCUMENT_INSERT_THIS_MONTH, UserDesktop.PageScrivania, "Docm")), ""))
                 End If
                 If menu.Nodes("FirstNode3").Nodes.Keys.Contains("SecondNode9") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode9").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode9").Name, "DE", UserDesktop.PageScrivania, "Docm")), ""))
+                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode3").Nodes("SecondNode9").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode3").Nodes("SecondNode9").Name, UserScrivaniaD.ACTION_NAME_DOCUMENT_TIMETABLE, UserDesktop.PageScrivania, "Docm")), ""))
                 End If
             End If
 
@@ -1876,17 +1873,17 @@ Partial Public Class FrameSet
     End Sub
 
     Private Sub CreateMenuCollaborations(menuJson As IDictionary(Of String, MenuNodeModel))
-        If ProtocolEnv.MoveCollaborationMenu AndAlso CollaborationRights.GetIsCollaborationEnabled() AndAlso menuJson.Keys.Contains("Menu3") Then
+        If ProtocolEnv.MoveCollaborationMenu AndAlso CollaborationRights.GetIsCollaborationEnabled(CurrentTenant.TenantAOO.UniqueId) AndAlso menuJson.Keys.Contains("Menu3") Then
             Dim hasSecretaryRole As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Collaboration, DomainUserFacade.HasSecretaryRole)
             Dim hasSignerRole As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Collaboration, DomainUserFacade.HasSignerRole)
             Dim hasInsertable As Boolean = GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Protocol, DomainUserFacade.HasInsertable) OrElse GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.Resolution, DomainUserFacade.HasInsertable) OrElse GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.DocumentSeries, DomainUserFacade.HasInsertable) OrElse GetCurrentRight(Model.Entities.Commons.DSWEnvironmentType.UDS, DomainUserFacade.HasInsertable)
             Dim menu As MenuNodeModel = menuJson("Menu3")
             Dim alMenu As New List(Of NodeLink)
-            If CollaborationRights.GetInserimentoAllaVisioneFirmaEnabled() AndAlso menu.Nodes.Keys.Contains("FirstNode1") Then
+            If CollaborationRights.GetInserimentoAllaVisioneFirmaEnabled(CurrentTenant.TenantAOO.UniqueId) AndAlso menu.Nodes.Keys.Contains("FirstNode1") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode1").Name, String.Format("User/UserCollGestione.aspx?Titolo=Inserimento&Action=Add&Title2={0}&Action2=CI&Type=Prot", menu.Nodes("FirstNode1").Name), String.Empty))
             End If
 
-            If CollaborationRights.GetInserimentoAlProtocolloSegreteriaEnabled() AndAlso menu.Nodes.Keys.Contains("FirstNode2") Then
+            If CollaborationRights.GetInserimentoAlProtocolloSegreteriaEnabled(CurrentTenant.TenantAOO.UniqueId) AndAlso menu.Nodes.Keys.Contains("FirstNode2") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode2").Name, String.Format("User/UserCollGestione.aspx?Titolo=Inserimento&Action=Apt&Title2={0}&Action2=CA&Type=Prot", menu.Nodes("FirstNode2").Name), String.Empty))
             End If
 
@@ -1911,9 +1908,6 @@ Partial Public Class FrameSet
             If menu.Nodes.Keys.Contains("FirstNode7") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode7").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode7").Name, CollaborationMainAction.ProtocollatiGestiti, UserDesktop.PageCollRisultati, "Prot")), ""))
             End If
-            If ProtocolEnv.IsUserCollOfflineEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode8") Then
-                alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode8").Name, "User/" & UserDesktop.GetNodeUrl(New UserDesktopNodeAction(menu.Nodes("FirstNode8").Name, CollaborationMainAction.VisualizzatoreOffline, "Offline.zip", "Docm")), ""))
-            End If
             If menu.Nodes.Keys.Contains("FirstNode9") Then
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode9").Name, "User/" & UserDesktop.GetNodeUrl(menu.Nodes("FirstNode9").Name, CollaborationMainAction.AttivitaInCorso), ""))
             End If
@@ -1921,9 +1915,9 @@ Partial Public Class FrameSet
                 alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode10").Name, "User/" & UserDesktop.GetNodeUrl(menu.Nodes("FirstNode10").Name, CollaborationMainAction.MieiCheckOut), "CCheckedOut"))
             End If
 
-            If Not DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode11") Then
-                alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode11").Name, "User/CollaborationVersioningManagement.aspx", String.Empty))
-            End If
+            'If Not DocSuiteContext.Current.ProtocolEnv.VersioningShareCheckOutEnabled AndAlso menu.Nodes.Keys.Contains("FirstNode11") Then
+            '    alMenu.Add(New NodeLink(NodeLevel.First, NodeImage.Point, menu.Nodes("FirstNode11").Name, "User/CollaborationVersioningManagement.aspx", String.Empty))
+            'End If
 
             If (DocSuiteContext.Current.ProtocolEnv.UDSEnabled OrElse (DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled AndAlso DocSuiteContext.Current.Tenants.Count > 1)) AndAlso menu.Nodes.Keys.Contains("FirstNode12") Then
                 Dim active As Boolean = DocSuiteContext.Current.ProtocolEnv.UDSEnabled
@@ -2051,12 +2045,6 @@ Partial Public Class FrameSet
                 If ProtocolEnv.InvoiceSDIB2BKind > 1 AndAlso menu.Nodes("FirstNode4").Nodes.Keys.Contains("SecondNode3") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode4").Nodes("SecondNode3").Name, "UDS/UDSInvoiceSearch.aspx", CommonShared.AppendSecurityCheck("Direction=0&InvoiceKind=B2B&InvoiceStatus=Contabilizzata&Type=UDS")))
                 End If
-                If ProtocolEnv.InvoiceSDIB2BKind > 1 AndAlso menu.Nodes("FirstNode4").Nodes.Keys.Contains("SecondNode4") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode4").Nodes("SecondNode4").Name, "PEC/PECInvoice.aspx", CommonShared.AppendSecurityCheck("Direction=0&InvoiceType=B2BInErrorePassive&Type=Pec")))
-                End If
-                If ProtocolEnv.InvoiceSDIB2BKind > 1 AndAlso menu.Nodes("FirstNode4").Nodes.Keys.Contains("SecondNode5") Then
-                    alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode4").Nodes("SecondNode5").Name, "PEC/PECInvoice.aspx", CommonShared.AppendSecurityCheck("Direction=0&InvoiceType=B2BInLavorazionePassive&Type=Pec")))
-                End If
                 If menu.Nodes("FirstNode4").Nodes.Keys.Contains("SecondNode6") Then
                     alMenu.Add(New NodeLink(NodeLevel.Second, NodeImage.Point, menu.Nodes("FirstNode4").Nodes("SecondNode6").Name, "Workflows/WorkflowInstances.aspx", CommonShared.AppendSecurityCheck("WorkflowRepositoryName=Fatturazione elettronica - Fattura tra privati passiva")))
                 End If
@@ -2157,53 +2145,53 @@ Partial Public Class FrameSet
     ''' <summary>
     ''' Inizializza i pulsanti di notifica
     ''' </summary>
-    Public Sub InitializeButtons(ByVal notificationType As NotificationType)
+    Public Sub InitializeButtons(ByVal notificationTypeEnum As NotificationType)
         Dim url As String = String.Empty
         Dim cutil As CommonUtil = New CommonUtil()
-        Select Case notificationType
-            Case notificationType.ProtocolliDaLeggere
+        Select Case notificationTypeEnum
+            Case NotificationType.ProtocolliDaLeggere
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Da leggere", "PL", UserDesktop.PageScrivania, "Prot"))
                 btnProtocolNotReaded.Visible = True
-                btnProtocolNotReaded.NavigateUrl = GetScrivaniaUrl(url, notificationType)
+                btnProtocolNotReaded.NavigateUrl = GetScrivaniaUrl(url, notificationTypeEnum)
                 Exit Select
-            Case notificationType.ProtocolliDifatturaDaLeggere
+            Case NotificationType.ProtocolliDifatturaDaLeggere
                 If DocSuiteContext.Current.ProtocolEnv.InvoiceSDIEnabled Then
                     url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Fatture da leggere", "IPL", UserDesktop.PageScrivania, "Prot"))
                     btnProtocolInvoiceNotReaded.Visible = True
-                    btnProtocolInvoiceNotReaded.NavigateUrl = GetScrivaniaUrl(url, notificationType)
+                    btnProtocolInvoiceNotReaded.NavigateUrl = GetScrivaniaUrl(url, notificationTypeEnum)
                 End If
                 Exit Select
-            Case notificationType.ProtocolliDaDistribuire
+            Case NotificationType.ProtocolliDaDistribuire
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Da distribuire", "PD", UserDesktop.PageScrivania, "Prot"))
                 btnProtocolToDistribute.Visible = True
-                btnProtocolToDistribute.NavigateUrl = GetScrivaniaUrl(url, notificationType)
+                btnProtocolToDistribute.NavigateUrl = GetScrivaniaUrl(url, notificationTypeEnum)
                 Exit Select
-            Case notificationType.ProtocolliRigettati
+            Case NotificationType.ProtocolliRigettati
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Rigettati", UserDesktop.ActionNameProtocolliRigettati, UserDesktop.PageScrivania, "Prot"))
                 btnProtocolRejected.Visible = True
-                btnProtocolRejected.NavigateUrl = GetScrivaniaUrl(url, notificationType)
+                btnProtocolRejected.NavigateUrl = GetScrivaniaUrl(url, notificationTypeEnum)
                 btnProtocolRejected.Icon.PrimaryIconUrl = ImagePath.SmallReject
                 Exit Select
-            Case notificationType.CollaborazioniDaProtocollare
+            Case NotificationType.CollaborazioniDaProtocollare
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Da protocollare/Gestire", CollaborationMainAction.DaProtocollareGestire, UserDesktop.PageCollRisultati, "Prot"))
                 btnCollToProtocol.Visible = True
-                btnCollToProtocol.NavigateUrl = GetScrivaniaUrl(url, notificationType)
+                btnCollToProtocol.NavigateUrl = GetScrivaniaUrl(url, notificationTypeEnum)
                 Exit Select
-            Case notificationType.CollaborazioniDaVisionare
+            Case NotificationType.CollaborazioniDaVisionare
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Da visionare/firmare", CollaborationMainAction.DaVisionareFirmare, UserDesktop.PageCollRisultati, "Prot"))
                 btnCollToVision.Visible = True
-                btnCollToVision.NavigateUrl = GetScrivaniaUrl(url, notificationType)
+                btnCollToVision.NavigateUrl = GetScrivaniaUrl(url, notificationTypeEnum)
                 Exit Select
-            Case notificationType.WorkflowUtenteCorrente
+            Case NotificationType.WorkflowUtenteCorrente
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Attività", Nothing, UserDesktop.PageWorkflowRisultati))
                 btnWorkflow.Visible = DocSuiteContext.Current.ProtocolEnv.WorkflowManagerEnabled
-                btnWorkflow.NavigateUrl = GetScrivaniaUrl(url, notificationType)
+                btnWorkflow.NavigateUrl = GetScrivaniaUrl(url, notificationTypeEnum)
                 Exit Select
-            Case notificationType.ProtocolliInEvidenza
+            Case NotificationType.ProtocolliInEvidenza
                 url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("In evidenza", "PE", UserDesktop.PageScrivania, "Prot"))
                 btnHighlightProtocols.Visible = True
-                btnHighlightProtocols.NavigateUrl = GetScrivaniaUrl(url, notificationType)
-            Case notificationType.PECDaLeggere
+                btnHighlightProtocols.NavigateUrl = GetScrivaniaUrl(url, notificationTypeEnum)
+            Case NotificationType.PECDaLeggere
                 If Not ProtocolEnv.IsPECEnabled Then
                     Exit Select
                 End If
@@ -2216,22 +2204,22 @@ Partial Public Class FrameSet
                 End If
                 btnPECNotReaded.Visible = ProtocolEnv.IsPECEnabled
                 btnPECNotReaded.NavigateUrl = url
-            Case notificationType.ProtocolliDaAccettare
+            Case NotificationType.ProtocolliDaAccettare
                 If ProtocolEnv.RefusedProtocolAuthorizationEnabled Then
                     url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Da accettare", "PDA", UserDesktop.PageAuthorized, "Prot"))
                     btnProtocolToAccept.Visible = True
-                    btnProtocolToAccept.NavigateUrl = GetScrivaniaUrl(url, notificationType)
+                    btnProtocolToAccept.NavigateUrl = GetScrivaniaUrl(url, notificationTypeEnum)
                 End If
                 Exit Select
-            Case notificationType.ProtocolliRespinti
+            Case NotificationType.ProtocolliRespinti
                 If ProtocolEnv.RefusedProtocolAuthorizationEnabled AndAlso CommonShared.HasRefusedProtocolGroupsRight Then
                     url = UserDesktop.GetNodeUrl(New UserDesktopNodeAction("Respinti", "PRS", UserDesktop.PageAuthorized, "Prot"))
                     btnProtocolRefused.Visible = True
-                    btnProtocolRefused.NavigateUrl = GetScrivaniaUrl(url, notificationType)
+                    btnProtocolRefused.NavigateUrl = GetScrivaniaUrl(url, notificationTypeEnum)
                 End If
                 Exit Select
                 Exit Select
-            Case notificationType.UltimePagineDaFirmare
+            Case NotificationType.UltimePagineDaFirmare
                 If DocSuiteContext.Current.IsResolutionEnabled AndAlso ResolutionEnv.ShowMassiveResolutionSearchPageEnabled AndAlso CommonShared.HasGroupDigitalLastPageRight Then
                     btnLastPagesToSign.Visible = True
                     btnLastPagesToSign.NavigateUrl = String.Concat("Resl/ReslFirmaUltimaPagina.aspx?", CommonShared.AppendSecurityCheck("Type=Resl"))
@@ -2243,8 +2231,8 @@ Partial Public Class FrameSet
     Private Function GetScrivaniaUrl(action As String, notificationType As NotificationType) As String
         ' Accrocchio url scrivania
         Select Case notificationType
-            Case notificationType.CollaborazioniDaProtocollare,
-                 notificationType.CollaborazioniDaVisionare
+            Case NotificationType.CollaborazioniDaProtocollare,
+                 NotificationType.CollaborazioniDaVisionare
                 Return If(ProtocolEnv.MoveCollaborationMenu, String.Format("User/{0}", action), String.Format("User/UserDesktop.aspx?content={0}", HttpUtility.UrlEncode(action)))
 
             Case Else

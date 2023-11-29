@@ -1,7 +1,5 @@
-﻿Imports System
-Imports System.Linq
+﻿Imports System.Linq
 Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.API
 
 Public Class OChartTransformerDTO
 
@@ -59,7 +57,6 @@ Public Class OChartTransformerDTO
 
     Public Property Contacts As IEnumerable(Of Contact)
     Public Property Containers As IEnumerable(Of OChartItemContainer)
-    Public Property Mailboxes As IEnumerable(Of PECMailBox)
     Public Property Roles As IEnumerable(Of Role)
 
     Public ReadOnly Property RegistrationDateOrDefault As DateTime
@@ -135,11 +132,6 @@ Public Class OChartTransformerDTO
             Return Not Containers.IsNullOrEmpty()
         End Get
     End Property
-    Public ReadOnly Property HasMailboxes As Boolean
-        Get
-            Return Not Mailboxes.IsNullOrEmpty()
-        End Get
-    End Property
     Public ReadOnly Property HasRoles As Boolean
         Get
             Return Not Roles.IsNullOrEmpty()
@@ -148,7 +140,7 @@ Public Class OChartTransformerDTO
 
     Public ReadOnly Property HasResources As Boolean
         Get
-            Return HasContacts OrElse HasContainers OrElse HasMailboxes OrElse HasRoles
+            Return HasContacts OrElse HasContainers OrElse HasRoles
         End Get
     End Property
 

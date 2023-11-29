@@ -1,9 +1,6 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Linq
-Imports NHibernate.Transform
-Imports NHibernate
+﻿Imports NHibernate
 Imports NHibernate.Criterion
+Imports NHibernate.Transform
 Imports VecompSoftware.NHibernateManager.Dao
 
 Public Class NHibernateCollaborationDao
@@ -54,15 +51,14 @@ Public Class NHibernateCollaborationDao
         criteria.CreateAlias("CV.Collaboration", "C", SqlCommand.JoinType.InnerJoin)
         criteria.Add(Expression.In("C.Id", idCollList))
         criteria.Add(Expression.Gt("CV.CollaborationIncremental", Convert.ToInt16(0)))
-        'criteria.Add(Restrictions.Eq("CV.DocumentGroup", VersioningDocumentGroup
+       
 
         Dim detach As DetachedCriteria = DetachedCriteria.For(GetType(CollaborationVersioning))
         detach.CreateAlias("Collaboration", "C_CV", SqlCommand.JoinType.InnerJoin)
         detach.Add(Restrictions.EqProperty("C_CV.Id", "C.Id"))
         detach.Add(Restrictions.EqProperty("CollaborationIncremental", "CV.CollaborationIncremental"))
-        detach.Add(Restrictions.Eq("IsActive", 1S))
-        ' mnegri correzione del bug 513 (vedi query docsuite vecchia)
-        'detach.SetProjection(Projections.Property("Incremental"))
+        detach.Add(Restrictions.Eq("IsActive", True))
+
         detach.SetProjection(Projections.Max("Incremental"))
         criteria.Add(Subqueries.PropertyEq("CV.Incremental", detach))
 
@@ -107,39 +103,17 @@ Public Class NHibernateCollaborationDao
         Return criteria.UniqueResult(Of Collaboration)()
     End Function
 
-    ''' <summary>
-    ''' Ritorna la lista delle collaborazioni non protocollate che hanno MemorandumDate inferiore alla data odierna
-    ''' </summary>
-    ''' <value><see cref="Nothing"></see> se non trova nessuna collaborazione</value>
-    ''' <remarks></remarks>
-    Public Function GetCollaborationsToWarn(checkExpiredCollaborations As Boolean) As IList(Of Collaboration)
-        Dim crit As ICriteria = Me.NHibernateSession.CreateCriteria(Of Collaboration)()
-
-        Dim memFilterColumnName As String = "AlertDate"
-        If checkExpiredCollaborations Then
-            memFilterColumnName = "MemorandumDate"
-        End If
-
-        Dim statuses As New List(Of CollaborationStatusType) From {CollaborationStatusType.PT, CollaborationStatusType.NP, CollaborationStatusType.NT}
-        Dim values As String() = statuses.Select(Function(s) s.ToString()).ToArray()
-
-        crit.Add(Restrictions.Not(Restrictions.In("IdStatus", values)))
-        crit.Add(Restrictions.IsNotNull(memFilterColumnName))
-        crit.Add(Restrictions.Le(memFilterColumnName, DateTime.Today))
-        If Not checkExpiredCollaborations Then
-            crit.Add(Restrictions.Ge("MemorandumDate", DateTime.Today))
-        End If
-        crit.AddOrder(Order.Desc("Id"))
-        Return crit.List(Of Collaboration)()
-    End Function
-
     Public Function GetByDocumentSeriesItem(idDocumentSeriesItem As Integer) As Collaboration
         Dim criteria As ICriteria = Me.NHibernateSession.CreateCriteria(Of Collaboration)()
         criteria.Add(Restrictions.Eq("DocumentSeriesItem.Id", idDocumentSeriesItem))
         criteria.SetMaxResults(1)
         Return criteria.UniqueResult(Of Collaboration)()
     End Function
-
+    Public Function GetByIdDocumentUnit(idDocumentUnit As Guid) As Collaboration
+        criteria = NHibernateSession.CreateCriteria(persitentType)
+        criteria.Add(Restrictions.Eq("IdDocumentUnit", idDocumentUnit))
+        Return criteria.UniqueResult(Of Collaboration)()
+    End Function
 #End Region
 
 End Class

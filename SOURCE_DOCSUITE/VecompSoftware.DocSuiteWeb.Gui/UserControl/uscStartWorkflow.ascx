@@ -1,7 +1,6 @@
 <%@ Control Language="vb" AutoEventWireup="false" CodeBehind="uscStartWorkflow.ascx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.uscStartWorkflow" %>
 
 <%@ Register Src="~/UserControl/uscRoleRest.ascx" TagName="uscRoleRest" TagPrefix="usc" %>
-<%@ Register Src="~/UserControl/uscSettori.ascx" TagName="settori" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscOggetto.ascx" TagName="oggetto" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="uscContattiSel" TagPrefix="usc" %>
@@ -9,6 +8,8 @@
 <%@ Register Src="~/UserControl/uscUploadDocumentRest.ascx" TagName="uscUploadDocumentRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscTenantsSelRest.ascx" TagName="uscTenantsSelRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscWorkflowFolderSelRest.ascx" TagName="uscWorkflowFolderSelRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscTemplateCollaborationSelRest.ascx" TagName="uscTemplateCollaborationSelRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscRoleUserSelRest.ascx" TagName="uscRoleUserSelRest" TagPrefix="usc" %>
 
 <telerik:RadScriptBlock runat="server" EnableViewState="false">
     <script type="text/javascript">
@@ -47,7 +48,6 @@
 
                 uscStartWorkflow.lblTemplateCollaborationRowId = "<%= lblTemplateCollaborationRow.ClientID %>";
                 uscStartWorkflow.ddlTemplateCollaborationRowId = "<%= ddlTemplateCollaborationRow.ClientID %>";
-                uscStartWorkflow.ddlTemplateCollaborationId = "<%= ddlTemplateCollaboration.ClientID %>";
 
                 uscStartWorkflow.lblChainTypeRowId = "<%= lblChainTypeRow.ClientID %>";
                 uscStartWorkflow.chainTypeRowId = "<%= chainTypeRow.ClientID %>";
@@ -68,6 +68,13 @@
                 uscStartWorkflow.uscRoleRecipientRestId = "<%=uscRoleRecipientRest.TableContentControl.ClientID%>";
                 uscStartWorkflow.uscRecipientContactRestId = "<%=uscRecipientContactRest.PageContent.ClientID%>";
                 uscStartWorkflow.uscProposerContactRestId = "<%=uscProposerContactRest.PageContent.ClientID%>";
+                uscStartWorkflow.uscTemplateCollaborationSelRestId = "<%= uscTemplateCollaborationSelRest.MainPanel.ClientID %>";
+                uscStartWorkflow.signalRServerAddress = "<%= SignalRServerAddress %>";
+                uscStartWorkflow.radListMessagesId = ("<%= radListMessages.ClientID %>");
+                uscStartWorkflow.pnlWorkflowId = "<%= pnlWorkflow.ClientID %>";
+                uscStartWorkflow.pnlNotificationMessagesId = "<%= pnlNotificationMessages.ClientID %>";
+                uscStartWorkflow.uscRoleUserSelRestId = "<%=uscRoleUserSelRest.PageContent.ClientID%>";
+                uscStartWorkflow.roleUserSelRowId = "<%=roleUserSelRow.ClientID%>";
                 uscStartWorkflow.initialize();
             });
         });
@@ -126,9 +133,7 @@
             <telerik:LayoutRow Style="margin-bottom: 2px;" CssClass="ts-initialize" ID="ddlTemplateCollaborationRow">
                 <Columns>
                     <telerik:LayoutColumn Span="12" Style="margin-bottom: 2px;">
-                        <telerik:RadComboBox runat="server" ID="ddlTemplateCollaboration" Width="100%" Filter="Contains"
-                            CausesValidation="false" EnableLoadOnDemand="True" AutoPostBack="false" EmptyMessage="Selezionare template">
-                        </telerik:RadComboBox>
+                        <usc:uscTemplateCollaborationSelRest runat="server" ID="uscTemplateCollaborationSelRest" TreeViewInitializationEnabled="False" />
                     </telerik:LayoutColumn>
                 </Columns>
             </telerik:LayoutRow>
@@ -230,8 +235,8 @@
                     </telerik:LayoutColumn>
                 </Columns>
             </telerik:LayoutRow>
-            
-                        <telerik:LayoutRow CssClass="dsw-panel-title ts-initialize" Style="margin-bottom: 2px;" ID="lblDossierTitle" runat="server">
+
+            <telerik:LayoutRow CssClass="dsw-panel-title ts-initialize" Style="margin-bottom: 2px;" ID="lblDossierTitle" runat="server">
                 <Columns>
                     <telerik:LayoutColumn Span="12" Style="margin-bottom: 10px;">
                         <asp:Label ID="lblDossier" runat="server" Font-Bold="True">Dossier</asp:Label>
@@ -242,6 +247,15 @@
                 <Content>
                     <usc:uscWorkflowFolderSelRest ID="uscWorkflowFolderSelRest" runat="server" UseSessionStorage="true" Required="false" />
                 </Content>
+            </telerik:LayoutRow>
+            <telerik:LayoutRow Style="margin-bottom: 2px; margin-left: 0.3em;" CssClass="ts-initialize" ID="roleUserSelRow">
+                <Columns>
+                    <telerik:LayoutColumn HtmlTag="None" CssClass="content-wrapper" Span="12" Style="margin-bottom: 10px;">
+                        <asp:Panel runat="server">
+                            <usc:uscRoleUserSelRest runat="server" ID="uscRoleUserSelRest" />
+                        </asp:Panel>
+                    </telerik:LayoutColumn>
+                </Columns>
             </telerik:LayoutRow>
             <telerik:LayoutRow ID="dataRow" CssClass="dsw-panel-title" Style="margin-bottom: 2px;">
                 <Columns>
@@ -296,6 +310,16 @@
                             ErrorMessage="E' obbligatorio inserire le oggetto" Display="Dynamic"></asp:RequiredFieldValidator>
                     </telerik:LayoutColumn>
                 </Columns>
+            </telerik:LayoutRow>
+        </Rows>
+    </telerik:RadPageLayout>
+
+    <telerik:RadPageLayout runat="server" widht="100%" ID="pnlNotificationMessages" CssClass="dsw-panel">
+        <Rows>
+            <telerik:LayoutRow runat="server" HtmlTag="Div">
+                <Content>
+                    <telerik:RadListBox RenderMode="Lightweight" ID="radListMessages" runat="server" Height="98%" Width="98%" SelectionMode="Single" />
+                </Content>
             </telerik:LayoutRow>
         </Rows>
     </telerik:RadPageLayout>

@@ -43,7 +43,7 @@
                             <asp:CheckBox AutoPostBack="false" CommandName="Selected" ID="chkSelect" runat="server" />
                         </ItemTemplate>
                     </telerik:GridTemplateColumn>
-                    <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../Prot/Images/Mail16.gif" HeaderText="Tipo" UniqueName="cType">
+                    <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../App_Themes/DocSuite2008/imgset16/mail.png" HeaderText="Tipo" UniqueName="cType">
                         <HeaderStyle HorizontalAlign="Center" Width="25px" />
                         <ItemStyle HorizontalAlign="Center" Width="25px" />
                         <ItemTemplate>

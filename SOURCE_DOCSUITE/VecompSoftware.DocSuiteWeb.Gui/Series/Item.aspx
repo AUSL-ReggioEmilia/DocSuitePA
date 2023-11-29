@@ -99,6 +99,10 @@
                 return false;
             }
 
+            function disableButton() {
+                document.getElementById("<%= btnYearConfirm.ClientID %>").disabled = true;
+            }
+
         </script>
         <style type="text/css" media="all">
             .BreakColumn {
@@ -124,7 +128,7 @@
                         <asp:CheckBox ID="chkSaveSession" runat="server" Text="Salva in sessione" />
                         <br />
                         <br />
-                        <asp:Button runat="server" ID="btnYearConfirm" Text="Conferma" Width="100" />
+                        <asp:Button runat="server" ID="btnYearConfirm" Text="Conferma" Width="100" OnClientClick="disableButton();" />
                         <br />
                         <br />
                     </div>
@@ -285,13 +289,13 @@
             </tr>
         </table>
         <asp:Panel runat="server" ID="DocumentsPanel">
-            <usc:UploadDocument ButtonPreviewEnabled="True" ButtonScannerEnabled="False" DocumentDeletable="True" ID="uscUploadDocument" IsDocumentRequired="True" MultipleDocuments="True" runat="server" SignButtonEnabled="false" />
+            <usc:UploadDocument ButtonPreviewEnabled="True" ButtonScannerEnabled="False" DocumentDeletable="True" ID="uscUploadDocument" IsDocumentRequired="True" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" SignButtonEnabled="false"/>
         </asp:Panel>
         <asp:Panel runat="server" ID="AnnexedPanel" Visible="False">
-            <usc:UploadDocument ButtonPreviewEnabled="True" ButtonScannerEnabled="False" DocumentDeletable="True" ID="uscUploadAnnexed" IsDocumentRequired="False" MultipleDocuments="True" runat="server" SignButtonEnabled="false" />
+            <usc:UploadDocument ButtonPreviewEnabled="True" ButtonScannerEnabled="False" DocumentDeletable="True" ID="uscUploadAnnexed" IsDocumentRequired="False" MultipleDocuments="True" HideScannerMultipleDocumentButton="true" runat="server" SignButtonEnabled="false" />
         </asp:Panel>
         <asp:Panel runat="server" ID="UnpublishedAnnexedPanel" Visible="False">
-            <usc:UploadDocument ButtonPreviewEnabled="True" ButtonScannerEnabled="False" DocumentDeletable="True" ID="uscUnpublishedAnnexed" IsDocumentRequired="False" MultipleDocuments="True" runat="server" SignButtonEnabled="false" />
+            <usc:UploadDocument ButtonPreviewEnabled="True" ButtonScannerEnabled="False" DocumentDeletable="True" ID="uscUnpublishedAnnexed" IsDocumentRequired="False" MultipleDocuments="True" HideScannerMultipleDocumentButton="true" runat="server" SignButtonEnabled="false" />
         </asp:Panel>
 
         <asp:Panel ID="pnlRoles" runat="server" Visible="True">
@@ -338,7 +342,8 @@
             <tr class="Chiaro">
                 <td class="DocumentSeriesLabel"><b>Data pubblicazione:</b></td>
                 <td>
-                    <telerik:RadDatePicker ID="ItemPublishingDate" runat="server" Visible="False" />
+                    <telerik:RadDatePicker ID="ItemPublishingDate" runat="server" Visible="False" AutoPostBack="true" />
+                    <telerik:RadLabel ID="lblItemPublishingDate" runat="server" Visible="False" Text="Seleziona una data maggiore o uguale alla data corrente" style="color: red;" />
                     <asp:Label ID="ItemPublishingDateLabel" runat="server" Visible="False" />
                 </td>
             </tr>

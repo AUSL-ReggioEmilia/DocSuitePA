@@ -68,7 +68,6 @@ Public Class NHibernateRoleGroupDao
     Public Function GetByPecMailBoxes(ByVal pecMailBoxes As ICollection(Of PECMailBox)) As IList(Of String)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.CreateAlias("Role", "R", SqlCommand.JoinType.InnerJoin)
-        criteria.Add(Restrictions.Eq("R.TenantId", DocSuiteContext.Current.CurrentTenant.TenantId))
         criteria.CreateAlias("R.Mailboxes", "PMBR", SqlCommand.JoinType.InnerJoin)
         criteria.Add(Restrictions.In("PMBR.Id", pecMailBoxes.Select(Function(m) m.Id).ToArray()))
         criteria.SetProjection(Projections.Distinct(Projections.Property("Name")))
@@ -85,9 +84,7 @@ Public Class NHibernateRoleGroupDao
     Public Function CheckGroupRights(group As RoleGroup, environment As DSWEnvironment) As Boolean
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.CreateAlias("Role", "R", SqlCommand.JoinType.InnerJoin)
-
         criteria.Add(Restrictions.Eq("Id", group.Id))
-        criteria.Add(Restrictions.Eq("R.TenantId", DocSuiteContext.Current.CurrentTenant.TenantId))
 
         Select Case environment
             Case DSWEnvironment.Protocol

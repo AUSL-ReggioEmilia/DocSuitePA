@@ -35,12 +35,21 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.Fascicles
 
         public void LinkFascicleReference(Guid currentIdProtocol, Guid linkedIdProtocol)
         {
-            GenerateFascicleReference(CurrentTenantConfiguration.Dao.FindFascicleFromDocumentUnit(currentIdProtocol), linkedIdProtocol);
-            GenerateFascicleReference(CurrentTenantConfiguration.Dao.FindFascicleFromDocumentUnit(linkedIdProtocol), currentIdProtocol);
+            WebAPIImpersonatorFacade.ImpersonateDao<FascicleDocumentUnitDao, FascicleDocumentUnit>(this.CurrentTenantConfiguration.Dao,
+            (impersonationType, dao) =>
+            {
+                GenerateFascicleReference(dao.FindFascicleFromDocumentUnit(currentIdProtocol), linkedIdProtocol);
+                GenerateFascicleReference(dao.FindFascicleFromDocumentUnit(linkedIdProtocol), currentIdProtocol);
+            });
         }
+
         public WebAPIDto<FascicleDocumentUnit> GetFascicolatedIdDocumentUnit(Guid idDocumentUnit)
         {
-            return CurrentTenantConfiguration.Dao.FindFascicolatedFascicleDocumentUnit(idDocumentUnit);
+            return WebAPIImpersonatorFacade.ImpersonateDao<FascicleDocumentUnitDao, FascicleDocumentUnit, WebAPIDto<FascicleDocumentUnit>>(this.CurrentTenantConfiguration.Dao,
+            (impersonationType, dao) =>
+            {
+                return dao.FindFascicolatedFascicleDocumentUnit(idDocumentUnit);
+            });
         }
         #endregion
     }

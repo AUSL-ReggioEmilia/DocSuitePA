@@ -18,9 +18,9 @@ Partial Public Class TbltTipoDoc
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         If Not CommonShared.HasGroupAdministratorRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
+
 
         InitializeAjaxSettings()
         InitializeControls()
@@ -154,7 +154,7 @@ Partial Public Class TbltTipoDoc
                 tn.Text = tabledoc.Description
                 If ("" & tabledoc.Code) <> "" Then tn.Text = "(" & tabledoc.Code & ") " & tn.Text
                 tn.ImageUrl = "../Comm/images/Oggetto.gif"
-                If tabledoc.IsActive <> 1 Then
+                If Not tabledoc.IsActive Then
                     tn.Style.Add("color", "gray")
                 End If
                 tn.Attributes.Add("IsActive", tabledoc.IsActive.ToString())

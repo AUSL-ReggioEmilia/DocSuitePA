@@ -7,6 +7,7 @@ import ExceptionDTO = require("../App/DTOs/ExceptionDTO");
 import TenantService = require("App/Services/Tenants/TenantService");
 import TenantViewModel = require("App/ViewModels/Tenants/TenantViewModel");
 import UpdateActionType = require("App/Models/UpdateActionType");
+import ContactFilterEntityType = require("App/Models/Commons/ContactFilterEntityType");
 
 enum UscContattiSelRestEvent {
     NewContactsAdded,
@@ -156,12 +157,6 @@ class uscContactSelRest {
                 let parentUpdateCallback: JQueryPromise<any> = this._parentPageEventHandlersDictionary[this.uscContattiSelRestEvents.NewContactsAdded](newlyAddedContact);
                 parentUpdateCallback.then((data: any) => {
                     this.createNode(newlyAddedContact);
-                    if (Boolean(this.multiTenantEnabled.toLowerCase())) {
-                        let tenant: TenantViewModel = new TenantViewModel();
-                        tenant.UniqueId = this.currentTenantId;
-                        tenant.Contacts = [newlyAddedContact];
-                        this._tenantService.updateTenant(tenant, UpdateActionType.TenantContactAdd, (data) => { });
-                    }
                 });
             }
             this._uscContactRest.clear();
@@ -222,17 +217,21 @@ class uscContactSelRest {
         }, 400, 300);
     }
 
-    deleteAllContacts = (): void => {
-        this._manager.radconfirm("Sei sicuro di voler eliminare tutti i contatti?", (arg) => {
-            if (arg) {
-                let deleteCallback: JQueryPromise<any> = this._parentPageEventHandlersDictionary[this.uscContattiSelRestEvents.AllContactsDeleted]();
+    deleteAllContacts = (showConfirm: boolean = true): void => {
+        if (!showConfirm) {
+            this._treeContact.get_nodes().clear()
+        }
+        else {
+            this._manager.radconfirm("Sei sicuro di voler eliminare tutti i contatti?", (arg) => {
+                if (arg) {
+                    let deleteCallback: JQueryPromise<any> = this._parentPageEventHandlersDictionary[this.uscContattiSelRestEvents.AllContactsDeleted]();
+                    deleteCallback.then(() => this._treeContact.get_nodes().clear());
+                }
 
-                deleteCallback.then(() => this._treeContact.get_nodes().clear());
-            }
+                document.getElementsByTagName("body")[0].setAttribute("class", "comm chrome");
 
-            document.getElementsByTagName("body")[0].setAttribute("class", "comm chrome");
-
-        }, 400, 300);
+            }, 400, 300);
+        }
     }
 
     private createNode(contactModel: any): JQueryPromise<Telerik.Web.UI.RadTreeNode> {
@@ -328,6 +327,15 @@ class uscContactSelRest {
 
     forceBehaviourValidationState(state: boolean): void {
         sessionStorage[this._roleValidationSessionKey] = state;
+    }
+
+    setContactFilterFromEntity(entityType: ContactFilterEntityType, entityId: any): void {
+        switch (entityType) {
+            case ContactFilterEntityType.Role: {
+                this._uscContactRest.setContactFilterFromEntity(entityType, entityId);
+                break;
+            }
+        }
     }
 }
 

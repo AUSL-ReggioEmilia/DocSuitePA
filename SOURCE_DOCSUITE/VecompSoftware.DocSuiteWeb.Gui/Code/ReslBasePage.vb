@@ -95,23 +95,6 @@ Public Class ReslBasePage
         Return GetKeyValue(Of T, ReslBasePage)(key)
     End Function
 
-    Public Sub PublicateResolutionOnSharePoint(ByRef resolution As Resolution, publicationDate As Date, addWatermark As Boolean)
-        '' Metadati per la pubblicazione
-        Dim strXmlOther As String = Facade.ResolutionWPFacade.GetXmlOther(resolution)
-
-        '' Documento da pubblicare
-        Dim watermark As String = If(addWatermark, DocSuiteContext.Current.ResolutionEnv.WebPublishWatermark, String.Empty)
-        Dim documentToPublishIdChain As Integer
-        Dim strXmlDoc As String = Facade.ResolutionWPFacade.GetSharepointPublicationXml(resolution, watermark, documentToPublishIdChain)
-
-        '' Verifico se la pubblicazione è di tipo Privacy (ovvero se è calcolata la colonna idPrivacyPublication su FileResolution)
-        Dim fileResolution As IList(Of FileResolution) = Facade.FileResolutionFacade.GetByResolution(resolution)
-        Dim isPrivacy As Boolean = fileResolution IsNot Nothing AndAlso fileResolution.Count > 0 AndAlso fileResolution(0).IdPrivacyPublicationDocument.HasValue AndAlso fileResolution(0).IdPrivacyPublicationDocument.Value > 0
-
-        '' Pubblicazione effettiva su SharePoint
-        VecompSoftware.DocSuiteWeb.Facade.Common.SharePointFacade.Publish(resolution, publicationDate, publicationDate.AddDays(15), strXmlDoc, strXmlOther, documentToPublishIdChain, 0, isPrivacy)
-    End Sub
-
     ''' <summary> Ottiene la pagina di visualizzazione dell'atto. </summary>
     Public Shared Function GetViewPageName(ByVal idResolution As Integer) As String
         Dim reslWorkflow As ResolutionWorkflow = (New ResolutionWorkflowFacade).SqlResolutionWorkflowSearch(idResolution, 0)

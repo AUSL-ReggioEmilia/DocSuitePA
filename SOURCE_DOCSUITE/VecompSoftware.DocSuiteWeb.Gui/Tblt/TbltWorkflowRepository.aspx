@@ -141,7 +141,7 @@
                     </telerik:RadPane>
 
                     <telerik:RadPane runat="server" Height="100%">
-                        <div style="        height: 99%;" class="elementBordered">
+                        <div style="height: 99%;" class="elementBordered">
                             <telerik:RadTreeView ID="rtvWorkflowRepository" runat="server" Height="100%">
                             </telerik:RadTreeView>
                         </div>
@@ -150,8 +150,7 @@
             </telerik:RadPane>
             <telerik:RadSplitBar runat="server" CollapseMode="None"></telerik:RadSplitBar>
             <telerik:RadPane runat="server" Width="50%">
-                <asp:Panel runat="server" ID="pnlDetails" CssClass="dsw-panel" Style="        margin-top: 5px;
-        visibility: hidden;">
+                <asp:Panel runat="server" ID="pnlDetails" CssClass="dsw-panel" Style="margin-top: 5px;visibility: hidden;">
                     <div class="dsw-panel-content">
                         <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
                         <telerik:RadPanelBar runat="server" ID="pnlBarDetails" AllowCollapseAllItems="true" ExpandMode="MultipleExpandedItems" Width="100%">
@@ -232,7 +231,7 @@
                                                                 <HeaderStyle HorizontalAlign="Left" />
                                                                 <ClientItemTemplate>
                                                                 <div class="dsw-text-left">                                                
-                                                                    <img class="dsw-vertical-middle" src="..\App_Themes\DocSuite2008\imgset16\bricks.png" style="        display: #=Role != undefined ? 'inline-block' : 'none' #"></img>
+                                                                    <img class="dsw-vertical-middle" src="..\App_Themes/DocSuite2008/imgset16/bricks.png" style="        display: #=Role != undefined ? 'inline-block' : 'none' #"></img>
                                                                     <span>#=Role != undefined ? Role.Name : ''#</span>
                                                                 </div>                                            
                                                                 </ClientItemTemplate>
@@ -439,8 +438,7 @@
 
                     </div>
                     <asp:Panel runat="server" ID="pnlRoleRest">
-                        <div class="dsw-display-inline-block" style="        padding: 2px;
-        width: 100%;">
+                        <div class="dsw-display-inline-block" style="padding: 2px;width: 100%;">
                             <usc:uscRoleRest Caption="Settori autorizzati all'avvio del workflow"
                                 MultipleRoles="true"
                                 ID="uscRole"
@@ -479,7 +477,7 @@
                                         <ItemStyle HorizontalAlign="Left" />
                                         <ClientItemTemplate>
                                             <div class="dsw-text-left">                                                
-                                                <img class="dsw-vertical-middle" src="../App_Themes/DocSuite2008/imgset16/bricks.png" style="        display: #=WorkflowRoleMapping != undefined && WorkflowRoleMapping.Role != undefined ? 'inline-block' : 'none' #"></img>
+                                                <img class="dsw-vertical-middle" src="../App_Themes/DocSuite2008/imgset16/bricks.png" style="display: #=WorkflowRoleMapping != undefined && WorkflowRoleMapping.Role != undefined ? 'inline-block' : 'none' #"></img>
                                                 <span>#=WorkflowRoleMapping != undefined &&  WorkflowRoleMapping.Role != undefined ? WorkflowRoleMapping.Role.Name : ''#</span>
                                             </div>                                            
                                         </ClientItemTemplate>

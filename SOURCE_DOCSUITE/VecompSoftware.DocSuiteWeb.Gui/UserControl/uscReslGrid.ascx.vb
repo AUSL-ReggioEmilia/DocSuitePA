@@ -1,14 +1,11 @@
 Imports System.Collections.Generic
 Imports System.Linq
 Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports Telerik.Web.UI
 Imports Newtonsoft.Json
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.Helpers
-Imports System.Web
-Imports VecompSoftware.Services.Biblos.Models
 
 Partial Public Class uscReslGrid
     Inherits GridControl
@@ -36,6 +33,7 @@ Partial Public Class uscReslGrid
     Public Const COLUMN_CATEGORY As String = "Category.Name"
     Public Const COLUMN_OBJECT As String = "ResolutionObject"
     Public Const COLUMN_ATTACH_SELECT As String = "AllegatiSelectColumn"
+    Public Const COLUMN_NOTE As String = "Note"
     ''' <summary>  </summary>
     ''' <remarks> ASL-TO2 </remarks>
     Public Const COLUMN_TIPOC As String = "TipOC"
@@ -43,14 +41,13 @@ Partial Public Class uscReslGrid
     Public Const COLUMN_REGIONE As String = "Regione"
     Public Const COLUMN_ADOPTION_DATE As String = "AdoptionDate"
 
-    Public Const COLUMN_PARER_ICON As String = "PARERIcon"
-    Public Const COLUMN_PARER_DESCRIPTION As String = "PARERDescription"
-
     Public Const COLUMN_RESOLUTION_TASK_STATUS As String = "ResolutionTaskStatus"
     Public Const COLUMN_DECLINE_NOTE As String = "DeclineNote"
 
     Public Const COLUMN_LAST_LOG As String = "LastReslLog"
     Public Const COLUMN_RETURN_FROM_COLLABORATION As String = "ReturnFromCollaboration"
+    Public Const COLUMN_USER_TAKE_CHARGE As String = "UserTakeCharge"
+
     Private _autoHideColumns As Nullable(Of Boolean)
     Private _workflowDescriptionType As Nullable(Of WorkflowDescription)
     Private _determinaManagedData As String
@@ -166,24 +163,6 @@ Partial Public Class uscReslGrid
         End Set
     End Property
 
-    Public Property ColumnParerIconVisible As Boolean
-        Get
-            Return grdResolutions.Columns.FindByUniqueName(COLUMN_PARER_ICON).Visible
-        End Get
-        Set(ByVal value As Boolean)
-            grdResolutions.Columns.FindByUniqueName(COLUMN_PARER_ICON).Visible = value
-        End Set
-    End Property
-
-    Public Property ColumnParerDescriptionVisible As Boolean
-        Get
-            Return grdResolutions.Columns.FindByUniqueName(COLUMN_PARER_DESCRIPTION).Visible
-        End Get
-        Set(ByVal value As Boolean)
-            grdResolutions.Columns.FindByUniqueName(COLUMN_PARER_DESCRIPTION).Visible = value
-        End Set
-    End Property
-
     Public Property ColumnRegistrationDateVisible As Boolean
         Get
             Return grdResolutions.Columns.FindByUniqueName(COLUMN_DATE).Visible
@@ -242,6 +221,14 @@ Partial Public Class uscReslGrid
         End Get
         Set(ByVal value As Boolean)
             grdResolutions.Columns.FindByUniqueName(COLUMN_RETURN_FROM_COLLABORATION).Visible = value
+        End Set
+    End Property
+    Public Property ColumnUserTakeChargeVisibile As Boolean
+        Get
+            Return grdResolutions.Columns.FindByUniqueName(COLUMN_USER_TAKE_CHARGE).Visible
+        End Get
+        Set(value As Boolean)
+            grdResolutions.Columns.FindByUniqueName(COLUMN_USER_TAKE_CHARGE).Visible = value
         End Set
     End Property
     Protected Property SetReadFunction() As SetReadDelegate
@@ -326,24 +313,6 @@ Partial Public Class uscReslGrid
             DirectCast(e.Item.FindControl("cbSelect"), CheckBox).Enabled = boundHeader.IdResolutionFile.HasValue
         End If
 
-        If DocSuiteContext.Current.ResolutionEnv.ParerEnabled Then
-            If ColumnParerIconVisible Then
-                DirectCast(e.Item.FindControl("imgParer"), Image).ImageUrl = GetImageUrlByHeader(boundHeader, COLUMN_PARER_ICON)
-            End If
-
-            If ColumnParerDescriptionVisible Then
-                With DirectCast(e.Item.FindControl("lnkParerDetail"), LinkButton)
-                    .OnClientClick = GetOnClientClickByHeader(boundHeader, COLUMN_PARER_DESCRIPTION)
-                    .Text = GetParerDescription(boundHeader)
-
-                    If boundHeader.HasParer Then
-                        .Attributes.Add("onmouseover", "this.style.cursor='hand';")
-                        .Attributes.Add("onmouseout", "this.style.cursor='default';")
-                    End If
-                End With
-            End If
-        End If
-
         If ColumnTipoAttoVisible Then
             DirectCast(e.Item.FindControl("imgTipoAtto"), Image).ImageUrl = GetImageUrlByHeader(boundHeader, COLUMN_TYPE)
         End If
@@ -413,6 +382,9 @@ Partial Public Class uscReslGrid
         Dim lblResolutionStatus As Label = TryCast(e.Item.FindControl("lblResolutionStatus"), Label)
         If lblResolutionStatus IsNot Nothing Then
             lblResolutionStatus.Text = Facade.ResolutionFacade.GetWorkflowString("W", boundHeader, WorkflowDescriptionType = WorkflowDescription.Database)
+            If boundHeader.StatusId.HasValue AndAlso boundHeader.StatusId.Value.Equals(ResolutionStatusId.Ritirata) Then
+                lblResolutionStatus.Text = boundHeader.Status.Description
+            End If
         End If
 
         If ColumnRegistrationDateVisible Then
@@ -456,6 +428,11 @@ Partial Public Class uscReslGrid
                 imgRetroStepResolution.Visible = CBool(boundHeader.ReturnFromRetroStep)
             End If
         End If
+
+        If ColumnUserTakeChargeVisibile Then
+            Dim lblUserTakeCharge As Label = DirectCast(e.Item.FindControl("lblUserTakeCharge"), Label)
+            lblUserTakeCharge.Text = boundHeader.CurrentUserTakeCharge
+        End If
     End Sub
 
     Private Sub GrdResolutionsItemCommand(ByVal source As Object, ByVal e As Telerik.Web.UI.GridCommandEventArgs) Handles grdResolutions.ItemCommand
@@ -481,8 +458,12 @@ Partial Public Class uscReslGrid
                     BasePage.AjaxAlert("Diritti Insufficienti per la Visualizzazione del Documento.")
                     Exit Sub
                 End If
+                Dim viewableDocument As Boolean = True
+                If currentResolution.Container.Privacy.HasValue AndAlso Convert.ToBoolean(currentResolution.Container.Privacy.Value) Then
+                    viewableDocument = currentResolutionRights.IsPrivacyViewable
+                End If
                 Facade.ResolutionLogFacade.Log(currentResolution, ResolutionLogType.RS)
-                Dim url As String = GetFileResolutionViewUrl(currentResolution.Id)
+                Dim url As String = GetFileResolutionViewUrl(currentResolution.Id, viewableDocument)
                 Response.Redirect(url)
         End Select
     End Sub
@@ -526,9 +507,12 @@ Partial Public Class uscReslGrid
             End If
         End If
 
+        grdResolutions.Columns.FindByUniqueName(COLUMN_NOTE).Visible = False
         Select Case DocSuiteContext.Current.ResolutionEnv.Configuration
             Case "ASL3-TO"
                 DisableColumn(COLUMN_CONTROLLER_STATUS)
+                DisableColumn(COLUMN_CATEGORY)
+                grdResolutions.Columns.FindByUniqueName(COLUMN_NOTE).Visible = True
 
             Case "AUSL-PC"
                 DisableColumn(COLUMN_CONTROLLER_STATUS)
@@ -565,14 +549,6 @@ Partial Public Class uscReslGrid
         End If
     End Sub
 
-    Private Function GetParerDescription(header As ResolutionHeader) As String
-        Dim parerStatusDescription As String = String.Empty
-        If DocSuiteContext.Current.ResolutionEnv.ParerEnabled Then
-            parerStatusDescription = Facade.ResolutionParerFacade.GetConservationStatusDescription(header)
-        End If
-        Return parerStatusDescription
-    End Function
-
     Private Function GetTextByHeader(header As ResolutionHeader, discriminator As String) As String
         Select Case discriminator
             Case COLUMN_DOCUMENT_TYPE ' lblResolutionType
@@ -597,46 +573,46 @@ Partial Public Class uscReslGrid
 
             Case COLUMN_TIPOC ' lblTipOC
                 Dim ocs As New List(Of String)
+
+                Dim supervisoryBoardLabel As String = "CS"
+                Dim regionLabel As String = "R"
+                Dim managementLabel As String = "CG"
+                Dim corteContiLabel As String = "CC"
+                Dim otherLabel As String = "A"
+                Dim joinString As String = "-"
+
+                Dim ocOptions As OCOptionsModel = ResolutionEnv.OCOptions
+                If ocOptions IsNot Nothing Then
+                    supervisoryBoardLabel = ocOptions.SupervisoryBoard.Label
+                    regionLabel = ocOptions.Region.Label
+                    managementLabel = ocOptions.Management.Label
+                    corteContiLabel = ocOptions.CorteConti.Label
+                    otherLabel = ocOptions.Other.Label
+                    joinString = Environment.NewLine
+                End If
+
                 If header.OCSupervisoryBoard.GetValueOrDefault(False) Then
-                    ocs.Add("CS")
+                    ocs.Add(supervisoryBoardLabel)
                 End If
                 If header.OCRegion.GetValueOrDefault(False) Then
-                    ocs.Add("R")
+                    ocs.Add(regionLabel)
                 End If
                 If header.OCManagement.GetValueOrDefault(False) Then
-                    ocs.Add("CG")
+                    ocs.Add(managementLabel)
                 End If
                 If header.OCCorteConti.GetValueOrDefault(False) Then
-                    ocs.Add("CC")
+                    ocs.Add(corteContiLabel)
                 End If
                 If header.OCOther.GetValueOrDefault(False) Then
-                    ocs.Add("A")
+                    ocs.Add(otherLabel)
                 End If
-                Return String.Join("-", ocs)
+                Return String.Join(joinString, ocs)
         End Select
         Return String.Empty
     End Function
 
     Private Function GetImageUrlByHeader(header As ResolutionHeader, discriminator As String) As String
         Select Case discriminator
-            Case COLUMN_PARER_ICON ' PARERIcon
-                If Not DocSuiteContext.Current.ResolutionEnv.ParerEnabled Then
-                    Return String.Empty
-                End If
-                If header.HasParer Then
-                    Select Case Facade.ResolutionParerFacade.GetConservationStatus(header.ProxiedResolutionParer)
-                        Case ResolutionParerFacade.ResolutionParerConservationStatus.Correct
-                            Return "../comm/images/parer/green.png"
-                        Case ResolutionParerFacade.ResolutionParerConservationStatus.Warning
-                            Return "../comm/images/parer/yellow.png"
-                        Case ResolutionParerFacade.ResolutionParerConservationStatus.Error
-                            Return "../comm/images/parer/red.png"
-                        Case ResolutionParerFacade.ResolutionParerConservationStatus.Undefined
-                            Return "../comm/images/parer/lightgray.png"
-                    End Select
-                End If
-                Return "../comm/images/parer/lightgray.png"
-
             Case COLUMN_TYPE ' imgTipoAtto
                 Dim statusId As Integer
                 If header.AdoptionDate.HasValue AndAlso Not DocSuiteContext.Current.ResolutionEnv.Configuration.Eq("AUSL-PC") Then
@@ -677,16 +653,6 @@ Partial Public Class uscReslGrid
 
     Private Function GetOnClientClickByHeader(header As ResolutionHeader, discriminator As String) As String
         Select Case discriminator
-            Case COLUMN_PARER_DESCRIPTION ' lnkParerDetail
-                If Not DocSuiteContext.Current.ResolutionEnv.ParerEnabled Then
-                    Return String.Empty
-                End If
-                If header.HasParer Then
-                    Dim resolved As String = ResolveUrl("~/PARER/ParerDetail.aspx")
-                    Return String.Format("return OpenParerDetail('{0}?Type=Resl&id={1}');", resolved, header.Id)
-                End If
-                Return "return false;"
-
             Case COLUMN_NUMBER ' lnkResolution
                 Dim parentPath As String = String.Format("IdResolution={0}&Type=Resl", header.Id)
                 parentPath = String.Format("../Resl/{0}?{1}", ReslBasePage.GetViewPageName(header.Id), CommonShared.AppendSecurityCheck(parentPath))
@@ -746,10 +712,10 @@ Partial Public Class uscReslGrid
         Return webDocuments
     End Function
 
-    Private Function GetFileResolutionViewUrl(idResolution As Integer) As String
+    Private Function GetFileResolutionViewUrl(idResolution As Integer, viewableDocument As Boolean) As String
         Const viewPage As String = "~/viewers/ResolutionViewer.aspx?"
         Dim paramId As String = String.Format("{0}IdResolution={1}", viewPage, idResolution)
-        Dim queryString As String = String.Format("{0}&documents=true&attachments=true&annexes=true&documentsomissis=true&attachmentsomissis=true&previous=conditional", paramId)
+        Dim queryString As String = String.Format("{0}&documents={1}&attachments=true&annexes=true&documentsomissis=true&attachmentsomissis=true&dematerialisation=true&metadata=true&previous=conditional", paramId, viewableDocument)
         Dim queryStringWithSecurityCheck As String = CommonShared.AppendSecurityCheck(queryString)
         Return queryStringWithSecurityCheck
     End Function

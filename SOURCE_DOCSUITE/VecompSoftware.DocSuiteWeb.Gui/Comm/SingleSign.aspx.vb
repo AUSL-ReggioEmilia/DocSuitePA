@@ -23,6 +23,9 @@ Imports VecompSoftware.DocSuiteWeb.Model.Documents.Signs
 Imports VecompSoftware.Services.SignService.Services
 Imports VecompSoftware.Services.SignService.ArubaSignService.Models
 Imports VecompSoftware.Helpers.Signer.CAdES
+Imports System.Net.Http.Headers
+Imports VecompSoftware.DocSuiteWeb.DTO.Commons
+Imports VecompSoftware.Services.SignService.Models
 
 Public Class SingleSign
     Inherits CommonBasePage
@@ -34,6 +37,7 @@ Public Class SingleSign
     Private _currentUserLog As UserLog
     Private _currentUserProfile As Model.Documents.Signs.UserProfile = Nothing
     Private _showViewer As Boolean = True
+    Private _signFlowService As SignFlowService = Nothing
 
 #End Region
 
@@ -155,6 +159,15 @@ Public Class SingleSign
         End Get
     End Property
 
+    Private ReadOnly Property SignFlowService As SignFlowService
+        Get
+            If (_signFlowService Is Nothing) Then
+                _signFlowService = New SignFlowService(Sub(f) FileLogger.Info(LoggerName, f), Sub(f) FileLogger.Error(LoggerName, f))
+            End If
+            Return _signFlowService
+        End Get
+    End Property
+
 #End Region
 
 #Region " Events "
@@ -211,10 +224,16 @@ Public Class SingleSign
                 If Not DocSuiteContext.Current.HasInfocertProxySign Then
                     signTypeDropdown.FindItemByValue("2").Remove()
                     signTypeDropdown.FindItemByValue("4").Remove()
+                    signTypeDropdown.FindItemByValue("5").Remove()
                 End If
                 If Not DocSuiteContext.Current.HasArubaActalisSign Then
                     signTypeDropdown.FindItemByValue("1").Remove()
                     signTypeDropdown.FindItemByValue("3").Remove()
+                End If
+                If Not DocSuiteContext.Current.HasInfocertProxySignLocal Then
+                    If (Not signTypeDropdown.FindItemByValue("5") Is Nothing) Then
+                        signTypeDropdown.FindItemByValue("5").Remove()
+                    End If
                 End If
             End If
             DisableControls()
@@ -293,6 +312,10 @@ Public Class SingleSign
             selectedProvider = CType(Integer.Parse(signTypeDropdown.SelectedValue), Signs.ProviderSignType)
         End If
 
+        If selectedProvider = ProviderSignType.GoSign Then
+            Return True
+        End If
+
         If String.IsNullOrEmpty(PinTextbox.Text) Then
             validationErrors.AppendLine("Inserire PIN.")
         End If
@@ -357,8 +380,30 @@ Public Class SingleSign
     End Sub
 
     Private Sub InitializeAjax()
+        AddHandler AjaxManager.AjaxRequest, AddressOf SingleSignAjaxRequest
         AjaxManager.AjaxSettings.AddAjaxSetting(ToolBar, startStream)
         'AjaxManager.AjaxSettings.AddAjaxSetting(ToolBar, signContainer, MasterDocSuite.AjaxDefaultLoadingPanel)
+    End Sub
+
+    Protected Sub SingleSignAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
+        Dim ajaxModel As AjaxModel = Nothing
+        Try
+            ajaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument)
+        Catch
+            Exit Sub
+        End Try
+
+        If ajaxModel Is Nothing Then
+            Return
+        End If
+
+        Select Case ajaxModel.ActionName
+            Case "SignGoSignCompleted"
+                Dim transactionId As String = ajaxModel.Value(0)
+                Dim newName As String = ajaxModel.Value(1)
+                Dim extension As String = ajaxModel.Value(2)
+                CompleteGoSign(transactionId, newName, extension)
+        End Select
     End Sub
 
     ''' <summary> Carica con <see cref="OriginalDocument"/> il componente di firma. </summary>
@@ -494,13 +539,13 @@ Public Class SingleSign
 
                 Dim remoteSignProperty As RemoteSignProperty = CurrentUserProfile.Value.Item(Signs.ProviderSignType.ArubaAutomatic)
                 Dim arubaSignModel As ArubaSignModel = New ArubaSignModel With {
-                    .DelegatedDomain = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_DELEGATED_DOMAIN),
-                    .DelegatedPassword = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_DELEGATED_PASSWORD),
-                    .DelegatedUser = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_DELEGATED_USER),
+                    .DelegatedDomain = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_DELEGATED_DOMAIN),
+                    .DelegatedPassword = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_DELEGATED_PASSWORD),
+                    .DelegatedUser = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_DELEGATED_USER),
                     .OTPPassword = remoteSignProperty.OTP,
-                    .OTPAuthType = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_OTP_AUTHTYPE),
-                    .User = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_USER),
-                    .CertificateId = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_CERTIFICATEID),
+                    .OTPAuthType = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_OTP_AUTHTYPE),
+                    .User = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_USER),
+                    .CertificateId = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_CERTIFICATEID),
                     .RequestType = SignModel.SignRequestType.Pades
                 }
                 If CAdESButton.Checked Then
@@ -575,10 +620,10 @@ Public Class SingleSign
                 Dim remoteSignProperty As RemoteSignProperty = selectedSignOption.Value.Value
                 Dim arubaSignModel As ArubaSignModel = New ArubaSignModel()
                 arubaSignModel.OTPPassword = OtpTextbox.Text
-                arubaSignModel.OTPAuthType = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_OTP_AUTHTYPE)
+                arubaSignModel.OTPAuthType = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_OTP_AUTHTYPE)
                 arubaSignModel.User = selectedSignOption.Value.Value.Alias
                 arubaSignModel.UserPassword = PinTextbox.Text
-                arubaSignModel.CertificateId = remoteSignProperty.CustomProperties(remoteSignProperty.ARUBA_CERTIFICATEID)
+                arubaSignModel.CertificateId = remoteSignProperty.CustomProperties(RemoteSignProperty.ARUBA_CERTIFICATEID)
                 arubaSignModel.SignType = SignModel.SignType.Remote
                 arubaSignModel.RequestType = SignModel.SignRequestType.Pades
                 If CAdESButton.Checked Then
@@ -619,6 +664,50 @@ Public Class SingleSign
         Catch ex As Exception
             FileLogger.Error(LoggerName, String.Format("Errore firma del documento [{0}] [{1}].", currentFilename, newName), ex)
             AjaxAlert("Errore generico nella firma del documento, contattare l'assistenza.")
+        End Try
+    End Sub
+
+    Private Sub SignGoSign()
+        Dim newName As String = Nothing
+        Dim stream As Byte() = Nothing
+        Dim extension As String = Nothing
+        Try
+            InitializeSign(stream, newName, extension)
+
+            Dim signParameter As ProxySignModel = New ProxySignModel With {
+                    .SignType = SignModel.SignType.Remote,
+                    .RequestType = If(CAdESButton.Checked, SignRequestType.Cades, SignRequestType.Pades)
+            }
+            Dim document As IList(Of FileModel) = New List(Of FileModel) From {New FileModel() With {.Document = OriginalDocument.Stream, .Filename = OriginalDocument.Name}}
+            Dim transactionId As String = SignFlowService.StartSignFlowSession(signParameter, document).SessionId
+            AjaxManager.ResponseScripts.Add($"signGoSign('{transactionId}','{newName}','{extension}');")
+        Catch ex As PathTooLongException
+            FileLogger.Warn(LoggerName, "Nome documento da firmare troppo lungo", ex)
+            AjaxAlert("Nome del documento troppo lungo.")
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, String.Format("Errore firma del documento [{0}] [{1}].", OriginalDocument.Name, newName), ex)
+            AjaxAlert("Errore generico nella firma del documento, contattare l'assistenza.")
+        End Try
+    End Sub
+
+    Private Sub CompleteGoSign(transactionId As String, newName As String, extension As String)
+        Try
+            Dim signedDocuments As ICollection(Of FileModel) = SignFlowService.GetSignedDocuments(transactionId)
+            If signedDocuments.Count = 0 Then
+                Throw New Exception($"Nessun documento firmato trovato")
+            End If
+
+            Dim stream As Byte() = signedDocuments.First().Document
+            Dim tempFileName As String = $"{FileHelper.UniqueFileNameFormat(OriginalDocument.Name, DocSuiteContext.Current.User.UserName)}{extension}"
+            Dim tempPath As String = Path.Combine(CommonInstance.AppTempPath, tempFileName)
+            File.WriteAllBytes(tempPath, stream)
+            SignedDocument = New TempFileDocumentInfo(newName, New FileInfo(tempPath), True, stream.Length)
+
+            AjaxManager.ResponseScripts.Add(String.Format("CloseWindow('{0}');", SignedDocument.ToQueryString().AsEncodedQueryString()))
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, String.Format("Errore firma del documento [{0}] [{1}].", OriginalDocument.Name, newName), ex)
+            AjaxAlert("Errore generico nella firma del documento, contattare l'assistenza.")
+            AjaxManager.ResponseScripts.Add($"hideAjaxLoadingPanel('{ToolBar.ClientID}');")
         End Try
     End Sub
 
@@ -663,6 +752,8 @@ Public Class SingleSign
                 SignRemote(selectedSignType)
             Case Signs.ProviderSignType.InfocertAutomatic, Signs.ProviderSignType.ArubaAutomatic
                 SignAutomatic(selectedSignType)
+            Case ProviderSignType.GoSign
+                SignGoSign()
         End Select
 
     End Sub

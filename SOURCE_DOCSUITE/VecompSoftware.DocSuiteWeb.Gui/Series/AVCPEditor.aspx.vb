@@ -913,7 +913,7 @@ Namespace Series
             End If
 
             ' salvo serie documentale e compilo i dati dinamici
-            Dim AVCPDocumenSeriesItem As DocumentSeriesItem = CurrentDocumentSeriesFacade.SaveDocumentSeriesItem(CurrentAVCPDocumentSeriesItem, annoRiferimento, chain, Nothing, Nothing, status, String.Empty)
+            Dim AVCPDocumenSeriesItem As DocumentSeriesItem = CurrentDocumentSeriesFacade.SaveDocumentSeriesItem(CurrentAVCPDocumentSeriesItem, annoRiferimento, chain, Nothing, Nothing, status, String.Empty, Nothing)
             ' setto il file XML di pubblicazione
             CurrentAVCPFacade.SetDataSetPub(publication, AVCPDocumenSeriesItem, DocSuiteContext.Current.User.FullUserName, True)
             ' Memorizzo la serie documentale in sessione. Viene utilizzata per collegare la serie di bandi di gara ad AVCP nella pagina di Item.

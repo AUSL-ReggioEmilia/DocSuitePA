@@ -183,12 +183,12 @@
     <%-- Dati Economici --%>
     <table id="tblEconomicData" runat="server" class="datatable" width="100%">
         <tr>
-            <th>Dati economici</th>
+            <th><asp:Label ID="lblEconomicDataTitle" runat="server">Dati economici</asp:Label></th>
         </tr>
         <tr>
             <td>
                 <table cellspacing="0" cellpadding="1" width="100%" border="0">
-                    <tr>
+                    <tr Visible="true" id="economicDataPosizione" runat="server">
                         <td class="label" width="20%">Posizione:</td>
                         <td align="right" width="5%"></td>
                         <td class="label" width="20%">
@@ -197,7 +197,7 @@
                         <td class="label" width="10%"></td>
                         <td class="label" width="45%"></td>
                     </tr>
-                    <tr>
+                    <tr Visible="true" id="economicDataContratto" runat="server">
                         <td class="label" width="20%">Val. contratto:</td>
                         <td class="label" width="5%">da:</td>
                         <td align="left" width="20%">
@@ -209,15 +209,16 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="label" width="20%">Tipologia gara:</td>
+                        <td class="label" width="20%" id="lblBidtype" runat="server">Tipologia gara:</td>
                         <td width="5%"></td>
-                        <td align="left" width="20%">
+                        <td align="left" width="20%" Visible="false">
+                            <telerik:RadDropDownList runat="server" ID="rlbBidTypes" Width="300px" selected="true" Visible="false"/>
                             <asp:DropDownList ID="ddlBidType" runat="server" />
                         </td>
                         <td width="10%"></td>
                         <td align="left" width="45%"></td>
                     </tr>
-                    <tr>
+                    <tr Visible="true" id="economicDataFornitore" runat="server">
                         <td class="label" width="20%">Fornitore:</td>
                         <td class="label" width="5%">Cod:</td>
                         <td align="left" width="20%">

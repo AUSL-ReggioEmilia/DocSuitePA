@@ -140,6 +140,15 @@ Partial Public Class WorkflowActivitySummary
     Protected WithEvents uscUploadDocumenti As Global.VecompSoftware.DocSuiteWeb.Gui.uscUploadDocumentRest
 
     '''<summary>
+    '''addDocumentsRest control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents addDocumentsRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscUploadDocumentRest
+
+    '''<summary>
     '''dateContainer control.
     '''</summary>
     '''<remarks>

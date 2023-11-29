@@ -9,9 +9,13 @@ Imports System.Web
 Imports VecompSoftware.WebAPIManager.Exceptions
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Collaborations
+Imports System.Web.UI.WebControls
 
 Public Class BindGrid
     Inherits BaseGrid
+
+    Public Event OnCustomExportDataRequest(ByVal sender As Object, ByVal e As EventArgs)
 
 #Region " Fields "
 
@@ -40,6 +44,7 @@ Public Class BindGrid
             PersistFinder()
         End Set
     End Property
+
 
 
     Public Overrides Property CustomPageIndex As Integer
@@ -138,12 +143,12 @@ Public Class BindGrid
             Finder = finderToExecute
             If ImpersonateCurrentUser Then
                 RaiseEvent NeedImpersonation(Me, New EventArgs())
-                If TypeOf Finder Is FascicleFinder AndAlso finderToExecute.FromPostMethod Then
+                If (TypeOf Finder Is FascicleFinder OrElse TypeOf Finder Is CollaborationFinder) AndAlso finderToExecute.FromPostMethod Then
                     Return ExecuteSearchWithImpersonation(Of Object)(AddressOf finderToExecute.GetFromPostMethod)
                 End If
                 Return ExecuteSearchWithImpersonation(Of Object)(AddressOf finderToExecute.DoSearchHeader)
             Else
-                If TypeOf Finder Is FascicleFinder AndAlso finderToExecute.FromPostMethod Then
+                If (TypeOf Finder Is FascicleFinder OrElse TypeOf Finder Is CollaborationFinder) AndAlso finderToExecute.FromPostMethod Then
                     Return finderToExecute.GetFromPostMethod()
                 End If
                 Return finderToExecute.DoSearchHeader()
@@ -215,6 +220,10 @@ Public Class BindGrid
     Protected Overrides Sub OnItemCommand(ByVal e As GridCommandEventArgs)
         Select Case e.CommandName
             Case "Filter"
+                Dim prop As KeyValuePair(Of String, Object) = GetFilterProperty(e)
+                If TypeOf Finder Is CollaborationFinder Then
+                    DirectCast(Finder, CollaborationFinder).PopulateFinderModel(prop.Key, prop.Value)
+                End If
                 'MasterTableView.AllowMultiColumnSorting = True
                 CustomPageIndex = 0
                 FinderFiltering(e)
@@ -260,6 +269,8 @@ Public Class BindGrid
                     FilterHelper.UpdateFilter(filterExpressions, command)
                 Next
                 DataBindFinder()
+            Case "CustomExport"
+                RaiseEvent OnCustomExportDataRequest(Me, e)
 
             Case Else
                 MyBase.OnItemCommand(e)
@@ -416,6 +427,9 @@ Public Class BindGrid
 
         DataBind()
     End Sub
+    Public Function GetDataSource(Of T)() As ICollection(Of WebAPIDto(Of T))
+        Return CType(FinderExecuteDoSearchHeader(Finder), ICollection(Of WebAPIDto(Of T)))
+    End Function
 
     Private Sub InitializeVirtualItemCount()
         If VirtualItemCount = 0 Then
@@ -449,6 +463,26 @@ Public Class BindGrid
             GridSettingsPersister.LoadSettings(Me, myCookie(ClientID & "_state"))
         End If
     End Sub
+
+    Private Function GetFilterProperty(ByVal e As GridCommandEventArgs) As KeyValuePair(Of String, Object)
+        Dim command As Pair = DirectCast(e.CommandArgument, Pair)
+        Dim column As GridColumn = Columns.FindByUniqueName(command.Second)
+        Dim filterItem As GridFilteringItem = DirectCast(e.Item, GridFilteringItem)
+        Dim filterValue As Object = Nothing
+        For Each ctrl As Control In filterItem(command.Second).Controls
+            If (TypeOf ctrl Is LiteralControl) Then
+                Continue For
+            End If
+
+            filterValue = FilterHelper.GetFilterValue(ctrl, column.UniqueName)
+            Exit For
+        Next
+
+        Dim propertyName As String = command.Second
+        Dim propertyValue As Object = filterValue
+
+        Return New KeyValuePair(Of String, Object)(propertyName, propertyValue)
+    End Function
 
 #End Region
 

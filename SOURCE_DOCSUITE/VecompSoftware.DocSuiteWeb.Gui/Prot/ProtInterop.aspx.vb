@@ -342,12 +342,12 @@ Partial Class ProtInterop
 
     Private Sub initializeRoleControl()
         ' Ritiro tutti i miei ruoli
-        Dim myRoles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, Nothing, True)
+        Dim myRoles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, Nothing, True, CurrentTenant.TenantAOO.UniqueId)
         'Facade.RoleFacade.GetRoleRigths("PROT", CommonShared.UserConnectedGroups, 1, "", Nothing, False)
 
         ' Prendo tutti i ruoli senza padre
         Dim roleFacade As New RoleFacade()
-        Dim tmpRoleList As IList(Of Role) = roleFacade.GetRootItems(withPECMailbox:=True)
+        Dim tmpRoleList As IList(Of Role) = roleFacade.GetRootItems(CurrentTenant.TenantAOO.UniqueId, withPECMailbox:=True)
 
         ' modifica temporanea
         Dim roleList As New List(Of Role)

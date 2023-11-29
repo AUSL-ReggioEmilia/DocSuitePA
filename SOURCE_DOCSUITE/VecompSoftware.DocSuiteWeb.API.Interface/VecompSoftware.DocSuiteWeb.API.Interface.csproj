@@ -42,8 +42,8 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,14 +63,12 @@
     <Compile Include="IMailDTO.cs" />
     <Compile Include="Implementation\CategoryDTO.cs" />
     <Compile Include="Implementation\APIResponse.cs" />
-    <Compile Include="Implementation\CollaborationDTO.cs" />
     <Compile Include="Implementation\AccountingSectionalDTO.cs" />
     <Compile Include="Implementation\DocumentDTO.cs" />
     <Compile Include="Implementation\DocumentSeriesItemDTO.cs" />
     <Compile Include="Implementation\ExceptionDTO.cs" />
     <Compile Include="Implementation\ContactDTO.cs" />
     <Compile Include="Implementation\ContainerDTO.cs" />
-    <Compile Include="IAPIProviderDTO.cs" />
     <Compile Include="IAPIResponse.cs" />
     <Compile Include="ICategoryDTO.cs" />
     <Compile Include="IContactDTO.cs" />
@@ -79,7 +77,6 @@
     <Compile Include="IExceptionDTO.cs" />
     <Compile Include="IMailboxDTO.cs" />
     <Compile Include="Implementation\MailDTO.cs" />
-    <Compile Include="ICollaborationDTO.cs" />
     <Compile Include="Implementation\ServiceCategoryDTO.cs" />
     <Compile Include="Implementation\TableDocTypeDTO.cs" />
     <Compile Include="Implementation\TaskDTO.cs" />

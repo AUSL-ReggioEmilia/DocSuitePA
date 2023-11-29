@@ -8,8 +8,9 @@
             }
         </style>
         <script type="text/javascript">
-            var activex = new ActiveXObject("VecompSoftware.MultiSigner.MultiSignerCtrl");
+            var activex = null;
             function riseSign(inputDir, outputDir, signTypes, comment) {
+                activex = new ActiveXObject("VecompSoftware.MultiSigner.MultiSignerCtrl");
                 // Controllo activex
                 if (!activex) {
                     alert("Impossibile trovare il componente.");
@@ -53,8 +54,10 @@
                     return;
                 }
                 ResponseEnd();
-                var ajaxManager = $find("<%= AjaxManager.ClientID %>");
-                ajaxManager.ajaxRequest("Signed");
+
+                var ajaxModel = {};
+                ajaxModel.ActionName = "Signed";
+                $find("<%= AjaxManager.ClientID %>").ajaxRequest(JSON.stringify(ajaxModel));
             }
 
             var currentLoadingPanel = null;
@@ -115,7 +118,8 @@
                 var toolBar = $find("<%= ToolBar.ClientID %>");
                 if (toolBar != null)
                     switch (selectedValue) {
-                        case "0": //CARD
+                        case "0": //CARD 
+                        case "5": //GO SIGN
                             {
                                 toolBar.findItemByValue("pinContainer2").set_visible(false);
                                 toolBar.findItemByValue("pinContainer").set_visible(false);
@@ -146,8 +150,37 @@
                 ajaxLoadingPanel.hide(htmlElementId);
             }
 
+            /**
+             * firma dike go sign
+             * @param url
+             */
+            function signGoSign(transactionId, fileNames) {
+                showAjaxLoadingPanel("<%= ToolBar.ClientID %>");
+                var windowManager = $find("<%= MasterDocSuite.DefaultWindowManager.ClientID %>");
+                window.setTimeout(function () {
+                    var wnd = windowManager.open("../UserControl/CommonGoSignFlow.aspx?GoSignSessionId=" + transactionId, null, null, 850, 500, 10, 10);
+                    wnd.set_destroyOnClose(true);
+                    wnd.add_close(function (sender, args) {
+                        var data = args.get_argument();
+                        if (data) {
+                            var ajaxModel = {};
+                            ajaxModel.Value = [transactionId, fileNames];
+                            ajaxModel.ActionName = "SignGoSignCompleted";
+
+                            $find("<%= MasterDocSuite.AjaxManager.ClientID %>").ajaxRequest(JSON.stringify(ajaxModel));
+                            return;
+                        }
+                        hideAjaxLoadingPanel("<%= ToolBar.ClientID %>");
+                        alert("Attività cancellata dall'utente.");
+                    });
+                    wnd.set_behaviours(Telerik.Web.UI.WindowBehaviors.Close);
+                    wnd.center();
+                }, 0);
+            }
+
         </script>
     </telerik:RadScriptBlock>
+    
     <telerik:RadToolBar AutoPostBack="true" CssClass="ToolBarContainer" EnableRoundedCorners="False" EnableShadows="False" ID="ToolBar" runat="server" Width="100%">
         <Items>
             <telerik:RadToolBarButton Value="signTypeDropdown">
@@ -157,6 +190,7 @@
                             <telerik:DropDownListItem Selected="true" Text="Smartcard" Value="0" />
                             <telerik:DropDownListItem Text="Automatica Aruba" Value="3" />
                             <telerik:DropDownListItem Text="Automatica Infocert" Value="4" />
+                            <telerik:DropDownListItem Text="Dike GoSign" Value="5" />
                         </Items>
                     </telerik:RadDropDownList>
                 </ItemTemplate>
@@ -209,7 +243,7 @@
 
 <asp:Content runat="server" ContentPlaceHolderID="cphContent">
     <div class="radGridWrapper">
-        <telerik:RadGrid runat="server" ID="DocumentListGrid" Width="100%" EnableViewState="true" AllowMultiRowSelection="True">
+        <telerik:RadGrid runat="server" ID="DocumentListGrid" Width="100%" Height="100%" EnableViewState="true" AllowMultiRowSelection="True">
             <MasterTableView AutoGenerateColumns="False" DataKeyNames="Serialized">
 
                 <GroupByExpressions>
@@ -228,7 +262,7 @@
                     <telerik:GridClientSelectColumn HeaderStyle-Width="16px" UniqueName="SelectColumn" />
 
 
-                    <telerik:GridTemplateColumn HeaderStyle-Width="16px" HeaderImageUrl="~/App_Themes/DocSuite2008/imgset16/documentPreview.png" HeaderText="Tipo Documento">
+                    <telerik:GridTemplateColumn HeaderStyle-Width="16px" HeaderImageUrl="~/App_Themes/DocSuite2008/imgset16/documentPreview.png" HeaderText="Tipo documento">
                         <ItemTemplate>
                             <asp:ImageButton ID="documentType" runat="server" CommandName="preview" />
                         </ItemTemplate>
@@ -264,6 +298,7 @@
             <ClientSettings EnableRowHoverStyle="False">
                 <Selecting AllowRowSelect="True" EnableDragToSelectRows="False" UseClientSelectColumnOnly="True" />
                 <ClientEvents OnRowDeselecting="RowDeselecting"></ClientEvents>
+                <Scrolling AllowScroll="true" ScrollHeight="100%" />
             </ClientSettings>
 
             <SortingSettings SortedAscToolTip="Ordine crescente" SortedDescToolTip="Ordine descrescente" SortToolTip="Ordina" />

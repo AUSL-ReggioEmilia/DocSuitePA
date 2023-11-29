@@ -1,14 +1,16 @@
 Imports System.Collections.Generic
 Imports System.Linq
-Imports Telerik.Web.UI
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Gui.UserControl
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Services.Logging
 Imports System.Web
+Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.Resolutions
-Imports System.Collections.ObjectModel
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Gui.UserControl
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Services.Logging
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations
+Imports VecompSoftware.DocSuiteWeb.Entity.Conservations
+Imports System.Text.RegularExpressions
 
 Partial Public Class uscResolution
     Inherits DocSuite2008BaseControl
@@ -23,7 +25,8 @@ Partial Public Class uscResolution
     Private _roleProposerEnabled As Boolean?
     Private Const PROPOSER_FIELD_DATA_NAME As String = "Proposer"
     Private Const ROLE_PROPOSER_PROPERTY_NAME As String = "ROLEPROPOSER"
-    Private _currentParer As ResolutionParer
+    Private Const COLLABORATION_PATH_FORMAT As String = "~/User/UserCollGestione.aspx?Type={0}&Titolo=Visualizzazione&Action={1}&idCollaboration={2}&Action2={3}&Title2=Visualizzazione"
+    Private _currentConservation As Conservation
     Dim _currentTabWorkflow As TabWorkflow
 #End Region
 
@@ -133,12 +136,6 @@ Partial Public Class uscResolution
         End Set
     End Property
 
-    Public ReadOnly Property ParerDetailUrl() As String
-        Get
-            Return ResolveUrl("~/PARER/ParerDetail.aspx")
-        End Get
-    End Property
-
     ''' <summary> Mostra/Nasconde pannello con la numerazione. </summary>
     Public Property VisibleNumber() As Boolean
         Get
@@ -183,10 +180,21 @@ Partial Public Class uscResolution
     ''' <summary> Mostra/Nasconde pannello con i dati sullo Stato. </summary>
     Public Property VisibleStatus() As Boolean
         Get
-            Return tblStatus.Visible
+            Return tdStatusDescription.Visible AndAlso tdStatusDescriptionValue.Visible
         End Get
         Set(ByVal value As Boolean)
-            tblStatus.Visible = value
+            tdStatusDescription.Visible = value
+            tdStatusDescriptionValue.Visible = value
+        End Set
+    End Property
+
+    Public Property VisibleConservation() As Boolean
+        Get
+            Return tdConservationDescription.Visible AndAlso collaborationLink.Visible
+        End Get
+        Set(ByVal value As Boolean)
+            tdConservationDescription.Visible = value
+            collaborationLink.Visible = value
         End Set
     End Property
 
@@ -280,16 +288,6 @@ Partial Public Class uscResolution
         End Set
     End Property
 
-    ''' <summary> Mostra/Nasconde pannello con i dati di utilità. </summary>
-    Public Property VisibleOther() As Boolean
-        Get
-            Return tblOther.Visible
-        End Get
-        Set(ByVal value As Boolean)
-            tblOther.Visible = value
-        End Set
-    End Property
-
     ''' <summary> Mostra/Nasconde pannello con i dati per le autorizzazioni. </summary>
     Public Property VisibleDataRole() As Boolean
         Get
@@ -306,9 +304,7 @@ Partial Public Class uscResolution
         End Get
         Set(ByVal value As Boolean)
             chkPublication.Visible = value
-            lblPubblication.Visible = value
-            tbPublication.Visible = value
-            tbPublicationLabel.Visible = value
+            tdPubblication.Visible = value
         End Set
     End Property
 
@@ -371,12 +367,19 @@ Partial Public Class uscResolution
         End Get
     End Property
 
-    Public ReadOnly Property CurrentParer As ResolutionParer
+    Public ReadOnly Property CurrentConservation As Conservation
         Get
-            If _currentParer Is Nothing Then
-                _currentParer = Facade.ResolutionParerFacade.GetByResolution(CurrentResolution)
+            If _currentConservation Is Nothing AndAlso CurrentResolution IsNot Nothing Then
+                Dim conservation As Conservation = WebAPIImpersonatorFacade.ImpersonateFinder(New ConservationFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.UniqueId = CurrentResolution.UniqueId
+                        finder.EnablePaging = False
+                        Return finder.DoSearch().Select(Function(x) x.Entity).FirstOrDefault()
+                    End Function)
+
+                _currentConservation = conservation
             End If
-            Return _currentParer
+            Return _currentConservation
         End Get
     End Property
 
@@ -431,19 +434,20 @@ Partial Public Class uscResolution
         VisibleNumber = False
         VisibleObject = False
         VisibleODC = False
-        VisibleOther = False
         VisibleRoles = False
-        VisibleStatus = False
         VisibleDataRole = False
         tblWorkflow.Visible = False
         tblComunicationStorico.Visible = False
-        lblPubblication.Visible = ResolutionEnv.IsPublicationEnabled
+        tdPubblication.Visible = ResolutionEnv.IsPublicationEnabled
+        chkPublication.Visible = ResolutionEnv.IsPublicationEnabled
         lblResolutionDeleteReason.Text = ResolutionEnv.ResolutionDeclineReasonLabel
     End Sub
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         InitializeAjax()
-        uscDocumentUnitReferences.IdDocumentUnit = CurrentResolution.UniqueId.ToString()
+        uscDocumentUnitReferences.ReferenceUniqueId = CurrentResolution.UniqueId.ToString()
+        uscDocumentUnitReferences.ShowFascicleLinks = Not ProtocolEnv.ProcessEnabled AndAlso ProtocolEnv.FascicleEnabled
+        uscDocumentUnitReferences.ShowDocumentUnitFascicleLinks = ProtocolEnv.ProcessEnabled
 
         'Calcola FullNumber dell'atto
         Facade.ResolutionFacade.ReslFullNumber(CurrentResolution, CurrentResolution.Type.Id, ProvNumber, FullNumber)
@@ -493,7 +497,6 @@ Partial Public Class uscResolution
 
     Private Sub InitializeAjax()
         AjaxManager.AjaxSettings.AddAjaxSetting(uscWorkflow, tblResolution)
-        AjaxManager.AjaxSettings.AddAjaxSetting(uscWorkflow, tblOther)
         AjaxManager.AjaxSettings.AddAjaxSetting(uscWorkflow, tblMotivazione)
         AjaxManager.AjaxSettings.AddAjaxSetting(uscWorkflow, uscSettori)
         AjaxManager.AjaxSettings.AddAjaxSetting(uscWorkflow, tblObjectPrivacy)
@@ -517,10 +520,8 @@ Partial Public Class uscResolution
         If _isStorico Then
             WebUtils.ObjAttDisplayNone(tblComunication)
             chkPublication.Visible = False
-            lblPubblication.Visible = False
+            tdPubblication.Visible = False
         End If
-
-        tblSettoriAutoriz.Visible = _isStorico
     End Sub
 
     Public Sub Show()
@@ -530,7 +531,10 @@ Partial Public Class uscResolution
             _btnDoc4.Text = "Doc4"
             _btnDoc4.Attributes.Clear()
         End If
-
+        If CurrentResolution.Amount.HasValue Then
+            tblAmount.Visible = True
+            lblAmountValue.Text = $"{CurrentResolution.Amount.Value:C}"
+        End If
         'Visualizzo OC
         If Facade.ResolutionFacade.IsManagedProperty("OCData", CurrentResolution.Type.Id) Then
             InitializeOC()
@@ -546,7 +550,15 @@ Partial Public Class uscResolution
             _btnDoc4.Style.Add("position", "absolute !important")
         End If
 
-        VisibleEconomyData = Facade.ResolutionFacade.IsManagedProperty("EconomicData", CurrentResolution.Type.Id)
+        VisibleEconomyData = Facade.ResolutionFacade.IsManagedProperty("EconomicData", CurrentResolution.Type.Id) _
+            AndAlso (Not ResolutionEnv.ResolutionAccountingEnabled OrElse (ResolutionEnv.ResolutionAccountingEnabled AndAlso CurrentContainerHasAccountingEnabled()))
+
+        If VisibleEconomyData AndAlso ResolutionEnv.ResolutionAccountingEnabled Then
+            rowEconomicDataFornitore.Visible = False
+            rowEconomicDataContratto.Visible = False
+            lblBidType.InnerText = "Stato contabilità:"
+            lblEconomicDataTitle.InnerText = "Contabilità"
+        End If
 
         If Facade.ResolutionFacade.IsManagedProperty("Proposer", CurrentResolution.Type.Id, "CONTACT") OrElse Facade.ResolutionFacade.IsManagedProperty("Recipent", CurrentResolution.Type.Id, "CONTACT") Then
             LoadProposerReceipientContacts()
@@ -561,11 +573,6 @@ Partial Public Class uscResolution
         End If
 
         VisibleCategory = Facade.ResolutionFacade.IsManagedProperty("Category", CurrentResolution.Type.Id)
-
-        'Pubblicazione
-        If ResolutionEnv.IsPublicationEnabled Then
-            lblPubblication.Style.Add("display", "block")
-        End If
 
         If ResolutionEnv.WebPublishPanel AndAlso (ResolutionEnv.WebPublishEnabled OrElse ResolutionEnv.IsPublicationEnabled) Then
             lbStatoWeb.Style.Add("display", "block")
@@ -586,12 +593,12 @@ Partial Public Class uscResolution
             If CurrentResolution.WebPublicationDate.HasValue Then
                 _webPublicationDateLabel.Text = CurrentResolution.WebPublicationDate.Value.ToString("dd/MM/yyyy")
             Else
-                _webPublicationDateLabel.Text = ""
+                _webPublicationDateLabel.Text = String.Empty
             End If
             If CurrentResolution.WebRevokeDate.HasValue Then
                 _webRevokeDateLabel.Text = CurrentResolution.WebRevokeDate.Value.ToString("dd/MM/yyyy")
             Else
-                _webRevokeDateLabel.Text = ""
+                _webRevokeDateLabel.Text = String.Empty
             End If
         Else
             tblWebPubblicationState.Style.Add("display", "none")
@@ -600,10 +607,13 @@ Partial Public Class uscResolution
         End If
 
         LoadHistoryMode()
+        LoadConservation()
 
-        'LoadRoles()
-
-        LoadParer()
+        trUltimaPagina.Visible = False
+        If CurrentResolution.UltimaPaginaDate.HasValue Then
+            trUltimaPagina.Visible = True
+            lbDataDematerializzazione.Text = CurrentResolution.UltimaPaginaDate.Value.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
+        End If
 
         If ResolutionEnv.WebPublicationPrint Then
             Try
@@ -624,12 +634,23 @@ Partial Public Class uscResolution
             Dim collaboration As Collaboration = Facade.CollaborationFacade.GetByResolution(CurrentResolution)
 
             If collaboration IsNot Nothing AndAlso (CurrentResolutionRight.IsDocumentViewable(CurrentActiveTabWorkflow) OrElse (CurrentResolution.EffectivenessDate.HasValue AndAlso ResolutionEnv.ShowExecutiveDocumentEnabled)) AndAlso Facade.ResolutionFacade.HasDocuments(CurrentResolution, ResolutionEnv.QuickDocumentsCheckAllChains) Then
-                collaborationPanel.Visible = True
+                tdCollaboration.Visible = True
+                cmdCollaboration.Visible = True
                 cmdCollaboration.Text = collaboration.CollaborationObject
                 cmdCollaboration.NavigateUrl = String.Format("~/User/UserCollGestione.aspx?Type={0}&Titolo=Visualizzazione&Action={1}&idCollaboration={2}&Action2={3}&Title2=Visualizzazione",
                                                              CollaborationFacade.GetPageTypeFromDocumentType(collaboration.DocumentType), CollaborationSubAction.ProtocollatiGestiti, collaboration.Id, CollaborationMainAction.ProtocollatiGestiti)
             End If
         End If
+
+        VisibleConservation = False
+
+        If Facade.CollaborationDraftFacade.ExistResolutionLink(CurrentResolution.UniqueId) Then
+            VisibleConservation = True
+            Dim collaborationDraft As CollaborationDraft = Facade.CollaborationDraftFacade.GetByIdDocumentUnit(CurrentResolution.UniqueId)
+            collaborationLink.Text = "Affari generali"
+            collaborationLink.NavigateUrl = String.Format(COLLABORATION_PATH_FORMAT, CollaborationFacade.GetPageTypeFromDocumentType(collaborationDraft.Collaboration.DocumentType), CollaborationSubAction.ProtocollatiGestiti, collaborationDraft.Collaboration.Id, CollaborationMainAction.ProtocollatiGestiti)
+        End If
+
     End Sub
 
     Protected Function GetProvNumber() As String
@@ -709,7 +730,6 @@ Partial Public Class uscResolution
             Return String.Empty
         End If
     End Function
-
     Private Function GetValidityDateFrom() As String
         If CurrentResolution.ValidityDateFrom.HasValue Then
             Return "Dal " & CurrentResolution.ValidityDateFromFormat("{0:dd/MM/yyyy}")
@@ -739,15 +759,7 @@ Partial Public Class uscResolution
     End Function
 
     Protected Function GetAlternativeRecipient() As String
-        Dim alternativeRecipient As String = String.Empty
-        For Each resRecipient As ResolutionRecipient In CurrentResolution.ResolutionRecipients
-            If resRecipient.Recipient IsNot Nothing Then
-                alternativeRecipient &= resRecipient.Recipient.FullName & "<BR>"
-            End If
-        Next
-        alternativeRecipient &= CurrentResolution.AlternativeRecipient
-
-        Return alternativeRecipient
+        Return CurrentResolution.AlternativeRecipient
     End Function
 
     Protected Function GetAlternativeProposer() As String
@@ -877,51 +889,29 @@ Partial Public Class uscResolution
     End Function
 
     ''' <summary> Carico dati PARER. </summary>
-    Public Sub LoadParer()
-        If Not ResolutionEnv.ParerEnabled Then
-            tblParer.Visible = False
-            If CurrentResolution.UltimaPaginaDate.HasValue Then
-                lbDataDematerializzazione.Text = CurrentResolution.UltimaPaginaDate.Value.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
-                tblParer.Visible = True
-                linkUriVersamento.Text = String.Empty
-            End If
-            Exit Sub
-        End If
+    Public Sub LoadConservation()
+        trConservationStatus.Visible = False
 
-        tblParer.Visible = True
+        If ProtocolEnv.ConservationEnabled AndAlso CurrentConservation IsNot Nothing Then
+            trConservationStatus.Visible = True
+            imgConservationIcon.ImageUrl = ConservationHelper.StatusSmallIcon(CurrentConservation.Status)
+            lblConservationStatus.Text = ConservationHelper.StatusDescription(CurrentConservation.Status)
 
-        If Facade.ResolutionParerFacade.Exists(CurrentResolution) Then
-            ' Sezione Atto Dematerializzato
-            If CurrentParer.ArchivedDate.HasValue Then
-                lbDataVersamento.Text = CurrentParer.ArchivedDate.Value.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
-            End If
-            linkUriVersamento.NavigateUrl = CurrentParer.ParerUri
-            If CurrentResolution.UltimaPaginaDate.HasValue Then
-                lbDataDematerializzazione.Text = CurrentResolution.UltimaPaginaDate.Value.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture)
+            If String.IsNullOrEmpty(CurrentConservation.Uri) Then
+                Exit Sub
             End If
 
-            parerInfo.ImageUrl = "../Comm/Images/info.png"
-            parerInfo.OnClientClick = String.Format("return OpenParerDetail({0});", CurrentResolution.Id)
+            If Not Regex.IsMatch(CurrentConservation.Uri, ProtocolEnv.ConservationURIValidationRegex) Then
+                lblConservationUri.Visible = True
+                conservationUriLabel.Visible = True
 
-            Select Case Facade.ResolutionParerFacade.GetConservationStatus(CurrentResolution)
-                Case ResolutionParerFacade.ResolutionParerConservationStatus.Correct
-                    parerIcon.ImageUrl = "../Comm/images/parer/green.png"
-                    parerLabel.Text = "Conservazione corretta."
-                Case ResolutionParerFacade.ResolutionParerConservationStatus.Warning
-                    parerIcon.ImageUrl = "../Comm/images/parer/yellow.png"
-                    parerLabel.Text = "Conservazione con avviso."
-                Case ResolutionParerFacade.ResolutionParerConservationStatus.Error
-                    parerIcon.ImageUrl = "../Comm/images/parer/red.png"
-                    parerLabel.Text = "Conservazione con errori."
-                Case ResolutionParerFacade.ResolutionParerConservationStatus.Undefined
-                    parerIcon.ImageUrl = "../Comm/images/parer/lightgray.png"
-                    parerLabel.Text = "Stato conservazione non definito."
-            End Select
-        Else
-            ' Non soggetto alla conservazione sostitutiva
-            parerInfo.Visible = False
-            parerIcon.ImageUrl = "../Comm/images/parer/lightgray.png"
-            parerLabel.Text = "Non soggetto alla conservazione anticipata."
+                lblConservationStatus.ToolTip = "Url non compatibile con il portale ingestor"
+                lblConservationUri.Text = CurrentConservation.Uri
+                Exit Sub
+            End If
+            If Not String.IsNullOrWhiteSpace(ProtocolEnv.IngestorBaseURL) Then
+                lblConservationStatus.NavigateUrl = $"{ProtocolEnv.IngestorBaseURL}/{CurrentConservation.Uri}"
+            End If
         End If
     End Sub
 
@@ -971,18 +961,39 @@ Partial Public Class uscResolution
         CurrentResolutionModel = model
     End Sub
     Protected Function GetLastResolutioLog() As String
-        trLastConfrimView.Visible = False
+        tdLastConfirmView.Visible = False
+        tdLastConfirmViewValue.Visible = False
         Dim resolutionLog As ResolutionLog = Facade.ResolutionLogFacade.GetlastResolutionLog(CurrentResolution.Id, ResolutionLogType.CV)
         If Not resolutionLog Is Nothing Then
             If Not resolutionLog Is Nothing Then
                 Dim user As AccountModel = CommonAD.GetAccount(resolutionLog.SystemUser)
                 If user IsNot Nothing Then
-                    trLastConfrimView.Visible = True
+                    tdLastConfirmView.Visible = True
+                    tdLastConfirmViewValue.Visible = True
                     Return String.Format("{0} il {1}", user.DisplayName, resolutionLog.LogDate)
                 End If
             End If
         End If
         Return String.Empty
+    End Function
+
+    Public Sub SetTakeChargeVisibility(visibile As Boolean, workflowUser As ResolutionWorkflowUser)
+        tdTakeCharge.Visible = visibile
+        lblUserTakeCharge.Visible = visibile
+        If workflowUser IsNot Nothing Then
+            lblUserTakeCharge.Text = $"{CommonAD.GetDisplayName(workflowUser.Account)} il {workflowUser.RegistrationDate:dd/MM/yyyy}"
+        End If
+    End Sub
+
+    Private Function CurrentContainerHasAccountingEnabled() As Boolean
+        If Not ResolutionEnv.ResolutionAccountingEnabled Then
+            Return True
+        End If
+        Dim accountingProperty As ContainerProperty = CurrentResolution.Container.ContainerProperties.FirstOrDefault(Function(x) x.Name.Equals(ContainerPropertiesName.ResolutionAccountingEnabled))
+        If accountingProperty Is Nothing Then
+            Return False
+        End If
+        Return accountingProperty.ValueBoolean.Value
     End Function
 #End Region
 

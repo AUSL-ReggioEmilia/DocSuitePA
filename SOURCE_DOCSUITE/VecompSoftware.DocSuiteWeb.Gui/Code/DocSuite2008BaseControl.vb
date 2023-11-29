@@ -155,13 +155,13 @@ Public Class DocSuite2008BaseControl
     End Property
     Public Property CurrentTenant As Tenant
         Get
-            If Session("CurrentTenant") IsNot Nothing Then
-                Return DirectCast(Session("CurrentTenant"), Tenant)
+            If Session(CommonShared.USER_CURRENT_TENANT) IsNot Nothing Then
+                Return DirectCast(Session(CommonShared.USER_CURRENT_TENANT), Tenant)
             End If
             Return Nothing
         End Get
         Set(value As Tenant)
-            Session("CurrentTenant") = value
+            Session(CommonShared.USER_CURRENT_TENANT) = value
         End Set
     End Property
 

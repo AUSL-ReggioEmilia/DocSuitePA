@@ -59,6 +59,15 @@ Partial Public Class uscMetadataRepositorySel
     Protected WithEvents rcbMetadataRepository As Global.Telerik.Web.UI.RadComboBox
 
     '''<summary>
+    '''advancedMetadataSearchPanel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents advancedMetadataSearchPanel As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+    '''<summary>
     '''enableAdvancedMetadataSearchBtn control.
     '''</summary>
     '''<remarks>

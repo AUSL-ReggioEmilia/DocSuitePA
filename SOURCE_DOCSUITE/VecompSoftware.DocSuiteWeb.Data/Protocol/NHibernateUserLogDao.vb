@@ -6,11 +6,16 @@ Imports VecompSoftware.NHibernateManager.Dao
 Public Class NHibernateUserLogDao
     Inherits BaseNHibernateDao(Of UserLog)
 
+#Region " Fields "
+#End Region
+
+#Region " Properties "
     Protected Overrides ReadOnly Property NHibernateSession As ISession
         Get
             Return NHibernateSessionManager.Instance.GetSessionFrom(SessionFactoryName, False)
         End Get
     End Property
+#End Region
 
     Public Sub New(ByVal sessionFactoryName As String)
         MyBase.New(sessionFactoryName)
@@ -23,7 +28,12 @@ Public Class NHibernateUserLogDao
     Public Function GetByUser(username As String) As UserLog
         criteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Eq("Id", username))
-        Return criteria.UniqueResult(Of UserLog)()
+        Dim userLog As UserLog = criteria.UniqueResult(Of UserLog)()
+        If userLog IsNot Nothing AndAlso Not String.IsNullOrEmpty(userLog.UserProfile) Then
+            userLog.UserProfile = Helpers.Security.EncryptionHelper.DecryptString(userLog.UserProfile, DocSuiteContext.PasswordEncryptionKey)
+        End If
+        NHibernateSession.Evict(userLog)
+        Return userLog
     End Function
 
     Public Function GetUnconfiguredUsers() As IList(Of UserLog)

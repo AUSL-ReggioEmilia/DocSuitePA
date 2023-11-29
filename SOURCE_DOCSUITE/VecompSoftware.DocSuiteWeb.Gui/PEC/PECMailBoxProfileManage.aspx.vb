@@ -2,6 +2,7 @@
 Imports Telerik.Web.UI
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Logging
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Public Class PECMailBoxProfileManage
     Inherits PECBasePage
@@ -32,6 +33,11 @@ Public Class PECMailBoxProfileManage
 #Region " Events "
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
+
         InitializeAjax()
         If Not IsPostBack Then
             Initialize()

@@ -1,11 +1,12 @@
-﻿Imports System.Linq
-Imports System.Collections.Generic
+﻿Imports System.Collections.Generic
 Imports System.Diagnostics
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Services.Biblos
+Imports Newtonsoft.Json
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.DTO.WorkflowsElsa
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI
 Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Services.Logging
 
 Public Class PecMailViewer
     Inherits PECBasePage
@@ -93,6 +94,9 @@ Public Class PecMailViewer
             Dim pecMailViewFolderInfo As New FolderInfo(pecMailView.Id.ToString(), pecMailView.Title)
 
             For Each pecMail As PECMail In CurrentPecMailList
+                If pecMail.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager AndAlso Not String.IsNullOrEmpty(pecMail.MailContent) Then
+                    Dim results As String = New FacadeElsaWebAPI(ProtocolEnv.DocSuiteNextElsaBaseURL).StartPreparePECMailDocumentsWorkflow(pecMail.UniqueId, JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(pecMail.MailContent))
+                End If
                 Dim temp As DocumentInfo = Facade.PECMailFacade.GetDocumentInfo(New BiblosPecMailWrapper(pecMail, ProtocolEnv.CheckSignedEvaluateStream), pecMailView)
                 temp.Caption = String.Format("{0} - {1}", temp.Name, pecMail.MailSubject)
                 pecMailViewFolderInfo.AddChild(temp)

@@ -65,7 +65,7 @@ Namespace My
         
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("http://win2003hv:99/PublishToSharepoint.asmx")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("http://.:99/PublishToSharepoint.asmx")>  _
         Public ReadOnly Property DocSuiteWeb_Gui_SP_PublishToSharepoint() As String
             Get
                 Return CType(Me("DocSuiteWeb_Gui_SP_PublishToSharepoint"),String)

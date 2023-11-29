@@ -27,7 +27,17 @@ Public Class NHibernateResolutionTypeDao
             ' Popolo un oggetto già esistente onde evitare di creare un nuovo dto per 2 property... - FG
             .SetResultTransformer(Transformers.AliasToBean(Of ResolutionType))
         End With
-        Return criteria.List(Of ResolutionType)()
+        Dim result As IList(Of ResolutionType)
+        Using transaction As ITransaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadUncommitted)
+            Try
+                result = criteria.List(Of ResolutionType)()
+                transaction.Commit()
+            Catch ex As Exception
+                transaction.Rollback()
+                Throw
+            End Try
+        End Using
+        Return result
     End Function
 
 End Class

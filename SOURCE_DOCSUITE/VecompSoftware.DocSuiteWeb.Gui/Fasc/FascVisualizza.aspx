@@ -54,6 +54,7 @@
                     fascVisualizza.btnCopyToFascicleId = "<%= btnCopyToFascicle.ClientID %>";
                     fascVisualizza.windowFascicleSearchId = "<%= windowFascicleSearch.ClientID %>";
                     fascVisualizza.currentTenantAOOId = "<%= CurrentTenant.TenantAOO.UniqueId %>";
+                    fascVisualizza.hasDgrooveSigner = "<%= HasDgrooveSigner %>";
                     fascVisualizza.initialize();
                 });
             });

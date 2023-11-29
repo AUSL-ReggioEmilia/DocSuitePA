@@ -35,15 +35,16 @@ Public Class ContainerPrint
 #End Region
 
 #Region "Creazione Righe"
-    Private Sub CreaRigaContenitore(ByRef tbl As DSTable, ByVal text As String, ByVal isActive As Integer)
+    Private Sub CreaRigaContenitore(ByRef tbl As DSTable, ByVal text As String, ByVal isActive As Boolean)
         Dim cellStyle As DSTableCellStyle = New DSTableCellStyle()
+
         'crea riga
-        Select Case isActive
-            Case 0
-                tbl.CreateEmptyRow("Prnt-Grigio")
-            Case Else
-                tbl.CreateEmptyRow("Prnt-Tabella")
-        End Select
+        If isActive Then
+            tbl.CreateEmptyRow("Prnt-Tabella")
+        Else
+            tbl.CreateEmptyRow("Prnt-Grigio")
+        End If
+
         'crea cella
         tbl.CurrentRow.CreateEmpytCell()
         tbl.CurrentRow.CurrentCell.Text = text

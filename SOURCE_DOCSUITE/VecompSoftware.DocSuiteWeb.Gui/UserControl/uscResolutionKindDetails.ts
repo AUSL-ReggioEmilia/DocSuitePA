@@ -7,10 +7,15 @@ import ResolutionKindModel = require('App/Models/Resolutions/ResolutionKindModel
 
 class UscResolutionKindDetails {
     lblStatusId: string;
+    lblAmountId: string;
     pnlInformationsId: string;
 
     private labelStatusControl(): JQuery {
         return $("#".concat(this.lblStatusId));
+    }
+
+    private labelAmountControl(): JQuery {
+        return $("#".concat(this.lblAmountId));
     }
 
     private _serviceConfigurations: ServiceConfiguration[];
@@ -37,6 +42,7 @@ class UscResolutionKindDetails {
         }
 
         this.labelStatusControl().html((resolutionKind.IsActive) ? "Attivo" : "Disattivo");
+        this.labelAmountControl().html((resolutionKind.AmountEnabled) ? "Abilitato" : "Disabilitato");
     }
 }
 export = UscResolutionKindDetails;

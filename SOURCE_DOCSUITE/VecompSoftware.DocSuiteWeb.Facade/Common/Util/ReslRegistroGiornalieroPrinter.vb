@@ -34,6 +34,7 @@ Public Class ReslRegistroGiornalieroPrinter
         End If
 
         Dim report As New ReportViewer()
+        report.LocalReport.SetBasePermissionsForSandboxAppDomain(New System.Security.PermissionSet(System.Security.Permissions.PermissionState.Unrestricted))
         report.LocalReport.ReportPath = reportTemplate.FullName
         report.LocalReport.DataSources.Add(New ReportDataSource("RegistroGiornalieroDataSet", resolutionList))
 
@@ -110,7 +111,6 @@ Public Class ReslRegistroGiornalieroPrinter
 
         Dim registri As New List(Of RegistroGiornaliero)
 
-        Dim recipientFacade As New RecipientFacade("ReslDB")
         Dim resolutionFacade As New ResolutionFacade()
         Dim number As Boolean
         Select Case True
@@ -139,7 +139,6 @@ Public Class ReslRegistroGiornalieroPrinter
                 ' Proponenti
                 Dim esi As String = String.Empty
                 GetContacts(item.ResolutionContacts, "P", esi)
-                esi &= getRecipientFullName(recipientFacade, item.Id, item.IdProposer, Not String.IsNullOrEmpty(esi))
                 If Not String.IsNullOrEmpty(item.AlternativeProposer) Then
                     esi &= If(Not String.IsNullOrEmpty(esi), "<BR>", "") & item.AlternativeProposer
                 End If
@@ -189,19 +188,6 @@ Public Class ReslRegistroGiornalieroPrinter
 
     End Sub
 
-    Private Shared Function getRecipientFullName(ByRef recipientFacade As RecipientFacade, ByVal idResolution As Integer, ByVal idRecipient As Nullable(Of Short), ByVal br As Boolean) As String
-        Dim sRet As String = String.Empty
-
-        If idRecipient.HasValue Then
-            Dim rec As Recipient = recipientFacade.GetById(idRecipient)
-            If rec IsNot Nothing Then
-                If br Then sRet &= "<BR>"
-                sRet &= rec.FullName
-            End If
-        End If
-
-        Return sRet
-    End Function
 
     Private Shared Function calcolaStato(ByVal iStato As Integer) As String
         Dim s As String = String.Empty

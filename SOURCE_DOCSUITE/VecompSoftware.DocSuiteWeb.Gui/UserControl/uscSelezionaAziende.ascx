@@ -59,7 +59,7 @@
     <telerik:RadButton ID="btnAddCompanyContact" runat="server" ToolTip="Inserimento Nuovo Contatto" Visible="false" Width="22px">
         <Icon PrimaryIconUrl="~/App_Themes/DocSuite2008/imgset16/pencil.png" PrimaryIconWidth="16" PrimaryIconHeight="16" />
     </telerik:RadButton>
-    <asp:Label ID="lblFilterName" Style="margin-left: 25px; vertical-align: middle;" runat="server">Filtra azienda: </asp:Label>
+    <asp:Label ID="lblFilterName" Style="margin-left: 25px; vertical-align: middle;" runat="server">Filtra: </asp:Label>
     <asp:TextBox ID="txtFilterTags" Width="150px" Style="vertical-align: middle;" runat="server" />
     <telerik:RadButton ID="btnSearch" runat="server" Text="Ricerca" />
     <asp:Label ID="lblWarningFilter" runat="server">Inserire almeno 2 caratteri</asp:Label>

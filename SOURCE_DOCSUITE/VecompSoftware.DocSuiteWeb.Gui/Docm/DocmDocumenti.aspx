@@ -89,11 +89,11 @@
                 &nbsp;
                 <asp:ImageButton ID="AddMultipleFile" ImageUrl="../Comm/Images/Files16.gif" runat="server" ToolTip="Inserimento Multiplo" Visible="false" />
                 &nbsp;
-                <asp:ImageButton ID="AddProtocol" ImageUrl="../Comm/Images/DocSuite/Protocollo16.gif" runat="server" ToolTip="Inserimento collegamento al Protocollo" />
+                <asp:ImageButton ID="AddProtocol" ImageUrl="../Comm/Images/DocSuite/Protocollo16.png" runat="server" ToolTip="Inserimento collegamento al Protocollo" />
                 &nbsp;
                 <asp:ImageButton ID="AddFascicle" ImageUrl="../App_Themes/DocSuite2008/imgset16/fascicle_open.png" runat="server" ToolTip="Inserimento collegamento al Fascicolo" />
                 &nbsp;
-                <asp:ImageButton ID="AddResolution" ImageUrl="../Comm/Images/DocSuite/Atti16.gif" runat="server" ToolTip="Inserimento collegamento Atti" />
+                <asp:ImageButton ID="AddResolution" ImageUrl="../Comm/Images/DocSuite/Atti16.png" runat="server" ToolTip="Inserimento collegamento Atti" />
             </td>
         </tr>
         <tr>

@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class CommonSelSettori
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''pnlCerca control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlCerca As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtFiltraSettori control.
     '''</summary>
@@ -39,16 +39,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtFiltraSettori As Global.System.Web.UI.WebControls.TextBox
-    
-    '''<summary>
-    '''lbMultiDomain control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lbMultiDomain As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''btnSearch control.
     '''</summary>
@@ -57,7 +48,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSearch As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''pnlSearchCode control.
     '''</summary>
@@ -66,7 +57,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlSearchCode As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtSearchCode control.
     '''</summary>
@@ -75,7 +66,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtSearchCode As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''btnSearchCode control.
     '''</summary>
@@ -84,7 +75,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSearchCode As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''tr_SearchByUser control.
     '''</summary>
@@ -93,7 +84,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tr_SearchByUser As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''pnlSearchAccount control.
     '''</summary>
@@ -102,7 +93,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlSearchAccount As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblSearchUser control.
     '''</summary>
@@ -111,7 +102,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSearchUser As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''btnSelContactDomain control.
     '''</summary>
@@ -120,7 +111,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSelContactDomain As Global.System.Web.UI.WebControls.ImageButton
-    
+
     '''<summary>
     '''RadWindowManagerSettoriUtenti control.
     '''</summary>
@@ -129,7 +120,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerSettoriUtenti As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowUsers control.
     '''</summary>
@@ -138,7 +129,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowUsers As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''RadTreeSettori control.
     '''</summary>
@@ -147,7 +138,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadTreeSettori As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''btnConferma control.
     '''</summary>
@@ -156,7 +147,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConferma As Global.System.Web.UI.WebControls.Button
-    
+
     '''<summary>
     '''txtIdRole control.
     '''</summary>
@@ -165,7 +156,7 @@ Partial Public Class CommonSelSettori
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtIdRole As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''btnUtenti control.
     '''</summary>

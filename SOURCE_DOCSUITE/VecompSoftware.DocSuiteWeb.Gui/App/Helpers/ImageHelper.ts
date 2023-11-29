@@ -14,6 +14,9 @@ class ImageHelper {
             case "AO": {
                 return "../comm/images/interop/Uo.gif";
             }
+            case "OU": {
+                return "../comm/images/interop/Uo.gif";
+            }
             case "Role": {
                 return "../comm/images/interop/Ruolo.gif";
             }
@@ -30,6 +33,10 @@ class ImageHelper {
                 return "";
             }
         }
+    }
+
+    static getFolderImageUrl(): string {
+        return "../App_Themes/DocSuite2008/imgset16/browse-document.png";
     }
 }
 

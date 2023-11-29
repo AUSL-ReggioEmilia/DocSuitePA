@@ -1,14 +1,10 @@
-﻿Imports System
-Imports System.Linq
-Imports System.Collections.Generic
+﻿Imports System.Linq
 Imports NHibernate
 Imports NHibernate.Criterion
-Imports NHibernate.Transform
 Imports NHibernate.Linq
-Imports System.Text
+Imports NHibernate.Transform
 Imports VecompSoftware.NHibernateManager.Dao
 Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 
 Public Class NHibernateContactDao
     Inherits BaseNHibernateDao(Of Contact)
@@ -55,12 +51,12 @@ Public Class NHibernateContactDao
         NHibernateSession.SessionFactory.Evict(GetType(Contact))
     End Sub
 
-    Public Function GetRootContact(ByVal searchAll As Boolean,
+    Public Function GetRootContact(searchAll As Boolean,
                                    Optional categoryFascicleRightRoles As IList(Of Integer) = Nothing,
                                    Optional excludeParentId As List(Of Integer) = Nothing,
                                    Optional onlyParentId As Integer? = Nothing,
-                                   Optional procedureType As String = Nothing, Optional idRole As Integer? = Nothing,
-                                   Optional currentTenant As Tenant = Nothing) As IList(Of Contact)
+                                   Optional procedureType As String = Nothing,
+                                   Optional idRole As Integer? = Nothing) As IList(Of Contact)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         If String.IsNullOrEmpty(procedureType) Then
@@ -72,7 +68,7 @@ Public Class NHibernateContactDao
         End If
 
         If Not searchAll Then
-            criteria.Add(Restrictions.Eq("IsActive", 1S))
+            criteria.Add(Restrictions.Eq("IsActive", True))
         End If
         If excludeParentId IsNot Nothing AndAlso excludeParentId.Count() > 0 Then
             criteria.Add(Restrictions.Not(Restrictions.In("Id", excludeParentId)))
@@ -92,18 +88,11 @@ Public Class NHibernateContactDao
             criteria.Add(GetSearchContactInCategoryIntersectionRoleCriteriaDisjunction(categoryFascicleRightRoles, procedureType))
         End If
 
-        If currentTenant IsNot Nothing Then
-            If Not String.IsNullOrEmpty(currentTenant.UniqueId.ToString()) Then
-                criteria.CreateAlias("TenantContacts", "TC", SqlCommand.JoinType.InnerJoin)
-                criteria.Add(Restrictions.Eq("TC.IdTenant", currentTenant.UniqueId))
-            End If
-        End If
-
         criteria.AddOrder(Order.Asc("Description"))
         Return criteria.List(Of Contact)()
     End Function
 
-    Public Function GetRoleRootContact(ByVal searchAll As Boolean, Optional excludeParentId As List(Of Integer) = Nothing, Optional onlyParentId As Integer? = Nothing, Optional currentTenant As Tenant = Nothing) As IList(Of Contact)
+    Public Function GetRoleRootContact(ByVal searchAll As Boolean, Optional excludeParentId As List(Of Integer) = Nothing, Optional onlyParentId As Integer? = Nothing) As IList(Of Contact)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         criteria.Add(Restrictions.IsNull("Parent"))
@@ -111,7 +100,7 @@ Public Class NHibernateContactDao
         criteria.Add(Restrictions.IsNotNull("RoleRootContact"))
 
         If Not searchAll Then
-            criteria.Add(Restrictions.Eq("IsActive", 1S))
+            criteria.Add(Restrictions.Eq("IsActive", True))
         End If
 
         If excludeParentId IsNot Nothing AndAlso excludeParentId.Count() > 0 Then
@@ -125,27 +114,20 @@ Public Class NHibernateContactDao
 
         End If
 
-        If currentTenant IsNot Nothing Then
-            If Not String.IsNullOrEmpty(currentTenant.UniqueId.ToString()) Then
-                criteria.CreateAlias("TenantContacts", "TC", SqlCommand.JoinType.InnerJoin)
-                criteria.Add(Restrictions.Eq("TC.IdTenant", currentTenant.UniqueId))
-            End If
-        End If
-
         criteria.AddOrder(Order.Asc("Description"))
 
         Return criteria.List(Of Contact)()
     End Function
 
 
-    Public Function GetRoleRootContact(ByVal sRole As ICollection, ByVal searchAll As Boolean, Optional excludeParentIds As List(Of Integer) = Nothing, Optional onlyParentId As Integer? = Nothing, Optional currentTenant As Tenant = Nothing) As IList(Of Contact)
+    Public Function GetRoleRootContact(ByVal sRole As ICollection, ByVal searchAll As Boolean, Optional excludeParentIds As List(Of Integer) = Nothing, Optional onlyParentId As Integer? = Nothing) As IList(Of Contact)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         criteria.Add(Restrictions.IsNull("Parent"))
         criteria.Add(Restrictions.In("RoleRootContact.Id", sRole))
 
         If Not searchAll Then
-            criteria.Add(Restrictions.Eq("IsActive", 1S))
+            criteria.Add(Restrictions.Eq("IsActive", True))
         End If
 
         If excludeParentIds IsNot Nothing AndAlso excludeParentIds.Count() > 0 Then
@@ -158,14 +140,6 @@ Public Class NHibernateContactDao
         If onlyParentId.HasValue Then
             criteria.Add(Restrictions.Like("FullIncrementalPath", onlyParentId.Value.ToString(), MatchMode.Start))
         End If
-
-        If currentTenant IsNot Nothing Then
-            If Not String.IsNullOrEmpty(currentTenant.UniqueId.ToString()) Then
-                criteria.CreateAlias("TenantContacts", "TC", SqlCommand.JoinType.InnerJoin)
-                criteria.Add(Restrictions.Eq("TC.IdTenant", currentTenant.UniqueId))
-            End If
-        End If
-
         criteria.AddOrder(Order.Asc("Description"))
 
         Return criteria.List(Of Contact)()
@@ -178,14 +152,13 @@ Public Class NHibernateContactDao
                                          Optional contactListId As Guid? = Nothing,
                                          Optional procedureType As String = Nothing,
                                          Optional idRole As Integer? = Nothing,
-                                         Optional roleType As String = Nothing,
-                                         Optional currentTenant As Tenant = Nothing) As IList(Of Contact)
+                                         Optional roleType As String = Nothing) As IList(Of Contact)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         criteria.CreateAlias("Parent", "p", SqlCommand.JoinType.LeftOuterJoin)
         criteria.Add(Restrictions.Eq("p.Id", parentId))
 
-        If Not searchAll Then criteria.Add(Restrictions.Eq("IsActive", 1S))
+        If Not searchAll Then criteria.Add(Restrictions.Eq("IsActive", True))
 
         If excludeParentIds IsNot Nothing AndAlso excludeParentIds.Count() > 0 Then
             criteria.Add(Restrictions.Not(Restrictions.In("Id", excludeParentIds)))
@@ -210,14 +183,6 @@ Public Class NHibernateContactDao
         If roleType IsNot Nothing AndAlso roleType.Equals(RoleUserType.RP.ToString()) Then
             criteria.Add(Subqueries.PropertyIn("SearchCode", GetByRoleUserRP(idRole, roleType)))
         End If
-
-        If currentTenant IsNot Nothing Then
-            If Not String.IsNullOrEmpty(currentTenant.UniqueId.ToString()) Then
-                criteria.CreateAlias("TenantContacts", "TC", SqlCommand.JoinType.InnerJoin)
-                criteria.Add(Restrictions.Eq("TC.IdTenant", currentTenant.UniqueId))
-            End If
-        End If
-
         criteria.AddOrder(Order.Asc("Description"))
 
         criteria.SetFetchMode("Children", FetchMode.Eager)
@@ -255,13 +220,13 @@ Public Class NHibernateContactDao
         disj.Add(Restrictions.In("CertifiedMail", eMailList))
         disj.Add(Restrictions.In("EmailAddress", eMailList))
         criteria.Add(disj)
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
 
         Return criteria.List(Of Contact)()
     End Function
 
-    Public Function GetContactByDescription(ByVal description As String, ByVal searchType As DescriptionSearchType, ByVal searchAll As Boolean,
-                                            ByVal contactRootRoles As List(Of Integer),
+    Public Function GetContactByDescription(description As String, searchType As DescriptionSearchType, ByVal searchAll As Boolean,
+                                            contactRootRoles As List(Of Integer),
                                             Optional categoryFascicleRightRoles As IList(Of Integer) = Nothing,
                                             Optional ByVal rootFullIncrementalPath As String = "",
                                             Optional exludeParentId As List(Of Integer) = Nothing,
@@ -269,8 +234,7 @@ Public Class NHibernateContactDao
                                             Optional contactListId As Guid? = Nothing,
                                             Optional procedureType As String = Nothing,
                                             Optional idRole As Integer? = Nothing,
-                                            Optional roleType As String = Nothing,
-                                            Optional currentTenant As Tenant = Nothing) As IList(Of Contact)
+                                            Optional roleType As String = Nothing) As IList(Of Contact)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         'descrizione da cercare
@@ -317,7 +281,7 @@ Public Class NHibernateContactDao
         End If
 
         If Not searchAll Then
-            criteria.Add(Restrictions.Eq("IsActive", 1S))
+            criteria.Add(Restrictions.Eq("IsActive", True))
         End If
 
         If DocSuiteContext.Current.ProtocolEnv.ContactListsEnabled AndAlso contactListId IsNot Nothing AndAlso Not contactListId.Equals(Guid.Empty) Then
@@ -331,13 +295,6 @@ Public Class NHibernateContactDao
 
         If roleType IsNot Nothing AndAlso roleType.Equals(RoleUserType.RP.ToString()) Then
             criteria.Add(Subqueries.PropertyIn("SearchCode", GetByRoleUserRP(idRole, roleType)))
-        End If
-
-        If currentTenant IsNot Nothing Then
-            If Not String.IsNullOrEmpty(currentTenant.UniqueId.ToString()) Then
-                criteria.CreateAlias("TenantContacts", "TC", SqlCommand.JoinType.InnerJoin)
-                criteria.Add(Restrictions.Eq("TC.IdTenant", currentTenant.UniqueId))
-            End If
         End If
 
         criteria.AddOrder(Order.Asc("Description"))
@@ -365,7 +322,7 @@ Public Class NHibernateContactDao
         Dim criteria As ICriteria = Me.NHibernateSession.CreateCriteria(Of Contact)()
         criteria.Add(Restrictions.Eq("Description", description))
         criteria.Add(Restrictions.Eq("ContactType.Id", contactType))
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
+        criteria.Add(Restrictions.Eq("IsActive", True))
 
         If parentId.HasValue Then
             If parentId.Value.Equals(0) Then
@@ -407,22 +364,18 @@ Public Class NHibernateContactDao
 
         Return criteria.List(Of Contact)()
     End Function
-    Public Function GetContactBySearchCode(ByVal searchCode As String, ByVal isActive As Short,
+    Public Function GetContactBySearchCode(searchCode As String, isActive As Boolean,
                                            Optional categoryFascicleRightRoles As IList(Of Integer) = Nothing,
                                            Optional excludeParentId As List(Of Integer) = Nothing,
                                            Optional onlyParentId As Integer? = Nothing,
                                            Optional contactListId As Guid? = Nothing,
                                            Optional procedureType As String = Nothing,
                                            Optional idRole As Integer? = Nothing,
-                                           Optional roleType As String = Nothing,
-                                           Optional currentTenantId? As Guid = Nothing) As IList(Of Contact)
+                                           Optional roleType As String = Nothing) As IList(Of Contact)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         criteria.Add(Restrictions.Eq("SearchCode", searchCode))
-
-        If isActive <> -1 Then
-            criteria.Add(Restrictions.Eq("IsActive", isActive))
-        End If
+        criteria.Add(Restrictions.Eq("IsActive", isActive))
 
         If excludeParentId IsNot Nothing AndAlso excludeParentId.Count() > 0 Then
             criteria.Add(Restrictions.Not(Restrictions.In("Id", excludeParentId)))
@@ -447,20 +400,11 @@ Public Class NHibernateContactDao
             criteria.CreateAlias("ContactLists", "CL")
             criteria.Add(Restrictions.Eq("CL.Id", contactListId))
         End If
-
-        If currentTenantId IsNot Nothing Then
-            If Not String.IsNullOrEmpty(currentTenantId.ToString()) Then
-                criteria.CreateAlias("TenantContacts", "TC", SqlCommand.JoinType.InnerJoin)
-                criteria.Add(Restrictions.Eq("TC.IdTenant", currentTenantId))
-            End If
-        End If
-
         criteria.AddOrder(Order.Asc("Description"))
-
         Return criteria.List(Of Contact)()
     End Function
 
-    Public Function GetContactByIncrementalFather(ByVal incrementalFather As Integer, Optional ByVal isActive As Boolean = False) As IList(Of Contact)
+    Public Function GetContactByIncrementalFather(incrementalFather As Integer, Optional ByVal isActive As Boolean = False) As IList(Of Contact)
         Dim sqlQuery As String = "SELECT {c.*} from Contact {c}" &
                                  " WHERE ( c.FullIncrementalPath LIKE (" &
                                  "  (SELECT c.FullIncrementalPath" &
@@ -529,16 +473,11 @@ Public Class NHibernateContactDao
         'recupera tutti i padri dei contatti passati in lista
         criteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.In("Id", contactList))
-        criteria.Add(Restrictions.Eq("IsActive", 1S))
-        Dim disj As New Disjunction()
-        disj.Add(Restrictions.And(Restrictions.IsNull("ActiveFrom"), Restrictions.IsNull("ActiveTo")))
-        disj.Add(Restrictions.And(Restrictions.Ge("ActiveTo", Date.Now), Restrictions.Le("ActiveFrom", DateTime.Now)))
-        criteria.Add(disj)
-
+        criteria.Add(Restrictions.Eq("IsActive", True))
         Return criteria.List(Of Contact)()
     End Function
 
-    Public Function GetContacts(ByVal code As String, ByVal contactType As Char?, ByVal isActive As Short?) As IList(Of Contact)
+    Public Function GetContacts(ByVal code As String, ByVal contactType As Char?, ByVal isActive As Boolean?) As IList(Of Contact)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         If Not String.IsNullOrEmpty(code) Then
@@ -546,9 +485,7 @@ Public Class NHibernateContactDao
         End If
 
         If isActive.HasValue Then
-            If isActive.Value <> -1 Then
-                criteria.Add(Restrictions.Eq("IsActive", isActive.Value))
-            End If
+            criteria.Add(Restrictions.Eq("IsActive", isActive.Value))
         End If
 
         If contactType.HasValue Then
@@ -599,7 +536,7 @@ Public Class NHibernateContactDao
         End If
 
         If Not showAll Then
-            criteria.Add(Restrictions.Eq("IsActive", 1S))
+            criteria.Add(Restrictions.Eq("IsActive", True))
         End If
 
         Return criteria.List(Of Contact)()
@@ -607,7 +544,7 @@ Public Class NHibernateContactDao
 
     Private Function GetByCategoryIdAndProcedureType(categoryFascicleRightRoles As IList(Of Integer), type As String) As DetachedCriteria
         Dim detachActiveRoleCriteria As DetachedCriteria = DetachedCriteria.For(Of Role)("R")
-        detachActiveRoleCriteria.Add(Restrictions.Eq("R.IsActive", Convert.ToInt16(True)))
+        detachActiveRoleCriteria.Add(Restrictions.Eq("R.IsActive", True))
         If categoryFascicleRightRoles IsNot Nothing AndAlso categoryFascicleRightRoles.Any() Then
             detachActiveRoleCriteria.Add(Restrictions.In("R.Id", categoryFascicleRightRoles.ToArray()))
         End If
@@ -644,7 +581,7 @@ Public Class NHibernateContactDao
         Dim detachRoleUserCriteria As DetachedCriteria = DetachedCriteria.For(Of RoleUser)("RU")
         detachRoleUserCriteria.CreateAlias("RU.Role", "Role", SqlCommand.JoinType.InnerJoin)
         detachRoleUserCriteria.CreateAlias("Role.RoleGroups", "RoleGroups", SqlCommand.JoinType.InnerJoin)
-        detachRoleUserCriteria.Add(Restrictions.Eq("Role.IsActive", Convert.ToInt16(True)))
+        detachRoleUserCriteria.Add(Restrictions.Eq("Role.IsActive", True))
 
         If idRole IsNot Nothing Then
             detachRoleUserCriteria.Add(Restrictions.Eq("Role.Id", idRole.Value))
@@ -657,12 +594,10 @@ Public Class NHibernateContactDao
         Return detachRoleUserCriteria.SetProjection(Projections.Property("RU.Account"))
     End Function
 
-    Public Function GetContactByRole(ByVal searchCode As String, ByVal isActive As Short, Optional parentId As Integer? = Nothing, Optional idRole As Integer? = Nothing) As IList(Of Contact)
+    Public Function GetContactByRole(ByVal searchCode As String, ByVal isActive As Boolean, Optional parentId As Integer? = Nothing, Optional idRole As Integer? = Nothing) As IList(Of Contact)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
-        If isActive <> -1 Then
-            criteria.Add(Restrictions.Eq("IsActive", isActive))
-        End If
+        criteria.Add(Restrictions.Eq("IsActive", isActive))
 
         If parentId.HasValue AndAlso parentId <> 0 Then
             criteria.Add(Restrictions.Like("FullIncrementalPath", String.Format("{0}|", parentId.Value.ToString()), MatchMode.Start))
@@ -671,7 +606,7 @@ Public Class NHibernateContactDao
         Dim detachRoleUserCriteria As DetachedCriteria = DetachedCriteria.For(Of RoleUser)("RU")
         detachRoleUserCriteria.CreateAlias("RU.Role", "Role", SqlCommand.JoinType.InnerJoin)
         detachRoleUserCriteria.CreateAlias("Role.RoleGroups", "RoleGroups", SqlCommand.JoinType.InnerJoin)
-        detachRoleUserCriteria.Add(Restrictions.Eq("Role.IsActive", Convert.ToInt16(True)))
+        detachRoleUserCriteria.Add(Restrictions.Eq("Role.IsActive", True))
 
         If idRole IsNot Nothing Then
             detachRoleUserCriteria.Add(Restrictions.Eq("Role.Id", idRole.Value))
@@ -701,21 +636,21 @@ Public Class NHibernateContactDao
         NHibernateSession.Query(Of Contact)() _
                         .Where(Function(x) x.Id = contact.Id) _
                         .UpdateBuilder() _
-                        .Set(Function(p) p.IsActive, Convert.ToInt16(isActive)) _
+                        .Set(Function(p) p.IsActive, isActive) _
                         .Update()
 
         If recursiveChildren Then
             NHibernateSession.Query(Of Contact)() _
                         .Where(Function(x) x.FullIncrementalPath.StartsWith(String.Concat(contact.FullIncrementalPath, "|"))) _
                         .UpdateBuilder() _
-                        .Set(Function(p) p.IsActive, Convert.ToInt16(isActive)) _
+                        .Set(Function(p) p.IsActive, isActive) _
                         .Update()
         End If
     End Sub
 
     Public Function GetContactByIncrementalFatherAndSearchCode(ByVal incrementalFather As Integer, ByVal searchCode As String, ByVal isActive As Boolean) As Contact
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.Eq("IsActive", If(isActive, 1S, 0S)))
+        criteria.Add(Restrictions.Eq("IsActive", isActive))
         If Not String.IsNullOrEmpty(searchCode) Then
             criteria.Add(Restrictions.Eq("SearchCode", searchCode))
         End If

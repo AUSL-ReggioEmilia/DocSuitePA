@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="Gestisci attività" Language="vb" AutoEventWireup="false" MasterPageFile="~/MasterPages/DocSuite2008.Master" CodeBehind="WorkflowActivityManage.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.WorkflowActivityManage" %>
 
 <%@ Import Namespace="VecompSoftware.DocSuiteWeb.Gui" %>
-<%@ Register Src="../UserControl/uscFascicleSearch.ascx" TagName="uscFascicleSearch" TagPrefix="uc1" %>
+<%@ Register Src="~/UserControl/uscFascicleSearch.ascx" TagName="uscFascicleSearch" TagPrefix="uc1" %>
 <%@ Register Src="~/UserControl/uscCategoryRest.ascx" TagName="uscCategoryRest" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="cphHeader" runat="server">
@@ -36,7 +36,7 @@
 
                     workflowActivityManage.panelDocumentUnitSelectId = "<%= panelDocumentUnitSelect.ClientID %>";
                     workflowActivityManage.panelManageId = "<%= panelManage.ClientID %>";
-
+                    workflowActivityManage.panelDocumentId = "<%= panelPEC.ClientID %>";
                     workflowActivityManage.initialize();
 
                     new ResizeSensor($(".details-template")[0], function () {
@@ -145,7 +145,7 @@
                                             <telerik:LayoutRow HtmlTag="Div">
                                                 <Columns>
                                                     <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
-                                                        <b>Oggetto:</b>
+                                                        <b>Note:</b>
                                                     </telerik:LayoutColumn>
                                                     <telerik:LayoutColumn Span="6" CssClass="t-col-left-padding">
                                                         <asp:Label ID="lblSubject" runat="server"></asp:Label>
@@ -174,7 +174,7 @@
                                                         </div>
                                                         <div class="dsw-panel-content" style="margin-left:40px">
                                                             <asp:RadioButtonList ID="rblDocumentUnit" runat="server" AutoPostBack="false">
-                                                                <asp:ListItem Text="Collaborazione" Value="Collaborazione" Selected="True"> </asp:ListItem>
+                                                                <asp:ListItem Text="Collaborazione" Value="Collaborazione" > </asp:ListItem>
                                                                 <asp:ListItem Text="Protocollo" Value="Protocollo"> </asp:ListItem>
                                                                 <asp:ListItem Text="Fascicolo" Value="Fascicolo"> </asp:ListItem>
                                                                 <asp:ListItem Text="Archivi" Value="Archivi"> </asp:ListItem>

@@ -27,6 +27,7 @@ import UscErrorNotification = require('UserControl/uscErrorNotification');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import WorkflowActivityLogService = require('App/Services/Workflows/WorkflowActivityLogService');
 import UscUploadDocumentRest = require('UserControl/uscUploadDocumentRest');
+import WorkflowArgumentModel = require('App/Models/Workflows/WorkflowArgumentModel');
 
 class WorkflowActivitySummary {
     ddlNameWorkflowId: string;
@@ -50,6 +51,7 @@ class WorkflowActivitySummary {
     tlrDateId: string;
     managerWindowsId: string;
     uscUploadDocumentiId: string;
+    uscAddDocumentsRestId: string;
     bindDocument: string;
 
     mainContainerId: string;
@@ -62,6 +64,7 @@ class WorkflowActivitySummary {
     ajaxLoadingPanelId: string;
 
     documentSection: HTMLElement;
+    addDocumentsSection: HTMLElement;
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _ddlNameWorkflowId: Telerik.Web.UI.RadComboBox;
@@ -82,6 +85,7 @@ class WorkflowActivitySummary {
     private _btnCompleteActivity: Telerik.Web.UI.RadButton;
     private _btnManageActivity: Telerik.Web.UI.RadButton;
     private _logTree: Telerik.Web.UI.RadTreeView;
+    private _uscAddDocumentsRest: UscUploadDocumentRest;
 
     private _activityDateId: JQuery;
     private _tlrDateId: JQuery;
@@ -168,8 +172,8 @@ class WorkflowActivitySummary {
         this._tlrDateId = <JQuery>$(`#${this.tlrDateId}`);
 
         this.documentSection.hidden = true;
+        this._uscAddDocumentsRest = <UscUploadDocumentRest>$("#".concat(this.uscAddDocumentsRestId)).data();
 
-               
         this.createNode("Attività gestita in", () => this.loadWorkflowActivitiesDoneLogCount(uniqueId, WorkflowStatus.Done));
         this.loadData(uniqueId, WorkflowStatus.Done);
     }
@@ -212,8 +216,17 @@ class WorkflowActivitySummary {
             }
 
             let isCurrentUser = this.workflowActivity.WorkflowAuthorizations.filter(x => x.Account == this.currentUser).length == 1;
-            let isManageable = <WorkflowStatus>WorkflowStatus[this.workflowActivity.Status.toString()] == WorkflowStatus.Todo || <WorkflowStatus>WorkflowStatus[this.workflowActivity.Status.toString()] == WorkflowStatus.Progress;
-            this._btnManageActivity.set_visible(isCurrentUser && isManageable && !!this.workflowActivity.IdArchiveChain);
+            let workflowEndReferenceModelJson = this.workflowActivity.WorkflowProperties.filter(x => x.Name === WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL)[0];
+            let isManageable: boolean = false;
+            let workflowEndReferenceModel: WorkflowArgumentModel = null;
+            if (workflowEndReferenceModelJson && workflowEndReferenceModelJson.ValueString) {
+                workflowEndReferenceModel = JSON.parse(workflowEndReferenceModelJson.ValueString);
+                if (workflowEndReferenceModel) {
+                    isManageable = true;
+                }
+            }
+
+            this._btnManageActivity.set_visible(isCurrentUser && isManageable && this._btnDocuments.get_enabled());
 
             var list = document.getElementById(`${this.tblFilterStateId}`);
             var inputs = list.getElementsByTagName("input");
@@ -292,7 +305,8 @@ class WorkflowActivitySummary {
                 this._rtbParereId.set_textBoxValue(workflowParere.ValueString);
                 this._lblActivityDate.html(moment(workflowParere.RegistrationDate).format("DD/MM/YYYY"));
                 this._rtbParereId.disable();
-                this._btnCompleteActivity.set_enabled(false);
+                this._btnCompleteActivity.set_enabled(WorkflowStatus[this.workflowActivity.Status.toString()] !== WorkflowStatus.Done);
+                this.addDocumentsSection.hidden = true;
             }
             else {
                 this._rtbParereId.enable();
@@ -337,14 +351,14 @@ class WorkflowActivitySummary {
             if (!data) return;
             this.workflowActivityDoneLog = data;
 
-                for (let wfaDoneLog of this.workflowActivityDoneLog.WorkflowActivityLogs) {
-                    let wtfDoneLogName: string = `Attività gestita da ${wfaDoneLog.RegistrationUser} in ${moment(wfaDoneLog.RegistrationDate).format("DD/MM/YYYY")} in ${wfaDoneLog.LogDescription}`;
-                    let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-                    node.set_text(wtfDoneLogName);
-                    this._logTree.get_nodes().getNode(0).set_expanded(true);
-                    this._logTree.get_nodes().getNode(0).get_nodes().add(node);
+            for (let wfaDoneLog of this.workflowActivityDoneLog.WorkflowActivityLogs) {
+                let wtfDoneLogName: string = `Attività gestita da ${wfaDoneLog.RegistrationUser} in ${moment(wfaDoneLog.RegistrationDate).format("DD/MM/YYYY")} in ${wfaDoneLog.LogDescription}`;
+                let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
+                node.set_text(wtfDoneLogName);
+                this._logTree.get_nodes().getNode(0).set_expanded(true);
+                this._logTree.get_nodes().getNode(0).get_nodes().add(node);
 
-                    this._logTree.commitChanges();
+                this._logTree.commitChanges();
             }
 
         });
@@ -460,95 +474,87 @@ class WorkflowActivitySummary {
             return;
         }
         this._loadingPanel.show(this.mainContainerId);
-        let workflowNotify: WorkflowNotifyModel = <WorkflowNotifyModel>{};
+        const workflowNotify: WorkflowNotifyModel = {} as WorkflowNotifyModel;
         workflowNotify.WorkflowName = this.workflowActivity.Name;
         workflowNotify.WorkflowActivityId = this.workflowActivity.UniqueId;
         workflowNotify.InstanceId = this.workflowActivity.WorkflowInstance.UniqueId;
-
+        workflowNotify.OutputArguments = {};        
 
         let dsw_e_ActivityEndMotivation: WorkflowPropertyModel = <WorkflowPropertyModel>{};
         dsw_e_ActivityEndMotivation.Name = WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_MOTIVATION;
         dsw_e_ActivityEndMotivation.PropertyType = ArgumentType.PropertyString;
         dsw_e_ActivityEndMotivation.ValueString = this._rtbParereId.get_textBoxValue();
+        workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_MOTIVATION] = dsw_e_ActivityEndMotivation;
 
+        let sessionDocuments: Array<DocumentModel> = this.getUscDocument();
+        const workflowDocumentModel: WorkflowDocumentModel = <WorkflowDocumentModel>{}
+        workflowDocumentModel.Documents = [];
 
-        let requestOpinion: RequestOpinionModel = <RequestOpinionModel>{};
-        let txt = <Telerik.Web.UI.RadTextBox>$find(this.rtbParereId);
-        requestOpinion.opinion = txt.get_textBoxValue();
-
-        let requertorNameJson: string = this.workflowActivity.WorkflowProperties.filter(x => x.Name === WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER)[0].ValueString;
-        requestOpinion.requestor = `[${requertorNameJson}]`;
-
-        let keys = Object.keys(sessionStorage);
-        let documentKey: string;
-        let documentFileName: string;
-        let documentStream: string;
-
-        for (let i of keys) {
-            if (i.startsWith(this.bindDocument)) {
-                documentKey = i;
-                documentFileName = JSON.parse(sessionStorage.getItem(documentKey))[0].FileName;
-                documentStream = JSON.parse(sessionStorage.getItem(documentKey))[0].ContentStream;
+        if (sessionDocuments && sessionDocuments.length > 0) {
+            for (let i = 0; i < sessionDocuments.length; i++) {
+                const documentModel: DocumentModel = <DocumentModel>{};
+                documentModel.FileName = sessionDocuments[i].FileName;
+                documentModel.ContentStream = sessionDocuments[i].ContentStream;
+                const encodedDocument: any = {
+                    Key: ChainType[ChainType.Miscellanea],
+                    Value: documentModel
+                }
+                workflowDocumentModel.Documents.push(encodedDocument);
             }
         }
 
-        if (documentFileName) {
-            requestOpinion.document = documentFileName;
-            requestOpinion.b64ContentStream = documentStream;
-        } else {
-            requestOpinion.document = "";
-            requestOpinion.b64ContentStream = "";
-        }
+        const encodedDocuments: string = JSON.stringify(workflowDocumentModel);
+        const documentReferenceModel: WorkflowReferenceModel = <WorkflowReferenceModel>{};
+        documentReferenceModel.ReferenceType = 3;
+        documentReferenceModel.ReferenceModel = encodedDocuments;
+        const encodedDocumentReferenceModel: string = JSON.stringify(documentReferenceModel);
+        const propActivityEndReferenceModel: WorkflowArgumentModel = {} as WorkflowArgumentModel;
+        propActivityEndReferenceModel.Name = WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL;
+        propActivityEndReferenceModel.PropertyType = ArgumentType.Json;
+        propActivityEndReferenceModel.ValueString = encodedDocumentReferenceModel;
+        workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL] = propActivityEndReferenceModel;
 
-        let documentModel: DocumentModel = <DocumentModel>{};
-        documentModel.FileName = requestOpinion.document;
-        documentModel.ContentStream = requestOpinion.b64ContentStream;
+        const requestorUsername: string = this.workflowActivity.WorkflowProperties.filter(x => x.Name === WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER)[0].ValueString;
+        const workflowAccountModels: Array<WorkflowAccountModel> = [];
+        workflowAccountModels.push(JSON.parse(requestorUsername));
+        const dswpAccounts = {} as WorkflowArgumentModel;
+        dswpAccounts.Name = WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS;
+        dswpAccounts.PropertyType = ArgumentType.Json;
+        dswpAccounts.ValueString = JSON.stringify(workflowAccountModels);
+        workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS] = dswpAccounts;
 
-        let wrappedDocumentModel: object = {
-            Key: ChainType[ChainType.Miscellanea],
-            Value: documentModel
+        //DSW_PROPERTY_PROPOSER_USER
+        const workflowProposerAccountModel: any = {
+            AccountName: this.currentUser,
+            DisplayName: this.currentUser,
+            Required: false
         };
 
-        let workflowDocumentModel: WorkflowDocumentModel = <WorkflowDocumentModel>{};
-        workflowDocumentModel.Documents = [];
-        workflowDocumentModel.Documents.push(wrappedDocumentModel);
+        const dswpProposerUser = {} as WorkflowArgumentModel;
+        dswpProposerUser.Name = WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER;
+        dswpProposerUser.PropertyType = ArgumentType.Json;
+        dswpProposerUser.ValueString = JSON.stringify(workflowProposerAccountModel);
+        workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER] = dswpProposerUser;
 
-        let encodedDocuments: string = JSON.stringify(workflowDocumentModel);
+        //DSW_FIELD_IDENTITY
+        const identityContextModel: any = {
+            User: this.currentUser
+        };
+        const dswpIdentityContext = {} as WorkflowArgumentModel;
+        dswpIdentityContext.Name = WorkflowPropertyHelper.DSW_FIELD_IDENTITY;
+        dswpIdentityContext.PropertyType = ArgumentType.Json;
+        dswpIdentityContext.ValueString = JSON.stringify(identityContextModel);
+        workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_IDENTITY] = dswpIdentityContext;
 
-        let documentReferenceModel: WorkflowReferenceModel = <WorkflowReferenceModel>{};
-        documentReferenceModel.ReferenceType = Environment.Document;
-        documentReferenceModel.ReferenceModel = encodedDocuments;
 
-        let dsw_e_ActivityEndReferenceModel: WorkflowPropertyModel = <WorkflowPropertyModel>{};
-
-        let documents: any = JSON.parse(documentReferenceModel.ReferenceModel);
-        if (documents.Documents[0].Value.FileName.length != 0) {
-            dsw_e_ActivityEndReferenceModel.Name = WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL;
-            dsw_e_ActivityEndReferenceModel.PropertyType = ArgumentType.Json;
-            dsw_e_ActivityEndReferenceModel.ValueString = JSON.stringify(documentReferenceModel);
-        }
-
-        let dsw_p_Accounts: WorkflowPropertyModel = <WorkflowPropertyModel>{};
-        dsw_p_Accounts.Name = WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS;
-        dsw_p_Accounts.PropertyType = ArgumentType.Json;
-        dsw_p_Accounts.ValueString = requestOpinion.requestor;
-
-        let dsw_p_Subject: WorkflowPropertyModel = <WorkflowPropertyModel>{};
-        dsw_p_Subject.Name = WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT;
-        dsw_p_Subject.PropertyType = ArgumentType.PropertyString;
-        dsw_p_Subject.ValueString = dsw_e_ActivityEndMotivation.ValueString;
-        
-        workflowNotify.OutputArguments = {};
-        workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_MOTIVATION] = dsw_e_ActivityEndMotivation;
-        if (documents.Documents[0].Value.FileName.length != 0) {
-            workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL] = dsw_e_ActivityEndReferenceModel;
-        }
-        workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS] = dsw_p_Accounts;
-        workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT] = dsw_p_Subject;
+        const propManualComplete: WorkflowArgumentModel = {} as WorkflowArgumentModel;
+        propManualComplete.Name = WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE;
+        propManualComplete.PropertyType = ArgumentType.PropertyBoolean;
+        propManualComplete.ValueBoolean = true;
+        workflowNotify.OutputArguments[WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE] = propManualComplete;
 
         this._workflowNotifyService.notifyWorkflow(workflowNotify,
             (data: any) => {
-                alert("Attività completata con successo");
                 this._loadingPanel.hide(this.mainContainerId);
                 window.location.href = "../User/UserWorkflow.aspx?Type=Comm";
             }, this._handleException);
@@ -557,7 +563,21 @@ class WorkflowActivitySummary {
     btnManageActivity_OnClicked = (sender: Telerik.Web.UI.RadButton, eventArgs: Telerik.Web.UI.ButtonEventArgs) => {
         window.location.href = `../Workflows/WorkflowActivityManage.aspx?&IdWorkflowActivity=${this.workflowActivity.UniqueId}&IdChain=${this.workflowActivity.IdArchiveChain}`;
     }
-
+    getUscDocument = () => {
+        let workflowDocuments: Array<DocumentModel> = new Array<DocumentModel>();
+        if (!jQuery.isEmptyObject(this._uscAddDocumentsRest)) {
+            let source: any = JSON.parse(this._uscAddDocumentsRest.getDocument());
+            if (source != null) {
+                for (let s of source) {
+                    let document: DocumentModel = <DocumentModel>{};
+                    document.FileName = s.FileName;
+                    document.ContentStream = s.ContentStream;
+                    workflowDocuments.push(document);
+                }
+            }
+        }
+        return workflowDocuments;
+    }
 }
 
 export = WorkflowActivitySummary;

@@ -94,6 +94,12 @@ namespace VecompSoftware.WebAPIManager.Dao
             Context.SendRequest(_clientConfiguration, _originalConfiguration, entity, externalHandlerInitialize: _customAuthFunc);
         }
 
+        public void Save(ref T entity, string actionType)
+        {
+            SetEntityREST();
+            Context.SendRequest(_clientConfiguration, _originalConfiguration, entity, actionType, externalHandlerInitialize: _customAuthFunc);
+        }
+
         public void Update(ref T entity)
         {
             SetEntityREST();

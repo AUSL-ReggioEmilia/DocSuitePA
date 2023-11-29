@@ -90,7 +90,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
             Domain = string.Empty;
             DateFrom = null;
             DateTo = null;
-            IsSecurityUserEnabled = false;
             IncludeThreshold = false;
             FascicolableThresholdDate = null;
             ExcludeLinked = false;

@@ -23,6 +23,8 @@ class DossierGridViewModelMapper implements IMapper<DossierGridViewModel>{
         toMap.MasterRoleName = (!!source.Roles && !!source.Roles[0] && !!source.Roles[0].Role) ? source.Roles[0].Role.Name : null;
         toMap.ImageUrl = source.EndDate ? "../Docm/Images/DocmChiusura.gif" : "../Docm/Images/Pratica.gif";
         toMap.TooltipImageUrl = source.EndDate ? "Dossier chiuso" : "Dossier aperto";
+        toMap.MetadataDesigner = source.MetadataDesigner;
+        toMap.MetadataValues = source.MetadataValues;
 
         return toMap;
     }

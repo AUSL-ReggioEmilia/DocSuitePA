@@ -6,6 +6,7 @@ Imports VecompSoftware.NHibernateManager
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports NHibernate
 Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports System.Text
 
 <ComponentModel.DataObject()>
 Public Class ContactFacade
@@ -58,29 +59,34 @@ Public Class ContactFacade
             CalculateFullIncremental(obj.Children)
         Next
     End Sub
-    Public Function GetRootContact(ByVal searchAll As Boolean, ByVal onlyMyRoles As Boolean, editMode As Boolean,
+    Public Function GetRootContact(searchAll As Boolean,
+                                   onlyMyRoles As Boolean,
+                                   editMode As Boolean,
+                                   idTenantAOO As Guid,
                                    Optional categoryFascicleRightRoles As IList(Of Integer) = Nothing,
                                    Optional excludeParentId As List(Of Integer) = Nothing,
-                                   Optional onlyParentId As Integer? = Nothing, Optional excludeRoleRoot As Boolean? = Nothing, Optional procedureType As String = Nothing,
-                                   Optional idRole As Integer? = Nothing, Optional roleType As String = Nothing, Optional currentTenant As Tenant = Nothing) As IList(Of Contact)
+                                   Optional onlyParentId As Integer? = Nothing,
+                                   Optional excludeRoleRoot As Boolean? = Nothing,
+                                   Optional procedureType As String = Nothing,
+                                   Optional idRole As Integer? = Nothing) As IList(Of Contact)
         Dim contacts As IList(Of Contact) = New List(Of Contact)
 
         ' Verifico se devo caricare i nodi di settore
         If DocSuiteContext.Current.ProtocolEnv.RoleContactEnabled AndAlso Not excludeRoleRoot Then
             ' Verifico se sono amministratore di rubrica
             If onlyMyRoles Then
-                Dim roles As IList(Of Role) = Factory.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Enabled, True)
+                Dim roles As IList(Of Role) = Factory.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Enabled, True, idTenantAOO)
 
                 If Not roles.IsNullOrEmpty() Then
 
                     Dim iRoles As List(Of Integer) = roles.Select(Function(f) f.Id).ToList()
-                    Dim tmp As IList(Of Contact) = _dao.GetRoleRootContact(iRoles, searchAll, excludeParentIds:=excludeParentId, onlyParentId:=onlyParentId, currentTenant:=currentTenant)
+                    Dim tmp As IList(Of Contact) = _dao.GetRoleRootContact(iRoles, searchAll, excludeParentIds:=excludeParentId, onlyParentId:=onlyParentId)
                     For Each ct As Contact In tmp
                         contacts.Add(ct)
                     Next
                 End If
             Else
-                Dim tmp As IList(Of Contact) = _dao.GetRoleRootContact(searchAll, currentTenant:=currentTenant)
+                Dim tmp As IList(Of Contact) = _dao.GetRoleRootContact(searchAll)
                 For Each ct As Contact In tmp
                     contacts.Add(ct)
                 Next
@@ -91,7 +97,7 @@ Public Class ContactFacade
         If Not editMode OrElse Not onlyMyRoles Then
             Dim roleIds As IList(Of Integer) = Nothing
 
-            Dim temp As IList(Of Contact) = _dao.GetRootContact(searchAll, categoryFascicleRightRoles:=categoryFascicleRightRoles, excludeParentId:=excludeParentId, onlyParentId:=onlyParentId, procedureType:=procedureType, idRole:=idRole, currentTenant:=currentTenant)
+            Dim temp As IList(Of Contact) = _dao.GetRootContact(searchAll, categoryFascicleRightRoles:=categoryFascicleRightRoles, excludeParentId:=excludeParentId, onlyParentId:=onlyParentId, procedureType:=procedureType, idRole:=idRole)
             For Each c As Contact In temp
                 If contacts.Contains(c) Then
                     Continue For
@@ -118,10 +124,9 @@ Public Class ContactFacade
                                          Optional contactListId As Guid? = Nothing,
                                          Optional procedureType As String = Nothing,
                                          Optional idRole As Integer? = Nothing,
-                                         Optional roleType As String = Nothing,
-                                         Optional currentTenant As Tenant = Nothing) As IList(Of Contact)
+                                         Optional roleType As String = Nothing) As IList(Of Contact)
         Return _dao.GetContactByParentId(parentId, searchAll, categoryFascicleRightRoles:=categoryFascicleRightRoles, excludeParentIds:=excludeParentIds, onlyParentId:=onlyParentId,
-                                         contactListId:=contactListId, procedureType:=procedureType, idRole:=idRole, roleType:=roleType, currentTenant:=currentTenant)
+                                         contactListId:=contactListId, procedureType:=procedureType, idRole:=idRole, roleType:=roleType)
     End Function
 
     Public Function GetContactWithId(ByVal idContactList As Integer()) As IList(Of Contact)
@@ -160,11 +165,10 @@ Public Class ContactFacade
                                             Optional contactListId As Guid? = Nothing,
                                             Optional procedureType As String = Nothing,
                                             Optional idRole As Integer? = Nothing,
-                                            Optional roleType As String = Nothing,
-                                            Optional currentTenant As Tenant = Nothing) As IList(Of Contact)
+                                            Optional roleType As String = Nothing) As IList(Of Contact)
         Return _dao.GetContactByDescription(description, searchType, searchAll, contactRootRoles, categoryFascicleRightRoles:=categoryFascicleRightRoles, rootFullIncrementalPath:=rootFullIncrementalPath,
                                             exludeParentId:=excludeParentId, onlyParentId:=onlyParentId, contactListId:=contactListId, procedureType:=procedureType,
-                                            idRole:=idRole, roleType:=roleType, currentTenant:=currentTenant)
+                                            idRole:=idRole, roleType:=roleType)
     End Function
 
     Public Function GetContactByFiscalCode(ByVal pFiscalCode As String) As IList(Of Contact)
@@ -175,16 +179,19 @@ Public Class ContactFacade
         Return _dao.GetContactByDescriptionAndContactType(description, contactType)
     End Function
 
-    Public Function GetContactBySearchCode(ByVal searchCode As String, ByVal isActive As Short,
+    Public Function GetContactBySearchCode(searchCode As String, isActive As Boolean,
                                            Optional categoryFascicleRightRoles As IList(Of Integer) = Nothing,
                                            Optional excludeParentIds As List(Of Integer) = Nothing,
-                                           Optional onlyParentId As Integer? = Nothing, Optional contactListId As Guid? = Nothing,
-                                           Optional idCategory As Integer? = Nothing, Optional procedureType As String = Nothing, Optional idRole As Integer? = Nothing, Optional roleType As String = Nothing,
-                                           Optional currentTenantId? As Guid = Nothing) As IList(Of Contact)
+                                           Optional onlyParentId As Integer? = Nothing,
+                                           Optional contactListId As Guid? = Nothing,
+                                           Optional idCategory As Integer? = Nothing,
+                                           Optional procedureType As String = Nothing,
+                                           Optional idRole As Integer? = Nothing,
+                                           Optional roleType As String = Nothing) As IList(Of Contact)
         Dim contactList As IList(Of Contact) = _dao.GetContactBySearchCode(searchCode, isActive, categoryFascicleRightRoles:=categoryFascicleRightRoles, excludeParentId:=excludeParentIds,
-                                                                           onlyParentId:=onlyParentId, contactListId:=contactListId, procedureType:=procedureType, idRole:=idRole, roleType:=roleType, currentTenantId:=currentTenantId)
+                                                                           onlyParentId:=onlyParentId, contactListId:=contactListId, procedureType:=procedureType, idRole:=idRole, roleType:=roleType)
         ''Verifico che tutto il ramo sia active
-        If isActive = 1 Then
+        If isActive Then
             Return contactList.Where(Function(f) IsTreeActive(f)).ToList()
         End If
         ''Altrimenti ritorno il risultato calcolato
@@ -194,38 +201,6 @@ Public Class ContactFacade
 
     Public Function GetContactByIncrementalFather(ByVal incrementalFather As Integer, Optional ByVal isActive As Boolean = False) As IList(Of Contact)
         Return _dao.GetContactByIncrementalFather(incrementalFather, isActive)
-    End Function
-
-    ''' <summary> Verifica l'esatezza e correge i FullIncrementalPath di tutti i contatti. </summary>
-    Public Function FullIncrementalUtility() As IList(Of Contact)
-        Dim modified As New List(Of Contact)
-        Using transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction()
-            Try
-                Dim contacts As IList(Of Contact) = GetAll()
-                For Each contact As Contact In contacts
-                    Dim sFullPath As String = String.Empty
-                    _dao.GetFullIncrementalPath(contact.Parent, sFullPath)
-                    If Not String.IsNullOrEmpty(sFullPath) Then
-                        sFullPath = sFullPath & "|"
-                    End If
-                    sFullPath = sFullPath & contact.Id.ToString()
-                    If contact.FullIncrementalPath <> sFullPath Then
-                        contact.FullIncrementalPath = sFullPath
-                        UpdateWithoutTransaction(contact)
-                        modified.Add(contact)
-                    End If
-                Next
-                transaction.Commit()
-            Catch exception As ObjectNotFoundException
-                transaction.Rollback()
-                Throw New DocSuiteException("Errore verifica", String.Format("Contatto non più esistente [{0}]", exception.Message), exception)
-            Catch ex As Exception
-                transaction.Rollback()
-                Throw New DocSuiteException("Errore verifica", "Impossibile calcolare FullIncrementalPath dei contatti", ex)
-            End Try
-        End Using
-
-        Return modified
     End Function
 
     Public Function GetContactByGroups(ByVal groups As IList(Of String)) As IList(Of Contact)
@@ -263,29 +238,35 @@ Public Class ContactFacade
         End If
 
         If obj.Children.Count > 0 Then
-            Return obj.Children.Aggregate(True, Function(current, c) current AndAlso (c.IsActive = 0S))
+            Return obj.Children.Aggregate(True, Function(current, c) current AndAlso (Not c.IsActive))
         End If
 
         Return False
     End Function
 
-    Public Function ImportFromXml(ByVal xmlDoc As XmlDocument) As IList(Of ContactDTO)
+    Public Function ImportFromXml(ByVal xmlDoc As XmlDocument, ByRef importErrors As List(Of String)) As IList(Of ContactDTO)
         Dim listDto As New List(Of ContactDTO)
 
         'verifica nodo ROOT
-        If Not xmlDoc.FirstChild.Name.Eq("ELENCOCONTATTI") Then
-            Throw New DocSuiteException("Errore importazione", String.Format("Formato del file non corretto.{0}Manca TAG <ElencoContatti>.{0}Importazione Interrotta", Environment.NewLine))
+        If Not xmlDoc.FirstChild.Name.Eq("ElencoContatti") Then
+            importErrors.Add(String.Format("Importazione interrotta: tag xml errato (<{0}> invece di <ElencoContatti>)", xmlDoc.FirstChild.Name))
+            Return listDto
         End If
-        'verifica nodi foglia
-        For Each node As XmlNode In xmlDoc.FirstChild.ChildNodes
-            If Not node.Name.Eq("SEARCHCODE") Then
-                Continue For
-            End If
 
-            Dim contacts As IList(Of Contact) = GetContactBySearchCode(node.InnerText, -1)
+        'determino la lista dei contatti da importare effettuando la distinct
+        Dim distinctContactList As XmlNodeList = xmlDoc.SelectNodes("/ElencoContatti/SearchCode[not(.=preceding-sibling::SearchCode)]")
+
+        If distinctContactList.Count = 0 Then
+            importErrors.Add(String.Format("Importazione interrotta: nessun elemento con tag xml <SearchCode>", xmlDoc.FirstChild.Name))
+            Return listDto
+        End If
+
+        'verifica nodi foglia
+        For Each node As XmlNode In distinctContactList
+            Dim contacts As IList(Of Contact) = GetContactBySearchCode(node.InnerText, True)
             Select Case contacts.Count
                 Case 0
-                    Throw New DocSuiteException("Errore importazione", String.Format("Codice {0} non trovato in tabella contatti.{1}Importazione Interrotta", node.InnerText, Environment.NewLine))
+                    importErrors.Add(String.Format("Codice {0} non trovato in tabella contatti.", node.InnerText))
                 Case 1
                     Dim contactDto As New ContactDTO()
                     contactDto.Contact = contacts(0)
@@ -293,25 +274,21 @@ Public Class ContactFacade
                     contactDto.Type = ContactDTO.ContactType.Address
                     listDto.Add(contactDto)
                 Case Is > 1
-                    Throw New DocSuiteException("Errore importazione", String.Format("Codice {0} non univoco in tabella contatti.{1}Importazione Interrotta", node.InnerText, Environment.NewLine))
+                    importErrors.Add(String.Format("Codice {0} non univoco in tabella contatti.", node.InnerText))
             End Select
-
         Next
-        If listDto.Count = 0 Then
-            Throw New DocSuiteException("Errore importazione", "Il File non contiene Codici Contatti\nImportazione Interrotta")
-        End If
 
         Return listDto
     End Function
 
-    Public Function GetContacts(ByVal code As String, ByVal contactType As Char?, ByVal isActive As Short?) As IList(Of Contact)
+    Public Function GetContacts(ByVal code As String, ByVal contactType As Char?, ByVal isActive As Boolean?) As IList(Of Contact)
         Return _dao.GetContacts(code, contactType, isActive)
     End Function
 
-    Public Function GetContactMyRoles() As List(Of Integer)
+    Public Function GetContactMyRoles(idTenantAOO As Guid) As List(Of Integer)
         Dim sRole As List(Of Integer) = Nothing
         If DocSuiteContext.Current.ProtocolEnv.RoleContactEnabled Then
-            Dim roles As IList(Of Role) = FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Enabled, True)
+            Dim roles As IList(Of Role) = FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Enabled, True, idTenantAOO)
             If roles Is Nothing Then
                 roles = New List(Of Role)
             End If
@@ -324,14 +301,14 @@ Public Class ContactFacade
     ''' <summary> Se necessario, controlla se il contatto è duplicato. </summary>
     ''' <param name="contact">Contatto da verificare</param>
     ''' <exception cref="DocSuiteException"> Se il contatto è già presente in rubrica. </exception>
-    Public Sub DuplicationCheck(ByVal contact As Contact)
+    Public Sub DuplicationCheck(ByVal contact As Contact, idTenantAOO As Guid)
         ' se la verifica 
         If Not DocSuiteContext.Current.ProtocolEnv.RubricaCheckDuplicati Then
             Exit Sub
         End If
 
         Dim existingContacts As IList(Of Contact) = Nothing
-        Dim sRole As List(Of Integer) = FacadeFactory.Instance.ContactFacade.GetContactMyRoles()
+        Dim sRole As List(Of Integer) = FacadeFactory.Instance.ContactFacade.GetContactMyRoles(idTenantAOO)
         Select Case contact.ContactType.Id
             Case ContactType.Aoo, ContactType.Person
                 If Not String.IsNullOrEmpty(contact.FiscalCode) Then
@@ -351,13 +328,13 @@ Public Class ContactFacade
 
     End Sub
 
-    Public Function ContactDuplicationCheck(ByVal contact As Contact) As Boolean
+    Public Function ContactDuplicationCheck(ByVal contact As Contact, idTenantAOO As Guid) As Boolean
         If Not DocSuiteContext.Current.ProtocolEnv.RubricaCheckDuplicati Then
             Return False
         End If
 
         Dim existingContacts As IList(Of Contact) = Nothing
-        Dim sRole As List(Of Integer) = FacadeFactory.Instance.ContactFacade.GetContactMyRoles()
+        Dim sRole As List(Of Integer) = FacadeFactory.Instance.ContactFacade.GetContactMyRoles(idTenantAOO)
         Select Case contact.ContactType.Id
             Case ContactType.Aoo, ContactType.Person
                 If Not String.IsNullOrEmpty(contact.FiscalCode) Then
@@ -519,10 +496,10 @@ Public Class ContactFacade
     Private Function IsTreeActive(ByVal contact As Contact) As Boolean
         ''Se sono arrivato all'ultimo nodo ritorno il suo valore
         If contact.Parent Is Nothing Then
-            Return contact.IsActive = 1
+            Return contact.IsActive = True
         End If
         ''Altrimenti metto in And il valore corrente con quello ritornato dalla ricorsione
-        Return contact.IsActive = 1 AndAlso IsTreeActive(contact.Parent)
+        Return contact.IsActive AndAlso IsTreeActive(contact.Parent)
     End Function
 
     Public Function GetByDescription(description As String, contactType As Char, parentId As Integer?) As IList(Of Contact)
@@ -584,7 +561,7 @@ Public Class ContactFacade
             If parent IsNot Nothing Then
                 contact.Parent = parent
             End If
-            contact.IsActive = 1
+            contact.IsActive = True
 
             Save(contact)
         End If
@@ -634,7 +611,7 @@ Public Class ContactFacade
         Return _dao.GetByList(contactListId, showAll, roleContactIds, excludeParentalIds, onlyParentId)
     End Function
 
-    Public Function GetContactByRole(ByVal searchCode As String, ByVal isActive As Short, Optional parentId As Integer? = Nothing, Optional idRole As Integer? = Nothing) As IList(Of Contact)
+    Public Function GetContactByRole(ByVal searchCode As String, ByVal isActive As Boolean, Optional parentId As Integer? = Nothing, Optional idRole As Integer? = Nothing) As IList(Of Contact)
         Dim contactList As IList(Of Contact) = _dao.GetContactByRole(searchCode, isActive, parentId:=parentId, idRole:=idRole)
         Return contactList
     End Function
@@ -688,7 +665,7 @@ Public Class ContactFacade
         Dim contactSaved As Contact
         Dim ochartContact As OChartItemContact
         Dim ochartContactItems As ICollection(Of OChartItem)
-        For Each contactToClone As Contact In contactsToClone.Where(Function(f) f.IsActive = 1)
+        For Each contactToClone As Contact In contactsToClone.Where(Function(f) f.IsActive)
             contactSaved = CloneContactRelations(contactToClone, parentContact, newName)
             ochartContactItems = FacadeFactory.Instance.OChartItemFacade.GetByContact(contactToClone)
             If Not ochartContactItems.IsNullOrEmpty() Then
@@ -736,9 +713,7 @@ Public Class ContactFacade
 
     Public Shared Function InitializeNewInstanceFromExistingContact(contact As Contact) As Contact
         Dim newInstanceContact As Contact = New Contact With {
-            .IsActive = Convert.ToInt16(False),
-            .ActiveFrom = contact.ActiveFrom,
-            .ActiveTo = contact.ActiveTo,
+            .IsActive = False,
             .Address = contact.Address,
             .BirthDate = contact.BirthDate,
             .BirthPlace = contact.BirthPlace,

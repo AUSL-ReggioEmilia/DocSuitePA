@@ -15,5 +15,9 @@ namespace VecompSoftware.DocSuiteWeb.DTO.UDS
         public DateTimeOffset? RegistrationDate { get; set; }
 
         public AuthorizationType AuthorizationType { get; set; }
+
+        public AuthorizationInstanceType AuthorizationInstanceType { get; set; }
+
+        public string Username { get; set; }
     }
 }

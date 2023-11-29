@@ -92,7 +92,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.OData
             };
             customHttpConfiguration.EndPoints.Add(endpoint);
 
-            ODataModel<bool> result = WebAPIHelper.GetRawRequest<Fascicle, ODataModel<bool>>(customHttpConfiguration, customHttpConfiguration, odataFilter);
+            ODataModel<bool> result = WebAPIImpersonatorFacade.ImpersonateRawRequest<Fascicle, ODataModel<bool>>(WebAPIHelper, odataFilter, customHttpConfiguration);
 
             return result.Value;
         }
@@ -156,6 +156,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.OData
             ODataModel<bool> result = WebAPIImpersonatorFacade.ImpersonateRawRequest<Fascicle, ODataModel<bool>>(WebAPIHelper, odataFilter, customHttpConfiguration);
             return result.Value;
         }
+
         public bool HasCollaborationViewableRight(int idCollaboration)
         {
             string odataFilter = $"/CollaborationService.HasViewableRight(idCollaboration={idCollaboration})";
@@ -175,7 +176,8 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.OData
             ODataModel<bool> result = WebAPIImpersonatorFacade.ImpersonateRawRequest<Collaboration, ODataModel<bool>>(WebAPIHelper, odataFilter, customHttpConfiguration);
             return result.Value;
         }
-        public DomainUserModel domainUserModel()
+
+        public DomainUserModel GetDomainUserModel()
         {
             string odataFilter = $"/DomainUserService.GetCurrentRights()";
             IBaseAddress webApiAddress = DocSuiteContext.Current.CurrentTenant.WebApiClientConfig.Addresses.Single(x => x.AddressName.Eq(WebApiHttpClient.ODATA_ADDRESS_NAME));

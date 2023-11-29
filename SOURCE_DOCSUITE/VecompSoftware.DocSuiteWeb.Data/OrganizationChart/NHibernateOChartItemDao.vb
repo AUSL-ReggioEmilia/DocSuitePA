@@ -1,10 +1,5 @@
-﻿Imports AutoMapper
-Imports NHibernate
+﻿Imports NHibernate
 Imports NHibernate.Criterion
-Imports NHibernate.SqlCommand
-Imports System.Linq
-Imports VecompSoftware.Helpers.NHibernate
-Imports VecompSoftware.NHibernateManager
 Imports VecompSoftware.NHibernateManager.Dao
 
 

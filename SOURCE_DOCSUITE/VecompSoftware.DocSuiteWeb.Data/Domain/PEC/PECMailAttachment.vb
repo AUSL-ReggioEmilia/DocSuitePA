@@ -1,4 +1,3 @@
-Imports AutoMapper
 
 <Serializable()>
 Public Class PECMailAttachment

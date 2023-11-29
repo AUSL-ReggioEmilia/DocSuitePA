@@ -138,7 +138,7 @@
         function <%= Me.ID %>_CloseImportFunction(sender, args) {
             sender.remove_close(<%= Me.ID %>_CloseImportFunction);
             if (args.get_argument() !== null) {
-                <%= Me.ID %>_UpdateImport(returnValue);
+                <%= Me.ID %>_UpdateImport(args.get_argument());
             }
         }
 
@@ -188,14 +188,7 @@
                 <%= Me.ID %>_UpdateManual(args.get_argument(), 'Ins');
             }
         }
-        //richiamata quando la finestra contatti OChart viene chiusa
-
-        function <%= Me.ID %>_CloseOChart(sender, args) {
-            sender.remove_close(<%= Me.ID %>_CloseOChart);
-            if (args.get_argument() !== null) {
-                <%= Me.ID %>_UpdateManual(args.get_argument().Contact, args.get_argument().Action);
-            }
-        }
+        
         
         function <%= Me.ID %>_CloseSmart(sender, args) {
             sender.remove_close(<%= Me.ID %>_CloseSmart);
@@ -248,18 +241,6 @@
             }
         }
 
-        // Evento che permette di fare il Check su un solo nodo
-        function <%= Me.ID %>_ClientNodeChecking(sender, eventArgs) {
-            var node = eventArgs.get_node();
-            var checked = !node.get_checked();
-            if (checked) {
-                var nodes = node.get_parent().get_nodes();
-                for (var i = 0; i < nodes.get_count(); i++) {
-                    nodes.getNode(i).set_checked(false);
-                }
-            }
-        }
-
     </script>
 </telerik:RadScriptBlock>
 
@@ -282,7 +263,7 @@
     </tr>
     <tr class="Chiaro">
         <td class="DXChiaro">
-            <telerik:RadTreeView ID="RadTreeContact" runat="server" Width="100%">
+            <telerik:RadTreeView ID="RadTreeContact" runat="server" Width="100%" CausesValidation="False">
                 <Nodes>
                     <telerik:RadTreeNode Expanded="true" Font-Bold="true" runat="server" Text="Contatti" Value="Root" />
                 </Nodes>
@@ -299,10 +280,9 @@
                     <asp:ImageButton CausesValidation="False" ID="btnAddMyself" Visible="False" ImageUrl="~/App_Themes/DocSuite2008/imgset16/user_add.png" runat="server" />
                     <asp:ImageButton CausesValidation="False" ID="btnAddSdiContact" Visible="False" ImageUrl="~/Comm/Images/Loop16.gif" runat="server" />
                     <asp:ImageButton CausesValidation="False" ID="btnSelContactDomain" ImageUrl="~/App_Themes/DocSuite2008/imgset16/user.png" runat="server" />
-                    <asp:ImageButton CausesValidation="false" ID="ButtonSelContactOChart" runat="server" ToolTip="Selezione contatto da organigramma" />
                     <asp:ImageButton CausesValidation="False" ID="btnSelContact" ImageUrl="~/App_Themes/DocSuite2008/imgset16/folder.png" runat="server" />
                     <asp:ImageButton CausesValidation="False" ID="btnAddManualMulti" Visible="False" ImageUrl="~/App_Themes/DocSuite2008/imgset16/pencil_add.png" runat="server" />
-                    <asp:ImageButton CausesValidation="False" ID="btnAddManual" ImageUrl="~/App_Themes/DocSuite2008/imgset16/pencil.png" runat="server" />
+                    <asp:ImageButton CausesValidation="False" ID="btnAddManual" ImageUrl="~/App_Themes/DocSuite2008/imgset16/addressEditor.png" runat="server" />
                     <asp:ImageButton CausesValidation="False" ID="btnContactSmart" ImageUrl="~/App_Themes/DocSuite2008/imgset16/account-circle.png" runat="server" ToolTip="Rubrica smart" Visible="false" />
                     <asp:ImageButton CausesValidation="False" ID="btnRoleUser" ImageUrl="~/App_Themes/DocSuite2008/imgset16/brick_add.png" runat="server" Visible="False" />
                     <asp:ImageButton CausesValidation="False" ID="btnIPAContact" ImageUrl="~/Comm/Images/Interop/Building.gif" runat="server" Visible="False" />

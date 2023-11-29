@@ -46,8 +46,8 @@
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=5.1.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\NHibernate.5.1.3\lib\net461\NHibernate.dll</HintPath>
@@ -70,20 +70,17 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.9.20254.2\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
+    <Reference Include="VecompSoftware.Commons.Interfaces, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Commons.Interfaces.9.22.23089.1\lib\net48\VecompSoftware.Commons.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Entity, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Entity.9.22.23089.1\lib\net48\VecompSoftware.DocSuiteWeb.Entity.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.9.20254.5, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.9.20254.5\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Model, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Model.9.22.23089.1\lib\net48\VecompSoftware.DocSuiteWeb.Model.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.9.20254.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.9.20254.2\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
-    </Reference>
-    <Reference Include="VecompSoftware.Helpers.Analytics, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Analytics.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Analytics.dll</HintPath>
+    <Reference Include="VecompSoftware.DocSuiteWeb.Repository, Version=9.22.23089.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.DocSuiteWeb.Repository.9.22.23089.1\lib\net48\VecompSoftware.DocSuiteWeb.Repository.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -92,6 +89,7 @@
     <Compile Include="Collaborations\MapperCollaborationSignsModel.cs" />
     <Compile Include="Collaborations\MapperCollaborationUsersModel.cs" />
     <Compile Include="Collaborations\MapperCollaborationVersioningModel.cs" />
+    <Compile Include="Commons\MapperContactEntity.cs" />
     <Compile Include="Commons\MapperCategoryFascicle.cs" />
     <Compile Include="Commons\MapperCategoryUserProcedure.cs" />
     <Compile Include="Commons\MapperContactDTODSWEntity.cs" />
@@ -105,6 +103,8 @@
     <Compile Include="Commons\MapperRoleDSWEntity.cs" />
     <Compile Include="Commons\MapperRoleModel.cs" />
     <Compile Include="Commons\MapperRoleEntity.cs" />
+    <Compile Include="Commons\MapperSecurityGroupEntity.cs" />
+    <Compile Include="Commons\MapperSecurityUserEntity.cs" />
     <Compile Include="Commons\MapperRoleUserEntity.cs" />
     <Compile Include="Desks\MapperDeskComment.cs" />
     <Compile Include="Desks\MapperDeskDocumentResult.cs" />
@@ -124,12 +124,17 @@
     <Compile Include="PECMails\MapperPECMailEntity.cs" />
     <Compile Include="PECMails\MapperPECMailLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocols\MapperProtocolContactManualEntity.cs" />
+    <Compile Include="Protocols\MapperProtocolJournalLogEntity.cs" />
+    <Compile Include="Protocols\MapperProtocolContactEntity.cs" />
     <Compile Include="Protocols\MapperProtocolUserEntity.cs" />
-    <Compile Include="Resolutions\MapperFileResolutionModel.cs" />
-    <Compile Include="Resolutions\MapperResolutionRoleModel.cs" />
+    <Compile Include="Resolutions\MapperFileResolution.cs" />
+    <Compile Include="Resolutions\MapperResolutionKind.cs" />
+    <Compile Include="Resolutions\MapperResolutionContact.cs" />
+    <Compile Include="Resolutions\MapperResolutionRole.cs" />
     <Compile Include="Protocols\MapperProtocolEntity.cs" />
     <Compile Include="Protocols\MapperProtocolRoleEntity.cs" />
-    <Compile Include="Resolutions\MapperResolutionModel.cs" />
+    <Compile Include="Resolutions\MapperResolution.cs" />
     <Compile Include="Resolutions\MapperResolutionType.cs" />
     <Compile Include="UDS\UDSRepositoryModelMapper.cs" />
     <Compile Include="WebAPI\WebAPIDtoMapper.cs" />

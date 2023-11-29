@@ -113,15 +113,6 @@ Partial Public Class uscRoleRest
     Protected WithEvents fldCurrentTenant As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 
     '''<summary>
-    '''lblCurrentTenant control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblCurrentTenant As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''rolesTree control.
     '''</summary>
     '''<remarks>

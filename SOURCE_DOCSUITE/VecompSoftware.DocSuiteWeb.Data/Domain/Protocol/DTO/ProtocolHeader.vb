@@ -5,7 +5,6 @@
     Private _proxiedCategory As Category
     Private _proxiedContainer As Container
     Private _proxiedLocation As Location
-    Private _proxiedProtocolParer As ProtocolParer
 
 #End Region
 
@@ -95,23 +94,6 @@
         End Get
     End Property
 
-    Public Property ParerUri As String
-    Public Property ParerHasError As Boolean?
-    Public Property ParerLastError As String
-    Public ReadOnly Property ProxiedProtocolParer As ProtocolParer
-        Get
-            If HasParer AndAlso _proxiedProtocolParer Is Nothing Then
-                _proxiedProtocolParer = New ProtocolParer()
-                With _proxiedProtocolParer
-                    .HasError = ParerHasError.GetValueOrDefault(False)
-                    .LastError = ParerLastError
-                    .ParerUri = ParerUri
-                End With
-            End If
-            Return _proxiedProtocolParer
-        End Get
-    End Property
-
     Public Property Subject As String
     ''' <summary> Identificativo della PEC che ha originato il protocollo </summary>
     Public Property IngoingPecId As Integer?
@@ -194,11 +176,6 @@
     Public ReadOnly Property HasRead As Nullable(Of Boolean)
         Get
             Return ReadCount.HasValue AndAlso ReadCount > 0
-        End Get
-    End Property
-    Public ReadOnly Property HasParer As Nullable(Of Boolean)
-        Get
-            Return ParerHasError.HasValue
         End Get
     End Property
 

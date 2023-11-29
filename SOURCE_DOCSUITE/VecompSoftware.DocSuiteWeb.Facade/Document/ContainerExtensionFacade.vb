@@ -46,7 +46,7 @@ Public Class ContainerExtensionFacade
     ''' <param name="pTree">Struttura ad albero da memorizzare</param>
     ''' <returns>True se il salvataggio avviene correttamente. False altrimenti.</returns>
     Public Function CreateContainerExtensionTree(ByVal pIdContainer As Integer, ByVal pKey As ContainerExtensionType, ByVal pTree As Tree(Of ContainerExtension)) As Boolean
-        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom(Me._dbName).BeginTransaction()
+        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom(Me._dbName).BeginTransaction(IsolationLevel.ReadCommitted)
         Try
             'elimina tutte gli extension di quel contenitore e keytype
             _dao.DeleteByContainerAndKey(pIdContainer, pKey, transaction)
@@ -71,7 +71,7 @@ Public Class ContainerExtensionFacade
     ''' <param name="pKey">KeyType</param>
     ''' <param name="pRole">List di settori il cui primo indentifica quello di default</param>
     Public Function SaveContainerExtensionDefaultRole(ByVal pIdContainer As Integer, ByVal pKey As ContainerExtensionType, ByVal pRole As IList(Of Role)) As Boolean
-        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom(Me._dbName).BeginTransaction()
+        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom(Me._dbName).BeginTransaction(IsolationLevel.ReadCommitted)
         Try
             'elimina tutti gli extension di quel contenitore e keytype
             _dao.DeleteByContainerAndKey(pIdContainer, pKey, transaction)

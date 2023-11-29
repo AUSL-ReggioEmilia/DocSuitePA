@@ -35,6 +35,7 @@ Public Class NHibernateResolutionFinder
     Protected _provNumber As Integer?
     Protected _idResolution As Integer?
     Protected _resolutionObjectSearch As ObjectSearchType
+    Protected _idBidType As Integer?
 
     'ASL-TO2
     Protected _immediatelyExecutive As Boolean
@@ -59,14 +60,11 @@ Public Class NHibernateResolutionFinder
     'Top
     Protected _topMaxRecords As Integer = 0
 
-    Protected _conservation As Boolean = False
-
     ' Web Publish
     Protected _webPublicationDateFrom As Date?
     Protected _webPublicationDateTo As Date?
     Protected _webRevokeDateFrom As Date?
     Protected _webRevokeDateTo As Date?
-    Protected _webSPGuid As Nullable(Of Guid)
     Protected _onlyPublicated As Nullable(Of Boolean)
     Protected _checkPublication As Nullable(Of Boolean)
 
@@ -77,7 +75,6 @@ Public Class NHibernateResolutionFinder
     Protected _resolutionType As ResolutionType
     Protected _hasDocumentalSeriesDraft As Boolean
     Protected _isDocumentalSeriesDraftToComplete As Boolean
-    Private _resolutionParerConservationStatus As IList(Of Integer) = New List(Of Integer)()
 
 #End Region
 
@@ -144,6 +141,15 @@ Public Class NHibernateResolutionFinder
         End Get
         Set(ByVal value As String)
             _idResolution = ConvertToInteger(value)
+        End Set
+    End Property
+
+    Public Property IdBidType() As String
+        Get
+            Return _idBidType.ToString()
+        End Get
+        Set(ByVal value As String)
+            _idBidType = ConvertToInteger(value)
         End Set
     End Property
 
@@ -234,24 +240,15 @@ Public Class NHibernateResolutionFinder
 
     Public Property DescriptionStep As String
 
+    Public Property DescriptionSteps As List(Of String) = New List(Of String)
+
+    Public Property FieldDateNames As List(Of String) = New List(Of String)
+
     Public Property WorkFlowStep As Short?
 
     Public Property EnableStatus As Boolean
 
     Public Property IdStatus As Short?
-
-    Public Property Conservation() As Boolean
-        Get
-            Return _conservation
-        End Get
-        Set(ByVal value As Boolean)
-            _conservation = value
-            If (_conservation) Then
-                _enableTableJoin = True
-                EnablePaging = False
-            End If
-        End Set
-    End Property
 
     Public Overridable Property WebPublicationDateFrom() As Date?
         Get
@@ -295,15 +292,6 @@ Public Class NHibernateResolutionFinder
         End Get
         Set(ByVal value As Date?)
             _webRevokeDateTo = value
-        End Set
-    End Property
-
-    Public Overridable Property WebSPGuid() As Nullable(Of Guid)
-        Get
-            Return _webSPGuid
-        End Get
-        Set(ByVal value As Nullable(Of Guid))
-            _webSPGuid = value
         End Set
     End Property
 
@@ -360,15 +348,6 @@ Public Class NHibernateResolutionFinder
 
     Public Property TemplateSpecifications As IList(Of ResolutionJournalTemplateSpecification)
 
-    Public Property ResolutionParerConservationStatus As IList(Of Integer)
-        Get
-            Return _resolutionParerConservationStatus
-        End Get
-        Set(value As IList(Of Integer))
-            _resolutionParerConservationStatus = value
-        End Set
-    End Property
-
     Public IsAdopted As Boolean?
     Public IsEffective As Boolean?
 
@@ -377,6 +356,10 @@ Public Class NHibernateResolutionFinder
     Public Property HasPublishingDate As Boolean?
 
     Public Property ViewAllExecutive As Boolean
+
+    Public Property WorkflowStepsExcluded As ICollection(Of Tuple(Of String, Integer))
+
+    Public Property WorkflowStepsForceVisibility As ICollection(Of Tuple(Of String, Integer))
 
 #End Region
 
@@ -485,6 +468,7 @@ Public Class NHibernateResolutionFinder
             _supervisoryBoardProtocolLink = value
         End Set
     End Property
+    Public Property UserTakeCharge As String
 #End Region
 
 #Region "Criteria"
@@ -514,26 +498,6 @@ Public Class NHibernateResolutionFinder
         criteria.Add(disj)
     End Sub
 
-    Private Function DetachedForParerStatus() As DetachedCriteria
-        Dim dc As DetachedCriteria = DetachedCriteria.For(Of ResolutionParer)("SRP")
-        dc.Add(Restrictions.EqProperty("R.Id", "SRP.Id"))
-
-        Dim hasParerUri As AbstractCriterion = Restrictions.IsNotNull("SRP.ParerUri")
-        Dim hasError As AbstractCriterion = Restrictions.And(Restrictions.IsNotNull("SRP.HasError"), Restrictions.Eq("SRP.HasError", True))
-        Dim hasLastError As AbstractCriterion = Restrictions.IsNotNull("SRP.LastError")
-        Dim isCorrect As AbstractCriterion = Restrictions.And(Restrictions.And(hasParerUri, Restrictions.Not(hasError)), Restrictions.Not(hasLastError))
-        Dim isWarning As AbstractCriterion = Restrictions.And(Restrictions.And(hasParerUri, Restrictions.Not(hasError)), hasLastError)
-        Dim isError As AbstractCriterion = Restrictions.And(Restrictions.And(Restrictions.Not(hasParerUri), hasError), hasLastError)
-
-        Dim proj As IProjection = Projections.Conditional(isCorrect, Projections.Constant(1),
-                                                           Projections.Conditional(isWarning, Projections.Constant(2),
-                                                                                   Projections.Conditional(isError, Projections.Constant(3),
-                                                                                                           Projections.Constant(0))))
-
-        dc.SetProjection(proj)
-        Return dc
-    End Function
-
     Private Sub DecorateController(ByRef criteria As ICriteria)
         'ControllerOpinion
         If Not String.IsNullOrEmpty(ControllerOpinion) Then
@@ -544,14 +508,6 @@ Public Class NHibernateResolutionFinder
         'ControllerStatus
         If Not String.IsNullOrEmpty(IdControllerStatus) Then
             criteria.Add(Restrictions.Eq("ControllerStatus.Id", _IdControllerStatus))
-        End If
-    End Sub
-
-    Private Sub DecorateConservation(ByRef criteria As ICriteria)
-        'CONSERVATION
-        If Conservation AndAlso DocSuiteContext.Current.ProtocolEnv.IsConservationEnabled Then
-            criteria.Add(Restrictions.Eq("ConservationStatus", "M"c))
-            criteria.Add(Restrictions.Eq("Container.Conservation", CType(1, Byte)))
         End If
     End Sub
 
@@ -587,6 +543,21 @@ Public Class NHibernateResolutionFinder
             AttachWorkflowStepExpression(criteria, WorkFlowStep)
         End If
 
+        If DescriptionSteps.Any() Then
+            AttachWorkflowStepsExpression(criteria, DescriptionSteps)
+        End If
+
+        If FieldDateNames.Any() Then
+            For Each fieldDate As String In FieldDateNames
+                If DateFrom.HasValue Then
+                    criteria.Add(Expression.Sql(NHibernateHelper.GreaterThanOrEqualToDateIsoFormat(fieldDate, DateFrom.Value)))
+                End If
+                If DateTo.HasValue Then
+                    criteria.Add(Expression.Sql(NHibernateHelper.LessThanOrEqualToDateIsoFormat(fieldDate, DateTo.Value)))
+                End If
+            Next
+        End If
+
         'Immediatamente esecutiva
         If ImmediatelyExecutive Then
             criteria.Add(Restrictions.Eq("R.ImmediatelyExecutive", ImmediatelyExecutive))
@@ -608,28 +579,6 @@ Public Class NHibernateResolutionFinder
         'Data Adozione a
         If AdoptionDateTo.HasValue Then
             criteria.Add(Expression.Sql(NHibernateHelper.LessThanOrEqualToDateIsoFormat("AdoptionDate", AdoptionDateTo.Value)))
-        End If
-
-        If User IsNot Nothing Then
-            If Not String.IsNullOrEmpty(Roles) Then
-                Dim conjReslRole As New Conjunction()
-                Dim dcReslRole As DetachedCriteria = DetachedCriteria.For(GetType(ResolutionRole), "RR")
-                dcReslRole.Add(Restrictions.EqProperty("RR.Resolution.Id", "R.Id"))
-                dcReslRole.Add(Restrictions.In("RR.Role.Id", Roles.Split(","c)))
-                dcReslRole.SetProjection(Projections.Property("RR.Id"))
-                conjReslRole.Add(Subqueries.Exists(dcReslRole))
-                Dim dcReslContact As DetachedCriteria = DetachedCriteria.For(GetType(ResolutionContact), "RC")
-                dcReslContact.Add(Restrictions.EqProperty("RC.Resolution.Id", "R.Id"))
-                dcReslContact.CreateAlias("RC.Contact", "CRContact", JoinType.InnerJoin)
-                dcReslContact.Add(Restrictions.EqProperty("RC.Id.IdContact", "CRContact.Id"))
-                dcReslContact.Add(Restrictions.In("CRContact.Role.Id", Roles.Split(","c)))
-                dcReslContact.Add(Restrictions.Eq("RC.Id.ComunicationType", "P"))
-                dcReslContact.SetProjection(Projections.Id())
-                conjReslRole.Add(Subqueries.Exists(dcReslContact))
-                criteria.Add(Restrictions.Or(Restrictions.Eq("ProposeUser", User), conjReslRole))
-            Else
-                criteria.Add(Restrictions.Eq("ProposeUser", User))
-            End If
         End If
 
     End Sub
@@ -691,17 +640,6 @@ Public Class NHibernateResolutionFinder
             'Controllo il campo AlternativeRecipient
             disj.Add(Expression.Like("R.AlternativeRecipient", s))
 
-            'Controllo la Recipient
-            If DocSuiteContext.Current.ResolutionEnv.EnvRecipient Then
-                criteria.SetFetchMode("ResolutionRecipients", FetchMode.Eager)
-                criteria.CreateAlias("ResolutionRecipients", "RRecipient", JoinType.LeftOuterJoin)
-                Dim dcRec As DetachedCriteria = DetachedCriteria.For(GetType(Recipient), "Rec")
-                dcRec.Add(Restrictions.EqProperty("RRecipient.Id.IdRecipient", "Rec.Id"))
-                dcRec.Add(Expression.Like("Rec.FullName", s))
-                dcRec.SetProjection(Projections.Id())
-                disj.Add(Subqueries.Exists(dcRec))
-            End If
-
             'Controllo i Contatti
             If DocSuiteContext.Current.ResolutionEnv.IsInteropEnabled Then
                 criteria.SetFetchMode("Destinatari", FetchMode.Eager)
@@ -731,14 +669,6 @@ Public Class NHibernateResolutionFinder
             'Controllo il campo AlternativeProposer
             disj.Add(Expression.Like("R.AlternativeProposer", s))
 
-            'Controllo la Recipient
-            If DocSuiteContext.Current.ResolutionEnv.EnvRecipient Then
-                Dim dcRec As DetachedCriteria = DetachedCriteria.For(GetType(Recipient), "RecP")
-                dcRec.Add(Expression.Like("RecP.FullName", s))
-                dcRec.SetProjection(Projections.Id())
-                disj.Add(Subqueries.PropertyIn("R.IdProposer", dcRec))
-            End If
-
             'Controllo i Contatti
             If DocSuiteContext.Current.ResolutionEnv.IsInteropEnabled Then
                 Dim reCon As DetachedCriteria = DetachedCriteria.For(GetType(ResolutionContact), "Proponenti")
@@ -765,14 +695,6 @@ Public Class NHibernateResolutionFinder
 
             'Controllo il campo AlternativeAssignee
             disj.Add(Expression.Like("R.AlternativeAssignee", s))
-
-            'Controllo la Recipient
-            If DocSuiteContext.Current.ResolutionEnv.EnvRecipient Then
-                Dim dcRec As DetachedCriteria = DetachedCriteria.For(GetType(Recipient), "RecA")
-                dcRec.Add(Expression.Like("RecA.FullName", s))
-                dcRec.SetProjection(Projections.Id())
-                disj.Add(Subqueries.PropertyIn("R.IdAssignee", dcRec))
-            End If
 
             'Controllo i Contatti
             If DocSuiteContext.Current.ResolutionEnv.IsInteropEnabled Then
@@ -801,14 +723,6 @@ Public Class NHibernateResolutionFinder
 
             'Controllo il campo AlternativeManager
             disj.Add(Expression.Like("R.AlternativeManager", s))
-
-            'Controllo la Recipient
-            If DocSuiteContext.Current.ResolutionEnv.EnvRecipient Then
-                Dim dcRec As DetachedCriteria = DetachedCriteria.For(GetType(Recipient), "RecM")
-                dcRec.Add(Expression.Like("RecM.FullName", s))
-                dcRec.SetProjection(Projections.Id())
-                disj.Add(Subqueries.PropertyIn("R.IdManager", dcRec))
-            End If
 
             'Controllo i Contatti
             If DocSuiteContext.Current.ResolutionEnv.IsInteropEnabled Then
@@ -989,14 +903,46 @@ Public Class NHibernateResolutionFinder
         End If
 
         'Filtro Roles
+        Dim disjunctionRightsCriteria As Disjunction = New Disjunction()
         If Not String.IsNullOrEmpty(Roles) Then
+            Dim conjunctionRoleCriteria As Conjunction = New Conjunction()
             roleIntIds = Roles.Split(","c).Select(Function(s) Integer.Parse(s)).ToArray()
 
             Dim dcRole As DetachedCriteria = DetachedCriteria.For(GetType(ResolutionRole), "RR")
             dcRole.Add(Restrictions.EqProperty("RR.Resolution.Id", "R.Id"))
             dcRole.Add(Restrictions.In("RR.Role.Id", roleIntIds))
             dcRole.SetProjection(Projections.GroupProperty("RR.Resolution.Id"))
-            disju.Add(Subqueries.PropertyIn("R.Id", dcRole))
+            conjunctionRoleCriteria.Add(Subqueries.Exists(dcRole))
+
+            If User IsNot Nothing Then
+                Dim dcReslContact As DetachedCriteria = DetachedCriteria.For(GetType(ResolutionContact), "RC")
+                dcReslContact.Add(Restrictions.EqProperty("RC.Resolution.Id", "R.Id"))
+                dcReslContact.CreateAlias("RC.Contact", "CRContact", JoinType.InnerJoin)
+                dcReslContact.Add(Restrictions.EqProperty("RC.Id.IdContact", "CRContact.Id"))
+                dcReslContact.Add(Restrictions.In("CRContact.Role.Id", roleIntIds))
+                dcReslContact.Add(Restrictions.Eq("RC.Id.ComunicationType", "P"))
+                dcReslContact.SetProjection(Projections.Id())
+                conjunctionRoleCriteria.Add(Subqueries.Exists(dcReslContact))
+                disjunctionRightsCriteria.Add(Restrictions.Eq("ProposeUser", User))
+            End If
+            disjunctionRightsCriteria.Add(conjunctionRoleCriteria)
+        End If
+
+        If Not WorkflowStepsForceVisibility.IsNullOrEmpty() Then
+            Dim stepDisj As Disjunction = Restrictions.Disjunction()
+            Dim tmpConj As Conjunction
+            For Each stepToExcelude As Tuple(Of String, Integer) In WorkflowStepsForceVisibility
+                tmpConj = Restrictions.Conjunction()
+                tmpConj.Add(Restrictions.Eq("RW.ResStep", Convert.ToInt16(stepToExcelude.Item2)))
+                tmpConj.Add(Restrictions.Eq("WorkflowType", stepToExcelude.Item1))
+                stepDisj.Add(tmpConj)
+            Next
+            disjunctionRightsCriteria.Add(stepDisj)
+        End If
+        disju.Add(disjunctionRightsCriteria)
+
+        If User IsNot Nothing AndAlso String.IsNullOrEmpty(Roles) Then
+            disju.Add(Restrictions.Eq("ProposeUser", User))
         End If
 
         'Includo anche gli atti esecutivi, anche se non ho diritti su contenitori/settori
@@ -1005,6 +951,29 @@ Public Class NHibernateResolutionFinder
         End If
 
         criteria.Add(disju)
+
+        If Not WorkflowStepsExcluded.IsNullOrEmpty() Then
+            Dim stepDisj As Disjunction
+            Dim tmpConj As Conjunction
+            For Each stepToExcelude As Tuple(Of String, Integer) In WorkflowStepsExcluded
+                stepDisj = Restrictions.Disjunction()
+                tmpConj = Restrictions.Conjunction()
+                tmpConj.Add(Restrictions.Not(Restrictions.Eq("RW.ResStep", Convert.ToInt16(stepToExcelude.Item2))))
+                tmpConj.Add(Restrictions.Eq("WorkflowType", stepToExcelude.Item1))
+                stepDisj.Add(tmpConj)
+                stepDisj.Add(Restrictions.Not(Restrictions.Eq("WorkflowType", stepToExcelude.Item1)))
+                criteria.Add(stepDisj)
+            Next
+        End If
+
+        If Not String.IsNullOrEmpty(UserTakeCharge) Then
+            Dim tmpExistCriteria As DetachedCriteria = DetachedCriteria.For(GetType(ResolutionWorkflowUser), "RWU")
+            tmpExistCriteria.Add(Restrictions.EqProperty("RWU.ResolutionWorkflow.Id", "RW.Id"))
+            tmpExistCriteria.Add(Restrictions.Eq("RWU.AuthorizationType", AuthorizationRoleType.Responsible))
+            tmpExistCriteria.Add(Restrictions.Eq("RWU.Account", UserTakeCharge))
+            tmpExistCriteria.SetMaxResults(1).SetProjection(Projections.Constant(1))
+            criteria.Add(Subqueries.Exists(tmpExistCriteria))
+        End If
     End Sub
 
     Private Sub DecoratePassi(ByRef criteria As ICriteria)
@@ -1380,30 +1349,6 @@ Public Class NHibernateResolutionFinder
         End If
     End Sub
 
-    Private Sub DecorateForParer(ByRef criteria As ICriteria)
-        If Not DocSuiteContext.Current.ResolutionEnv.ParerEnabled Then
-            Return
-        End If
-        criteria.SetFetchMode("R.ResolutionParer", FetchMode.Eager)
-        criteria.CreateAliasIfNotExists("R.ResolutionParer", "RP", JoinType.LeftOuterJoin)
-        If ResolutionParerConservationStatus.IsNullOrEmpty() Then
-            Return
-        End If
-
-        Dim identifiers As Integer() = ResolutionParerConservationStatus.Where(Function(s) Not s.Equals(-1)).ToArray()
-        Dim identifiersFilter As AbstractCriterion = Restrictions.In(Projections.SubQuery(DetachedForParerStatus()), identifiers)
-
-        Dim includeMissing As Boolean = ResolutionParerConservationStatus.Contains(-1)
-        Dim includeMissingFilter As AbstractCriterion = Restrictions.Not(Subqueries.Exists(DetachedForParerStatus()))
-
-        If Not identifiers.IsNullOrEmpty() AndAlso includeMissing Then
-            criteria.Add(Restrictions.Or(identifiersFilter, includeMissingFilter))
-        ElseIf Not identifiers.IsNullOrEmpty() Then
-            criteria.Add(identifiersFilter)
-        Else
-            criteria.Add(includeMissingFilter)
-        End If
-    End Sub
     Private Sub DecorateForWorkflowStatus(ByRef criteria As ICriteria)
         If IsAdopted.HasValue Then
             If IsAdopted Then
@@ -1532,8 +1477,9 @@ Public Class NHibernateResolutionFinder
             criteria.Add(Restrictions.Eq("R.Type.Id", ResolutionType.Id))
         End If
 
-        If WebSPGuid.HasValue Then
-            criteria.Add(Restrictions.Eq("WebSPGuid", WebSPGuid.Value))
+        'Filtro per BidType
+        If Not (String.IsNullOrEmpty(IdBidType)) Then
+            criteria.Add(Restrictions.Eq("R.BidType.Id", _idBidType))
         End If
 
         'Note
@@ -1551,12 +1497,9 @@ Public Class NHibernateResolutionFinder
             If RegistrationDateFrom.HasValue Then
                 criteria.Add(Restrictions.Ge("R.PublishingDate", RegistrationDateFrom))
             End If
-
         End If
 
         DecorateDeliberaDetermina(criteria)
-
-        DecorateForParer(criteria)
 
         DecorateForWorkflowStatus(criteria)
 
@@ -1583,8 +1526,6 @@ Public Class NHibernateResolutionFinder
         DecorateSteps(criteria)
 
         DecorateOC(criteria)
-
-        DecorateConservation(criteria)
 
         DecorateWeb(criteria)
 
@@ -1760,6 +1701,13 @@ Public Class NHibernateResolutionFinder
         dc.SetMaxResults(1).SetProjection(Projections.Constant(1))
         Return dc
     End Function
+    Private Function DetachedUserTakeCharge() As DetachedCriteria
+        Dim dc As DetachedCriteria = DetachedCriteria.For(Of ResolutionWorkflowUser)("tw_ResolutionWorkflowUser")
+        dc.Add(Restrictions.EqProperty("tw_ResolutionWorkflowUser.ResolutionWorkflow.Id", "RW.Id"))
+        dc.Add(Restrictions.Eq("tw_ResolutionWorkflowUser.AuthorizationType", AuthorizationRoleType.Responsible))
+        dc.SetMaxResults(1).SetProjection(Projections.Property("tw_ResolutionWorkflowUser.Account"))
+        Return dc
+    End Function
     Protected Function GetProjectionForResolutionHeader(includeResolutionWorkflow As Boolean) As ProjectionList
         Dim proj As ProjectionList = Projections.ProjectionList()
 
@@ -1780,6 +1728,7 @@ Public Class NHibernateResolutionFinder
         proj.Add(Projections.Property("ResolutionObject"), "ResolutionObject")
         proj.Add(Projections.Property("WorkflowType"), "WorkflowType")
         proj.Add(Projections.Property("DeclineNote"), "DeclineNote")
+        proj.Add(Projections.Property("Note"), "Note")
 
         proj.Add(Projections.Property("ControllerStatus"), "ControllerStatus")
         proj.Add(Projections.Property("ControllerStatus.Acronym"), "ControllerStatusAcronym")
@@ -1844,12 +1793,7 @@ Public Class NHibernateResolutionFinder
             proj.Add(Projections.SubQuery(detachedReturnFromCollaboration()), "ReturnFromCollaboration")
             proj.Add(Projections.SubQuery(detachedConfirmViewBy()), "ConfirmViewBy")
             proj.Add(Projections.SubQuery(detachedReturnFromRetroStep()), "ReturnFromRetroStep")
-        End If
-
-        If DocSuiteContext.Current.ResolutionEnv.ParerEnabled Then
-            proj.Add(Projections.Property("RP.ParerUri"), "ParerUri")
-            proj.Add(Projections.Property("RP.HasError"), "ParerHasError")
-            proj.Add(Projections.Property("RP.LastError"), "ParerLastError")
+            proj.Add(Projections.SubQuery(DetachedUserTakeCharge()), "CurrentUserTakeCharge")
         End If
 
         If includeResolutionWorkflow Then
@@ -1885,6 +1829,7 @@ Public Class NHibernateResolutionFinder
         If TopMaxRecords > 0 Then
             criteria.SetResultTransformer(New TopRecordsResultTransformer(TopMaxRecords))
         End If
+
 
         Return criteria.List(Of ResolutionHeader)()
     End Function
@@ -1963,26 +1908,35 @@ Public Class NHibernateResolutionFinder
 #End Region
 
 #Region "Private Methods: Criteria Workflow Step"
-    Private Sub AttachWorkflowStepExpression(ByRef criteria As ICriteria, ByVal description As String)
-        'SubQuery sulla tabella TabWorkflow
-        criteria.CreateAliasIfNotExists("R.Type", "Type", JoinType.LeftOuterJoin)
-        criteria.CreateAliasIfNotExists("Type.TabMaster", "TabMaster", JoinType.LeftOuterJoin)
-
-        Dim dcTw As DetachedCriteria = DetachedCriteria.For(GetType(TabWorkflow), "TW")
-        dcTw.Add(Restrictions.Eq("Description", description))
-        dcTw.Add(Restrictions.EqProperty("TabMaster.WorkflowType", "Id.WorkflowType"))
-        'Proiezione sull'id di TabWorkFlow
-        dcTw.SetProjection(Projections.Property("Id.ResStep"))
-
-        'Subquery sulla TabMaster per tipologia configurazione
-        If String.IsNullOrEmpty(Configuration) Then
-            Configuration = DocSuiteContext.Current.ResolutionEnv.Configuration
-        End If
-        criteria.Add(Restrictions.Eq("TabMaster.Id.Configuration", Configuration))
-        criteria.Add(Restrictions.EqProperty("TabMaster.WorkflowType", "WorkflowType"))
+    Private Sub AttachWorkflowStepExpression(ByRef criteria As ICriteria, description As String)
+        Dim existStepCriteria As DetachedCriteria = DetachedCriteria.For(GetType(TabWorkflow), "TW")
+        existStepCriteria.Add(Restrictions.Eq("TW.Description", description))
+        existStepCriteria.Add(Restrictions.EqProperty("TW.Id.WorkflowType", "R.WorkflowType"))
+        existStepCriteria.Add(Restrictions.EqProperty("TW.Id.ResStep", "RW.ResStep"))
+        existStepCriteria.SetProjection(Projections.Constant(1))
+        criteria.Add(Subqueries.Exists(existStepCriteria))
 
         DecorateWorkflow(criteria)
-        criteria.Add(Subqueries.PropertyIn("RW.ResStep", dcTw))
+    End Sub
+
+    Private Sub AttachWorkflowStepsExpression(ByRef criteria As ICriteria, descriptions As List(Of String))
+        Dim existStepCriteria As DetachedCriteria = DetachedCriteria.For(GetType(ResolutionWorkflow), "RWW")
+        existStepCriteria.Add(Restrictions.EqProperty("RWW.Resolution.Id", "R.Id"))
+
+        Dim existTabWorkflow As DetachedCriteria = DetachedCriteria.For(GetType(TabWorkflow), "TWW")
+        existTabWorkflow.Add(Restrictions.In("TWW.Description", descriptions))
+        existTabWorkflow.Add(Restrictions.EqProperty("TWW.Id.WorkflowType", "R.WorkflowType"))
+        existTabWorkflow.Add(Restrictions.EqProperty("TWW.Id.ResStep", "RWW.ResStep"))
+        existTabWorkflow.SetProjection(Projections.Constant(1))
+
+        existStepCriteria.Add(Subqueries.Exists(existTabWorkflow))
+
+        If StepAttivo Then
+            existStepCriteria.Add(Restrictions.Eq("RWW.IsActive", 1S))
+        End If
+
+        existStepCriteria.SetProjection(Projections.Constant(1))
+        criteria.Add(Subqueries.Exists(existStepCriteria))
     End Sub
 
     Private Sub AttachWorkflowStepExpression(ByRef criteria As ICriteria, ByVal [step] As Short?)
@@ -1995,15 +1949,13 @@ Public Class NHibernateResolutionFinder
         'Subquery sulla Resolution
         criteria.Add(Subqueries.PropertyIn("Id", dcRw))
     End Sub
-    Private Sub DecorateWorkflow(ByRef criteria As ICriteria)
-        If Not NHibernateHelper.ExistAlias(criteria, "RW") Then
-            criteria.CreateAlias("ResolutionWorkflows", "RW", JoinType.LeftOuterJoin)
 
-            Dim isActDisju As Disjunction = Expression.Disjunction()
-            isActDisju.Add(Restrictions.Eq("RW.IsActive", 1S))
-            isActDisju.Add(Restrictions.IsNull("RW.IsActive"))
-            criteria.Add(isActDisju)
-        End If
+    Private Sub DecorateWorkflow(ByRef criteria As ICriteria)
+        criteria.CreateAliasIfNotExists("ResolutionWorkflows", "RW", JoinType.LeftOuterJoin)
+        Dim isActDisju As Disjunction = Restrictions.Disjunction()
+        isActDisju.Add(Restrictions.Eq("RW.IsActive", 1S))
+        isActDisju.Add(Restrictions.IsNull("RW.IsActive"))
+        criteria.Add(isActDisju)
     End Sub
 
 #End Region

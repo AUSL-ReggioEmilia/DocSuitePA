@@ -8,7 +8,10 @@
     Fascicle,
     File,
     MiscellaneousFolder,
-    Root
+    Root,
+    LoadMore, 
+    Container,
+    PECMailBox
 }
 
 export = TreeNodeType;

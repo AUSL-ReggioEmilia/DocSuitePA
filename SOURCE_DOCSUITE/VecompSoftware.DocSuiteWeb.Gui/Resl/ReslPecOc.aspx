@@ -53,7 +53,7 @@
             <MasterTableView NoMasterRecordsText="Nessuna richiesta PEC trovata" TableLayout="Auto">
                 <Columns>
                     <telerik:GridBoundColumn HeaderStyle-Width="100px" ItemStyle-Width="100px" AllowFiltering="false" AllowSorting="false" DataField="ResolutionType.Description" HeaderText="Tipologia" UniqueName="tipoAtto" />
-                    <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../Comm/Images/File/Mail16.gif" HeaderText="Mail" UniqueName="allegato">
+                    <telerik:GridTemplateColumn AllowFiltering="false" Groupable="false" HeaderImageUrl="../App_Themes/DocSuite2008/imgset16/mail.png" HeaderText="Mail" UniqueName="allegato">
                         <HeaderStyle HorizontalAlign="Center" Width="25px" />
                         <ItemStyle HorizontalAlign="Center" Width="25px" />
                         <ItemTemplate>

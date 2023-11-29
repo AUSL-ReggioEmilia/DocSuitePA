@@ -286,9 +286,9 @@ Public Class PECMailBoxFacade
 
         Dim userRoles As IList(Of Role) = New List(Of Role)
         If DocSuiteContext.Current.ProtocolEnv.RoleGroupPECRightEnabled Then
-            userRoles = FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 3, True)
+            userRoles = FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 3, True, CurrentTenant.TenantAOO.UniqueId)
         Else
-            userRoles = FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 1, True)
+            userRoles = FacadeFactory.Instance.RoleFacade.GetUserRoles(DSWEnvironment.Protocol, 1, True, CurrentTenant.TenantAOO.UniqueId)
         End If
 
         Dim defaultBoxes As ICollection(Of PECMailBox) = mailboxes.Where(Function(x) x.MailBoxRoles.Any(Function(xx) xx.Priority AndAlso userRoles.Any(Function(xr) xr.Id = xx.Role.Id))).ToList()

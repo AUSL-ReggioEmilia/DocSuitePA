@@ -1,20 +1,19 @@
 ﻿Imports System.Collections.Generic
 Imports System.Linq
-Imports VecompSoftware.Services.Logging
+Imports System.Web
+Imports Newtonsoft.Json
+Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
+Imports VecompSoftware.DocSuiteWeb.DTO.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports System.Web
 Imports VecompSoftware.Services.Biblos.Models
-Imports Newtonsoft.Json
-Imports VecompSoftware.DocSuiteWeb.DTO.DocumentUnits
-Imports Telerik.Web.UI
-Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
-Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
-Imports VecompSoftware.DocSuiteWeb.DTO.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
+Imports VecompSoftware.Services.Logging
 
 Namespace Viewers
     Public Class ProtocolViewer
@@ -222,20 +221,17 @@ Namespace Viewers
             Dim protocolRights As ProtocolRights = Nothing
             Dim uniqueId As Guid
             Dim protocol As Protocol = Nothing
-            Dim documentEnvironment As DSWEnvironment
-            Dim haveEnvironment As Boolean
             ' Registro il log di visualizzazione dei documenti
             For Each doc As DocumentInfo In checkedDocuments.Where(Function(f) f.Attributes.ContainsKey(ViewerLight.BIBLOS_ATTRIBUTE_UniqueId))
-                haveEnvironment = doc.Attributes.ContainsKey(ViewerLight.BIBLOS_ATTRIBUTE_Environment) AndAlso [Enum].TryParse(doc.Attributes(ViewerLight.BIBLOS_ATTRIBUTE_Environment), documentEnvironment)
-                If Guid.TryParse(doc.Attributes(ViewerLight.BIBLOS_ATTRIBUTE_UniqueId), uniqueId) AndAlso (Not haveEnvironment OrElse documentEnvironment = DSWEnvironment.Protocol) Then
+                If Guid.TryParse(doc.Attributes(ViewerLight.BIBLOS_ATTRIBUTE_UniqueId), uniqueId) Then
                     protocol = FacadeFactory.Instance.ProtocolFacade.GetById(uniqueId)
                     If protocol IsNot Nothing AndAlso Facade.DocumentFacade.CheckPrivacy(doc, protocol.Container.Id,
                                                                                          protocol.Roles.Where(Function(r) String.IsNullOrEmpty(r.Type) OrElse Not r.Type.Eq(ProtocolRoleTypes.Privacy)).Select(Function(t) t.Role.UniqueId).ToArray(),
                                                                                          protocol.Roles.Where(Function(r) Not String.IsNullOrEmpty(r.Type) AndAlso r.Type.Eq(ProtocolRoleTypes.Privacy)).Select(Function(t) t.Role.UniqueId).ToArray(),
                                                                                          DSWEnvironment.Protocol, protocol.Users.Any(Function(u) u.Account.Eq(DocSuiteContext.Current.User.FullUserName) AndAlso u.Type = ProtocolUserType.Authorization)) Then
                         protocolRights = New ProtocolRights(protocol)
-                        If protocolRights.IsEditable OrElse protocolRights.IsEditableAttachment.GetValueOrDefault(False) Then
-                            selected.Add(protocol.UniqueId)
+                        If Not selected.Contains(protocol.Id) AndAlso (protocolRights.IsEditable OrElse protocolRights.IsEditableAttachment.GetValueOrDefault(False)) Then
+                            selected.Add(protocol.Id)
                         End If
                     End If
                 End If

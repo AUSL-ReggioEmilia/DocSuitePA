@@ -1,16 +1,9 @@
-﻿Imports System.Collections.Generic
-Imports Newtonsoft.Json
-Imports Telerik.Web.UI
-Imports VecompSoftware.DocSuiteWeb.DTO.Commons
-Imports VecompSoftware.DocSuiteWeb.Model.Metadata
+﻿Imports Telerik.Web.UI
 
 Public Class FascPeriodInserimento
     Inherits FascBasePage
 
 #Region " Fields "
-
-    Private Const FASCICLE_PERIOD_INSERT_CALLBACK As String = "fascPeriodInserimento.insertCallback('{0}','{1}');"
-
 #End Region
 
 #Region " Properties "
@@ -30,36 +23,11 @@ Public Class FascPeriodInserimento
         InitializeAjax()
     End Sub
 
-    Protected Sub FascPeriodInserimento_AjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
-        Dim ajaxModel As AjaxModel = Nothing
-        Try
-            ajaxModel = JsonConvert.DeserializeObject(Of AjaxModel)(e.Argument)
-            If ajaxModel Is Nothing Then
-                Return
-            End If
-            Select Case ajaxModel.ActionName
-                Case "Insert"
-                    Dim metadataModel As Tuple(Of MetadataDesignerModel, ICollection(Of MetadataValueModel)) = Nothing
-                    If ProtocolEnv.MetadataRepositoryEnabled Then
-                        metadataModel = uscFascicleInsert.GetDynamicValues()
-                    End If
-
-                    AjaxManager.ResponseScripts.Add(String.Format(FASCICLE_PERIOD_INSERT_CALLBACK,
-                                                                  If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item1), Nothing),
-                                                                  If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item2), Nothing)))
-                    Exit Select
-            End Select
-        Catch
-            Exit Sub
-        End Try
-    End Sub
-
 #End Region
 
 #Region " Methods "
 
     Private Sub InitializeAjax()
-        AddHandler AjaxManager.AjaxRequest, AddressOf FascPeriodInserimento_AjaxRequest
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma)
     End Sub
 

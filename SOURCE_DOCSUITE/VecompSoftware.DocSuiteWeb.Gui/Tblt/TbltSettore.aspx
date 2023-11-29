@@ -67,14 +67,6 @@
                 });
             }
 
-            function OpenHistoryWindow() {
-                require(["Tblt/TbltSettore"], function (TbltSettore) {
-                    tbltSettore = new TbltSettore();
-                    Initialize();
-                    tbltSettore.openHistoryWindow();
-                });
-            }
-
             function OpenLogWindow(name) {
                 require(["Tblt/TbltSettore"], function (TbltSettore) {
                     tbltSettore = new TbltSettore();
@@ -133,7 +125,6 @@
             <telerik:RadWindow ID="windowGroupRoles" Modal="true" runat="server" ShowContentDuringLoad="false" Title="Gestione Gruppi Settore" VisibleStatusbar="false" />
             <telerik:RadWindow ID="windowPrintRoles" Modal="true" runat="server" ShowContentDuringLoad="false" Title="Stampa Settore" VisibleStatusbar="false" />
             <telerik:RadWindow ID="windowPropagation" Modal="true" runat="server" ShowContentDuringLoad="false" Title="Propagazione gerarchia" VisibleStatusbar="false" />
-            <telerik:RadWindow ID="windowHistory" Modal="true" runat="server" ShowContentDuringLoad="false" Title="Storico" VisibleStatusbar="false" />
             <telerik:RadWindow ID="windowAddUsers" Modal="true" Title="Aggiungi utente" runat="server" VisibleStatusbar="false" />
         </Windows>
     </telerik:RadWindowManager>
@@ -172,7 +163,6 @@
                                 <telerik:RadToolBarButton runat="server" ToolTip="Sposta" Value="move" Text="Sposta" ImageUrl="~/App_Themes/DocSuite2008/imgset16/move_to_folder.png" />
                                 <telerik:RadToolBarButton runat="server" ToolTip="Clona" Value="clone" Text="Clona" ImageUrl="~/App_Themes/DocSuite2008/imgset16/clone.png" />
                                 <telerik:RadToolBarButton runat="server" ToolTip="Stampa" Value="print" Text="Stampa" ImageUrl="~/App_Themes/DocSuite2008/imgset16/printer.png" />
-                                <telerik:RadToolBarButton runat="server" ToolTip="Storico" Visible="false" Text="Storico" Value="history" ImageUrl="~/App_Themes/DocSuite2008/imgset16/history.png" />
                                 <telerik:RadToolBarButton runat="server" ToolTip="Propagazione massiva" Value="propagation" Text="Propagazione" ImageUrl="~/App_Themes/DocSuite2008/imgset16/propagation.png" />
                                 <telerik:RadToolBarButton runat="server" ToolTip="Log" Value="log" Text="Log" ImageUrl="~/App_Themes/DocSuite2008/imgset16/file_extension_log.png" />
                             </Items>

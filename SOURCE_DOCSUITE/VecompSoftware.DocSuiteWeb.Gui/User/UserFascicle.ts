@@ -147,7 +147,6 @@ class UserFascicle extends FascicleBase {
     getSelectedItemIDs(): string[] {
         let ids: string[] = new Array();
         let selectedItems: Telerik.Web.UI.GridDataItem[] = this.getSelectedItems();
-        debugger;
         $.each(selectedItems, (index, item) => {
             if (item.getDataKeyValue("IdFascicle")) {
                 ids.push(item.getDataKeyValue("IdFascicle"));

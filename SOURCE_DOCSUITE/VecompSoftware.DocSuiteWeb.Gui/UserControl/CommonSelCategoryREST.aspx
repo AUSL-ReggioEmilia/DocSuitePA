@@ -32,6 +32,9 @@
                     commonSelCategoryREST.includeParentDescendants = <%= IncludeParentDescendants.ToString().ToLower() %>;
                     commonSelCategoryREST.currentTenantAOOId = "<%= CurrentTenant.TenantAOO.UniqueId %>";
                     commonSelCategoryREST.showProcesses = <%= (ShowProcesses AndAlso ProtocolEnv.ProcessEnabled).ToString().ToLower() %>;
+                    commonSelCategoryREST.showProcessFascicleTemplate = <%= (ShowProcessFascicleTemplate AndAlso ProtocolEnv.ProcessEnabled).ToString().ToLower() %>;
+                    commonSelCategoryREST.processNodeSelectable = <%= ProcessNodeSelectable.ToString().ToLower() %>;
+                    commonSelCategoryREST.isProcessActive = <%= IsProcessActive.ToString().ToLower() %>;
                     commonSelCategoryREST.initialize();
                 });
             });

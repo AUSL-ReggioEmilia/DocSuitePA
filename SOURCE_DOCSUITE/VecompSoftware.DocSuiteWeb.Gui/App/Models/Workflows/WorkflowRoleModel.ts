@@ -3,6 +3,6 @@
     IdRole: number;
     UniqueId: string;
     EmailAddress: string;
-    TenantId: string;
+    IdTenantAOO: string;
 }
 export = WorkflowRoleModel;

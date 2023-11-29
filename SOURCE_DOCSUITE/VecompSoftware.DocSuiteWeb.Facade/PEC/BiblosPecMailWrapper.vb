@@ -1,8 +1,9 @@
 ﻿Imports System.IO
 Imports System.Linq
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.Services.Biblos
+Imports Newtonsoft.Json
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.DTO.WorkflowsElsa
+Imports VecompSoftware.Helpers
 Imports VecompSoftware.Services.Biblos.Models
 
 Public Class BiblosPecMailWrapper
@@ -13,12 +14,20 @@ Public Class BiblosPecMailWrapper
     Private _receipts As IList(Of BiblosPecMailReceiptWrapper)
 
     Private _postaCert As BiblosDocumentInfo
+    Private _postaCertProxy As DocumentProxyDocumentInfo
+
     Private _envelope As BiblosDocumentInfo
-    Private _segnaturaInteroperabilita As BiblosDocumentInfo
+    Private _envelopeProxy As DocumentProxyDocumentInfo
+
+    Private _interopSignature As BiblosDocumentInfo
+    Private _interopSignatureProxy As DocumentProxyDocumentInfo
+
     Private _datiCert As BiblosDocumentInfo
-    Private _oChartCommunicationData As DocumentInfo
+    Private _datiCertProxy As DocumentProxyDocumentInfo
 
     Private _mailContent As BiblosDocumentInfo
+    Private _mailContentProxy As DocumentProxyDocumentInfo
+
     Private _mailBody As FileDocumentInfo
 
     Private _mailBox As PECMailBox
@@ -64,29 +73,65 @@ Public Class BiblosPecMailWrapper
         End Get
     End Property
 
-    Public ReadOnly Property PostaCert As BiblosDocumentInfo
+    Public ReadOnly Property PostaCert As DocumentInfo
         Get
-            If _postaCert Is Nothing Then
-                If Not _pec.IDPostacert.Equals(Guid.Empty) Then
+            If _pec.IDPostacert = Guid.Empty Then
+                Return Nothing
+            End If
+
+            If _pec.ProcessStatus <> PECMailProcessStatus.StoredInDocumentManager Then
+                If _postaCert Is Nothing Then
                     _postaCert = New BiblosDocumentInfo(_pec.IDPostacert)
-                    If (_postaCert IsNot Nothing) Then
+                    If _postaCert IsNot Nothing Then
                         _postaCert.CheckSignedEvaluateStream = _checkSignedEvaluateStream
                     End If
                 End If
+                Return _postaCert
             End If
-            Return _postaCert
+            If _pec.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager Then
+                If _postaCertProxy Is Nothing Then
+                    If Not String.IsNullOrEmpty(_pec.MailContent) Then
+                        Dim docs As List(Of DocumentInfoModel) = JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(_pec.MailContent)
+                        Dim documentInfoModel As DocumentInfoModel = docs.Single(Function(f) f.DocumentId = _pec.IDPostacert)
+                        _postaCertProxy = New DocumentProxyDocumentInfo(_pec.UniqueId, documentInfoModel.DocumentId, DSWEnvironment.PECMail, documentInfoModel.Filename, documentInfoModel.FileExtension, documentInfoModel.Size, documentInfoModel.ReferenceType, documentInfoModel.VirtualPath)
+                    Else
+                        _postaCertProxy = New DocumentProxyDocumentInfo(_pec.UniqueId, _pec.IDPostacert, DSWEnvironment.PECMail)
+                    End If
+                End If
+                Return _postaCertProxy
+            End If
+            Return Nothing
         End Get
     End Property
 
-    Public ReadOnly Property MailContent As BiblosDocumentInfo
+    Public ReadOnly Property MailContent As DocumentInfo
         Get
-            If _mailContent Is Nothing Then
-                _mailContent = FacadeFactory.Instance.PECMailFacade.GetPecMailContent(_pec)
-                If (_mailContent IsNot Nothing) Then
-                    _mailContent.CheckSignedEvaluateStream = _checkSignedEvaluateStream
-                End If
+            If _pec.IDMailContent = Guid.Empty Then
+                Return Nothing
             End If
-            Return _mailContent
+
+            If _pec.ProcessStatus <> PECMailProcessStatus.StoredInDocumentManager Then
+                If _mailContent Is Nothing Then
+                    _mailContent = FacadeFactory.Instance.PECMailFacade.GetPecMailContent(_pec)
+                    If _mailContent IsNot Nothing Then
+                        _mailContent.CheckSignedEvaluateStream = _checkSignedEvaluateStream
+                    End If
+                End If
+                Return _mailContent
+            End If
+            If _pec.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager Then
+                If _mailContentProxy Is Nothing Then
+                    If Not String.IsNullOrEmpty(_pec.MailContent) Then
+                        Dim docs As List(Of DocumentInfoModel) = JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(_pec.MailContent)
+                        Dim documentInfoModel As DocumentInfoModel = docs.Single(Function(f) f.DocumentId = _pec.IDMailContent)
+                        _mailContentProxy = New DocumentProxyDocumentInfo(_pec.UniqueId, documentInfoModel.DocumentId, DSWEnvironment.PECMail, documentInfoModel.Filename, documentInfoModel.FileExtension, documentInfoModel.Size, documentInfoModel.ReferenceType, documentInfoModel.VirtualPath)
+                    Else
+                        _mailContentProxy = New DocumentProxyDocumentInfo(_pec.UniqueId, _pec.IDMailContent, DSWEnvironment.PECMail)
+                    End If
+                End If
+                Return _mailContentProxy
+            End If
+            Return Nothing
         End Get
     End Property
 
@@ -97,70 +142,108 @@ Public Class BiblosPecMailWrapper
                 Dim name As String = FileHelper.UniqueFileNameFormat("Corpo della mail.txt", DocSuiteContext.Current.User.UserName)
                 Dim fullname As String = Path.Combine(CommonUtil.GetInstance().AppTempPath, name)
                 File.WriteAllText(fullname, _pec.MailBody)
-                _mailBody = New FileDocumentInfo(New FileInfo(fullname))
-                _mailBody.Name = "Corpo della mail.txt"
-                _mailBody.CheckSignedEvaluateStream = _checkSignedEvaluateStream
+                _mailBody = New FileDocumentInfo(New FileInfo(fullname)) With {
+                    .Name = "Corpo della mail.txt",
+                    .CheckSignedEvaluateStream = _checkSignedEvaluateStream
+                }
             End If
             Return _mailBody
         End Get
     End Property
 
-    Public ReadOnly Property Envelope As BiblosDocumentInfo
+    Public ReadOnly Property Envelope As DocumentInfo
         Get
-            If _envelope Is Nothing AndAlso _pec.IDEnvelope <> Guid.Empty Then
-                _envelope = New BiblosDocumentInfo(_pec.IDEnvelope)
-                If (_envelope IsNot Nothing) Then
-                    _envelope.CheckSignedEvaluateStream = _checkSignedEvaluateStream
-                End If
-
+            If _pec.IDEnvelope = Guid.Empty Then
+                Return Nothing
             End If
-            Return _envelope
+
+            If _pec.ProcessStatus <> PECMailProcessStatus.StoredInDocumentManager Then
+                If _envelope Is Nothing Then
+                    _envelope = New BiblosDocumentInfo(_pec.IDEnvelope)
+                    If _envelope IsNot Nothing Then
+                        _envelope.CheckSignedEvaluateStream = _checkSignedEvaluateStream
+                    End If
+
+                End If
+                Return _envelope
+            End If
+            If _pec.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager Then
+                If _envelopeProxy Is Nothing Then
+                    If Not String.IsNullOrEmpty(_pec.MailContent) Then
+                        Dim docs As List(Of DocumentInfoModel) = JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(_pec.MailContent)
+                        Dim documentInfoModel As DocumentInfoModel = docs.SingleOrDefault(Function(f) f.DocumentId = _pec.IDEnvelope)
+                        _envelopeProxy = New DocumentProxyDocumentInfo(_pec.UniqueId, documentInfoModel.DocumentId, DSWEnvironment.PECMail, documentInfoModel.Filename, documentInfoModel.FileExtension, documentInfoModel.Size, documentInfoModel.ReferenceType, documentInfoModel.VirtualPath)
+                    Else
+                        _envelopeProxy = New DocumentProxyDocumentInfo(_pec.UniqueId, _pec.IDEnvelope, DSWEnvironment.PECMail)
+                    End If
+                End If
+                Return _envelopeProxy
+            End If
+            Return Nothing
         End Get
     End Property
 
-    Public ReadOnly Property SegnaturaInteroperabilita As BiblosDocumentInfo
+    Public ReadOnly Property SegnaturaInteroperabilita As DocumentInfo
         Get
-            If _segnaturaInteroperabilita Is Nothing AndAlso _pec.IDSegnatura <> Guid.Empty Then
-                _segnaturaInteroperabilita = New BiblosDocumentInfo(_pec.IDSegnatura)
-                If (_segnaturaInteroperabilita IsNot Nothing) Then
-                    _segnaturaInteroperabilita.CheckSignedEvaluateStream = _checkSignedEvaluateStream
-                End If
-
+            If _pec.IDSegnatura = Guid.Empty Then
+                Return Nothing
             End If
-            Return _segnaturaInteroperabilita
+
+            If _pec.ProcessStatus <> PECMailProcessStatus.StoredInDocumentManager Then
+                If _interopSignature Is Nothing Then
+                    _interopSignature = New BiblosDocumentInfo(_pec.IDSegnatura)
+                    If _interopSignature IsNot Nothing Then
+                        _interopSignature.CheckSignedEvaluateStream = _checkSignedEvaluateStream
+                    End If
+
+                End If
+                Return _interopSignature
+            End If
+            If _pec.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager Then
+                If _interopSignatureProxy Is Nothing Then
+                    If Not String.IsNullOrEmpty(_pec.MailContent) Then
+                        Dim docs As List(Of DocumentInfoModel) = JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(_pec.MailContent)
+                        Dim documentInfoModel As DocumentInfoModel = docs.SingleOrDefault(Function(f) f.DocumentId = _pec.IDSegnatura)
+                        _interopSignatureProxy = New DocumentProxyDocumentInfo(_pec.UniqueId, documentInfoModel.DocumentId, DSWEnvironment.PECMail, documentInfoModel.Filename, documentInfoModel.FileExtension, documentInfoModel.Size, documentInfoModel.ReferenceType, documentInfoModel.VirtualPath)
+                    Else
+                        _interopSignatureProxy = New DocumentProxyDocumentInfo(_pec.UniqueId, _pec.IDSegnatura, DSWEnvironment.PECMail)
+                    End If
+                End If
+                Return _interopSignatureProxy
+            End If
+            Return Nothing
         End Get
     End Property
 
-    Public ReadOnly Property DatiCert As BiblosDocumentInfo
+    Public ReadOnly Property DatiCert As DocumentInfo
         Get
-            If _datiCert Is Nothing AndAlso _pec.IDDaticert <> Guid.Empty Then
-                _datiCert = New BiblosDocumentInfo(_pec.IDDaticert)
-                If (_datiCert IsNot Nothing) Then
-                    _datiCert.CheckSignedEvaluateStream = _checkSignedEvaluateStream
-                End If
-
+            If _pec.IDDaticert = Guid.Empty Then
+                Return Nothing
             End If
-            Return _datiCert
-        End Get
-    End Property
 
-    Public ReadOnly Property OChartCommunicationData As DocumentInfo
-        Get
-            If _oChartCommunicationData Is Nothing Then
-                ''Cerco l'allegato con il nome richiesto
-                Dim pecMailAttachment As PECMailAttachment = _pec.Attachments.ToList().Find(Function(x) x.AttachmentName = DocSuiteContext.Current.ProtocolEnv.OChartCommunicationDataName)
+            If _pec.ProcessStatus <> PECMailProcessStatus.StoredInDocumentManager Then
+                If _datiCert Is Nothing Then
+                    _datiCert = New BiblosDocumentInfo(_pec.IDDaticert)
+                    If _datiCert IsNot Nothing Then
+                        _datiCert.CheckSignedEvaluateStream = _checkSignedEvaluateStream
+                    End If
 
-                If pecMailAttachment Is Nothing OrElse pecMailAttachment.IDDocument = Guid.Empty Then
-                    Return Nothing
                 End If
-
-                _oChartCommunicationData = New BiblosDocumentInfo(pecMailAttachment.IDDocument)
-                If (_oChartCommunicationData IsNot Nothing) Then
-                    _oChartCommunicationData.CheckSignedEvaluateStream = _checkSignedEvaluateStream
-                End If
-
+                Return _datiCert
             End If
-            Return _oChartCommunicationData
+            If _pec.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager Then
+                If _datiCertProxy Is Nothing Then
+                    If Not String.IsNullOrEmpty(_pec.MailContent) Then
+                        Dim docs As List(Of DocumentInfoModel) = JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(_pec.MailContent)
+                        Dim documentInfoModel As DocumentInfoModel = docs.SingleOrDefault(Function(f) f.DocumentId = _pec.IDDaticert)
+                        _datiCertProxy = New DocumentProxyDocumentInfo(_pec.UniqueId, documentInfoModel.DocumentId, DSWEnvironment.PECMail, documentInfoModel.Filename, documentInfoModel.FileExtension, documentInfoModel.Size, documentInfoModel.ReferenceType, documentInfoModel.VirtualPath)
+                    Else
+                        _datiCertProxy = New DocumentProxyDocumentInfo(_pec.UniqueId, _pec.IDDaticert, DSWEnvironment.PECMail)
+                    End If
+                End If
+                Return _datiCertProxy
+            End If
+            Return Nothing
         End Get
     End Property
 

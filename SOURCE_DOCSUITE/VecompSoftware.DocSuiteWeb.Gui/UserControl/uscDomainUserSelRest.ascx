@@ -14,7 +14,10 @@
                 domainUserSelRest.btnDelContactId ="<%=btnDelContact.ClientID%>";
                 domainUserSelRest.radWindowManagerId = "<%=RadWindowManagerContacts.ClientID%>";
                 domainUserSelRest.panelButtonsId = "<%=panelButtons.ClientID%>";
-                domainUserSelRest.initialize();
+                domainUserSelRest.currentUserDescription = "<%= CurrentUserDescription %>";
+                domainUserSelRest.currentUser = <%= CurrentUser %>;
+                domainUserSelRest.currentUserEmail = "<%= CurrentUserEmail %>";
+                domainUserSelRest.initialize(); 
             });
         });
     </script>

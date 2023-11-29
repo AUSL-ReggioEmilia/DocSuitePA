@@ -111,7 +111,7 @@ Public Class ResolutionWorkflowFacade
         idwf.Incremental = incFather
         Dim rw As ResolutionWorkflow = GetById(idwf)
         If rw IsNot Nothing Then
-            rw.IsActive = 0
+            rw.IsActive = 0S
             UpdateOnly(rw)
         End If
 
@@ -120,7 +120,7 @@ Public Class ResolutionWorkflowFacade
         rwNext.Id.IdResolution = idResolution
         rwNext.Id.Incremental = GetMaxIncremental(idResolution)
         rwNext.ResStep = activeStep + 1S
-        rwNext.IsActive = 1
+        rwNext.IsActive = 1S
 
         ' Documento
         If Not idDocument.Equals(0) Then
@@ -183,7 +183,7 @@ Public Class ResolutionWorkflowFacade
 
     ''' <summary> Riabilita lo step precedente </summary>
     Public Function EnablePreviousStep(ByVal idResolution As Integer, ByVal activeStep As Short) As Boolean
-        Dim activeInc As Short = GetActiveIncremental(idResolution, 1)
+        Dim activeInc As Short = GetActiveIncremental(idResolution, 1S)
         If activeInc = 0S Then
             Return False
         End If
@@ -196,7 +196,7 @@ Public Class ResolutionWorkflowFacade
             Return False
         End If
 
-        rw.isActive = 2
+        rw.IsActive = 2S
         rw.LastChangedUser = DocSuiteContext.Current.User.FullUserName
         rw.LastChangedDate = DateTimeOffset.UtcNow
         Factory.ResolutionWorkflowFacade.Update(rw)
@@ -208,7 +208,7 @@ Public Class ResolutionWorkflowFacade
         Dim bRet As Boolean = False
         If Not rw2 Is Nothing Then
 
-            rw2.IsActive = 1
+            rw2.IsActive = 1S
 
             rw2.LastChangedUser = DocSuiteContext.Current.User.FullUserName
             rw2.LastChangedDate = DateTimeOffset.UtcNow
@@ -235,7 +235,7 @@ Public Class ResolutionWorkflowFacade
 
     ''' <summary> Salvataggio in ResolutionWorkflow </summary>
     Public Overloads Function SqlResolutionWorkflowUpdate(ByVal idResolution As Integer, ByVal idDocument As Integer, ByVal idAttachment As Integer, ByVal idPrivacyAttachment As Integer, ByVal idAnnexes As Guid, ByVal idDocumentsOmissis As Guid, ByVal idAttachmentsOmissis As Guid) As Boolean
-        Dim activeInc As Short = GetActiveIncremental(idResolution, 1)
+        Dim activeInc As Short = GetActiveIncremental(idResolution, 1S)
         Dim idwf As New ResolutionWorkflowCompositeKey
 
         If activeInc = 0S Then

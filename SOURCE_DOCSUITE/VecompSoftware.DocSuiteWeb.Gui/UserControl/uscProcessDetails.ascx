@@ -43,6 +43,7 @@
                 uscProcessDetails.lblRegistrationDateId = "<%= lblRegistrationDate.ClientID %>";
                 uscProcessDetails.lblNoteId = "<%= lblNote.ClientID %>";
                 uscProcessDetails.uscCustomActionsRestId = "<%= uscCustomActionsRest.PageContent.ClientID %>";
+                uscProcessDetails.activityFascicleEnabled = <%= ProtocolEnv.ActivityFascicleEnabled.ToString().ToLower() %>;
                 uscProcessDetails.initialize();
             });
         });
@@ -217,6 +218,9 @@
 
                                                         </div>
                                                     </div>
+                                                    <div id="responsibleRoleFieldset">
+                                                        <usc:uscRoleRest runat="server" ID="uscResponsibleRoles" ReadOnlyMode="false" MultipleRoles="false" OnlyMyRoles="false" Collapsable="true" Caption="Settore responsabile" />
+                                                    </div>
                                                     <div id="uscContactRestFieldset">
                                                         <table class="datatable">
                                                             <thead>
@@ -226,9 +230,6 @@
                                                             </thead>
                                                         </table>
                                                         <usc:uscContattiSelRest runat="server" ID="uscContattiSelRest" />
-                                                    </div>
-                                                    <div id="responsibleRoleFieldset">
-                                                        <usc:uscRoleRest runat="server" ID="uscResponsibleRoles" ReadOnlyMode="false" MultipleRoles="false" OnlyMyRoles="false" Collapsable="true" Caption="Settore responsabile" />
                                                     </div>
                                                     <div id="authorizedRolesFieldset">
                                                         <usc:uscRoleRest runat="server" ID="uscAuthorizedRoles" ReadOnlyMode="false" MultipleRoles="true" Required="false" OnlyMyRoles="false" Collapsable="true" Caption="Settori autorizzati" RACIButtonEnabled="true" />

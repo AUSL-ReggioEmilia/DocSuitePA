@@ -73,7 +73,10 @@ class uscFascicleFolders {
     private _btnCreateFolder: Telerik.Web.UI.RadToolBarItem;
     private _btnDeleteFolder: Telerik.Web.UI.RadToolBarItem;
     private _btnModifyFolder: Telerik.Web.UI.RadToolBarItem;
+    private _btnRefreshFolders: Telerik.Web.UI.RadToolBarItem;
     private _btnMoveFolder: Telerik.Web.UI.RadToolBarItem;
+    private _btnUploadScanner: Telerik.Web.UI.RadToolBarItem;
+    private _btnUploadFile: Telerik.Web.UI.RadToolBarItem;
     private _fascicleFolderService: FascicleFolderService;
     private _fascicleService: FascicleService;
     private _btnExpandFascicleFolders: Telerik.Web.UI.RadButton;
@@ -158,7 +161,7 @@ class uscFascicleFolders {
                     let selectedNodeId: string = currentSelectedNode.get_value();
                     if (currentSelectedNode.get_attributes()) {
                         this.setFascicleFolder(selectedNodeId);
-                        let url: string = `../Fasc/FascicleFolderModifica.aspx?Type=Fasc&idFascicleFolder=${selectedNodeId}&SessionUniqueKey=${this.pageId}_${selectedNodeId}`;
+                        let url: string = `../Fasc/FascicleFolderModifica.aspx?Type=Fasc&idFascicleFolder=${selectedNodeId}&SessionUniqueKey=${this.pageId}_${selectedNodeId}&DoNotUpdateDatabase=${this.doNotUpdateDatabase}`;
                         this.openWindow(url, "managerModifyFolder", 480, 300);
                     }
                     break;
@@ -220,7 +223,7 @@ class uscFascicleFolders {
                     sessionStorage.removeItem(this.SESSION_FascicleHierarchy);
                     this.setRootNode(sessionStorage.getItem(this.SESSION_FascicleId));
                     this.loadFolders(sessionStorage.getItem(this.SESSION_FascicleId))
-                        .done(() => this.selectFascicleNode());                    
+                        .done(() => this.selectFascicleNode());
                     break;
                 }
 
@@ -233,7 +236,7 @@ class uscFascicleFolders {
                     sessionStorage.removeItem(SessionStorageKeysHelper.SESSION_KEY_COMPONENT_SCANNER);
                     let url: string = "";
                     if (this.scannerLightRestEnabled.toLocaleLowerCase() == "true") {
-                        url = `../UserControl/ScannerRest.aspx?&multipleEnabled=True`;
+                        url = `../UserControl/ScannerRest.aspx?multipleEnabled=False`;
                     }
                     this.openWindow(url, "managerScannerDocument", 800, 500, this.closeScannerWnd);
                     break;
@@ -294,6 +297,9 @@ class uscFascicleFolders {
         this._btnDeleteFolder = this._folderToolBar.findItemByValue("deleteFolder");
         this._btnModifyFolder = this._folderToolBar.findItemByValue("modifyFolder");
         this._btnMoveFolder = this._folderToolBar.findItemByValue("moveFolder");
+        this._btnUploadScanner = this._folderToolBar.findItemByValue("scanner");
+        this._btnUploadFile = this._folderToolBar.findItemByValue("uploadFile");
+        this._btnRefreshFolders = this._folderToolBar.findItemByValue(uscFascicleFolders.REFRESH_FolderHierarchy);
         this._managerModifyFolder.add_close(this.closeModifyWindow);
         this._checkedToolBarButtons = 0;
         this._managerCreateFolder.add_close(this.closeFolderInsertWindow);
@@ -306,6 +312,13 @@ class uscFascicleFolders {
 
         if (this.viewOnlyFolders) {
             this._pnlFascicleFolder.css("margin-top", "0");
+        }
+
+        if (this.doNotUpdateDatabase === "True") {
+            this._btnMoveFolder.set_visible(false);
+            this._btnMoveFolder.set_enabled(false);
+            this._btnRefreshFolders.set_visible(false);
+            this._btnRefreshFolders.set_enabled(false);
         }
 
         let fascicleDocumentConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "FascicleDocument");
@@ -386,7 +399,7 @@ class uscFascicleFolders {
     }
 
     setCloseAttributeFascicleFolder(): void {
-        this._treeFascicleFolders.get_attributes().setAttribute("isClosed", "false");
+        this._treeFascicleFolders.get_attributes().setAttribute("isClosed", "true");
         this._folderToolBar.set_enabled(false);
     }
 
@@ -639,6 +652,8 @@ class uscFascicleFolders {
             this._btnDeleteFolder.set_enabled(false);
             this._btnModifyFolder.set_enabled(false);
             this._btnMoveFolder.set_enabled(false);
+            this._btnUploadScanner.set_enabled(false);
+            this._btnUploadFile.set_enabled(false);
 
             if (parentNode != this._treeFascicleFolders.get_nodes().getNode(0)) {
                 this._btnModifyFolder.set_enabled(false);
@@ -708,7 +723,7 @@ class uscFascicleFolders {
         sender.set_loadingStatusPosition(Telerik.Web.UI.TreeViewLoadingStatusPosition.BeforeNodeText);
         if (sessionStorage.getItem(this.SESSION_FascicleHierarchy) == null ||
             sessionStorage.getItem(this.SESSION_FascicleHierarchy) == "[]") {
-               this.setSelectedNode(eventArgs.get_node());
+            this.setSelectedNode(eventArgs.get_node());
         } else {
             this.createModelInSession();
             let idFascicle: string = this._treeFascicleFolders.get_nodes().getNode(0).get_value();
@@ -758,6 +773,8 @@ class uscFascicleFolders {
         this._btnDeleteFolder.set_enabled(false);
         this._btnModifyFolder.set_enabled(false);
         this._btnMoveFolder.set_enabled(false);
+        this._btnUploadScanner.set_enabled(false);
+        this._btnUploadFile.set_enabled(false);
     }
 
     removeNode(idFascicleFolder: string) {
@@ -842,6 +859,7 @@ class uscFascicleFolders {
 
     closeDocumentWnd = (sender, args) => {
         sender.remove_close(this.closeDocumentWnd);
+        $(`#${this.pageId}`).triggerHandler(uscFascicleFolders.REFRESH_GRID_UPLOAD_DOCUMENTS);
         this.chainId = this._treeFascicleFolders.get_selectedNode().get_attributes().getAttribute(uscFascicleFolders.CHAIN_ID);
         let model: AjaxModel = <AjaxModel>{};
         model.ActionName = "Upload_document";
@@ -854,6 +872,7 @@ class uscFascicleFolders {
 
     closeScannerWnd = (sender, args) => {
         sender.remove_close(this.closeScannerWnd);
+        $(`#${this.pageId}`).triggerHandler(uscFascicleFolders.REFRESH_GRID_UPLOAD_DOCUMENTS);
         this.chainId = this._treeFascicleFolders.get_selectedNode().get_attributes().getAttribute(uscFascicleFolders.CHAIN_ID);
         var documents = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_COMPONENT_SCANNER);
         let model: AjaxModel = <AjaxModel>{};
@@ -882,7 +901,6 @@ class uscFascicleFolders {
                 }
             );
         }
-        $(`#${this.pageId}`).triggerHandler(uscFascicleFolders.REFRESH_GRID_UPLOAD_DOCUMENTS);
     }
 
 
@@ -908,7 +926,7 @@ class uscFascicleFolders {
             this.hiddenInputs();
             if (triggerHandler) {
                 $("#".concat(this.pageId)).triggerHandler(uscFascicleFolders.ROOT_NODE_CLICK);
-            }            
+            }
             return;
         }
         let attributeStatus: string = currentSelectedNode.get_attributes().getAttribute(this.TYPOLOGY_ATTRIBUTE);
@@ -934,9 +952,11 @@ class uscFascicleFolders {
                 this._btnDeleteFolder.set_enabled(!(hasCategory || hasDocuments || hasChildren || level < 3) && manageable);
                 this._btnModifyFolder.set_enabled(false);
                 this._btnMoveFolder.set_enabled(false);
+                this._btnUploadScanner.set_enabled(manageable);
+                this._btnUploadFile.set_enabled(manageable);
                 if (triggerHandler) {
                     $("#".concat(this.pageId)).triggerHandler(uscFascicleFolders.FASCICLE_TREE_NODE_CLICK);
-                }                
+                }
                 break;
             }
             case FascicleFolderTypology.SubFascicle: {
@@ -944,9 +964,11 @@ class uscFascicleFolders {
                 this._btnDeleteFolder.set_enabled(!(hasCategory || hasDocuments || hasChildren || level < 3) && manageable);
                 this._btnModifyFolder.set_enabled(!(hasCategory || level < 3) && manageable);
                 this._btnMoveFolder.set_enabled(manageable);
+                this._btnUploadScanner.set_enabled(manageable);
+                this._btnUploadFile.set_enabled(manageable);
                 if (triggerHandler) {
                     $("#".concat(this.pageId)).triggerHandler(uscFascicleFolders.SUBFASCICLE_TREE_NODE_CLICK);
-                }                
+                }
                 break;
             }
         }
@@ -977,7 +999,7 @@ class uscFascicleFolders {
 
     rebuildTreeFromSession(fascicleId: string): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
-        sessionStorage.setItem(this.SESSION_FascicleId, fascicleId);        
+        sessionStorage.setItem(this.SESSION_FascicleId, fascicleId);
         this.createTreeFromSession();
 
         for (let fascicleFolder of this.fascicleFoldersModel) {
@@ -990,7 +1012,7 @@ class uscFascicleFolders {
                                 this.setSelectedNode(toSelectNode, false);
                             } else {
                                 this.selectFascicleNode(false);
-                            }                         
+                            }
                         }
                         next();
                     })
@@ -1001,7 +1023,7 @@ class uscFascicleFolders {
                     });
             });
         }
-        
+
         $(document).queue((next) => {
             this._loadingPanel.hide(this.pageId);
             promise.resolve();
@@ -1050,7 +1072,7 @@ class uscFascicleFolders {
                 node.set_expanded(false);
             } else {
                 node.set_expanded(false);
-            }            
+            }
         }
         this._treeFascicleFolders.commitChanges();
     }

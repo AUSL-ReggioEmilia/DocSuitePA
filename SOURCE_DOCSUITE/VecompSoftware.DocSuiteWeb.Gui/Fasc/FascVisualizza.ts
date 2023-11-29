@@ -54,6 +54,11 @@ import FascicleRoleModel = require('App/Models/Fascicles/FascicleRoleModel');
 import uscStartWorkflow = require('UserControl/uscStartWorkflow');
 import WorkflowRoleModel = require('App/Models/Workflows/WorkflowRoleModel');
 import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
+import DocumentRootFolderViewModel = require("App/ViewModels/SignDocuments/DocumentRootFolderViewModel");
+import DocumentFolderViewModel = require("App/ViewModels/SignDocuments/DocumentFolderViewModel");
+import DocumentViewModel = require("App/ViewModels/SignDocuments/DocumentViewModel");
+import DocumentSignBehaviour = require("App/ViewModels/SignDocuments/DocumentSignBehaviour");
+import FileHelper = require("App/Helpers/FileHelper");
 
 class FascVisualizza extends FascicleBase {
     currentFascicleId: string;
@@ -105,6 +110,7 @@ class FascVisualizza extends FascicleBase {
     windowFascicleSearchId: string;
     currentTenantAOOId: string;
     isClosed: boolean
+    hasDgrooveSigner: string;
 
     private static UniqueId_ATTRIBUTE_NAME = "UniqueId";
     private static DocumentUnitName_ATTRIBUTE_NAME = "DocumentUnitName";
@@ -223,7 +229,14 @@ class FascVisualizza extends FascicleBase {
         this._btnRemove.add_clicking(this.btnRemove_OnClick);
         this._btnCompleteWorkflow.add_clicking(this.btnCompleteWorkflow_OnClick);
         this._btnAutorizza.add_clicking(this.btnAutorizza_OnClick);
-        this._btnSign.add_clicking(this.btnSign_OnClick);
+
+        let isIE = /(MSIE|Trident\/|Edge\/)/i.test(navigator.userAgent);
+        if (this.hasDgrooveSigner === "True" && isIE === false) {
+            this._btnSign.add_clicking(this.btnSign_DgrooveSigner_OnClick);
+        } else {
+            this._btnSign.add_clicking(this.btnSign_OnClick);
+        }
+
         this._btnWorkflow.add_clicking(this.btnWorkflow_OnClick);
         this._btnWorkflowLogs.add_clicking(this.btnWorkflowLogs_OnClick);
         this._btnFascicleLog.add_clicking(this.btnFascicleLog_OnClick);
@@ -276,7 +289,7 @@ class FascVisualizza extends FascicleBase {
 
                 let fascicleRoleModel: FascicleRoleModel = this._fascicleModel.FascicleRoles.filter(x => x.IsMaster == true)[0];
                 if (fascicleRoleModel != undefined) {
-                    let workflowRoleModel: WorkflowRoleModel = <WorkflowRoleModel>{ IdRole: fascicleRoleModel.Role.IdRole, TenantId: fascicleRoleModel.Role.TenantId };
+                    let workflowRoleModel: WorkflowRoleModel = <WorkflowRoleModel>{ IdRole: fascicleRoleModel.Role.IdRole, IdTenantAOO: fascicleRoleModel.Role.IdTenantAOO, UniqueId: fascicleRoleModel.Role.UniqueId };
                     sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_PROPOSER_ROLES, JSON.stringify(workflowRoleModel));
                 }
                 let wfCheckActivityAction: () => JQueryPromise<string>;
@@ -420,7 +433,6 @@ class FascVisualizza extends FascicleBase {
                         this._btnCompleteWorkflow.set_visible(false);
                         this.setBtnOpenVisibility();
                         this._btnUndo.set_visible(false);
-                        this._btnCopyToFascicle.set_visible(false);
                         let uscFascicolo: UscFascicolo = <UscFascicolo>$("#".concat(this.uscFascicoloId)).data();
                         if (!jQuery.isEmptyObject(uscFascicolo)) {
                             uscFascicolo.loadData(this._fascicleModel);
@@ -449,10 +461,10 @@ class FascVisualizza extends FascicleBase {
     }
 
     /**
-* Evento al click del pulsante "Autorizza"
-* @param sender
-* @param args
-*/
+    * Evento al click del pulsante "Sign"
+    * @param sender
+    * @param args
+    */
     btnSign_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         this.setWorkflowSessionStorage();
@@ -488,6 +500,94 @@ class FascVisualizza extends FascicleBase {
     }
 
     /**
+    * Evento al click del pulsante "Sign" (DgrooveSign)
+    * @param sender
+    * @param args
+    */
+    btnSign_DgrooveSigner_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
+        args.set_cancel(true);
+        this.setWorkflowSessionStorage();
+        let varStr: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL);
+        if (!varStr) {
+            this.showWarningMessage(this.uscNotificationId, "Nessun documento selezionato");
+            return false;
+        }
+        let fascicle: FascicleModel = JSON.parse(varStr);
+        if (!fascicle) {
+            this.showWarningMessage(this.uscNotificationId, "Nessun documento selezionato");
+            return false;
+        }
+        varStr = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENTS_REFERENCE_MODEL);
+        if (!varStr) {
+            this.showWarningMessage(this.uscNotificationId, "Nessun documento selezionato");
+            return false;
+        }
+        this._loadingPanel.show(this.pageContentId);
+        let documents: WorkflowReferenceBiblosModel[] = JSON.parse(varStr);
+        if (!documents || documents.length === 0) {
+            this._loadingPanel.hide(this.pageContentId);
+            this._notificationInfo.set_text("Nessun documento selezionato");
+            this._notificationInfo.show();
+            return;
+        }
+
+        let radGridUD: Telerik.Web.UI.RadGrid = <Telerik.Web.UI.RadGrid>$find(this.radGridUDId);
+        let dataItems: Telerik.Web.UI.GridDataItem[] = radGridUD.get_selectedItems();
+
+        let documentRoot: DocumentRootFolderViewModel = {} as DocumentRootFolderViewModel;
+        documentRoot.Id = this._fascicleModel.Number;
+        documentRoot.UniqueId = this._fascicleModel.UniqueId;
+        documentRoot.Name = this._fascicleModel.Title;
+        documentRoot.SignBehaviour = DocumentSignBehaviour.Fascicle;
+        documentRoot.DocumentFolders = [];
+
+        let documentFolder: DocumentFolderViewModel = {} as DocumentFolderViewModel;
+        documentFolder.Name = "Documenti";
+        documentFolder.ChainType = ChainType.Miscellanea;
+
+        let documentsToSign: DocumentViewModel[] = [];
+        let element: Telerik.Web.UI.RadButton;
+        let archiveChainId: string;
+        let archiveDocumentId: string;
+        let documentName: string;
+
+        let document: DocumentViewModel;
+        for (let item of dataItems) {
+            element = <Telerik.Web.UI.RadButton>(item.findControl(FascVisualizza.btnUDLink_CONTROL_NAME));
+            archiveChainId = element.get_element().getAttribute(FascVisualizza.BiblosChainId_ATTRIBUTE_NAME);
+            archiveDocumentId = element.get_element().getAttribute(FascVisualizza.BiblosDocumentId_ATTRIBUTE_NAME);
+            documentName = element.get_element().getAttribute(FascVisualizza.BiblosDocumentName_ATTRIBUTE_NAME);
+            document = {} as DocumentViewModel;
+            document.Mandatory = false;
+            document.MandatorySelectable = false;
+            document.DocumentId = archiveDocumentId;
+            document.Name = documentName;
+            document.ChainId = archiveChainId;
+            document.FascicleId = this._fascicleModel.UniqueId;
+
+            let extensions: string[] = documentName.split(".");
+            if (extensions != null && extensions.length > 0) {
+                let extension = extensions.pop().toLowerCase();
+                document.PadesCompliant = extension === FileHelper.PDF ? true : false;
+            }
+
+            documentsToSign.push(document);
+        }
+
+        documentFolder.Documents = documentsToSign;
+        documentRoot.DocumentFolders.push(documentFolder);
+
+        let docsToSigns: DocumentRootFolderViewModel[] = [documentRoot];
+
+        sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_DOCS_TO_SIGN, JSON.stringify(docsToSigns));
+
+        var linkUrl = "../Comm/DgrooveSigns.aspx";
+        window.location.href = linkUrl;
+
+        return false;
+    }
+
+    /**
 * Evento al click del pulsante "Autorizza"
 * @param sender
 * @param args
@@ -515,15 +615,16 @@ class FascVisualizza extends FascicleBase {
         this._manager.radconfirm("Sei sicuro di voler eliminare il documento selezionato dal fascicolo corrente?", (arg) => {
             if (arg) {
                 this._loadingPanel.show(this.pageContentId);
-                let documentsToDelete: string[] = [];
+                let documentsToDelete: any = {};
                 let udToDeletePromises: JQueryPromise<void>[] = [$.Deferred<void>().resolve().promise()];
                 for (let item of dataItems) {
                     let element: Telerik.Web.UI.RadButton = <Telerik.Web.UI.RadButton>(item.findControl(FascVisualizza.btnUDLink_CONTROL_NAME));
                     let uniqueId: string = element.get_element().getAttribute(FascVisualizza.UniqueId_ATTRIBUTE_NAME);
+                    let documentName: string = element.get_element().getAttribute(FascVisualizza.BiblosDocumentName_ATTRIBUTE_NAME);
                     let environment: string = element.get_element().getAttribute(FascVisualizza.Environment_ATTRIBUTE_NAME);
                     switch (<Environment>Number(environment)) {
                         case Environment.Document:
-                            documentsToDelete.push(uniqueId);
+                            documentsToDelete[uniqueId] = documentName;
                             break;
                         default:
                             udToDeletePromises.push(this.removeDocumentUnitFromFascicle(uniqueId));
@@ -533,11 +634,11 @@ class FascVisualizza extends FascicleBase {
 
                 $.when.apply(null, udToDeletePromises)
                     .done(() => {
-                        if (documentsToDelete.length > 0) {
+                        if (documentsToDelete && !$.isEmptyObject(documentsToDelete)) {
                             let ajaxRequest: AjaxModel = {} as AjaxModel;
                             ajaxRequest.ActionName = "Delete_Miscellanea_Document";
                             ajaxRequest.Value = new Array<string>();
-                            ajaxRequest.Value = documentsToDelete;
+                            ajaxRequest.Value.push(JSON.stringify(documentsToDelete));
                             this._ajaxManager.ajaxRequest(JSON.stringify(ajaxRequest));
                         } else {
                             this.sendRefreshUDRequest();
@@ -622,9 +723,14 @@ class FascVisualizza extends FascicleBase {
     * @param args
     */
     btnUndo_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
-        this._loadingPanel.show(this.pageContentId);
         args.set_cancel(true);
-        this.undoFascicle();
+        this._manager.radconfirm("Sei sicuro di voler cancellare il fascicolo?", (arg) => {
+            if (arg) {
+                this._loadingPanel.show(this.pageContentId);
+                args.set_cancel(true);
+                this.undoFascicle();
+            }
+        });
     }
 
 
@@ -667,17 +773,17 @@ class FascVisualizza extends FascicleBase {
         this.getFascicleDocumentUnits(qs, currentIdFascicleFolder)
             .done((data) => {
                 this.refreshUD(data, afterRemove);
-            }).fail((exception: ExceptionDTO) => {  
+            }).fail((exception: ExceptionDTO) => {
                 this._loadingPanel.hide(this.pageContentId);
                 $("#".concat(this.pageContentId)).hide();
                 this.showNotificationException(this.uscNotificationId, exception);
             });
     }
 
-    private getFascicleDocumentUnits(qs: string, currentIdFascicleFolder: string): JQueryPromise<DocumentUnitModel[]> {
-        let promise: JQueryDeferred<DocumentUnitModel[]> = $.Deferred<DocumentUnitModel[]>();
+    private getFascicleDocumentUnits(qs: string, currentIdFascicleFolder: string): JQueryPromise<FascicleDocumentUnitModel[]> {
+        let promise: JQueryDeferred<FascicleDocumentUnitModel[]> = $.Deferred<FascicleDocumentUnitModel[]>();
 
-        this._documentUnitService.getFascicleDocumentUnits(this._fascicleModel, qs, this.currentTenantAOOId, currentIdFascicleFolder, (data: DocumentUnitModel[]) => {
+        this._fascicleDocumentUnitService.getFascicleDocumentUnits(this._fascicleModel, qs, this.currentTenantAOOId, currentIdFascicleFolder, (data: FascicleDocumentUnitModel[]) => {
             promise.resolve(data);
         }, (exception: ExceptionDTO) => {
             promise.reject(exception);
@@ -690,7 +796,7 @@ class FascVisualizza extends FascicleBase {
      * @param sender
      * @param args
      */
-    refreshUD = (models: DocumentUnitModel[], updateFascicleDocument: boolean = false) => {
+    refreshUD = (models: FascicleDocumentUnitModel[], updateFascicleDocument: boolean = false) => {
         PageClassHelper.callUserControlFunctionSafe<UscFascicolo>(this.uscFascicoloId)
             .done((instance) => {
                 let selectedFolderId: string = "";
@@ -1000,7 +1106,6 @@ class FascVisualizza extends FascicleBase {
         this._btnLink.set_visible(!this.isClosed);
         this._btnAutorizza.set_visible(!this.isClosed);
         this._btnSign.set_visible(!this.isClosed);
-        this._btnCopyToFascicle.set_visible(!this.isClosed);
         this._btnDocuments.set_visible(viewRights.IsViewable || isPeriodicFascicle);
         let isWorkflowEnabled: boolean = this.workflowEnabled && isProcedureFascicle;
         let workflowButtonVisibility = isWorkflowEnabled && viewRights.HasAuthorizedWorkflows && viewRights.IsManageable;

@@ -41,7 +41,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.Commons
             Category category = null;
             IList<int> results = NHibernateSession.QueryOver<CategoryFascicle>()
                                     .Right.JoinAlias(x => x.Category, () => category)
-                                    .Where(() => category.IsActive == 1)
+                                    .Where(() => category.IsActive)
                                     .Where(Restrictions.IsNull(Projections.Property<CategoryFascicle>(x => x.Id)))
                                     .SelectList(list => list.SelectGroup(() => category.Id)
                                     ).List<int>();
@@ -54,7 +54,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.Commons
             Category category = null;
             IList<int> results = NHibernateSession.QueryOver<CategoryFascicle>()
                                     .Right.JoinAlias(x => x.Category, () => category)
-                                    .Where((x) => category.IsActive == 1 && x.DSWEnvironment == 0)
+                                    .Where((x) => category.IsActive && x.DSWEnvironment == 0)
                                     .SelectList(list => list.SelectGroup(() => category.Id)
                                     ).List<int>();
 

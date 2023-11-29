@@ -1,9 +1,5 @@
-﻿Imports System.Linq
-Imports NHibernate
+﻿Imports NHibernate
 Imports NHibernate.Criterion
-Imports NHibernate.SqlCommand
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.NHibernateManager
 
 Public Class NHSecurityGroupFinder
@@ -39,7 +35,6 @@ Public Class NHSecurityGroupFinder
     End Function
 
     Protected Overridable Function Decorate(criteria As ICriteria) As ICriteria
-        criteria.Add(Restrictions.Eq("TenantId", DocSuiteContext.Current.CurrentTenant.TenantId))
         criteria.AddOrder(Order.Asc("GroupName"))
 
         If Not OnContainerEnabled = Nothing Then

@@ -45,7 +45,7 @@ Public Class NHibernateTaskLockDao
         Dim failedTasks As IList(Of TaskLock) = New List(Of TaskLock)
         Dim tasksToDelete As IList(Of TaskLock) = Me.GetTasksByType(type)
 
-        Me.NHibernateSession.BeginTransaction()
+        Me.NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted)
 
         Try
             For Each task As TaskLock In tasksToDelete
@@ -84,7 +84,7 @@ Public Class NHibernateTaskLockDao
 
         tasksToDelete = criteria.List(Of TaskLock)()
 
-        Me.NHibernateSession.BeginTransaction()
+        Me.NHibernateSession.BeginTransaction(IsolationLevel.ReadCommitted)
 
         Try
             For Each task As TaskLock In tasksToDelete

@@ -61,7 +61,7 @@
                                 <p>
                                     <asp:Label ID="lblRecoveringTemplateCollaborations" runat="server" Visible="False" Style="color: Red; font-weight: bold" />
                                 </p>
-                                <telerik:RadButton runat="server" ID="btnTemplateCollaborationCorrects" Text="Correggi Template" Style="margin-top: 5px;" Visible="false" PostBackUrl="../Tblt/TbltTemplateCollaborationManager.aspx?Type=Comm&ViewNotActive=true" />
+                                <telerik:RadButton runat="server" ID="btnTemplateCollaborationCorrects" Text="Correggi Template" Style="margin-top: 5px;" Visible="false" PostBackUrl="../Tblt/TbltTemplateCollaboration.aspx?Type=Comm&ViewNotActive=true" />
                             </Content>
                         </telerik:LayoutRow>
                         <telerik:LayoutRow runat="server" HtmlTag="Div" ID="rowRecoverResolutionActivities" CssClass="intro-panel dsw-text-center">
@@ -83,7 +83,7 @@
                                     Text="Vedi caselle pec in errore"
                                     Style="margin-top: 5px;"
                                     Visible="false"
-                                    PostBackUrl="../PEC/PECMailBoxSettings.aspx?Type=Pec&ViewLoginError=True" />
+                                    PostBackUrl="~/Tblt/TbltPECMailBox.aspx?Type=Pec&ViewLoginError=True" />
                             </Content>
                         </telerik:LayoutRow>
                     </telerik:RadPageLayout>

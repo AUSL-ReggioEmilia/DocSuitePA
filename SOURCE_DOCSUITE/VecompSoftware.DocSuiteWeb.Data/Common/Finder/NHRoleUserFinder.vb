@@ -59,9 +59,8 @@ Public Class NHRoleUserFinder
         End If
 
         If RoleEnabled.HasValue Then
-            Criteria.Add(Restrictions.Eq("R.IsActive", Convert.ToInt16(RoleEnabled.Value)))
+            Criteria.Add(Restrictions.Eq("R.IsActive", RoleEnabled.Value))
         End If
-        Criteria.Add(Restrictions.Eq("R.TenantId", DocSuiteContext.Current.CurrentTenant.TenantId))
     End Sub
 
     Public Overridable Function List() As IList(Of RoleUser)

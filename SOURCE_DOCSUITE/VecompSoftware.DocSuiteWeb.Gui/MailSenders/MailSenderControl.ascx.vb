@@ -5,6 +5,7 @@ Imports System.Web
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Compress
 Imports VecompSoftware.Helpers.ExtensionMethods
@@ -458,11 +459,21 @@ Namespace MailSenders
                     Else
                         ' Allego i documenti
                         For Each originalAttachment As DocumentInfo In CurrentOriginalAttachments
-                            Facade.MessageFacade.AddAttachment(email.Message, originalAttachment, False)
+                            If TypeOf originalAttachment Is DocumentProxyDocumentInfo Then
+                                Dim newTempDoc As FileInfo = originalAttachment.SaveUniqueToTemp()
+                                Facade.MessageFacade.AddAttachment(email.Message, New TempFileDocumentInfo(originalAttachment.Name, newTempDoc), False)
+                            Else
+                                Facade.MessageFacade.AddAttachment(email.Message, originalAttachment, False)
+                            End If
                         Next
 
                         For Each pdfAttachment As DocumentInfo In CurrentPdfAttachments
-                            Facade.MessageFacade.AddAttachment(email.Message, pdfAttachment, True)
+                            If TypeOf pdfAttachment Is DocumentProxyDocumentInfo Then
+                                Dim newTempDoc As FileInfo = pdfAttachment.SaveUniqueToTemp()
+                                Facade.MessageFacade.AddAttachment(email.Message, New TempFileDocumentInfo(pdfAttachment.Name, newTempDoc), False)
+                            Else
+                                Facade.MessageFacade.AddAttachment(email.Message, pdfAttachment, True)
+                            End If
                         Next
                     End If
                 End If

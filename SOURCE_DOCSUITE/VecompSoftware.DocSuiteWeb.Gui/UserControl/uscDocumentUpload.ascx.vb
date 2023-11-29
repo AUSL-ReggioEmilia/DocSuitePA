@@ -8,6 +8,7 @@ Imports System.Web
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.DTO.SignDocuments
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
@@ -36,12 +37,15 @@ Partial Public Class uscDocumentUpload
     Private Const OpenWindowScript As String = "return {0}_OpenWindow('{1}', '{2}', '{3}');"
     Private Const OpenWindowScannerScript As String = "return {0}_OpenWindowScanner('{1}', '{2}', '{3}');"
     Private Const OpenWindowSignScript As String = "return {0}_OpenWindowSign('{1}', '{2}', '{3}');"
+    Private Const OpenWindowDgrooveSignScript As String = "return {0}_OpenWindowDgrooveSign('{1}', '{2}', '{3}', '{4}');"
     Private Const PrefixPadding As String = "000"
     Private Const TREEVIEW_NODE_DROPPING_FUNCTION As String = "{0}_onNodeDropping"
     Private Const EDIT_DOCUMENT_SCRIPT As String = "return {0}_editDocumentName();"
     Private Const TREENODE_EDITED_SCRIPT As String = "{0}_treeDocumentEdited"
     Private Const TREENODE_EDITED_END_SCRIPT As String = "{0}_responseEnd();"
     Private Const FakeNodeValue As String = "meta"
+    Private Const SignInfoAttributeName As String = "SignInfo"
+    Private Const NewDocumentName As String = "NewDocumentName"
 
     Private _wndHeight As Integer?
     Private _wndWidth As Integer?
@@ -52,6 +56,7 @@ Partial Public Class uscDocumentUpload
     Private _sendSourceDocument As Nullable(Of Boolean)
     Private _btnVersioning As Button
     Private _privacyLevelFacade As PrivacyLevelFacade
+    Private _disableSignButtonIfNotIE As Boolean = True
 
     Private _allowedExtensions As List(Of String)
 
@@ -160,6 +165,15 @@ Partial Public Class uscDocumentUpload
         End Get
         Set(ByVal value As Boolean)
             ViewState("MultipleDocuments") = value
+        End Set
+    End Property
+
+    Public Property HideScannerMultipleDocumentButton As Boolean
+        Get
+            Return CType(ViewState("HideScannerMultipleDocumentButton"), Boolean)
+        End Get
+        Set(ByVal value As Boolean)
+            ViewState("HideScannerMultipleDocumentButton") = value
         End Set
     End Property
 
@@ -397,6 +411,12 @@ Partial Public Class uscDocumentUpload
                 tmpDocInfo.AddAttribute(BiblosFacade.DOCUMENT_POSITION_ATTRIBUTE, SelectedNode.Index.ToString())
             End If
             Return tmpDocInfo
+        End Get
+    End Property
+
+    Public ReadOnly Property SelectedDocumentSignInfo As String
+        Get
+            Return GetDocumentSignInfoByNode(SelectedNode)
         End Get
     End Property
 
@@ -825,6 +845,12 @@ Partial Public Class uscDocumentUpload
             ViewState("DelegatedUser") = value
         End Set
     End Property
+
+    Public ReadOnly Property HasDgrooveSigner As Boolean
+        Get
+            Return DocSuiteContext.Current.HasDgrooveSigner
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
@@ -908,7 +934,7 @@ Partial Public Class uscDocumentUpload
                     tempDoc = New TempFileDocumentInfo(document.FileName, New FileInfo(pathInfo))
                     If tempDoc.Size > 0 OrElse ProtocolEnv.AllowZeroBytesUpload Then
                         LoadDocumentInfo(tempDoc, False, True, MultipleDocuments, True, False)
-                        RaiseEvent DocumentUploaded(Me, New DocumentEventArgs() With {.document = tempDoc})
+                        RaiseEvent DocumentUploaded(Me, New DocumentEventArgs() With {.Document = tempDoc})
 
                         AddNextPrefix()
                     End If
@@ -963,15 +989,48 @@ Partial Public Class uscDocumentUpload
                 FileLogger.Info(LoggerName, String.Format("[{0}.SIGN] RaiseEvent DocumentSigned", ClientID))
                 RaiseEvent DocumentSigned(Me, args)
                 UpdateTotalSize()
+            Case "DGROOVESIGN"
+                Dim signedDoc As DTO.SignDocuments.Document = JsonConvert.DeserializeObject(Of DTO.SignDocuments.Document)(HttpUtility.HtmlDecode(arguments(2)))
+
+                Dim tempFileName As String = $"{DocSuiteContext.Current.User.UserName}{Guid.NewGuid()}{signedDoc.Name}"
+                Dim tempPath As String = Path.Combine(CommonInstance.AppTempPath, tempFileName)
+                ' Salvataggio stream
+                File.WriteAllBytes(tempPath, signedDoc.Content)
+
+                Dim signed As TempFileDocumentInfo = New TempFileDocumentInfo(signedDoc.Name, New FileInfo(tempPath), True, signedDoc.Content.Length)
+                Dim args As New DocumentSignedEventArgs()
+                args.DestinationDocument = signed
+                args.SourceDocument = SelectedDocumentInfo
+
+                FileLogger.Info(LoggerName, String.Format("[{0}.DGROOVESIGN] fileName: {1}", ClientID, signed.Name))
+
+                If Not signed.FileInfo.Exists Then
+                    BasePage.AjaxAlert(String.Format("Documento firmato non è valido, reinserire il documento. {0}", ProtocolEnv.DefaultErrorMessage), False)
+                    Exit Sub
+                End If
+
+                Dim node As RadTreeNode = SelectedNode
+                node.Text = signed.Name
+                If ShowDocumentsSize Then
+                    node.Text &= String.Format(" ({0})", signed.Size.ToByteFormattedString(0))
+                End If
+                node.ImageUrl = ImagePath.FromDocumentInfo(signed, True) ' ImagePath.FromFile(signed.Name)
+                node.Value = signed.FileInfo.Name
+                node.Attributes("key") = signed.ToQueryString().AsEncodedQueryString()
+                node.Attributes("EncodeFileName") = signed.FileInfo.Name
+
+                FileLogger.Info(LoggerName, String.Format("[{0}.DGROOVESIGN] RaiseEvent DocumentSigned", ClientID))
+                RaiseEvent DocumentSigned(Me, args)
+                UpdateTotalSize()
 
             Case "REMOVE"
                 RemoveNode(SelectedNode)
                 If (FilenameAutomaticRenameEnabled) Then
-                    Dim count As Int16 = 0
+                    Dim count As Short = 0
                     For Each doc As RadTreeNode In RadTreeViewDocument.Nodes(0).Nodes
                         Dim res As String() = WebHelper.SplitUploadDocumentRename(doc.Text)
                         If (res IsNot Nothing AndAlso res.Length = 4) Then
-                            count += 1
+                            count += 1S
                             doc.Text = WebHelper.UploadDocumentSetFilename(WebHelper.UploadDocumentRename(res(0), Int16.Parse(res(1)), Int32.Parse(res(2))), res(3), count)
                         End If
                     Next
@@ -1015,6 +1074,12 @@ Partial Public Class uscDocumentUpload
                 End If
         End Select
 
+    End Sub
+
+    Protected Sub RefreshTree(node As RadTreeNode)
+        If node IsNot Nothing AndAlso Not String.IsNullOrEmpty(node.Attributes(NewDocumentName)) Then
+            DirectCast(SelectedNode.FindControl("lbl"), Label).Text = node.Attributes(NewDocumentName)
+        End If
     End Sub
 
     Protected Sub btnFrontespizio_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnFrontespizio.Click
@@ -1095,14 +1160,14 @@ Partial Public Class uscDocumentUpload
     Private Sub btnCopyResl_Click(sender As Object, e As ImageClickEventArgs) Handles btnCopyResl.Click
         wndCopyResl.Width = Unit.Pixel(ProtocolEnv.ModalWidth)
         wndCopyResl.Height = Unit.Pixel(ProtocolEnv.ModalHeight)
-        wndCopyResl.OnClientClose = JavascriptCloseReslFunction
+        wndCopyResl.OnClientClose = JavascriptClosingFunction
         AjaxManager.ResponseScripts.Add(String.Format(OpenWindowScript, ID, "../Resl/ReslAllega.aspx", wndCopyResl.ClientID, "Titolo=Selezione Protocollo&Action=CopyProtocolDocuments&Type=Resl"))
     End Sub
 
     Private Sub btnCopySeries_Click(sender As Object, e As ImageClickEventArgs) Handles btnCopySeries.Click
         wndCopySeries.Height = Unit.Pixel(ProtocolEnv.ModalHeight)
         wndCopySeries.Width = Unit.Pixel(ProtocolEnv.ModalWidth)
-        wndCopySeries.OnClientClose = JavascriptCloseSeriesFunction
+        wndCopySeries.OnClientClose = JavascriptClosingFunction
         wndCopySeries.Title = "Copia da " & ProtocolEnv.DocumentSeriesName
         AjaxManager.ResponseScripts.Add(String.Format(OpenWindowScript, ID, "../Series/AttachDocuments.aspx", wndCopySeries.ClientID, "Titolo=Selezione Protocollo&Action=CopyProtocolDocuments&Type=Series"))
     End Sub
@@ -1110,7 +1175,7 @@ Partial Public Class uscDocumentUpload
     Private Sub btnCopyUDS_Click(sender As Object, e As ImageClickEventArgs) Handles btnCopyUDS.Click
         wndCopyUDS.Height = Unit.Pixel(ProtocolEnv.ModalHeight)
         wndCopyUDS.Width = Unit.Pixel(ProtocolEnv.ModalWidth)
-        wndCopyUDS.OnClientClose = JavascriptCloseUDSFunction
+        wndCopyUDS.OnClientClose = JavascriptClosingFunction
         AjaxManager.ResponseScripts.Add(String.Format(OpenWindowScript, ID, "../UDS/AttachDocuments.aspx", wndCopyUDS.ClientID, "Titolo=Selezione Protocollo&Action=CopyProtocolDocuments&Type=UDS"))
     End Sub
 
@@ -1120,16 +1185,28 @@ Partial Public Class uscDocumentUpload
             Exit Sub
         End If
 
+        Dim parameters As String = SelectedDocumentInfo.ToQueryString().AsEncodedQueryString()
         Dim args As New DocumentBeforeSignEventArgs()
         args.SourceDocument = SelectedDocumentInfo
         RaiseEvent DocumentBeforeSign(Me, args)
-
         If args.Cancel Then
             Exit Sub
         End If
 
+        'Se il dgroove signer è attivo e non sono su IE pagina di firma nuova
+        If HasDgrooveSigner AndAlso Request.Browser.Browser.Equals("internetexplorer", StringComparison.OrdinalIgnoreCase) = False Then
+            If String.IsNullOrEmpty(SelectedDocumentSignInfo) = False Then
+                Dim script As String = String.Format("SaveToSessionStorageAndRedirect('{0}');", HttpUtility.JavaScriptStringEncode(SelectedDocumentSignInfo))
+                AjaxManager.ResponseScripts.Add(script)
+                Exit Sub
+            End If
+            signWindow.OnClientClose = ID & "_CloseDgrooveSignWindow"
+            AjaxManager.ResponseScripts.Add(String.Format(OpenWindowDgrooveSignScript, ID, "../Comm/DgrooveSigns.aspx", signWindow.ClientID, parameters, HttpUtility.JavaScriptStringEncode(GetDgrooveSignerInfo(SelectedDocumentInfo))))
+            Exit Sub
+        End If
+
+        'Altrimenti pagina di firma vecchia
         signWindow.OnClientClose = ID & "_CloseSignWindow"
-        Dim parameters As String = SelectedDocumentInfo.ToQueryString().AsEncodedQueryString()
         If CloseAfterSignPdfConversion Then
             parameters = String.Concat(parameters, "&CloseAfterPdfConversion=True")
         End If
@@ -1147,8 +1224,8 @@ Partial Public Class uscDocumentUpload
         If ProtocolEnv.ScannerLightRestEnabled Then
             scannerLightPath = SCANNER_LIGHT_PATH_REST
             params.AppendFormat("&multipleEnabled={0}", MultipleDocuments)
-            windowScannerDocument.Width = Unit.Pixel(700)
-            windowScannerDocument.Height = Unit.Pixel(480)
+            windowScannerDocument.Width = Unit.Pixel(1005)
+            windowScannerDocument.Height = Unit.Pixel(765)
             windowScannerDocument.OnClientClose = JavascriptClosingScannerRestFunction
         End If
         AjaxManager.ResponseScripts.Add(String.Format(OpenWindowScannerScript, ID, scannerLightPath, windowScannerDocument.ClientID, params.ToString(), ""))
@@ -1270,6 +1347,8 @@ Partial Public Class uscDocumentUpload
         End If
 
         nodeEdited.Text = newText
+        SelectedNode.AddAttribute(NewDocumentName, newText)
+        RefreshTree(nodeEdited)
         Dim selectedDocInfo As DocumentInfo = SelectedDocumentInfo
         selectedDocInfo.Name = newText
         SelectedNode.AddAttribute("key", selectedDocInfo.ToQueryString().AsEncodedQueryString())
@@ -1456,6 +1535,13 @@ Partial Public Class uscDocumentUpload
         End If
 
         Return DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(node.Attributes("key")))
+    End Function
+
+    Public Shared Function GetDocumentSignInfoByNode(node As RadTreeNode) As String
+        If node Is Nothing OrElse node.Attributes Is Nothing OrElse String.IsNullOrEmpty(node.Attributes(SignInfoAttributeName)) Then
+            Return Nothing
+        End If
+        Return node.Attributes(SignInfoAttributeName)
     End Function
 
     Public Function GetNodeByDocumentInfo(document As DocumentInfo) As RadTreeNode
@@ -1757,6 +1843,19 @@ Partial Public Class uscDocumentUpload
         End If
         RadTreeViewDocument.DataBind()
     End Sub
+
+    Private Function GetDgrooveSignerInfo(docInfo As TempFileDocumentInfo) As String
+        Dim docRootFolder As DocumentRootFolder = New DocumentRootFolder() With {.SignBehaviour = DocumentSignBehaviour.DocumentUploadTempFolder}
+        Dim docFolder As DTO.SignDocuments.DocumentFolder = New DTO.SignDocuments.DocumentFolder() With {.Name = "Da Firmare"}
+
+        Dim docToSign As DTO.SignDocuments.Document = New DTO.SignDocuments.Document(docInfo)
+        docToSign.Mandatory = False
+        docToSign.MandatorySelectable = False
+        docFolder.Documents.Add(docToSign)
+
+        docRootFolder.DocumentFolders = New List(Of DTO.SignDocuments.DocumentFolder) From {docFolder}
+        Return JsonConvert.SerializeObject(New List(Of DocumentRootFolder) From {docRootFolder})
+    End Function
 #End Region
 
 End Class

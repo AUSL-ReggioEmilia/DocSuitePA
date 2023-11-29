@@ -26,7 +26,7 @@ namespace BiblosDS.Library.Common.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=srvbiblos;Initial Catalog=BiblosDS2009;Integrated Security=True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=.;Initial Catalog=BiblosDS2009;Integrated Security=True")]
         public string BiblosDS2009ConnectionString {
             get {
                 return ((string)(this["BiblosDS2009ConnectionString"]));
@@ -36,7 +36,7 @@ namespace BiblosDS.Library.Common.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=PC-TERA1;Initial Catalog=BiblosDS2009;User ID=DocSuite")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=PC-TERA1;Initial Catalog=BiblosDS2009;User ID=utente")]
         public string BiblosDS2009ConnectionString2 {
             get {
                 return ((string)(this["BiblosDS2009ConnectionString2"]));

@@ -101,7 +101,7 @@ Public Class MessageFacade
             End If
 
 #If DEBUG Then
-            recipientAddress = recipientAddress.Replace("**REMOVE**.it", "@vecompsw.emea.microsoftonline.com")
+            recipientAddress = recipientAddress.Replace("@vecompsoftware.it", "@vecompsw.emea.microsoftonline.com")
 #End If
 
             ' Invio la mail di notifica al precedente gestore

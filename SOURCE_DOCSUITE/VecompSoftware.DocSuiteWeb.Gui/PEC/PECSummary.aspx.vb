@@ -1,20 +1,26 @@
 ﻿Imports System.Collections.Generic
-Imports System.Text
 Imports System.Linq
-Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Gui.Viewers.Extensions
-Imports VecompSoftware.DocSuiteWeb.Facade.PEC
-Imports VecompSoftware.Services.Biblos
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Helpers.Web
-Imports VecompSoftware.Services.Biblos.Models
+Imports System.Text
+Imports System.Text.RegularExpressions
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
+Imports VecompSoftware.DocSuiteWeb.DTO.WorkflowsElsa
+Imports VecompSoftware.DocSuiteWeb.Entity.Conservations
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
+Imports VecompSoftware.DocSuiteWeb.Facade.PEC
+Imports VecompSoftware.DocSuiteWeb.Gui.Viewers.Extensions
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Services.Biblos
+Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Services.Logging
+Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI
 
 Public Class PECSummary
     Inherits PECBasePage
@@ -22,7 +28,7 @@ Public Class PECSummary
     Implements IHavePecMail
 
 #Region " Fields "
-
+    Private _currentConservation As Conservation
 #End Region
 
 #Region " Properties "
@@ -75,6 +81,22 @@ Public Class PECSummary
         End Get
     End Property
 
+    Public ReadOnly Property CurrentConservation As Conservation
+        Get
+            If _currentConservation Is Nothing Then
+                Dim conservation As Conservation = WebAPIImpersonatorFacade.ImpersonateFinder(New ConservationFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.UniqueId = CurrentPecMail.UniqueId
+                        finder.EnablePaging = False
+                        Return finder.DoSearch().Select(Function(x) x.Entity).FirstOrDefault()
+                    End Function)
+                _currentConservation = conservation
+            End If
+            Return _currentConservation
+        End Get
+    End Property
+
+
 #End Region
 
 #Region " Events "
@@ -82,9 +104,18 @@ Public Class PECSummary
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         InitializeAjax()
         InitIcons()
+        LoadConservation()
 
         If Not IsPostBack AndAlso Not Page.IsCallback Then
             SetResponseNoCache()
+            If CurrentPecMail.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager AndAlso Not String.IsNullOrEmpty(CurrentPecMail.MailContent) Then
+                Dim results As String = New FacadeElsaWebAPI(ProtocolEnv.DocSuiteNextElsaBaseURL).StartPreparePECMailDocumentsWorkflow(CurrentPecMail.UniqueId, JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(CurrentPecMail.MailContent))
+                If CurrentPecMail.Receipts IsNot Nothing AndAlso CurrentPecMail.Receipts.Count > 0 Then
+                    For Each pecMailReceipt As PECMailReceipt In CurrentPecMail.Receipts.Where(Function(x) x.Parent.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager AndAlso Not String.IsNullOrWhiteSpace(x.Parent.MailContent))
+                        results = New FacadeElsaWebAPI(ProtocolEnv.DocSuiteNextElsaBaseURL).StartPreparePECMailDocumentsWorkflow(pecMailReceipt.Parent.UniqueId, JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(pecMailReceipt.Parent.MailContent))
+                    Next
+                End If
+            End If
 
             If Not String.IsNullOrEmpty(CurrentPecMail.Segnatura) Then
                 uscInteropInfo.Visible = True
@@ -94,8 +125,7 @@ Public Class PECSummary
                 CommonShared.UserConnectedBelongsTo(ProtocolEnv.GroupPecAutoHandle, True) AndAlso
                 CurrentPecMail.Direction = PECMailDirection.Ingoing AndAlso
                 String.IsNullOrEmpty(CurrentPecMail.Handler) AndAlso
-                CurrentPecMailRights.CanHandle AndAlso
-                Not PecUnhandled Then
+                CurrentPecMailRights.CanHandle AndAlso Not PecUnhandled Then
                 ' Prendi in carico la PEC
 
                 CurrentPecMail.Handler = DocSuiteContext.Current.User.FullUserName
@@ -114,17 +144,15 @@ Public Class PECSummary
             '' Gestione del download dell'eml originale - Se l'utente è amministratore o è presente nel gruppo
             If CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupOriginalEmlRight Then
                 If CurrentPecMail.IDMailContent <> Guid.Empty Then
-                    Dim mainChain As BiblosChainInfo = New BiblosChainInfo(CurrentPecMail.IDMailContent)
-                    If Not mainChain.HasActiveDocuments() Then
+                    If CurrentPecMail.ProcessStatus <> PECMailProcessStatus.StoredInDocumentManager AndAlso Not New BiblosChainInfo(CurrentPecMail.IDMailContent).HasActiveDocuments() Then
                         btnOriginalEml.Visible = True
                         btnOriginalEml.Enabled = False
                         btnOriginalEml.Text = String.Format("Scarica {0} originale", PecLabel)
                         btnOriginalEml.ToolTip = "La PEC originale è stata rimossa in quanto storica e non più di interesse."
                     Else
-                        Dim original As DocumentInfo = Facade.PECMailFacade.GetOriginalEml(CurrentPecMail)
+                        Dim original As DocumentInfo = Facade.PECMailFacade.GetOriginalEml(CurrentPecMail, New Action(Sub() DelegateElsaInitialize(CurrentPecMail)))
                         If original IsNot Nothing Then
                             btnOriginalEml.Text = String.Format("Scarica {0} originale", PecLabel)
-                            ' btnOriginalEml.PostBackUrl = original.DownloadLink()
                             btnOriginalEml.Visible = True
                             btnOriginalEml.Enabled = True
                         End If
@@ -132,8 +160,8 @@ Public Class PECSummary
                 End If
 
                 If cmdPECView.Visible AndAlso CurrentPecMail.IDAttachments <> Guid.Empty Then
-                    Dim chain As BiblosChainInfo = New BiblosChainInfo(CurrentPecMail.IDAttachments)
-                    If chain.HasActiveDocuments() Then
+                    If CurrentPecMail.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager OrElse
+                        (CurrentPecMail.ProcessStatus <> PECMailProcessStatus.StoredInDocumentManager AndAlso New BiblosChainInfo(CurrentPecMail.IDAttachments).HasActiveDocuments()) Then
                         cmdPECView.Enabled = True
                     Else
                         cmdPECView.Enabled = False
@@ -223,7 +251,7 @@ Public Class PECSummary
     End Sub
 
     Private Sub btnOriginalEml_Click(sender As Object, e As EventArgs) Handles btnOriginalEml.Click
-        Dim original As DocumentInfo = Facade.PECMailFacade.GetOriginalEml(CurrentPecMail)
+        Dim original As DocumentInfo = Facade.PECMailFacade.GetOriginalEml(CurrentPecMail, New Action(Sub() DelegateElsaInitialize(CurrentPecMail)))
         Dim url As String = original.DownloadLink()
         url = String.Format(url, Me.CurrentPecMail.Id, Me.ProtocolBoxEnabled)
         AjaxManager.ResponseScripts.Add(String.Format("StartDownload('{0}');", url))
@@ -331,6 +359,7 @@ Public Class PECSummary
             Me.btnRaccomandata.Visible = DocSuiteContext.Current.ProtocolEnv.FastProtocolSenderEnabled _
                 AndAlso DocSuiteContext.Current.ProtocolEnv.IsRaccomandataEnabled
             Me.cmdResend.Visible = DocSuiteContext.Current.ProtocolEnv.FastProtocolSenderEnabled
+
         End If
 
         If Not IsReadOnly Then
@@ -410,11 +439,25 @@ Public Class PECSummary
         If CommonShared.HasGroupPECFisicalDeleteRight AndAlso ProtocolEnv.RemovePECEnabledInPECMailBoxes.Contains(CurrentPecMail.MailBox.Id) Then
             btnFisicalRemovePEC.Enabled = True
         End If
+
+        If CurrentConservation IsNot Nothing AndAlso CurrentConservation.Status = ConservationStatus.Conservated Then
+            btnDelete.Visible = False
+        End If
+
+        If ProtocolEnv.PECMailInsertAuthorizationEnabled AndAlso Not Facade.DomainUserFacade.HasCurrentRight(CurrentDomainUser, DSWEnvironmentType.Protocol, DomainUserFacade.HasPECSendableRight) Then
+            btnReply.Visible = False
+            btnReplyAll.Visible = False
+        End If
+
+        If ProtocolEnv.WorkflowManagerEnabled Then
+            btnWorkflow.Enabled = True
+            btnWorkflow.Visible = True
+        End If
     End Sub
 
     Private Sub InitializePec()
 
-        If CurrentPecMail.HasDocumentUnit() AndAlso CurrentPecMail.DocumentUnit.Environment = DSWEnvironment.Protocol Then
+        If CurrentPecMail.HasDocumentUnit() AndAlso CurrentPecMail.DocumentUnit IsNot Nothing AndAlso CurrentPecMail.DocumentUnit.Environment = DSWEnvironment.Protocol Then
             Dim protocol As Protocol = Facade.ProtocolFacade.GetById(CurrentPecMail.DocumentUnit.Id)
             uscProtocolPreview.CurrentProtocol = protocol
         Else
@@ -460,7 +503,7 @@ Public Class PECSummary
         End If
 
         ''Gestione Size
-        lblPecSize.Text = Facade.PECMailFacade.GetCalculatedSize(CurrentPecMail)
+        lblPecSize.Text = Facade.PECMailFacade.GetCalculatedSize(CurrentPecMail, New Action(Sub() DelegateElsaInitialize(CurrentPecMail)))
 
         lblStatus.Text = ActiveType.Message(CurrentPecMail.IsActive)
 
@@ -569,6 +612,10 @@ Public Class PECSummary
             AggiungiIcona(cell, kvp.Key, kvp.Value)
         End If
 
+
+        If ProtocolEnv.ConservationEnabled AndAlso CurrentConservation IsNot Nothing Then
+            AggiungiIcona(cell, ConservationHelper.StatusBigIcon(CurrentConservation.Status), ConservationHelper.StatusDescription(CurrentConservation.Status))
+        End If
     End Sub
 
     Private Sub AggiungiIcona(ByVal c As TableCell, ByVal imageUrl As String, ByVal toolTip As String)
@@ -622,6 +669,31 @@ Public Class PECSummary
         lblHandler.Text = temp
     End Sub
 
+    Public Sub LoadConservation()
+        trConservationStatus.Visible = False
+
+        If ProtocolEnv.ConservationEnabled AndAlso CurrentConservation IsNot Nothing Then
+            trConservationStatus.Visible = True
+            conservationIcon.ImageUrl = ConservationHelper.StatusSmallIcon(CurrentConservation.Status)
+            lblConservationStatus.Text = ConservationHelper.StatusDescription(CurrentConservation.Status)
+
+            If String.IsNullOrEmpty(CurrentConservation.Uri) Then
+                Exit Sub
+            End If
+
+            If Not Regex.IsMatch(CurrentConservation.Uri, ProtocolEnv.ConservationURIValidationRegex) Then
+                lblConservationUri.Visible = True
+                conservationUriLabel.Visible = True
+
+                lblConservationStatus.ToolTip = "Url non compatibile con il portale ingestor"
+                lblConservationUri.Text = CurrentConservation.Uri
+                Exit Sub
+            End If
+            If Not String.IsNullOrWhiteSpace(ProtocolEnv.IngestorBaseURL) Then
+                lblConservationStatus.NavigateUrl = $"{ProtocolEnv.IngestorBaseURL}/{CurrentConservation.Uri}"
+            End If
+        End If
+    End Sub
 #End Region
 
 

@@ -1,4 +1,4 @@
-﻿<%@ Page AutoEventWireup="false" CodeBehind="CommonSelContactDomain.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.CommonSelContactDomain" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="Selezione contatto da Rubrica Aziendale" %>
+﻿<%@ Page AutoEventWireup="false" CodeBehind="CommonSelContactDomain.aspx.vb" Inherits="VecompSoftware.DocSuiteWeb.Gui.CommonSelContactDomain" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="Selezione contatto da rubrica organizzazione" %>
 
 <%@ Register Src="../UserControl/uscSearchADUser.ascx" TagName="uscUserSearch" TagPrefix="uc" %>
 

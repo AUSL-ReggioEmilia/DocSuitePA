@@ -12,6 +12,9 @@ Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
 Imports Telerik.Web.UI
 Imports VecompSoftware.Services.Logging
 Imports System.Web
+Imports WebAPIUDS = VecompSoftware.DocSuiteWeb.Entity.UDS
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
 
 Partial Public Class UDSAutorizza
     Inherits UDSBasePage
@@ -25,6 +28,8 @@ Partial Public Class UDSAutorizza
     Public Const COMMAND_SUCCESS As String = "Attendere il termine dell'attività di {0}."
     Private Const ON_ERROR_FUNCTION As String = "onError('{0}')"
     Private Const UDS_SUMMARY_PATH As String = "~/UDS/UDSView.aspx?Type=UDS&IdUDS={0}&IdUDSRepository={1}"
+    Private _udsUserFinder As UDSUserFinder
+    Private authorizedUsers As ICollection(Of WebAPIUDS.UDSUser)
 
 #End Region
 
@@ -47,12 +52,41 @@ Partial Public Class UDSAutorizza
         End Get
     End Property
 
+    Public ReadOnly Property UDSUserFinder As UDSUserFinder
+        Get
+            If _udsUserFinder Is Nothing Then
+                _udsUserFinder = New UDSUserFinder(DocSuiteContext.Current.Tenants)
+            End If
+            Return _udsUserFinder
+        End Get
+    End Property
+
+    Public ReadOnly Property AuhtorizedUsers As ICollection(Of WebAPIUDS.UDSUser)
+        Get
+            If authorizedUsers Is Nothing Then
+                authorizedUsers = New List(Of WebAPIUDS.UDSUser)
+                Dim result As ICollection(Of WebAPIDto(Of WebAPIUDS.UDSUser)) = WebAPIImpersonatorFacade.ImpersonateFinder(UDSUserFinder,
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.IdUDS = UDSSource.Id
+                        finder.EnablePaging = False
+                        Return finder.DoSearch()
+                    End Function)
+
+                If result IsNot Nothing AndAlso result.Count() > 0 Then
+                    authorizedUsers = result.Select(Function(x) x.Entity).ToList()
+                End If
+            End If
+            Return authorizedUsers
+        End Get
+    End Property
 #End Region
 
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
         InitializeAjax()
+        uscAutorizza.UserMultiSelectionEnabled = UDSSource.UDSModel.Model.Authorizations.AllowMultiUserAuthorization
         If Not IsPostBack Then
             Initialize()
         End If
@@ -96,9 +130,16 @@ Partial Public Class UDSAutorizza
             Dim model As ReferenceModel
             For Each role As Role In uscAutorizza.GetRoles()
                 model = New ReferenceModel()
+                model.AuthorizationInstanceType = AuthorizationInstanceType.Role
                 model.AuthorizationType = AuthorizationType.Accounted
                 model.EntityId = role.Id
                 model.UniqueId = role.UniqueId
+                models.Add(model)
+            Next
+            For Each user As KeyValuePair(Of String, String) In uscAutorizza.GetUsers()
+                model = New ReferenceModel()
+                model.AuthorizationInstanceType = AuthorizationInstanceType.User
+                model.Username = user.Key
                 models.Add(model)
             Next
             udsModel.FillAuthorizations(models)
@@ -141,21 +182,26 @@ Partial Public Class UDSAutorizza
         uscUDS.UDSLastChangedUser = UDSSource.LastChangedUser
         uscUDS.UDSContainer = UDSSource.UDSRepository.Container
         uscUDS.UDSId = UDSSource.Id
+
         Dim roles As New List(Of Role)
+        Dim users As New Dictionary(Of String, String)
         If UDSSource.Authorizations.Count() > 0 Then
             For Each item As UDSEntityRoleDto In UDSSource.Authorizations
-                If item.IdRole.HasValue Then
+                If item.IdRole.HasValue AndAlso item.AuthorizationInstanceType = AuthorizationInstanceType.Role Then
                     Dim role As Role = Facade.RoleFacade.GetById(item.IdRole.Value)
                     roles.Add(role)
+                ElseIf item.AuthorizationInstanceType = AuthorizationInstanceType.User Then
+                    Dim user As AccountModel = CommonAD.GetAccount(item.Username.Split("\"c)(1))
+                    users.Add(user.GetFullUserName(), $"{user.DisplayName} ({user.GetFullUserName()})")
                 End If
             Next
         End If
 
-        If ProtocolEnv.MultiDomainEnabled AndAlso ProtocolEnv.TenantAuthorizationEnabled Then
-            uscAutorizza.TenantEnabled = True
-        End If
-
+        uscAutorizza.UserMultiSelectionEnabled = UDSSource.UDSModel.Model.Authorizations.AllowMultiUserAuthorization
+        uscAutorizza.UserAuthorizationEnabled = UDSSource.UDSModel.Model.Authorizations.UserAuthorizationEnabled
+        uscAutorizza.InitializeUserAuthorization()
         uscAutorizza.SourceRoles = roles
+        uscAutorizza.SourceUsers = users
         uscAutorizza.DataBind()
 
         Title = String.Format("{0} - Autorizzazioni", UDSSource.UDSModel.Model.Title)

@@ -35,8 +35,7 @@ Partial Public Class TbltTitoloStudioGes
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         MasterDocSuite.TitleVisible = False
         If Not CommonShared.HasGroupAdministratorRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
 
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma)
@@ -53,7 +52,7 @@ Partial Public Class TbltTitoloStudioGes
                     .Id = Facade.ContactTitleFacade.GetMaxId() + 1
                     .Code = txtCode.Text
                     .Description = txtObject.Text
-                    .IsActive = 1
+                    .IsActive = True
                     .RegistrationDate = DateTimeOffset.UtcNow
                     .RegistrationUser = DocSuiteContext.Current.User.FullUserName
                 End With
@@ -78,7 +77,7 @@ Partial Public Class TbltTitoloStudioGes
                 With CurrentContactTitle
                     .Code = txtCode.Text
                     .Description = txtObject.Text
-                    .IsActive = 1
+                    .IsActive = True
                     .LastChangedDate = DateTimeOffset.UtcNow
                     .LastChangedUser = DocSuiteContext.Current.User.FullUserName
                 End With

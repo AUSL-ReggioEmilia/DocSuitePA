@@ -311,15 +311,6 @@ Partial Public Class uscProtocollo
     Protected WithEvents tblAltri As Global.System.Web.UI.HtmlControls.HtmlTable
 
     '''<summary>
-    '''LocationName control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents LocationName As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''ContainerName control.
     '''</summary>
     '''<remarks>
@@ -327,6 +318,24 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ContainerName As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblProtocolRegistrationUser control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblProtocolRegistrationUser As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblProtocolLastChangedUser control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblProtocolLastChangedUser As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''rowProponente control.
@@ -365,31 +374,49 @@ Partial Public Class uscProtocollo
     Protected WithEvents lblCheckPublication As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblProtocolRegistrationUser control.
+    '''trConservationStatus control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblProtocolRegistrationUser As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents trConservationStatus As Global.System.Web.UI.HtmlControls.HtmlTableRow
 
     '''<summary>
-    '''lblProtocolLastChangedUser control.
+    '''imgConservationIcon control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblProtocolLastChangedUser As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents imgConservationIcon As Global.System.Web.UI.WebControls.Image
 
     '''<summary>
-    '''lblProtocolLink control.
+    '''lblConservationStatus control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblProtocolLink As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents lblConservationStatus As Global.System.Web.UI.WebControls.HyperLink
+
+    '''<summary>
+    '''conservationUriLabel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents conservationUriLabel As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConservationUri control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConservationUri As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''trSourceCollaboration control.
@@ -507,42 +534,6 @@ Partial Public Class uscProtocollo
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblReject As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''tblParer control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tblParer As Global.System.Web.UI.HtmlControls.HtmlTable
-
-    '''<summary>
-    '''parerInfo control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents parerInfo As Global.System.Web.UI.WebControls.ImageButton
-
-    '''<summary>
-    '''parerIcon control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents parerIcon As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
-    '''parerLabel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents parerLabel As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''tblInvoicePA control.

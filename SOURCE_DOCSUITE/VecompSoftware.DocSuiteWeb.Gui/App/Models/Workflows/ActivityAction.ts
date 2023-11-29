@@ -21,7 +21,9 @@
     UpdateFascicle = 19,
     ToIntegration = 20,
     GenerateReport = 21,
-    CopyFascicleContents = 22
+    CopyFascicleContents = 22,
+    UpdateProtocol = 23,
+    Authorize = 24
 }
 
 export = ActivityAction;

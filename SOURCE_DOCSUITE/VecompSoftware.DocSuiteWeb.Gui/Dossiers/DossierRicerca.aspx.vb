@@ -19,7 +19,7 @@ Public Class DossierRicerca
 #Region " Events "
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         uscMetadataRepositorySel.SetiContactVisibilityButton = False
-        rblDossierStatus.Enabled = DossierStatusEnabled
+        dossierStatusRow.Visible = DossierStatusEnabled
     End Sub
 #End Region
 

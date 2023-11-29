@@ -24,6 +24,7 @@ class uscContactSearchRest {
     private _rcdsContactsFinder: Telerik.Web.UI.RadClientDataSource;
     private _rsbSearchBox: Telerik.Web.UI.RadSearchBox;
     private _toolTipManager: Telerik.Web.UI.RadToolTipManager;
+    private _selectedContactRoleIdSessionKey: string = "";
 
     static LOADED_EVENT: string = "onLoaded";
     static SELECTED_CONTACT_EVENT: string = "onSelectedContact";
@@ -41,14 +42,18 @@ class uscContactSearchRest {
 
     rsbSearchBox_dataRequesting = (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxDataRequestingEventArgs) => {
         args.set_cancel(true);
-        let finderModel: ContactSearchFilterDTO = {
+        let finderModel: ContactSearchFilterDTO = <ContactSearchFilterDTO>{
             Filter: args.get_text(),
             ApplyAuthorizations: this.applyAuthorizations,
             ExcludeRoleContacts: this.excludeRoleContacts,
             ParentId: this.filterByParentId,
-            ParentToExclude: this.parentToExclude,
-            IdTenant: this.tenantId !== "" ? this.tenantId : null
+            ParentToExclude: this.parentToExclude
         };
+
+        if (sessionStorage.getItem(this._selectedContactRoleIdSessionKey)) {
+            let idRole: number = +sessionStorage.getItem(this._selectedContactRoleIdSessionKey);
+            finderModel.IdRole = idRole;
+        }
 
         (<any>sender)._onRequestStart();
         this._contactService.findContacts(finderModel,
@@ -91,6 +96,7 @@ class uscContactSearchRest {
             searchBoxButton.get_element().style.display = "none";
         }
         searchBoxButton.set_cssClass("searchBoxButton");
+        this._selectedContactRoleIdSessionKey = `${this.pnlMainContentId}_selectedContactRoleIdSessionKey`;
 
         this.bindLoaded();
     }
@@ -162,14 +168,15 @@ class uscContactSearchRest {
         (<any>this._rsbSearchBox.get_inputElement()).value = "";
     }
 
-    rsbSearchBox_buttonCommand = (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxButtonCommandEventArgs) => {1
+    rsbSearchBox_buttonCommand = (sender: Telerik.Web.UI.RadSearchBox, args: Telerik.Web.UI.SearchBoxButtonCommandEventArgs) => {
         switch (args.get_commandName()) {
             case this.SEARCH_BY_PARENT_COMMAND: {
-                if (!this.filterByParentId) {
+                if (!this.filterByParentId || !sessionStorage.getItem(this._selectedContactRoleIdSessionKey)) {
                     break;
                 }
                 (<any>sender)._onRequestStart();
-                this._contactService.getByParentId(this.filterByParentId, 20,
+                let idRole: number = +sessionStorage.getItem(this._selectedContactRoleIdSessionKey);
+                this._contactService.getByParentId(this.filterByParentId, idRole, 20,
                     (data: any) => {
                         for (let contact of data) {
                             contact.Description = contact.Description.replace("|", " ");

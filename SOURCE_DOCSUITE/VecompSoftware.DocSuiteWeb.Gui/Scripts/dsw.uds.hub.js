@@ -115,17 +115,14 @@
         console.log(message);
         currentUDSRadNotification.hide();
         currentUDSErrorRadNotification.set_updateInterval(0);
-        if (tentativeCount < maxDeliveryCountOnQueue) {
-            message = "Avvenuta anomalia durante l'inserimento dell'archivio. Nuovo tentativo in corso, attendere prego...";
-        }    
-        else {
-            message = "L'errore non si è risolto automaticamente durante i successivi tetentativi. Contattare assistenza.<br/>"+message;
-            currentUDSScripts.hideLoadingPanel();
-            if (currentOnErrorCallback) {
-                currentOnErrorCallback();
-                currentBtnAction.set_enabled(true);
-            }
+
+        message = "E' avvenuto il seguente errore: <br/>" + message;
+        currentUDSScripts.hideLoadingPanel();
+        if (currentOnErrorCallback) {
+            currentOnErrorCallback();
+            currentBtnAction.set_enabled(true);
         }
+
         currentUDSErrorRadNotification.show();
         currentUDSErrorRadNotification.set_text(message);
     }

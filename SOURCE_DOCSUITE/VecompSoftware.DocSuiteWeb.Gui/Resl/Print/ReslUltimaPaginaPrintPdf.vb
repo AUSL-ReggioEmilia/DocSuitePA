@@ -2,14 +2,22 @@
 Imports System.Collections.Generic
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers
-Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports System.IO
-Imports System.Web
-Imports System.Linq
 Imports Microsoft.Reporting.WebForms
 Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Core.Command.CQRS.Events.Models.Integrations.GenericProcesses
+Imports VecompSoftware.DocSuiteWeb.Model.ExternalModels
+Imports VecompSoftware.DocSuiteWeb.Model.Documents.Signs
+Imports Newtonsoft.Json
+Imports VecompSoftware.DocSuiteWeb.Model.Integrations.GenericProcesses
+Imports VecompSoftware.DocSuiteWeb.Model.Workflow
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
+Imports VecompSoftware.Services.Command
+Imports VecompSoftware.Services.Command.CQRS.Events.Models.Integrations.GenericProcesses
+Imports VecompSoftware.Core.Command
+Imports System.Linq
 
 Public Class ReslUltimaPaginaPrintPdf
     Inherits ReportViewerPdfExporter
@@ -135,7 +143,7 @@ Public Class ReslUltimaPaginaPrintPdf
     End Sub
 #End Region
 
-    Public Function GeneraUltimaPagina(ByVal resolution As Resolution, ByVal archive As Boolean) As String
+    Public Function GeneraUltimaPagina(ByVal resolution As Resolution, ByVal archive As Boolean, ByVal tenantAOOId As Guid) As String
         Dim tempSingoloFileUltimaPagina As String = CommonUtil.GetInstance().AppTempPath & CommonUtil.UserDocumentName & "-Print-" & String.Format("{0:HHmmss}", Now()) & "_up_" & resolution.Id.ToString() & FileHelper.PDF
         Dim resls As New List(Of Resolution)
         resls.Add(resolution)
@@ -155,12 +163,71 @@ Public Class ReslUltimaPaginaPrintPdf
         If archive Then
             Dim doc As New MemoryDocumentInfo(buffer, "UltimaPagina.pdf")
             doc.Signature = Facade.ResolutionFacade.SqlResolutionGetNumber(idResolution:=resolution.Id, complete:=True)
-            Dim idChain As Integer = doc.ArchiveInBiblos(resolution.Location.ReslBiblosDSDB).BiblosChainId
-            Facade.ResolutionFacade.SqlResolutionDocumentUpdate(resolution.Id, idChain, ResolutionFacade.DocType.UltimaPagina)
+
+            'save outbox event (EventIntegrationRequest)
+            Dim reportSignEnabled As Boolean = DocSuiteContext.Current.ResolutionEnv.UltimaPaginaReportSignEnabled
+            Dim remoteSignInformation As String = DocSuiteContext.Current.ResolutionEnv.UltimaPaginaRemoteSignInformation
+            Dim ultimaPaginaDoc As BiblosDocumentInfo
+            If Not reportSignEnabled AndAlso Not String.IsNullOrEmpty(remoteSignInformation) Then
+                Dim fileResolution As FileResolution = Facade.FileResolutionFacade.GetByResolution(resolution).FirstOrDefault()
+                ultimaPaginaDoc = doc.ArchiveInBiblos(resolution.Location.ReslBiblosDSDB, fileResolution.IdResolutionFile.Value)
+                PushEventIntegrationRequest(ultimaPaginaDoc, remoteSignInformation, tenantAOOId)
+                fileResolution.IdUltimaPagina = Nothing
+                resolution.WebRevokeDate = DateTime.Today()
+                resolution.WebState = resolution.WebStateEnum.Revoked
+                resolution.UltimaPaginaDate = DateTimeOffset.UtcNow
+                Facade.FileResolutionFacade.UpdateOnly(fileResolution)
+            Else
+                ultimaPaginaDoc = doc.ArchiveInBiblos(resolution.Location.ReslBiblosDSDB)
+                Facade.ResolutionFacade.SqlResolutionDocumentUpdate(resolution.Id, ultimaPaginaDoc.BiblosChainId, ResolutionFacade.DocType.UltimaPagina)
+            End If
         End If
 
         Return tempSingoloFileUltimaPagina
     End Function
 
+    Private Sub PushEventIntegrationRequest(ultimaPaginaDoc As BiblosDocumentInfo, remoteSignInformation As String, tenantAOOId As Guid)
+        Dim remoteSignProperty As RemoteSignProperty = JsonConvert.DeserializeObject(Of RemoteSignProperty)(remoteSignInformation, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)
+
+        If remoteSignProperty Is Nothing Then
+            Exit Sub
+        End If
+
+        Dim documentManagementRequest As DocumentManagementRequestModel = New DocumentManagementRequestModel() With
+            {
+                .Documents = New List(Of WorkflowReferenceBiblosModel) From
+                {
+                    New WorkflowReferenceBiblosModel With
+                    {
+                        .ArchiveChainId = ultimaPaginaDoc.ChainId,
+                        .ArchiveDocumentId = ultimaPaginaDoc.DocumentId,
+                        .ArchiveName = ultimaPaginaDoc.ArchiveName,
+                        .ChainType = ChainType.Miscellanea,
+                        .DocumentName = ultimaPaginaDoc.Name
+                    }
+                },
+                .UserProfileRemoteSignProperty = remoteSignProperty
+            }
+
+        Dim docSuiteEvent As DocSuiteEvent = New DocSuiteEvent() With
+        {
+            .WorkflowAutoComplete = True,
+            .EventDate = DateTimeOffset.UtcNow,
+            .EventModel = New DocSuiteModel() With
+            {
+                .CustomProperties = New Dictionary(Of String, String) From
+                {
+                    {NameOf(DocumentManagementRequestModel), JsonConvert.SerializeObject(documentManagementRequest, DocSuiteContext.DefaultWebAPIJsonSerializerSettings)}
+                }
+            }
+        }
+
+        Dim identityContext As IIdentityContext = New IdentityContext(DocSuiteContext.Current.User.FullUserName)
+        Dim eventIntegrationRequest As EventIntegrationRequest = New EventIntegrationRequest(Guid.NewGuid(), DocSuiteContext.Current.CurrentTenant.TenantName,
+            DocSuiteContext.Current.CurrentTenant.TenantId, tenantAOOId, identityContext, docSuiteEvent)
+
+        Dim eventFacade As EventFacade(Of IEventIntegrationRequest) = New EventFacade(Of IEventIntegrationRequest)
+        eventFacade.Push(eventIntegrationRequest)
+    End Sub
 
 End Class

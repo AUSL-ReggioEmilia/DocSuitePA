@@ -20,7 +20,7 @@ Public Class DocmTokenRichiestaPresa
     Private ReadOnly Property DocumentTokensActive() As IList(Of DocumentToken)
         Get
             If _documentTokenListActive Is Nothing Then
-                _documentTokenListActive = Facade.DocumentTokenFacade.GetByYearNumber(CurrentDocumentYear, CurrentDocumentNumber, 1)
+                _documentTokenListActive = Facade.DocumentTokenFacade.GetByYearNumber(CurrentDocumentYear, CurrentDocumentNumber, True)
             End If
             Return _documentTokenListActive
         End Get
@@ -122,7 +122,7 @@ Public Class DocmTokenRichiestaPresa
 
         'cambio stato isactive al documenttoken
         Dim originDocumentToken As DocumentToken = Facade.DocumentTokenFacade.GetById(CurrentDocumentYear, CurrentDocumentNumber, IncrementalOrigin)
-        Facade.DocumentTokenFacade.UpdateIsActive(originDocumentToken, 2)
+        Facade.DocumentTokenFacade.UpdateIsActive(originDocumentToken, False)
 
         Dim idSubStep As Integer = 0
         Dim listRoles As IList(Of Role) = uscDocumentToken.ControlSettoreDestinatario.GetRoles()
@@ -132,7 +132,7 @@ Public Class DocmTokenRichiestaPresa
             With newDocumentToken
                 .IncrementalOrigin = IncrementalOrigin
                 .Response = String.Empty
-                .IsActive = 1
+                .IsActive = True
                 .DocStep = iStep + 1S
                 .SubStep = idSubStep
                 .DocumentTabToken = Facade.DocumentTabTokenFacade.GetById(uscDocumentToken.TextTokenType)
@@ -157,7 +157,7 @@ Public Class DocmTokenRichiestaPresa
             With newDocumentToken
                 .IncrementalOrigin = IncrementalOrigin
                 .Response = String.Empty
-                .IsActive = 0
+                .IsActive = False
                 .DocStep = iStep + 1S
                 .SubStep = 0
                 .DocumentTabToken = Facade.DocumentTabTokenFacade.GetById("CC")

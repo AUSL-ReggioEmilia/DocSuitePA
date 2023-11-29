@@ -22,7 +22,8 @@ class FascicleDocumentUnitModelMapper extends BaseMapper<FascicleDocumentUnitMod
         toMap.Fascicle = source.Fascicle ? _fascicleModelMapper.Map(source.Fascicle) : null;       
         toMap.UniqueId = source.UniqueId;
         toMap.DocumentUnit = source.DocumentUnit ? new DocumentUnitModelMapper().Map(source.DocumentUnit) : null;
-        toMap.ReferenceType = source.ReferenceType
+        toMap.ReferenceType = source.ReferenceType;
+        toMap.SequenceNumber = source.SequenceNumber;
         return toMap;
     }
 }

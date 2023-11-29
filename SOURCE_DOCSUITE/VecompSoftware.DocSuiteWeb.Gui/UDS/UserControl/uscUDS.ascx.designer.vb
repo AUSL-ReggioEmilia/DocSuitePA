@@ -248,13 +248,49 @@ Partial Public Class uscUDS
     Protected WithEvents lblLastChangedUser As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''lblAuthorized control.
+    '''trConservationStatus control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents lblAuthorized As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents trConservationStatus As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''imgConservationIcon control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents imgConservationIcon As Global.System.Web.UI.WebControls.Image
+
+    '''<summary>
+    '''lblConservationStatus control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConservationStatus As Global.System.Web.UI.WebControls.HyperLink
+
+    '''<summary>
+    '''conservationUriLabel control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents conservationUriLabel As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblConservationUri control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblConservationUri As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
     '''rowData control.
@@ -327,15 +363,6 @@ Partial Public Class uscUDS
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCancelMotivation As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''uscDocumentUnitConservationRest control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscDocumentUnitConservationRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUnitConservationRest
 
     '''<summary>
     '''tblUDSMessage control.

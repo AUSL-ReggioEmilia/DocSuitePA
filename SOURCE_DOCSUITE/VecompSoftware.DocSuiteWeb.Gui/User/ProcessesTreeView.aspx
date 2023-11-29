@@ -18,6 +18,7 @@
                 processesTreeView.windowManagerId = "<%= RadWindowManager.ClientID %>";
                 processesTreeView.windowMoveFascId = "<%= windowMoveFasc.ClientID %>";
                 processesTreeView.splitterMainId = "<%= splitterMain.ClientID %>";
+                processesTreeView.treeViewNodesPageSize = <%= ProtocolEnv.TreeViewNodesPageSize %>;
                 processesTreeView.initialize();
             });
 

@@ -3,15 +3,12 @@ import BaseService = require('App/Services/BaseService');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import TenantViewModel = require('App/ViewModels/Tenants/TenantViewModel');
 import TenantViewModelMapper = require('App/Mappers/Tenants/TenantViewModelMapper');
-import TenantSearchFilterDTO = require('App/DTOs/TenantSearchFilterDTO');
 import ContainerModel = require('App/Models/Commons/ContainerModel');
 import ContainerModelMapper = require('App/Mappers/Commons/ContainerModelMapper');
 import PECMailBoxModel = require('App/Models/PECMails/PECMailBoxModel');
 import PECMailBoxModelMapper = require('App/Mappers/PECMails/PECMailBoxViewModelMapper');
 import RoleModel = require('App/Models/Commons/RoleModel');
 import RoleModelMapper = require('App/Mappers/Commons/RoleModelMapper');
-import WorkflowRepositoryModel = require('App/Models/Workflows/WorkflowRepositoryModel');
-import WorkflowRepositoryModelMapper = require('App/Mappers/Workflows/WorkflowRepositoryModelMapper');
 import TenantWorkflowRepositoryModel = require('App/Models/Tenants/TenantWorkflowRepositoryModel');
 import TenantConfigurationModel = require('App/Models/Tenants/TenantConfigurationModel');
 import TenantConfigurationModelMapper = require('App/Mappers/Tenants/TenantConfigurationModelMapper');
@@ -20,6 +17,7 @@ import ContactModel = require('App/Models/Commons/ContactModel');
 import ContactModelMapper = require('App/Mappers/Commons/ContactModelMapper');
 import UpdateActionType = require('App/Models/UpdateActionType');
 import TenantTypologyTypeEnum = require('App/Models/Tenants/TenantTypologyTypeEnum');
+import PaginationModel = require('App/Models/Commons/PaginationModel');
 
 class TenantService extends BaseService {
     _configuration: ServiceConfiguration;
@@ -51,8 +49,14 @@ class TenantService extends BaseService {
         }, error);
     }
 
-    getTenantContainers(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.concat(`?$expand=Containers&$filter=UniqueId eq ${uniqueId}`);
+    getTenantContainers(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, paginationModel?: PaginationModel): void {
+        let baseOdataURL: string = this._configuration.ODATAUrl.concat(`?$expand=Containers`);
+        let odataFilterQuery: string = `$filter=UniqueId eq ${uniqueId}`;
+
+        let url: string = paginationModel
+            ? `${baseOdataURL}($skip=${paginationModel.Skip};$top=${paginationModel.Take};$count=true)&${odataFilterQuery}`
+            : `${baseOdataURL}&${odataFilterQuery}`;
+
         this.getRequest(url, null, (response: any) => {
             if (callback && response) {
                 let modelMapper = new ContainerModelMapper();
@@ -60,6 +64,12 @@ class TenantService extends BaseService {
                 $.each(response.value[0].Containers, function (i, value) {
                     tenantContainers.push(modelMapper.Map(value));
                 });
+
+                if (!paginationModel) {
+                    callback(tenantContainers);
+                    return;
+                }
+
                 callback(tenantContainers);
             };
         }, error);
@@ -75,34 +85,6 @@ class TenantService extends BaseService {
                     tenantPECMailBoxes.push(modelMapper.Map(value));
                 });
                 callback(tenantPECMailBoxes);
-            };
-        }, error);
-    }
-
-    getTenantRoles(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.concat(`?$expand=Roles&$filter=UniqueId eq ${uniqueId}`);
-        this.getRequest(url, null, (response: any) => {
-            if (callback && response) {
-                let modelMapper = new RoleModelMapper();
-                let tenantRoles: RoleModel[] = [];
-                $.each(response.value[0].Roles, function (i, value) {
-                    tenantRoles.push(modelMapper.Map(value));
-                });
-                callback(tenantRoles);
-            };
-        }, error);
-    }
-
-    getTenantContacts(uniqueId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl.concat(`?$expand=Contacts&$filter=UniqueId eq ${uniqueId}`);
-        this.getRequest(url, null, (response: any) => {
-            if (callback && response) {
-                let modelMapper = new ContactModelMapper();
-                let tenantContacts: ContactModel[] = [];
-                $.each(response.value[0].Contacts, function (i, value) {
-                    tenantContacts.push(modelMapper.Map(value));
-                });
-                callback(tenantContacts);
             };
         }, error);
     }

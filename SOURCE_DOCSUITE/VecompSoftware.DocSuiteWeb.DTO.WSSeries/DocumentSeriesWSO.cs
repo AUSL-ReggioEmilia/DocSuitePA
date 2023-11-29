@@ -18,6 +18,9 @@ namespace VecompSoftware.DocSuiteWeb.DTO.WSSeries
         [XmlElement("PublicationEnabled")]
         public bool? PublicationEnabled { get; set; }
 
+        [XmlAttribute("SeriesHeader")]
+        public string SeriesHeader { get; set; }
+
         [XmlArray("DocumentSeriesSubsections"), XmlArrayItem("DocumentSeriesSubsection")]
         public List<DocumentSeriesSubsectionWSO> DocumentSeriesSubsections { get; set; }
     }

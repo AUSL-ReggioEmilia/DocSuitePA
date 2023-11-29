@@ -37,21 +37,6 @@ class RoleService extends BaseService implements IRoleService {
             }, error);
     }
 
-    getTenantRoles(tenantId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl;
-        let data: string = `$expand=Father&$filter=Tenants/any(t: t/UniqueId eq ${tenantId})&$orderby=Name`;
-        this.getRequest(url, data, (response: any) => {
-            if (callback && response) {
-                let modelMapper = new RoleModelMapper();
-                let roles: RoleModel[] = [];
-                $.each(response.value, function (i, value) {
-                    roles.push(modelMapper.Map(value));
-                });
-                callback(roles);
-            };
-        }, error);
-    }
-
     getRoles(callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
         let url: string = this._configuration.ODATAUrl;
         this.getRequest(url, null, (response: any) => {
@@ -77,6 +62,16 @@ class RoleService extends BaseService implements IRoleService {
                     roles.push(modelMapper.Map(value));
                 });
                 callback(roles);
+            }
+        }, error);
+    }
+
+    countRoles(idTenantAOO: string, callback?: (data: number) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataUrl: string = `${this._configuration.ODATAUrl}/$count?$filter=TenantAOO/UniqueId eq ${idTenantAOO} and IsActive eq true`;
+
+        this.getRequest(odataUrl, null, (response: any) => {
+            if (callback && response) {
+                callback(response.value);
             }
         }, error);
     }

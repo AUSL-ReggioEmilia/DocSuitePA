@@ -164,6 +164,10 @@
                 var pnlButtons = "<%= pnlButtons.ClientID%>";
                 ajaxFlatLoadingPanel.hide(pnlButtons);
             }
+
+            function SetMetadataSessionStorage(metadatas) {
+                sessionStorage.setItem('DocumentMetadatas', metadatas);
+            }
         </script>
     </telerik:RadScriptBlock>
     <telerik:RadScriptBlock runat="server" EnableViewState="false">
@@ -271,7 +275,7 @@
                     <asp:Button ID="btnPrintAttachmentLabel" runat="server" OnClientClick="ShowLoadingPanel();" Width="150px" Text="Etichetta allegato" />
                     <asp:Button ID="btnHighlight" runat="server" OnClientClick="return OpenHighlightWindow();" Text="Evidenzia" Width="150px" />
                     <asp:Button ID="btnRemoveHighlight" runat="server" OnClientClick="ShowLoadingPanel();" Text="Rimuovi evidenza" Width="150px" />
-                    <asp:Button ID="btnWorkflow" runat="server" Width="150" Text="Avvia attività" CausesValidation="false" />
+                    <asp:Button ID="btnWorkflow" runat="server" Width="150" Text="Avvia attività" OnClientClick="protVisualizza.btnWorkflow_onClick();"/>
                 </td>
             </tr>
             <tr>

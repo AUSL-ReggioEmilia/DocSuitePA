@@ -7,6 +7,7 @@ Public Class DomainUserFacade
     Public Const HasFascicleSecretaryRole As String = "HasFascicleSecretaryRole"
     Public Const HasSecretaryRole As String = "HasSecretaryRole"
     Public Const HasSignerRole As String = "HasSignerRole"
+    Public Const HasPECSendableRight As String = "HasPECSendableRight"
 
     Private Function GetPropValue(ByVal obj As Object, ByVal name As String) As Object
         For Each part As String In name.Split("."c)

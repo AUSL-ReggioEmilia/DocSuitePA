@@ -64,7 +64,7 @@
                     <telerik:RadToolBarButton CommandName="token" ToolTip="Dettaglio attività" ImageUrl="~/Docm/Images/RoleToken.gif" CommandArgument="DocmToken.aspx" />
                     <telerik:RadToolBarButton CommandName="user" ToolTip="Dettaglio assegnazione utenti" ImageUrl="~/Comm/Images/User16.gif" CommandArgument="DocmTokenUser.aspx" />
                     <telerik:RadToolBarButton CommandName="step" ToolTip="Autorizzazioni" ImageUrl="~/Comm/Images/Proprieta16.gif" CommandArgument="DocmInfoStep.aspx" />
-                    <telerik:RadToolBarButton CommandName="send" ToolTip="Mail" ImageUrl="~/Comm/Images/File/Mail16.gif" Visible="False" PostBackUrl="../MailSenders/GenericMailSender.aspx?Type=Docm" />
+                    <telerik:RadToolBarButton CommandName="send" ToolTip="Mail" ImageUrl="~/App_Themes/DocSuite2008/imgset16/mail.png" Visible="False" PostBackUrl="../MailSenders/GenericMailSender.aspx?Type=Docm" />
                     <telerik:RadToolBarButton CommandName="log" ToolTip="Log" ImageUrl="~/Comm/Images/Trova16.gif" CommandArgument="DocmLog.aspx" />
                     <telerik:RadToolBarButton IsSeparator="true" />
                     <telerik:RadToolBarButton CommandName="legenda" ToolTip="Legenda" ImageUrl="~/Docm/Images/Legenda.gif" />

@@ -1,35 +1,18 @@
 ﻿Imports System.Linq
-Imports VecompSoftware.Helpers.ExtensionMethods
 Imports NHibernate
 Imports NHibernate.Criterion
-Imports NHibernate.Transform
 Imports NHibernate.SqlCommand
-Imports VecompSoftware.NHibernateManager
+Imports NHibernate.Transform
 Imports VecompSoftware.DocSuiteWeb.Data.PEC.Finder
-Imports VecompSoftware.DocSuiteWeb.Entity.UDS
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.NHibernateManager
+Imports VecompSoftware.NHibernateManager.Criterion
 
 <Serializable()>
 Public Class NHibernatePECMailFinder
     Inherits NHibernateBaseFinder(Of PECMail, PecMailHeader)
 
 #Region " Fields "
-
-    Private _direction As Short?
-    Private _xTrasporto As String
-    Private _xRiferimentoMessageId As String
-    Private _mailSubject As String
-    Private _withSegnatura As Boolean
-    Private _topMaxRecords As Integer
-    Private _destinated As Nullable(Of Boolean)
-
-    Private _handler As String
-    Private _recipient As String
-    Private _invertedSort As Boolean
-
-    Private _mailDateFrom As Date?
-    Private _mailDateTo As Date?
-    Private _recordedDateFrom As Date?
-    Private _recordedDateTo As Date?
 
 #End Region
 
@@ -41,14 +24,7 @@ Public Class NHibernatePECMailFinder
         End Get
     End Property
 
-    Public Property TopMaxRecords() As Integer
-        Get
-            Return _topMaxRecords
-        End Get
-        Set(ByVal value As Integer)
-            _topMaxRecords = value
-        End Set
-    End Property
+    Public Property TopMaxRecords As Integer
 
     Public Property EnablePaging As Boolean
 
@@ -58,56 +34,21 @@ Public Class NHibernatePECMailFinder
 
     Public Property RecordedInDocSuite As Short?
 
-    Public Property OnlyNotRecorded As Boolean?
+    Public Property OnlyNotRecorded As Boolean? = Nothing
 
     Public Property NotRead As Boolean? = Nothing
 
     Public Property Direction As Short?
-        Get
-            Return _direction
-        End Get
-        Set(ByVal value As Short?)
-            _direction = value
-        End Set
-    End Property
 
     Public Property XTrasporto As String
-        Get
-            Return _xTrasporto
-        End Get
-        Set(ByVal value As String)
-            _xTrasporto = value
-        End Set
-    End Property
 
     Public Property XRiferimentoMessageId As String
-        Get
-            Return _xRiferimentoMessageId
-        End Get
-        Set(ByVal value As String)
-            _xRiferimentoMessageId = value
-        End Set
-    End Property
 
     Public Property MailSubject As String
-        Get
-            Return _mailSubject
-        End Get
-        Set(ByVal value As String)
-            _mailSubject = value
-        End Set
-    End Property
 
     Public Property MailboxIds As Short()
 
     Public Property WithSegnatura As Boolean
-        Get
-            Return _withSegnatura
-        End Get
-        Set(ByVal value As Boolean)
-            _withSegnatura = value
-        End Set
-    End Property
 
     Public Property ReceiptCriteria As PECReceiptCriteria?
 
@@ -119,32 +60,12 @@ Public Class NHibernatePECMailFinder
 
     Public Property Roles As String
 
-    Public Property Destinated As Nullable(Of Boolean)
-        Get
-            Return _destinated
-        End Get
-        Set(ByVal value As Nullable(Of Boolean))
-            _destinated = value
-        End Set
-    End Property
+    Public Property Destinated As Boolean? = Nothing
 
-    Public Property RecordedDateFrom As Date?
-        Get
-            Return _recordedDateFrom
-        End Get
-        Set(ByVal value As Date?)
-            _recordedDateFrom = value
-        End Set
-    End Property
+    Public Property RecordedDateFrom As Date? = Nothing
 
-    Public Property RecordedDateTo As Date?
-        Get
-            Return _recordedDateTo
-        End Get
-        Set(ByVal value As Date?)
-            _recordedDateTo = value
-        End Set
-    End Property
+
+    Public Property RecordedDateTo As Date? = Nothing
 
     ''' <summary> Pec attive </summary>
     Public Property Actives As Boolean?
@@ -153,13 +74,6 @@ Public Class NHibernatePECMailFinder
     Public Property Anomalies As Boolean?
 
     Public Property Handler As String
-        Get
-            Return _handler
-        End Get
-        Set(value As String)
-            _handler = value
-        End Set
-    End Property
 
     ''' <summary> Definisce il mittente da cercare </summary>
     Public Property Sender As String
@@ -169,41 +83,13 @@ Public Class NHibernatePECMailFinder
     Public Property RegistrationUsers As String()
 
     Public Property Recipient As String
-        Get
-            Return _recipient
-        End Get
-        Set(value As String)
-            _recipient = value
-        End Set
-    End Property
 
     Public Property InvertedSort As Boolean
-        Get
-            Return _invertedSort
-        End Get
-        Set(value As Boolean)
-            _invertedSort = value
-        End Set
-    End Property
 
-    Public Property MailDateFrom As Date?
-        Get
-            Return _mailDateFrom
-        End Get
-        Set(ByVal value As Date?)
-            _mailDateFrom = value
-        End Set
-    End Property
+    Public Property MailDateFrom As Date? = Nothing
 
 
-    Public Property MailDateTo As Date?
-        Get
-            Return _mailDateTo
-        End Get
-        Set(ByVal value As Date?)
-            _mailDateTo = value
-        End Set
-    End Property
+    Public Property MailDateTo As Date? = Nothing
 
     Public Property UnsentMails As Boolean
 
@@ -233,12 +119,13 @@ Public Class NHibernatePECMailFinder
 
     ''' <summary> Definisce una restrizione di MailBoxId per un particolare Sender </summary>
     ''' <remarks> funzionalità pensata per la visualizzazione "All" delle caselle di protocollazione coerentemente con l'impostazione "IsProtocolBoxExplicit" </remarks>
-    Public Property MailBoxIdsBySender As KeyValuePair(Of String, Short()) ?
+    Public Property MailBoxIdsBySender As KeyValuePair(Of String, Short())?
 
     Public Property TaskHeaderIdIn As IEnumerable(Of Integer)
 
     ''' <summary> Definisce se cercare le PEC con controllo sui settori </summary>
     Public Property CheckSecurityRight As Boolean? = Nothing
+    Public Property OnlyProtocolBox As Boolean? = Nothing
 
 #End Region
 
@@ -253,6 +140,7 @@ Public Class NHibernatePECMailFinder
         IncludeMultiples = False
         IncludeNormalAndMultiples = False
         EnablePaging = True
+        OnlyProtocolBox = Nothing
     End Sub
 
 #End Region
@@ -263,7 +151,7 @@ Public Class NHibernatePECMailFinder
         criteria.ClearOrders()
 
         If Not AttachSortExpressions(criteria) Then
-            If _invertedSort Then
+            If _InvertedSort Then
                 criteria.AddOrder(Order.Asc("PM.MailDate"))
             Else
                 criteria.AddOrder(Order.Desc("PM.MailDate"))
@@ -284,6 +172,10 @@ Public Class NHibernatePECMailFinder
             Dim dcPecMailBoxId As DetachedCriteria = DetachedCriteria.For(GetType(PECMailBoxRole), "PMBR")
             dcPecMailBoxId.CreateAlias("PMBR.PECMailBox", "PMB", JoinType.InnerJoin)
             dcPecMailBoxId.Add(Restrictions.In("PMBR.Role.Id", roleIntIds))
+
+            If OnlyProtocolBox.HasValue Then
+                dcPecMailBoxId.Add(Restrictions.Eq("PMB.IsProtocolBox", OnlyProtocolBox.Value))
+            End If
             dcPecMailBoxId.SetProjection(Projections.Property("PMBR.PECMailBox.Id"))
 
             criteria.Add(Subqueries.PropertyIn("PM.MailBox.Id", dcPecMailBoxId))
@@ -348,22 +240,22 @@ Public Class NHibernatePECMailFinder
         End If
 
         'Filtro MailType
-        If Not String.IsNullOrEmpty(_xTrasporto) Then
-            con.Add(Restrictions.Like("PM.XTrasporto", _xTrasporto))
+        If Not String.IsNullOrEmpty(_XTrasporto) Then
+            con.Add(Restrictions.Like("PM.XTrasporto", _XTrasporto))
         End If
 
         'Riferimento mailID
-        If Not String.IsNullOrEmpty(_xRiferimentoMessageId) Then
-            con.Add(Restrictions.Eq("PM.XRiferimentoMessageID", _xRiferimentoMessageId))
+        If Not String.IsNullOrEmpty(_XRiferimentoMessageId) Then
+            con.Add(Restrictions.Eq("PM.XRiferimentoMessageID", _XRiferimentoMessageId))
         End If
 
         'Filtro MailSubject
-        If Not String.IsNullOrEmpty(_mailSubject) Then
-            con.Add(Restrictions.Like("PM.MailSubject", _mailSubject, MatchMode.Anywhere))
+        If Not String.IsNullOrEmpty(_MailSubject) Then
+            con.Add(Restrictions.Like("PM.MailSubject", _MailSubject, MatchMode.Anywhere))
         End If
 
         ' segnatura
-        If _withSegnatura Then
+        If _WithSegnatura Then
             con.Add(Restrictions.IsNotNull("PM.Segnatura"))
         End If
 
@@ -409,7 +301,7 @@ Public Class NHibernatePECMailFinder
             If Destinated.Value Then
                 con.Add(Restrictions.Eq("PM.IsDestinated", True))
             Else
-                con.Add(Expression.Or(Restrictions.IsNull("PM.IsDestinated"), Restrictions.Eq("PM.IsDestinated", False)))
+                con.Add(Restrictions.Or(Restrictions.IsNull("PM.IsDestinated"), Restrictions.Eq("PM.IsDestinated", False)))
             End If
         End If
 
@@ -553,7 +445,6 @@ Public Class NHibernatePECMailFinder
     End Function
 
     Private Function FilterPecMailBox() As Disjunction
-
         Dim mailBoxIdsDisj As New Disjunction()
         'Mantengo in MailBoxIds tutti gli id di MailBox da gestire
         'ne faccio un sottoinsieme per la gestione di ProtocolBox
@@ -565,7 +456,7 @@ Public Class NHibernatePECMailFinder
                 notRestrictedMailBoxIds = notRestrictedMailBoxIds.Where(Function(id) Not MailBoxIdsBySender.Value.Value.Contains(id)).ToArray()
             End If
             If notRestrictedMailBoxIds.Count > 0 Then
-                mailBoxIdsDisj.Add(Restrictions.In("PM.MailBox.Id", notRestrictedMailBoxIds))
+                mailBoxIdsDisj.Add(XmlInCriterion.Create("PM.MailBox.Id", notRestrictedMailBoxIds, 1000))
             End If
         End If
 

@@ -57,7 +57,7 @@ Public Class CollaborationMailSender
                 If ProtocolEnv.CheckResolutionCollaborationOriginEnabled AndAlso CollaborationId > 0 Then
                     Dim recipients As IList(Of ContactDTO) = New List(Of ContactDTO)
                     Dim currentCollaboration As Collaboration = Facade.CollaborationFacade.GetById(CollaborationId)
-                    Dim draft As CollaborationXmlData = FacadeFactory.Instance.ProtocolDraftFacade.GetDataFromCollaboration(currentCollaboration)
+                    Dim draft As CollaborationXmlData = FacadeFactory.Instance.CollaborationDraftFacade.GetDataFromCollaboration(currentCollaboration)
                     If draft IsNot Nothing AndAlso draft.GetType() = GetType(ResolutionXML) Then
                         Dim resolutionXML As ResolutionXML = CType(draft, ResolutionXML)
                         If (resolutionXML IsNot Nothing) Then

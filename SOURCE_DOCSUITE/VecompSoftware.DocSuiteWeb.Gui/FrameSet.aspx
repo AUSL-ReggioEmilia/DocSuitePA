@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>DocSuite</title>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
     <link href="" type="text/css" rel="stylesheet" id="stylesheet" />
     <asp:PlaceHolder runat="server">
@@ -39,7 +39,7 @@
                     alert('Per un corretto funzionamento è consigliato impostare una risoluzione minima di 1024x768.');
                 }
             </script>
-            <script type="text/javascript" src="Scripts/jquery.signalR-2.4.1.min.js"></script>
+            <script type="text/javascript" src="Scripts/jquery.signalR-2.4.2.min.js"></script>
             <script type="text/javascript" src="signalr/hubs?version=<%= DSWVersion %>"></script>
             <script type="text/javascript" src="Scripts/dsw.signalR.js?version=<%= DSWVersion %>"></script>
             <script type="text/javascript" src="Scripts/dsw.frameset.js?version=<%= DSWVersion %>"></script>
@@ -90,7 +90,7 @@
 
                                 <telerik:RadButton runat="server" ID="btnProtocolNotReaded" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
                                     Target="main" ToolTip="Protocolli da leggere" Visible="false">
-                                    <Icon PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.gif" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
+                                    <Icon PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.png" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
                                 </telerik:RadButton>
                                 <telerik:RadButton runat="server" ID="btnProtocolInvoiceNotReaded" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
                                     Target="main" ToolTip="Protocolli di fattura da leggere" Visible="false">
@@ -98,7 +98,7 @@
                                 </telerik:RadButton>
                                 <telerik:RadButton runat="server" ID="btnProtocolToDistribute" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
                                     Target="main" ToolTip="Protocolli da distribuire" Visible="false">
-                                    <Icon PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.gif" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
+                                    <Icon PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.png" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
                                 </telerik:RadButton>
                                 <telerik:RadButton runat="server" ID="btnProtocolRejected" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
                                     Target="main" ToolTip="Protocolli rigettati" Visible="false">
@@ -106,15 +106,15 @@
                                 </telerik:RadButton>
                                 <telerik:RadButton runat="server" ID="btnProtocolToAccept" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
                                     Target="main" ToolTip="Protocolli da accettare" Visible="false">
-                                    <Icon PrimaryIconHeight="16px" PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.gif" PrimaryIconWidth="16px" />
+                                    <Icon PrimaryIconHeight="16px" PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.png" PrimaryIconWidth="16px" />
                                 </telerik:RadButton>
                                 <telerik:RadButton runat="server" ID="btnProtocolRefused" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
                                     Target="main" ToolTip="Protocolli respinti" Visible="false">
-                                    <Icon PrimaryIconHeight="16px" PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.gif" PrimaryIconWidth="16px" />
+                                    <Icon PrimaryIconHeight="16px" PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.png" PrimaryIconWidth="16px" />
                                 </telerik:RadButton>
                                 <telerik:RadButton runat="server" ID="btnHighlightProtocols" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
                                     Target="main" ToolTip="Protocolli in evidenza" Visible="false">
-                                    <Icon PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.gif" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
+                                    <Icon PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.png" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
                                 </telerik:RadButton>
                                 <telerik:RadButton runat="server" ID="btnCollToProtocol" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
                                     Target="main" ToolTip="Collaborazioni da protocollare/gestire" Visible="false">
@@ -134,7 +134,7 @@
                                 </telerik:RadButton>
                                 <telerik:RadButton runat="server" ID="btnLastPagesToSign" ButtonType="LinkButton" OnClientClicking="ToolBarClientClicking"
                                     Target="main" ToolTip="Ultime pagine da firmare" Visible="false">
-                                    <Icon PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.gif" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
+                                    <Icon PrimaryIconUrl="Comm/Images/DocSuite/Protocollo16.png" PrimaryIconHeight="16px" PrimaryIconWidth="16px" />
                                 </telerik:RadButton>
                             </asp:Panel>
                             <telerik:RadButton ID="btnScrivania" runat="server" Text="Scrivania" ToolTip="Vai a Scrivania" ButtonType="LinkButton">
@@ -173,12 +173,12 @@
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/images/desk/Desk.png" Value="DeskItem" Visible="False" Width="100%" runat="server"></telerik:RadPanelItem>
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/imgset16/collaboration.png" Value="CollaborazioneItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/Comm/Images/DocSuite/Pratica16.gif" Value="PraticheItem" Visible="false" Width="100%" />
-                                        <telerik:RadPanelItem ImageUrl="~/Comm/Images/DocSuite/Protocollo16.gif" Value="ProtocolloItem" Visible="false" Width="100%" />
+                                        <telerik:RadPanelItem ImageUrl="~/Comm/Images/DocSuite/Protocollo16.png" Value="ProtocolloItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem Value="SeriesItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/imgset16/fascicle_open.png" Value="FascicoliItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/imgset16/invoice-icon.png" Value="InvoiceItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/imgset16/user_info.png" Value="ContrattiItem" Visible="false" Width="100%" />
-                                        <telerik:RadPanelItem ImageUrl="~/Comm/Images/DocSuite/Atti16.gif" Value="AttiItem" Visible="false" Width="100%" />
+                                        <telerik:RadPanelItem ImageUrl="~/Comm/Images/DocSuite/Atti16.png" Value="AttiItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/imgset16/pec.png" Value="PECItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/App_Themes/DocSuite2008/imgset16/AdminTable.png" Value="TabelleItem" Visible="false" Width="100%" />
                                         <telerik:RadPanelItem ImageUrl="~/Comm/Images/DocSuite/Link16.png" Text="Utilità" Value="UtilitaItem" Visible="false" Width="100%" />

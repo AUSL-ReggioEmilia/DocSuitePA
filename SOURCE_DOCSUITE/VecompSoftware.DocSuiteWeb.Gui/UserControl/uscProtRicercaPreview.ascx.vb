@@ -20,9 +20,7 @@ Public Class uscProtRicercaPreview
         Else
             ddlContainer.Style.Remove("display")
         End If
-        trLocazione.Visible = ProtocolEnv.ProtocolSearchLocationEnabled
         sett.SetDisplay(ProtocolEnv.RolesUserProfileEnabled)
-
         If ProtocolEnv.ProtParzialeEnabled Then
             rowIncomplete.Style.Add("display", "")
         Else

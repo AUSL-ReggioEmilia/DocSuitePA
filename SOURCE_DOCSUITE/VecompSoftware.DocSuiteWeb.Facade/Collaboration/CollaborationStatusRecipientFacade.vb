@@ -48,7 +48,7 @@ Public Class CollaborationStatusRecipientFacade
     ''' <param name="removeNullEmailContacts">Definisce se devono essere rimossi eventuali contatti che risultassero senza e-mail impostata</param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    Public Function ResolveAddresses(ByVal collaborationStatusRecipientCode As String, ByVal idCollaboration As Integer, ByVal removeNullEmailContacts As Boolean) As IList(Of Contact)
+    Public Function ResolveAddresses(collaborationStatusRecipientCode As String, idCollaboration As Integer, removeNullEmailContacts As Boolean, idTenantAOO As Guid) As IList(Of Contact)
         Dim contacts As New List(Of Contact)
         Select Case DirectCast([Enum].Parse(GetType(Code), collaborationStatusRecipientCode), Code)
             Case Code.DirectWorkers
@@ -57,19 +57,19 @@ Public Class CollaborationStatusRecipientFacade
 
             Case Code.AllSecretaries
                 ''Tutti gli utenti segretari di tutti i settori segreteria
-                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.S, Nothing, Nothing) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
+                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.S, Nothing, Nothing, idTenantAOO) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
 
             Case Code.CheckedSecretaries
                 ''Tutti gli utenti segretari di tutti i settori segreteria che hanno il checkbox a 1
-                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.S, True, Nothing) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
+                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.S, True, Nothing, idTenantAOO) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
 
             Case Code.MainSecretaries
                 ''Tutti gli utenti segretari di tutti i settori segreteria che hanno la proprietà Main impostata a True
-                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.S, Nothing, True) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
+                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.S, Nothing, True, idTenantAOO) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
 
             Case Code.CheckedMainSecretaries
                 ''Tutti gli utenti segretari di tutti i settori segreteria che hanno la proprietà Main impostata a True e che hanno il chekcbox a 1
-                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.S, True, True) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
+                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.S, True, True, idTenantAOO) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
 
             Case Code.CollaborationProposer
                 ''L'utente che ha inserito la collaborazione
@@ -77,15 +77,15 @@ Public Class CollaborationStatusRecipientFacade
                 contacts.Add(New Contact() With {.Description = collaboration.RegistrationName, .EmailAddress = collaboration.RegistrationEMail})
             Case Code.AllDirectors
                 ''Tutti gli utenti direttori di tutti i settori segreteria
-                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.D, Nothing, Nothing) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
+                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.D, Nothing, Nothing, idTenantAOO) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
 
             Case Code.AllViceDirector
                 ''Tutti gli utenti vice direttori di tutti i settori segreteria
-                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.V, Nothing, Nothing) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
+                contacts.AddRange((From roleUser In Factory.RoleUserFacade.GetByCollaboration(idCollaboration, RoleUserType.V, Nothing, Nothing, idTenantAOO) Select New Contact() With {.Description = roleUser.Description, .EmailAddress = roleUser.Email}).ToList())
 
             Case Code.ActiveSigner
                 ''Il firmatario attivo
-                contacts.Add((From sign In Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, 1)).Select(Function(s) New Contact() With {.Description = s.SignName, .EmailAddress = s.SignEMail}).First())
+                contacts.Add((From sign In Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, True)).Select(Function(s) New Contact() With {.Description = s.SignName, .EmailAddress = s.SignEMail}).First())
 
             Case Code.AllSigners
                 ''Tutti i firmatari
@@ -94,7 +94,7 @@ Public Class CollaborationStatusRecipientFacade
             Case Code.AllPrecedentSigners
                 ''Tutti i firmatari precedenti a quello attivo
                 For Each collaborationSign As CollaborationSign In Factory.CollaborationSignsFacade.GetByIdCollaboration(idCollaboration)
-                    If collaborationSign.IsActive = 0 Then
+                    If Not collaborationSign.IsActive Then
                         contacts.Add(New Contact() With {.Description = collaborationSign.SignName, .EmailAddress = collaborationSign.SignEMail})
                     Else
                         Exit For
@@ -116,12 +116,12 @@ Public Class CollaborationStatusRecipientFacade
 
             Case Code.ActiveSignerAntecedent
                 '' L'ultimo firmatario prima di quello attivo
-                Dim activeSignerIncremental As Short = Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, 1).First().Incremental
+                Dim activeSignerIncremental As Short = Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, True).First().Incremental
                 contacts.Add((From signer In Factory.CollaborationSignsFacade.SearchFull(idCollaboration, False, activeSignerIncremental - 1S) Select New Contact() With {.Description = signer.SignName, .EmailAddress = signer.SignEMail}).First())
 
             Case Code.CurrentSignerRole
                 ''il settore del firmatario attivo
-                Dim currentSigner As CollaborationSign = Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, 1).FirstOrDefault()
+                Dim currentSigner As CollaborationSign = Factory.CollaborationSignsFacade.GetCollaborationSignsBy(idCollaboration, True).FirstOrDefault()
                 If currentSigner IsNot Nothing Then
                     Dim currentRoleUser As RoleUser = Factory.RoleUserFacade.GetByAccountsAndNotType(currentSigner.SignUser, Nothing, True).FirstOrDefault()
                     If currentRoleUser IsNot Nothing Then

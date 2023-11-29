@@ -72,19 +72,21 @@ class FascAutorizza extends FascicleBase {
             PageClassHelper.callUserControlFunctionSafe<UscFascicolo>(this.uscFascicoloId)
                 .done((instance) => {
                     instance.getRaciRoles().done((raciRoles: RoleModel[]) => {
-                        this._loadingPanel.show(this.pageContentId);
-                        $.when(this.insertFascicleRoles(instance.getAddedRolesIds(), raciRoles, instance.getRemovedRolesIds()),
-                            this.removeFascicleRoles(instance.getRemovedRolesIds()),
-                            this.setRaciRole(raciRoles, "", instance.getRemovedRolesIds()),
-                            this.updateFascicleVisibilityType(instance.getSelectedVisibilityType()))
-                            .done(() => {
-                                this._loadingPanel.hide(this.pageContentId);
-                                window.location.href = `../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=${this._fascicleModel.UniqueId}`;
-                            })
-                            .fail((exception: ExceptionDTO) => {
-                                this._loadingPanel.hide(this.pageContentId);
-                                this.showNotificationException(this.uscNotificationId, exception, "E' avvenuto un errore durante la fase di salvataggio delle autorizzazioni.");
-                            });
+                        instance.getRemovedRaciRoles().done((removedRaciRoles: RoleModel[]) => {
+                            this._loadingPanel.show(this.pageContentId);
+                            $.when(this.insertFascicleRoles(instance.getAddedRolesIds(), raciRoles, removedRaciRoles, instance.getRemovedRolesIds()),
+                                this.removeFascicleRoles(instance.getRemovedRolesIds()),
+                                this.setRaciRole(raciRoles, removedRaciRoles, "", instance.getRemovedRolesIds()),
+                                this.updateFascicleVisibilityType(instance.getSelectedVisibilityType()))
+                                .done(() => {
+                                    this._loadingPanel.hide(this.pageContentId);
+                                    window.location.href = `../Fasc/FascVisualizza.aspx?Type=Fasc&IdFascicle=${this._fascicleModel.UniqueId}`;
+                                })
+                                .fail((exception: ExceptionDTO) => {
+                                    this._loadingPanel.hide(this.pageContentId);
+                                    this.showNotificationException(this.uscNotificationId, exception, "E' avvenuto un errore durante la fase di salvataggio delle autorizzazioni.");
+                                });
+                        });
                     });
                 });
             args.set_cancel(true);
@@ -172,7 +174,7 @@ class FascAutorizza extends FascicleBase {
             });
     }
 
-    private insertFascicleRoles(roleAddedIds: number[], raciRole: RoleModel[], removedRoleIds: number[]): JQueryPromise<void> {
+    private insertFascicleRoles(roleAddedIds: number[], raciRole: RoleModel[], removedRaciRoles: RoleModel[], removedRoleIds: number[]): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred();
         if (!roleAddedIds || !roleAddedIds.length) {
             return promise.resolve();
@@ -197,7 +199,7 @@ class FascAutorizza extends FascicleBase {
                 fascicleRole.AuthorizationRoleType = authorizationType;
                 fascicleRole.Role = role;
                 fascicleRole.Fascicle = this._fascicleModel;
-                ajaxPromises.push(this.insertFascicleRole(fascicleRole, raciRole));
+                ajaxPromises.push(this.insertFascicleRole(fascicleRole, raciRole, removedRaciRoles));
             }
 
             $.when.apply(null, ajaxPromises)
@@ -210,13 +212,13 @@ class FascAutorizza extends FascicleBase {
         return promise.promise();
     }
 
-    private insertFascicleRole(fascicleRole: FascicleRoleModel, raciRole: RoleModel[]): JQueryPromise<void> {
+    private insertFascicleRole(fascicleRole: FascicleRoleModel, raciRole: RoleModel[], removedRaciRoles: RoleModel[]): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred();
         try {
             this._fascicleRoleService.insertFascicleRole(fascicleRole,
                 (data: any) => {
                     if (raciRole && raciRole.some(x => x.EntityShortId === fascicleRole.Role.EntityShortId)) {
-                        this.setRaciRole(raciRole, data.UniqueId, null).then(() => {
+                        this.setRaciRole(raciRole, removedRaciRoles, data.UniqueId, null).then(() => {
                             promise.resolve();
                         }, (exception: ExceptionDTO) => {
                             promise.reject(exception);
@@ -290,7 +292,7 @@ class FascAutorizza extends FascicleBase {
         this._btnConfirm.set_enabled(value);
     }
 
-    private setRaciRole(raciRoles: RoleModel[], fascicleRoleId: string, removedRoleIds: number[]): JQueryPromise<void> {
+    private setRaciRole(raciRoles: RoleModel[], removedRaciRoles: RoleModel[], fascicleRoleId: string, removedRoleIds: number[]): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
         if (!raciRoles || !raciRoles.length) {
             return promise.resolve();
@@ -299,27 +301,16 @@ class FascAutorizza extends FascicleBase {
         if (removedRoleIds) {
             raciRoles = raciRoles.filter(raciRole => !removedRoleIds.some(removedRoleId => raciRole.EntityShortId === removedRoleId));
         }
-        for (let role of raciRoles) {
-            let fascicleRole: FascicleRoleModel = fascicleRoleId !== ""
-                ? <FascicleRoleModel>{
-                    UniqueId: fascicleRoleId,
-                    IsMaster: false,
-                    Role: role
-                }
-                : this._fascicleModel.FascicleRoles.filter((x) => x.Role.EntityShortId == role.EntityShortId)[0];
-
-            if (!fascicleRole) {
-                return promise.resolve();
-            }
-
-            fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Responsible;
-            this._fascicleRoleService.updateFascicleRole(fascicleRole,
-                (data: any) => {
-                    promise.resolve();
-                }, (exception: ExceptionDTO) => {
-                    promise.reject(exception);
-                });
-        }
+        this.updateFascicleRole(removedRaciRoles, AuthorizationRoleType.Accounted, fascicleRoleId).then(() => {
+            promise.resolve();
+        }, (exception: ExceptionDTO) => {
+            promise.reject(exception);
+        });
+        this.updateFascicleRole(raciRoles, AuthorizationRoleType.Responsible, fascicleRoleId).then(() => {
+            promise.resolve();
+        }, (exception: ExceptionDTO) => {
+            promise.reject(exception);
+        });
         return promise.promise();
     }
 
@@ -332,6 +323,33 @@ class FascAutorizza extends FascicleBase {
                     promise.resolve();
                 },
                 (exception: ExceptionDTO) => {
+                    promise.reject(exception);
+                });
+        }
+        return promise.promise();
+    }
+
+    updateFascicleRole(roles: RoleModel[], authorizationRoleType: AuthorizationRoleType, fascicleRoleId: string): JQueryPromise<void>  {
+        let promise: JQueryDeferred<void> = $.Deferred<void>();
+
+        for (let role of roles) {
+            let fascicleRole: FascicleRoleModel = fascicleRoleId !== ""
+                ? <FascicleRoleModel>{
+                    UniqueId: fascicleRoleId,
+                    IsMaster: false,
+                    Role: role
+                }
+                : this._fascicleModel.FascicleRoles.filter((x) => x.Role.EntityShortId == role.EntityShortId)[0];
+
+            if (!fascicleRole) {
+                return promise.resolve();
+            }
+
+            fascicleRole.AuthorizationRoleType = authorizationRoleType;
+            this._fascicleRoleService.updateFascicleRole(fascicleRole,
+                (data: any) => {
+                    promise.resolve();
+                }, (exception: ExceptionDTO) => {
                     promise.reject(exception);
                 });
         }

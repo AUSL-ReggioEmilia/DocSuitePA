@@ -20,7 +20,9 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Desks
             dto.IdDesk = entity.Desk.Id;
             dto.IdDeskDocument = entity.Id;
             dto.RegistrationDate = entity.RegistrationDate;
+            dto.LastChangedDate = entity.LastChangedDate;
             dto.LastComment = string.Empty;
+            dto.IsActive = entity.IsActive ? (short)1 : (short)0;
 
             return dto;
         }

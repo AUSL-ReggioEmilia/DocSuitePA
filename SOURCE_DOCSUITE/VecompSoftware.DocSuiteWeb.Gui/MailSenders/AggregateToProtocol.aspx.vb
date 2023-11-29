@@ -1,20 +1,20 @@
 ﻿Imports System.Collections.Generic
-Imports System.Linq
-Imports System.Text
 Imports System.Collections.Specialized
 Imports System.IO
-Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports Telerik.Web.UI
-Imports VecompSoftware.Services.Biblos
+Imports System.Linq
+Imports System.Text
 Imports System.Web
-Imports VecompSoftware.Services.Biblos.Models
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.DTO.DocumentUnits
 Imports Newtonsoft.Json
+Imports Telerik.Web.UI
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.DTO.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
+Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Services.Biblos
+Imports VecompSoftware.Services.Biblos.Models
 
 Public Class AggregateToProtocol
     Inherits ProtBasePage
@@ -223,7 +223,7 @@ Public Class AggregateToProtocol
             Dim node As New RadTreeNode()
             node.Text = String.Format("{0} del {1:dd/MM/yyyy} ({2})", prot.FullNumber, prot.RegistrationDate.ToLocalTime(), prot.ProtocolObject)
             node.Font.Bold = True
-            node.ImageUrl = "~/Comm/Images/DocSuite/Protocollo16.gif"
+            node.ImageUrl = "~/Comm/Images/DocSuite/Protocollo16.png"
             rtvProtocol.Nodes.Add(node)
         Next
     End Sub
@@ -297,27 +297,15 @@ Public Class AggregateToProtocol
 
     Private Function InizializeDocuments() As IList(Of DocumentInfo)
         Dim documents As IList(Of DocumentInfo) = New List(Of DocumentInfo)()
-
-        'TODO: rivedere con privacy di tipo 4
         If (Not PreviousPage Is Nothing AndAlso TypeOf PreviousPage Is ISendMail AndAlso PreviousPage.IsCrossPagePostBack) Then
             Dim docs As List(Of DocumentInfo) = CType(CType(PreviousPage, ISendMail).Documents, List(Of DocumentInfo))
-            If DocSuiteContext.Current.PrivacyEnabled AndAlso FromViewer AndAlso docs.Count = 0 Then
-                Dim message As String = "mail"
-                If ToSendProtocolType.Equals(SendDocumentUnitType.ToPec) Then
-                    message = "PEC"
-                End If
-                Dim fullMessage As String = String.Concat("Attenzione: solo i documenti con un livello di ", PRIVACY_LABEL, " adeguato vengono allegati alla ", message, ".\r\nL'utente non risulta avere un livello di ", PRIVACY_LABEL, " coerente con alcun documento.")
-                If DocSuiteContext.Current.SimplifiedPrivacyEnabled Then
-                    fullMessage = String.Concat("Attenzione: solo i documenti al quale l'utente è autorizzato vengono allegati alla ", message, ".\r\nL'utente non risulta essere autorizzato al trattamento privacy per alcun documento.")
-                End If
-                AjaxManager.Alert(fullMessage)
-            End If
             If docs.Any() Then
                 Return docs
             End If
         End If
         Return documents
     End Function
+
     Private Function BonificaDocumenti(ByRef documents As IList(Of DocumentInfo)) As List(Of DocumentInfo)
         Dim bonificati As List(Of DocumentInfo) = New List(Of DocumentInfo)
         For Each doc As DocumentInfo In documents

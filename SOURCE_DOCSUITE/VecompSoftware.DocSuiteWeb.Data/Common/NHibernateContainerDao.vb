@@ -1,12 +1,10 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports System.Linq
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.NHibernateManager.Dao
+﻿Imports System.Linq
 Imports NHibernate
 Imports NHibernate.Criterion
-Imports NHibernate.Transform
 Imports NHibernate.SqlCommand
+Imports NHibernate.Transform
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.NHibernateManager.Dao
 
 Public Class NHibernateContainerDao
     Inherits BaseNHibernateDao(Of Container)
@@ -64,7 +62,7 @@ Public Class NHibernateContainerDao
         Return criteria.List(Of Container)()
     End Function
 
-    Public Function GetAllRights(ByVal type As String, ByVal isActive As Short?) As IList(Of ContainerRightsDto)
+    Public Function GetAllRights(ByVal type As String, ByVal isActive As Boolean?) As IList(Of ContainerRightsDto)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType, "C")
         criteria.CreateAlias("C.ContainerGroups", "ContainerGroups", SqlCommand.JoinType.LeftOuterJoin)
 
@@ -82,22 +80,7 @@ Public Class NHibernateContainerDao
         End Select
 
         If isActive.HasValue Then
-            Select Case isActive.Value
-                Case 1
-                    criteria.Add(Restrictions.Eq("C.IsActive", 1S))
-                    Dim disj As New Disjunction()
-                    disj.Add(Restrictions.And(Restrictions.IsNull("C.ActiveFrom"), Restrictions.IsNull("C.ActiveTo")))
-                    disj.Add(Restrictions.And(Restrictions.Ge("C.ActiveTo", DateTime.Now), Restrictions.Le("C.ActiveFrom", DateTime.Now)))
-                    criteria.Add(disj)
-                Case 0
-                    Dim disj As New Disjunction()
-                    disj.Add(Restrictions.Eq("C.IsActive", 0S))
-                    disj.Add(Restrictions.Le("C.ActiveTo", DateTime.Now))
-                    disj.Add(Restrictions.Ge("C.ActiveFrom", DateTime.Now))
-                    criteria.Add(disj)
-                Case Else
-                    Throw New DocSuiteException("Errore ricerca contenitori", "Caso non previsto")
-            End Select
+            criteria.Add(Restrictions.Eq("C.IsActive", isActive.Value))
         End If
 
         criteria.Add(Restrictions.Not(Restrictions.Eq("ContainerGroups." & fields, "00000000000000000000")))
@@ -115,7 +98,7 @@ Public Class NHibernateContainerDao
 
     End Function
 
-    Public Function GetAllRightsDistinct(ByVal type As String, ByVal isActive As Short?) As IList(Of Container)
+    Public Function GetAllRightsDistinct(ByVal type As String, ByVal isActive As Boolean?) As IList(Of Container)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType, "C")
         criteria.CreateAlias("C.ContainerGroups", "ContainerGroups", SqlCommand.JoinType.LeftOuterJoin)
 
@@ -144,22 +127,7 @@ Public Class NHibernateContainerDao
         End Select
 
         If isActive.HasValue Then
-            Select Case isActive.Value
-                Case 1
-                    criteria.Add(Restrictions.Eq("C.IsActive", 1S))
-                    Dim disj As New Disjunction()
-                    disj.Add(Restrictions.And(Restrictions.IsNull("C.ActiveFrom"), Restrictions.IsNull("C.ActiveTo")))
-                    disj.Add(Restrictions.And(Restrictions.Ge("C.ActiveTo", DateTime.Now), Restrictions.Le("C.ActiveFrom", DateTime.Now)))
-                    criteria.Add(disj)
-                Case 0
-                    Dim disj As New Disjunction()
-                    disj.Add(Restrictions.Eq("C.IsActive", 0S))
-                    disj.Add(Restrictions.Le("C.ActiveTo", DateTime.Now))
-                    disj.Add(Restrictions.Ge("C.ActiveFrom", DateTime.Now))
-                    criteria.Add(disj)
-                Case Else
-                    Throw New DocSuiteException("Errore ricerca contenitori", "Caso non previsto")
-            End Select
+            criteria.Add(Restrictions.Eq("C.IsActive", isActive.Value))
         End If
 
         criteria.Add(Expression.Not(Restrictions.Eq("ContainerGroups." & fields, "00000000000000000000")))
@@ -171,7 +139,7 @@ Public Class NHibernateContainerDao
         Return criteria.List(Of Container)()
     End Function
 
-    Public Function GetSecurityGroupsContainerRights(ByVal type As String, ByVal securityGroups As IList(Of SecurityGroups), ByVal isActive As Short, ByVal rightPosition As Integer?, ByVal idContainer As Integer?) As IList(Of Container)
+    Public Function GetSecurityGroupsContainerRights(ByVal type As String, ByVal securityGroups As IList(Of SecurityGroups), ByVal isActive As Boolean, ByVal rightPosition As Integer?, ByVal idContainer As Integer?) As IList(Of Container)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType, "C")
         criteria.CreateAlias("C.ContainerGroups", "ContainerGroups", SqlCommand.JoinType.LeftOuterJoin)
 
@@ -196,12 +164,7 @@ Public Class NHibernateContainerDao
 
         criteria.Add(Expression.In("ContainerGroups.SecurityGroup.Id", idGruppi))
 
-        Select Case isActive
-            Case 0, 1
-                criteria.Add(Restrictions.Eq("C.IsActive", isActive))
-            Case 3
-                criteria.Add(Expression.Lt("C.IsActive", isActive))
-        End Select
+        criteria.Add(Restrictions.Eq("C.IsActive", isActive))
 
         Dim tmpRights As String = RIGHTS_LENGTH
         If rightPosition.HasValue Then
@@ -315,7 +278,7 @@ Public Class NHibernateContainerDao
         Return criteria.List(Of Container)()
     End Function
 
-    Public Function GetContainerByName(ByVal description As String, ByVal isActive As Short?) As IList(Of Container)
+    Public Function GetContainerByName(ByVal description As String, ByVal isActive As Boolean?) As IList(Of Container)
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
 
         'Description
@@ -378,24 +341,9 @@ Public Class NHibernateContainerDao
         End If
 
         If isActive.HasValue Then
-            If isActive.Value Then
-                criteria.Add(Restrictions.Eq("C.IsActive", 1S))
-                Dim disj As New Disjunction()
-                disj.Add(Restrictions.And(Restrictions.IsNull("C.ActiveFrom"), Restrictions.IsNull("C.ActiveTo")))
-                disj.Add(Restrictions.And(Restrictions.Ge("C.ActiveTo", DateTime.Now), Restrictions.Le("C.ActiveFrom", DateTime.Now)))
-                criteria.Add(disj)
-            Else
-                Dim disj As New Disjunction()
-                disj.Add(Restrictions.Eq("C.IsActive", 0S))
-                disj.Add(Restrictions.Le("C.ActiveTo", DateTime.Now))
-                disj.Add(Restrictions.Ge("C.ActiveFrom", DateTime.Now))
-                criteria.Add(disj)
-            End If
+            criteria.Add(Restrictions.Eq("C.IsActive", isActive.Value))
         End If
-
         criteria.SetResultTransformer(Transformers.DistinctRootEntity)
-
-
         If getRowCount Then
             criteria.SetProjection(Projections.RowCount())
         Else
@@ -433,11 +381,24 @@ Public Class NHibernateContainerDao
         Return GetContainersBySG(idGroupIn, env, rightPositions, active, idProtocolType)
     End Function
 
-    Public Function GetContainersBySG(idGroupIn As IList(Of Integer), env As DSWEnvironment, rightPositions As List(Of Integer), active As Boolean?, Optional idProtocolType As Short? = Nothing) As IList(Of Container)
+    Public Function GetContainersBySG(idGroupIn As IList(Of Integer), env As DSWEnvironment, rightPositions As List(Of Integer), active As Boolean?, Optional idProtocolType As Short? = Nothing, Optional accounting As Boolean? = Nothing) As IList(Of Container)
         Dim criteria As ICriteria = CreateGetContainerCriteria(env, rightPositions, active)
         criteria.Add(Restrictions.In("CG.SecurityGroup.Id", idGroupIn.ToArray()))
         If idProtocolType.HasValue Then
             criteria.Add(Restrictions.Or(Restrictions.Eq("C.IdProtocolType", idProtocolType.Value), Restrictions.IsNull("C.IdProtocolType")))
+        End If
+
+        If accounting IsNot Nothing Then
+            Dim existContainerProp As DetachedCriteria = DetachedCriteria.For(GetType(ContainerProperty), "CP")
+            existContainerProp.Add(Restrictions.EqProperty("CP.Container.Id", "C.Id"))
+            existContainerProp.Add(Restrictions.Eq("CP.ValueBoolean", True))
+            existContainerProp.Add(Restrictions.Eq("CP.Name", ContainerPropertiesName.ResolutionAccountingEnabled))
+            existContainerProp.SetProjection(Projections.Constant(1))
+            If accounting Then
+                criteria.Add(Subqueries.Exists(existContainerProp))
+            Else
+                criteria.Add(Subqueries.NotExists(existContainerProp))
+            End If
         End If
 
         Return criteria.List(Of Container)()
@@ -481,7 +442,7 @@ Public Class NHibernateContainerDao
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of Container)("C")
         criteria.CreateAlias("C.DocumentSeriesLocation", "Location", SqlCommand.JoinType.InnerJoin)
         criteria.Add(Restrictions.Eq("C.Archive.Id", idArchive))
-        criteria.Add(Restrictions.Eq("C.IsActive", Int16.Parse(1)))
+        criteria.Add(Restrictions.Eq("C.IsActive", True))
         criteria.SetProjection(Projections.Property("Location.ProtBiblosDSDB"))
         Return criteria.List(Of String)()
     End Function

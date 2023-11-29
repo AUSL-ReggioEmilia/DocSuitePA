@@ -40,7 +40,7 @@ Public Class CollaborationUser
 
     Public Sub New(sourceRole As Role)
         Me.New()
-        IdRole = sourceRole.Id
+        IdRole = Convert.ToInt16(sourceRole.Id)
         DestinationName = sourceRole.Name
         DestinationEMail = sourceRole.EMailAddress
         DestinationType = DestinatonType.S.ToString()

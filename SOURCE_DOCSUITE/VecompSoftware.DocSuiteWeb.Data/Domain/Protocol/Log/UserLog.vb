@@ -23,6 +23,7 @@ Public Class UserLog
     Public Overridable Property AdaptiveSearchEvaluated As String
     Public Overridable Property PrivacyLevel As Integer
     Public Overridable Property UserProfile As String
+    Public Overridable Property UserPrincipalName As String
 
 #End Region
 

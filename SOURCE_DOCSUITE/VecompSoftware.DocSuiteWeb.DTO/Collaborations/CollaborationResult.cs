@@ -6,8 +6,6 @@ namespace VecompSoftware.DocSuiteWeb.DTO.Collaborations
     {
         public int IdCollaboration { get; set; }
 
-        public string TenantName { get; set; }
-
         public string DocumentType { get; set; }
     }
 }

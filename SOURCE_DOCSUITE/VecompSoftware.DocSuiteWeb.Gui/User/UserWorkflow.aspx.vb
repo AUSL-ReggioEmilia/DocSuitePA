@@ -12,10 +12,12 @@ Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.Workflow
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Workflow
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.ExtensionMethods.EnumEx
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Helpers.Workflow
 Imports VecompSoftware.Services.Logging
 Imports WorkflowActivityAction = VecompSoftware.DocSuiteWeb.Model.Workflow.WorkflowActivityAction
@@ -35,7 +37,8 @@ Public Class UserWorkflow
     Public Const UDS_ADDRESS_NAME As String = "API-UDSAddress"
     Private Const ODATA_FILTER As String = "$filter=_year eq {0} and _number eq {1}"
     Private _currentUDSFacade As UDSFacade
-
+    Private _currentWorkflowPropertyFacade As Facade.WebAPI.Workflows.WorkflowPropertyFacade
+    Private _currentWorkflowRepositoryFacade As Facade.WebAPI.Workflows.WorkflowRepositoryFacade
 #Region "Property"
 
     Public ReadOnly Property CurrentUDSFacade As UDSFacade
@@ -44,6 +47,29 @@ Public Class UserWorkflow
                 _currentUDSFacade = New UDSFacade()
             End If
             Return _currentUDSFacade
+        End Get
+    End Property
+
+    Public ReadOnly Property CurrentWorkflowPropertyFacade As Facade.WebAPI.Workflows.WorkflowPropertyFacade
+        Get
+            If _currentWorkflowPropertyFacade Is Nothing Then
+                _currentWorkflowPropertyFacade = New WebAPI.Workflows.WorkflowPropertyFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
+            End If
+            Return _currentWorkflowPropertyFacade
+        End Get
+    End Property
+    Public ReadOnly Property CurrentWorkflowRepositoryFacade As Facade.WebAPI.Workflows.WorkflowRepositoryFacade
+        Get
+            If _currentWorkflowRepositoryFacade Is Nothing Then
+                _currentWorkflowRepositoryFacade = New WebAPI.Workflows.WorkflowRepositoryFacade(DocSuiteContext.Current.Tenants, CurrentTenant)
+            End If
+            Return _currentWorkflowRepositoryFacade
+        End Get
+    End Property
+
+    Private ReadOnly Property RepositoryName As String
+        Get
+            Return Request.QueryString.GetValueOrDefault("RepositoryName", String.Empty)
         End Get
     End Property
 
@@ -124,6 +150,11 @@ Public Class UserWorkflow
             With DirectCast(e.Item.FindControl("lblWorkflowActivityStatus"), Label)
                 .Text = workflowActivityResult.WorkflowActivityStatus.GetDescription()
             End With
+
+            Dim workflowProperty As WorkflowProperty = CurrentWorkflowPropertyFacade.FindPropertyByActivityIdAndName(workflowActivityResult.WorkflowActivityId, WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_MOTIVATION)
+            If workflowProperty IsNot Nothing AndAlso String.IsNullOrEmpty(workflowProperty.ValueString) = False Then
+                workflowActivityResult.WorkflowSubject = workflowProperty.ValueString
+            End If
 
             With DirectCast(e.Item.FindControl("lblWorkflowSubject"), Label)
                 .Text = workflowActivityResult.WorkflowSubject
@@ -274,6 +305,8 @@ Public Class UserWorkflow
                 url = GetDossierUrlByAction(workflowAction, row.WorkflowActivityId)
             Case WorkflowActivityArea.Desk
                 url = GetDeskUrlByAction(workflowAction, row.WorkflowActivityId)
+            Case WorkflowActivityArea.DocSuiteNext
+                url = GetDocsuiteNextByAction(workflowAction, row.WorkflowActivityId)
             Case Else
                 Throw New DocSuiteException(String.Format("Nessuna Area configurata per il nome passato: {0}", workflowArea.GetDescription()))
         End Select
@@ -308,24 +341,8 @@ Public Class UserWorkflow
     ''' </summary>
     ''' <remarks></remarks>
     Private Sub InitializeFilters()
-        trType.Visible = False
+        trType.Visible = True
         trEnvironment.Visible = False
-        'Dim sorted As Dictionary(Of Integer, String) = [Enum].GetValues(GetType(ActivityType)).OfType(Of ActivityType)() _
-        '            .Where(Function(x) Not x.Equals(ActivityType.All)) _
-        '            .Select(Function(s) New With {.Key = Integer.Parse(s), .Value = EnumHelper.GetDescription(s)}) _
-        '            .OrderBy(Function(x) x.Value).ToDictionary(Function(d) d.Key, Function(d) d.Value)
-
-        'For Each type As KeyValuePair(Of Integer, String) In sorted
-        '    ddlType.Items.Add(New ListItem(type.Value, type.Key.ToString()))
-        'Next
-        'ddlType.Items.Insert(0, New ListItem(EnumHelper.GetDescription(ActivityType.All), Integer.Parse(ActivityType.All.ToString()).ToString()))
-        'ddlType.SelectedIndex = ActivityType.All
-        'Dim repositories As Dictionary(Of Integer, String) = Me.GetAvailableDSWEnvironment()
-        'For Each type As KeyValuePair(Of Integer, String) In repositories
-        '    ddlEnvironment.Items.Add(New ListItem(type.Value.ToString(), type.Key.ToString()))
-        'Next
-        'ddlEnvironment.Items.Insert(0, New ListItem(EnumHelper.GetDescription(DSWEnvironment.Any), DirectCast(DSWEnvironment.Any, Integer).ToString()))
-        'ddlEnvironment.SelectedIndex = DSWEnvironment.Any
 
         rdpDateFilterFrom.SelectedDate = DateTime.Today.AddDays(-ProtocolEnv.DesktopDayDiff).Date
         rdpDateFilterTo.SelectedDate = DateTime.Today.Date.AddDays(1).AddMilliseconds(-1)
@@ -334,6 +351,10 @@ Public Class UserWorkflow
         txtWfNameActivity.Text = String.Empty
         txtWfInstanceName.Text = String.Empty
         txtWfSubject.Text = String.Empty
+
+        ddlType.Enabled = True
+
+        LoadWorkflowRepositories()
     End Sub
 
     Private Function GetAvailableDSWEnvironment() As Dictionary(Of Integer, String)
@@ -354,6 +375,33 @@ Public Class UserWorkflow
         Return results
     End Function
 
+
+    Private Sub LoadWorkflowRepositories()
+        ddlType.Items.Clear()
+        ddlType.Items.Add(New RadComboBoxItem(String.Empty, String.Empty))
+        Dim selectedItem As RadComboBoxItem = Nothing
+        Dim workflowRepositories As ICollection(Of WorkflowRepository)
+        Try
+            workflowRepositories = CurrentWorkflowRepositoryFacade.GetAllUserWorkflowRepository()
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, ex.Message, ex)
+            AjaxAlert("Errore in caricamento lista attività.")
+            Exit Sub
+        End Try
+
+        For Each repository As WorkflowRepository In workflowRepositories
+            Dim item As New RadComboBoxItem(repository.Name, repository.UniqueId.ToString())
+            ddlType.Items.Add(item)
+
+            If repository.Name = RepositoryName AndAlso selectedItem Is Nothing Then
+                selectedItem = item
+            End If
+        Next
+
+        If selectedItem IsNot Nothing Then
+            ddlType.SelectedValue = selectedItem.Value
+        End If
+    End Sub
 
     ''' <summary>
     ''' Imposto i filtri per il finder
@@ -391,15 +439,20 @@ Public Class UserWorkflow
             _finder.WorkflowDateTo = rdpDateFilterTo.SelectedDate.Value.Date.AddDays(1)
         End If
 
-        wfGrid.MasterTableView.GroupByExpressions.Clear()
-        If rdbViewer.SelectedValue = "1" Then
-            Dim expression As GridGroupByExpression = New GridGroupByExpression()
-            Dim gridGroupByField As GridGroupByField = New GridGroupByField()
-            gridGroupByField.FieldName = "WorkflowInstanceId"
-            gridGroupByField.HeaderText = "Raggruppa"
-            expression.GroupByFields.Add(gridGroupByField)
-            wfGrid.MasterTableView.GroupByExpressions.Add(expression)
+        If ddlType.SelectedItem IsNot Nothing AndAlso Not String.IsNullOrEmpty(ddlType.SelectedItem.Value) Then
+            _finder.WorkflowRepositoryUniqueId = Guid.Parse(ddlType.SelectedItem.Value)
         End If
+
+        _finder.IsVisible = True
+        wfGrid.MasterTableView.GroupByExpressions.Clear()
+        'If rdbViewer.SelectedValue = "1" Then
+        '    Dim expression As GridGroupByExpression = New GridGroupByExpression()
+        '    Dim gridGroupByField As GridGroupByField = New GridGroupByField()
+        '    gridGroupByField.FieldName = "WorkflowInstanceId"
+        '    gridGroupByField.HeaderText = "Raggruppa"
+        '    expression.GroupByFields.Add(gridGroupByField)
+        '    wfGrid.MasterTableView.GroupByExpressions.Add(expression)
+        'End If
     End Sub
 
     Private Function GetProtocolUrlByAction(workflowAction As WorkflowActivityAction, workflowActivityId As Guid) As String
@@ -431,6 +484,19 @@ Public Class UserWorkflow
                 Return String.Empty
                 Exit Select
 
+            Case WorkflowActivityAction.ToProtocol
+                Dim dsw_p_ReferenceModel As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL, workflowActivityId)
+                If dsw_p_ReferenceModel IsNot Nothing Then
+                    Dim workflowReferenceModel As WorkflowReferenceModel = JsonConvert.DeserializeObject(Of WorkflowReferenceModel)(dsw_p_ReferenceModel.ValueString)
+                    If workflowReferenceModel IsNot Nothing AndAlso workflowReferenceModel.ReferenceId <> Guid.Empty Then
+                        Return String.Format(PROTOCOL_VISUALIZZA_PATH, workflowReferenceModel.ReferenceId)
+                    Else
+                        Return String.Empty
+                    End If
+                Else
+                    Return String.Empty
+                End If
+
             Case Else
                 Return String.Empty
         End Select
@@ -438,6 +504,8 @@ Public Class UserWorkflow
 
     Private Function GetFascicleUrlByAction(workflowAction As WorkflowActivityAction, workflowActivityId As Guid) As String
         Select Case workflowAction
+            Case WorkflowActivityAction.Authorize
+                Return DESK_VISUALIZZA_PATH
             Case WorkflowActivityAction.ToAssignment
                 Dim dsw_p_ReferenceModel As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL, workflowActivityId)
                 If dsw_p_ReferenceModel IsNot Nothing Then
@@ -478,6 +546,35 @@ Public Class UserWorkflow
         Select Case workflowAction
             Case WorkflowActivityAction.Create
                 Return DESK_VISUALIZZA_PATH
+            Case Else
+                Return String.Empty
+        End Select
+    End Function
+
+    Private Function GetDocsuiteNextByAction(workflowAction As WorkflowActivityAction, workflowactivityId As Guid) As String
+        Select Case workflowAction
+            Case WorkflowActivityAction.ToProtocol
+                Dim dsw_a_RedirectToPECToDocumentUnit As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_ACTION_REDIRECT_PEC_DOCUMENTUNIT, workflowactivityId)
+                If dsw_a_RedirectToPECToDocumentUnit Is Nothing OrElse Not dsw_a_RedirectToPECToDocumentUnit.ValueBoolean.HasValue Then
+                    Return String.Empty
+                End If
+
+                Dim dsw_p_ReferenceModel As WorkflowProperty = GetActivityWorkflowProperty(WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL, workflowactivityId)
+                If dsw_p_ReferenceModel Is Nothing OrElse String.IsNullOrEmpty(dsw_p_ReferenceModel.ValueString) Then
+                    Return String.Empty
+                End If
+
+                Dim workflowReferenceModel As WorkflowReferenceModel = JsonConvert.DeserializeObject(Of WorkflowReferenceModel)(dsw_p_ReferenceModel.ValueString)
+                If workflowReferenceModel Is Nothing OrElse workflowReferenceModel.ReferenceType <> DSWEnvironmentType.PECMail Then
+                    Return String.Empty
+                End If
+
+                Dim pecMail As Entity.PECMails.PECMail = JsonConvert.DeserializeObject(Of Entity.PECMails.PECMail)(workflowReferenceModel.ReferenceModel)
+                If pecMail.ProcessStatus <> PECMailProcessStatus.ArchivedInDocSuiteNext Then
+                    Throw New DocSuiteException(String.Format("PECMail (id:{0}) ProcessStatus non compatibile con ActivityArea DocSuiteNext e ActivityAction ToProtocol. (atteso {1}, ricevuto {2})", pecMail.UniqueId, PECMailProcessStatus.ArchivedInDocSuiteNext, pecMail.ProcessStatus))
+                End If
+
+                Return String.Format("~/Pec/PECToDocumentUnit.aspx?{0}", CommonShared.AppendSecurityCheck($"isInWindow=true&Type=Pec&PECId={pecMail.EntityId}"))
             Case Else
                 Return String.Empty
         End Select

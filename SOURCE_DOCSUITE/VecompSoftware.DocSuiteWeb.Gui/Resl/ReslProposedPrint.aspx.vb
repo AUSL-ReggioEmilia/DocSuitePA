@@ -76,7 +76,7 @@ Partial Public Class ReslProposedPrint
     Private Sub Initialize()
         Title = String.Format("{0} - {1}", Facade.TabMasterFacade.TreeViewCaption, "Stampa Elenco Provvedimenti Proposti Al Collegio Sindacale")
         Dim reslContainers As New List(Of ListItem)
-        Dim activeContainers As IList(Of ContainerRightsDto) = Facade.ContainerFacade.GetAllRights("Resl", 1)
+        Dim activeContainers As IList(Of ContainerRightsDto) = Facade.ContainerFacade.GetAllRights("Resl", True)
 
         For Each container As ContainerRightsDto In activeContainers
             Dim containerName As String = container.Name

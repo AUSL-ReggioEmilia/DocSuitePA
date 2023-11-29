@@ -1,4 +1,5 @@
 ﻿Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Public Class TbltContenitoriGesProprieta
@@ -31,6 +32,10 @@ Public Class TbltContenitoriGesProprieta
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerAdminRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         MasterDocSuite.TitleVisible = False
         uscParam.CurrentContainer = CurrentContainer
 

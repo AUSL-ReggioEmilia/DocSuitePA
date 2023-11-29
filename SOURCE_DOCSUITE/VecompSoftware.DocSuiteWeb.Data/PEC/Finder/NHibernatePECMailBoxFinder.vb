@@ -73,9 +73,6 @@ Public Class NHibernatePECMailBoxFinder
 
     Protected Overrides Function CreateCriteria() As ICriteria
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(Of PECMailBox)("PMB")
-        'criteria.CreateAlias("PMB.Mails", "PM", )
-        'criteria.CreateAlias("PMB.Roles", "R")
-        'criteria.CreateAlias("PMB.MailBoxRoles", "PMBR")
 
         If (HasIncomingServer.HasValue AndAlso HasIncomingServer.Value) Then
             criteria.Add(Restrictions.IsNotNull("PMB.IncomingServerName"))
@@ -131,11 +128,7 @@ Public Class NHibernatePECMailBoxFinder
                 criteria.Add(Restrictions.Like("RG._protocolRights", pattern, MatchMode.Start))
             End If
 
-            criteria.Add(Restrictions.Eq("R.IsActive", 1S))
-            Dim disj As New Disjunction()
-            disj.Add(Restrictions.And(Restrictions.IsNull("R.ActiveFrom"), Restrictions.IsNull("R.ActiveTo")))
-            disj.Add(Restrictions.And(Restrictions.Ge("R.ActiveTo", Date.UtcNow), Restrictions.Le("R.ActiveFrom", Date.UtcNow)))
-            criteria.Add(disj)
+            criteria.Add(Restrictions.Eq("R.IsActive", True))
             criteria.Add(Restrictions.InG("RG.SecurityGroup.Id", GroupIds))
             criteria.AddOrder(Order.Asc("R.Name"))
         End If

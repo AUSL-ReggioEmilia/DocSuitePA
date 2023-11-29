@@ -24,8 +24,7 @@
                     commonSelRoleRest.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID%>";
                     commonSelRoleRest.entityType = "<%= EntityType %>";
                     commonSelRoleRest.entityId = "<%= EntityId %>";
-                    commonSelRoleRest.tenantId = "<%= CurrentTenant.UniqueId %>";
-                    commonSelRoleRest.loadAllRoles =<%= LoadAllRoles.ToString().ToLower() %>;
+                    commonSelRoleRest.idTenantAOO = "<%= IdTenantAOO %>";
                     commonSelRoleRest.initialize();
                 });
             });

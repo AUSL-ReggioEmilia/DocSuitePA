@@ -95,14 +95,14 @@ Partial Public Class UserSelRoleUser
             End If
         Else
             ' Popolo dirigenti
-            PopulateRoleUser(Facade.RoleUserFacade.GetByType(RoleUserType.D, True, txtNameFilter.Text))
+            PopulateRoleUser(Facade.RoleUserFacade.GetByType(RoleUserType.D, True, txtNameFilter.Text, CurrentTenant.TenantAOO.UniqueId))
 
             ' Popolo vicedirigenti
-            PopulateRoleUser(Facade.RoleUserFacade.GetByType(RoleUserType.V, True, txtNameFilter.Text))
+            PopulateRoleUser(Facade.RoleUserFacade.GetByType(RoleUserType.V, True, txtNameFilter.Text, CurrentTenant.TenantAOO.UniqueId))
 
             If (Not ProtocolEnv.HideSegreteriaOnDirigSelect) Then
                 ' Popolo segreterie
-                PopulateRoleUser(Facade.RoleUserFacade.GetByType(RoleUserType.S, True, txtNameFilter.Text))
+                PopulateRoleUser(Facade.RoleUserFacade.GetByType(RoleUserType.S, True, txtNameFilter.Text, CurrentTenant.TenantAOO.UniqueId))
             End If
         End If
 
@@ -151,7 +151,7 @@ Partial Public Class UserSelRoleUser
             If userNode Is Nothing Then
                 userNode = New RadTreeNode()
                 userNode.Text = roleUser.Description
-                If DocSuiteContext.Current.ProtocolEnv.IsSecurityGroupEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
+                If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
                     userNode.Text = String.Concat(roleUser.Description, " (", roleUser.Account, ")")
                 End If
                 userNode.Value = roleUser.Id.ToString()

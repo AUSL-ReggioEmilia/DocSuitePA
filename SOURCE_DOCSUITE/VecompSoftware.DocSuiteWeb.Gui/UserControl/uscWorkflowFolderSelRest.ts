@@ -187,7 +187,11 @@ class uscWorkflowFolderSelRest {
         if (node.get_attributes().getAttribute(uscWorkflowFolderSelRest.SET_RECIPIENT_ROLE) === true) {
             const fascicleRole: FascicleRoleModel = fascicleModel.FascicleRoles.filter(x => x.IsMaster === true)[0];
             if (fascicleRole) {
-                const role: WorkflowRoleModel = { IdRole: fascicleRole.Role.EntityShortId } as WorkflowRoleModel;
+                const role: WorkflowRoleModel = {
+                    IdRole: fascicleRole.Role.EntityShortId,
+                    UniqueId: fascicleRole.Role.UniqueId,
+                    IdTenantAOO: fascicleRole.Role.IdTenantAOO
+                } as WorkflowRoleModel;
                 const roles: WorkflowRoleModel[] = [];
                 roles.push(role);
                 sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_RECIPIENT_ROLES, JSON.stringify(roles));

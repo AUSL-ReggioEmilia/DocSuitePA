@@ -1,15 +1,14 @@
-﻿Imports System.Linq
-Imports System.Collections.Generic
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.DocSuiteWeb.Facade
+﻿Imports System.Collections.Generic
+Imports System.Linq
+Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
-Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Commons
-Imports APIEntity = VecompSoftware.DocSuiteWeb.Entity.Commons
-Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.Web.ExtensionMethods
+Imports VecompSoftware.Services.Logging
+Imports APIEntity = VecompSoftware.DocSuiteWeb.Entity.Commons
 
 Partial Class TbltContenitoriGes
     Inherits CommonBasePage
@@ -18,7 +17,7 @@ Partial Class TbltContenitoriGes
 
     Private _currentContainer As Container
     Private _currentPrivacyLevelFinder As Data.WebAPI.Finder.Commons.PrivacyLevelFinder = Nothing
-
+    Private _amministrazioneTrasparenteSeriesHeaderLabel As String = "AmministrazioneTrasparenteSeriesHeaderLabel"
 #End Region
 
 #Region " Properties "
@@ -55,9 +54,7 @@ Partial Class TbltContenitoriGes
         MasterDocSuite.TitleVisible = False
 
         If Not CommonShared.HasGroupAdministratorRight AndAlso Not CommonShared.HasGroupTblContainerAdminRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            AjaxManager.ResponseScripts.Add("CloseWindow();")
-            Exit Sub
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
 
         InitializaAjax()
@@ -86,16 +83,21 @@ Partial Class TbltContenitoriGes
                 FillContainer(CurrentContainer)
                 Facade.ContainerFacade.Save(CurrentContainer)
 
-                Dim currentTenant As Tenant = CType(Session("CurrentTenant"), Tenant)
-                currentTenant.Containers.Add(New APIEntity.Container With {.EntityShortId = CType(CurrentContainer.Id, Short)})
-                Dim currentTenantFacade As WebAPI.Tenants.TenantFacade = New WebAPI.Tenants.TenantFacade(DocSuiteContext.Current.Tenants, currentTenant)
-                currentTenantFacade.Update(currentTenant, UpdateActionType.TenantContainerAdd.ToString())
-                currentTenant.Containers.Clear()
+                CurrentTenant.Containers.Clear()
+                CurrentTenant.Containers.Add(New APIEntity.Container With {.EntityShortId = CType(CurrentContainer.Id, Short)})
+                Dim currentTenantFacade As WebAPI.Tenants.TenantFacade = New WebAPI.Tenants.TenantFacade(DocSuiteContext.Current.Tenants.ToList(), CurrentTenant)
+                currentTenantFacade.Update(CurrentTenant, UpdateActionType.TenantContainerAdd.ToString())
 
                 FillDocumentSeries(CurrentContainer)
                 FillFrontalino(CurrentContainer)
                 Facade.ContainerFacade.Update(CurrentContainer)
                 FillContainerBehaviours(CurrentContainer)
+
+                If checkResolutionAccounting.Checked Then
+                    Facade.ContainerPropertyFacade.InsertContainerProperty(ContainerPropertiesName.ResolutionAccountingEnabled, True, CurrentContainer, ContainerPropertyType.PropertyBoolean)
+                Else
+                    Facade.ContainerPropertyFacade.DeleteContainerProperty(ContainerPropertiesName.ResolutionAccountingEnabled, CurrentContainer)
+                End If
             Case "Rename"
                 If CheckContainerNameExist() AndAlso Not txtName.Text.Eq(CurrentContainer.Name) Then
                     AjaxAlert("Esiste già un contenitore con lo stesso nome")
@@ -106,12 +108,22 @@ Partial Class TbltContenitoriGes
                 FillFrontalino(CurrentContainer)
                 FillContainerBehaviours(CurrentContainer)
                 Facade.ContainerFacade.Update(CurrentContainer)
+                If String.IsNullOrEmpty(txtSeriesHeader.Content) = False Then
+                    Facade.ContainerPropertyFacade.InsertContainerProperty(_amministrazioneTrasparenteSeriesHeaderLabel, txtSeriesHeader.GetHtml(EditorStripHtmlOptions.None), CurrentContainer, ContainerPropertyType.PropertyString)
+                Else
+                    Facade.ContainerPropertyFacade.DeleteContainerProperty(_amministrazioneTrasparenteSeriesHeaderLabel, CurrentContainer)
+                End If
+                If checkResolutionAccounting.Checked Then
+                    Facade.ContainerPropertyFacade.InsertContainerProperty(ContainerPropertiesName.ResolutionAccountingEnabled, True, CurrentContainer, ContainerPropertyType.PropertyBoolean)
+                Else
+                    Facade.ContainerPropertyFacade.DeleteContainerProperty(ContainerPropertiesName.ResolutionAccountingEnabled, CurrentContainer)
+                End If
             Case "Delete"
                 Facade.ContainerFacade.Delete(CurrentContainer)
                 Facade.DocumentSeriesFacade.DeactivateDocumentSeries(CurrentContainer)
                 Facade.ContainerGroupFacade.DeactivateUD(CurrentContainer)
             Case "Recovery"
-                CurrentContainer.IsActive = 1
+                CurrentContainer.IsActive = True
                 Facade.ContainerFacade.Update(CurrentContainer)
         End Select
 
@@ -126,20 +138,6 @@ Partial Class TbltContenitoriGes
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma, MasterDocSuite.AjaxFlatLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlPrivacy)
     End Sub
-
-
-    Private Function IsConservationEnable() As Boolean
-        If DocSuiteContext.Current.IsProtocolEnabled AndAlso DocSuiteContext.Current.ProtocolEnv.IsConservationEnabled Then
-            Return True
-        End If
-        If DocSuiteContext.Current.IsResolutionEnabled AndAlso DocSuiteContext.Current.ResolutionEnv.IsConservationEnabled Then
-            Return True
-        End If
-        If DocSuiteContext.Current.IsDocumentEnabled AndAlso DocSuiteContext.Current.DocumentEnv.IsConservationEnabled Then
-            Return True
-        End If
-        Return False
-    End Function
 
     Private Sub InitializePage()
 
@@ -159,7 +157,6 @@ Partial Class TbltContenitoriGes
             Case "Delete", "Recovery"
                 Page.Title = String.Format("Contenitore [{0}] - {1} ", CurrentContainer.Name, If(Action.Eq("Delete"), "Elimina", "Recupera"))
                 pnlLocation.Visible = False
-                pnlConservation.Visible = False
                 pnlDocumentSeries.Visible = False
                 pnlPrivacy.Disabled = True
                 chkIsPrivacy.ForeColor = Drawing.Color.Gray
@@ -173,6 +170,8 @@ Partial Class TbltContenitoriGes
         txtHeadingFrontalino.DisableFilter(Telerik.Web.UI.EditorFilters.MozEmStrong)
         txtHeadingLetter.DisableFilter(Telerik.Web.UI.EditorFilters.ConvertTags)
         txtHeadingLetter.DisableFilter(Telerik.Web.UI.EditorFilters.MozEmStrong)
+        txtSeriesHeader.DisableFilter(Telerik.Web.UI.EditorFilters.ConvertTags)
+        txtSeriesHeader.DisableFilter(Telerik.Web.UI.EditorFilters.MozEmStrong)
 
         pnlPrivacy.Visible = False
         If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso CommonShared.HasGroupAdministratorRight Then
@@ -181,17 +180,16 @@ Partial Class TbltContenitoriGes
             LoadLevels()
         End If
 
+        pnlResolutionAccounting.Visible = False
+        If ResolutionEnv.ResolutionAccountingEnabled Then
+            pnlResolutionAccounting.Visible = True
+            Dim resAccountingEnabled As Boolean = Facade.ContainerPropertyFacade.GetProperty(ContainerPropertiesName.ResolutionAccountingEnabled, CurrentContainer, ContainerPropertyType.PropertyBoolean)
+            checkResolutionAccounting.Checked = resAccountingEnabled
+        End If
+
         lblPrivacyLevel.Disabled = True
         If chkIsPrivacy.Checked Then
             lblPrivacyLevel.Disabled = False
-        End If
-
-        ' Conservazione Sostitutiva
-        If IsConservationEnable() Then
-            pnlConservation.Visible = True
-            chkConservation.Checked = CType(CurrentContainer.Conservation, Boolean)
-        Else
-            pnlConservation.Visible = False
         End If
 
         uscProtLocation.Visible = DocSuiteContext.Current.IsProtocolEnabled
@@ -284,6 +282,8 @@ Partial Class TbltContenitoriGes
             If series.Family IsNot Nothing Then
                 ddlDocumentSeriesFamily.SelectedValue = series.Family.Id.ToString()
             End If
+            labelSeriesHeader.Text = "Intestazione Amm. Trasparente"
+            txtSeriesHeader.Content = Facade.ContainerPropertyFacade.GetProperty(_amministrazioneTrasparenteSeriesHeaderLabel, CurrentContainer, ContainerPropertyType.PropertyString)
         End If
 
         uscDeskLocation.Visible = False
@@ -339,7 +339,6 @@ Partial Class TbltContenitoriGes
         container.ProtAttachLocation = uscProtAttachLocation.Location
         container.DeskLocation = uscDeskLocation.Location
         container.UDSLocation = uscUDSLocation.Location
-        container.Conservation = Convert.ToByte(chkConservation.Checked)
         If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso CommonShared.HasGroupAdministratorRight Then
             If Not container.PrivacyEnabled = chkIsPrivacy.Checked OrElse Not container.PrivacyLevel = Int16.Parse(ddlPrivacyLevel.SelectedValue) Then
                 Dim message As String = String.Concat("Modificato il contenitore ", container.Id, ": ")

@@ -18,7 +18,6 @@ Public Class OChartItemDTO
         Title = item.Title
         Description = item.Description
         Acronym = item.Acronym
-        Mailboxes = item.ToMailAddressString()
 
         If item.HasItems Then
             Items = item.Items.ReplicateListAsDTO(Me).Distinct().ToArray()
@@ -35,7 +34,6 @@ Public Class OChartItemDTO
     Public Property Title As String Implements IOChartItemDTO.Title
     Public Property Description As String Implements IOChartItemDTO.Description
     Public Property Acronym As String Implements IOChartItemDTO.Acronym
-    Public Property Mailboxes As String Implements IOChartItemDTO.Mailboxes
 
     <JsonIgnore>
     Public Property Parent As IOChartItemDTO Implements IOChartItemDTO.Parent

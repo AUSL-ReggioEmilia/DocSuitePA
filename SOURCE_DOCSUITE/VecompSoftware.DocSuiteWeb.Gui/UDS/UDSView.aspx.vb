@@ -1,12 +1,13 @@
 ﻿Imports System.Collections.Generic
+Imports System.Linq
 Imports System.Text
 Imports System.Web
-Imports System.Linq
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
+Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
 Imports VecompSoftware.DocSuiteWeb.Model.Workflow
@@ -16,7 +17,6 @@ Imports VecompSoftware.Helpers.Workflow
 Imports VecompSoftware.Services.Logging
 Imports WebApientity = VecompSoftware.DocSuiteWeb.Entity.UDS
 Imports WebApiFacade = VecompSoftware.DocSuiteWeb.Facade.WebAPI.UDS
-Imports VecompSoftware.DocSuiteWeb.Entity.Workflows
 
 Public Class UDSView
     Inherits UDSBasePage
@@ -192,7 +192,7 @@ Public Class UDSView
     End Sub
 
     Private Sub BtnFascicle_Click(ByVal sender As System.Object, ByVal e As EventArgs) Handles btnFascicle.Click
-        Dim params As String = CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&UDSRepositoryName={1}&CategoryId={2}&UDType={3}&CategoryFullIncrementalPath={4}&FascicleObject={5}&FolderSelectionEnabled=True&Type=Fasc",
+        Dim params As String = CommonShared.AppendSecurityCheck(String.Format("UniqueId={0}&UDSRepositoryName={1}&CategoryId={2}&UDType={3}&CategoryFullIncrementalPath={4}&FascicleObject={5}&FolderSelectionEnabled=True&AuthorizedFasciclesEnabled=True&Type=Fasc",
             UDSSource.Id, UDSSource.UDSRepository.Name, UDSSource.Category.EntityShortId, Convert.ToInt32(DSWEnvironment.UDS), UDSSource.Category.FullIncrementalPath, UDSSource.Subject))
         If CurrentIdUDSRepository.HasValue Then
             params = String.Concat(params, "&IdUDSRepository=", CurrentIdUDSRepository.Value)
@@ -248,7 +248,7 @@ Public Class UDSView
         uscUDS.UDSNumber = UDSSource.Number
         uscUDS.InitializeUscDocumentUnitReferences()
         uscUDS.InitializeMulticlassification()
-        uscUDS.VisibleParer = ProtocolEnv.ParerEnabled AndAlso UDSSource.UDSModel.Model.ConservationEnabled
+        uscUDS.VisibleConservation = ProtocolEnv.ConservationEnabled AndAlso UDSSource.UDSModel.Model.ConservationEnabled
 
         btnEdit.PostBackUrl = String.Format(EDIT_PAGE_URL, CurrentIdUDS, CurrentIdUDSRepository, String.Empty)
 
@@ -299,6 +299,11 @@ Public Class UDSView
         Title = $"{UDSSource.UDSModel.Model.Title} - Visualizzazione"
 
         UDSLogFacade.InsertLog(UDSSource.Id, UDSSource.UDSRepository.UniqueId, UDSSource.UDSRepository.DSWEnvironment, String.Concat("Visualizzazione ", UDSSource.UDSModel.Model.Title), WebApientity.UDSLogType.SummaryView)
+
+        If CurrentRepositoryRights.IsConservated Then
+            SetConservationButtonVisibility()
+        End If
+
     End Sub
     Public Function GetUDSInitializer() As UDSDto Implements IUDSInitializer.GetUDSInitializer
         Return UDSSource
@@ -308,8 +313,8 @@ Public Class UDSView
 
         Dim insertUDSStep As RadWizardStep = New RadWizardStep()
         insertUDSStep.ID = "InsertUDS"
-        insertUDSStep.Title = "Inserisci un nuovo Archivio"
-        insertUDSStep.ToolTip = "Inserisci un nuovo Archivio"
+        insertUDSStep.Title = "Inserisci un nuovo archivio"
+        insertUDSStep.ToolTip = "Inserisci un nuovo archivio"
         insertUDSStep.Enabled = False
         MasterDocSuite.WorkflowWizardControl.WizardSteps.Add(insertUDSStep)
 
@@ -330,6 +335,13 @@ Public Class UDSView
         Return CurrentUDSRepositoryFacade.GetProtocolInitializer(UDSSource)
     End Function
 
+
+    Private Sub SetConservationButtonVisibility()
+    End Sub
+
+    Private Function GetIdFascicle() As Guid? Implements IUDSInitializer.GetIdFascicle
+        Return Nothing
+    End Function
 #End Region
 
 End Class

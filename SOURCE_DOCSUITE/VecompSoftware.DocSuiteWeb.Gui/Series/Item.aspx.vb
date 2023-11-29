@@ -31,6 +31,7 @@ Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.Services.Logging
 Imports DocumentArchives = VecompSoftware.DocSuiteWeb.Entity.DocumentArchives
 Imports FascicleDocumentUnitFacade = VecompSoftware.DocSuiteWeb.Facade.WebAPI.Fascicles.FascicleDocumentUnitFacade
+Imports VecompSoftware.Commons.Interfaces.CQRS.Events
 
 Namespace Series
     Public Class Item
@@ -260,7 +261,7 @@ Namespace Series
         Private ReadOnly Property MyRoles As IList(Of Role)
             Get
                 If _myRoles Is Nothing Then
-                    _myRoles = Facade.RoleFacade.GetUserRoles(DSWEnvironment.DocumentSeries, 1, Nothing)
+                    _myRoles = Facade.RoleFacade.GetUserRoles(DSWEnvironment.DocumentSeries, 1, Nothing, CurrentTenant.TenantAOO.UniqueId)
                 End If
                 Return _myRoles
             End Get
@@ -557,7 +558,11 @@ Namespace Series
             ' Inizializzo le componenti Ajax
             InitializeAjax()
 
-            uscDocumentUnitReferences.IdDocumentUnit = CurrentDocumentSeriesItem.UniqueId.ToString()
+            uscDocumentUnitReferences.Visible = False
+            If Action.Equals(DocumentSeriesAction.View) Then
+                uscDocumentUnitReferences.Visible = True
+                uscDocumentUnitReferences.ReferenceUniqueId = CurrentDocumentSeriesItem.UniqueId.ToString()
+            End If
 
             If Not Page.IsPostBack Then
                 DocumentUnitsToDelete = New List(Of DocumentUnitModel)()
@@ -587,7 +592,7 @@ Namespace Series
                         ddlContainerArchive.SelectedIndex = 0
                         ddlContainerArchive_SelectedIndexChanged(sender, Nothing)
                     Else
-                        ddlContainerArchive.Items.Insert(0, "")
+                        ddlContainerArchive.Items.Insert(0, String.Empty)
                     End If
 
                     ' Serie Documentali
@@ -758,6 +763,10 @@ Namespace Series
                 uscAmmTraspMonitorLog.OwnerRoleId = CurrentOwnerRole.Id
             End If
 
+            If ProtocolEnv.DocumentSeriesPublicationDateConstraintEnabled AndAlso Action = DocumentSeriesAction.Insert Then
+                ItemPublishingDate.MinDate = Date.Today.Date
+            End If
+
             btnNuovoMonitoraggio.OnClientClick = "showWindow()"
         End Sub
 
@@ -843,7 +852,7 @@ Namespace Series
             CurrentDocumentSeriesItem.Priority = chkPriority.Checked
 
             ' Salvo l'Item in DB
-            Facade.DocumentSeriesItemFacade.SaveDocumentSeriesItem(CurrentDocumentSeriesItem, DocumentSeriesYearNumber, chain, uscUploadAnnexed.DocumentInfosAdded, uscUnpublishedAnnexed.DocumentInfosAdded, status, String.Empty)
+            Facade.DocumentSeriesItemFacade.SaveDocumentSeriesItem(CurrentDocumentSeriesItem, DocumentSeriesYearNumber, chain, uscUploadAnnexed.DocumentInfosAdded, uscUnpublishedAnnexed.DocumentInfosAdded, status, String.Empty, CurrentCollaboration)
 
             ' Se l'Item è proveniente da una Protocol ne salvo il collegamento e registro su LOG Applicativo
             If Action = DocumentSeriesAction.FromProtocol Then
@@ -871,8 +880,8 @@ Namespace Series
             If Action = DocumentSeriesAction.FromCollaboration Then
                 CurrentCollaboration.DocumentSeriesItem = CurrentDocumentSeriesItem
 
-                Facade.CollaborationFacade.Update(CurrentCollaboration, "", Nothing, "", Nothing, CollaborationStatusType.PT, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, "", 0, False)
-                Facade.CollaborationFacade.SendMail(CurrentCollaboration, CollaborationMainAction.ProtocollatiGestiti)
+                Facade.CollaborationFacade.Update(CurrentCollaboration, String.Empty, Nothing, String.Empty, Nothing, CollaborationStatusType.PT, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, String.Empty, 0, False)
+                Facade.CollaborationFacade.SendMail(CurrentCollaboration, CollaborationMainAction.ProtocollatiGestiti, CurrentTenant.TenantAOO.UniqueId)
             End If
 
             If Action = DocumentSeriesAction.FromResolutionKind OrElse Action = DocumentSeriesAction.FromResolutionKindUpdate OrElse Action = DocumentSeriesAction.FromResolutionView Then
@@ -1104,7 +1113,7 @@ Namespace Series
 
             If CurrentDocumentSeriesItem.Status = DocumentSeriesItemStatus.Active Then
                 If btn.CommandArgument.Eq("ASSIGN") Then
-                    Facade.DocumentSeriesItemFacade.SendInsertDocumentSeriesItemCommand(CurrentDocumentSeriesItem)
+                    Facade.DocumentSeriesItemFacade.SendInsertDocumentSeriesItemCommand(CurrentDocumentSeriesItem, New List(Of IWorkflowAction))
                 Else
                     Facade.DocumentSeriesItemFacade.SendUpdateDocumentSeriesItemCommand(CurrentDocumentSeriesItem)
                 End If
@@ -1175,6 +1184,10 @@ Namespace Series
         Private Sub RadAjaxManagerAjaxRequest(ByVal sender As Object, ByVal e As AjaxRequestEventArgs)
 
             Dim arguments As String() = Split(e.Argument, "|")
+
+            If arguments(0).Eq(uscUploadDocument.ClientID) OrElse arguments(0).Eq(uscUploadAnnexed.ClientID) OrElse arguments(0).Eq(uscUnpublishedAnnexed.ClientID) Then
+                Exit Sub
+            End If
 
             Select Case arguments(0)
                 Case "removeDraftLink"
@@ -1317,6 +1330,18 @@ Namespace Series
 
             btnRemoveLink.OnClientClick = String.Format("return RemoveDraftLink('{0}');", dto.UniqueId)
         End Sub
+
+        Private Sub ItemPublishingDate_SelectedDateChanged(sender As Object, e As EventArgs) Handles ItemPublishingDate.SelectedDateChanged
+            SetFiltersState()
+            If ProtocolEnv.DocumentSeriesPublicationDateConstraintEnabled Then
+                ItemPublishingDate.MinDate = Date.Today.Date
+
+                If ItemPublishingDate.SelectedDate.HasValue AndAlso ItemPublishingDate.SelectedDate.Value < Date.Today.Date Then
+                    SetFiltersState(True)
+                    Return
+                End If
+            End If
+        End Sub
 #End Region
 
 #Region " Methods "
@@ -1379,6 +1404,7 @@ Namespace Series
 
             AjaxManager.AjaxSettings.AddAjaxSetting(uscRoleOwner, uscRoleOwner)
             AjaxManager.AjaxSettings.AddAjaxSetting(uscRoleAuthorization, uscRoleAuthorization)
+            AjaxManager.AjaxSettings.AddAjaxSetting(ItemPublishingDate, ButtonsPanel, MasterDocSuite.AjaxFlatLoadingPanel)
 
             If DocSuiteContext.Current.PrivacyLevelsEnabled Then
                 AjaxManager.AjaxSettings.AddAjaxSetting(uscUploadDocument, uscUploadDocument, MasterDocSuite.AjaxDefaultLoadingPanel)
@@ -1881,7 +1907,7 @@ Namespace Series
             'ROLES
             DataBindRoles()
 
-            Facade.DocumentSeriesItemLogFacade.AddLog(CurrentDocumentSeriesItem, DocumentSeriesItemLogType.View, "")
+            Facade.DocumentSeriesItemLogFacade.AddLog(CurrentDocumentSeriesItem, DocumentSeriesItemLogType.View, String.Empty)
         End Sub
 
         Private Sub LoadAvailableDocumentSeries()
@@ -1896,7 +1922,7 @@ Namespace Series
                 CurrentDocumentSeriesItem.DocumentSeries = Facade.DocumentSeriesFacade.GetDocumentSeries(Integer.Parse(ddlDocumentSeries.SelectedValue))
                 ddlDocumentSeries_SelectedIndexChanged(Me.Page, Nothing)
             Else
-                ddlDocumentSeries.Items.Insert(0, "")
+                ddlDocumentSeries.Items.Insert(0, String.Empty)
             End If
         End Sub
 
@@ -2104,6 +2130,9 @@ Namespace Series
             If Editable Then
                 If CurrentDocumentSeriesItem.PublishingDate.HasValue Then
                     ItemPublishingDate.SelectedDate = CurrentDocumentSeriesItem.PublishingDate.Value
+                    If ProtocolEnv.DocumentSeriesPublicationDateConstraintEnabled Then
+                        ItemPublishingDate.Enabled = False
+                    End If
                 End If
                 If CurrentDocumentSeriesItem.RetireDate.HasValue Then
                     ItemRetireDate.SelectedDate = CurrentDocumentSeriesItem.RetireDate.Value
@@ -2142,7 +2171,7 @@ Namespace Series
             AnnexedPanel.Visible = True
             ItemSubCategory.Visible = False
             cmdOk.Visible = True
-            cmdSaveDraft.Visible = True
+            cmdSaveDraft.Visible = Action <> DocumentSeriesAction.FromCollaboration
             uscUploadDocument.SignButtonEnabled = True
             uscUploadAnnexed.SignButtonEnabled = True
             uscUnpublishedAnnexed.SignButtonEnabled = True
@@ -2478,7 +2507,7 @@ Namespace Series
                 cb.Width = New Unit(350, UnitType.Pixel)
                 cb.Enabled = Editable
 
-                cb.Items.Add(New ListItem("", "-1"))
+                cb.Items.Add(New ListItem(String.Empty, "-1"))
 
                 For Each item As DocumentSeriesAttributeEnumValue In ae.EnumValues
                     cb.Items.Add(New ListItem(item.Description, item.AttributeValue.ToString()))
@@ -3255,6 +3284,12 @@ Namespace Series
             Dim docUnitsToDelete As List(Of DocumentUnitModel) = DocumentUnitsToDelete
             docUnitsToDelete.Add(documentUnit)
             DocumentUnitsToDelete = docUnitsToDelete
+        End Sub
+
+        Private Sub SetFiltersState(Optional isErrorState As Boolean = False)
+            lblItemPublishingDate.Visible = isErrorState
+            cmdOk.Enabled = Not isErrorState
+            cmdSaveDraft.Enabled = Not isErrorState
         End Sub
 #End Region
 

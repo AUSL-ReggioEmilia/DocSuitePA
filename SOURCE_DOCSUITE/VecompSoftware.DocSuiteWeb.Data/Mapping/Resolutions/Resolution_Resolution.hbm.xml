@@ -53,9 +53,6 @@
     <property name="SupplierCode" column="SupplierCode" type="AnsiString" />
     <property name="SupplierDescription" column="SupplierDescription" type="AnsiString" />
     <property name="_checkPublication" column="CheckPublication" access="field" type="AnsiString" />
-    <property name="ConservationStatus" column="ConservationStatus" type="AnsiChar" />
-    <property name="LastConservationDate" column="LastConservationDate" />
-    <property name="HasConservatedDocs" column="HasConservatedDocs"  />
     <property name="UltimaPaginaDate" column="UltimaPaginaDate"  />
     <property name="_webState" column="WebState" access="field" />
     <property name="WebPublicationDate" column="WebPublicationDate" />
@@ -94,6 +91,7 @@
     <property name="InclusiveNumber" column="InclusiveNumber" type="AnsiString" />
     <property name="IsChecked" column="IsChecked" />
     <property name="UniqueId" column="UniqueId" unique="true" />
+    <property name="Amount" column="Amount" />
     
     <many-to-one name="Type" column="idType" class="ResolutionType" />
     <many-to-one name="Container" column="idContainer" class="Container" />
@@ -103,13 +101,12 @@
     <many-to-one name="BidType" column="idBidType" class="BidType" />
     <many-to-one name="Category" column="idCategory" class="Category" />
     <many-to-one name="SubCategory" column="idSubCategory" class="Category" />
-	<many-to-one name="CategoryAPI" column="IdCategoryAPI" class="Category" insert="false" update="false" />
+	  <many-to-one name="CategoryAPI" column="IdCategoryAPI" class="Category" insert="false" update="false" />
     <many-to-one name="ResolutionKind" column="IdResolutionKind" class="ResolutionKind" />
     <many-to-one name="RoleProposer" column="IdRoleProposer" class="Role" />
     
     <one-to-one name="File" class="FileResolution" cascade="all-delete-orphan" fetch="join" outer-join="false" constrained="false"/>
-    <one-to-one name="ResolutionParer" class="ResolutionParer" cascade="all-delete-orphan" fetch="join" />
-    
+
     <bag name="ResolutionContacts" table="ResolutionContact" cascade="all-delete-orphan" inverse="true">
       <key>
         <column name="IdResolution" />
@@ -157,12 +154,6 @@
         <column name="IdResolution" />
       </key>
       <one-to-many class="ResolutionWorkflow" />
-    </bag>
-    <bag name="ResolutionRecipients" table="ResolutionRecipient" cascade="all-delete-orphan" inverse="true">
-      <key>
-        <column name="IdResolution" />
-      </key>
-      <one-to-many class="ResolutionRecipient" />
     </bag>
     <bag name="WebPublications" table="WebPublication" cascade="all-delete-orphan" inverse="true">
       <key>

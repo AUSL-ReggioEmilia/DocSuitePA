@@ -19,7 +19,8 @@ enum ActivityType {
     BuildMessages = 16,
     DocumentUnitIntoFascicle = 17,
     DocumentUnitLinks = 18,
-    GenericActivity = 19
+    GenericActivity = 19,
+    ProtocolUpdate = 20
 }
 
 export = ActivityType;

@@ -102,7 +102,7 @@ namespace VecompSoftware.JeepService
         }
 
         [Category("Configuration")]
-        [DefaultValue("SRVBIBLOS")]
+        [DefaultValue(".")]
         [Description("Nome del server Biblos destinatario dell'archiviazione.")]
         public string BiblosServerName { get; set; }
 

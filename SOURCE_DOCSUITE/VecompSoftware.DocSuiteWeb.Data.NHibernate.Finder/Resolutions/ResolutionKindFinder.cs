@@ -35,7 +35,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.NHibernate.Finder.Resolutions
             return queryOver
                 .Left.JoinAlias(x => x.ResolutionKindDocumentSeries, () => resolutionKindDocumentSeries)
                 .Left.JoinAlias(() => resolutionKindDocumentSeries.DocumentSeries, () => documentSeries)
-                .Where(x => x.IsActive == 1);
+                .Where(x => x.IsActive == true);
         }
 
         /// <summary>

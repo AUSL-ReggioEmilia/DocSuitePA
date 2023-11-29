@@ -23,7 +23,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Dao.Collaborations
         {
             Finder.ResetDecoration();
             Finder.CollaborationFinderActionType = null;
-            Finder.Incremental = incremental;
+            Finder.CollaborationFinderModel.EntityId = incremental;
             return Finder.DoSearch().Select(s => s.Entity).SingleOrDefault();
         }
 

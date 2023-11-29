@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://BiblosDS/2009/10/DocumentServer" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/DocumentServer" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Document" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Server" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd20" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd10" namespace="http://BiblosDS/2009/10/Storage" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/StorageArea" />
-  <xs:import schemaLocation="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd5" namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd8" namespace="http://BiblosDS/2009/10/Server" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd20" namespace="http://schemas.datacontract.org/2004/07/BiblosDS.Library.Common.Objects" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd10" namespace="http://BiblosDS/2009/10/Storage" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/StorageArea" />
+  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?xsd=xsd4" namespace="http://BiblosDS/2009/10/BiblosDSObject" />
   <xs:complexType name="ArrayOfDocumentServer">
     <xs:sequence>
       <xs:element minOccurs="0" maxOccurs="unbounded" name="DocumentServer" nillable="true" type="tns:DocumentServer" />

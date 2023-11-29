@@ -33,7 +33,6 @@ Namespace Viewers
         Private _currentFascicleDocumentUnitFinder As FascicleDocumentUnitFinder
         Public Const GET_WF_VISIBILITY_VALUE As String = "getWfVisibilityValue();"
 
-
 #End Region
 
 #Region " Properties "
@@ -104,6 +103,7 @@ Namespace Viewers
                 Dim hasDocumentAttributesRight As Boolean = False
                 Dim documentUniqueIdAttribute As Guid? = Nothing
                 For Each document As DocumentInfo In toCheckDocuments
+                    document.AddAttribute(ViewerLight.BIBLOS_ATTRIBUTE_FascicleId, IdFascicle.ToString())
                     hasDocumentAttributesRight = document.Attributes.Any(Function(x) (x.Key = ViewerLight.BIBLOS_ATTRIBUTE_Miscellanea OrElse x.Key = ViewerLight.BIBLOS_ATTRIBUTE_UserVisibilityAuthorized) AndAlso x.Value.Eq(True.ToString()))
                     documentUniqueIdAttribute = document.Attributes.Where(Function(x) x.Key = ViewerLight.BIBLOS_ATTRIBUTE_UniqueId).Select(Function(s) Guid.Parse(s.Value)).SingleOrDefault()
                     If Not hasDocumentAttributesRight AndAlso documentUniqueIdAttribute.HasValue Then
@@ -124,7 +124,7 @@ Namespace Viewers
 
         Public ReadOnly Property Body() As String Implements ISendMail.Body
             Get
-                Return MailFacade.GetFascicleListBody(FascicleList)
+                Return MailFacade.GetFascicleListBody(FascicleList, Documents)
             End Get
         End Property
         Public ReadOnly Property CurrentInsertsLocation() As Location

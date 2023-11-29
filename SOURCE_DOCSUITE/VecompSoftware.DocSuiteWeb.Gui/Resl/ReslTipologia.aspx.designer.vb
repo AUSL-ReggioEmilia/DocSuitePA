@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class ReslTipologia
-    
+
     '''<summary>
     '''RadCodeBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
-    
+
     '''<summary>
     '''wndManage control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents wndManage As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''wndResolutionKind control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents wndResolutionKind As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''pnlWindowContent control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlWindowContent As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtKindName control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtKindName As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''rcbKindActive control.
     '''</summary>
@@ -66,7 +66,16 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rcbKindActive As Global.System.Web.UI.WebControls.CheckBox
-    
+
+    '''<summary>
+    '''rcbKindAmountEnabled control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rcbKindAmountEnabled As Global.System.Web.UI.WebControls.CheckBox
+
     '''<summary>
     '''btnConfirm control.
     '''</summary>
@@ -75,7 +84,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConfirm As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''uscNotification control.
     '''</summary>
@@ -84,7 +93,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
-    
+
     '''<summary>
     '''splContent control.
     '''</summary>
@@ -93,7 +102,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents splContent As Global.Telerik.Web.UI.RadSplitter
-    
+
     '''<summary>
     '''tlbStatusSearch control.
     '''</summary>
@@ -102,7 +111,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tlbStatusSearch As Global.Telerik.Web.UI.RadToolBar
-    
+
     '''<summary>
     '''inActive control.
     '''</summary>
@@ -111,7 +120,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents inActive As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''active control.
     '''</summary>
@@ -120,7 +129,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents active As Global.Telerik.Web.UI.RadToolBarButton
-    
+
     '''<summary>
     '''rtvResolutionKinds control.
     '''</summary>
@@ -129,7 +138,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtvResolutionKinds As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''pnlDetails control.
     '''</summary>
@@ -138,7 +147,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDetails As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscResolutionKindDetails control.
     '''</summary>
@@ -147,7 +156,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscResolutionKindDetails As Global.VecompSoftware.DocSuiteWeb.Gui.uscResolutionKindDetails
-    
+
     '''<summary>
     '''uscResolutionKindSeries control.
     '''</summary>
@@ -156,7 +165,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscResolutionKindSeries As Global.VecompSoftware.DocSuiteWeb.Gui.uscResolutionKindSeries
-    
+
     '''<summary>
     '''pnlButtons control.
     '''</summary>
@@ -165,7 +174,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnAdd control.
     '''</summary>
@@ -174,7 +183,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAdd As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnEdit control.
     '''</summary>
@@ -183,7 +192,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnEdit As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnCancel control.
     '''</summary>
@@ -192,7 +201,7 @@ Partial Public Class ReslTipologia
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnCancel As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnRestore control.
     '''</summary>

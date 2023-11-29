@@ -36,7 +36,7 @@ Public Class ProtImportList
     Private Sub Initialize(ByVal sContainer As String)
         Dim dtFile As DataTable = Nothing
 
-        ''**REMOVE**: distinzione tra importazione fatture e lettere
+        ''EMANUELE: distinzione tra importazione fatture e lettere
         Select Case (Type)
             Case "Fattura"
                 Dim oImport As New CommImport(sContainer, Type)

@@ -1,8 +1,7 @@
 ﻿<%@ Page AutoEventWireup="false" CodeBehind="TbltTenant.aspx.vb" EnableViewState="True" Inherits="VecompSoftware.DocSuiteWeb.Gui.TbltTenant" Language="vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Title="Gestione AOO" %>
 
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
-<%@ Register Src="~/UserControl/uscContattiSelRest.ascx" TagPrefix="usc" TagName="uscContattiSelRest" %>
-<%@ Register Src="~/UserControl/uscRoleRest.ascx" TagName="uscRoleRest" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscContainerRest.ascx" TagName="uscContainerRest" TagPrefix="usc" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1" EnableViewState="false">
@@ -33,8 +32,7 @@
 
                     //rad tree views
                     tbltTenant.rtvTenantsId = "<%= rtvTenants.ClientID %>";
-                    tbltTenant.rtvContainersId = "<%= rtvContainers.ClientID %>";
-                    tbltTenant.rtvPECMailBoxesId = "<%= rtvPECMailBoxes.ClientID %>";
+                    <%--tbltTenant.rtvPECMailBoxesId = "<%= rtvPECMailBoxes.ClientID %>";--%>
                     tbltTenant.rtvWorkflowRepositoriesId = "<%= rtvWorkflowRepositories.ClientID %>";
                     tbltTenant.rtvTenantConfigurationsId = "<%= rtvTenantConfigurations.ClientID %>";
 
@@ -52,15 +50,13 @@
                     tbltTenant.lblTenantDataDiDisattivazioneId = "<%= lblTenantDataDiDisattivazione.ClientID %>";
 
                     //Containers, PECMailBoxes, Rules, WorkflowReposiory, TenantConfiguration, Contact
-                    tbltTenant.tbContainersControlId = "<%= tbContainersControl.ClientID%>";
-                    tbltTenant.tbPECMailBoxesControlId = "<%= tbPECMailBoxControl.ClientID%>";
+                    <%--tbltTenant.tbPECMailBoxesControlId = "<%= tbPECMailBoxControl.ClientID%>";--%>
                     tbltTenant.tbWorkflowRepositoryControlId = "<%= tbWorkflowControl.ClientID%>";
                     tbltTenant.tbConfigurationControlId = "<%= tbConfigurationControl.ClientID%>";
 
 
                     // windows
-                    tbltTenant.rwContainerId = "<%=rwContainerSelector.ClientID%>";
-                    tbltTenant.rwPECMailBoxId = "<%=rwPECMailBoxSelector.ClientID%>";
+                    <%--tbltTenant.rwPECMailBoxId = "<%=rwPECMailBoxSelector.ClientID%>";--%>
                     tbltTenant.rwTenantConfigurationId = "<%=rwTenantConfigurationSelector.ClientID%>";
                     tbltTenant.rwRoleId = "<%=rwRoleSelector.ClientID%>";
                     tbltTenant.rwWorkflowRepositoryId = "<%=rwWorkflowRepositorySelector.ClientID%>";
@@ -68,8 +64,7 @@
 
 
                     //window combos
-                    tbltTenant.cmbContainerId = "<%= cbContainer.ClientID %>";
-                    tbltTenant.cmbPECMailBoxId = "<%= cbPECMailBoxSelector.ClientID %>";
+                    <%--tbltTenant.cmbPECMailBoxId = "<%= cbPECMailBoxSelector.ClientID %>";--%>
                     tbltTenant.cmbRoleId = "<%= cbRoleSelector.ClientID %>";
                     tbltTenant.cmbWorkflowRepositoryId = "<%= cbWorkflowRepositorySelector.ClientID %>";
                     tbltTenant.cmbConfigurationTypeId = "<%=cmbConfigurationType.ClientID%>";
@@ -98,12 +93,10 @@
                     tbltTenant.txtTenantAOOSuffixInfoId = "<%= txtTenantAOOSuffixInfo.ClientID %>";
 
                     // Window buttons Confirm, Cancel
-                    tbltTenant.btnContainerSelectorOkId = "<%= btnContainerSelectorOk.ClientID %>";
-                    tbltTenant.btnContainerSelectorCancelId = "<%= btnContainerSelectorCancel.ClientID %>";
-                    tbltTenant.btnPECMailBoxSelectorOkId = "<%= btnPECMailBoxSelectorOk.ClientID %>";
-                    tbltTenant.btnPECMailBoxSelectorCancelId = "<%= cbRoleSelector.ClientID %>";
+                    <%--tbltTenant.btnPECMailBoxSelectorOkId = "<%= btnPECMailBoxSelectorOk.ClientID %>";
+                    tbltTenant.btnPECMailBoxSelectorCancelId = "<%= cbRoleSelector.ClientID %>";--%>
                     tbltTenant.btnRoleSelectorOkId = "<%= cbWorkflowRepositorySelector.ClientID %>";
-                    tbltTenant.btnPECMailBoxSelectorCancelId = "<%= btnPECMailBoxSelectorCancel.ClientID %>";
+                    <%--tbltTenant.btnPECMailBoxSelectorCancelId = "<%= btnPECMailBoxSelectorCancel.ClientID %>";--%>
                     tbltTenant.btnRoleSelectorOkId = "<%= btnRoleSelectorOk.ClientID %>";
                     tbltTenant.btnRoleSelectorCancelId = "<%= btnRoleSelectorCancel.ClientID %>";
                     tbltTenant.btnWorkflowRepositorySelectorOkId = "<%= btnWorkflowRepositorySelectorOk.ClientID %>";
@@ -115,11 +108,12 @@
                     tbltTenant.rtbCompanyOptionsId = "<%= rtbCompanyOptions.ClientID %>";
                     tbltTenant.btnTenantAOOSelectorOkId = "<%=btnTenantAOOSelectorOk.ClientID %>"
                     tbltTenant.btnTenantAOOSelectorCancelId = "<%= btnTenantAOOSelectorCancel.ClientID%>"
-                    tbltTenant.uscContattiSelRestId = "<% =uscContattiSelRest.PanelContent.ClientID%>";
-                    tbltTenant.uscRoleRestId = "<%= uscRoles.TableContentControl.ClientID %>";
 
                     tbltTenant.maxNumberElements = "<%= ProtocolEnv.MaxNumberDropdownElements %>";
 
+
+
+                    tbltTenant.uscContainerId = "<%= uscContainer.TableContentControl.ClientID %>";
                     tbltTenant.initialize();
                 });
             });
@@ -132,33 +126,7 @@
         </style>
     </telerik:RadScriptBlock>
 
-    <telerik:RadWindow runat="server" ID="rwContainerSelector" Title="Seleziona Contenitore" Width="650" Height="100" Behaviors="Close, Move, Maximize" RenderMode="Lightweight">
-        <ContentTemplate>
-            <asp:UpdatePanel runat="server" ID="ContainerSelectorUpdatePanel" UpdateMode="Conditional">
-                <ContentTemplate>
-                    <table class="datatable" id="ContainerSelectorWindowTable">
-                        <tr>
-                            <td class="label">Contenitore</td>
-                            <td>
-                                <telerik:RadComboBox runat="server" CausesValidation="false"
-                                    ID="cbContainer" AutoPostBack="false" EnableLoadOnDemand="true" MarkFirstMatch="true"
-                                    ItemRequestTimeout="500" Width="550px" ShowMoreResultsBox="true">
-                                </telerik:RadComboBox>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="buttons" colspan="2">
-                                <telerik:RadButton runat="server" ID="btnContainerSelectorOk" Text="Conferma" Width="100px" AutoPostBack="false"></telerik:RadButton>
-                                <telerik:RadButton runat="server" ID="btnContainerSelectorCancel" Text="Annulla" Width="100px" AutoPostBack="false"></telerik:RadButton>
-                            </td>
-                        </tr>
-                    </table>
-                </ContentTemplate>
-            </asp:UpdatePanel>
-        </ContentTemplate>
-    </telerik:RadWindow>
-
-    <telerik:RadWindow runat="server" ID="rwPECMailBoxSelector" Title="Seleziona casella PEC" Width="650" Height="100" Behaviors="Close, Move, Maximize">
+    <%--<telerik:RadWindow runat="server" ID="rwPECMailBoxSelector" Title="Seleziona casella PEC" Width="650" Height="100" Behaviors="Close, Move, Maximize">
         <ContentTemplate>
             <asp:UpdatePanel runat="server" ID="PECMailBoxSelectorUpdatePanel" UpdateMode="Conditional">
                 <ContentTemplate>
@@ -183,7 +151,7 @@
                 </ContentTemplate>
             </asp:UpdatePanel>
         </ContentTemplate>
-    </telerik:RadWindow>
+    </telerik:RadWindow>--%>
 
     <telerik:RadWindow runat="server" ID="rwRoleSelector" Title="Seleziona settore" Width="650" Height="100" Behaviors="Close, Move, Maximize" RenderMode="Lightweight">
         <ContentTemplate>
@@ -450,8 +418,7 @@
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="cphContent" runat="server">
-
-    <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
+   <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
     <div class="splitterWrapper">
         <telerik:RadSplitter runat="server" ID="splitterMain" Width="100%" Height="100%">
 
@@ -579,35 +546,9 @@
                         </tr>
 
                     </table>                  
-
-                    <table class="datatable">
-                        <thead>
-                            <tr>
-                                <th>Contenitori</th>
-                            </tr>
-                        </thead>
-                        <tr>
-                            <td>
-                                <telerik:RadToolBar AutoPostBack="False" ID="tbContainersControl" CssClass="ToolBarContainer"
-                                    RenderMode="Lightweight" EnableRoundedCorners="False" EnableShadows="False" runat="server" Width="100%">
-                                    <Items>
-                                        <telerik:RadToolBarButton CommandName="ADDNEW" ImageUrl="~/App_Themes/DocSuite2008/imgset16/box_open_add.png" ToolTip="Aggiungi contenitore esistente"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton CommandName="REMOVE" ImageUrl="~/App_Themes/DocSuite2008/imgset16/box_open_remove.png" ToolTip="Elimina contenitore selezionato"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton CommandName="ADDALL" ImageUrl="~/App_Themes/DocSuite2008/imgset16/database_add.png" ToolTip="Aggiungi tutti contenitori"></telerik:RadToolBarButton>
-                                        <telerik:RadToolBarButton CommandName="REMOVEALL" ImageUrl="~/App_Themes/DocSuite2008/imgset16/database_delete.png" ToolTip="Elimina tutti contenitori"></telerik:RadToolBarButton>
-                                    </Items>
-                                </telerik:RadToolBar>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <telerik:RadTreeView ID="rtvContainers" LoadingStatusPosition="BeforeNodeText" PersistLoadOnDemandNodes="false" runat="server" Style="margin-top: 10px;" Width="100%">
-                                </telerik:RadTreeView>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <table class="datatable">
+                    <usc:uscContainerRest runat="server" ID="uscContainer" />
+ 
+<%--                    <table class="datatable">
                         <thead>
                             <tr>
                                 <th>Caselle PEC</th>
@@ -630,22 +571,7 @@
                                 </telerik:RadTreeView>
                             </td>
                         </tr>
-                    </table>
-
-                    <table class="datatable">
-                        <tr>
-                            <td>
-                                <usc:uscRoleRest Caption="Settori collegati"
-                                    MultipleRoles="true"
-                                    ID="uscRoles"
-                                    ReadOnlyMode="false"
-                                    runat="server"
-                                    AllDataButtonEnabled="true"
-                                    RemoveAllDataButtonEnabled="true"
-                                    LoadAllRoles="true"></usc:uscRoleRest>
-                            </td>
-                        </tr>
-                    </table>
+                    </table>--%>
 
                     <table class="datatable">
                         <tr>
@@ -690,23 +616,6 @@
                         <tr>
                             <td>
                                 <telerik:RadTreeView ID="rtvTenantConfigurations" LoadingStatusPosition="BeforeNodeText" PersistLoadOnDemandNodes="false" runat="server" Style="margin-top: 10px;" Width="100%" />
-                            </td>
-                        </tr>
-                    </table>
-
-                    <%-- Contatti --%>
-                    <table class="datatable">
-                        <tr>
-                            <th>Contatti</th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <asp:Panel runat="server">
-                                    <usc:uscContattiSelRest FilterByTenantEnabled="False" runat="server" ID="uscContattiSelRest"
-                                        AddAllDataButtonVisibility="true"
-                                        RemoveAllDataButtonVisibility="true"></usc:uscContattiSelRest>
-                                </asp:Panel>
-
                             </td>
                         </tr>
                     </table>

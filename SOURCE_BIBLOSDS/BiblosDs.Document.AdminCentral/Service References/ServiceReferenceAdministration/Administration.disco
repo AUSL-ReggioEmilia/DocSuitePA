@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <discovery xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/disco/">
-  <contractRef ref="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc?wsdl" docRef="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF_DEV/Administration.svc" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
+  <contractRef ref="http://localhost/BiblosDS2010WCF_DEV/Administration.svc?wsdl" docRef="http://localhost/BiblosDS2010WCF_DEV/Administration.svc" xmlns="http://schemas.xmlsoap.org/disco/scl/" />
 </discovery>

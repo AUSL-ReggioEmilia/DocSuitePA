@@ -20,12 +20,12 @@ import TenantConfigurationTypeEnum = require('App/Models/Tenants/TenantConfigura
 import TenantWorkflowRepositoryTypeEnum = require('App/Models/Tenants/TenantWorkflowRepositoryTypeEnum');
 import EnumHelper = require("App/Helpers/EnumHelper");
 import ContactModel = require('App/Models/Commons/ContactModel');
-import uscContattiSelRest = require('UserControl/uscContattiSelRest');
-import uscRoleRest = require('UserControl/uscRoleRest');
 import UpdateActionType = require('App/Models/UpdateActionType');
 import TenantAOOModel = require('App/Models/Tenants/TenantAOOModel');
 import TenantAOOAttribute = require('App/Models/Tenants/TenantAOOAttributeEnum');
 import TenantTypologyTypeEnum = require('App/Models/Tenants/TenantTypologyTypeEnum');
+import uscContainerRest = require('UserControl/uscContainerRest');
+import PageClassHelper = require('App/Helpers/PageClassHelper');
 
 
 class TbltTenant extends TbltTenantBase {
@@ -36,22 +36,19 @@ class TbltTenant extends TbltTenantBase {
     splitterMainId: string;
     toolBarSearchId: string;
     pnlDetailsId: string;
-    uscRoleRestId: string;
-    uscContattiSelRestId: string;
     managerId: string;
+    uscContainerId: string;
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _manager: Telerik.Web.UI.RadWindowManager;
 
     //rad tree views
     rtvTenantsId: string;
-    rtvContainersId: string;
     rtvPECMailBoxesId: string;
     rtvWorkflowRepositoriesId: string;
     rtvTenantConfigurationsId: string;
 
     // toolbars where the buttons are
-    tbContainersControlId: string;
     tbPECMailBoxesControlId: string;
     tbWorkflowRepositoryControlId: string;
     tbConfigurationControlId: string;
@@ -65,7 +62,6 @@ class TbltTenant extends TbltTenantBase {
     lblTenantDataDiDisattivazioneId: string;
 
     //rad windows
-    rwContainerId: string;
     rwPECMailBoxId: string;
     rwRoleId: string;
     rwWorkflowRepositoryId: string;
@@ -73,7 +69,6 @@ class TbltTenant extends TbltTenantBase {
     rwTenantSelectorId: string;
 
     //window combos
-    cmbContainerId: string;
     cmbPECMailBoxId: string;
     cmbWorkflowRepositoryId: string;
     cmbRoleId: string;
@@ -81,8 +76,6 @@ class TbltTenant extends TbltTenantBase {
     cmbTenantWorkflowRepositoryTypeId: string;
 
     // Window buttons Confirm, Cancel
-    btnContainerSelectorOkId: string;
-    btnContainerSelectorCancelId: string;
     btnPECMailBoxSelectorOkId: string;
     btnPECMailBoxSelectorCancelId: string;
     btnRoleSelectorOkId: string;
@@ -121,7 +114,6 @@ class TbltTenant extends TbltTenantBase {
     selectedTenantConfiguration: TenantConfigurationModel;
 
     //dropdown data models
-    containers: ContainerModel[];
     selectedContainer: ContainerModel;
     pecMailBoxes: PECMailBoxModel[];
     selectedPECMailBox: PECMailBoxModel;
@@ -143,7 +135,6 @@ class TbltTenant extends TbltTenantBase {
 
     //rad tree views
     private _rtvTenants: Telerik.Web.UI.RadTreeView;
-    private _rtvContainers: Telerik.Web.UI.RadTreeView;
     private _rtvPECMailBoxes: Telerik.Web.UI.RadTreeView;
     private _rtvRoles: Telerik.Web.UI.RadTreeView;
     private _rtvTenantWorkflowRepositories: Telerik.Web.UI.RadTreeView;
@@ -151,7 +142,6 @@ class TbltTenant extends TbltTenantBase {
 
     // toolbars where the buttons are
     private _toolbarSearch: Telerik.Web.UI.RadToolBar;
-    private _toolbarContainer: Telerik.Web.UI.RadToolBar;
     private _toolbarPECMailBox: Telerik.Web.UI.RadToolBar;
     private _toolbarRole: Telerik.Web.UI.RadToolBar;
     private _toolbarWorkflowRepository: Telerik.Web.UI.RadToolBar;
@@ -173,14 +163,12 @@ class TbltTenant extends TbltTenantBase {
     private _txtTenantAOOSuffixInfo: HTMLLabelElement;
 
     // windows
-    private _rwContainer: Telerik.Web.UI.RadWindow;
     private _rwPECMailBox: Telerik.Web.UI.RadWindow;
     private _rwWorkflowRepository: Telerik.Web.UI.RadWindow;
     private _rwTenantConfiguration: Telerik.Web.UI.RadWindow;
     private _rwTenantSelector: Telerik.Web.UI.RadWindow;
 
     //window combos
-    private _cmbContainer: Telerik.Web.UI.RadComboBox;
     private _cmbPECMailBox: Telerik.Web.UI.RadComboBox;
     private _cmbRole: Telerik.Web.UI.RadComboBox;
     private _cmbWorkflowRepository: Telerik.Web.UI.RadComboBox;
@@ -188,8 +176,6 @@ class TbltTenant extends TbltTenantBase {
     private _cmbTenantWorkflowRepositoryType: Telerik.Web.UI.RadComboBox;
 
     // Window buttons Confirm, Cancel
-    private _btnContainerOk: Telerik.Web.UI.RadButton;
-    private _btnContainerCancel: Telerik.Web.UI.RadButton;
     private _btnPECMailBoxSelectorOk: Telerik.Web.UI.RadButton;
     private _btnPECMailBoxSelectorCancel: Telerik.Web.UI.RadButton;
     private _btnWorkflowRepositorySelectorOk: Telerik.Web.UI.RadButton;
@@ -221,8 +207,7 @@ class TbltTenant extends TbltTenantBase {
     private _txtCategorySuffix: Telerik.Web.UI.RadTextBox;
 
     private _serviceConfiguration: ServiceConfiguration[];
-    private _uscRoleRest: uscRoleRest;
-    private _uscContattiSelRest: uscContattiSelRest;
+    private _uscContainerRest: uscContainerRest;
 
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         super(serviceConfigurations);
@@ -246,8 +231,7 @@ class TbltTenant extends TbltTenantBase {
         this._rtvTenants = <Telerik.Web.UI.RadTreeView>$find(this.rtvTenantsId);
         this._rtvTenants.add_nodeExpanded(this.tenantAOO_onExpanded);
         this._rtvTenants.add_nodeClicked(this.rtvTenants_onClick);
-        this._rtvContainers = <Telerik.Web.UI.RadTreeView>$find(this.rtvContainersId);
-        this._rtvPECMailBoxes = <Telerik.Web.UI.RadTreeView>$find(this.rtvPECMailBoxesId);
+        //this._rtvPECMailBoxes = <Telerik.Web.UI.RadTreeView>$find(this.rtvPECMailBoxesId);
         this._rtvTenantWorkflowRepositories = <Telerik.Web.UI.RadTreeView>$find(this.rtvWorkflowRepositoriesId);
         this._rtvTenantWorkflowRepositories.add_nodeClicked(this.rtvTenantWorkflowrepositories_onNodeClick);
         this._rtvTenantConfigurations = <Telerik.Web.UI.RadTreeView>$find(this.rtvTenantConfigurationsId);
@@ -268,10 +252,8 @@ class TbltTenant extends TbltTenantBase {
         this._txtTenantAOOSuffixInfo = <HTMLLabelElement>document.getElementById(this.txtTenantAOOSuffixInfoId);
 
         //Containers, PECMailBoxes, Rules, WorkflowReposiory, TenantConfiguration
-        this._toolbarContainer = <Telerik.Web.UI.RadToolBar>$find(this.tbContainersControlId);
-        this._toolbarContainer.add_buttonClicking(this.toolbarContainer_onClick);
-        this._toolbarPECMailBox = <Telerik.Web.UI.RadToolBar>$find(this.tbPECMailBoxesControlId);
-        this._toolbarPECMailBox.add_buttonClicking(this.toolbarPECMailBox_onClick);
+        //this._toolbarPECMailBox = <Telerik.Web.UI.RadToolBar>$find(this.tbPECMailBoxesControlId);
+        //this._toolbarPECMailBox.add_buttonClicking(this.toolbarPECMailBox_onClick);
         this._toolbarWorkflowRepository = <Telerik.Web.UI.RadToolBar>$find(this.tbWorkflowRepositoryControlId);
         this._toolbarWorkflowRepository.add_buttonClicking(this.toolbarWorkflowRepository_onClick);
         this._tbConfigurationControl = <Telerik.Web.UI.RadToolBar>$find(this.tbConfigurationControlId);
@@ -280,22 +262,17 @@ class TbltTenant extends TbltTenantBase {
         this._rtbCompanyOptions.add_buttonClicked(this.rtbCompanyOptions_onClick);
 
         // windows
-        this._rwContainer = <Telerik.Web.UI.RadWindow>$find(this.rwContainerId);
-        this._rwContainer.add_show(this._rwContainer_OnShow);
-        this._rwPECMailBox = <Telerik.Web.UI.RadWindow>$find(this.rwPECMailBoxId);
-        this._rwPECMailBox.add_show(this._rwPECMailBox_OnShow);
+        //this._rwPECMailBox = <Telerik.Web.UI.RadWindow>$find(this.rwPECMailBoxId);
+        //this._rwPECMailBox.add_show(this._rwPECMailBox_OnShow);
         this._rwTenantConfiguration = <Telerik.Web.UI.RadWindow>$find(this.rwTenantConfigurationId);
         this._rwWorkflowRepository = <Telerik.Web.UI.RadWindow>$find(this.rwWorkflowRepositoryId);
         this._rwWorkflowRepository.add_show(this._rwWorkflowRepository_OnShow);
         this._rwTenantSelector = <Telerik.Web.UI.RadWindow>$find(this.rwTenantSelectorId);
 
         //combos from windows
-        this._cmbContainer = <Telerik.Web.UI.RadComboBox>$find(this.cmbContainerId);
-        this._cmbContainer.add_selectedIndexChanged(this.cmbContainers_onClick);
-        this._cmbContainer.add_itemsRequested(this._cmbContainer_OnClientItemsRequested);
-        this._cmbPECMailBox = <Telerik.Web.UI.RadComboBox>$find(this.cmbPECMailBoxId);
-        this._cmbPECMailBox.add_selectedIndexChanged(this.cmbPECMailBoxes_onClick);
-        this._cmbPECMailBox.add_itemsRequested(this._cmbPECMailBox_OnClientItemsRequested);
+        //this._cmbPECMailBox = <Telerik.Web.UI.RadComboBox>$find(this.cmbPECMailBoxId);
+        //this._cmbPECMailBox.add_selectedIndexChanged(this.cmbPECMailBoxes_onClick);
+        //this._cmbPECMailBox.add_itemsRequested(this._cmbPECMailBox_OnClientItemsRequested);
         this._cmbRole = <Telerik.Web.UI.RadComboBox>$find(this.cmbRoleId);
         this._cmbWorkflowRepository = <Telerik.Web.UI.RadComboBox>$find(this.cmbWorkflowRepositoryId);
         this._cmbWorkflowRepository.add_selectedIndexChanged(this.cmbWorkflowRepositories_onClick);
@@ -304,14 +281,10 @@ class TbltTenant extends TbltTenantBase {
         this._cmbTenantWorkflowRepositoryType = <Telerik.Web.UI.RadComboBox>$find(this.cmbTenantWorkflowRepositoryTypeId);
 
         // Window buttons Confirm, Cancel
-        this._btnContainerOk = <Telerik.Web.UI.RadButton>$find(this.btnContainerSelectorOkId);
-        this._btnContainerOk.add_clicking(this.btnContainerOk_onClick);
-        this._btnContainerCancel = <Telerik.Web.UI.RadButton>$find(this.btnContainerSelectorCancelId);
-        this._btnContainerCancel.add_clicking(this.btnContainerCancel_onClick);
-        this._btnPECMailBoxSelectorOk = <Telerik.Web.UI.RadButton>$find(this.btnPECMailBoxSelectorOkId);
-        this._btnPECMailBoxSelectorOk.add_clicking(this.btnPECMailBoxOk_onClick);
-        this._btnPECMailBoxSelectorCancel = <Telerik.Web.UI.RadButton>$find(this.btnPECMailBoxSelectorCancelId);
-        this._btnPECMailBoxSelectorCancel.add_clicking(this.btnPECMailBoxCancel_onClick);
+        //this._btnPECMailBoxSelectorOk = <Telerik.Web.UI.RadButton>$find(this.btnPECMailBoxSelectorOkId);
+        //this._btnPECMailBoxSelectorOk.add_clicking(this.btnPECMailBoxOk_onClick);
+        //this._btnPECMailBoxSelectorCancel = <Telerik.Web.UI.RadButton>$find(this.btnPECMailBoxSelectorCancelId);
+        //this._btnPECMailBoxSelectorCancel.add_clicking(this.btnPECMailBoxCancel_onClick);
         this._btnWorkflowRepositorySelectorOk = <Telerik.Web.UI.RadButton>$find(this.btnWorkflowRepositorySelectorOkId);
         this._btnWorkflowRepositorySelectorOk.add_clicking(this.btnWorkflowRepositoryOk_onClick);
         this._btnWorkflowRepositorySelectorCancel = <Telerik.Web.UI.RadButton>$find(this.btnWorkflowRepositorySelectorCancelId);
@@ -348,9 +321,7 @@ class TbltTenant extends TbltTenantBase {
         this._txtTenantAOONote = <Telerik.Web.UI.RadTextBox>$find(this.txtTenantAOONoteId);
         this._txtCategorySuffix = <Telerik.Web.UI.RadTextBox>$find(this.txtCategorySuffixId);
 
-        this._uscRoleRest = <uscRoleRest>$(`#${this.uscRoleRestId}`).data();
-
-        this._uscContattiSelRest = <uscContattiSelRest>$(`#${this.uscContattiSelRestId}`).data();
+        this._uscContainerRest = <uscContainerRest>$(`#${this.uscContainerId}`).data();
         let searchDTO: TenantSearchFilterDTO = null;
         $(`#tenantLinkOptions`).hide();
         $(`#tenantAOOInfo`).hide();
@@ -470,16 +441,11 @@ class TbltTenant extends TbltTenantBase {
             this._lblTenantDataDiAttivazioneId.innerText = data !== undefined && moment(data.StartDate).isValid() ? moment(data.StartDate).format("DD-MM-YYYY") : "";
             this._lblTenantDataDiDisattivazioneId.innerText = data !== undefined && moment(data.EndDate).isValid() ? moment(data.EndDate).format("DD-MM-YYYY") : "";
 
-            this.populateContainersTreeView();
-            this.populatePECMailBoxesTreeView();
+            this.populateContainerTreeView();
+            //this.populatePECMailBoxesTreeView();
             this.populateTenantWorkflowRepositoriesTreeView();
             this.populateTenantConfigurationsTreeView();
             this.populateWorkflowRepositoryComboBox();
-            this.populateContactTreeView();
-            this.registerUscContattiRestEventHandlers();
-
-            this.populateRolesTree();
-            this.registerUscRoleRestEventHandlers();
         },
             (exception: ExceptionDTO) => {
                 this._loadingPanel.hide(this.splitterMainId);
@@ -488,19 +454,10 @@ class TbltTenant extends TbltTenantBase {
             });
     }
 
-    //region [ Roles tree view ]
-    private populateRolesTree(): void {
-        this._loadingPanel.show(this.splitterMainId);
-        this._roleService.getTenantRoles(this._currentSelectedTenant.UniqueId,
-            (tenantRoles: RoleModel[]) => {
-                this._uscRoleRest.renderRolesTree(tenantRoles);
-                this._currentSelectedTenant.Roles = tenantRoles;
-                this._loadingPanel.hide(this.splitterMainId);
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.splitterMainId);
-                $("#".concat(this.rtvTenantsId)).hide();
-                this.showNotificationException(this.uscNotificationId, exception);
+    private populateContainerTreeView(): void {
+        PageClassHelper.callUserControlFunctionSafe<uscContainerRest>(this.uscContainerId)
+            .done((instance) => {
+                instance.initializeContainersTreeView(this._currentSelectedTenant);
             });
     }
 
@@ -590,84 +547,6 @@ class TbltTenant extends TbltTenantBase {
         this._rwTenantSelector.set_height(220);
         this._rwTenantSelector.show();
     }
-
-    private registerUscRoleRestEventHandlers(): void {
-        let uscRoleRestEvents = this._uscRoleRest.uscRoleRestEvents;
-
-        this._uscRoleRest.registerEventHandler(uscRoleRestEvents.RoleDeleted, this.deleteTenantRolePromise);
-        this._uscRoleRest.registerEventHandler(uscRoleRestEvents.NewRolesAdded, this.updateTenantRolesPromise);
-        this._uscRoleRest.registerEventHandler(uscRoleRestEvents.AllRolesAdded, this.updateAllTenantRolesPromise);
-        this._uscRoleRest.registerEventHandler(uscRoleRestEvents.AllRolesDeleted, this.deleteAllTenantRolesPromise);
-    }
-
-    private updateAllTenantRolesPromise = (): JQueryPromise<any> => {
-        return this.addAllContactsOrRolesToTenant(UpdateActionType.TenantRoleAddAll);
-    }
-
-    private deleteAllTenantRolesPromise = (): JQueryPromise<any> => {
-        return this.deleteAllContactsOrRolesFromTenant(UpdateActionType.TenantRoleRemoveAll);
-    }
-
-    private deleteTenantRolePromise = (roleIdToDelete: number, instanceId?: string): JQueryPromise<any> => {
-        let promise: JQueryDeferred<any> = $.Deferred<any>();
-        this._manager.radconfirm("Sei sicuro di voler eliminare il settore selezionato?", (arg) => {
-            if (arg) {
-                if (!roleIdToDelete)
-                    return promise.promise();
-
-                let roleToDelete: RoleModel = this._currentSelectedTenant.Roles
-                    .filter(role => role.IdRole === roleIdToDelete && role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) !== -1)[0];
-                this._currentSelectedTenant.Roles = this._currentSelectedTenant.Roles
-                    .filter(role => role.IdRole !== roleIdToDelete && role.FullIncrementalPath.indexOf(roleIdToDelete.toString()) === -1);
-                let tenantToUpdate: TenantViewModel = this.constructTenant();
-                tenantToUpdate.Roles = [roleToDelete];
-
-                this._loadingPanel.show(this.splitterMainId);
-                this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantRoleRemove,
-                    (data: any) => {
-                        promise.resolve(data);
-                        this._loadingPanel.hide(this.splitterMainId);
-                    },
-                    (exception: ExceptionDTO) => {
-                        this._loadingPanel.hide(this.splitterMainId);
-                        $("#".concat(this.rtvTenantsId)).hide();
-                        this.showNotificationException(this.uscNotificationId, exception);
-                    });
-            }
-
-            document.getElementsByTagName("body")[0].setAttribute("class", "comm chrome");
-
-        }, 400, 300);
-
-        return promise.promise();
-    }
-
-    private updateTenantRolesPromise = (newAddedRoles: RoleModel[], instanceId?: string): JQueryPromise<any> => {
-        let promise: JQueryDeferred<any> = $.Deferred<any>();
-
-        if (!newAddedRoles.length)
-            return promise.promise();
-
-        this._currentSelectedTenant.Roles = [...this._currentSelectedTenant.Roles, ...newAddedRoles];
-        this._loadingPanel.show(this.splitterMainId);
-
-        let tenantToUpdate: TenantViewModel = this.constructTenant();
-        tenantToUpdate.Roles = newAddedRoles;
-
-        //multi selection on roles??
-        this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantRoleAdd,
-            (data: any) => {
-                promise.resolve(data);
-                this._loadingPanel.hide(this.splitterMainId);
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.splitterMainId);
-                $("#".concat(this.rtvTenantsId)).hide();
-                this.showNotificationException(this.uscNotificationId, exception);
-            });
-        return promise.promise();
-    }
-
     // endregion
 
     toolbarSearch_onClick = (sender: any, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => {
@@ -933,407 +812,191 @@ class TbltTenant extends TbltTenantBase {
     }
     //endregion
 
-    //region [ Add/Delete Containers from RadTreeView ]
-    toolbarContainer_onClick = (sender: any, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => {
-        var btn = args.get_item();
-        switch (btn.get_index()) {
-            case 0: {
-                this._rwContainer.show();
-                this._containerService.getContainers(null,
-                    (data: any) => {
-                        this.containers = <ContainerModel[]>data;
-                        this.addContainers(this.containers, this._cmbContainer);
-                    },
-                    (exception: ExceptionDTO) => {
-                        this._loadingPanel.hide(this.splitterMainId);
-                        this.showNotificationException(this.uscNotificationId, exception);
-                    });
-                args.set_cancel(true);
-                break;
-            }
-            case 1: {
-                if (this._rtvContainers.get_selectedNode() !== null) {
-                    this._manager.radconfirm("Sei sicuro di voler eliminare il contenitore selezionato?", (arg) => {
-                        if (arg) {
-                            let tenantToUpdate: TenantViewModel = this.constructTenant();
-                            tenantToUpdate.Containers = this._currentSelectedTenant.Containers.filter(x => x.EntityShortId === Number(this._rtvContainers.get_selectedNode().get_value()));
-                            let removeIndex = this._currentSelectedTenant.Containers.map(item => item.EntityShortId).indexOf(Number(this._rtvContainers.get_selectedNode().get_value()));
-                            this._currentSelectedTenant.Containers.splice(removeIndex, 1);
-
-                            this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantContainerRemove,
-                                (data) => {
-                                    this._rtvContainers.get_nodes().getNode(0).get_nodes().removeAt(this._rtvContainers.get_selectedNode().get_index());
-                                    if (this._rtvContainers.get_nodes().getNode(0).get_nodes().getItem(0) === undefined)
-                                        this._rtvContainers.get_nodes().clear();
-                                },
-                                (exception: ExceptionDTO) => {
-                                    this._loadingPanel.hide(this.splitterMainId);
-                                    $("#".concat(this.rtvTenantsId)).hide();
-                                    this.showNotificationException(this.uscNotificationId, exception);
-                                });
-                        }
-                    }, 400, 300);
-                } else {
-                    alert("Selezionare un Contentitore");
-                }
-                args.set_cancel(true);
-                break;
-            }
-            case 2: {
-                this.addOrRemoveAllTenantContainers("Sei sicuro di voler aggiungere tutti i contenitori?", UpdateActionType.TenantContainerAddAll);
-                break;
-            }
-            case 3: {
-                this.addOrRemoveAllTenantContainers("Sei sicuro di voler eliminare tutti i contenitori?", UpdateActionType.TenantContainerRemoveAll);
-                break;
-            }
-        }
-    }
-
-    btnContainerOk_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
-        if (this._cmbContainer && this.selectedContainer) {
-            this._rwContainer.close();
-            this._loadingPanel.show(this.tbContainersControlId);
-            let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
-            let nodeValue = this.selectedContainer.EntityShortId.toString();
-            let nodeText = this.selectedContainer.Name;
-            let alreadySavedInTree: boolean = this.alreadySavedInTree(nodeValue, this._rtvContainers);
-            if (!alreadySavedInTree) {
-                this._currentSelectedTenant.Containers.push(this.selectedContainer);
-                let tenantToUpdate: TenantViewModel = this.constructTenant();
-                tenantToUpdate.Containers = [this.selectedContainer];
-                this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantContainerAdd,
-                    (data) => {
-                        this.addNodesToRadTreeView(nodeValue, nodeText, "Contenitori", nodeImageUrl, this._rtvContainers);
-                    },
-                    (exception: ExceptionDTO) => {
-                        this._loadingPanel.hide(this.splitterMainId);
-                        $("#".concat(this.rtvTenantsId)).hide();
-                        this.showNotificationException(this.uscNotificationId, exception);
-                    });
-            }
-            this._loadingPanel.hide(this.tbContainersControlId);
-        }
-    }
-
-    btnContainerCancel_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
-        this._rwContainer.close();
-    }
-
-    protected addContainers(containers: ContainerModel[], cmbContainer: Telerik.Web.UI.RadComboBox) {
-        this.containers = containers;
-        cmbContainer.get_items().clear();
-        let item: Telerik.Web.UI.RadComboBoxItem;
-        item = new Telerik.Web.UI.RadComboBoxItem();
-        item.set_text("");
-        item.set_value("");
-        cmbContainer.get_items().add(item);
-        for (let container of containers) {
-            item = new Telerik.Web.UI.RadComboBoxItem();
-            item.set_text(container.Name);
-            item.set_value(container.EntityShortId.toString());
-            cmbContainer.get_items().add(item);
-        }
-    }
-
-    cmbContainers_onClick = (sender: any, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
-        this.selectedContainer = this.containers.filter(function (x) {
-            return x.EntityShortId.toString() === args.get_item().get_value()
-        })[0];
-    }
-
-    _cmbContainer_OnClientItemsRequested = (sender: Telerik.Web.UI.RadComboBox,
-        args: Telerik.Web.UI.RadComboBoxRequestEventArgs) => {
-        let containerNumberOfItems: number = sender.get_items().get_count();
-        this._containerService.getAllContainers(args.get_text(), this.maxNumberElements, containerNumberOfItems,
-            (data: ODATAResponseModel<ContainerModel>) => {
-                try {
-                    this.refreshContainers(data.value);
-                    let scrollToPosition: boolean = args.get_domEvent() == undefined;
-                    if (scrollToPosition) {
-                        if (sender.get_items().get_count() > 0) {
-                            let scrollContainer: JQuery = $(sender.get_dropDownElement()).find('div.rcbScroll');
-                            scrollContainer.scrollTop($(sender.get_items().getItem(containerNumberOfItems + 1).get_element()).position().top);
-                        }
-                    }
-                    sender.get_attributes().setAttribute('otherContainerCount', data.count.toString());
-                    sender.get_attributes().setAttribute('updating', 'false');
-                    if (sender.get_items().get_count() > 0) {
-                        containerNumberOfItems = sender.get_items().get_count() - 1;
-                    }
-                    this._cmbContainer.get_moreResultsBoxMessageElement().innerText = `Visualizzati ${containerNumberOfItems.toString()} di ${data.count.toString()}`;
-                }
-                catch (error) {
-                }
-            },
-            (exception: ExceptionDTO) => {
-                this.showNotificationException(this.uscNotificationId, exception);
-            });
-    }
-
-    refreshContainers = (data: ContainerModel[]) => {
-        if (data.length > 0) {
-            this._cmbContainer.beginUpdate();
-            if (this._cmbContainer.get_items().get_count() === 0) {
-                let emptyItem: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
-                emptyItem.set_text("");
-                emptyItem.set_value("");
-                this._cmbContainer.get_items().insert(0, emptyItem);
-            }
-
-            $.each(data, (index, container) => {
-                let item: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
-                item.set_text(container.Name);
-                item.set_value(container.EntityShortId.toString());
-                this._cmbContainer.get_items().add(item);
-                this.containers.push(container);
-            });
-            this._cmbContainer.showDropDown();
-            this._cmbContainer.endUpdate();
-        }
-        else {
-            if (this._cmbContainer.get_items().get_count() === 0) {
-            }
-
-        }
-    }
-
-    private populateContainersTreeView() {
-        this._tenantService.getTenantContainers(this._currentSelectedTenant.UniqueId,
-            (data: ContainerModel[]) => {
-                if (data === undefined) {
-                    return;
-                } else {
-                    this._rtvContainers.get_nodes().clear();
-                    let thisObj = this;
-                    this._currentSelectedTenant.Containers = data;
-                    $.each(data, function (i, value) {
-                        let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
-                        let nodeValue = value.EntityShortId.toString();
-                        let nodeText = value.Name;
-                        let alreadySavedInTree: boolean = thisObj.alreadySavedInTree(nodeValue, thisObj._rtvContainers);
-                        if (!alreadySavedInTree) {
-                            thisObj.addNodesToRadTreeView(nodeValue, nodeText, "Contenitori", nodeImageUrl, thisObj._rtvContainers);
-                        }
-                    });
-                }
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.splitterMainId);
-                $("#".concat(this.rtvTenantsId)).hide();
-                this.showNotificationException(this.uscNotificationId, exception);
-            });
-    }
-
-    _rwContainer_OnShow = (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => {
-        this._cmbContainer.clearSelection();
-        this.selectedContainer = null;
-    }
-
-    addOrRemoveAllTenantContainers(message: string, actionType: UpdateActionType): void {
-        this._manager.radconfirm(message, (arg) => {
-            if (arg) {
-                this._loadingPanel.show(this.tbContainersControlId);
-                this._tenantService.updateTenant(this._currentSelectedTenant, actionType, (data) => {
-                    this.populateContainersTreeView();
-                    this._loadingPanel.hide(this.tbContainersControlId);
-                }, (exception: ExceptionDTO) => {
-                    this._loadingPanel.hide(this.tbContainersControlId);
-                    this.showNotificationException(this.uscNotificationId, exception);
-                });
-            }
-
-            document.getElementsByTagName("body")[0].setAttribute("class", "comm chrome");
-
-        }, 400, 300);
-    }
-    //endregion
-
     //region [ Add/Delete PECMailBoxes from RadTreeView ]
-    toolbarPECMailBox_onClick = (sender: any, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => {
-        var btn = args.get_item();
-        switch (btn.get_index()) {
-            case 0:
-                this._rwPECMailBox.show();
-                this._pecMailBoxService.getPECMailBoxes("",
-                    (data: any) => {
-                        this.pecMailBoxes = <PECMailBoxModel[]>data;
-                        this.addPECMailBoxes(this.pecMailBoxes, this._cmbPECMailBox);
-                    },
-                    (exception: ExceptionDTO) => {
-                        this._loadingPanel.hide(this.splitterMainId);
-                        this.showNotificationException(this.uscNotificationId, exception);
-                    });
-                args.set_cancel(true);
-                break;
-            case 1:
-                if (this._rtvPECMailBoxes.get_selectedNode() !== null) {
-                    this._manager.radconfirm("Sei sicuro di voler eliminare il casella PEC selezionato?", (arg) => {
-                        if (arg) {
-                            let tenantToUpdate: TenantViewModel = this.constructTenant();
-                            tenantToUpdate.PECMailBoxes = this._currentSelectedTenant.PECMailBoxes.filter(x => x.EntityShortId === Number(this._rtvPECMailBoxes.get_selectedNode().get_value()));
-                            let removeIndex = this._currentSelectedTenant.PECMailBoxes.map(item => item.EntityShortId).indexOf(Number(this._rtvPECMailBoxes.get_selectedNode().get_value()));
-                            this._currentSelectedTenant.PECMailBoxes.splice(removeIndex, 1);
-                            this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantPECMailBoxRemove,
-                                (data) => {
-                                    this._rtvPECMailBoxes.get_nodes().getNode(0).get_nodes().removeAt(this._rtvPECMailBoxes.get_selectedNode().get_index());
-                                    if (this._rtvPECMailBoxes.get_nodes().getNode(0).get_nodes().getItem(0) === undefined)
-                                        this._rtvPECMailBoxes.get_nodes().clear();
-                                },
-                                (exception: ExceptionDTO) => {
-                                    this._loadingPanel.hide(this.splitterMainId);
-                                    $("#".concat(this.rtvTenantsId)).hide();
-                                    this.showNotificationException(this.uscNotificationId, exception);
-                                });
-                        }
-                    }, 400, 300);
-                } else {
-                    alert("Selezionare una caselle PEC");
-                }
-                args.set_cancel(true);
-                break;
-        }
-    }
+    //toolbarPECMailBox_onClick = (sender: any, args: Telerik.Web.UI.RadToolBarCancelEventArgs) => {
+    //    var btn = args.get_item();
+    //    switch (btn.get_index()) {
+    //        case 0:
+    //            this._rwPECMailBox.show();
+    //            this._pecMailBoxService.getPECMailBoxes("",
+    //                (data: any) => {
+    //                    this.pecMailBoxes = <PECMailBoxModel[]>data;
+    //                    this.addPECMailBoxes(this.pecMailBoxes, this._cmbPECMailBox);
+    //                },
+    //                (exception: ExceptionDTO) => {
+    //                    this._loadingPanel.hide(this.splitterMainId);
+    //                    this.showNotificationException(this.uscNotificationId, exception);
+    //                });
+    //            args.set_cancel(true);
+    //            break;
+    //        case 1:
+    //            if (this._rtvPECMailBoxes.get_selectedNode() !== null) {
+    //                this._manager.radconfirm("Sei sicuro di voler eliminare il casella PEC selezionato?", (arg) => {
+    //                    if (arg) {
+    //                        let tenantToUpdate: TenantViewModel = this.constructTenant();
+    //                        tenantToUpdate.PECMailBoxes = this._currentSelectedTenant.PECMailBoxes.filter(x => x.EntityShortId === Number(this._rtvPECMailBoxes.get_selectedNode().get_value()));
+    //                        let removeIndex = this._currentSelectedTenant.PECMailBoxes.map(item => item.EntityShortId).indexOf(Number(this._rtvPECMailBoxes.get_selectedNode().get_value()));
+    //                        this._currentSelectedTenant.PECMailBoxes.splice(removeIndex, 1);
+    //                        this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantPECMailBoxRemove,
+    //                            (data) => {
+    //                                this._rtvPECMailBoxes.get_nodes().getNode(0).get_nodes().removeAt(this._rtvPECMailBoxes.get_selectedNode().get_index());
+    //                                if (this._rtvPECMailBoxes.get_nodes().getNode(0).get_nodes().getItem(0) === undefined)
+    //                                    this._rtvPECMailBoxes.get_nodes().clear();
+    //                            },
+    //                            (exception: ExceptionDTO) => {
+    //                                this._loadingPanel.hide(this.splitterMainId);
+    //                                $("#".concat(this.rtvTenantsId)).hide();
+    //                                this.showNotificationException(this.uscNotificationId, exception);
+    //                            });
+    //                    }
+    //                }, 400, 300);
+    //            } else {
+    //                alert("Selezionare una caselle PEC");
+    //            }
+    //            args.set_cancel(true);
+    //            break;
+    //    }
+    //}
 
-    btnPECMailBoxOk_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
-        if (this._cmbPECMailBox && this.selectedPECMailBox) {
-            this._rwPECMailBox.close();
-            this._loadingPanel.show(this.tbPECMailBoxesControlId);
-            let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
-            let nodeValue = this.selectedPECMailBox.EntityShortId.toString();
-            let nodeText = this.selectedPECMailBox.MailBoxRecipient;
-            let alreadySavedInTree: boolean = this.alreadySavedInTree(nodeValue, this._rtvPECMailBoxes);
-            if (!alreadySavedInTree) {
-                this._currentSelectedTenant.PECMailBoxes.push(this.selectedPECMailBox);
-                let tenantToUpdate: TenantViewModel = this.constructTenant();
-                tenantToUpdate.PECMailBoxes = [this.selectedPECMailBox];
-                this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantPECMailBoxAdd,
-                    (data) => {
-                        this.addNodesToRadTreeView(nodeValue, nodeText, "Caselle PEC", nodeImageUrl, this._rtvPECMailBoxes);
-                    },
-                    (exception: ExceptionDTO) => {
-                        this._loadingPanel.hide(this.splitterMainId);
-                        $("#".concat(this.rtvTenantsId)).hide();
-                        this.showNotificationException(this.uscNotificationId, exception);
-                    });
-            }
-            this._loadingPanel.hide(this.tbPECMailBoxesControlId);
-        }
-    }
+    //btnPECMailBoxOk_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
+    //    if (this._cmbPECMailBox && this.selectedPECMailBox) {
+    //        this._rwPECMailBox.close();
+    //        this._loadingPanel.show(this.tbPECMailBoxesControlId);
+    //        let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
+    //        let nodeValue = this.selectedPECMailBox.EntityShortId.toString();
+    //        let nodeText = this.selectedPECMailBox.MailBoxRecipient;
+    //        let alreadySavedInTree: boolean = this.alreadySavedInTree(nodeValue, this._rtvPECMailBoxes);
+    //        if (!alreadySavedInTree) {
+    //            this._currentSelectedTenant.PECMailBoxes.push(this.selectedPECMailBox);
+    //            let tenantToUpdate: TenantViewModel = this.constructTenant();
+    //            tenantToUpdate.PECMailBoxes = [this.selectedPECMailBox];
+    //            this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantPECMailBoxAdd,
+    //                (data) => {
+    //                    this.addNodesToRadTreeView(nodeValue, nodeText, "Caselle PEC", nodeImageUrl, this._rtvPECMailBoxes);
+    //                },
+    //                (exception: ExceptionDTO) => {
+    //                    this._loadingPanel.hide(this.splitterMainId);
+    //                    $("#".concat(this.rtvTenantsId)).hide();
+    //                    this.showNotificationException(this.uscNotificationId, exception);
+    //                });
+    //        }
+    //        this._loadingPanel.hide(this.tbPECMailBoxesControlId);
+    //    }
+    //}
 
-    btnPECMailBoxCancel_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
-        this._rwPECMailBox.close();
-    }
+    //btnPECMailBoxCancel_onClick = (sender: any, args: Telerik.Web.UI.ButtonEventArgs) => {
+    //    this._rwPECMailBox.close();
+    //}
 
-    protected addPECMailBoxes(pecMailBoxes: PECMailBoxModel[], cmbPECMailBox: Telerik.Web.UI.RadComboBox) {
-        this.pecMailBoxes = pecMailBoxes;
-        cmbPECMailBox.get_items().clear();
-        let item: Telerik.Web.UI.RadComboBoxItem;
-        item = new Telerik.Web.UI.RadComboBoxItem();
-        item.set_text("");
-        item.set_value("");
-        cmbPECMailBox.get_items().add(item);
-        for (let pecMailBox of pecMailBoxes) {
-            item = new Telerik.Web.UI.RadComboBoxItem();
-            item.set_text(pecMailBox.MailBoxRecipient);
-            item.set_value(pecMailBox.EntityShortId.toString());
-            cmbPECMailBox.get_items().add(item);
-        }
-    }
+    //protected addPECMailBoxes(pecMailBoxes: PECMailBoxModel[], cmbPECMailBox: Telerik.Web.UI.RadComboBox) {
+    //    this.pecMailBoxes = pecMailBoxes;
+    //    cmbPECMailBox.get_items().clear();
+    //    let item: Telerik.Web.UI.RadComboBoxItem;
+    //    item = new Telerik.Web.UI.RadComboBoxItem();
+    //    item.set_text("");
+    //    item.set_value("");
+    //    cmbPECMailBox.get_items().add(item);
+    //    for (let pecMailBox of pecMailBoxes) {
+    //        item = new Telerik.Web.UI.RadComboBoxItem();
+    //        item.set_text(pecMailBox.MailBoxRecipient);
+    //        item.set_value(pecMailBox.EntityShortId.toString());
+    //        cmbPECMailBox.get_items().add(item);
+    //    }
+    //}
 
-    cmbPECMailBoxes_onClick = (sender: any, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
-        this.selectedPECMailBox = this.pecMailBoxes.filter(function (x) {
-            return x.EntityShortId.toString() === args.get_item().get_value()
-        })[0];
-    }
+    //cmbPECMailBoxes_onClick = (sender: any, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
+    //    this.selectedPECMailBox = this.pecMailBoxes.filter(function (x) {
+    //        return x.EntityShortId.toString() === args.get_item().get_value()
+    //    })[0];
+    //}
 
-    _cmbPECMailBox_OnClientItemsRequested = (sender: Telerik.Web.UI.RadComboBox,
-        args: Telerik.Web.UI.RadComboBoxRequestEventArgs) => {
-        let pecMailBoxNumberOfItems: number = sender.get_items().get_count();
-        this._pecMailBoxService.getAllPECMailBoxes(args.get_text(), this.maxNumberElements, pecMailBoxNumberOfItems,
-            (data: ODATAResponseModel<PECMailBoxModel>) => {
-                try {
-                    this.refreshPECMailBoxes(data.value);
-                    let scrollToPosition: boolean = args.get_domEvent() == undefined;
-                    if (scrollToPosition) {
-                        if (sender.get_items().get_count() > 0) {
-                            let scrollContainer: JQuery = $(sender.get_dropDownElement()).find('div.rcbScroll');
-                            scrollContainer.scrollTop($(sender.get_items().getItem(pecMailBoxNumberOfItems + 1).get_element()).position().top);
-                        }
-                    }
-                    sender.get_attributes().setAttribute('otherContainerCount', data.count.toString());
-                    sender.get_attributes().setAttribute('updating', 'false');
-                    if (sender.get_items().get_count() > 0) {
-                        pecMailBoxNumberOfItems = sender.get_items().get_count() - 1;
-                    }
-                    this._cmbPECMailBox.get_moreResultsBoxMessageElement().innerText = `Visualizzati ${pecMailBoxNumberOfItems.toString()} di ${data.count.toString()}`;
-                }
-                catch (error) {
-                }
-            },
-            (exception: ExceptionDTO) => {
-                this.showNotificationException(this.uscNotificationId, exception);
-            });
-    }
+    //_cmbPECMailBox_OnClientItemsRequested = (sender: Telerik.Web.UI.RadComboBox,
+    //    args: Telerik.Web.UI.RadComboBoxRequestEventArgs) => {
+    //    let pecMailBoxNumberOfItems: number = sender.get_items().get_count();
+    //    this._pecMailBoxService.getAllPECMailBoxes(args.get_text(), this.maxNumberElements, pecMailBoxNumberOfItems,
+    //        (data: ODATAResponseModel<PECMailBoxModel>) => {
+    //            try {
+    //                this.refreshPECMailBoxes(data.value);
+    //                let scrollToPosition: boolean = args.get_domEvent() == undefined;
+    //                if (scrollToPosition) {
+    //                    if (sender.get_items().get_count() > 0) {
+    //                        let scrollContainer: JQuery = $(sender.get_dropDownElement()).find('div.rcbScroll');
+    //                        scrollContainer.scrollTop($(sender.get_items().getItem(pecMailBoxNumberOfItems + 1).get_element()).position().top);
+    //                    }
+    //                }
+    //                sender.get_attributes().setAttribute('otherContainerCount', data.count.toString());
+    //                sender.get_attributes().setAttribute('updating', 'false');
+    //                if (sender.get_items().get_count() > 0) {
+    //                    pecMailBoxNumberOfItems = sender.get_items().get_count() - 1;
+    //                }
+    //                this._cmbPECMailBox.get_moreResultsBoxMessageElement().innerText = `Visualizzati ${pecMailBoxNumberOfItems.toString()} di ${data.count.toString()}`;
+    //            }
+    //            catch (error) {
+    //            }
+    //        },
+    //        (exception: ExceptionDTO) => {
+    //            this.showNotificationException(this.uscNotificationId, exception);
+    //        });
+    //}
 
-    refreshPECMailBoxes = (data: PECMailBoxModel[]) => {
-        if (data.length > 0) {
-            this._cmbPECMailBox.beginUpdate();
-            if (this._cmbPECMailBox.get_items().get_count() === 0) {
-                let emptyItem: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
-                emptyItem.set_text("");
-                emptyItem.set_value("");
-                this._cmbPECMailBox.get_items().insert(0, emptyItem);
-            }
+    //refreshPECMailBoxes = (data: PECMailBoxModel[]) => {
+    //    if (data.length > 0) {
+    //        this._cmbPECMailBox.beginUpdate();
+    //        if (this._cmbPECMailBox.get_items().get_count() === 0) {
+    //            let emptyItem: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
+    //            emptyItem.set_text("");
+    //            emptyItem.set_value("");
+    //            this._cmbPECMailBox.get_items().insert(0, emptyItem);
+    //        }
 
-            $.each(data, (index, pecMailBox) => {
-                let item: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
-                item.set_text(pecMailBox.MailBoxRecipient);
-                item.set_value(pecMailBox.EntityShortId.toString());
-                this._cmbPECMailBox.get_items().add(item);
-                this.pecMailBoxes.push(pecMailBox);
-            });
-            this._cmbPECMailBox.showDropDown();
-            this._cmbPECMailBox.endUpdate();
-        }
-        else {
-            if (this._cmbPECMailBox.get_items().get_count() === 0) {
-            }
+    //        $.each(data, (index, pecMailBox) => {
+    //            let item: Telerik.Web.UI.RadComboBoxItem = new Telerik.Web.UI.RadComboBoxItem();
+    //            item.set_text(pecMailBox.MailBoxRecipient);
+    //            item.set_value(pecMailBox.EntityShortId.toString());
+    //            this._cmbPECMailBox.get_items().add(item);
+    //            this.pecMailBoxes.push(pecMailBox);
+    //        });
+    //        this._cmbPECMailBox.showDropDown();
+    //        this._cmbPECMailBox.endUpdate();
+    //    }
+    //    else {
+    //        if (this._cmbPECMailBox.get_items().get_count() === 0) {
+    //        }
 
-        }
-    }
+    //    }
+    //}
 
-    private populatePECMailBoxesTreeView() {
-        this._tenantService.getTenantPECMailBoxes(this._currentSelectedTenant.UniqueId,
-            (data: PECMailBoxModel[]) => {
-                if (data === undefined) {
-                    return;
-                } else {
-                    this._rtvPECMailBoxes.get_nodes().clear();
-                    let thisObj = this;
-                    this._currentSelectedTenant.PECMailBoxes = data;
-                    $.each(data, function (i, value) {
-                        let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
-                        let nodeValue = value.EntityShortId.toString();
-                        let nodeText = value.MailBoxRecipient;
-                        let alreadySavedInTree: boolean = thisObj.alreadySavedInTree(nodeValue, thisObj._rtvPECMailBoxes);
-                        if (!alreadySavedInTree) {
-                            thisObj.addNodesToRadTreeView(nodeValue, nodeText, "Caselle PEC", nodeImageUrl, thisObj._rtvPECMailBoxes);
-                        }
-                    });
-                }
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.splitterMainId);
-                $("#".concat(this.rtvTenantsId)).hide();
-                this.showNotificationException(this.uscNotificationId, exception);
-            });
-    }
+    //private populatePECMailBoxesTreeView() {
+    //    this._tenantService.getTenantPECMailBoxes(this._currentSelectedTenant.UniqueId,
+    //        (data: PECMailBoxModel[]) => {
+    //            if (data === undefined) {
+    //                return;
+    //            } else {
+    //                this._rtvPECMailBoxes.get_nodes().clear();
+    //                let thisObj = this;
+    //                this._currentSelectedTenant.PECMailBoxes = data;
+    //                $.each(data, function (i, value) {
+    //                    let nodeImageUrl = "../App_Themes/DocSuite2008/imgset16/box_open.png";
+    //                    let nodeValue = value.EntityShortId.toString();
+    //                    let nodeText = value.MailBoxRecipient;
+    //                    let alreadySavedInTree: boolean = thisObj.alreadySavedInTree(nodeValue, thisObj._rtvPECMailBoxes);
+    //                    if (!alreadySavedInTree) {
+    //                        thisObj.addNodesToRadTreeView(nodeValue, nodeText, "Caselle PEC", nodeImageUrl, thisObj._rtvPECMailBoxes);
+    //                    }
+    //                });
+    //            }
+    //        },
+    //        (exception: ExceptionDTO) => {
+    //            this._loadingPanel.hide(this.splitterMainId);
+    //            $("#".concat(this.rtvTenantsId)).hide();
+    //            this.showNotificationException(this.uscNotificationId, exception);
+    //        });
+    //}
 
-    _rwPECMailBox_OnShow = (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => {
-        this._cmbPECMailBox.clearSelection();
-        this.selectedPECMailBox = null;
-    }
+    //_rwPECMailBox_OnShow = (sender: Telerik.Web.UI.RadWindow, args: Sys.EventArgs) => {
+    //    this._cmbPECMailBox.clearSelection();
+    //    this.selectedPECMailBox = null;
+    //}
     //endregion
 
     //region [ Add/Delete WorkflowRepositories from RadTreeView ]
@@ -1788,98 +1451,6 @@ class TbltTenant extends TbltTenantBase {
     }
     //endregion
 
-
-    //region [Add/Delete TenantContact]
-
-    private registerUscContattiRestEventHandlers(): void {
-        let uscContattiSelRestEvents = this._uscContattiSelRest.uscContattiSelRestEvents;
-
-        this._uscContattiSelRest.registerEventHandler(uscContattiSelRestEvents.ContactDeleted, this.deleteTenantContactPromise);
-        this._uscContattiSelRest.registerEventHandler(uscContattiSelRestEvents.NewContactsAdded, this.updateTenantContactPromise);
-        this._uscContattiSelRest.registerEventHandler(uscContattiSelRestEvents.AllContactsDeleted, this.deleteAllTenantContactPromise);
-        this._uscContattiSelRest.registerEventHandler(uscContattiSelRestEvents.AllContactsAdded, this.updateAllTenantContactPromise);
-    }
-
-    private deleteTenantContactPromise = (contactId: number): JQueryPromise<any> => {
-        let promise: JQueryDeferred<any> = $.Deferred<any>();
-
-        if (contactId) {
-            this._manager.radconfirm("Sei sicuro di voler eliminare il contatto selezionato?", (arg) => {
-                if (arg) {
-                    let contactParent = this._currentSelectedTenant.Contacts.filter(contact => contact.EntityId === contactId)[0];
-                    let contactParentId = null;
-                    if (contactParent) {
-                        contactParentId = contactParent.IncrementalFather;
-                    }
-                    let tenantToUpdate: TenantViewModel = this.constructTenant();
-                    tenantToUpdate.Contacts = this._currentSelectedTenant.Contacts.filter(contact => contact.EntityId === contactId && contact.IncrementalFather !== contactId);
-                    this._currentSelectedTenant.Contacts = this._currentSelectedTenant.Contacts.filter(contact => contact.EntityId !== contactId && contact.IncrementalFather !== contactId);
-                    this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantContactRemove,
-                        (data: any) => {
-                            promise.resolve(contactParentId);
-                            this._loadingPanel.hide(this.splitterMainId);
-                        },
-                        (exception: ExceptionDTO) => {
-                            this._loadingPanel.hide(this.splitterMainId);
-                            $("#".concat(this.rtvTenantsId)).hide();
-                            this.showNotificationException(this.uscNotificationId, exception);
-                        });
-                }
-            }, 400, 300);
-        }
-        return promise.promise();
-    }
-
-    private updateTenantContactPromise = (newContactAdded: ContactModel): JQueryPromise<any> => {
-        let promise: JQueryDeferred<any> = $.Deferred<any>();
-        if (newContactAdded) {
-            this._currentSelectedTenant.Contacts.push(newContactAdded);
-
-            this._loadingPanel.show(this.splitterMainId);
-            let tenantToUpdate: TenantViewModel = this.constructTenant();
-            tenantToUpdate.Contacts = [newContactAdded];
-            this._tenantService.updateTenant(tenantToUpdate, UpdateActionType.TenantContactAdd,
-                (data: any) => {
-                    promise.resolve(data);
-                    this._loadingPanel.hide(this.splitterMainId);
-                },
-                (exception: ExceptionDTO) => {
-                    this._loadingPanel.hide(this.splitterMainId);
-                    $("#".concat(this.rtvTenantsId)).hide();
-                    this.showNotificationException(this.uscNotificationId, exception);
-                });
-        }
-        return promise.promise();
-    }
-
-    private updateAllTenantContactPromise = (): JQueryPromise<any> => {
-        return this.addAllContactsOrRolesToTenant(UpdateActionType.TenantContactAddAll);
-    }
-
-    private deleteAllTenantContactPromise = (): JQueryPromise<any> => {
-        return this.deleteAllContactsOrRolesFromTenant(UpdateActionType.TenantContactRemoveAll);
-    }
-
-    private populateContactTreeView() {
-        this._loadingPanel.show(this.splitterMainId);
-        this._tenantService.getTenantContacts(this._currentSelectedTenant.UniqueId,
-            (data: ContactModel[]) => {
-                if (data === undefined) {
-                    return;
-                } else {
-                    this._currentSelectedTenant.Contacts = data;
-                    this._uscContattiSelRest.renderContactsTree(data);
-                    this._loadingPanel.hide(this.splitterMainId);
-                }
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.splitterMainId);
-                $("#".concat(this.rtvTenantsId)).hide();
-                this.showNotificationException(this.uscNotificationId, exception);
-            });
-    }
-
-    //endregion
     protected addNodesToRadTreeView(nodeValue: string, nodeText: string, text: string, nodeImageUrl: string, radTreeView: Telerik.Web.UI.RadTreeView) {
         let rtvNode: Telerik.Web.UI.RadTreeNode;
 
@@ -1909,33 +1480,6 @@ class TbltTenant extends TbltTenantBase {
             }
         }
         return alreadySavedInTree;
-    }
-
-    addAllContactsOrRolesToTenant(actionType: UpdateActionType): JQueryPromise<any> {
-        let promise: JQueryDeferred<any> = $.Deferred<any>();
-        this._tenantService.updateTenant(this._currentSelectedTenant, actionType, (data) => {
-            if (actionType === UpdateActionType.TenantContactAddAll) {
-                this.populateContactTreeView();
-            }
-            else {
-                this.populateRolesTree();
-            }
-        }, (exception: ExceptionDTO) => {
-            this.showNotificationException(this.uscNotificationId, exception);
-            promise.reject(exception);
-        });
-        return promise.promise();
-    }
-
-    deleteAllContactsOrRolesFromTenant(actionType: UpdateActionType): JQueryPromise<any> {
-        let promise: JQueryDeferred<any> = $.Deferred<any>();
-        this._tenantService.updateTenant(this._currentSelectedTenant, actionType, (data) => {
-            promise.resolve();
-        }, (exception: ExceptionDTO) => {
-            this.showNotificationException(this.uscNotificationId, exception);
-            promise.reject(exception);
-        });
-        return promise.promise();
     }
 
     constructTenant(): TenantViewModel {

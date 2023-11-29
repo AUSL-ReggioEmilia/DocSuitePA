@@ -11,7 +11,6 @@
       <column name="Timestamp" not-null="true" sql-type="timestamp" />
     </version>
     
-    
     <property name="AttachmentName" column="AttachmentName" />
     <property name="IDDocument" column="IDDocument"/>
     <property name="IsMain" column="IsMain" />

@@ -19,7 +19,6 @@ Partial Class TbltSettore
     Private Const CLONE_OPTION As String = "clone"
     Private Const PRINT_OPTION As String = "print"
     Private Const GROUPS_OPTION As String = "groups"
-    Private Const HISTORY_OPTION As String = "history"
     Private Const LOG_OPTION As String = "log"
     Private Const FUNCTION_OPTION As String = "function"
     Private Const PROPAGATION_OPTION As String = "propagation"
@@ -92,15 +91,19 @@ Partial Class TbltSettore
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
-        InitializeAjax()
-        InitializeControls()
-
-        If Not IsPostBack Then
-            RadTreeViewRoles.Nodes(0).Selected = True
-            InitializeButtons()
-            pnlDetail.Visible = False
-            pnlCollaboration.Visible = False
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblRoleRight OrElse CommonShared.HasGroupTblRoleAdminRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
+
+        InitializeAjax()
+            InitializeControls()
+
+            If Not IsPostBack Then
+                RadTreeViewRoles.Nodes(0).Selected = True
+                InitializeButtons()
+                pnlDetail.Visible = False
+                pnlCollaboration.Visible = False
+            End If
     End Sub
 
     Protected Sub ToolBarSearch_ButtonClick(sender As Object, e As RadToolBarEventArgs)
@@ -243,7 +246,7 @@ Partial Class TbltSettore
         End If
 
         InitializeButtons()
-        If roleSelected.IsActive <> 1 Then
+        If Not roleSelected.IsActive Then
             HideButtons()
         End If
 
@@ -429,8 +432,6 @@ Partial Class TbltSettore
                 AjaxManager.ResponseScripts.Add("OpenPrintWindow('windowPrintRoles');")
             Case GROUPS_OPTION
                 AjaxManager.ResponseScripts.Add("OpenGroupsWindow();")
-            Case HISTORY_OPTION
-                AjaxManager.ResponseScripts.Add("OpenHistoryWindow();")
             Case LOG_OPTION
                 AjaxManager.ResponseScripts.Add("OpenLogWindow('windowLogRoles');")
             Case FUNCTION_OPTION
@@ -598,11 +599,6 @@ Partial Class TbltSettore
         If Not Integer.TryParse(node.Value, idRole) Then
             Exit Sub
         End If
-
-        Select Case nodeType
-            Case "Role", "SubRole"
-                CheckHistoryDetails(idRole)
-        End Select
     End Sub
 
     ''' <summary> Cancella l'albero corrente e lo ridisegna a seconda del filtro impostato. </summary>
@@ -611,12 +607,12 @@ Partial Class TbltSettore
         RadTreeViewRoles.Nodes(0).Nodes.Clear()
         Dim roleLists As IList(Of Role)
         If String.IsNullOrEmpty(RoleDescriptionTextBox.Text) Then
-            roleLists = Facade.RoleFacade.GetRootItems(isActive:=CurrentSearchActiveValue, withPECMailbox:=False, tenantId:=Nothing, multiTenantEnabled:=ProtocolEnv.MultiTenantEnabled)
+            roleLists = Facade.RoleFacade.GetRootItems(CurrentTenant.TenantAOO.UniqueId, isActive:=CurrentSearchActiveValue, withPECMailbox:=False)
             For Each role As Role In roleLists
                 RecursiveAddChildren(Nothing, role)
             Next
         Else
-            roleLists = Facade.RoleFacade.GetNoSecurityRoles(Env, RoleDescriptionTextBox.Text, isActive:=CurrentSearchActiveValue, tenantId:=Nothing, multiTenantEnabled:=ProtocolEnv.MultiTenantEnabled)
+            roleLists = Facade.RoleFacade.GetNoSecurityRoles(Env, RoleDescriptionTextBox.Text, CurrentTenant.TenantAOO.UniqueId, isActive:=CurrentSearchActiveValue)
             For Each role As Role In roleLists
                 RecursiveAddFather(Nothing, role)
             Next
@@ -732,34 +728,15 @@ Partial Class TbltSettore
             node.Attributes.Add("NodeType", "SubRole")
         End If
         ' Imposto il colore se è attivo
-        If (role.IsActive <> 1) Then
+        If Not role.IsActive Then
             node.Style.Add("color", "gray")
             node.Attributes.Add("Recovery", "true")
         Else
             node.Style.Add("color", "black")
             node.Attributes.Add("Recovery", "false")
         End If
-        If (role.IsChanged.Equals(1S)) Then
-            node.Style.Add("color", "red")
-            node.Attributes.Add("Changed", "true")
-        Else
-            node.Attributes.Add("Changed", "false")
-        End If
-        ' Stili
         node.Font.Bold = True
         node.Expanded = True
-    End Sub
-
-    Private Sub CheckHistoryDetails(ByVal roleId As Integer)
-        Dim currentRole As Role = Facade.RoleFacade.GetById(roleId)
-        If currentRole Is Nothing Then
-            Exit Sub
-        End If
-
-        If currentRole.IsChanged.Equals(1S) Then
-            FolderToolBar.FindItemByValue(HISTORY_OPTION).Visible = True
-
-        End If
     End Sub
 
     Private Sub MoveRole(destinationId As Short?)
@@ -770,7 +747,7 @@ Partial Class TbltSettore
             If destinationId.HasValue Then
                 destination = Facade.RoleFacade.GetById(destinationId.Value)
             End If
-            If destination Is Nothing OrElse (Not destination.FullIncrementalPath.StartsWith(role.FullIncrementalPath) AndAlso destination.IdRoleTenant <> role.IdRoleTenant) Then
+            If destination Is Nothing OrElse (Not destination.FullIncrementalPath.StartsWith(role.FullIncrementalPath) AndAlso destination.Id <> role.Id) Then
                 Facade.RoleFacade.Move(role, destination)
             End If
         End If

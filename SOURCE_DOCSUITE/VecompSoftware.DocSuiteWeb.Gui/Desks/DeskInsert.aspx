@@ -88,7 +88,7 @@
                     </td>
                     <td class="col-dsw-5 dsw-text-nowrap" style="vertical-align: top;">
                          <!--Documenti del Tavolo -->
-                        <usc:DeskDocument ID="uscDeskDocument" MultipleDocuments="True" ButtonDeleteEnable="True" Type="Insert" runat="server" BindAsyncEnable="true"/>
+                        <usc:DeskDocument ID="uscDeskDocument" MultipleDocuments="True" HideScannerMultipleDocumentButton="true" ButtonDeleteEnable="True" Type="Insert" runat="server" BindAsyncEnable="true"/>
                     </td>
                 </tr>
             </table>

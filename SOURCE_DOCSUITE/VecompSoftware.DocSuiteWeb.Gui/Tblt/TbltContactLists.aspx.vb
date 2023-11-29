@@ -1,4 +1,5 @@
 ﻿Imports System.Collections.Generic
+Imports System.Text
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
@@ -19,7 +20,8 @@ Partial Public Class TbltContactLists
     Private Const CREATE_OPTION As String = "create"
     Private Const MODIFY_OPTION As String = "modify"
     Private Const DELETE_OPTION As String = "delete"
-
+    Private OpenWindowSmartScript As String = "OpenSmartContactWindow('{0}');"
+    Private OpenEditContactWindowScript As String = "OpenEditContactWindow();"
 #End Region
 
 #Region "Properties"
@@ -36,8 +38,7 @@ Partial Public Class TbltContactLists
 #Region "Events"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         If Not CommonShared.HasGroupAdministratorRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
 
         InitializeAjax()
@@ -76,7 +77,9 @@ Partial Public Class TbltContactLists
 
 
     Protected Sub RadTreeViewLists_NodeClick(sender As Object, e As RadTreeNodeEventArgs) Handles RadTreeViewLists.NodeClick
-        LoadContacts()
+        If Not RadTreeViewLists.SelectedNode.Level = 0 Then
+            LoadContacts()
+        End If
     End Sub
 
     Public ReadOnly Property SearchListTextBox As RadTextBox
@@ -129,6 +132,18 @@ Partial Public Class TbltContactLists
                 AjaxManager.ResponseScripts.Add("OpenEditWindow('windowModifyList', 'Edit');")
         End Select
     End Sub
+
+    Private Sub BtnAddContact_ButtonClick(sender As Object, e As EventArgs) Handles btnAddContact.Click
+        If ProtocolEnv.ContactSmartEnabled Then
+            Dim contactSmartQs As StringBuilder = New StringBuilder()
+            contactSmartQs.Append($"ParentId={ClientID}")
+            contactSmartQs.Append($"&AVCPBusinessContactEnabled=false")
+
+            AjaxManager.ResponseScripts.Add(String.Format(OpenWindowSmartScript, $"../UserControl/CommonSelContactRest.aspx?{contactSmartQs}"))
+        Else
+            AjaxManager.ResponseScripts.Add(OpenEditContactWindowScript)
+        End If
+    End Sub
 #End Region
 
 #Region "Methods"
@@ -139,8 +154,10 @@ Partial Public Class TbltContactLists
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlDetails, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(ToolBarSearch.FindItemByValue(SEARCH_OPTION), RadTreeViewLists, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(RadTreeViewLists, pnlDetails, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(btnAddContact, pnlDetails, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(btnDeleteContact, pnlDetails, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(ToolBarSearch.FindItemByValue(SEARCH_OPTION), pnlDetails, MasterDocSuite.AjaxDefaultLoadingPanel)
+        AjaxManager.AjaxSettings.AddAjaxSetting(FolderToolBar, FolderToolBar)
     End Sub
 
     Private Sub Initialize()

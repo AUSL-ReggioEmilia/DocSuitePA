@@ -6,10 +6,7 @@
 import FascicleBase = require('Fasc/FascBase');
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
 import ServiceConfigurationHelper = require('App/Helpers/ServiceConfigurationHelper');
-import ValidationExceptionDTO = require('App/DTOs/ValidationExceptionDTO');
-import ValidationMessageDTO = require('App/DTOs/ValidationMessageDTO');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
-import UscErrorNotification = require('UserControl/uscErrorNotification');
 import UscFascicleInsert = require('UserControl/uscFascicleInsert');
 import FascicleService = require('App/Services/Fascicles/FascicleService');
 import FascicleModel = require('App/Models/Fascicles/FascicleModel');
@@ -17,7 +14,6 @@ import CategoryFascicleService = require('App/Services/Commons/CategoryFascicleS
 import CategoryFascicleViewModel = require('App/ViewModels/Commons/CategoryFascicleViewModel');
 import FascicleType = require('App/Models/Fascicles/FascicleType');
 import MetadataRepositoryModel = require('App/Models/Commons/MetadataRepositoryModel');
-import AjaxModel = require('App/Models/AjaxModel');
 import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 
 declare var Page_IsValid: any;
@@ -84,10 +80,7 @@ class FascPeriodInserimento extends FascicleBase {
 
         this._loadingPanel.show(this.currentPageId);
         this._btnConferma.set_enabled(false);
-        let ajaxModel: AjaxModel = <AjaxModel>{};
-        ajaxModel.Value = new Array<string>();
-        ajaxModel.ActionName = "Insert";
-        this._ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
+        this.insertFascicleData();
     }
 
     insertAllData(fascicle: FascicleModel) {
@@ -97,7 +90,7 @@ class FascPeriodInserimento extends FascicleBase {
                 if (data) {
                     this._categoryFascicles = data;
                     $.each(this._categoryFascicles, (index: number, categoryFascicle: CategoryFascicleViewModel) => {
-                        newFascicle = fascicle;                        
+                        newFascicle = fascicle;
                         if (FascicleType[categoryFascicle.FascicleType] == FascicleType.Period) {
                             $(document).queue((next) => {
                                 newFascicle.DSWEnvironment = categoryFascicle.Environment;
@@ -127,23 +120,26 @@ class FascPeriodInserimento extends FascicleBase {
             });
     }
 
-
-    insertCallback(metadataDesignerModel: string, metadataValueModel: string): void {
+    private insertFascicleData(): void {
         let uscFascInsert: UscFascicleInsert = <UscFascicleInsert>$("#".concat(this._uscFascInsertId)).data();
         if (!jQuery.isEmptyObject(uscFascInsert)) {
             let fascicle: FascicleModel = new FascicleModel;
             fascicle = uscFascInsert.getFascicle();
 
-            if (!!metadataValueModel) {
-                fascicle.MetadataValues = metadataValueModel;
-                fascicle.MetadataDesigner = metadataDesignerModel;
-                if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY)) {
-                    let metadataRepository: MetadataRepositoryModel = new MetadataRepositoryModel();
-                    metadataRepository.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
-                    fascicle.MetadataRepository = metadataRepository;
-                }
-            }
+            uscFascInsert.fillMetadataModel().done((metadatas: [string, string]) => {
+                let metadataDesignerModel = metadatas[0];
+                let metadataValueModel = metadatas[1];
 
+                if (!!metadataValueModel) {
+                    fascicle.MetadataValues = metadataValueModel;
+                    fascicle.MetadataDesigner = metadataDesignerModel;
+                    if (sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY)) {
+                        let metadataRepository: MetadataRepositoryModel = new MetadataRepositoryModel();
+                        metadataRepository.UniqueId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_METADATA_REPOSITORY);
+                        fascicle.MetadataRepository = metadataRepository;
+                    }
+                }
+            });
             this.insertAllData(fascicle);
         }
     }

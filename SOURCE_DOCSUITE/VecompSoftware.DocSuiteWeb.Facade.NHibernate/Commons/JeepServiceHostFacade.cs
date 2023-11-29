@@ -64,7 +64,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
         public void ActivateJeepServiceHost(Guid idHost)
         {
             JeepServiceHost jeepHost = base.GetById(idHost);
-            jeepHost.IsActive = Convert.ToInt16(true);
+            jeepHost.IsActive = true;
             _dao.UpdateOnly(ref jeepHost);
         }
 
@@ -80,7 +80,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
         public void DisableJeepServiceHost(Guid idHost)
         {
             JeepServiceHost jeepHost = base.GetById(idHost);
-            jeepHost.IsActive = Convert.ToInt16(false);
+            jeepHost.IsActive = false;
             _dao.UpdateOnly(ref jeepHost);
         }
 

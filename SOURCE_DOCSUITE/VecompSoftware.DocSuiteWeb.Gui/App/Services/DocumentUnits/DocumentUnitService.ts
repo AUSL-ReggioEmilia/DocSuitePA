@@ -3,11 +3,11 @@ import BaseService = require('App/Services/BaseService');
 import DocumentUnitModel = require('App/Models/DocumentUnits/DocumentUnitModel');
 import DocumentUnitModelMapper = require('App/Mappers/DocumentUnits/DocumentUnitModelMapper');
 import FascicleModel = require('App/Models/Fascicles/FascicleModel');
-import FascicleFinderViewModel = require('App/ViewModels/Fascicles/FascicleFinderViewModel');
-import UDSRepositoryModel = require('App/Models/UDS/UDSRepositoryModel');
 import ExceptionDTO = require('App/DTOs/ExceptionDTO');
 import Environment = require('App/Models/Environment');
 import DocumentUnitSearchFilterDTO = require('App/DTOs/DocumentUnitSearchFilterDTO');
+import PaginationModel = require('App/Models/Commons/PaginationModel');
+import ODATAResponseModel = require('App/Models/ODATAResponseModel');
 
 class DocumentUnitService extends BaseService {
     private _configuration: ServiceConfiguration;
@@ -65,10 +65,23 @@ class DocumentUnitService extends BaseService {
         if (!idFascicleFolder) {
             idFascicleFolder = null;
         }
-        let url: string = this._configuration.ODATAUrl.concat(`/DocumentUnitService.FascicleDocumentUnits(idFascicle=@p1,idFascicleFolder=@p2,idTenantAOO=@p3)?@p1=${model.UniqueId}&@p2=${idFascicleFolder}&@p3=${idTenantAOO}`);
-        this.getRequest(url, qs,
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/DocumentUnitService.FascicleDocumentUnits(idFascicle=@p1,idFascicleFolder=@p2,idTenantAOO=@p3)?@p1=${model.UniqueId}&@p2=${idFascicleFolder}&@p3=${idTenantAOO}`;
+
+        this.getRequest(odataQuery, qs,
             (response: any) => {
-                if (callback) callback(response.value);
+
+                if (!callback) {
+                    return;
+                }
+
+                let docUnitMapper: DocumentUnitModelMapper = new DocumentUnitModelMapper();
+                let fascicleFolderDocUnits = [];
+                if (response && response.value) {
+                    fascicleFolderDocUnits = docUnitMapper.MapCollection(response.value);
+                }
+
+                callback(fascicleFolderDocUnits);
             }, error);
     }
 
@@ -95,6 +108,49 @@ class DocumentUnitService extends BaseService {
         this.getRequest(url, null, (response: any) => {
             if (callback) callback(response.value);
         }, error);
+    }
+
+    countTenantFascicleDocumentUnits(tenantAOOId: string, fascicleId: string, fascicleFolderId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+        const baseOdataURL: string = `${this._configuration.ODATAUrl}/$count`;
+        let odataQuery: string = `$filter=TenantAOO/UniqueId eq ${tenantAOOId} and FascicleDocumentUnits/any(fdu: fdu/Fascicle/UniqueId eq ${fascicleId} and fdu/FascicleFolder/UniqueId eq ${fascicleFolderId})`;
+
+        this.getRequest(baseOdataURL, odataQuery,
+            (response: any) => {
+                if (callback) {
+                    callback(response);
+                }
+            }, error);
+    }
+
+    getTenantFascicleDocumentUnits(tenantAOOId: string, fascicleId: string, fascicleFolderId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, paginationModel: PaginationModel = null): void {
+        let url: string = this._configuration.ODATAUrl;
+        let odataQuery: string = `$filter=TenantAOO/UniqueId eq ${tenantAOOId} and FascicleDocumentUnits/any(fdu: fdu/Fascicle/UniqueId eq ${fascicleId} and fdu/FascicleFolder/UniqueId eq ${fascicleFolderId})`;
+
+        if (paginationModel) {
+            odataQuery = `${odataQuery}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}&$count=true`;
+        }
+
+        this.getRequest(url, odataQuery,
+            (response: any) => {
+                if (!callback) {
+                    return;
+                }
+
+                let docUnitMapper: DocumentUnitModelMapper = new DocumentUnitModelMapper();
+                let fascicleFolderDocUnits = [];
+                if (response && response.value) {
+                    fascicleFolderDocUnits = docUnitMapper.MapCollection(response.value);
+                }
+
+                if (!paginationModel) {
+                    callback(response.value);
+                    return;
+                }
+
+                const odataResult: ODATAResponseModel<DocumentUnitModel> = new ODATAResponseModel<DocumentUnitModel>(response);
+                odataResult.value = fascicleFolderDocUnits;
+                callback(odataResult);
+            }, error);
     }
 }
 

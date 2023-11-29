@@ -15,6 +15,7 @@
                     fascRisultati.btnDocumentsId = "<%= btnDocuments.ClientID %>";
                     fascRisultati.btnSelectAllId = "<%= btnSelectAll.ClientID %>";
                     fascRisultati.btnDeselectAllId = "<%= btnDeselectAll.ClientID %>";
+                    fascRisultati.btnExportAllId = "<%= btnExportAll.ClientID %>";
                     fascRisultati.ajaxLoadingPanelId = "<%= MasterDocSuite.AjaxDefaultLoadingPanel.ClientID %>";
                     fascRisultati.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                     fascRisultati.backBtnId = "<%= backBtn.ClientID %>";
@@ -53,6 +54,7 @@
     <telerik:RadButton id="btnDocuments" runat="server" width="130px" text="Visualizza documenti" />
 	<telerik:RadButton id="btnSelectAll" runat="server" width="120px" text="Seleziona tutti"></telerik:RadButton>
 	<telerik:RadButton id="btnDeselectAll" runat="server" width="120px" text="Annulla selezione"></telerik:RadButton>
+	<telerik:RadButton id="btnExportAll" runat="server" width="120px" text="Esporta tutto"></telerik:RadButton>
     <telerik:RadButton runat="server" AutoPostBack="false" Visible="false" ID="backBtn" Text="Torna alla ricerca" />
     </asp:Panel>
 </asp:Content>

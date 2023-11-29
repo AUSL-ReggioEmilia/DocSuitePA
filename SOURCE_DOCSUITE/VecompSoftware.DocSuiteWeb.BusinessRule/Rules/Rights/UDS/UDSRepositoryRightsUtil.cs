@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.Entity.UDS;
+using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS;
 using VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows;
 using VecompSoftware.DocSuiteWeb.DTO.UDS;
 using VecompSoftware.DocSuiteWeb.DTO.WebAPI;
+using VecompSoftware.DocSuiteWeb.Entity.Conservations;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Facade;
@@ -41,6 +43,7 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
         private bool? _hasWorkflowInProgress;
         private UDSUserFinder _currentUDSUserFinder;
         private WorkflowActivityFinder _currentWorkflowActivityFinder;
+        private Conservation _currentConservation;
         #endregion
 
         #region [ Constructor ]
@@ -58,7 +61,10 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
         #endregion
 
         #region [ Properties ]
-        public Data.Entity.UDS.UDSRepository CurrentUDSRepository { get; private set; }
+        public Data.Entity.UDS.UDSRepository CurrentUDSRepository
+        {
+            get; private set;
+        }
 
         private UDSUserFinder CurrentUDSUserFinder
         {
@@ -170,7 +176,7 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
                     DSWEnvironment.UDS, (int)UDSRightPositions.Modify, true) && !HasWorkflowInProgress;
                 if (_isEditable.HasValue && !_isEditable.Value && _UDSDto.UDSModel.Model.Authorizations != null && _UDSDto.UDSModel.Model.Authorizations.Instances != null && _UDSDto.UDSModel.Model.Authorizations.Instances.Any())
                 {
-                    IList<Role> roles = FacadeFactory.Instance.RoleFacade.GetByIds(_UDSDto.UDSModel.Model.Authorizations.Instances.Where(f=> f.AuthorizationType == AuthorizationType.Responsible).Select(t => t.IdAuthorization).ToList());
+                    IList<Role> roles = FacadeFactory.Instance.RoleFacade.GetByIds(_UDSDto.UDSModel.Model.Authorizations.Instances.Where(f => f.AuthorizationType == AuthorizationType.Responsible).Select(t => t.IdAuthorization).ToList());
                     _isEditable = FacadeFactory.Instance.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.DocumentSeries, roles);
                 }
                 if (_isEditable.HasValue && !_isEditable.Value)
@@ -457,6 +463,35 @@ namespace VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
                     }
                 }
                 return _currentIdWorkflowActivity;
+            }
+        }
+
+        private Conservation CurrentConservation
+        {
+            get
+            {
+                if (_currentConservation == null && _UDSDto != null)
+                {
+                    WebAPIDto<Conservation> conservation = WebAPIImpersonatorFacade.ImpersonateFinder(new ConservationFinder(DocSuiteContext.Current.CurrentTenant),
+                    (impersonationType, finder) =>
+                    {
+                        finder.ResetDecoration();
+                        finder.EnablePaging = false;
+                        finder.UniqueId = _UDSDto.Id;
+                        return finder.DoSearch().FirstOrDefault();
+                    });
+
+                    _currentConservation = conservation?.Entity;
+                }
+                return _currentConservation;
+            }
+        }
+
+        public bool IsConservated
+        {
+            get
+            {
+                return CurrentConservation != null && CurrentConservation.Status == ConservationStatus.Conservated;
             }
         }
         #endregion

@@ -86,12 +86,6 @@ Public Class ResolutionMailSender
                     PreviousPageUrl = previousBasePage.PreviousPageUrl
                 End If
             End If
-
-            'TODO: rivedere con privacy di tipo 4 quando verrà applicata agli atti
-            If DocSuiteContext.Current.PrivacyLevelsEnabled AndAlso FromViewer AndAlso previous.Documents.Count = 0 Then
-                AjaxManager.Alert(String.Concat("Attenzione: solo i documenti con un livello di ", PRIVACY_LABEL, " adeguato vengono allegati alla mail.\r\n L'utente non risulta avere un livello di ", PRIVACY_LABEL, " coerente con alcun documento."))
-            End If
-
         Else
             ' Se arriva da una pagina di resolution che non implementa ISendMail
             Facade.ResolutionLogFacade.Insert(CurrentResolution, ResolutionLogType.RO, "Aperta pagina di spedizione.")

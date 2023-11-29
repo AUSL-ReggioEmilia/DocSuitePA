@@ -35,6 +35,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
         public const string UDS_ADDRESS_NAME = "API-UDSAddress";
         private IWebAPIHelper _webAPIHelper;
         private UDSRoleFinder _udsRoleFinder;
+        private UDSUserFinder _udsUserFinder;
         private UDSContactFinder _udsContactFinder;
         private UDSMessageFinder _udsMessageFinder;
         private UDSPECMailFinder _udsPECMailFinder;
@@ -66,6 +67,18 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
                     _udsRoleFinder = new UDSRoleFinder(DocSuiteContext.Current.Tenants);
                 }
                 return _udsRoleFinder;
+            }
+        }
+
+        protected UDSUserFinder UDSUserFinder
+        {
+            get
+            {
+                if (_udsUserFinder == null)
+                {
+                    _udsUserFinder = new UDSUserFinder(DocSuiteContext.Current.Tenants);
+                }
+                return _udsUserFinder;
             }
         }
 
@@ -192,7 +205,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
                 Messages = entityDto.Messages,
                 PecMails = entityDto.PecMails,
                 Collaborations = entityDto.Collaborations,
-                DocumentUnits = entityDto.DocumentUnits,                
+                DocumentUnits = entityDto.DocumentUnits,
                 UDSModel = udsModel
             };
 
@@ -337,14 +350,44 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 
             roles = result.Select(f => f.Entity).ToList();
 
-            if (roles == null || roles.Count() < 1)
+            ICollection<UDSUser> users = WebAPIImpersonatorFacade.ImpersonateFinder(UDSUserFinder,
+                    (impersonationType, finder) =>
+                    {
+                        finder.ResetDecoration();
+                        finder.IdUDS = entityDto.Id;
+                        finder.EnablePaging = false;
+                        return finder.DoSearch();
+                    }).Select(x => x.Entity).ToList();
+
+            if ((roles == null || !roles.Any()) && (users == null || !users.Any()))
             {
                 return;
             }
 
-            IEnumerable<ReferenceModel> referenceModels = roles.Select(s => new ReferenceModel() { EntityId = s.Relation.EntityShortId, UniqueId = s.UniqueId, AuthorizationType = (AuthorizationType)s.AuthorizationType});
+            ICollection<ReferenceModel> referenceModels = roles.Select(s => new ReferenceModel()
+            {
+                EntityId = s.Relation.EntityShortId,
+                UniqueId = s.UniqueId,
+                AuthorizationType = (AuthorizationType)s.AuthorizationType,
+                AuthorizationInstanceType = AuthorizationInstanceType.Role
+            }).ToList();
+            foreach (UDSUser user in users)
+            {
+                referenceModels.Add(new ReferenceModel()
+                {
+                    AuthorizationInstanceType = AuthorizationInstanceType.User,
+                    Username = user.Account
+                });
+            }
             model.FillAuthorizations(referenceModels, model.Model.Authorizations.Label);
-            entityDto.Authorizations = roles.Select(s => new UDSEntityRoleDto() { IdRole = s.Relation.EntityShortId, UniqueId = s.UniqueId, AuthorizationType = (AuthorizationType)s.AuthorizationType }).ToArray();
+            entityDto.Authorizations = referenceModels.Select(x => new UDSEntityRoleDto()
+            {
+                AuthorizationInstanceType = x.AuthorizationInstanceType,
+                AuthorizationType = x.AuthorizationType,
+                IdRole = x.EntityId,
+                UniqueId = x.UniqueId,
+                Username = x.Username
+            }).ToList();
         }
 
 
@@ -635,7 +678,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
             {
                 docs.ToList().ForEach(f => documentOptionsAction(f, Helpers.UDS.UDSDocumentType.Main));
             }
-            
+
             if (docs.Length > 0)
             {
                 FolderInfo folderDoc = new FolderInfo() { Name = udsModel.Model.Documents.Document.Label, Parent = mainFolder };
@@ -647,8 +690,8 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
             if (documentOptionsAction != null)
             {
                 attachments.ToList().ForEach(f => documentOptionsAction(f, Helpers.UDS.UDSDocumentType.Attachment));
-            }      
-            
+            }
+
             if (attachments.Length > 0)
             {
                 FolderInfo folderAtt = new FolderInfo() { Name = udsModel.Model.Documents.DocumentAttachment.Label, Parent = mainFolder };
@@ -661,7 +704,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
             {
                 annexes.ToList().ForEach(f => documentOptionsAction(f, Helpers.UDS.UDSDocumentType.Annexed));
             }
-            
+
             if (annexes.Length > 0)
             {
                 FolderInfo folderAnnexed = new FolderInfo() { Name = udsModel.Model.Documents.DocumentAnnexed.Label, Parent = mainFolder };
@@ -674,7 +717,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.UDS
             {
                 dematerialisation.ToList().ForEach(f => documentOptionsAction(f, Helpers.UDS.UDSDocumentType.Dematerialisation));
             }
-            
+
             if (dematerialisation.Length > 0)
             {
                 FolderInfo folderDematerialisation = new FolderInfo() { Name = udsModel.Model.Documents.DocumentDematerialisation.Label, Parent = mainFolder };

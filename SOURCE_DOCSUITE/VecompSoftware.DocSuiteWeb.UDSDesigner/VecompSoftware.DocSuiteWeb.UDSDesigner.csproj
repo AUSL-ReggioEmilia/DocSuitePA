@@ -38,8 +38,8 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,11 +48,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VecompSoftware.Helpers.UDS, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.UDS.9.9.20267.1\lib\net48\VecompSoftware.Helpers.UDS.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.UDS, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.UDS.9.22.23292.1\lib\net48\VecompSoftware.Helpers.UDS.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.XML, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.XML.9.9.20267.1\lib\net48\VecompSoftware.Helpers.XML.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.XML, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.9.22.23292.1\lib\net48\VecompSoftware.Helpers.XML.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

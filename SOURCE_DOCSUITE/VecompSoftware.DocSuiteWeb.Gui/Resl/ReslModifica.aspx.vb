@@ -2,10 +2,7 @@ Imports VecompSoftware.Services.Logging
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.Resolutions
-Imports System.Collections.Generic
 Imports System.Linq
-Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI.Fascicles
-Imports VecompSoftware.DocSuiteWeb.Model.Parameters
 Imports FascicleDocumentUnitFacade = VecompSoftware.DocSuiteWeb.Facade.WebAPI.Fascicles.FascicleDocumentUnitFacade
 
 Partial Public Class ReslModifica
@@ -54,7 +51,6 @@ Partial Public Class ReslModifica
         End Get
     End Property
 
-
 #End Region
 
 #Region " Events "
@@ -63,12 +59,12 @@ Partial Public Class ReslModifica
         uscReslChange.CurrentResolution = CurrentResolution
         Controller = ControllerFactory.CreateResolutionChangerController(uscReslChange)
         Controller.AttachEvents()
+
         If Not IsPostBack Then
             Controller.Initialize()
             Title = Facade.ResolutionTypeFacade.GetDescription(CurrentResolution.Type) & " - Modifica"
             Controller.DataBind()
         End If
-
     End Sub
 
     Private Sub btnConfirm_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnConfirm.Click
@@ -119,6 +115,7 @@ Partial Public Class ReslModifica
                 uscReslChange.DocumentSeriesToRemove = Nothing
             End If
 
+            Dim currentStatus As ResolutionStatus = CurrentResolution.Status
             Dim currentCategory As Category = If(CurrentResolution.SubCategory IsNot Nothing, CurrentResolution.SubCategory, CurrentResolution.Category)
             Controller.BindDataToObject(CurrentResolution)
             If currentCategory IsNot Nothing Then
@@ -132,6 +129,9 @@ Partial Public Class ReslModifica
             End If
             Facade.ResolutionFacade.Update(CurrentResolution)
             Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.RM)
+            If (currentStatus.Id <> CurrentResolution.Status.Id) Then
+                Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.RM, $"Lo stato è stato modificato da [{currentStatus.Description}] in [{CurrentResolution.Status.Description}] ")
+            End If
 
             FacadeFactory.Instance.ResolutionFacade.SendUpdateResolutionCommand(CurrentResolution)
 

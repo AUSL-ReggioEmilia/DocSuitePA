@@ -21,10 +21,10 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://SRVGEDDEV9999.CLOUDAPP.NET/BiblosDS2010WCF/Documents.svc?singleWsdl" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost/BiblosDS2010WCF/Documents.svc?singleWsdl" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="Documents.wsdl" MetadataType="Wsdl" ID="da9d66f8-e5ad-4268-9bad-64aea1a78797" SourceId="1" SourceUrl="http://srvgeddev9999.cloudapp.net/BiblosDS2010WCF/Documents.svc?singleWsdl" />
+    <MetadataFile FileName="Documents.wsdl" MetadataType="Wsdl" ID="da9d66f8-e5ad-4268-9bad-64aea1a78797" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?singleWsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

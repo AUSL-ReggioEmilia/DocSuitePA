@@ -95,13 +95,13 @@ Partial Public Class TbltWorkflowEvaluationPropertyGes
     Protected WithEvents uscWorkflowDesignerValidations As Global.VecompSoftware.DocSuiteWeb.Gui.uscWorkflowDesignerValidations
 
     '''<summary>
-    '''ddlTemplateCollaboration control.
+    '''uscTemplateCollaborationSelRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ddlTemplateCollaboration As Global.Telerik.Web.UI.RadComboBox
+    Protected WithEvents uscTemplateCollaborationSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscTemplateCollaborationSelRest
 
     '''<summary>
     '''ddlCollaborationSignSummary control.

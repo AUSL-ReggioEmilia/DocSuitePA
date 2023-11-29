@@ -4,11 +4,45 @@
 <%@ Register Src="~/UserControl/uscDocumentUpload.ascx" TagName="DocumentUpload" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscContattiSel.ascx" TagName="ContattiSel" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscSettori.ascx" TagName="Settori" TagPrefix="usc" %>
-
+<%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscTemplateCollaborationSelRest.ascx" TagName="uscTemplateCollaborationSelRest" TagPrefix="usc" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphHeader">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1">
         <script type="text/javascript" language="javascript">
+            $(function () {
+                signBtnVisibility();
+            });
+
+            function signBtnVisibility() {
+                if ("<%= HasDgrooveSigner %>" === "False") {
+                    if (document.getElementById("<%= btnDgrooveSigns.ClientID %>")) {
+                        document.getElementById("<%= btnDgrooveSigns.ClientID %>").style.display = 'none';
+                    }
+                    return;
+                }
+
+                if (document.getElementById("<%= btnDgrooveSigns.ClientID %>") === null ||
+                    document.getElementById("<%= btnMultiSign.ClientID %>" === null)) {
+                    return;
+                }
+
+                var currentBrowser = getBrowserType();
+
+                if (currentBrowser.startsWith("ie")) {
+                    document.getElementById("<%= btnDgrooveSigns.ClientID %>").style.display = 'none';
+                    document.getElementById("<%= btnMultiSign.ClientID %>").style.display = '';
+                }
+                else {
+                    document.getElementById("<%= btnDgrooveSigns.ClientID %>").style.display = '';
+                    document.getElementById("<%= btnMultiSign.ClientID %>").style.display = 'none';
+                }
+            }
+
+            function SaveToSessionStorageAndRedirect(documents) {
+                sessionStorage.setItem("DocsToSign", documents);
+                window.location.href = "../Comm/DgrooveSigns.aspx";
+            }
 
             function ExecuteAjaxRequest(operationName) {
                 if (operationName == 'FORWARD') {
@@ -102,21 +136,6 @@
                 }
             }
 
-            function BindingFromWorkflowUI() {
-                ShowLoadingPanel();
-                var workflowReferenceModel = sessionStorage.getItem("WorkflowReferenceModel");
-                var workflowStartModel = sessionStorage.getItem("WorkflowStartModel");
-                if (workflowReferenceModel && workflowStartModel) {
-                    var ajaxManager = $find("<%= AjaxManager.ClientID%>");
-                    var ajaxModel = {};
-                    ajaxModel.Value = [];
-                    ajaxModel.ActionName = "BindingFromWorkflowUI";
-                    ajaxModel.Value.push(workflowReferenceModel);
-                    ajaxModel.Value.push(workflowStartModel);
-                    ajaxManager.ajaxRequest(JSON.stringify(ajaxModel));
-                }
-            }
-
             var microsoftExcel = null;
             var microsoftWord = null;
             var handle = null;
@@ -178,6 +197,7 @@
                 }
                 return false;
             }
+
             function OpenAlert(path) {
                 alert("Estensione non supportata.", path);
             }
@@ -197,6 +217,24 @@
                 }
                 return false;
             }
+
+            var userCollGestione;
+            require(["User/UserCollGestione"], function (UserCollGestione) {
+                $(function () {
+                    userCollGestione = new UserCollGestione(tenantModelConfiguration.serviceConfiguration);
+                    userCollGestione.uscTemplateCollaborationSelRestId = "<%= uscTemplateCollaborationSelRest.MainPanel.ClientID %>";
+                    userCollGestione.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
+                    userCollGestione.ajaxManagerId = "<%= AjaxManager.ClientID %>";
+                    userCollGestione.hfCurrentFixedTemplateId = "<%= hfCurrentFixedTemplate.ClientID %>";
+                    userCollGestione.hfCurrentTemplateId = "<%= hfCurrentTemplate.ClientID %>";
+                    userCollGestione.defaultTemplateId = "<%= DefaultTemplateId %>";
+                    userCollGestione.fromWorkflowUI = <%= FromWorkflowUI.ToString().ToLower() %>;
+                    userCollGestione.isInsertAction = <%= IsInsertAction.ToString().ToLower() %>;
+                    userCollGestione.initialize();
+                });
+            });
+
+
         </script>
     </telerik:RadScriptBlock>
     <telerik:RadWindowManager EnableViewState="False" ID="rwmDialogManager" runat="server">
@@ -226,22 +264,15 @@
                 <td class="label" style="width: 20%">Tipologia documento/attività:
                 </td>
                 <td>
-                    <telerik:RadDropDownList AppendDataBoundItems="true" AutoPostBack="True" CausesValidation="False" ID="ddlDocumentType" Width="350px" runat="server" />
-                    <asp:RequiredFieldValidator ControlToValidate="ddlDocumentType" Display="Dynamic" ErrorMessage="Campo tipologia documento obbligatorio" ID="rfvDocumentType" runat="server" />
+                    <usc:uscTemplateCollaborationSelRest runat="server" ID="uscTemplateCollaborationSelRest" />
+                    <asp:HiddenField ID="hfCurrentFixedTemplate" runat="server" />
+                    <asp:HiddenField ID="hfCurrentTemplate" runat="server" />
                 </td>
             </tr>
-            <tr id="trSpecificDocumentType" runat="server">
-                <td class="label" style="width: 20%">Tipologia specifica documento:
-                </td>
-                <td>
-                    <telerik:RadDropDownList AppendDataBoundItems="true" AutoPostBack="True" CausesValidation="False" Width="350px" ID="ddlSpecificDocumentType" runat="server" />
-                    <asp:RequiredFieldValidator ControlToValidate="ddlSpecificDocumentType" Display="Dynamic" ErrorMessage="Campo tipologia specifica documento obbligatorio" ID="rfvSpecificDocumentType" Enabled="false" runat="server" />
-                </td>
-            </tr>
+
         </table>
     </div>
 </asp:Content>
-
 <asp:Content runat="server" ContentPlaceHolderID="cphContent">
     <div style="width: 100%;" runat="server" id="pnlMainPanel">
         <%-- Restituzione --%>
@@ -270,9 +301,9 @@
                     <usc:DocumentUpload ButtonPreviewEnabled="True" ID="uscDocumento" runat="server" MultipleDocuments="False" />
                 </td>
                 <td class="stacked">
-                    <asp:Button ID="cmdDocumentCheckOut" runat="server" Text="Check Out" Width="120px" />
-                    <asp:Button Enabled="False" ID="cmdDocumentUndoCheckOut" runat="server" Text="Annulla Check Out" Width="120px" />
-                    <asp:Button Enabled="False" ID="cmdDocumentCheckIn" runat="server" Text="Check In" Width="120px" />
+                    <asp:Button ID="cmdDocumentCheckOut" runat="server" Text="Estrai" Width="120px" />
+                    <asp:Button Enabled="False" ID="cmdDocumentUndoCheckOut" runat="server" Text="Annulla" Width="120px" />
+                    <asp:Button Enabled="False" ID="cmdDocumentCheckIn" runat="server" Text="Archivia" Width="120px" />
                 </td>
             </tr>
         </table>
@@ -286,12 +317,12 @@
             </tr>
             <tr>
                 <td style="width: 80%">
-                    <usc:DocumentUpload ButtonFileEnabled="true" ButtonPreviewEnabled="True" ButtonRemoveEnabled="true" CheckSelectedNode="true" HeaderVisible="false" ID="uscDocumentoOmissis" IsAttachment="true" IsDocumentRequired="false" MultipleDocuments="true" runat="server" />
+                    <usc:DocumentUpload ButtonFileEnabled="true" ButtonPreviewEnabled="True" ButtonRemoveEnabled="true" CheckSelectedNode="true" HeaderVisible="false" ID="uscDocumentoOmissis" IsAttachment="true" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" />
                 </td>
                 <td class="stacked">
-                    <asp:Button ID="cmdDocumentOmissisCheckOut" runat="server" Text="Check Out" Width="120px" />
-                    <asp:Button Enabled="False" ID="cmdDocumentOmissisUndoCheckOut" runat="server" Text="Annulla Check Out" Width="120px" />
-                    <asp:Button Enabled="False" ID="cmdDocumentOmissisCheckIn" runat="server" Text="Check In" Width="120px" />
+                    <asp:Button ID="cmdDocumentOmissisCheckOut" runat="server" Text="Estrai" Width="120px" />
+                    <asp:Button Enabled="False" ID="cmdDocumentOmissisUndoCheckOut" runat="server" Text="Annulla" Width="120px" />
+                    <asp:Button Enabled="False" ID="cmdDocumentOmissisCheckIn" runat="server" Text="Archivia" Width="120px" />
                 </td>
             </tr>
         </table>
@@ -306,9 +337,9 @@
                     <usc:DocumentUpload ButtonPreviewEnabled="True" ID="uscAllegati" runat="server" />
                 </td>
                 <td class="stacked">
-                    <asp:Button ID="cmdAttachmentsCheckOut" runat="server" Text="Check Out" Width="120px" />
-                    <asp:Button Enabled="False" ID="cmdAttachmentsUndoCheckOut" runat="server" Text="Annulla Check Out" Width="120px" />
-                    <asp:Button Enabled="False" ID="cmdAttachmentsCheckIn" runat="server" Text="Check In" Width="120px" />
+                    <asp:Button ID="cmdAttachmentsCheckOut" runat="server" Text="Estrai" Width="120px" />
+                    <asp:Button Enabled="False" ID="cmdAttachmentsUndoCheckOut" runat="server" Text="Annulla" Width="120px" />
+                    <asp:Button Enabled="False" ID="cmdAttachmentsCheckIn" runat="server" Text="Archivia" Width="120px" />
                 </td>
             </tr>
         </table>
@@ -320,12 +351,12 @@
             </tr>
             <tr>
                 <td style="width: 80%">
-                    <usc:DocumentUpload ButtonFileEnabled="true" ButtonPreviewEnabled="True" ButtonRemoveEnabled="true" CheckSelectedNode="true" HeaderVisible="false" ID="uscAllegatiOmissis" IsAttachment="true" IsDocumentRequired="false" MultipleDocuments="true" runat="server" />
+                    <usc:DocumentUpload ButtonFileEnabled="true" ButtonPreviewEnabled="True" ButtonRemoveEnabled="true" CheckSelectedNode="true" HeaderVisible="false" ID="uscAllegatiOmissis" IsAttachment="true" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" />
                 </td>
                 <td class="stacked">
-                    <asp:Button ID="cmdAttachmentsOmissisCheckOut" runat="server" Text="Check Out" Width="120px" />
-                    <asp:Button Enabled="False" ID="cmdAttachmentsOmissisUndoCheckOut" runat="server" Text="Annulla Check Out" Width="120px" />
-                    <asp:Button Enabled="False" ID="cmdAttachmentsOmissisCheckIn" runat="server" Text="Check In" Width="120px" />
+                    <asp:Button ID="cmdAttachmentsOmissisCheckOut" runat="server" Text="Estrai" Width="120px" />
+                    <asp:Button Enabled="False" ID="cmdAttachmentsOmissisUndoCheckOut" runat="server" Text="Annulla" Width="120px" />
+                    <asp:Button Enabled="False" ID="cmdAttachmentsOmissisCheckIn" runat="server" Text="Archivia" Width="120px" />
                 </td>
             </tr>
         </table>
@@ -341,9 +372,9 @@
                     <usc:DocumentUpload ButtonPreviewEnabled="True" ID="uscAnnexed" runat="server" />
                 </td>
                 <td class="stacked">
-                    <asp:Button ID="cmdAnnexedCheckOut" runat="server" Text="Check Out" Width="120px" />
-                    <asp:Button Enabled="False" ID="cmdAnnexedUndoCheckOut" runat="server" Text="Annulla Check Out" Width="120px" />
-                    <asp:Button Enabled="False" ID="cmdAnnexedCheckIn" runat="server" Text="Check In" Width="120px" />
+                    <asp:Button ID="cmdAnnexedCheckOut" runat="server" Text="Estrai" Width="120px" />
+                    <asp:Button Enabled="False" ID="cmdAnnexedUndoCheckOut" runat="server" Text="Annulla" Width="120px" />
+                    <asp:Button Enabled="False" ID="cmdAnnexedCheckIn" runat="server" Text="Archivia" Width="120px" />
                 </td>
             </tr>
         </table>
@@ -518,6 +549,12 @@
                     <asp:HiddenField ID="hdfLastTemplateNote" runat="server" />
                 </td>
             </tr>
+            <tr id="tResolution" runat="server" visible="false">
+                <td class="label" style="width: 20%">Delibere e determine:</td>
+                <td style="width: 80%">
+                <asp:HyperLink runat="server" ID="resolutionLink"></asp:HyperLink>
+                </td>
+            </tr>
             <tr id="tEditCollaborationData" runat="server">
                 <td class="label" style="width: 20%"></td>
                 <td style="width: 80%">
@@ -530,12 +567,12 @@
         <table class="datatable">
             <tr>
                 <td class="label" style="width: 20%">
-                    <asp:Button ID="btnDocumentUnitDraftEditor" runat="server" Text="Bozza di protocollo" Width="150px"  CausesValidation="false"  />
+                    <asp:Button ID="btnDocumentUnitDraftEditor" runat="server" Text="Bozza di protocollo" Width="150px" CausesValidation="false" />
                 </td>
             </tr>
         </table>
     </asp:Panel>
- 
+
     <asp:Panel ID="pnlUDS" runat="server">
         <table class="datatable">
             <tr>
@@ -556,6 +593,7 @@
     <div class="fakeDiv" runat="server" style="display: none;">
         <a id="link_download" href="">Il documento richiesto è pronto per il download.</a>
     </div>
+    <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphFooter">
@@ -578,8 +616,9 @@
         <asp:Button ID="cmdSave" runat="server" Text="Salva" Width="120px" />
         <DocSuite:PromptClickOnceButton ConfirmationMessage="Si desidera annullare la collaborazione?" ConfirmBeforeSubmit="true" ID="btnCancella" runat="server" Text="Annulla collaborazione" Visible="false" Width="150px" />
         <asp:Button ID="btnMultiSign" runat="server" Text="Firma" OnClientClick="ShowLoadingPanel();" />
+        <asp:Button ID="btnDgrooveSigns" runat="server" Text="Firma" Width="120px" />
         <asp:Button ID="btnRefresh" runat="server" Text="Aggiorna" Width="120px" />
-        <asp:Button ID="cmdVersioningManagement" runat="server" Text="Check in multiplo" Width="120px" />
+        <asp:Button ID="cmdVersioningManagement" runat="server" Text="Versionamento multiplo" Width="120px" />
         <%--antichità da eliminare col tempo--%>
         <asp:TextBox AutoPostBack="True" ID="txtDestinatarioOK" runat="server" Width="16px" />
         <asp:TextBox AutoPostBack="True" ID="txtRestituzioniOK" runat="server" Width="16px" />

@@ -35,7 +35,7 @@ Public Class NHibernateDocumentTypeDao
         End If
 
         If onlyIsActive Then
-            criteria.Add(Restrictions.Eq("IsActive", 1S))
+            criteria.Add(Restrictions.Eq("IsActive", True))
         End If
 
         If description.Length > 0 Then

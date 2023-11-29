@@ -21,4 +21,8 @@ Public Enum DSWEnvironment
     Fascicle = 8
     <Description("Dossier")>
     Dossier = 9
+    <Description("Build")>
+    Build = 10
+    <Description("PEC")>
+    PECMail = 11
 End Enum

@@ -24,6 +24,9 @@
                     userDossier.desktopDayDiff = "<%= VecompSoftware.DocSuiteWeb.Data.DocSuiteContext.Current.ProtocolEnv.DesktopDayDiff %>";
                     userDossier.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                     userDossier.actionType = "<%= ActionType %>";
+                    userDossier.dossierTypologyEnabled = <%= ProtocolEnv.DossierTypologyEnabled.ToString().ToLower() %>;
+                    userDossier.columnDossierTypeKeyId = "<%= columnDossierTypeKey.ClientID %>";
+                    userDossier.columnDossierTypeValueId = "<%= columnDossierTypeValue.ClientID %>";
                     userDossier.initialize();
                 });
             });
@@ -48,10 +51,10 @@
                 </telerik:LayoutRow>
                 <telerik:LayoutRow CssClass="col-dsw-10 form-group" HtmlTag="Div" ID="rowExcludeLinked" runat="server">
                     <Columns>
-                        <telerik:LayoutColumn HtmlTag="Div" CssClass="control-label" Span="3">
+                        <telerik:LayoutColumn HtmlTag="Div" CssClass="control-label" Span="3" ID="columnDossierTypeKey">
                             <asp:Label ID="lblExcludeLinked" runat="server" Text="Tipo di dossier:" />
                         </telerik:LayoutColumn>
-                        <telerik:CompositeLayoutColumn HtmlTag="Div" CssClass="form-control dsw-vertical-middle" Span="9">
+                        <telerik:CompositeLayoutColumn HtmlTag="Div" CssClass="form-control dsw-vertical-middle" Span="9" ID="columnDossierTypeValue">
                             <Content>
                                 <telerik:RadDropDownList runat="server" ID="ddlDossierType" AutoPostBack="false"
                                     Width="300px" CausesValidation="false">

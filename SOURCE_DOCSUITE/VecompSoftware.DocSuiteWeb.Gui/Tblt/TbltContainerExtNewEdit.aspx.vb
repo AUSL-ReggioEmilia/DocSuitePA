@@ -2,6 +2,7 @@
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports Newtonsoft.Json
 Imports VecompSoftware.Helpers
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Partial Public Class TbltContainerExtNewEdit
     Inherits CommonBasePage
@@ -78,6 +79,10 @@ Partial Public Class TbltContainerExtNewEdit
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerAdminRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         MasterDocSuite.TitleVisible = False
         If Not Page.IsPostBack Then
             Initialize()

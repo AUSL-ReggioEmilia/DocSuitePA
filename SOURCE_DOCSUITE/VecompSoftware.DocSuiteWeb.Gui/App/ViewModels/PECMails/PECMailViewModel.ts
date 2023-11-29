@@ -1,10 +1,11 @@
 ﻿import PECMailBoxViewModel = require('App/ViewModels/PECMails/PECMailBoxViewModel');
 import LocationViewModel = require('App/ViewModels/Commons/LocationViewModel');
 import PECMailReceiptsModel = require('App/ViewModels/PECMails/PECMailReceiptsModel');
+import PECMailDirection = require("App/Models/PECMails/PECMailDirection");
 
 class PECMailViewModel {
     EntityShortId: number;
-    Direction: number;
+    Direction: PECMailDirection;
     Year?: number;
     Number?: number;
     MailUID: string;
@@ -12,7 +13,7 @@ class PECMailViewModel {
     MailSubject: string;
     MailSenders: string;
     MailRecipients: string;
-    MailDate: string;
+    MailDate?: Date;
     MailType: string;
     MailError: string;
     MailPriority?: number;

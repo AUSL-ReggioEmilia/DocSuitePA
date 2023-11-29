@@ -176,13 +176,13 @@ Partial Public Class uscFascicleFinder
     Protected WithEvents rdlContainers As Global.Telerik.Web.UI.RadDropDownList
 
     '''<summary>
-    '''UscClassificatore1 control.
+    '''uscCategoryRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents UscClassificatore1 As Global.VecompSoftware.DocSuiteWeb.Gui.uscClassificatore
+    Protected WithEvents uscCategoryRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscCategoryRest
 
     '''<summary>
     '''rowCategorySearch control.
@@ -201,6 +201,24 @@ Partial Public Class uscFascicleFinder
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chbCategoryChild As Global.System.Web.UI.WebControls.CheckBox
+
+    '''<summary>
+    '''settResp control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents settResp As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''uscSettoriResp control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscSettoriResp As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
 
     '''<summary>
     '''sett control.

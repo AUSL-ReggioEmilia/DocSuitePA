@@ -122,15 +122,6 @@ Partial Public Class DossierVisualizza
     Protected WithEvents footer As Global.System.Web.UI.WebControls.Panel
 
     '''<summary>
-    '''btnDocumenti control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnDocumenti As Global.Telerik.Web.UI.RadButton
-
-    '''<summary>
     '''btnModifica control.
     '''</summary>
     '''<remarks>

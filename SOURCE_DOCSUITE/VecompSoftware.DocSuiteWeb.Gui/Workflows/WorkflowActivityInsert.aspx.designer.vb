@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class WorkflowActivityInsert
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''pnlWorkflowActivityInsert control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlWorkflowActivityInsert As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlNuovaAttivita control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlNuovaAttivita As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''ddlWorkflowActivity control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlWorkflowActivity As Global.Telerik.Web.UI.RadDropDownList
-    
+
     '''<summary>
     '''rblPriority control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rblPriority As Global.System.Web.UI.WebControls.RadioButtonList
-    
+
     '''<summary>
     '''pnlDocumenti control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDocumenti As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscUploadDocumentRest control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUploadDocumentRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscUploadDocumentRest
-    
+
     '''<summary>
     '''pnlDesstinatario control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDesstinatario As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscDestinatari control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDestinatari As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSel
-    
+
     '''<summary>
     '''pnlDati control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDati As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''dataScadenza control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents dataScadenza As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''txtNote control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class WorkflowActivityInsert
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''btnConfirm control.
     '''</summary>

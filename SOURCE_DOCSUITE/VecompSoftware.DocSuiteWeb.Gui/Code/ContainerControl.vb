@@ -209,8 +209,10 @@ Public Class ContainerControl
 
     Public Sub ClearItems()
         If UseClassic Then
+            ClassicControl.ClearSelection()
             ClassicControl.Items.Clear()
         Else
+            SmartControl.ClearSelection()
             SmartControl.Items.Clear()
         End If
     End Sub

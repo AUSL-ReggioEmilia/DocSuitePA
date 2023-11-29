@@ -1,8 +1,8 @@
 ﻿Imports System.Collections.Generic
 Imports System.Collections.Specialized
-Imports System.Diagnostics
 Imports System.IO
 Imports System.Linq
+Imports System.ServiceModel
 Imports System.Text
 Imports System.Web
 Imports Newtonsoft.Json
@@ -13,7 +13,6 @@ Imports VecompSoftware.DocSuiteWeb.DTO.Commons
 Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.OData
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Model.DocumentGenerator
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Helpers.Compress
@@ -23,6 +22,7 @@ Imports VecompSoftware.Helpers.PDF
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 Imports VecompSoftware.Helpers.XML.Converters.Factory
 Imports VecompSoftware.Services.Biblos
+Imports VecompSoftware.Services.Biblos.DocumentsService
 Imports VecompSoftware.Services.Biblos.Models
 Imports VecompSoftware.Services.Logging
 Imports WebAPICommons = VecompSoftware.DocSuiteWeb.Entity.Commons
@@ -59,7 +59,7 @@ Namespace Viewers
         Public Const BIBLOS_ATTRIBUTE_BiblosChainId As String = "BiblosChainId"
         Public Const BIBLOS_ATTRIBUTE_BiblosDocumentName As String = "BiblosDocumentName"
         Public Const BIBLOS_ATTRIBUTE_BiblosDocumentId As String = "BiblosDocumentId"
-
+        Public Const BIBLOS_ATTRIBUTE_FascicleId As String = "FascicleId"
 
         Private _prefixFileName As String
         Private _collapseOnSingleDocument As Boolean?
@@ -334,6 +334,12 @@ Namespace Viewers
             End Get
         End Property
 
+        Protected ReadOnly Property DefaultDocumentId As Guid?
+            Get
+                Return Request.QueryString.GetValueOrDefault("DefaultDocumentId", Guid.Empty)
+            End Get
+        End Property
+
         Public Property StampaConformeEnabled As Boolean = True
         Public Property DocumentsPreviewEnabled As Boolean = True
 
@@ -413,7 +419,7 @@ Namespace Viewers
                 Case "ViewerLight_Version"
                     Dim ii As Integer = 0
                     For Each checkedDocument As BiblosDocumentInfo In documents.OfType(Of BiblosDocumentInfo)
-                        Dim node As RadTreeNode = CurrentTreeView.CheckedNodes.SingleOrDefault(Function(n) (n.Value.Eq(NODE_DOCUMENT_IDENTIFIER) OrElse n.Value.Eq(NODE_GROUP_IDENTIFIER)) AndAlso n.Attributes("key").Eq(checkedDocument.Serialized))
+                        Dim node As RadTreeNode = CurrentTreeView.CheckedNodes.SingleOrDefault(Function(n) (n.Value.Eq(NODE_DOCUMENT_IDENTIFIER) OrElse n.Value.Eq(NODE_GROUP_IDENTIFIER)) AndAlso NodeHasSameKey(n, checkedDocument))
                         Dim nodehasdoc As Boolean = False
                         If checkedDocument.DocumentParentId.HasValue AndAlso (Not node Is Nothing) Then
                             Dim BiblosDocInfos As ICollection(Of BiblosDocumentInfo) = Service.GetAllDocumentVersions(checkedDocument.DocumentParentId.Value)
@@ -425,9 +431,10 @@ Namespace Viewers
                             Next
                             For Each bibloDocument As BiblosDocumentInfo In BiblosDocInfos.OrderByDescending(Function(f) f.Version)
                                 If bibloDocument.Version <> checkedDocument.Version Then
+                                    SetUniqueIdAndEnviromentAttributes(node, bibloDocument)
                                     Dim idbliblos As Guid = bibloDocument.DocumentId
                                     bibloDocument.Name = String.Concat(Path.GetFileNameWithoutExtension(bibloDocument.Name), "_", FormatNumber(bibloDocument.Version, 2).ToString().Replace(",", "."), bibloDocument.Extension)
-                                    AddDocumentInfo(rtvListDocument, node, bibloDocument, True)
+                                    AddDocumentInfo(rtvListDocument, node, bibloDocument, True, True)
                                     nodehasdoc = True
                                 End If
                             Next
@@ -659,8 +666,8 @@ Namespace Viewers
             Next
         End Sub
 
-        Private Sub AddDocumentInfo(rtvControl As RadTreeView, parentNode As RadTreeNode, doc As DocumentInfo, isDefaultTreeView As Boolean)
-            Dim node As RadTreeNode = RadTreeNodeFactory(doc, isDefaultTreeView)
+        Private Sub AddDocumentInfo(rtvControl As RadTreeView, parentNode As RadTreeNode, doc As DocumentInfo, isDefaultTreeView As Boolean, Optional specificVersion As Boolean = False)
+            Dim node As RadTreeNode = RadTreeNodeFactory(doc, isDefaultTreeView, specificVersion)
             If IsNothing(parentNode) Then
                 rtvControl.Nodes.Add(node)
             Else
@@ -728,7 +735,7 @@ Namespace Viewers
             Return String.Empty
         End Function
 
-        Private Function RadTreeNodeFactory(doc As DocumentInfo, isDefaultTreeView As Boolean) As RadTreeNode
+        Private Function RadTreeNodeFactory(doc As DocumentInfo, isDefaultTreeView As Boolean, Optional specificVersion As Boolean = False) As RadTreeNode
             Dim items As NameValueCollection = doc.ToQueryString()
             Dim key As String = items.AsEncodedQueryString()
 
@@ -821,11 +828,26 @@ Namespace Viewers
                         treeNode.ToolTip = String.Concat(treeNode.ToolTip, " - livello di ", CommonBasePage.PRIVACY_LABEL, ": ", privacyLevel.Description)
                     End If
                 End If
-                treeNode.ImageUrl = ImagePath.FromDocumentInfo(doc)
+
+                Try
+                    treeNode.ImageUrl = ImagePath.FromDocumentInfo(doc)
+                Catch ex As Exception
+                    If Not ex.GetType() Is GetType(FaultException(Of BiblosDsException)) _
+                        OrElse DirectCast(ex, FaultException(Of BiblosDsException)).Detail.Code <> DocumentsService.FaultCode.ParerRetriveDocuments_Exception Then
+                        Throw ex
+                    End If
+                    treeNode.ImageUrl = ImagePath.FromFile(doc.Name)
+                End Try
                 treeNode.Value = If((FileHelper.MatchExtension(doc.Name, FileHelper.ZIP) _
                     OrElse FileHelper.MatchExtension(doc.Name, FileHelper.RAR)), NODE_GROUP_IDENTIFIER, NODE_DOCUMENT_IDENTIFIER)
 
                 items.Add("parent", GetParentID(doc))
+
+                If specificVersion Then
+                    Dim biblosDoc As BiblosDocumentInfo = CType(doc, BiblosDocumentInfo)
+                    items.Add("BiblosVersion", biblosDoc.Version.ToString())
+                End If
+
                 Dim resFileName As String = doc.PDFName
                 treeNode.NavigateUrl = GetViewerLink(items, resFileName)
                 treeNode.Attributes.Add("onclick", "return false;")
@@ -873,18 +895,18 @@ Namespace Viewers
                     treeNode.ToolTip = "Estensione del file configurata come non sicura o non valida. L'anteprima e il download del file è inibito dalle policy di sicurezza aziendali."
                 End If
 
-                If DocumentsPreviewEnabled AndAlso Not containDisabledAttribute Then
-                    If treeNode.Enabled AndAlso isDefaultTreeView AndAlso String.IsNullOrEmpty(DefaultDocument) OrElse key.Eq(DefaultDocument) Then
-                        SetFirst(treeNode)
-                    End If
-                End If
-
                 If TypeOf doc Is BiblosDocumentInfo Then
                     Dim fi As BiblosDocumentInfo = DirectCast(doc, BiblosDocumentInfo)
                     treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_BiblosChainId, fi.ChainId.ToString())
                     treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_BiblosDocumentId, fi.DocumentId.ToString())
                     treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_BiblosDocumentName, fi.Name)
                     treeNode.Attributes.Add(BIBLOS_ATTRIBUTE_Environment, Convert.ToInt32(DSWEnvironment.Document).ToString())
+                End If
+
+                If DocumentsPreviewEnabled AndAlso Not containDisabledAttribute Then
+                    If treeNode.Enabled AndAlso isDefaultTreeView AndAlso String.IsNullOrEmpty(DefaultDocument) OrElse key.Eq(DefaultDocument) Then
+                        SetFirst(treeNode)
+                    End If
                 End If
             End If
 
@@ -924,9 +946,13 @@ Namespace Viewers
         ''' <param name="node">Nodo da visualizzare</param>
         ''' <remarks>Il primo nodo che chiama questo metodo viene registrato come quello aperto di default</remarks>
         Private Sub SetFirst(node As RadTreeNode)
-            If String.IsNullOrEmpty(PdfSRC.Attributes.Item("value")) Then
+            If Not String.IsNullOrEmpty(PdfSRC.Attributes.Item("value")) Then
+                Exit Sub
+            End If
+            If DefaultDocumentId = Guid.Empty OrElse node.Attributes(BIBLOS_ATTRIBUTE_BiblosDocumentId) = DefaultDocumentId.ToString() Then
                 PdfSRC.Attributes.Add("value", node.Attributes.Item("ViewLink"))
                 node.Selected = True
+                AjaxManager.ResponseScripts.Add(String.Format("LoadDocumentInViewer('{0}');", node.Attributes.Item("ViewLink")))
             End If
         End Sub
 
@@ -997,13 +1023,18 @@ Namespace Viewers
                     Try
                         merger.AddDocument(document.GetPdfStream())
                     Catch ex As Exception
-                        Dim stream As New MemoryStream()
-                        If String.Compare(document.Extension, FileHelper.PDF, True) = 0 Then
-                            stream = New MemoryStream(document.Stream)
-                        Else
-                            FacadeFactory.Instance.BiblosFacade.GetExceptionReadingDocument(ex, stream)
-                        End If
-                        merger.AddDocument(stream.ToArray())
+                        Try
+                            Dim stream As New MemoryStream()
+                            If String.Compare(document.Extension, FileHelper.PDF, True) = 0 Then
+                                stream = New MemoryStream(document.Stream)
+                            Else
+                                FacadeFactory.Instance.BiblosFacade.GetExceptionReadingDocument(ex, stream)
+                            End If
+                            merger.AddDocument(stream.ToArray())
+                        Catch exi As Exception
+                            FileLogger.Warn(LogName.FileLog, exi.Message, exi)
+                        End Try
+
                     End Try
                 Else
                     ' Aggiungo pagina di conversione non permessa
@@ -1287,6 +1318,24 @@ Namespace Viewers
 
         Private Function CountDocuments() As Integer
             Return CurrentTreeView.GetAllNodes().Where(Function(node) node.Value.Eq(NODE_DOCUMENT_IDENTIFIER)).Count()
+        End Function
+
+        Private Function NodeHasSameKey(node As RadTreeNode, document As BiblosDocumentInfo) As Boolean
+            Dim docInfo As BiblosDocumentInfo = TryCast(DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(node.Attributes("key"))), BiblosDocumentInfo)
+            If docInfo Is Nothing Then
+                Return False
+            End If
+            Return docInfo.DocumentId.Equals(document.DocumentId)
+        End Function
+
+        Private Function SetUniqueIdAndEnviromentAttributes(node As RadTreeNode, document As BiblosDocumentInfo) As BiblosDocumentInfo
+            If node.Attributes.Keys.OfType(Of String).Any(Function(f) f = BIBLOS_ATTRIBUTE_UniqueId) Then
+                document.AddAttribute(BIBLOS_ATTRIBUTE_UniqueId, node.Attributes(BIBLOS_ATTRIBUTE_UniqueId))
+            End If
+            If node.Attributes.Keys.OfType(Of String).Any(Function(f) f = BIBLOS_ATTRIBUTE_Environment) Then
+                document.AddAttribute(BIBLOS_ATTRIBUTE_Environment, node.Attributes(BIBLOS_ATTRIBUTE_Environment))
+            End If
+            Return document
         End Function
 #End Region
 

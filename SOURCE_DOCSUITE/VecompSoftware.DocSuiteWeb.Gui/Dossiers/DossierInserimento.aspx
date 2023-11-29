@@ -41,6 +41,9 @@
                     dossierInserimento.rcbDossierTypeId = "<%= rcbDossierType.ClientID %>";
                     dossierInserimento.rfvDossierTypeId = "<%= rfvDossierType.ClientID %>";
                     dossierInserimento.defaultCategoryId = <%= DefaultCategory.Id %>;
+                    dossierInserimento.dossierTypologyEnabled = <%= ProtocolEnv.DossierTypologyEnabled.ToString().ToLower() %>;
+                    dossierInserimento.rowDossierTypeKeyId = "<%= rowDossierTypeKey.ClientID %>";
+                    dossierInserimento.rowDossierTypeValueId = "<%= rowDossierTypeValue.ClientID %>";
                     dossierInserimento.initialize();
                 });
             });
@@ -146,10 +149,10 @@
                                     </telerik:LayoutRow>
                                     <telerik:LayoutRow HtmlTag="Div" Style="margin-top: 2px;">
                                         <Columns>
-                                            <telerik:LayoutColumn Span="2" CssClass="dsw-text-right">
+                                            <telerik:LayoutColumn Span="2" CssClass="dsw-text-right" ID="rowDossierTypeKey">
                                                 <b>Tipologia:</b>
                                             </telerik:LayoutColumn>
-                                            <telerik:LayoutColumn Span="9" CssClass="t-col-left-padding">
+                                            <telerik:LayoutColumn Span="9" CssClass="t-col-left-padding" ID="rowDossierTypeValue">
                                                 <telerik:RadComboBox ID="rcbDossierType" runat="server" AutoPostBack="false" />
                                                 <asp:RequiredFieldValidator ControlToValidate="rcbDossierType" Display="Dynamic" ErrorMessage="Tipo obbligatorio" ID="rfvDossierType" runat="server" />
                                             </telerik:LayoutColumn>

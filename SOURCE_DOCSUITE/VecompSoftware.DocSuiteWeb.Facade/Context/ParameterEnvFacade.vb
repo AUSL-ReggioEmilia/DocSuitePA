@@ -10,10 +10,10 @@ Public Class ParameterEnvFacade
     ''' <remarks>  se non è presente nel DB, la <see cref="String"/> se presente. </remarks>
     Public Function GetValue(environment As EnvironmentDataCode, key As String, ByVal useInstanceValue As Boolean) As String
         Dim trueKey As String = If(useInstanceValue, DocSuiteContext.CustomInstanceName & key, key)
-
         Dim list As IList(Of String) = _dao.SelectByKey(environment, trueKey)
         If Not list.IsNullOrEmpty() Then
-            Return list(0)
+            Dim decryptedValue As String = BaseEnvironment.DecryptParameterToken(list(0))
+            Return decryptedValue
         End If
 
         Return Nothing
@@ -28,7 +28,8 @@ Public Class ParameterEnvFacade
         End If
         ' Aggiorno il parametro
         Dim trueKey As String = If(useInstanceValue, DocSuiteContext.CustomInstanceName & key, key)
-        _dao.SetByKey(environment, trueKey, value)
+        Dim encryptedValue As String = BaseEnvironment.EncryptParameterToken(value)
+        _dao.SetByKey(environment, trueKey, encryptedValue)
     End Sub
 
     ''' <summary> Cancella il valore di un parametro. </summary>
@@ -51,7 +52,8 @@ Public Class ParameterEnvFacade
         End If
         ' Aggiungo il parametro
         Dim trueKey As String = If(useInstanceValue, DocSuiteContext.CustomInstanceName & key, key)
-        _dao.AddByKey(environment, trueKey, value)
+        Dim encryptedValue As String = BaseEnvironment.EncryptParameterToken(value)
+        _dao.AddByKey(environment, trueKey, encryptedValue)
     End Sub
 
     ''' <summary> Ritorna tutti i parametri del database non mappati negli xml. </summary>

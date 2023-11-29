@@ -192,8 +192,8 @@ class FullTextSearch {
     }
 
     private _registerEnvironmentImages(): void {
-        this._environmentImageDictionary[Environment.Protocol] = "../Comm/Images/DocSuite/Protocollo16.gif";
-        this._environmentImageDictionary[Environment.Resolution] = "../Comm/Images/DocSuite/Atti16.gif";
+        this._environmentImageDictionary[Environment.Protocol] = "../Comm/Images/DocSuite/Protocollo16.png";
+        this._environmentImageDictionary[Environment.Resolution] = "../Comm/Images/DocSuite/Atti16.png";
         this._environmentImageDictionary[Environment.DocumentSeries] = "../App_Themes/DocSuite2008/imgset16/document_copies.png";
         this._environmentImageDictionary[Environment.UDS] = "../App_Themes/DocSuite2008/imgset16/document_copies.png";
     }

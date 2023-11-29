@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using VecompSoftware.DocSuiteWeb.Entity.Templates;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
 using VecompSoftware.WebAPIManager;
@@ -48,6 +49,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Templates
             UserName = string.Empty;
             Domain = string.Empty;
             DocumentType = string.Empty;
+            Name = string.Empty;
             ExpandProperties = null;
         }
 
@@ -89,17 +91,20 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Templates
 
             if (!string.IsNullOrEmpty(DocumentType))
             {
-                string filter = string.Concat("DocumentType eq '", DocumentType, "'");
+                StringBuilder filterBuilder = new StringBuilder("(");
+                filterBuilder.Append($"DocumentType eq '{DocumentType} '");
                 if (DocumentType.Equals("UDS", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    filter = string.Concat(filter, " or (startswith(DocumentType, '1') and length(DocumentType) gt 2)");
+                    filterBuilder.Append($" or (startswith(DocumentType, '1') and length(DocumentType) gt 2)");
                 }
-                odataQuery.Filter(filter);
+                filterBuilder.Append(")");
+                
+                odataQuery.Filter(filterBuilder.ToString());
             }
 
             if (!string.IsNullOrEmpty(Name))
             {
-                odataQuery.Filter(string.Concat("Name eq '", Name, "'"));
+                odataQuery.Filter(string.Concat("Name eq '", Name.Replace("'", "''"), "'"));
             }
 
             return base.DecorateFinder(odataQuery);

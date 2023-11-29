@@ -163,6 +163,8 @@ class FascicleLink extends FascicleBase {
             this.isFascicleTabSelected = true;
             $(`#${this.dossierDisponibiliId}`).hide();
             $(`#${this.dossierCollegatiId}`).hide();
+            $(`#${this.dossierSummaryContainerId}`).hide();
+            $(`#${this.dossierFolderCotainerId}`).hide();
 
             $(`#${this.fascicoliCollegatiId}`).show();
             $(`#${this.uscFascicleSearchId}`).show();
@@ -454,7 +456,7 @@ class FascicleLink extends FascicleBase {
                 model = {
                     UniqueId: dossierFolder.Dossier.UniqueId, DossierFolderName: dossierFolder.Name, DossierName: dossierName,
                     Subject: dossierFolder.Dossier.Subject, StartDate: moment(dossierFolder.Dossier.StartDate).format("DD/MM/YYYY"),
-                    Contenitori: dossierFolder.Dossier.Container.Name, Category: dossierFolder.Category.Name
+                    Contenitori: dossierFolder.Dossier.Container.Name, Category: dossierFolder.Category == null ? "" : dossierFolder.Category.Name
                 }
                 models.push(model);
             }

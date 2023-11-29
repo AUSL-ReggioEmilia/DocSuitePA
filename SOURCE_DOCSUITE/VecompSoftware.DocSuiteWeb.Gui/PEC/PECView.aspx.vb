@@ -131,7 +131,7 @@ Public Class PECView
             End If
             InitializeButtons()
 
-            Title = String.Format("{0:dddd dd/MM/yyyy} - {1} - [{2}]", If(CurrentPecMail.MailDate.HasValue, CurrentPecMail.MailDate.Value, CurrentPecMail.RegistrationDate.ToLocalTime().Date), CurrentPecMail.MailSubject, Facade.PECMailFacade.GetCalculatedSize(CurrentPecMail))
+            Title = String.Format("{0:dddd dd/MM/yyyy} - {1} - [{2}]", If(CurrentPecMail.MailDate.HasValue, CurrentPecMail.MailDate.Value, CurrentPecMail.RegistrationDate.ToLocalTime().Date), CurrentPecMail.MailSubject, Facade.PECMailFacade.GetCalculatedSize(CurrentPecMail, New Action(Sub() DelegateElsaInitialize(CurrentPecMail))))
             viewerLight.CheckBoxes = True
             Facade.PECMailLogFacade.Read(CurrentPecMail)
 

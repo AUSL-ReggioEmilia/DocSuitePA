@@ -24,6 +24,8 @@ class uscMetadataRepositorySel {
     enableAdvancedMetadataSearchBtnId: string;
     txtMetadataValueId: string;
     advancedMetadataRepositoryEnabled: boolean;
+    advancedMetadataSearchEnabled: boolean;
+    advancedMetadataSearchPanelId: string;
 
     private _rcbMetadataRepository: Telerik.Web.UI.RadComboBox;
     private _uscAdvancedSearchDynamicMetadataRest: UscAdvancedSearchDynamicMetadataRest;
@@ -179,7 +181,7 @@ class uscMetadataRepositorySel {
             this.initializeMetadataPanel();
         }
 
-        let scrollContainer: JQuery = $(this._rcbMetadataRepository.get_dropDownElement()).find('div.rcbScroll');
+        const scrollContainer: JQuery = $(this._rcbMetadataRepository.get_dropDownElement()).find('div.rcbScroll');
         $(scrollContainer).scroll(this.rcbLookup_onScroll);
 
         $("#".concat(this.metadataPageContentId)).data(this);
@@ -187,17 +189,22 @@ class uscMetadataRepositorySel {
     }
 
     private initializeMetadataPanel(): void {
-        let $advancedMetadataSearchBtn = $(`#${this.enableAdvancedMetadataSearchBtnId}`);
-        this._enableAdvancedMetadataSearchBtn = <HTMLInputElement>$advancedMetadataSearchBtn[0];
-        $advancedMetadataSearchBtn.on("change", () => {
-            let advancedMetadataSearchEnabled: boolean = this._enableAdvancedMetadataSearchBtn.checked;
-            this._txtMetadataValue.set_visible(!advancedMetadataSearchEnabled);
+        const $advancedMetadataSearchBtn = $(`#${this.enableAdvancedMetadataSearchBtnId}`);
+        this._enableAdvancedMetadataSearchBtn = $advancedMetadataSearchBtn[0] as HTMLInputElement;
 
-            let selectedMetadataRepositoryId: string = this.getSelectedMetadataRepositoryId();
-            this._uscAdvancedSearchDynamicMetadataRest.setPanelSearchType(advancedMetadataSearchEnabled, selectedMetadataRepositoryId);
+        if (this.advancedMetadataSearchEnabled) {
+            const advancedMetadataSearchPanel = $(`#${this.advancedMetadataSearchPanelId}`);
+            advancedMetadataSearchPanel.css("display", "inline-block");
+        }
+        $advancedMetadataSearchBtn.on("change", () => {
+            const advancedMetadataSearchVisible: boolean = this._enableAdvancedMetadataSearchBtn.checked;
+            this._txtMetadataValue.set_visible(!advancedMetadataSearchVisible);
+
+            const selectedMetadataRepositoryId = this.getSelectedMetadataRepositoryId();
+            this._uscAdvancedSearchDynamicMetadataRest.setPanelSearchType(advancedMetadataSearchVisible, selectedMetadataRepositoryId);
         });
 
-        this._txtMetadataValue = <Telerik.Web.UI.RadTextBox>$find(this.txtMetadataValueId);
+        this._txtMetadataValue = $find(this.txtMetadataValueId) as Telerik.Web.UI.RadTextBox;
         this._setMetadataValueElementsState(false);
     }
 

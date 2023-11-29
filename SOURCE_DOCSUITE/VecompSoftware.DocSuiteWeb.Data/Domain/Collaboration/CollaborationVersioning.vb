@@ -1,7 +1,7 @@
 ﻿<Serializable()>
 Public Class CollaborationVersioning
     Inherits AuditableDomainObject(Of Guid)
-    Implements ISupportLogicDelete
+    Implements ISupportBooleanLogicDelete
 
 #Region " Fields "
 #End Region
@@ -18,7 +18,7 @@ Public Class CollaborationVersioning
 
     ''' <summary> </summary>
     ''' <remarks> SUL DB È UN BIT </remarks>
-    Public Overridable Property IsActive As Short Implements ISupportLogicDelete.IsActive
+    Public Overridable Property IsActive As Boolean Implements ISupportBooleanLogicDelete.IsActive
 
     Public Overridable Property Collaboration As Collaboration
 

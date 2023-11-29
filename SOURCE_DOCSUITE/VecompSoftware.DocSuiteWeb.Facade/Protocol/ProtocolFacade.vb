@@ -13,12 +13,10 @@ Imports VecompSoftware.DocSuiteWeb.Data.Entity.Protocols
 Imports VecompSoftware.DocSuiteWeb.Data.Formatter
 Imports VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.Commons
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
-Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
-Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.Commons
 Imports VecompSoftware.DocSuiteWeb.EntityMapper.Protocols
 Imports VecompSoftware.DocSuiteWeb.Facade.Interfaces
-Imports VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
 Imports VecompSoftware.DocSuiteWeb.Model.Workflow.Actions
@@ -33,6 +31,11 @@ Imports VecompSoftware.Services.Command.CQRS.Commands.Entities.Protocols
 Imports VecompSoftware.Services.Logging
 Imports APICommons = VecompSoftware.DocSuiteWeb.Entity.Commons
 Imports APIProtocol = VecompSoftware.DocSuiteWeb.Entity.Protocols
+Imports EntityModelCommons = VecompSoftware.DocSuiteWeb.Model.Entities.Commons
+Imports ContactType = VecompSoftware.DocSuiteWeb.Data.ContactType
+Imports VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
+Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.DocumentUnits
 
 <ComponentModel.DataObject()>
 Public Class ProtocolFacade
@@ -154,7 +157,6 @@ Public Class ProtocolFacade
 
     Private _protocolRejectionContainer As Container
     Private _observer As IFacadeObserver(Of ProtocolFacade)
-    Private _contactNamesFacade As ContactNameFacade
     Private _contactFacade As ContactFacade
     Private _commandInsertFacade As CommandFacade(Of ICommandCreateProtocol)
     Private _commandUpdateFacade As CommandFacade(Of ICommandUpdateProtocol)
@@ -169,15 +171,6 @@ Public Class ProtocolFacade
 #End Region
 
 #Region " Properties "
-
-    Public ReadOnly Property ContactNamesFacade As ContactNameFacade
-        Get
-            If _contactNamesFacade Is Nothing Then
-                _contactNamesFacade = New ContactNameFacade
-            End If
-            Return _contactNamesFacade
-        End Get
-    End Property
 
     Public ReadOnly Property MapperProtocolEntity As MapperProtocolEntity
         Get
@@ -235,7 +228,7 @@ Public Class ProtocolFacade
     End Property
 
     ''' <summary> Contenitore per i protocolli rigettati </summary>
-    ''' <remarks> Funzione nata per **REMOVE**</remarks>
+    ''' <remarks> Funzione nata per cliente </remarks>
     Public ReadOnly Property RejectionContainer As Container
         Get
             If _protocolRejectionContainer Is Nothing Then
@@ -275,510 +268,8 @@ Public Class ProtocolFacade
 
 #End Region
 
-#Region "[ WSProt - Per ASMN-RE/AUSL-RE ]"
 
-    ''' <summary> Permette di inserire un Protocollo partendo dal rispettivo xml. </summary>
-    ''' <returns>Identificativo del protocollo appena creato</returns>
-    Public Function InsertProtocol(ByVal protocolXml As ProtocolXML, ByVal username As String, currentTenantAOOId As Guid, createLogToRead As Boolean) As Protocol
-        If Not CheckInsertPreviousYear() Then
-            Throw New DocSuiteException("Impossibile inserire nuovi protocolli.", $"Non è ancora stato eseguito il cambio anno. {DocSuiteContext.Current.ProtocolEnv.DefaultErrorMessage}")
-        End If
-        ' Creo il protocollo
-        Dim protocol As Protocol = CreateProtocol(currentTenantAOOId)
-
-        ' Contenitore
-        protocol.Container = Factory.ContainerFacade.GetById(protocolXml.Container)
-        protocol.Location = protocol.Container.ProtLocation
-        protocol.AttachLocation = protocol.Container.ProtAttachLocation
-        protocol.IdTenantAOO = currentTenantAOOId
-
-        ' Classificatore
-        protocol.Category = Factory.CategoryFacade.GetById(protocolXml.Category)
-        ' Tipo documento
-        Dim tableTypeFacade As New TableDocTypeFacade()
-        Dim documentType As DocumentType = tableTypeFacade.GetById(protocolXml.DocumentType)
-        If DocSuiteContext.Current.ProtocolEnv.IsTableDocTypeEnabled Then
-            protocol.DocumentType = documentType
-        End If
-
-        ' Tipo di protocollo
-        Dim protocolType As ProtocolType = Factory.ProtocolTypeFacade.GetById(protocolXml.Type)
-        protocol.Type = protocolType
-
-        ' Assegno i settori
-        For Each idRole As Integer In protocolXml.Authorizations
-            Dim role As Role = Factory.RoleFacade.GetById(idRole)
-            If role Is Nothing Then
-                Throw New ArgumentException(String.Format("Attenzione settore non presente. RoleId: {0}", idRole))
-            End If
-            protocol.AddRole(role, username, DateTimeOffset.UtcNow)
-        Next
-
-        ' Oggetto 
-        protocol.ProtocolObject = StringHelper.Clean(protocolXml.Object, DocSuiteContext.Current.ProtocolEnv.RegexOnPasteString)
-
-        ' Data
-        Dim data As Date
-        If DateTime.TryParseExact(protocolXml.Data, "d/M/yyyy", Nothing, DateTimeStyles.None, data) Then
-            protocol.DocumentDate = data
-        Else
-            protocol.DocumentDate = Nothing
-        End If
-
-        ' Note
-        protocol.Note = StringHelper.Clean(protocolXml.Notes, DocSuiteContext.Current.ProtocolEnv.RegexOnPasteString)
-        ' Assegnatari/Proponente
-        protocol.Subject = If(String.IsNullOrEmpty(protocolXml.Assignee), Nothing, protocolXml.Assignee)
-        ' Categoria di servizio    
-        protocol.ServiceCategory = If(String.IsNullOrEmpty(protocolXml.ServiceCode), Nothing, protocolXml.ServiceCode)
-
-        ' Inserimento dei contatti dei Mittenti
-        BindContactsFromProtocolXML(protocol, protocolXml.Senders, True)
-
-        ' Inserimento dei contatti dei Destinatari
-        BindContactsFromProtocolXML(protocol, protocolXml.Recipients, False)
-
-        ' Stato di parcheggio del protocollo
-        protocol.IdStatus = ProtocolStatusId.Errato
-
-        ' Stato di ProtocolStatus
-        If DocSuiteContext.Current.ProtocolEnv.IsStatusEnabled Then
-            If Not String.IsNullOrEmpty(DocSuiteContext.Current.ProtocolEnv.ProtocolStatusWcfDefault) Then
-                protocol.AdvanceProtocol.Status = FacadeFactory.Instance.ProtocolStatusFacade.GetById(DocSuiteContext.Current.ProtocolEnv.ProtocolStatusWcfDefault)
-            End If
-            If Not String.IsNullOrEmpty(protocolXml.Status) Then
-                Dim currentStatus As ProtocolStatus = FacadeFactory.Instance.ProtocolStatusFacade.GetById(protocolXml.Status)
-                If currentStatus Is Nothing Then
-                    currentStatus = FacadeFactory.Instance.ProtocolStatusFacade.GetByDescription(protocolXml.Status).FirstOrDefault()
-                End If
-                If currentStatus IsNot Nothing Then
-                    protocol.AdvanceProtocol.Status = currentStatus
-                End If
-            End If
-        End If
-
-        Save(protocol)
-
-        If createLogToRead Then
-            FacadeFactory.Instance.ProtocolLogFacade.Insert(protocol.Year, protocol.Number, ProtocolLogEvent.PI.ToString(), "Creato protocollo", DocSuiteContext.Current.User.FullUserName, False)
-        End If
-        Return protocol
-    End Function
-
-    ''' <summary> Permette di inserire i contatti nel protocollo dal xml, con validazione dei dati. </summary>
-    ''' <param name="protocol">protocollo da creare dal protocolXML</param>
-    ''' <param name="listContactBag">lista dei contatti</param>
-    ''' <param name="isSender">true se contatti di tipo Mittete, altrimenti false in caso di destinatari</param>
-    Private Sub BindContactsFromProtocolXML(ByRef protocol As Protocol, ByVal listContactBag As List(Of ContactBag), ByVal isSender As Boolean)
-        Dim contactFacade As New ContactFacade()
-        Dim contactTypeFacade As New ContactTypeFacade()
-
-        For Each contactBag As ContactBag In listContactBag
-            For Each contactXml As ContactXML In contactBag.Contacts
-                Select Case contactBag.SourceType
-                    Case ContactTypeEnum.AddressBook, ContactTypeEnum.AD
-                        'Case ContactTypeEnum.IPA
-                        Dim contact As Contact = contactFacade.GetById(contactXml.Id)
-                        If contact Is Nothing Then
-                            Throw New ArgumentException(String.Format("Attenzione contatto non presente in rubrica id: {0}", contactXml.Id), "id")
-                        End If
-
-                        If isSender Then  ' Mittenti
-                            protocol.AddSender(contact, contactXml.Cc)
-                        Else              ' Destinatari
-                            protocol.AddRecipient(contact, contactXml.Cc)
-                        End If
-                    Case Else
-                        ' Tipo di Contatto
-                        Dim contactType As ContactType = contactTypeFacade.GetById(contactXml.Type(0))
-                        If contactType Is Nothing Then
-                            Throw New DocSuiteException(String.Format("Attenzione tipo di contatto non presente type: {0}", contactXml.Type))
-                        End If
-
-                        Dim contact As New Contact()
-                        If contactXml.Description IsNot Nothing Then
-                            contact.Description = contactXml.Description
-                        Else
-                            contact.Description = String.Format("{0}|{1}", contactXml.Surname, contactXml.Name)
-                        End If
-
-                        contact.ContactType = contactType
-                        contact.EmailAddress = contactXml.StandardMail
-                        contact.CertifiedMail = contactXml.CertifiedMail
-                        contact.FiscalCode = contactXml.FiscalCode
-
-                        ' Indirizzo contatto
-                        Dim address As New Address
-                        If contactXml.Address IsNot Nothing Then
-                            address.Address = contactXml.Address.Name
-                            address.City = contactXml.Address.City
-                            address.ZipCode = contactXml.Address.Cap
-                            address.CivicNumber = contactXml.Address.Number
-                            address.CityCode = contactXml.Address.Prov
-                            If Not String.IsNullOrEmpty(contactXml.Address.Type) Then
-                                Dim contactPlaceNameFacade As New ContactPlaceNameFacade
-                                Dim lstPlaceName As IList(Of ContactPlaceName) = contactPlaceNameFacade.GetByDescription(contactXml.Address.Type)
-                                If lstPlaceName.Count > 0 Then
-                                    address.PlaceName = lstPlaceName(0)
-                                End If
-                            End If
-                        End If
-
-                        contact.Address = address
-
-                        contact.TelephoneNumber = contactXml.Telephone
-                        contact.FaxNumber = contactXml.Fax
-                        contact.Note = contactXml.Notes
-                        ' Data
-                        Dim data As Date
-                        If DateTime.TryParseExact(contactXml.BirthDate, "d/M/yyyy", Nothing, DateTimeStyles.None, data) Then
-                            contact.BirthDate = data
-                        Else
-                            contact.BirthDate = Nothing
-                        End If
-
-                        contact.BirthPlace = contactXml.BirthPlace
-
-                        If isSender Then ' Mittenti
-                            protocol.AddSenderManual(contact, contactXml.Cc)
-                        Else             ' Destinatari
-                            protocol.AddRecipientManual(contact, contactXml.Cc)
-                        End If
-                End Select
-            Next
-        Next
-    End Sub
-
-    ''' <summary> Validazione xml protocollo come da GUI. </summary>
-    ''' <param name="protocolXML">xml del protocollo</param>
-    Public Sub CheckDataForInsert(ByVal protocolXML As ProtocolXML)
-
-        ' Verifico il tipo di protocollo
-        Dim protocolTypeFacade As New ProtocolTypeFacade
-        Dim protocolType As ProtocolType = protocolTypeFacade.GetById(protocolXML.Type)
-        If protocolType Is Nothing Then
-            Throw New ArgumentException("Impossibile salvare. Il Campo TIPO PROTOCOLLO non è valorizzato o non è numerico. Valore Attuale: " & protocolXML.Type)
-        End If
-
-        ' Verifica data protocollo mittente
-        If protocolXML.Type = -1 Then
-            If protocolXML.Data Is Nothing Then
-                protocolXML.Data = DateTime.Today.ToString()
-            End If
-            If DateTime.Parse(protocolXML.Data) > DateTime.Today Then
-                Throw New ArgumentException("Impossibile salvare.La data del protocollo mittente deve essere antecedente a quella odierna. Verificare xml")
-            End If
-        End If
-
-        'Verifica oggetto
-        If protocolXML.Object.Length > 255 Then
-            Throw New ArgumentException("Impossibile salvare. Il campo Oggetto ha superato i caratteri disponibili.\n\n" & "(Caratteri " & protocolXML.Object.Length & " Disponibili " & 255 & ")")
-        End If
-
-        If DocSuiteContext.Current.ProtocolEnv.ObjectMinLength <> 0 Then
-            If protocolXML.Object.Length < DocSuiteContext.Current.ProtocolEnv.ObjectMinLength Then
-                Throw New ArgumentException("Impossibile salvare. Il campo Oggetto non ha raggiunto i caratteri minimi (" & DocSuiteContext.Current.ProtocolEnv.ObjectMinLength & " caratteri).")
-            End If
-        End If
-
-        'Verifico il contenitore
-        Dim container As Container = Factory.ContainerFacade.GetById(protocolXML.Container)
-        If container Is Nothing Then
-            Throw New ArgumentException(String.Format("Attenzione contenitore con id = {0} non presente", protocolXML.Container))
-        End If
-
-        If container.ProtLocation Is Nothing Then
-            Throw New ArgumentException(String.Format("Impossibile salvare. La LOCATION del Protocollo per il Contenitore {0} non è stata definita.", container.Name))
-        End If
-
-        Dim tableTypeFacade As New TableDocTypeFacade()
-        Dim documentType As DocumentType = tableTypeFacade.GetById(protocolXML.DocumentType)
-        If DocSuiteContext.Current.ProtocolEnv.EnvTableDocTypeRequired AndAlso (documentType Is Nothing) Then
-            Throw New ArgumentException("Impossibile salvare. Il Campo TIPO DOCUMENTO non è valorizzato o non è numerico. Valore Attuale: " & protocolXML.DocumentType)
-        End If
-
-        Dim category As Category = Factory.CategoryFacade.GetById(protocolXML.Category)
-        If category Is Nothing Then
-            Throw New ArgumentException(String.Format("Attenzione Categoria con id = {0} non presente", protocolXML.Category))
-        End If
-
-        If DocSuiteContext.Current.ProtocolEnv.IsStatusEnabled AndAlso Not String.IsNullOrEmpty(protocolXML.Status) Then
-            Dim results As IList(Of ProtocolStatus) = FacadeFactory.Instance.ProtocolStatusFacade.GetByDescription(protocolXML.Status)
-            If (results Is Nothing OrElse Not results.Any()) AndAlso
-                FacadeFactory.Instance.ProtocolStatusFacade.GetById(protocolXML.Status) Is Nothing Then
-                Throw New ArgumentException(String.Format("Attenzione Stato protocollo {0} non presente (sia come ID che come descrizione)", protocolXML.Status))
-            End If
-        End If
-
-    End Sub
-
-    ''' <summary> Permette di inserire il documento principale in formato stream ad un protocollo </summary>
-    ''' <param name="protocol">protocollo sul quale si vuole carticare il documento principale</param>
-    ''' <param name="stream">stream del documento</param>
-    ''' <param name="documentName">nome del documento da caricare</param>
-    Public Sub BiblosInsert(ByVal protocol As Protocol, ByVal stream As Byte(), ByVal documentName As String, ByVal username As String)
-
-        ' Aggiungo a biblos su una nuova catena il documento principale passato come stream
-        Dim doc As New MemoryDocumentInfo(stream, documentName)
-        doc.Signature = GenerateSignature(protocol, protocol.RegistrationDate.ToLocalTime().DateTime, New ProtocolSignatureInfo() With {.DocumentType = ProtocolDocumentType.Main})
-
-        protocol.IdDocument = doc.ArchiveInBiblos(protocol.Location.ProtBiblosDSDB).BiblosChainId
-        protocol.DocumentCode = documentName
-
-        ' Aggiorno il protocollo con il riferimento all'id del documento su biblos
-        Update(protocol)
-        ' Log dell'inserimento
-        Factory.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.PM, String.Format("Documento (Add by {0}): {1}", username, documentName))
-    End Sub
-
-    ''' <summary> Permette di inserire un documento come allegato in formato stream ad un protocollo </summary>
-    ''' <param name="protocol">protocollo sul quale si vuole caricare l'allegato</param>
-    ''' <param name="stream">stream del documento</param>
-    ''' <param name="documentName">nome del documento da caricare</param>
-    Public Sub BiblosInsertAllegati(ByVal protocol As Protocol, ByVal stream As Byte(), ByVal documentName As String, ByVal username As String)
-
-        ' Aggiungo a biblos l'allegato passato come stream
-        Dim doc As New MemoryDocumentInfo(stream, documentName)
-        doc.Signature = GenerateSignature(protocol, protocol.RegistrationDate.ToLocalTime().DateTime, New ProtocolSignatureInfo() With {.DocumentType = ProtocolDocumentType.Attachment})
-
-        Dim loc As UIDLocation = GetAttachmentLocation(protocol)
-        protocol.IdAttachments = doc.ArchiveInBiblos(loc.Archive, protocol.IdAttachments.GetValueOrDefault(0)).BiblosChainId
-
-        ' Aggiorno il protocollo con il riferimento all'id degli allegati su biblos
-        Update(protocol)
-        ' Log dell'inserimento allegato
-        Factory.ProtocolLogFacade.Insert(protocol, ProtocolLogEvent.PM, String.Format("Allegati (Add by {0}): {1}", username, documentName))
-    End Sub
-
-    ''' <summary> Crea un xml che idica l'elenco completo di tutte le PEC (ingresso e uscita) </summary>
-    ''' <param name="protocol">oggetto protocollo</param>
-    ''' <returns>xml con elenco completo PEC</returns>
-    Public Function GetPecs(ByVal protocol As Protocol) As String
-        Dim protocolPecsXML As New ProtocolPecsXML
-        protocolPecsXML.Year = protocol.Year
-        protocolPecsXML.Number = protocol.Number
-
-        If protocol.PecMails.Count > 0 Then
-            protocolPecsXML.Pecs = New List(Of PECXML)
-        End If
-        For Each pecMail As PECMail In protocol.PecMails
-            Dim pec As New PECXML
-            pec.Id = pecMail.Id
-
-            ' PecMailBox
-            Dim mailBox As New Mailbox
-            mailBox.Id = pecMail.MailBox.Id
-            mailBox.AssociatedMail = pecMail.MailBox.MailBoxName
-            pec.Mailbox = mailBox
-
-            pec.Direction = pecMail.Direction
-            pec.Subject = pecMail.MailSubject
-            pec.Sender = pecMail.MailSenders
-
-            ' Recipients
-            Dim lstRecipient As List(Of String) = StringHelper.ConvertStringToList(Of String)(pecMail.MailRecipients, ";"c)
-            If lstRecipient.Count > 0 Then
-                pec.Recipients = New List(Of RecipientXML)
-                For Each item As String In lstRecipient
-                    Dim recipient As New RecipientXML
-                    recipient.Name = item
-                    recipient.Type = "to" 'cc  e ccn sono da implementare mancano nel sistema PEC
-                    pec.Recipients.Add(recipient)
-                Next
-            End If
-
-            pec.Timestamp = If(pecMail.MailDate Is Nothing, Nothing, pecMail.MailDate.ToString())
-
-            ' CertificationData
-            Dim certificationData As New CertificationData
-            ' è una pecmail certificata
-            certificationData.IsCertified = CurrentPecMailFacade.IsCertified(pecMail)
-            ' é una pecmail interoperabile
-            If pecMail.Segnatura IsNot Nothing AndAlso pecMail.IsValidForInterop Then
-                certificationData.IsInterop = True
-            Else
-                certificationData.IsInterop = False
-            End If
-            pec.CertificationData = certificationData
-
-            ' Body della mail
-            pec.Body = pecMail.MailBody
-
-            ' Receipt
-            If pecMail.Direction = PECMailDirection.Outgoing Then
-                ' Ottengo tutti i messaggi in uscita con il medesimo XRiferimentoMessageID
-                Dim lstPecMailXRif As IList(Of PECMail) = CurrentPecMailFacade.GetIncomingMailByXRiferimentoMessageId(pecMail.XRiferimentoMessageID)
-
-                pec.Receipts = New List(Of Receipt)
-                For Each item As PECMail In lstPecMailXRif
-                    Dim receipt As New Receipt
-                    receipt.Timestamp = If(item.MailDate Is Nothing, Nothing, item.MailDate.Value.ToString())
-                    receipt.Type = item.MailType
-                    If item.MailError IsNot Nothing Then
-                        receipt.Value = item.MailError
-                    End If
-                    pec.Receipts.Add(receipt)
-                Next
-            End If
-
-            protocolPecsXML.Pecs.Add(pec)
-        Next
-        Return SerializationHelper.SerializeToStringWithoutNamespace(protocolPecsXML)
-    End Function
-
-    ''' <summary> Ritorna xml con info del protocollo passato come parametro. </summary>
-    Public Function GetProtocolInfo(ByVal protocol As Protocol) As String
-        Dim protocolXml As New ProtocolXML
-        protocolXml.RegistrationDate = protocol.RegistrationDate
-        protocolXml.Year = protocol.Year
-        protocolXml.Number = protocol.Number
-        protocolXml.Type = protocol.Type.Id
-        protocolXml.Container = protocol.Container.Id
-        protocolXml.DocumentType = protocolXml.DocumentType
-
-        If protocol.DocumentDate.HasValue Then
-            protocolXml.Data = If(protocol.DocumentDate Is Nothing, Nothing, protocol.DocumentDate.Value.ToString())
-        End If
-
-        protocolXml.Object = protocol.ProtocolObject
-        protocolXml.Category = protocol.Category.Id
-        protocolXml.Notes = protocol.Note
-        protocolXml.Assignee = protocol.Subject
-        protocolXml.ServiceCode = protocol.ServiceCategory
-        protocolXml.IdStatus = protocol.IdStatus.Value
-
-        If DocSuiteContext.Current.ProtocolEnv.IsStatusEnabled AndAlso protocol.Status IsNot Nothing Then
-            protocolXml.Status = protocol.Status.Id
-        End If
-
-        ' Settori
-        protocolXml.Authorizations = New List(Of Integer)
-        For Each role As ProtocolRole In protocol.Roles
-            protocolXml.Authorizations.Add(role.Role.Id)
-        Next
-
-        ' Ottengo i riferimenti di biblos del documento principale e allegati
-        Dim doc As BiblosDocumentInfo = GetDocument(protocol)
-        Dim attachments() As BiblosDocumentInfo = GetAttachments(protocol)
-
-        ' xmlelement Documents
-        Dim documentsXml As New DocumentsXml()
-
-        ' Creo xmlElement del documento principale 
-        documentsXml.MainDocument = New List(Of BiblosDocumentInfoXml)
-        If doc IsNot Nothing Then
-            SetBiblosDocumentInfoXml(doc, documentsXml.MainDocument)
-        End If
-
-        ' Creo xmlelement degli allegati se presenti
-        If attachments.Length > 0 Then
-            documentsXml.Attachments = New List(Of BiblosDocumentInfoXml)
-            SetBiblosDocumentInfoXml(attachments, documentsXml.Attachments)
-        End If
-
-        protocolXml.Document = documentsXml
-
-        ' Mittenti
-        GetProtocolXMLContact(GetSenders(protocol), protocolXml.Senders)
-        ' Destinatari
-        GetProtocolXMLContact(GetRecipients(protocol), protocolXml.Recipients)
-
-        Return SerializationHelper.SerializeToStringWithoutNamespace(protocolXml)
-    End Function
-
-    Private Sub SetBiblosDocumentInfoXml(ByVal doc() As BiblosDocumentInfo, ByRef biblosDocumentInfo As List(Of BiblosDocumentInfoXml))
-        For Each item As BiblosDocumentInfo In doc
-            SetBiblosDocumentInfoXml(item, biblosDocumentInfo)
-        Next
-    End Sub
-
-    ''' <summary>
-    ''' Crea una lista di biblosDocumentInfo per identificare la location del documento principale e/o allegati
-    ''' </summary>
-    Private Sub SetBiblosDocumentInfoXml(ByVal doc As BiblosDocumentInfo, ByRef biblosDocumentInfo As List(Of BiblosDocumentInfoXml))
-        Dim indexPosition As Integer = Services.Biblos.Models.BiblosDocumentInfo.GetInChainPosition(doc.DocumentParentId.Value, doc.DocumentId)
-        Dim biblosDocInfo As New BiblosDocumentInfoXml
-        biblosDocInfo.Archive = doc.ArchiveName
-        biblosDocInfo.Id = doc.BiblosChainId
-        biblosDocInfo.Enum = indexPosition
-        biblosDocInfo.ChainId = doc.ChainId.ToString()
-        biblosDocInfo.DocumentId = doc.DocumentId.ToString()
-
-        biblosDocumentInfo.Add(biblosDocInfo)
-    End Sub
-
-    Public Sub GetProtocolXMLContact(ByVal lstContactDTO As List(Of Data.ContactDTO), ByRef lstContactBag As List(Of ContactBag))
-        ' Contatti da rubrica
-        Dim contactBagRubrica As New ContactBag
-        contactBagRubrica.Contacts = New List(Of ContactXML)
-        contactBagRubrica.SourceType = ContactTypeEnum.AddressBook
-        ' Contatti da manuali
-        Dim contactBagManuale As New ContactBag
-        contactBagManuale.Contacts = New List(Of ContactXML)
-        contactBagManuale.SourceType = ContactTypeEnum.Manual
-
-        ' MITTENTI o DESTINATARI
-        For Each item As Data.ContactDTO In lstContactDTO
-            Dim contactXML As New ContactXML
-            Select Case item.Type
-                Case Data.ContactDTO.ContactType.Address
-                    contactXML.Id = item.Contact.Id
-                    contactXML.Type = item.Contact.ContactType.Id.ToString()
-                    contactXML.Cc = item.IsCopiaConoscenza
-                    contactBagRubrica.Contacts.Add(contactXML)
-                Case Else
-                    If item.Contact.Description.Contains("|") Then
-                        Dim array As String() = item.Contact.Description.Split("|"c)
-                        If array.Count > 1 Then
-                            contactXML.Surname = array(0)
-                            contactXML.Name = array(1)
-                        Else
-                            contactXML.Surname = array(0)
-                        End If
-                    Else
-                        contactXML.Description = item.Contact.Description
-                    End If
-                    contactXML.Type = item.Contact.ContactType.Id.ToString()
-                    contactXML.Cc = item.IsCopiaConoscenza
-                    contactXML.StandardMail = item.Contact.EmailAddress
-                    contactXML.CertifiedMail = item.Contact.CertifiedMail
-                    contactXML.FiscalCode = item.Contact.FiscalCode
-
-                    ' Address
-                    If item.Contact.Address IsNot Nothing Then
-                        contactXML.Address = New AddressXML()
-                        contactXML.Address.Cap = item.Contact.Address.ZipCode
-                        contactXML.Address.City = item.Contact.Address.City
-                        contactXML.Address.Name = item.Contact.Address.Address
-                        contactXML.Address.Prov = item.Contact.Address.CityCode
-                        If item.Contact.Address.PlaceName IsNot Nothing Then
-                            contactXML.Address.Type = item.Contact.Address.PlaceName.Description
-                        End If
-                    End If
-
-                    contactXML.Telephone = item.Contact.TelephoneNumber
-                    contactXML.Fax = item.Contact.FaxNumber
-                    contactXML.Notes = item.Contact.Note
-
-                    If item.Contact.BirthDate.HasValue Then
-                        contactXML.BirthDate = item.Contact.BirthDate.Value.ToString()
-                    Else
-                        contactXML.BirthDate = Nothing
-                    End If
-
-                    contactBagManuale.Contacts.Add(contactXML)
-            End Select
-        Next
-
-        lstContactBag = New List(Of ContactBag)
-        If contactBagRubrica.Contacts.Count > 0 Then
-            lstContactBag.Add(contactBagRubrica)
-        End If
-        If contactBagManuale.Contacts.Count > 0 Then
-            lstContactBag.Add(contactBagManuale)
-        End If
-    End Sub
-
+#Region " NEW FUNCTIONS "
     Public Function GetSenders(protocol As Protocol) As List(Of Data.ContactDTO)
         Return GetContacts(protocol, ProtocolContactCommunicationType.Sender)
     End Function
@@ -795,11 +286,6 @@ Public Class ProtocolFacade
         For Each protContact As ProtocolContact In l
             Dim vContactDto As New Data.ContactDTO()
             vContactDto.Contact = protContact.Contact
-
-            Dim contactName As ContactName = ContactNamesFacade.GetContactNamesByValidDate(protContact.Contact.Id, protocol.RegistrationDate.ToLocalTime().DateTime)
-            If contactName IsNot Nothing Then
-                vContactDto.Contact.Description = contactName.Name
-            End If
             vContactDto.IsCopiaConoscenza = protContact.Type = "CC"
             vContactDto.Type = Data.ContactDTO.ContactType.Address
             tor.Add(vContactDto)
@@ -819,10 +305,6 @@ Public Class ProtocolFacade
 
         Return tor
     End Function
-
-#End Region
-
-#Region " NEW FUNCTIONS "
 
     ''' <summary> Ottiene la lista con tutti i documenti del protocollo. </summary>
     Public Shared Function GetAllDocuments(ByVal protocol As Protocol) As List(Of DocumentInfo)
@@ -919,6 +401,40 @@ Public Class ProtocolFacade
             Next
         End If
         Return tor
+    End Function
+    Public Shared Function GetMetadata(prot As Protocol, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
+        Return GetChainDocuments(prot.Id, Entity.DocumentUnits.ChainType.MetadataChain, includeUniqueId)
+    End Function
+
+    Public Shared Function GetDematerialisation(prot As Protocol, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
+        Return GetChainDocuments(prot.Id, Entity.DocumentUnits.ChainType.DematerialisationChain, includeUniqueId)
+    End Function
+
+    Private Shared Function GetChainDocuments(protocolId As Guid, chainType As Entity.DocumentUnits.ChainType, Optional includeUniqueId As Boolean = False) As BiblosDocumentInfo()
+        Dim structs As BiblosDocumentInfo() = New BiblosDocumentInfo() {}
+
+        Dim result As ICollection(Of WebAPIDto(Of DocumentUnitChain)) = WebAPIImpersonatorFacade.ImpersonateFinder(New DocumentUnitChainFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.ResetDecoration()
+                        finder.IdDocumentUnit = protocolId
+                        finder.EnablePaging = False
+                        finder.ExpandProperties = False
+                        Return finder.DoSearch()
+                    End Function)
+        Dim documentUnitChain As WebAPIDto(Of DocumentUnitChain) = result.SingleOrDefault(Function(x) x.Entity.ChainType = chainType)
+
+        If documentUnitChain Is Nothing OrElse documentUnitChain.Entity Is Nothing Then
+            Return structs
+        End If
+
+        structs = BiblosDocumentInfo.GetDocuments(documentUnitChain.Entity.IdArchiveChain).ToArray()
+        If includeUniqueId Then
+            For Each item As BiblosDocumentInfo In structs
+                item = SetProtocolUniqueIdAttribute(item, protocolId, DSWEnvironment.Protocol)
+            Next
+        End If
+
+        Return structs
     End Function
 
     Public Function GenerateSignature(ByVal protocol As Protocol, ByVal mydate As DateTime, ByVal info As ProtocolSignatureInfo) As String
@@ -1053,7 +569,7 @@ Public Class ProtocolFacade
 
         Using stream As MemoryStream = New MemoryStream()
             merger.Merge(stream)
-            Return New MergeDocumentResult() With {.MergedDocument = New MemoryDocumentInfo(stream.ToArray(), "Merged.pdf"), .errors = errors}
+            Return New MergeDocumentResult() With {.MergedDocument = New MemoryDocumentInfo(stream.ToArray(), "Merged.pdf"), .Errors = errors}
         End Using
     End Function
 #End Region
@@ -1551,7 +1067,7 @@ Public Class ProtocolFacade
 
     Public Function GetContact(dto As API.IContactDTO, parent As Contact) As Contact
         If Not String.IsNullOrWhiteSpace(dto.Code) Then
-            Dim foundBySearchCode As IList(Of Contact) = FacadeFactory.Instance.ContactFacade.GetContactBySearchCode(dto.Code, CShort(1))
+            Dim foundBySearchCode As IList(Of Contact) = FacadeFactory.Instance.ContactFacade.GetContactBySearchCode(dto.Code, True)
             If Not foundBySearchCode.IsNullOrEmpty() Then
                 Return foundBySearchCode.OrderByDescending(Function(f) f.Id).First()
             End If
@@ -1565,10 +1081,13 @@ Public Class ProtocolFacade
         End If
 
         If Not String.IsNullOrWhiteSpace(dto.Code) AndAlso DocSuiteContext.Current.ProtocolEnv.FastProtocolSenderIPAContactEnabled Then
-            Dim foundByIpa As IList(Of IPA) = IPARetriever.GetIpaEntities(DocSuiteContext.Current.ProtocolEnv.LdapIndicePa, dto.Code)
-            If foundByIpa.Count() = 1 Then
-                Return ContactFacade.CreateFromIpa(foundByIpa.Single())
-            End If
+            ' La logica è stata commentata alla luce della nuova integrazione IPA tramite WebService in quanto non è più possibile fare una ricerca per descrizione
+            ' unica tra amministrazioni, aoo e ou.
+            ' Il codice viene commentato per eventuali approfondimenti in fase di PR.
+            'Dim foundByIpa As IList(Of IPA) = IPARetriever.GetIpaEntities(DocSuiteContext.Current.ProtocolEnv.LdapIndicePa, dto.Code)
+            'If foundByIpa.Count() = 1 Then
+            '    Return ContactFacade.CreateFromIpa(foundByIpa.Single())
+            'End If
         End If
 
         'Ritorno un nuovo contatto
@@ -1603,7 +1122,7 @@ Public Class ProtocolFacade
         If parent IsNot Nothing Then
             contact.Parent = parent
         End If
-        contact.IsActive = 1
+        contact.IsActive = True
 
         Return contact
     End Function
@@ -1804,12 +1323,6 @@ Public Class ProtocolFacade
         OnAfterAddAttachments(args)
     End Sub
 
-    Public Overloads Sub AddAnnexes(ByVal protocol As Protocol, ByVal stream As Byte(), ByVal documentName As String, ByVal username As String)
-        Dim annexes As IList(Of DocumentInfo) = New List(Of DocumentInfo)
-        annexes.Add(New MemoryDocumentInfo(stream, documentName))
-        AddAnnexes(protocol, annexes)
-    End Sub
-
     Public Overloads Sub AddAnnexes(ByRef protocol As Protocol, ByRef annexes As IList(Of DocumentInfo))
         AddAnnexes(protocol, annexes, New ProtocolSignatureInfo())
     End Sub
@@ -1999,7 +1512,7 @@ Public Class ProtocolFacade
                                          ByVal linkType As ProtocolLinkType, lambda As Action(Of Guid, Guid))
         Dim dao As New NHibernateProtocolLinkDao(_dbName)
         Dim link As ProtocolLink = New ProtocolLink With {
-            .linkType = linkType,
+            .LinkType = linkType,
             .RegistrationUser = DocSuiteContext.Current.User.FullUserName,
             .RegistrationDate = DateTimeOffset.UtcNow,
             .Protocol = protocolFather,
@@ -2062,7 +1575,7 @@ Public Class ProtocolFacade
     Public Sub UpdateProtocolPackage(ByRef protocol As Protocol, ByVal package As String,
                 ByVal lot As String, ByVal incremental As String, ByVal origin As Char)
 
-        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction()
+        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction(IsolationLevel.ReadCommitted)
         Try
             'aggiornamento campi AdvancedProtocol
             Dim iPackage As Integer? = If(String.IsNullOrEmpty(package), Nothing, Integer.Parse(package))
@@ -2131,7 +1644,7 @@ Public Class ProtocolFacade
         'Mittenti
         If pDuplicateSender Then
             For Each pc As ProtocolContact In vProtocol.Contacts
-                If pc.ComunicationType.Eq(ProtocolContactCommunicationType.Sender) AndAlso pc.Contact.IsActive = 1 Then
+                If pc.ComunicationType.Eq(ProtocolContactCommunicationType.Sender) AndAlso pc.Contact.IsActive Then
                     vDuplicate.Contacts.Add(pc)
                 End If
             Next
@@ -2142,7 +1655,7 @@ Public Class ProtocolFacade
                 End If
             Next
 
-            If Not hasDisabledElements AndAlso vProtocol.Contacts.Where(Function(pc) pc.Contact.IsActive = 0).Any() Then
+            If Not hasDisabledElements AndAlso vProtocol.Contacts.Where(Function(pc) Not pc.Contact.IsActive).Any() Then
                 hasDisabledElements = True
             End If
 
@@ -2150,7 +1663,7 @@ Public Class ProtocolFacade
         'Destinatari
         If pDuplicateReceipt Then
             For Each pc As ProtocolContact In vProtocol.Contacts
-                If pc.ComunicationType.Eq(ProtocolContactCommunicationType.Recipient) AndAlso pc.Contact.IsActive = 1 Then
+                If pc.ComunicationType.Eq(ProtocolContactCommunicationType.Recipient) AndAlso pc.Contact.IsActive Then
                     vDuplicate.Contacts.Add(pc)
                 End If
             Next
@@ -2168,10 +1681,10 @@ Public Class ProtocolFacade
         End If
 
         'Classificatore
-        If pDuplicateClassification AndAlso vProtocol.Category.IsActive = 1 Then
+        If pDuplicateClassification AndAlso vProtocol.Category.IsActive Then
             vDuplicate.Category = vProtocol.Category
         End If
-        If Not hasDisabledElements AndAlso pDuplicateClassification AndAlso vProtocol.Category.IsActive = 0 Then
+        If Not hasDisabledElements AndAlso pDuplicateClassification AndAlso Not vProtocol.Category.IsActive Then
             hasDisabledElements = True
         End If
 
@@ -2192,14 +1705,14 @@ Public Class ProtocolFacade
             If DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled Then
                 vDuplicate.Roles = vProtocol.Roles _
                     .Where(Function(r) Not String.IsNullOrWhiteSpace(r.DistributionType) _
-                               AndAlso r.DistributionType.Equals(ProtocolDistributionType.Explicit) AndAlso r.Role IsNot Nothing AndAlso r.Role.IsActive = 1) _
+                               AndAlso r.DistributionType.Equals(ProtocolDistributionType.Explicit) AndAlso r.Role IsNot Nothing AndAlso r.Role.IsActive) _
                     .ToList()
             Else
                 vDuplicate.Roles = vProtocol.Roles _
-                    .Where(Function(pr) pr.Role IsNot Nothing AndAlso pr.Role.IsActive = 1).ToList()
+                    .Where(Function(pr) pr.Role IsNot Nothing AndAlso pr.Role.IsActive).ToList()
             End If
 
-            If Not hasDisabledElements AndAlso vProtocol.Roles.Where(Function(r) r.Role IsNot Nothing AndAlso r.Role.IsActive = 0).Any() Then
+            If Not hasDisabledElements AndAlso vProtocol.Roles.Where(Function(r) r.Role IsNot Nothing AndAlso Not r.Role.IsActive).Any() Then
                 hasDisabledElements = True
             End If
         End If
@@ -2220,10 +1733,6 @@ Public Class ProtocolFacade
         Return pYear & "/" & pNumber.ToString().PadLeft(7, "0"c)
     End Function
 
-    Public Function CreateProtocol() As Protocol
-        Return CreateProtocol(DocSuiteContext.Current.CurrentTenant.TenantId)
-    End Function
-
     Public Function CreateProtocol(currentTenantAOOId As Guid) As Protocol
         Dim args As New ProtocolEventArgs()
         OnBeforeProtocolCreate(args)
@@ -2240,9 +1749,9 @@ Public Class ProtocolFacade
             Try
                 vParameter = CType(sqlQuery.UniqueResult, Parameter)
                 session.Refresh(vParameter) ' Forzo un refresh del dato da SQL
+                vParameter.LastUsedNumber += 1
                 vProtocol.Year = vParameter.LastUsedYear
                 vProtocol.Number = vParameter.LastUsedNumber
-                vParameter.LastUsedNumber += 1
                 session.Update(vParameter)
                 tx.Commit()
             Catch ex As Exception
@@ -2318,7 +1827,7 @@ Public Class ProtocolFacade
         For Each pr As ProtocolRole In protocol.Roles
             For Each sg As SecurityGroups In securityGroups
                 For Each rg As RoleGroup In pr.Role.RoleGroups
-                    If (DocSuiteContext.Current.ProtocolEnv.DisabledRolesRights OrElse pr.Role.IsActive = 1S) _
+                    If (DocSuiteContext.Current.ProtocolEnv.DisabledRolesRights OrElse pr.Role.IsActive) _
                         AndAlso rg.ProtocolRights.ToString().StartsWith(rights) AndAlso rg.SecurityGroup.Id.Equals(sg.Id) Then
                         Return True
                     End If
@@ -2344,7 +1853,7 @@ Public Class ProtocolFacade
         For Each pr As ProtocolRole In protocol.Roles
             For Each group As String In userGroups
                 For Each rg As RoleGroup In pr.Role.RoleGroups
-                    If Not DocSuiteContext.Current.ProtocolEnv.DisabledRolesRights AndAlso pr.Role.IsActive <> 1S OrElse Not rg.Name.Eq(group) Then
+                    If Not DocSuiteContext.Current.ProtocolEnv.DisabledRolesRights AndAlso Not pr.Role.IsActive OrElse Not rg.Name.Eq(group) Then
                         Continue For
                     End If
 
@@ -2368,7 +1877,7 @@ Public Class ProtocolFacade
     Public Sub UpdateProtocolsForContainerOrCategory(ByVal idnewcontainer As Integer, ByVal idnewcategory As String, ByVal listprot As IList(Of Protocol), ByVal Action As String)
         Dim container As Container
         Dim category As Category
-        Dim transazione As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction()
+        Dim transazione As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction(IsolationLevel.ReadCommitted)
         Try
 
             Select Case Action
@@ -2405,7 +1914,7 @@ Public Class ProtocolFacade
             Exit Sub
         End If
 
-        Dim transazione As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction()
+        Dim transazione As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction(IsolationLevel.ReadCommitted)
         Try
             For Each protocol As Protocol In protocols
                 protocol.Roles.Clear()
@@ -2472,17 +1981,6 @@ Public Class ProtocolFacade
     Function GetLastProtocolInDuplicateMetadatas(ByVal documentCode As String, ByVal [date] As Date?, ByVal subject As String) As Protocol
         Return _dao.GetLastProtocolInDuplicateMetadatas(documentCode, [date], subject)
     End Function
-
-    Public Sub UpdateProtocolObject(ByVal Year As Short, ByVal Number As Integer, ByVal oldObject As String, ByVal newObject As String)
-        Dim prot As Protocol = GetById(Year, Number)
-
-        UpdateProtocolObject(prot, oldObject, newObject)
-    End Sub
-
-    Public Sub UpdateProtocolObject(ByVal Year As Short, ByVal Number As Integer, ByVal oldObject As String, ByVal newObject As String, ByVal oldChangeReason As String, ByVal newChangeReason As String)
-        Dim prot As Protocol = GetById(Year, Number)
-        UpdateProtocolObject(prot, oldObject, newObject, oldChangeReason, newChangeReason)
-    End Sub
 
     Public Sub UpdateProtocolObject(ByRef protocol As Protocol, ByVal oldObject As String, ByVal newObject As String, Optional ByVal oldChangeReason As String = "", Optional ByVal newChangeReason As String = "")
         protocol.ProtocolObject = newObject
@@ -2657,9 +2155,17 @@ Public Class ProtocolFacade
     End Sub
 
     Public Sub RemoveRoleAuthorizations(protocol As Protocol, roles As ICollection(Of Integer))
-        If Not roles Is Nothing Then
+        If roles IsNot Nothing AndAlso roles.Any() Then
             For Each id As Integer In roles
                 RemoveRoleAuthorization(protocol, id)
+            Next
+        End If
+    End Sub
+
+    Public Sub RemoveRoleAuthorizations(protocol As Protocol, roles As ICollection(Of Role))
+        If roles IsNot Nothing AndAlso roles.Any() Then
+            For Each role As Role In roles
+                RemoveRoleAuthorization(protocol, role)
             Next
         End If
     End Sub
@@ -2818,9 +2324,10 @@ Public Class ProtocolFacade
 
     ''' <summary> Ritorna un dizionario di ProtocolRights per i ProtocolHeaders specificati. </summary>
     ''' <param name="headers">Lista di ProtocolHeader</param>
-    Public Function GetProtocolRightsDictionary(headers As IList(Of ProtocolHeader)) As IDictionary(Of Guid, ProtocolRights)
+    Public Function GetProtocolRightsDictionary(headers As IList(Of ProtocolHeader), includeParer As Boolean) As IDictionary(Of Guid, ProtocolRights)
         Dim keys As IList(Of Guid) = headers.Select(Function(s) s.UniqueId).ToList()
-        Dim protocols As ICollection(Of Protocol) = GetProtocols(keys, NHibernateProtocolDao.FetchingStrategy.BasicDataAndPermissions)
+        Dim strategy As NHibernateProtocolDao.FetchingStrategy = If(includeParer, NHibernateProtocolDao.FetchingStrategy.BasicDataAndPermissionAndParer, NHibernateProtocolDao.FetchingStrategy.BasicDataAndPermissions)
+        Dim protocols As ICollection(Of Protocol) = GetProtocols(keys, strategy)
         Dim retval As IDictionary(Of Guid, ProtocolRights) = New Dictionary(Of Guid, ProtocolRights)
         Dim pr As ProtocolRights
         For Each p As Protocol In protocols
@@ -2855,10 +2362,6 @@ Public Class ProtocolFacade
 
         If protocol.ProtocolParentLinks IsNot Nothing Then
             protocol.ProtocolParentLinks.Clear()
-        End If
-
-        If protocol.Recipients IsNot Nothing Then
-            protocol.Recipients.Clear()
         End If
 
         If protocol.Contacts IsNot Nothing Then
@@ -3231,6 +2734,20 @@ Public Class ProtocolFacade
             folderAtt.AddChildren(annexes)
         End If
 
+        ' Metadata
+        Dim metadatas() As BiblosDocumentInfo = GetMetadata(prot, includeUniqueId:=True)
+        If metadatas.Count > 0 Then
+            Dim folderAtt As New FolderInfo() With {.Name = "Metadata", .Parent = mainFolder}
+            folderAtt.AddChildren(metadatas)
+        End If
+
+        ' Dematerializzazione
+        Dim dematerialisations() As BiblosDocumentInfo = GetDematerialisation(prot, includeUniqueId:=True)
+        If dematerialisations.Count > 0 Then
+            Dim folderAtt As New FolderInfo() With {.Name = "Dematerializzazione", .Parent = mainFolder}
+            folderAtt.AddChildren(dematerialisations)
+        End If
+
         Return mainFolder
     End Function
 
@@ -3244,12 +2761,12 @@ Public Class ProtocolFacade
     End Function
 
     Public Function SendInsertProtocolCommand(protocol As Protocol, workflowActions As ICollection(Of IWorkflowAction)) As Guid?
-        Return SendInsertProtocolCommand(protocol, FacadeFactory.Instance.CollaborationFacade.GetByProtocol(protocol), Nothing, Nothing, Nothing, workflowActions)
+        Return SendInsertProtocolCommand(protocol, FacadeFactory.Instance.CollaborationFacade.GetByProtocol(protocol), Nothing, Nothing, Nothing, Nothing, workflowActions)
     End Function
 
-    Public Function SendInsertProtocolCommand(protocol As Protocol, collaboration As Collaboration, toIdfascicle As Guid?, collaborationsToFinalize As ICollection(Of Collaboration), pecToFinalize As PECMail, workflowActions As ICollection(Of IWorkflowAction)) As Guid?
+    Public Function SendInsertProtocolCommand(protocol As Protocol, collaboration As Collaboration, toIdfascicle As Guid?, toIdfascicleFolder As Guid?, collaborationsToFinalize As ICollection(Of Collaboration), pecToFinalize As PECMail, workflowActions As ICollection(Of IWorkflowAction), Optional workflowName As String = Nothing, Optional idWorkflowActivity As Guid? = Nothing) As Guid?
         Try
-            Dim commandInsert As ICommandCreateProtocol = PrepareProtocolCommand(Of ICommandCreateProtocol)(protocol, collaboration, toIdfascicle, collaborationsToFinalize, pecToFinalize, workflowActions,
+            Dim commandInsert As ICommandCreateProtocol = PrepareProtocolCommand(Of ICommandCreateProtocol)(protocol, collaboration, toIdfascicle, toIdfascicleFolder, collaborationsToFinalize, pecToFinalize, workflowActions, workflowName, idWorkflowActivity,
                 Function(tenantName, tenantId, collaborationUniqueId, collaborationId, collaborationTemplateName, identity, apiPRotocol, apiCategoryFascicle, documentUnit)
                     Dim command As CommandCreateProtocol = New CommandCreateProtocol(CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, collaborationUniqueId, collaborationId, collaborationTemplateName, identity, apiPRotocol, apiCategoryFascicle, documentUnit)
                     If apiPRotocol.WorkflowActions IsNot Nothing Then
@@ -3272,15 +2789,24 @@ Public Class ProtocolFacade
     ''' </summary>
     ''' <param name="protocol"></param>
     ''' <returns>Command ID</returns>
-    Public Function SendUpdateProtocolCommand(protocol As Protocol) As Guid?
-        Return SendUpdateProtocolCommand(protocol, FacadeFactory.Instance.CollaborationFacade.GetByProtocol(protocol), Nothing, Nothing, Nothing)
+    Public Function SendUpdateProtocolCommand(protocol As Protocol, Optional updatedPropertyType As UpdatedPropertyType? = Nothing) As Guid?
+        Return SendUpdateProtocolCommand(protocol, FacadeFactory.Instance.CollaborationFacade.GetByProtocol(protocol), Nothing, Nothing, Nothing, Nothing, updatedPropertyType)
     End Function
 
-    Public Function SendUpdateProtocolCommand(protocol As Protocol, collaboration As Collaboration, toIdfascicle As Guid?, collaborationsToFinalize As ICollection(Of Collaboration), pecToFinalize As PECMail) As Guid?
+    Public Function SendUpdateProtocolCommand(
+            protocol As Protocol,
+            collaboration As Collaboration,
+            toIdfascicle As Guid?,
+            toIdfascicleFolder As Guid?,
+            collaborationsToFinalize As ICollection(Of Collaboration),
+            pecToFinalize As PECMail,
+            Optional updatedPropertyType As UpdatedPropertyType? = Nothing) As Guid?
         Try
-            Dim commandUpdate As ICommandUpdateProtocol = PrepareProtocolCommand(Of ICommandUpdateProtocol)(protocol, collaboration, toIdfascicle, collaborationsToFinalize, pecToFinalize, Nothing,
+            Dim commandUpdate As ICommandUpdateProtocol = PrepareProtocolCommand(Of ICommandUpdateProtocol)(protocol, collaboration, toIdfascicle, toIdfascicleFolder, collaborationsToFinalize, pecToFinalize, Nothing, Nothing, Nothing,
                 Function(tenantName, tenantId, collaborationUniqueId, collaborationId, collaborationTemplateName, identity, apiProtocol, apiCategoryFascicle, documentUnit)
-                    Dim command As CommandUpdateProtocol = New CommandUpdateProtocol(CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, collaborationUniqueId, collaborationId, collaborationTemplateName, identity, apiProtocol, apiCategoryFascicle, documentUnit)
+                    Dim command As CommandUpdateProtocol = If(updatedPropertyType Is Nothing,
+                        New CommandUpdateProtocol(CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, collaborationUniqueId, collaborationId, collaborationTemplateName, identity, apiProtocol, apiCategoryFascicle, documentUnit),
+                        New CommandUpdateProtocol(CurrentTenant.TenantName, CurrentTenant.UniqueId, CurrentTenant.TenantAOO.UniqueId, collaborationUniqueId, collaborationId, collaborationTemplateName, identity, apiProtocol, apiCategoryFascicle, documentUnit, updatedPropertyType.Value))
                     If apiProtocol.WorkflowActions IsNot Nothing Then
                         For Each workflowAction As IWorkflowAction In apiProtocol.WorkflowActions
                             command.WorkflowActions.Add(workflowAction)
@@ -3296,12 +2822,9 @@ Public Class ProtocolFacade
         Return Nothing
     End Function
 
-    Public Function PrepareProtocolCommand(Of T As {ICommand})(protocol As Protocol, collaboration As Collaboration, toIdfascicle As Guid?, collaborationsToFinalize As ICollection(Of Collaboration), pecToFinalize As PECMail, workflowActions As ICollection(Of IWorkflowAction),
+    Public Function PrepareProtocolCommand(Of T As {ICommand})(protocol As Protocol, collaboration As Collaboration, toIdfascicle As Guid?, toIdfascicleFolder As Guid?, collaborationsToFinalize As ICollection(Of Collaboration), pecToFinalize As PECMail, workflowActions As ICollection(Of IWorkflowAction), workflowName As String, idWorkflowActivity As Guid?,
                                                                commandInitializeFunc As Func(Of String, Guid, Guid?, Integer?, String, IdentityContext, APIProtocol.Protocol, APICommons.CategoryFascicle, Entity.DocumentUnits.DocumentUnit, T)) As T
         Dim apiProtocol As APIProtocol.Protocol = MapperProtocolEntity.MappingDTO(protocol)
-        If toIdfascicle.HasValue Then
-            apiProtocol.WorkflowActions.Add(New WorkflowActionFascicleModel(New FascicleModel() With {.UniqueId = toIdfascicle.Value}, New DocumentUnitModel() With {.UniqueId = apiProtocol.UniqueId}, Nothing))
-        End If
         Dim identity As IdentityContext = New IdentityContext(DocSuiteContext.Current.User.FullUserName)
         Dim tenantName As String = DocSuiteContext.Current.CurrentTenant.TenantName
         Dim tenantId As Guid = DocSuiteContext.Current.CurrentTenant.TenantId
@@ -3314,21 +2837,46 @@ Public Class ProtocolFacade
             apiCategoryFascicle = MapperCategoryFascicle.MappingDTO(dswCategoryFascicle)
         End If
 
+        apiProtocol.WorkflowName = workflowName
+        apiProtocol.IdWorkflowActivity = idWorkflowActivity
         If collaboration IsNot Nothing Then
             collaborationId = collaboration.Id
             colalborationTemplateName = collaboration.TemplateName
             collaborationUniqueId = collaboration.UniqueId
         End If
 
+        If toIdfascicle.HasValue Then
+            Dim fascicleFolderModel As FascicleFolderModel = Nothing
+            If toIdfascicleFolder.HasValue Then
+                fascicleFolderModel = New FascicleFolderModel() With {.UniqueId = toIdfascicleFolder.Value}
+            End If
+            apiProtocol.WorkflowActions.Add(New WorkflowActionFascicleModel(
+                New FascicleModel() With {.UniqueId = toIdfascicle.Value},
+                New DocumentUnitModel() With {
+                    .UniqueId = apiProtocol.UniqueId,
+                    .Year = apiProtocol.Year,
+                    .Number = apiProtocol.Number.ToString(),
+                    .Environment = Model.Entities.Commons.DSWEnvironmentType.Protocol},
+                fascicleFolderModel))
+        End If
+
         If Not collaborationsToFinalize.IsNullOrEmpty() Then
             For Each toFinalize As Collaboration In collaborationsToFinalize
-                apiProtocol.WorkflowActions.Add(New WorkflowActionDocumentUnitLinkModel(New DocumentUnitModel() With {.UniqueId = apiProtocol.UniqueId, .Year = apiProtocol.Year, .Number = apiProtocol.Number.ToString()},
-                                                                                    New DocumentUnitModel() With {.UniqueId = toFinalize.UniqueId, .EntityId = toFinalize.Id, .Environment = Model.Entities.Commons.DSWEnvironmentType.Collaboration}))
+                apiProtocol.WorkflowActions.Add(New WorkflowActionDocumentUnitLinkModel(
+                New DocumentUnitModel() With {
+                    .UniqueId = apiProtocol.UniqueId,
+                    .Year = apiProtocol.Year,
+                    .Number = apiProtocol.Number.ToString(),
+                    .Environment = Model.Entities.Commons.DSWEnvironmentType.Protocol},
+                New DocumentUnitModel() With {
+                    .UniqueId = toFinalize.UniqueId,
+                    .EntityId = toFinalize.Id,
+                    .Environment = Model.Entities.Commons.DSWEnvironmentType.Collaboration}))
             Next
         End If
 
         If pecToFinalize IsNot Nothing Then
-            apiProtocol.WorkflowActions.Add(New WorkflowActionDocumentUnitLinkModel(New DocumentUnitModel() With {.UniqueId = apiProtocol.UniqueId, .Year = apiProtocol.Year, .Number = apiProtocol.Number.ToString()},
+            apiProtocol.WorkflowActions.Add(New WorkflowActionDocumentUnitLinkModel(New DocumentUnitModel() With {.UniqueId = apiProtocol.UniqueId, .Year = apiProtocol.Year, .Number = apiProtocol.Number.ToString(), .Environment = Model.Entities.Commons.DSWEnvironmentType.Protocol},
                                                                                     New DocumentUnitModel() With {.UniqueId = pecToFinalize.UniqueId, .EntityId = pecToFinalize.Id, .Environment = Model.Entities.Commons.DSWEnvironmentType.PECMail}))
         End If
 
@@ -3341,28 +2889,17 @@ Public Class ProtocolFacade
         Return commandInitializeFunc(tenantName, tenantId, collaborationUniqueId, collaborationId, colalborationTemplateName, identity, apiProtocol, apiCategoryFascicle, Nothing)
     End Function
 
-    Public Function GetDistributionProtocolRole(protocol As Protocol) As ProtocolRole
+    Public Function GetDistributionProtocolRole(protocol As Protocol, role As Role) As ProtocolRole
         For Each protocolRole As ProtocolRole In protocol.Roles
-            If Factory.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.Protocol, protocolRole.Role) Then
-                Return protocolRole
+            If protocolRole.Role.Id = role.Id Then
+                If Factory.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.Protocol, protocolRole.Role) Then
+                    Return protocolRole
+                End If
             End If
-
         Next
         Return Nothing
     End Function
 
-    Public Function GetDistributionGroupName(protocol As Protocol) As String
-        Dim groupName As String = String.Empty
-        Dim rg As RoleGroup
-        For Each protocolRole As ProtocolRole In protocol.Roles
-            rg = protocolRole.Role.RoleGroups.Where(Function(f) Not f.ProtocolRights.IsRoleManager).FirstOrDefault
-            If Factory.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.Protocol, protocolRole.Role) Then
-                groupName = rg.SecurityGroup.GroupName
-                Exit For
-            End If
-        Next
-        Return groupName
-    End Function
 
     Public Function GetProtocolMainDocumentPdfConverted(protocol As Protocol) As ProtocolDocumentDTO
         Dim doc As BiblosDocumentInfo = GetDocument(protocol)
@@ -3383,21 +2920,19 @@ Public Class ProtocolFacade
         Return _dao.GetLastProtocolByYear(year)
     End Function
 
-    Public Sub SendUserAuthorizationEmail(protocol As Protocol, user As AccountModel)
-        Dim contacts As List(Of MessageContactEmail) = New List(Of MessageContactEmail)
-        contacts.Add(FacadeFactory.Instance.MessageContactEmailFacade.CreateEmailContact(CommonUtil.GetInstance().UserDescription, DocSuiteContext.Current.User.FullUserName, FacadeFactory.Instance.UserLogFacade.EmailOfUser(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain, True), MessageContact.ContactPositionEnum.Sender))
-        contacts.Add(FacadeFactory.Instance.MessageContactEmailFacade.CreateEmailContact(user.GetFullUserName(), user.GetFullUserName(), Factory.UserLogFacade.EmailOfUser(user.Account, user.Domain, True), MessageContact.ContactPositionEnum.Recipient))
-        If contacts.Any(Function(f) String.IsNullOrEmpty(f.Email)) Then
-            FileLogger.Warn(LoggerName, String.Concat("ProtocolFacade.SendEmail - Protocollo ", protocol.FullNumber, " per ", user.GetFullUserName(), ": La email non può essere inviata in quanto il mittente/destinatario non ha un indirizzo email valido"))
-            Return
+    Public Sub UpdateRoleStatus(protocol As Protocol, roles As IList(Of Integer), status As ProtocolRoleStatus)
+        If roles.IsNullOrEmpty() Then
+            Exit Sub
         End If
 
-        Dim mailSubject As String = String.Concat("Autorizzazione al protocollo aziendale n. ", protocol.FullNumber)
-        Dim mailBody As String = String.Concat("Azienda unità sanitaria locale di Reggio Emilia<br/>Archivio DocSuite: ", protocol.Container.Name, "<br/>Autorizzazione di ", DocSuiteContext.Current.User.FullUserName, " alla lettura del seguente documento ", protocol.FullNumber, "<br/><br/>Per accedere utilizzare il seguente indizzo: ", DocSuiteContext.Current.ProtocolEnv.ExternalViewerMyDocuments)
-        Dim email As MessageEmail = FacadeFactory.Instance.MessageEmailFacade.CreateEmailMessage(contacts, mailSubject, mailBody, False)
+        Dim proles As IList(Of ProtocolRole) = protocol.Roles.Where(Function(x) roles.Any(Function(xx) xx.Equals(x.Role.Id))).ToList()
+        If proles.Count = 0 Then
+            Exit Sub
+        End If
 
-        Dim idMessage As Integer = FacadeFactory.Instance.MessageEmailFacade.SendEmailMessage(email)
-        FileLogger.Info(LoggerName, String.Concat("ProtocolFacade.SendEmail - Protocollo ", protocol.FullNumber, " per ", user.GetFullUserName(), ": Mail inserita in coda di invio [id ", idMessage, " ]"))
+        For Each prole As ProtocolRole In proles
+            prole.Status = status
+        Next
     End Sub
 
 End Class

@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class ReslRicerca
-    
+
     '''<summary>
     '''rsb control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class ReslRicerca
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rsb As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''searchPanel control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class ReslRicerca
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents searchPanel As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''uscResolutionFinder control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class ReslRicerca
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscResolutionFinder As Global.VecompSoftware.DocSuiteWeb.Gui.uscResolutionFinder
-    
+
     '''<summary>
     '''btnSearch control.
     '''</summary>

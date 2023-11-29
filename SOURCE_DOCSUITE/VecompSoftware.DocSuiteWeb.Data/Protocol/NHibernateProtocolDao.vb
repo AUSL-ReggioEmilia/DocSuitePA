@@ -22,6 +22,7 @@ Public Class NHibernateProtocolDao
     Public Enum FetchingStrategy
         Common
         BasicDataAndPermissions
+        BasicDataAndPermissionAndParer
         BasicDataAndLocation
     End Enum
 
@@ -62,12 +63,8 @@ Public Class NHibernateProtocolDao
 
                     .SetFetchMode("PecMails", FetchMode.Lazy)
                     .SetFetchMode("DocumentType", FetchMode.Lazy)
-                    If DocSuiteContext.Current.ProtocolEnv.ParerEnabled Then
-                        .SetFetchMode("ProtocolParer", FetchMode.Lazy)
-                    End If
 
                     .SetFetchMode("Container", FetchMode.Lazy)
-                    .SetFetchMode("Container.ContainerDocTypes", FetchMode.Lazy)
                     .SetFetchMode("Container.ContainerGroups", FetchMode.Lazy)
 
                     .SetFetchMode("Location", FetchMode.Lazy)
@@ -75,19 +72,29 @@ Public Class NHibernateProtocolDao
                     .SetFetchMode("Roles.Role", FetchMode.Lazy)
                     .SetFetchMode("Roles.Role.RoleGroups", FetchMode.Lazy)
                 End With
+            Case FetchingStrategy.BasicDataAndPermissionAndParer
+                With crit
+                    .SetFetchMode("Category", FetchMode.Lazy)
 
+                    .SetFetchMode("PecMails", FetchMode.Lazy)
+                    .SetFetchMode("DocumentType", FetchMode.Lazy)
+
+                    .SetFetchMode("Container", FetchMode.Lazy)
+                    .SetFetchMode("Container.ContainerGroups", FetchMode.Lazy)
+
+                    .SetFetchMode("Location", FetchMode.Lazy)
+                    .SetFetchMode("Roles", FetchMode.Eager)
+                    .SetFetchMode("Roles.Role", FetchMode.Lazy)
+                    .SetFetchMode("Roles.Role.RoleGroups", FetchMode.Lazy)
+                End With
             Case FetchingStrategy.BasicDataAndLocation
                 With crit
                     .SetFetchMode("Category", FetchMode.Lazy)
 
                     .SetFetchMode("PecMails", FetchMode.Lazy)
                     .SetFetchMode("DocumentType", FetchMode.Lazy)
-                    If DocSuiteContext.Current.ProtocolEnv.ParerEnabled Then
-                        .SetFetchMode("ProtocolParer", FetchMode.Lazy)
-                    End If
 
                     .SetFetchMode("Container", FetchMode.Lazy)
-                    .SetFetchMode("Container.ContainerDocTypes", FetchMode.Lazy)
                     .SetFetchMode("Container.ContainerGroups", FetchMode.Lazy)
 
                     .SetFetchMode("Location", FetchMode.Eager)
@@ -122,20 +129,28 @@ Public Class NHibernateProtocolDao
     Private Function GetProtocols(ByRef crit As ICriteria, ByVal keys As IList(Of YearNumberCompositeKey)) As IList(Of Protocol)
         If keys IsNot Nothing AndAlso keys.Count > 0 Then
             Dim aggregated As IDictionary(Of Short, IList(Of Integer)) = AggregateProtocolKeys(keys)
-            With crit
-                Dim disj As New Disjunction()
-                For Each item As KeyValuePair(Of Short, IList(Of Integer)) In aggregated
-                    Dim conj As New Conjunction
-                    conj.Add(Restrictions.Eq("P.Year", item.Key))
-                    Dim numbers As New List(Of Integer)(item.Value)
-                    conj.Add(Restrictions.In("P.Number", numbers))
-                    disj.Add(conj)
-                Next
-                .Add(disj)
-                .AddOrder(Order.Asc("P.Year"))
-                .AddOrder(Order.Asc("P.Number"))
-                Return .List(Of Protocol)()
-            End With
+            Dim result As IList(Of Protocol)
+            Using transaction As ITransaction = NHibernateSession.BeginTransaction(IsolationLevel.ReadUncommitted)
+                Try
+                    Dim disj As New Disjunction()
+                    For Each item As KeyValuePair(Of Short, IList(Of Integer)) In aggregated
+                        Dim conj As New Conjunction
+                        conj.Add(Restrictions.Eq("P.Year", item.Key))
+                        Dim numbers As New List(Of Integer)(item.Value)
+                        conj.Add(Restrictions.In("P.Number", numbers))
+                        disj.Add(conj)
+                    Next
+                    crit.Add(disj)
+                    crit.AddOrder(Order.Asc("P.Year"))
+                    crit.AddOrder(Order.Asc("P.Number"))
+                    result = crit.List(Of Protocol)()
+                    transaction.Commit()
+                Catch ex As Exception
+                    transaction.Rollback()
+                    Throw
+                End Try
+            End Using
+            Return result
         End If
         Return Nothing
     End Function
@@ -261,7 +276,7 @@ Public Class NHibernateProtocolDao
             Dim useParameterData As Boolean = Not suspendYear.HasValue OrElse (vParameter.LastUsedYear = suspendYear.Value)
             If useParameterData Then
                 currentProtocolYear = vParameter.LastUsedYear
-                firstAvailableProtocolNumber = vParameter.LastUsedNumber
+                firstAvailableProtocolNumber = vParameter.LastUsedNumber + 1
                 vParameter.LastUsedNumber += suspendNumber
                 lastUsedNumber = vParameter.LastUsedNumber
             Else
@@ -282,7 +297,7 @@ Public Class NHibernateProtocolDao
             Dim currentSuspendLocation As Location = locationDao.GetById(0, False)
 
             Dim currentProtocol As Protocol
-            For currentProtocolNumber As Integer = firstAvailableProtocolNumber To lastUsedNumber - 1
+            For currentProtocolNumber As Integer = firstAvailableProtocolNumber To lastUsedNumber
                 currentProtocol = New Protocol
 
                 currentProtocol.Year = currentProtocolYear

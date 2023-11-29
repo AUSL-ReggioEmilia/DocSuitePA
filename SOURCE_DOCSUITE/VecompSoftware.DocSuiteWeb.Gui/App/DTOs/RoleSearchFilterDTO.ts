@@ -3,11 +3,14 @@
     UniqueId? : string,
     ParentId?: number,
     ServiceCode: string,
-    TenantId: string,
+    IdTenantAOO: string,
     Environment?: number,
     LoadOnlyRoot?: boolean,
     LoadOnlyMy?: boolean,
-    LoadAlsoParent?:boolean
+    LoadAlsoParent?: boolean,
+    RoleTypology: string;
+    IdCategory?: number;
+    IdDossierFolder?: string;
 }
 
 export = RoleSearchFilterDTO;

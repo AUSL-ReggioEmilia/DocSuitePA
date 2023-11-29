@@ -47,3 +47,4 @@
 <telerik:RadFormDecorator RenderMode="Lightweight" ID="frmDecorator" runat="server" DecoratedControls="Fieldset"></telerik:RadFormDecorator>
 <asp:PlaceHolder runat="server" ID="dynamicControls" />
 <input type="hidden" id="hiddenLookup" runat="server" />
+<input type="hidden" id="hiddenFieldList" runat="server" />

@@ -20,12 +20,7 @@
 
                 var roles = $get('<%= txtIdRole.ClientID %>').value;
                 var values = roles.slice(0, -1).split(';');
-                var tenant = $get('<%= lbMultiDomain.ClientID %>')
                 var userName = $get('<%= lblSearchUser.ClientID %>')
-                if (tenant != null) {
-                    var tenantId = tenant.value;
-                    values = values + "|tenantId=" + tenantId;
-                }
                 if (userName != null) {
                     var account = userName.innerText;
                     values = values + "|userName=" + account;
@@ -91,7 +86,7 @@
                 var treeView = $find('<%= RadTreeSettori.ClientID %>');
                 var node = treeView.get_selectedNode();
                 if (node != null) {
-                    var url = "../Comm/CommUtenti.aspx?Type=Comm&IDRole=" + node.get_value() + "&TenantId=" + node.get_attributes().getAttribute("TenantId");
+                    var url = "../Comm/CommUtenti.aspx?Type=Comm&IDRole=" + node.get_value();
                     var manager = $find("<%=RadWindowManagerSettoriUtenti.ClientID %>");
                     var wnd = manager.open(url, 'windowUsers');
                     wnd.setSize(400, 350);
@@ -133,7 +128,6 @@
             <td>
                 <asp:Panel runat="server" ID="pnlCerca" DefaultButton="btnSearch" Style="display: inline;">
                     <asp:TextBox ID="txtFiltraSettori" runat="server" Width="250px" />
-                    <asp:DropDownList ID="lbMultiDomain" runat="server" Visible="false" Width="80px"  />
                 </asp:Panel>
                 <asp:Button ID="btnSearch" runat="server" Text="Cerca" ToolTip="Ricerca per Descrizione" />
             </td>

@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class SelContattiIPA
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class SelContattiIPA
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''RadWindowManagerDetail control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class SelContattiIPA
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerDetail As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowDetails control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class SelContattiIPA
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowDetails As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''pnlCerca control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class SelContattiIPA
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlCerca As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtSearch control.
     '''</summary>
@@ -56,17 +56,8 @@ Partial Public Class SelContattiIPA
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents txtSearch As Global.System.Web.UI.WebControls.TextBox
-    
-    '''<summary>
-    '''rblFilterTypeObject control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rblFilterTypeObject As Global.System.Web.UI.WebControls.CheckBoxList
-    
+    Protected WithEvents txtSearch As Global.Telerik.Web.UI.RadTextBox
+
     '''<summary>
     '''btnSearch control.
     '''</summary>
@@ -75,7 +66,7 @@ Partial Public Class SelContattiIPA
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnSearch As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''tvwIPA control.
     '''</summary>
@@ -84,7 +75,7 @@ Partial Public Class SelContattiIPA
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents tvwIPA As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''btnConferma control.
     '''</summary>
@@ -93,7 +84,7 @@ Partial Public Class SelContattiIPA
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConferma As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnConfermaNuovo control.
     '''</summary>
@@ -102,7 +93,7 @@ Partial Public Class SelContattiIPA
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConfermaNuovo As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''cmdDetail control.
     '''</summary>

@@ -15,7 +15,7 @@ Public Class DocumentTokenFacade
         Return _dao.GetMaxIncremental(year, number)
     End Function
 
-    Public Sub UpdateIsActive(ByRef documentToken As DocumentToken, ByVal isActive As Short)
+    Public Sub UpdateIsActive(ByRef documentToken As DocumentToken, ByVal isActive As Boolean)
         documentToken.IsActive = isActive
     End Sub
 
@@ -75,7 +75,7 @@ Public Class DocumentTokenFacade
         Return _dao.GetDocumentTokenByTokenType(year, number, idTokenTypes, roles, bAddResponseCriteria, isActive)
     End Function
 
-    Function GetByYearNumber(ByVal year As Short, ByVal number As Integer, ByVal isActive As Short) As IList(Of DocumentToken)
+    Function GetByYearNumber(ByVal year As Short, ByVal number As Integer, ByVal isActive As Boolean) As IList(Of DocumentToken)
         Return _dao.GetByYearNumber(year, number, isActive)
     End Function
 

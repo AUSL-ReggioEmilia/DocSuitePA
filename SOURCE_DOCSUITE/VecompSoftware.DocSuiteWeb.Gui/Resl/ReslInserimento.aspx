@@ -6,7 +6,6 @@
 <%@ Register Src="~/UserControl/uscOggetto.ascx" TagPrefix="usc" TagName="SelOggetto" %>
 <%@ Register Src="~/UserControl/uscSettori.ascx" TagName="Settori" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscContattiSelText.ascx" TagPrefix="usc" TagName="SelContattiTesto" %>
-<%@ Register Src="~/UserControl/uscPrivacyPanel.ascx" TagPrefix="usc" TagName="PrivacyPanel" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphContent">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1">
@@ -152,7 +151,7 @@
         <%--Sezione gestione Documentale--%>
         <table class="datatable">
             <tr>
-                <th colspan="2">Gestione Documentale
+                <th colspan="2">Gestione documentale
                 </th>
             </tr>
             <tr>
@@ -192,7 +191,7 @@
                                 <asp:Label ID="lblDocumentOmissisCaption" runat="server" />
                             </td>
                             <td>
-                                <usc:UploadDocument Caption="" HeaderVisible="false" ID="uscUploadDocumentiOmissis" IsDocumentRequired="false" MultipleDocuments="true" runat="server" Type="Resl" />
+                                <usc:UploadDocument Caption="" HeaderVisible="false" ID="uscUploadDocumentiOmissis" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" Type="Resl" />
                             </td>
                         </tr>
                     </table>
@@ -208,7 +207,7 @@
                                     <asp:Label ID="lblAttachmentsCaption" runat="server" />
                                 </td>
                                 <td>
-                                    <usc:UploadDocument ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAttach" IsDocumentRequired="false" MultipleDocuments="true" runat="server" Type="Resl" />
+                                    <usc:UploadDocument ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAttach" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" Type="Resl" />
                                 </td>
                             </tr>
                         </table>
@@ -224,7 +223,7 @@
                                 <asp:Label ID="lblAttachmentsOmissisCaption" runat="server" />
                             </td>
                             <td>
-                                <usc:UploadDocument ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAttachOmissis" IsDocumentRequired="false" MultipleDocuments="true" runat="server" Type="Resl" />
+                                <usc:UploadDocument ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAttachOmissis" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" Type="Resl" />
                             </td>
                         </tr>
                     </table>
@@ -240,7 +239,7 @@
                                     <asp:Label ID="lblPrivacyAttachmentCaption" runat="server" />
                                 </td>
                                 <td>
-                                    <usc:UploadDocument ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadPrivacyAttachment" IsDocumentRequired="false" MultipleDocuments="true" runat="server" Type="Resl" />
+                                    <usc:UploadDocument ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadPrivacyAttachment" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" Type="Resl" />
                                 </td>
                             </tr>
                         </table>
@@ -256,18 +255,18 @@
                                 <asp:Label ID="lblAnnexedCaption" runat="server" />
                             </td>
                             <td>
-                                <usc:UploadDocument ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAnnexed" IsDocumentRequired="false" MultipleDocuments="true" runat="server" Type="Resl" />
+                                <usc:UploadDocument ButtonSharedFolederEnabled="false" Caption="" HeaderVisible="false" ID="uscUploadAnnexed" IsDocumentRequired="false" MultipleDocuments="true"  HideScannerMultipleDocumentButton="true" runat="server" Type="Resl" />
                             </td>
                         </tr>
                     </table>
                 </td>
             </tr>
             <tr>
-                <td style="width: 150px">&nbsp;
+               <td style="width: 150px">&nbsp;
                 </td>
                 <td>
                     <asp:Panel runat="server" ID="pnlImmediatelyExecutive" Width="100%" Visible="false">
-                        <asp:CheckBox runat="server" ID="chkImmediatelyExecutive" Text="Immediatamente esecutiva" TextAlign="Right" />
+                        <asp:CheckBox runat="server" ID="chkImmediatelyExecutive" Text="Immediatamente esecutiva" TextAlign="Right" /> 
                     </asp:Panel>
                 </td>
             </tr>
@@ -276,7 +275,7 @@
         <asp:Panel ID="pnlAUSLREOC" runat="server" Visible="false">
             <table class="datatable">
                 <tr>
-                    <th colspan="2">Tipo Delibera
+                    <th colspan="2">Tipo delibera
                     </th>
                 </tr>
                 <tr class="Chiaro">
@@ -310,7 +309,7 @@
         <asp:Panel runat="server" ID="pnlResolutionKind" Visible="False">
             <table class="datatable">
                 <tr>
-                    <th colspan="2">Tipologia Atto
+                    <th colspan="2">Tipologia atto
                     </th>
                 </tr>
                 <tr class="Chiaro">
@@ -319,6 +318,23 @@
                     <td>
                         <asp:DropDownList ID="ddlResolutionKind" runat="server" AutoPostBack="true" />
                         <asp:RequiredFieldValidator ControlToValidate="ddlResolutionKind" Display="Dynamic" ErrorMessage="Campo Tipologia Atto Obbligatorio" ID="ddlResolutionKindValidator" runat="server" />
+                    </td>
+                </tr>
+            </table>
+        </asp:Panel>
+        <%-- Sezione Dati economici --%>
+        <asp:Panel runat="server" ID="pnlAccounting" Visible="false" >
+            <table class="datatable">
+                <tr>
+                    <th colspan="2">Contabilità
+                    </th>
+                </tr>
+                <tr class="Chiaro">
+                    <td class="label" style="width: 155px">
+                        <asp:Label ID="lblBidTypes" runat="server" Text="Stato contabilità:" />
+                    </td>
+                    <td>
+                        <telerik:RadDropDownList runat="server" ID="rlbBidTypes" Width="300px" selected="true"/>
                     </td>
                 </tr>
             </table>
@@ -379,7 +395,7 @@
         <%--Sezione Autorizzazioni--%>
         <table class="datatable" id="tblCollaborationAuthorize" runat="server" visible="false">
             <tr>
-                <th colspan="2">Autorizzazioni da Collaborazione
+                <th colspan="2">Autorizzazioni da collaborazione
                 </th>
             </tr>
             <tr class="Chiaro">
@@ -498,9 +514,6 @@
             </tr>
         </table>
 
-        <%--Sezione Privacy--%>
-        <usc:PrivacyPanel ID="uscPrivacyPanel" runat="server" />
-
         <%--Sezione Note--%>
         <table class="datatable">
             <tr>
@@ -511,12 +524,29 @@
                 <td style="width: 150px">&nbsp;
                 </td>
                 <td>
-                    <telerik:RadTextBox runat="server" ID="txtNote" Width="100%" MaxLength="1500">
+                    <telerik:RadTextBox runat="server" ID="txtNote" Width="100%" MaxLength="1500" MultiLine="true" Rows="2">
                         <ClientEvents OnBlur="ChangeStrWithValidCharacterHandler"></ClientEvents>
                     </telerik:RadTextBox>
                 </td>
             </tr>
         </table>
+        <%--Sezione Autorizzazioni--%>
+        <asp:Panel ID="pnlAmount" runat="server">
+            <table class="datatable">
+                <tr>
+                    <th colspan="2">Importo / impegno di spesa
+                    </th>
+                </tr>
+                <tr class="Chiaro">
+                    <td style="width: 150px">&nbsp;
+                    </td>
+                    <td>
+                        <telerik:RadNumericTextBox runat="server" ID="txtAmount" ShowSpinButtons="true" Type="Currency" Width="250px" NumberFormat-DecimalDigits="2" NumberFormat-DecimalSeparator="."  />
+                        <asp:RequiredFieldValidator ControlToValidate="txtAmount" Display="Dynamic" ErrorMessage="Importo / impegno di spesa" ID="rfvAmount" runat="server" />
+                    </td>
+                </tr>
+            </table>
+        </asp:Panel>
         <%--Sezione Autorizzazioni--%>
         <asp:Panel ID="pnlAutorizzazioni" runat="server">
             <table class="datatable">
@@ -546,23 +576,23 @@
                     </td>
                     <td>
                         <asp:Panel ID="pnlOCSupervisoryBoard" runat="server">
-                            <asp:CheckBox AutoPostBack="False" ID="chkOCSupervisoryBoard" runat="server" Text="Provvedimento soggetto al Controllo del Collegio Sindacale ai sensi dell’art. 14, Legge 24.1.95 n. 10."></asp:CheckBox>
+                            <asp:CheckBox AutoPostBack="False" ID="chkOCSupervisoryBoard" runat="server" Text="Provvedimento soggetto al controllo del collegio sindacale ai sensi dell’art. 14, Legge 24.1.95 n. 10."></asp:CheckBox>
                             <br>
                         </asp:Panel>
                         <asp:Panel ID="pnlOCConfSindaci" runat="server" Visible="false">
-                            <asp:CheckBox AutoPostBack="False" ID="chkOCConfSindaci" runat="server" Text="Provvedimento soggetto al Controllo della Conferenza dei Sindaci." />
+                            <asp:CheckBox AutoPostBack="False" ID="chkOCConfSindaci" runat="server" Text="Provvedimento soggetto al controllo della conferenza dei sindaci." />
                             <br>
                         </asp:Panel>
                         <asp:Panel ID="pnlOCRegion" runat="server">
-                            <asp:CheckBox AutoPostBack="False" ID="chkOCRegion" runat="server" Text="Provvedimento soggetto al Controllo della Regione ai sensi della LR 31/92." />
+                            <asp:CheckBox AutoPostBack="False" ID="chkOCRegion" runat="server" Text="Provvedimento soggetto al controllo della regione ai sensi della LR 31/92." />
                             <br>
                         </asp:Panel>
                         <asp:Panel ID="pnlOCManagement" runat="server">
-                            <asp:CheckBox AutoPostBack="False" ID="chkOCManagement" runat="server" Text="Provvedimento soggetto al Controllo di Gestione ai sensi della Legge 30.07.04 n. 191."></asp:CheckBox>
+                            <asp:CheckBox AutoPostBack="False" ID="chkOCManagement" runat="server" Text="Provvedimento soggetto al controllo di gestione ai sensi della Legge 30.07.04 n. 191."></asp:CheckBox>
                             <br>
                         </asp:Panel>
                         <asp:Panel ID="pnlOCCorteConti" runat="server">
-                            <asp:CheckBox AutoPostBack="False" ID="chkOCCorteConti" runat="server" Text="Provvedimento soggetto al Controllo della Corte dei Conti." />
+                            <asp:CheckBox AutoPostBack="False" ID="chkOCCorteConti" runat="server" Text="Provvedimento soggetto al controllo della corte dei conti." />
                             <br>
                         </asp:Panel>
                         <asp:Panel ID="pnlOCOther" runat="server">
@@ -592,7 +622,7 @@
         <asp:Panel runat="server" ID="pnlAmmTrasp" Visible="False">
             <table class="datatable">
                 <tr>
-                    <th>Amministrazione Trasparente
+                    <th>Amministrazione trasparente
                     </th>
                 </tr>
                 <tr class="Chiaro">

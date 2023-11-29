@@ -3,7 +3,7 @@ import ContactAddressDSWModel = require("App/Models/Commons/ContactAddressDSWMod
 
 interface ContactDSWModel {
     Id?: number;
-    IsActive?: number;
+    IsActive?: boolean;
     BirthDate?: Date;
     BirthPlace: string;
     Description: string;

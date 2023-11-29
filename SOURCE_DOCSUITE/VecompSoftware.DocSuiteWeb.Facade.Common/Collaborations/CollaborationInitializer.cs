@@ -7,7 +7,9 @@ namespace VecompSoftware.DocSuiteWeb.Facade.Common.Collaborations
     {
         public string Subject { get; set; }
         public DocumentInfo MainDocument { get; set; }
+        public DocumentInfo MainDocumentOmissis {get;set;}        
         public IList<DocumentInfo> Attachments { get; set; }
-        public IList<DocumentInfo> Annexed { get; set; }
+        public IList<DocumentInfo> AttachmentsOmissis { get; set; }
+        public IList<DocumentInfo> Annexed { get; set; }        
     }
 }

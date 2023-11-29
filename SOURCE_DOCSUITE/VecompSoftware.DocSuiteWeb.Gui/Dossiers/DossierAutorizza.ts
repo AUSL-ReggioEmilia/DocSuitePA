@@ -175,7 +175,7 @@ class DossierAutorizza extends DossierBase {
                                 UniqueId: role.UniqueId,
                                 Name: role.Name,
                                 IdRole: role.EntityShortId,
-                                IsActive: 1
+                                IsActive: true
                             }
                             roles.push(newRole);
                         }

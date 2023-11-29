@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class SingleSign
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class SingleSign
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''loginTime control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class SingleSign
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents loginTime As Global.System.Web.UI.WebControls.HiddenField
-    
+
     '''<summary>
     '''serializedDocumentSource control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class SingleSign
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents serializedDocumentSource As Global.System.Web.UI.WebControls.HiddenField
-    
+
     '''<summary>
     '''startStream control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class SingleSign
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents startStream As Global.System.Web.UI.WebControls.HiddenField
-    
+
     '''<summary>
     '''endStream control.
     '''</summary>
@@ -57,7 +57,16 @@ Partial Public Class SingleSign
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents endStream As Global.System.Web.UI.WebControls.HiddenField
-    
+
+    '''<summary>
+    '''wndGoSignFlow control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents wndGoSignFlow As Global.Telerik.Web.UI.RadWindow
+
     '''<summary>
     '''signContainer control.
     '''</summary>
@@ -66,7 +75,7 @@ Partial Public Class SingleSign
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents signContainer As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''ToolBar control.
     '''</summary>
@@ -75,7 +84,7 @@ Partial Public Class SingleSign
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ToolBar As Global.Telerik.Web.UI.RadToolBar
-    
+
     '''<summary>
     '''uscViewerLight control.
     '''</summary>

@@ -29,7 +29,7 @@ Public Class NHibernateCollaborationVersioningDao
         Dim detachedMaxIncremental As DetachedCriteria = DetachedCriteria.For(GetType(CollaborationVersioning), "CVS")
         detachedMaxIncremental.Add(Restrictions.EqProperty("CVS.Collaboration.Id", "CV.Collaboration.Id"))
         detachedMaxIncremental.Add(Restrictions.EqProperty("CVS.CollaborationIncremental", "CV.CollaborationIncremental"))
-        detachedMaxIncremental.Add(Restrictions.Eq("CVS.IsActive", 1S))
+        detachedMaxIncremental.Add(Restrictions.Eq("CVS.IsActive", True))
         detachedMaxIncremental.SetProjection(Projections.Max("CVS.Incremental"))
 
         criteria = NHibernateSession.CreateCriteria(persitentType, "CV")
@@ -70,7 +70,7 @@ Public Class NHibernateCollaborationVersioningDao
         Dim detachedMaxIncremental As DetachedCriteria = DetachedCriteria.For(GetType(CollaborationVersioning), "CVS")
         detachedMaxIncremental.Add(Restrictions.EqProperty("CVS.Collaboration.Id", "CV.Collaboration.Id"))
         detachedMaxIncremental.Add(Restrictions.EqProperty("CVS.CollaborationIncremental", "CV.CollaborationIncremental"))
-        detachedMaxIncremental.Add(Restrictions.Eq("CVS.IsActive", 1S))
+        detachedMaxIncremental.Add(Restrictions.Eq("CVS.IsActive", True))
         detachedMaxIncremental.SetProjection(Projections.Max("CVS.Incremental"))
 
         criteria = NHibernateSession.CreateCriteria(persitentType, "CV")
@@ -84,7 +84,7 @@ Public Class NHibernateCollaborationVersioningDao
         Dim detachedMaxIncremental As DetachedCriteria = DetachedCriteria.For(GetType(CollaborationVersioning), "CVS")
         detachedMaxIncremental.Add(Restrictions.EqProperty("CVS.Collaboration.Id", "CV.Collaboration.Id"))
         detachedMaxIncremental.Add(Restrictions.EqProperty("CVS.CollaborationIncremental", "CV.CollaborationIncremental"))
-        detachedMaxIncremental.Add(Restrictions.Eq("CVS.IsActive", 1S))
+        detachedMaxIncremental.Add(Restrictions.Eq("CVS.IsActive", True))
         detachedMaxIncremental.SetProjection(Projections.Max("CVS.Incremental"))
 
         criteria = NHibernateSession.CreateCriteria(persitentType, "CV")
@@ -98,7 +98,7 @@ Public Class NHibernateCollaborationVersioningDao
         Dim detachedMaxIncremental As DetachedCriteria = DetachedCriteria.For(GetType(CollaborationVersioning), "CVS")
         detachedMaxIncremental.Add(Restrictions.EqProperty("CVS.Collaboration.Id", "CV.Collaboration.Id"))
         detachedMaxIncremental.Add(Restrictions.EqProperty("CVS.CollaborationIncremental", "CV.CollaborationIncremental"))
-        detachedMaxIncremental.Add(Restrictions.Eq("CVS.IsActive", 1S))
+        detachedMaxIncremental.Add(Restrictions.Eq("CVS.IsActive", True))
         detachedMaxIncremental.SetProjection(Projections.Max("CVS.Incremental"))
 
         criteria = NHibernateSession.CreateCriteria(persitentType, "CV")
@@ -112,7 +112,7 @@ Public Class NHibernateCollaborationVersioningDao
         Dim detachedMaxIncremental As DetachedCriteria = DetachedCriteria.For(GetType(CollaborationVersioning), "CVS")
         detachedMaxIncremental.Add(Restrictions.EqProperty("CVS.Collaboration.Id", "CV.Collaboration.Id"))
         detachedMaxIncremental.Add(Restrictions.EqProperty("CVS.CollaborationIncremental", "CV.CollaborationIncremental"))
-        detachedMaxIncremental.Add(Restrictions.Eq("CVS.IsActive", 1S))
+        detachedMaxIncremental.Add(Restrictions.Eq("CVS.IsActive", True))
         detachedMaxIncremental.SetProjection(Projections.Max("CVS.Incremental"))
 
         criteria = NHibernateSession.CreateCriteria(persitentType, "CV")
@@ -125,7 +125,7 @@ Public Class NHibernateCollaborationVersioningDao
 
     Public Function GetVersioningByCheckOutSessionId(sessionId As String) As CollaborationVersioning
         criteria = NHibernateSession.CreateCriteria(persitentType, "CV")
-        criteria.Add(Restrictions.Eq("CV.IsActive", 1S))
+        criteria.Add(Restrictions.Eq("CV.IsActive", True))
         criteria.Add(Restrictions.Eq("CheckOutSessionId", sessionId))
         Return criteria.UniqueResult(Of CollaborationVersioning)()
     End Function

@@ -10,17 +10,18 @@ class uscDossierGrid extends DossierBase {
     authorizedDossiers: DossierGridViewModel[];
     pageId: string;
     isWindowPopupEnable: boolean;
+    dynamicMetadataEnabled: boolean;
 
     public static LOADED_EVENT: string = "onLoaded";
     public static PAGE_CHANGED_EVENT: string = "onPageChanged";
 
     private _dossierGrid: Telerik.Web.UI.RadGrid;
     private _masterTableView: Telerik.Web.UI.GridTableView;
- 
-      /**
-    * Costruttore
-    * @param webApiConfiguration
-    */
+
+    /**
+  * Costruttore
+  * @param webApiConfiguration
+  */
     constructor(serviceConfigurations: ServiceConfiguration[]) {
         super(ServiceConfigurationHelper.getService(serviceConfigurations, DossierBase.DOSSIER_TYPE_NAME));
         $(document).ready(() => {
@@ -54,6 +55,8 @@ class uscDossierGrid extends DossierBase {
     }
 
     onGridDataBound() {
+        this._dossierGrid = <Telerik.Web.UI.RadGrid>$find(this.dossierGridId);
+        this._masterTableView = this._dossierGrid.get_masterTableView();
         let row = this._masterTableView.get_dataItems();
         for (let i = 0; i < row.length; i++) {
             if (i % 2) {
@@ -66,27 +69,29 @@ class uscDossierGrid extends DossierBase {
     }
 
 
-     /**
-     *------------------------- Methods -----------------------------
-     */
+    /**
+    *------------------------- Methods -----------------------------
+    */
 
     /**
      * Inizializza lo user control del sommario di fascicolo
      */
-    
+
     private bindLoaded(): void {
         $("#".concat(this.pageId)).data(this);
         $("#".concat(this.pageId)).triggerHandler(uscDossierGrid.LOADED_EVENT);
     }
 
     setDataSource(results: DossierGridViewModel[]) {
+        this._dossierGrid = <Telerik.Web.UI.RadGrid>$find(this.dossierGridId);
+        this._masterTableView = this._dossierGrid.get_masterTableView();
         this._masterTableView.set_dataSource(results);
         this._masterTableView.dataBind();
     }
 
     setItemCount(count: number) {
         this._masterTableView.set_virtualItemCount(count);
-        this._masterTableView.dataBind(); 
+        this._masterTableView.dataBind();
     }
 
     getGridPageSize(): number {

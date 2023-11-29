@@ -50,6 +50,15 @@ Partial Public Class DossierRicerca
     Protected WithEvents txtNumber As Global.Telerik.Web.UI.RadNumericTextBox
 
     '''<summary>
+    '''trDossierType control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents trDossierType As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
     '''rcbDossierType control.
     '''</summary>
     '''<remarks>

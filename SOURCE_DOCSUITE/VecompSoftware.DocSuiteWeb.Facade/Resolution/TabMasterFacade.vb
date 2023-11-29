@@ -13,6 +13,7 @@ Public Class TabMasterFacade
     Public Const DescriptionField As String = "Description"
     Public Const TitleField As String = "Title"
     Public Const ManagedDataField As String = "ManagedData"
+    Public Const WorkflowTypeField As String = "WorkflowType"
 
 #End Region
 

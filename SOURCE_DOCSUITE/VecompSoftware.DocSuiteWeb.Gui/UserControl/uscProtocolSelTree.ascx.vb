@@ -193,7 +193,7 @@ Partial Public Class uscProtocolSelTree
         If (RadTreeProtocollo.FindNodeByValue(prot.Id.ToString()) Is Nothing) Then
             nodeToAdd.Text = prot.FullNumber
             nodeToAdd.Value = prot.Id.ToString()
-            nodeToAdd.ImageUrl = "../Comm/Images/DocSuite/Protocollo16.gif"
+            nodeToAdd.ImageUrl = "../Comm/Images/DocSuite/Protocollo16.png"
             nodeToAdd.Expanded = True
 
             If prot IsNot Nothing Then

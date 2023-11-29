@@ -106,7 +106,7 @@ Public Class DocmInserimento
         Dim documentToken As DocumentToken = Facade.DocumentTokenFacade.CreateDocumentToken(document.Year, document.Number)
         With documentToken
             .IncrementalOrigin = 0
-            .IsActive = 1
+            .IsActive = True
             .Response = String.Empty
             .DocStep = 1
             .SubStep = 0
@@ -154,7 +154,7 @@ Public Class DocmInserimento
     Private Sub Initialize()
         uscContatti.ButtonSelectDomainVisible = False
         'Put user code to initialize the page here
-        Dim roles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, 1, True)
+        Dim roles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, 1, True, CurrentTenant.TenantAOO.UniqueId)
         If roles.Count = 1 Then
             uscSettori.SourceRoles = roles.ToList()
             uscSettori.DataBind()
@@ -196,7 +196,7 @@ Public Class DocmInserimento
             If containerExtensionSd.Count > 0 Then
                 Dim idRole As String = containerExtensionSd(0).KeyValue
                 If Not String.IsNullOrEmpty(idRole) Then
-                    Dim userRoles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, 1, True)
+                    Dim userRoles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, 1, True, CurrentTenant.TenantAOO.UniqueId)
 
                     Dim added As Boolean = False
                     For Each rightRole As Role In userRoles

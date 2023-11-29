@@ -21,4 +21,31 @@ Partial Public Class Designer
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents workflowManager As Global.System.Web.UI.HtmlControls.HtmlInputHidden
+
+    '''<summary>
+    '''conservationManager control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents conservationManager As Global.System.Web.UI.HtmlControls.HtmlInputHidden
+
+    '''<summary>
+    '''odataUrl control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents odataUrl As Global.System.Web.UI.HtmlControls.HtmlInputHidden
+
+    '''<summary>
+    '''restUrl control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents restUrl As Global.System.Web.UI.HtmlControls.HtmlInputHidden
 End Class

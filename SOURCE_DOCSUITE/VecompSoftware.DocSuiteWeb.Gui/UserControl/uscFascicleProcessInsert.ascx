@@ -29,6 +29,7 @@
                 uscFascicleProcessInsert.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
                 uscFascicleProcessInsert.pnlContactId = "<%= pnlContact.ClientID %>";
                 uscFascicleProcessInsert.pnlRoleMasterId = "<%= pnlRoleMaster.ClientID %>";
+                uscFascicleProcessInsert.pnlRoleId = "<%= pnlRole.ClientID %>";
                 uscFascicleProcessInsert.pnlConservationId = "<%= pnlConservation.ClientID %>";
                 uscFascicleProcessInsert.rcbFascicleTypeId = "<%= rcbFascicleType.ClientID %>";
                 uscFascicleProcessInsert.activityFascicleEnabled = <%=ProtocolEnv.ActivityFascicleEnabled.ToString().ToLower() %>;
@@ -69,6 +70,13 @@
     <asp:Panel runat="server" ID="pnlFascProcessInsert">
         <telerik:RadPageLayout runat="server" ID="fasciclePageContent" Width="100%" Height="100%" HtmlTag="Div">
             <Rows>
+                <telerik:LayoutRow runat="server" HtmlTag="Div" ID="pnlRoleMaster">
+                    <Content>
+                        <div class="dsw-panel">
+                            <usc:uscRoleRest runat="server" ID="uscRoleMaster" Expanded="true" ReadOnlyMode="false" Caption="Settore responsabile" Required="true" OnlyMyRoles="true" Collapsable="true" RequiredMessage="Campo settore responsabile obbligatorio" FascicleVisibilityTypeButtonEnabled="false"  />
+                        </div>
+                    </Content>
+                </telerik:LayoutRow>
                 <telerik:LayoutRow runat="server" HtmlTag="Div" ID="pnlContact">
                     <Content>
                         <div class="dsw-panel">
@@ -79,17 +87,10 @@
                         </div>
                     </Content>
                 </telerik:LayoutRow>
-                <telerik:LayoutRow runat="server" HtmlTag="Div" ID="pnlRoleMaster">
+                <telerik:LayoutRow runat="server" HtmlTag="Div" ID="pnlRole">
                     <Content>
                         <div class="dsw-panel">
-                            <usc:uscRoleRest runat="server" ID="uscRoleMaster" Expanded="true" ReadOnlyMode="false" Caption="Settore responsabile" Required="true" OnlyMyRoles="true" Collapsable="true" RequiredMessage="Campo settore responsabile obbligatorio" />
-                        </div>
-                    </Content>
-                </telerik:LayoutRow>
-                <telerik:LayoutRow runat="server" HtmlTag="Div">
-                    <Content>
-                        <div class="dsw-panel">
-                            <usc:uscRoleRest runat="server" ID="uscRole" ReadOnlyMode="false" Expanded="true" MultipleRoles="true" Caption="Settori con autorizzazioni" Required="false" OnlyMyRoles="false" Collapsable="true" RequiredMessage="Campo settori con autorizzazioni obbligatorio" RACIButtonEnabled="true" />
+                            <usc:uscRoleRest runat="server" ID="uscRole" ReadOnlyMode="false" Expanded="true" MultipleRoles="true" Caption="Settori con autorizzazioni" Required="false" OnlyMyRoles="false" Collapsable="true" RequiredMessage="Campo settori con autorizzazioni obbligatorio" RACIButtonEnabled="true" FascicleVisibilityTypeButtonEnabled="true" />
                         </div>
                     </Content>
                 </telerik:LayoutRow>

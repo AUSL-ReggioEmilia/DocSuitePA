@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscContattiGes
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''DefaultLoadingPanel control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents DefaultLoadingPanel As Global.Telerik.Web.UI.RadAjaxLoadingPanel
-    
+
     '''<summary>
     '''RadWindowManagerContattiGes control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerContattiGes As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''trTrvContatto control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trTrvContatto As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''Tvw control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents Tvw As Global.Telerik.Web.UI.RadTreeView
-    
+
     '''<summary>
     '''pnlEditType control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlEditType As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''ToolBar control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ToolBar As Global.Telerik.Web.UI.RadToolBar
-    
+
     '''<summary>
     '''pnlAggiungi control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlAggiungi As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''pnlPersona control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlPersona As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtLastName control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtLastName As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''RequiredFieldValidator1 control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RequiredFieldValidator1 As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''txtFirstName control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtFirstName As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''trBirthDay control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trBirthDay As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''txtBirthDate control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtBirthDate As Global.Telerik.Web.UI.RadDatePicker
-    
+
     '''<summary>
     '''pnlBirthPlace control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlBirthPlace As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtBirthPlace control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtBirthPlace As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''pnlTitoliStudio control.
     '''</summary>
@@ -165,7 +165,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlTitoliStudio As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''ddlTitoliStudio control.
     '''</summary>
@@ -174,7 +174,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlTitoliStudio As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''pnlDescrizione control.
     '''</summary>
@@ -183,7 +183,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlDescrizione As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtDescription control.
     '''</summary>
@@ -192,7 +192,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtDescription As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''rfvDescription control.
     '''</summary>
@@ -201,34 +201,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvDescription As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
-    '''<summary>
-    '''pnlHistory control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents pnlHistory As Global.System.Web.UI.WebControls.Panel
-    
-    '''<summary>
-    '''txtHistoryDate control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents txtHistoryDate As Global.Telerik.Web.UI.RadDatePicker
-    
-    '''<summary>
-    '''lbErrorHistoryDate control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lbErrorHistoryDate As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''pnlCertifiedMail control.
     '''</summary>
@@ -237,7 +210,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlCertifiedMail As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblCertifiedMail control.
     '''</summary>
@@ -246,7 +219,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblCertifiedMail As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtCertifiedMail control.
     '''</summary>
@@ -255,7 +228,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtCertifiedMail As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''rfvCertifiedMail control.
     '''</summary>
@@ -264,7 +237,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvCertifiedMail As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''pnlSDIIdentification control.
     '''</summary>
@@ -273,7 +246,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlSDIIdentification As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblSDIIdentification control.
     '''</summary>
@@ -282,7 +255,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSDIIdentification As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtSDIIdentification control.
     '''</summary>
@@ -291,7 +264,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtSDIIdentification As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''pnlContactRubrica control.
     '''</summary>
@@ -300,7 +273,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlContactRubrica As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''chkLocked control.
     '''</summary>
@@ -309,7 +282,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkLocked As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''lblChildren control.
     '''</summary>
@@ -318,7 +291,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblChildren As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''chkChildren control.
     '''</summary>
@@ -327,7 +300,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkChildren As Global.System.Web.UI.WebControls.CheckBox
-    
+
     '''<summary>
     '''txtCode control.
     '''</summary>
@@ -336,7 +309,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtCode As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtSearchCode control.
     '''</summary>
@@ -345,7 +318,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtSearchCode As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''pnlFiscalCode control.
     '''</summary>
@@ -354,7 +327,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlFiscalCode As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtFiscalCode control.
     '''</summary>
@@ -363,7 +336,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtFiscalCode As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''rfvFiscalCode control.
     '''</summary>
@@ -372,7 +345,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvFiscalCode As Global.System.Web.UI.WebControls.RequiredFieldValidator
-    
+
     '''<summary>
     '''pnlSimpleMode control.
     '''</summary>
@@ -381,7 +354,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlSimpleMode As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''ddlPlaceName control.
     '''</summary>
@@ -390,7 +363,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlPlaceName As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''txtAddress control.
     '''</summary>
@@ -399,7 +372,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtAddress As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''txtCivicNumber control.
     '''</summary>
@@ -408,7 +381,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtCivicNumber As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtZipCode control.
     '''</summary>
@@ -417,7 +390,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtZipCode As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtCity control.
     '''</summary>
@@ -426,7 +399,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtCity As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtCityCode control.
     '''</summary>
@@ -435,7 +408,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtCityCode As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''pnlNationality control.
     '''</summary>
@@ -444,7 +417,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlNationality As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''txtNationality control.
     '''</summary>
@@ -453,7 +426,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNationality As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''ddlLanguageType control.
     '''</summary>
@@ -462,7 +435,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlLanguageType As Global.System.Web.UI.WebControls.DropDownList
-    
+
     '''<summary>
     '''txtTelephoneNumber control.
     '''</summary>
@@ -471,7 +444,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtTelephoneNumber As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtFaxNumber control.
     '''</summary>
@@ -480,7 +453,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtFaxNumber As Global.System.Web.UI.WebControls.TextBox
-    
+
     '''<summary>
     '''txtEMailAddress control.
     '''</summary>
@@ -489,7 +462,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtEMailAddress As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''lblNote control.
     '''</summary>
@@ -498,7 +471,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblNote As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''txtNote control.
     '''</summary>
@@ -507,7 +480,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents txtNote As Global.Telerik.Web.UI.RadTextBox
-    
+
     '''<summary>
     '''pnlRole control.
     '''</summary>
@@ -516,7 +489,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlRole As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblSettoreAutorizzato control.
     '''</summary>
@@ -525,7 +498,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblSettoreAutorizzato As Global.System.Web.UI.WebControls.Label
-    
+
     '''<summary>
     '''uscAutorizza control.
     '''</summary>
@@ -534,7 +507,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscAutorizza As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''trSettoreRubrica control.
     '''</summary>
@@ -543,7 +516,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents trSettoreRubrica As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''uscSettoreRubrica control.
     '''</summary>
@@ -552,7 +525,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscSettoreRubrica As Global.VecompSoftware.DocSuiteWeb.Gui.uscSettori
-    
+
     '''<summary>
     '''pnlFooter control.
     '''</summary>
@@ -561,7 +534,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlFooter As Global.System.Web.UI.HtmlControls.HtmlTableRow
-    
+
     '''<summary>
     '''btnConferma control.
     '''</summary>
@@ -570,7 +543,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConferma As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnConfermaNuovo control.
     '''</summary>
@@ -579,7 +552,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnConfermaNuovo As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''ValidationSummary1 control.
     '''</summary>
@@ -588,7 +561,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ValidationSummary1 As Global.System.Web.UI.WebControls.ValidationSummary
-    
+
     '''<summary>
     '''ObjectDataSourcePlaceName control.
     '''</summary>
@@ -597,7 +570,7 @@ Partial Public Class uscContattiGes
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ObjectDataSourcePlaceName As Global.System.Web.UI.WebControls.ObjectDataSource
-    
+
     '''<summary>
     '''ObjectDataSourceContactTitle control.
     '''</summary>

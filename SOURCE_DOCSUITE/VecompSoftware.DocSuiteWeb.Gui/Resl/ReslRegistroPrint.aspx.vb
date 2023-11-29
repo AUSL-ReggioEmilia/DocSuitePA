@@ -50,7 +50,7 @@ Partial Public Class ReslRegistroPrint
         If DocSuiteContext.Current.ResolutionEnv.SecurityPrint Then
             contenitori = Facade.ContainerFacade.GetContainers(DSWEnvironment.Resolution, ResolutionRightPositions.Adoption, True)
         Else
-            contenitoriDto = Facade.ContainerFacade.GetAllRights("Resl", 1)
+            contenitoriDto = Facade.ContainerFacade.GetAllRights("Resl", True)
         End If
 
         If contenitori.Count > 0 Then

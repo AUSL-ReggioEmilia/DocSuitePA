@@ -12,6 +12,8 @@
     MasterRoleName: string;
     ImageUrl: string;
     TooltipImageUrl: string;
+    MetadataDesigner: string;
+    MetadataValues: string;
 
 }
 export = DossierGridViewModel;

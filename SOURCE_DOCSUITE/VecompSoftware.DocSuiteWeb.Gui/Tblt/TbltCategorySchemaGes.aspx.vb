@@ -43,8 +43,8 @@ Partial Public Class TbltCategorySchemaGes
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
-        If Not CommonShared.HasGroupTblCategoryRight Then
-            Throw New DocSuiteException("Utente non autorizzato alla visualizzazione della Versione del Classificatore.")
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
 
         InitializeAjax()

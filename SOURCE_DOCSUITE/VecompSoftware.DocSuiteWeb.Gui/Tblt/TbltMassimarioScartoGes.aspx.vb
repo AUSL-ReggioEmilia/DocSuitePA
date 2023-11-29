@@ -19,6 +19,10 @@ Public Class TbltMassimarioScartoGes
 #Region "Events"
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         InitializeAjax()
         If Not IsPostBack Then
             Initialize()
@@ -30,9 +34,6 @@ Public Class TbltMassimarioScartoGes
 #Region "Methods"
 
     Private Sub Initialize()
-        If Not CommonShared.HasGroupTblCategoryRight Then
-            Throw New DocSuiteException("Utente non autorizzato alla visualizzazione del massimario di scarto.")
-        End If
 
         MasterDocSuite.Title = PAGE_TITLE
         rgvCategories.DataSource = New List(Of Category)

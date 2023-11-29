@@ -41,6 +41,7 @@ Partial Class ReslRicerca
             FinderController.Initialize()
             uscResolutionFinder.EnableDateFromValue = False
             uscResolutionFinder.EnableDateToValue = False
+            uscResolutionFinder.ActiveStepSelected = ResolutionEnv.ActiveStepFilterSelectedEnabled
             Page.Form.DefaultButton = btnSearch.UniqueID
             btnSearch.Focus()
         End If
@@ -49,7 +50,7 @@ Partial Class ReslRicerca
 
     Private Sub Search_Click(ByVal sender As Object, ByVal e As EventArgs) Handles btnSearch.Click
         Dim finder As NHibernateResolutionFinder = FinderController.LoadFinder()
-        If CommonInstance.ApplyResolutionFinderSecurity(Me, finder) AndAlso ResolutionEnv.SearchMaxRecords <> 0 Then
+        If CommonInstance.ApplyResolutionFinderSecurity(Me, finder, CurrentTenant.TenantAOO.UniqueId) AndAlso ResolutionEnv.SearchMaxRecords <> 0 Then
             finder.PageSize = ResolutionEnv.SearchMaxRecords
         End If
         SessionSearchController.SaveSessionFinder(finder, SessionSearchController.SessionFinderType.ReslFinderType)

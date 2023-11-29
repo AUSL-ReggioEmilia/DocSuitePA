@@ -1,5 +1,6 @@
 ﻿Imports System.Web
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Namespace Viewers.Handlers
 
@@ -7,6 +8,7 @@ Namespace Viewers.Handlers
         Inherits DocumentHandler
 
         Private _currentResolution As Resolution
+        Private _currentResolutionRights As ResolutionRights
 
         Private ReadOnly Property CurrentResolution As Resolution
             Get
@@ -17,6 +19,14 @@ Namespace Viewers.Handlers
             End Get
         End Property
 
+        Private ReadOnly Property CurrentResolutionRights As ResolutionRights
+            Get
+                If _currentResolutionRights Is Nothing Then
+                    _currentResolutionRights = New ResolutionRights(CurrentResolution)
+                End If
+                Return _currentResolutionRights
+            End Get
+        End Property
 
         Overrides Sub ProcessRequest(ByVal context As HttpContext)
             _currentHttpContext = context
@@ -30,6 +40,9 @@ Namespace Viewers.Handlers
         Protected Overrides Function CheckRight() As Boolean
             If Not CurrentResolution.AdoptionDate.HasValue OrElse CurrentResolution.EffectivenessDate.HasValue Then
                 Return True
+            End If
+            If Not CurrentResolutionRights.HasCurrentStepVisibilityRights Then
+                Return False
             End If
             Dim viewRight As Boolean = CurrentODataFacade.HasViewableRight(UniqueId.Value, DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain)
             Return viewRight

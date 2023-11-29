@@ -15,8 +15,7 @@ class RoleModelMapper extends BaseMapper<RoleModel>{
 
         toMap.EntityShortId = source.EntityShortId;
         toMap.Name = source.Name;
-        toMap.IdRoleTenant = source.IdRoleTenant;
-        toMap.TenantId = source.TenantId;
+        toMap.IdTenantAOO = source.IdTenantAOO;
         toMap.IdRole = source.IdRole ? source.IdRole : source.EntityShortId;
         toMap.FullIncrementalPath = source.FullIncrementalPath;
         toMap.IsActive = source.IsActive;
@@ -24,9 +23,10 @@ class RoleModelMapper extends BaseMapper<RoleModel>{
         toMap.UniqueId = source.UniqueId;
         toMap.Children = source.Children;
         toMap.ServiceCode = source.ServiceCode;
-        toMap.ActiveFrom = source.ActiveFrom ? moment(source.ActiveFrom).format("DD/MM/YYYY") : "";
+        toMap.RoleTypology = source.RoleTypology;
         toMap.Children = source.Children && source.Children.length ? source.Children.map(childRole => this.Map(childRole)) : [];
         toMap.CategoryFascicleRights = source.CategoryFascicleRights;
+        toMap.IsRealResult = source.IsRealResult;
 
         return toMap;
     }

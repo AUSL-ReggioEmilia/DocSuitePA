@@ -12,6 +12,10 @@ Public Class TbltTemplateProtocolManager
 
 #Region "Events"
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateGroups) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         InitializeAjax()
         If Not IsPostBack Then
             Initialize()
@@ -140,9 +144,6 @@ Public Class TbltTemplateProtocolManager
     End Sub
 
     Private Sub Initialize()
-        If Not CommonShared.UserConnectedBelongsTo(ProtocolEnv.TemplateGroups) Then
-            Throw New DocSuiteException("Utente non abilitato alla gestione del template di Protocollo")
-        End If
 
         Page.Title = "Gestione Template di Protocollo"
     End Sub

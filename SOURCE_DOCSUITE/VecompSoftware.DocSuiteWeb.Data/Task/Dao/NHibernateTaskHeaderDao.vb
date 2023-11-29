@@ -24,7 +24,7 @@ Public Class NHibernateTaskHeaderDao
 
     Public Sub UpdateHeader(header As TaskHeader)
         Using session As ISession = NHibernateSessionManager.Instance.OpenSession(FactoryName)
-            Using transaction As ITransaction = session.BeginTransaction()
+            Using transaction As ITransaction = session.BeginTransaction(IsolationLevel.ReadCommitted)
                 session.SaveOrUpdate(header)
                 transaction.Commit()
             End Using

@@ -95,7 +95,7 @@ function createCookie(name, value, days) {
 function mngRequestStarted(ajaxManager, eventArgs) {
     var array = eventArgs.EventTarget.split('$');
     var target = array[array.length - 1];
-    if (target === 'excelFButton' || target === 'excelButton' || target === 'wordFButton' || target === 'wordButton' || target === 'pdfButton' || target === 'lbtViewProtocol' || target === 'lnkPratica' || target === 'lnkResolution') {
+    if (target === 'excelFButton' || target === 'excelButton' || target === 'wordFButton' || target === 'wordButton' || target === 'pdfButton' || target === 'lbtViewProtocol' || target === 'lnkPratica' || target === 'lnkResolution' || target == 'excelCButton') {
         eventArgs.EnableAjax = false;
     }
 }

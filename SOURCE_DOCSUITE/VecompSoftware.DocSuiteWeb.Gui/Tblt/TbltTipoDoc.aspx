@@ -83,7 +83,7 @@
                     //TYPE DOC
                     EnableItemByValue(menu,'Add');
                     EnableItemByValue(menu,'Rename');
-                    if(node.get_attributes().getAttribute("IsActive") == "1")
+                    if(node.get_attributes().getAttribute("IsActive") == "true")
                     {
                         EnableItemByValue(menu,'Delete');
                         DisableItemByValue(menu,'Recovery');

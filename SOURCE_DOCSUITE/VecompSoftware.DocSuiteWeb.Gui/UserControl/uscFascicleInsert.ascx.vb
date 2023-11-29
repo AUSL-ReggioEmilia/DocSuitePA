@@ -9,7 +9,6 @@ Imports VecompSoftware.DocSuiteWeb.Entity.MassimariScarto
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Commons
 Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI.MassimariScarto
-Imports VecompSoftware.DocSuiteWeb.Model.Metadata
 Imports VecompSoftware.Helpers.ExtensionMethods
 
 Public Class uscFascicleInsert
@@ -19,14 +18,12 @@ Public Class uscFascicleInsert
     Dim _currentCategory As Category
     Private Const CATEGORY_CHANGE_HANDLER As String = "uscFascicleInsert.onCategoryChanged('{0}', '{1}', '{2}');"
     Private Const INITIALIZE_CALLBACK As String = "uscFascicleInsert.initializeCallback();"
+    Private Const BIND_LOADED As String = "uscFascicleInsert.bindLoaded();"
     Private Const CATEGORY_NOT_FASCICOLABLE_WARNING As String = "uscFascicleInsert.printCategoryNotFascicolable();"
     Private Const FASCICLE_TYPE_SELECTED_CALLBACK As String = "uscFascicleInsert.fascicleTypeSelectedCallback();"
     Dim _categoryFascicleFacade As CategoryFascicleFacade
     Private _categoryFascicleRightFacade As CategoryFascicleRightFacade
     Private _currentMassimarioScartoFacade As MassimarioScartoFacade
-    Private _currentUDId As Guid?
-    Private _environment As Integer?
-    Private _currentIdUDSRepository As Guid?
     Private _contactFacade As ContactFacade
 #End Region
 
@@ -103,25 +100,27 @@ Public Class uscFascicleInsert
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
         InitializeAjax()
-        uscDynamicMetadata.ValidationDisabled = ValidationDisabled
+        uscDynamicMetadataRest.ValidationEnabled = Not ValidationDisabled
         uscContattiResp.Caption = DocSuiteContext.Current.ProtocolEnv.FascicleRoleRPLabel
         uscContattiResp.RequiredErrorMessage = $"Inserire un {DocSuiteContext.Current.ProtocolEnv.FascicleRoleRPLabel}"
         If Not IsPostBack() Then
             If IsPeriodic Then
                 rdlFascicleType.Items.Add(item:=New DropDownListItem With {.Text = "Fascicolo periodico", .Value = "2"})
-                rdlFascicleType.Items(3).Selected = True
             End If
             Initialize()
         End If
         RefreshControls(False)
     End Sub
 
-    Private Sub uscClassificatore_CategoryChange(ByVal sender As Object, ByVal e As EventArgs) Handles uscClassificatore.CategoryAdded, uscClassificatore.CategoryRemoved
+    Private Sub uscClassificatore_CategoryChange(ByVal sender As Object, ByVal e As List(Of String)) Handles uscClassificatore.EntityAdded, uscClassificatore.EntityRemoved
         If uscClassificatore.SelectedCategories.Count = 0 Then
             uscContattiResp.SearchInCategoryContacts = Nothing
             uscContattiResp.CategoryContactsProcedureType = String.Empty
             uscContattiResp.UpdateButtons()
             AjaxManager.ResponseScripts.Add(String.Format(CATEGORY_CHANGE_HANDLER, String.Empty, String.Empty, String.Empty))
+            Exit Sub
+        End If
+        If uscContattiResp.DataSource.Any() Then
             Exit Sub
         End If
         Dim category As Category = Facade.CategoryFacade.GetById(uscClassificatore.SelectedCategories.First())
@@ -179,14 +178,24 @@ Public Class uscFascicleInsert
                     If ProtocolEnv.FascicleContactId > 0 Then
                         contactFascicleId = ProtocolEnv.FascicleContactId
                     End If
-                    Dim respUser As IList(Of Contact) = Facade.ContactFacade.GetContactByRole(DocSuiteContext.Current.User.FullUserName, 1, parentId:=contactFascicleId, idRole:=roleRestriction)
+                    Dim respUser As IList(Of Contact) = Facade.ContactFacade.GetContactByRole(DocSuiteContext.Current.User.FullUserName, True, parentId:=contactFascicleId, idRole:=roleRestriction)
                     If respUser IsNot Nothing AndAlso respUser.Count > 0 Then
                         uscContattiResp.DataSource = New List(Of ContactDTO) From {New ContactDTO(respUser.First(), ContactDTO.ContactType.Address)}
                         uscContattiResp.DataBind()
                     End If
                 End If
                 AjaxManager.ResponseScripts.Add(FASCICLE_TYPE_SELECTED_CALLBACK)
-
+            Case "SetDefaultContact"
+                Dim contactId As Integer
+                If ajaxModel.Value.Count > 0 AndAlso Integer.TryParse(ajaxModel.Value(0), contactId) Then
+                    Dim contact As Contact = Facade.ContactFacade.GetById(contactId)
+                    If Not contact Is Nothing Then
+                        Dim contacts As New List(Of ContactDTO)
+                        contacts.Add(New ContactDTO With {.Contact = contact, .Type = ContactDTO.ContactType.Address})
+                        uscContattiResp.DataSource = contacts
+                        uscContattiResp.DataBind(contacts.Count)
+                    End If
+                End If
         End Select
     End Sub
 
@@ -197,7 +206,7 @@ Public Class uscFascicleInsert
     Private Sub InitializeAjax()
         AddHandler AjaxManager.AjaxRequest, AddressOf FascInserimento_AjaxRequest
         AjaxManager.AjaxSettings.AddAjaxSetting(uscClassificatore, uscContattiResp)
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscContattiResp)
+        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, uscContattiResp.TreeViewControl)
         AjaxManager.AjaxSettings.AddAjaxSetting(uscClassificatore, uscMetadataRepositorySel)
     End Sub
 
@@ -249,9 +258,6 @@ Public Class uscFascicleInsert
         AjaxManager.ResponseScripts.Add(FASCICLE_TYPE_SELECTED_CALLBACK)
     End Sub
 
-    Public Function GetDynamicValues() As Tuple(Of MetadataDesignerModel, ICollection(Of MetadataValueModel))
-        Return uscDynamicMetadata.GetControlValues()
-    End Function
 
     Private Function TryParseJsonModel(Of T)(json As String) As T
         Try

@@ -24,6 +24,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         private bool enabledLinkButton = false;
         private bool enabledCQRSSync = true;
         private bool enabledCancelMotivation = false;
+        private bool enabledConservation = false;
         private bool hideRegistrationIdentifier = false;
         private bool stampaConformeEnabled = true;
         private bool showArchiveInProtocolSummaryEnabled = true;
@@ -34,6 +35,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         private bool modifyEnabled = true;
         private bool showLastChangedDate = false;
         private bool showLastChangedUser = false;
+        private bool documentTypeCoherencyInArchivingCollaborationDisabled = false;
 
 
         //elenco di controlli
@@ -57,14 +59,18 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
         private string ctlDocument = "Document";
         private string ctlContact = "Contact";
         private string ctlAuthorization = "Authorization";
+        private string ctlTreeList = "TreeList";
 
         private readonly IDictionary<ContactType, string> _contactTypeDescriptions = new Dictionary<ContactType, string>()
         {
             { ContactType.None, "Non definito" },
             { ContactType.Sender, "Mittente" },
             { ContactType.Recipient, "Destinatario" }
-            //{ ContactType.AccountAuthorization, "Utente autorizzato" },
-            //{ ContactType.RoleAuthorization, "Settore autorizzato" }
+        };
+        private readonly IDictionary<CustomActionEnum, string> _customActionsDescriptions = new Dictionary<CustomActionEnum, string>()
+        {
+            { CustomActionEnum.None, "Non definito" },
+            { CustomActionEnum.LeggivaloredachiavedellutentecorrentedaActiveDirectory, "Leggi “valore da chiave” dell’utente corrente da Active Directory" }
         };
 
         public List<string> GetContactTypeDescriptionLabels()
@@ -76,7 +82,17 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             }
             return ListContactLabels;
         }
-        
+
+        public List<string> GetCustomActionDescriptionLabels()
+        {
+            List<string> ListCustomActionLabels = new List<string>();
+            foreach (KeyValuePair<CustomActionEnum, string> item in _customActionsDescriptions)
+            {
+                ListCustomActionLabels.Add(item.Value);
+            }
+            return ListCustomActionLabels;
+        }
+
         public UDSModel ConvertFromJson(JsModel jsonModel)
         {
             if (jsonModel.elements == null)
@@ -122,12 +138,15 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             model.IncrementalIdentityEnabled = incrementalIdentityEnabled;
             model.Alias = alias;
             model.CancelMotivationRequired = enabledCancelMotivation;
+            model.ConservationEnabled = enabledConservation;
             model.HideRegistrationIdentifier = hideRegistrationIdentifier;
             model.StampaConformeEnabled = stampaConformeEnabled;
             model.ShowArchiveInProtocolSummaryEnabled = showArchiveInProtocolSummaryEnabled;
             model.RequiredRevisionUDSRepository = requiredRevisionUDSRepository;
             model.ShowLastChangedDate = showLastChangedDate;
             model.ShowLastChangedUser = showLastChangedUser;
+            model.DocumentTypeCoherencyInArchivingCollaborationDisabled = documentTypeCoherencyInArchivingCollaborationDisabled;
+            model.DocumentTypeCoherencyInArchivingCollaborationDisabledSpecified = true;
 
             model.Contacts = contacts.ToArray();
             model.Documents = new Documents();
@@ -177,6 +196,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 searchable = true,
                 modifyEnable = model.Subject.ModifyEnabled,
                 subject = model.Subject.DefaultValue,
+                alias = model.Alias,
                 clientId = "SubjectId",
                 enabledWorkflow = model.WorkflowEnabled,
                 enabledProtocol = model.ProtocolEnabled,
@@ -186,7 +206,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 enabledMailRoleButton = model.MailRoleButtonEnabled,
                 enabledLinkButton = model.LinkButtonEnabled,
                 enabledCQRSSync = model.DocumentUnitSynchronizeEnabled,
-                alias = model.Alias,
+                enabledConservation = model.ConservationEnabled,
                 enabledCancelMotivation = model.CancelMotivationRequired,
                 incrementalIdentityEnabled = model.IncrementalIdentityEnabled,
                 subjectResultVisibility = model.Subject.ResultVisibility,
@@ -195,7 +215,8 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 showArchiveInProtocolSummaryEnabled = model.ShowArchiveInProtocolSummaryEnabled,
                 requiredRevisionUDSRepository = model.RequiredRevisionUDSRepository,
                 showLastChangedDate = model.ShowLastChangedDate,
-                showLastChangedUser = model.ShowLastChangedUser
+                showLastChangedUser = model.ShowLastChangedUser,
+                documentTypeCoherencyInArchivingCollaborationDisabled = model.DocumentTypeCoherencyInArchivingCollaborationDisabledSpecified && model.DocumentTypeCoherencyInArchivingCollaborationDisabled
             };
 
             if (model.Category != null)
@@ -363,6 +384,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                     searchable = field.Searchable,
                     modifyEnable = field.ModifyEnabled,
                     hiddenField = field.HiddenField,
+                    customActionKey = field.CustomActionKey,
                     clientId = field.ClientId,
                     resultVisibility = field.ResultVisibility,
                     resultPosition = field.ResultPosition
@@ -371,6 +393,16 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 {
                     textField.rows = field.Layout.RowNumber;
                     textField.columns = field.Layout.ColNumber;
+                }
+
+                foreach (KeyValuePair<CustomActionEnum, string> item in _customActionsDescriptions)
+                {
+                    textField.customActions.Add(item.Value);
+                }
+
+                if (_customActionsDescriptions.ContainsKey(field.CustomAction))
+                {
+                    textField.customActionSelected = _customActionsDescriptions[field.CustomAction];
                 }
 
                 return textField;
@@ -498,6 +530,31 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 return lookup;
             }
 
+            if (obj.GetType() == typeof(TreeListField))
+            {
+                TreeListField field = obj as TreeListField;
+                Element treeList = new Element
+                {
+                    ctrlType = ctlTreeList,
+                    label = field.Label,
+                    required = field.Required,
+                    columnName = field.ColumnName,
+                    searchable = field.Searchable,
+                    modifyEnable = field.ModifyEnabled,
+                    hiddenField = field.HiddenField,
+                    clientId = field.ClientId,
+                    resultVisibility = field.ResultVisibility,
+                    resultPosition = field.ResultPosition,
+                    defaultValue = field.DefaultValue
+                };
+                if (field.Layout != null)
+                {
+                    treeList.rows = field.Layout.RowNumber;
+                    treeList.columns = field.Layout.ColNumber;
+                }
+                return treeList;
+            }
+
             return null;
         }
 
@@ -580,6 +637,9 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 ctrlType = ctlAuthorization,
                 label = auth.Label,
                 enableMultiAuth = auth.AllowMultiAuthorization,
+                allowMultiUserAuthorization = auth.AllowMultiUserAuthorization,
+                userAuthorizationEnabled = auth.UserAuthorizationEnabled,
+                myAuthorizedRolesEnabled = auth.MyAuthorizedRolesEnabled,
                 required = auth.Required,
                 searchable = auth.Searchable,
                 clientId = auth.ClientId,
@@ -624,6 +684,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             parseDict.Add(ctlDocument, ParseDocument);
             parseDict.Add(ctlContact, ParseContact);
             parseDict.Add(ctlAuthorization, ParseAuthorization);
+            parseDict.Add(ctlTreeList, ParseTreeList);
 
             return parseDict;
         }
@@ -642,6 +703,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             enabledWorkflow = el.enabledWorkflow;
             enabledProtocol = el.enabledProtocol;
             enabledCancelMotivation = el.enabledCancelMotivation;
+            enabledConservation = el.enabledConservation;
 
             hideRegistrationIdentifier = el.hideRegistrationIdentifier;
             stampaConformeEnabled = el.stampaConformeEnabled;
@@ -660,6 +722,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             resultVisibility = el.subjectResultVisibility;
             showLastChangedDate = el.showLastChangedDate;
             showLastChangedUser = el.showLastChangedUser;
+            documentTypeCoherencyInArchivingCollaborationDisabled = el.documentTypeCoherencyInArchivingCollaborationDisabled;
 
             SectionExt section = sections.GetCurrent();
 
@@ -696,10 +759,12 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 ModifyEnabled = el.modifyEnable,
                 HiddenField = el.hiddenField,
                 Searchable = el.searchable,
+                CustomActionKey = el.customActionKey,
                 ClientId = el.clientId,
                 ColumnName = Utils.SafeSQLName(el.label),
                 ResultVisibility = el.resultVisibility,
                 ResultPosition = el.resultPosition,
+                CustomAction = CustomActionEnum.None,
                 Layout = new LayoutPosition
                 {
                     PanelId = el.columns.ToString(),
@@ -708,7 +773,11 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 }
             };
 
-
+            field.CustomAction = CustomActionEnum.None;
+            if (!string.IsNullOrEmpty(el.customActionSelected) && _customActionsDescriptions.Any(x => x.Value == el.customActionSelected))
+            {
+                field.CustomAction = _customActionsDescriptions.Single(x => x.Value == el.customActionSelected).Key;
+            }
 
             sections.AddCtrl(field);
             return true;
@@ -732,6 +801,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 ResultPosition = el.resultPosition,
                 MultipleValues = el.multipleValues,
                 MultipleValuesSpecified = el.multipleValues,
+                CustomAction = CustomActionEnum.None,
                 Layout = new LayoutPosition
                 {
                     PanelId = el.columns.ToString(),
@@ -767,6 +837,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 ColumnName = Utils.SafeSQLName(el.label),
                 ResultVisibility = el.resultVisibility,
                 ResultPosition = el.resultPosition,
+                CustomAction = CustomActionEnum.None,
                 Layout = new LayoutPosition
                 {
                     PanelId = el.columns.ToString(),
@@ -800,6 +871,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 ColumnName = Utils.SafeSQLName(el.label),
                 ResultVisibility = el.resultVisibility,
                 ResultPosition = el.resultPosition,
+                CustomAction = CustomActionEnum.None,
                 Layout = new LayoutPosition
                 {
                     PanelId = el.columns.ToString(),
@@ -836,6 +908,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 MinValueSpecified = el.minValue.HasValue,
                 MaxValue = el.maxValue ?? 0,
                 MaxValueSpecified = el.maxValue.HasValue,
+                CustomAction = CustomActionEnum.None,
                 Layout = new LayoutPosition
                 {
                     PanelId = el.columns.ToString(),
@@ -865,6 +938,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 HiddenField = el.hiddenField,
                 ClientId = el.clientId,
                 ColumnName = Utils.SafeSQLName(el.label),
+                CustomAction = CustomActionEnum.None,
                 Layout = new LayoutPosition
                 {
                     PanelId = el.columns.ToString(),
@@ -894,6 +968,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 ResultPosition = el.resultPosition,
                 MultipleValues = el.multipleValues,
                 MultipleValuesSpecified = el.multipleValues,
+                CustomAction = CustomActionEnum.None,
                 Layout = new LayoutPosition
                 {
                     PanelId = el.columns.ToString(),
@@ -958,7 +1033,7 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
 
             return true;
         }
-        
+
         private bool ParseContact(Element el)
         {
             SectionExt section = sections.GetCurrent();
@@ -1006,7 +1081,10 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
             authorizations = new Authorizations
             {
                 Label = el.label,
+                AllowMultiUserAuthorization = el.allowMultiUserAuthorization,
+                UserAuthorizationEnabled = el.userAuthorizationEnabled,
                 AllowMultiAuthorization = el.enableMultiAuth,
+                MyAuthorizedRolesEnabled = el.myAuthorizedRolesEnabled,
                 Required = el.required,
                 Searchable = el.searchable,
                 ClientId = el.clientId,
@@ -1021,6 +1099,33 @@ namespace VecompSoftware.DocSuiteWeb.UDSDesigner
                 }
             };
             authorizations.ClientId = string.Concat("uds_auth_", el.collectionType, "_", section.Ctrls.Count);
+            return true;
+        }
+
+        private bool ParseTreeList(Element el)
+        {
+            TreeListField field = new TreeListField
+            {
+                Label = el.label,
+                Required = el.required,
+                Searchable = el.searchable,
+                ModifyEnabled = el.modifyEnable,
+                HiddenField = el.hiddenField,
+                ClientId = el.clientId,
+                ColumnName = Utils.SafeSQLName(el.label),
+                ResultVisibility = el.resultVisibility,
+                ResultPosition = el.resultPosition,
+                DefaultValue = el.defaultValue,
+                CustomAction = CustomActionEnum.None,
+                Layout = new LayoutPosition
+                {
+                    PanelId = el.columns.ToString(),
+                    ColNumber = el.columns,
+                    RowNumber = el.rows
+                }
+            };
+
+            sections.AddCtrl(field);
             return true;
         }
     }

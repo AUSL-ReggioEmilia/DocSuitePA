@@ -68,7 +68,7 @@ Partial Class UtltUserGroup
         tblRicerca.Rows.AddRaw(Nothing, {4}, Nothing, {"Gruppi (Security Group)"}, {"head"})
         Dim list As IList(Of SecurityGroups) = CurrentSecurityGroups
         For Each sg As SecurityGroups In list.OrderBy(Function(item) item.GroupName)
-            tblRicerca.Rows.AddRaw(Nothing, {4}, Nothing, {String.Format("{0} [{1}]", sg.GroupName, sg.FullIncrementalPath)}, Nothing)
+            tblRicerca.Rows.AddRaw(Nothing, {4}, Nothing, {String.Format("{0} [{1}]", sg.GroupName, sg.Id)}, Nothing)
             groups.Add(sg.GroupName)
         Next
         If groups.IsNullOrEmpty() Then
@@ -155,7 +155,7 @@ Partial Class UtltUserGroup
     End Sub
 
     Private Sub PrintSettori(environment As DSWEnvironment, ByVal role As Role)
-        Dim roles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(txtDomain.Text, txtAccount.Text, environment, 1, True, "", False, role)
+        Dim roles As IList(Of Role) = Facade.RoleFacade.GetUserRoles(txtDomain.Text, txtAccount.Text, environment, 1, True, "", False, role, CurrentTenant.TenantAOO.UniqueId)
         If roles.IsNullOrEmpty() Then
             tblRicerca.Rows.AddRaw(Nothing, {4}, Nothing, {"nessun elemento trovato"}, {"label"})
             Exit Sub

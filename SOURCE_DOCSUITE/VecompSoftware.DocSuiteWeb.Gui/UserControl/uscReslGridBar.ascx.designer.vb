@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscReslGridBar
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscReslGridBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''RadWindowManagerReslGridBar control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class uscReslGridBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadWindowManagerReslGridBar As Global.Telerik.Web.UI.RadWindowManager
-    
+
     '''<summary>
     '''windowFlussoElenco control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class uscReslGridBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents windowFlussoElenco As Global.Telerik.Web.UI.RadWindow
-    
+
     '''<summary>
     '''pnlGridBarWorkflow control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class uscReslGridBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlGridBarWorkflow As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnWorkflow control.
     '''</summary>
@@ -56,8 +56,8 @@ Partial Public Class uscReslGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnWorkflow As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnWorkflow As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''pnlGridBar control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class uscReslGridBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlGridBar As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnAdd control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class uscReslGridBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnAdd As Global.VecompSoftware.DocSuiteWeb.Presentation.PromptClickOnceButton
-    
+
     '''<summary>
     '''btnRemove control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class uscReslGridBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnRemove As Global.VecompSoftware.DocSuiteWeb.Presentation.PromptClickOnceButton
-    
+
     '''<summary>
     '''btnStampa control.
     '''</summary>
@@ -92,8 +92,8 @@ Partial Public Class uscReslGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnStampa As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnStampa As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''btnDocuments control.
     '''</summary>
@@ -101,8 +101,8 @@ Partial Public Class uscReslGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnDocuments As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnDocuments As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''btnSelectAll control.
     '''</summary>
@@ -110,8 +110,8 @@ Partial Public Class uscReslGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnSelectAll As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnSelectAll As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''btnDeselectAll control.
     '''</summary>
@@ -119,8 +119,8 @@ Partial Public Class uscReslGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnDeselectAll As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnDeselectAll As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''btnSetRead control.
     '''</summary>
@@ -128,8 +128,8 @@ Partial Public Class uscReslGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnSetRead As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnSetRead As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''btnPubblicaWeb control.
     '''</summary>
@@ -137,8 +137,8 @@ Partial Public Class uscReslGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnPubblicaWeb As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnPubblicaWeb As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''btnValida control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class uscReslGridBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnValida As Global.VecompSoftware.DocSuiteWeb.Presentation.PromptClickOnceButton
-    
+
     '''<summary>
     '''pnlGridBarRegion control.
     '''</summary>
@@ -156,7 +156,7 @@ Partial Public Class uscReslGridBar
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlGridBarRegion As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnShowRegion control.
     '''</summary>
@@ -164,8 +164,8 @@ Partial Public Class uscReslGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnShowRegion As Global.System.Web.UI.WebControls.Button
-    
+    Protected WithEvents btnShowRegion As Global.Telerik.Web.UI.RadButton
+
     '''<summary>
     '''btnShowAll control.
     '''</summary>
@@ -173,5 +173,5 @@ Partial Public Class uscReslGridBar
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnShowAll As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnShowAll As Global.Telerik.Web.UI.RadButton
 End Class

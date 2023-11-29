@@ -14,7 +14,7 @@ Partial Public Class ProtRolesLog
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         InitializeAjaxSettings()
         If Not Page.IsPostBack Then
-            Title = $"Protocollo - Movimentazioni {CurrentProtocol.Id}"
+            Title = $"Protocollo - movimentazioni {CurrentProtocol.Id}"
             Initialize()
         End If
 

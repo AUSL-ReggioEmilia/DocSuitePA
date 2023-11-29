@@ -42,6 +42,7 @@ import FascicleCustomActionModel = require('App/Models/Commons/FascicleCustomAct
 import uscCustomActionsRest = require('./uscCustomActionsRest');
 import PageClassHelper = require('App/Helpers/PageClassHelper');
 import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
+import ContactFilterEntityType = require('App/Models/Commons/ContactFilterEntityType');
 
 class uscProcessDetails {
 
@@ -93,7 +94,9 @@ class uscProcessDetails {
     lblRegistrationDateId: string;
     lblNoteId: string;
     uscCustomActionsRestId: string;
+    activityFascicleEnabled: boolean;
 
+    public static pftJsonModel: string;
     public static InformationDetails_PanelName: string = "informationDetails";
     public static CategoryInformationDetails_PanelName: string = "categoryInformationDetails";
     public static RoleDetails_PanelName: string = "roleDetails";
@@ -243,6 +246,7 @@ class uscProcessDetails {
 
             this._uscFascicleFolders.addNewFolder(model);
             this._uscFascicleFolders.setManageFascicleFolderVisibility(true);
+            PageClassHelper.callUserControlFunctionSafe<uscContattiSelRest>(this.uscContactRestId).done((instance) => instance.setToolbarVisibility(false));
         }
 
         this._uscContactRest = <uscContattiSelRest>$(`#${this.uscContactRestId}`).data();
@@ -257,12 +261,21 @@ class uscProcessDetails {
 
     private registerUscRoleRestEventHandlers(): void {
         let uscRoleRestEventsDictionary = this._uscRoleRest.uscRoleRestEvents;
-        this._uscRoleRest.registerEventHandler(uscRoleRestEventsDictionary.RoleDeleted, this.deleteRolePromise, this.uscRoleRestId);
-        this._uscRoleRest.registerEventHandler(uscRoleRestEventsDictionary.NewRolesAdded, this.updateRolesPromise, this.uscRoleRestId);
-        this._uscResponsibleRoles.registerEventHandler(uscRoleRestEventsDictionary.RoleDeleted, this.deleteRolePromise, this.uscResponsibleRolesId);
-        this._uscResponsibleRoles.registerEventHandler(uscRoleRestEventsDictionary.NewRolesAdded, this.updateRolesPromise, this.uscResponsibleRolesId);
-        this._uscAuthorizedRoles.registerEventHandler(uscRoleRestEventsDictionary.RoleDeleted, this.deleteRolePromise, this.uscAuthorizedRolesId);
-        this._uscAuthorizedRoles.registerEventHandler(uscRoleRestEventsDictionary.NewRolesAdded, this.updateRolesPromise, this.uscAuthorizedRolesId);
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRestId)
+            .done((instance) => {
+                instance.registerEventHandler(uscRoleRestEventsDictionary.RoleDeleted, this.deleteRolePromise, this.uscRoleRestId);
+                instance.registerEventHandler(uscRoleRestEventsDictionary.NewRolesAdded, this.updateRolesPromise, this.uscRoleRestId);
+            });
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscResponsibleRolesId)
+            .done((instance) => {
+                instance.registerEventHandler(uscRoleRestEventsDictionary.RoleDeleted, this.deleteRolePromise, this.uscResponsibleRolesId);
+                instance.registerEventHandler(uscRoleRestEventsDictionary.NewRolesAdded, this.updateRolesPromise, this.uscResponsibleRolesId);
+            });
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscAuthorizedRolesId)
+            .done((instance) => {
+                instance.registerEventHandler(uscRoleRestEventsDictionary.RoleDeleted, this.deleteRolePromise, this.uscAuthorizedRolesId);
+                instance.registerEventHandler(uscRoleRestEventsDictionary.NewRolesAdded, this.updateRolesPromise, this.uscAuthorizedRolesId);
+            });
     }
 
     private registerUscContattiRestEventHandlers(): void {
@@ -318,6 +331,10 @@ class uscProcessDetails {
                     case this.uscResponsibleRolesId: {
                         promise.resolve(uscProcessDetails.responsibleRole ? [uscProcessDetails.responsibleRole] : []);
                         uscProcessDetails.responsibleRole = null;
+                        PageClassHelper.callUserControlFunctionSafe<uscContattiSelRest>(this.uscContactRestId).done((instance) => {
+                            instance.deleteAllContacts(false);
+                            instance.setToolbarVisibility(false);
+                        });
                         break;
                     }
                     case this.uscAuthorizedRolesId: {
@@ -394,6 +411,11 @@ class uscProcessDetails {
                         }
                         if (newAddedRoles.length > 0) {
                             uscProcessDetails.responsibleRole = newAddedRoles[0];
+                            PageClassHelper.callUserControlFunctionSafe<uscContattiSelRest>(this.uscContactRestId).done((instance) => {
+                                instance.deleteAllContacts(false);
+                                instance.setContactFilterFromEntity(ContactFilterEntityType.Role, uscProcessDetails.responsibleRole.IdRole);
+                                instance.setToolbarVisibility(true);
+                            });
                             promise.resolve([uscProcessDetails.responsibleRole]);
                         }
                         else {
@@ -527,9 +549,12 @@ class uscProcessDetails {
         }
         this._uscResponsibleRoles.renderRolesTree([]);
         this._uscAuthorizedRoles.renderRolesTree([]);
-        this._uscAuthorizedRoles.disableRaciRoleButton();
 
-        this._uscFascicleFolders.fileManagementButtonsVisibility(false);
+        PageClassHelper.callUserControlFunctionSafe<UscFascicleFolders>(this.uscFascicleFoldersId)
+            .done((instance) => {
+                instance.fileManagementButtonsVisibility(false);
+            });
+
         if (uscProcessDetails.selectedEntityType === ProcessNodeType.ProcessFascicleTemplate) {
             uscProcessDetails.responsibleRole = null;
             uscProcessDetails.authorizedRoles = [];
@@ -608,7 +633,7 @@ class uscProcessDetails {
             if (dossierFolder.DossierFolderRoles && dossierFolder.DossierFolderRoles.length > 0) {
                 this._uscRoleRest.renderRolesTree(dossierFolder.DossierFolderRoles.map(x => x.Role));
             } else {
-                this._uscRoleRest.clearRoleTreeView();
+                this._uscRoleRest.clearRoleTreeView(false);
             }
         }, (error) => {
             this._ajaxLoadingPanel.hide(this._pnlWorkflowDetails.get_element().id);
@@ -701,6 +726,7 @@ class uscProcessDetails {
         processFascicleTemplate.Process.UniqueId = uscProcessDetails.selectedProcessId;
         this.populateFascicleTemplateInfo().then((jsonModel) => {
             processFascicleTemplate.JsonModel = jsonModel;
+            uscProcessDetails.pftJsonModel = jsonModel;
             processFascicleTemplate.Name = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_PROCESS_FASCICLE_TEMPLATE_NAME);
             sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_PROCESS_FASCICLE_TEMPLATE_NAME, JSON.stringify(processFascicleTemplate));
             this._processFascicleTemplateService.update(processFascicleTemplate, (data) => {
@@ -768,6 +794,7 @@ class uscProcessDetails {
         if (processFascicleTemplate.JsonModel === "") {
             return;
         }
+        uscProcessDetails.pftJsonModel = processFascicleTemplate.JsonModel;
         let fascicle: FascicleModel = JSON.parse(processFascicleTemplate.JsonModel);
         this._rtbFascicleSubject.set_value(fascicle.FascicleObject);
         if (fascicle.FascicleType) {
@@ -778,6 +805,10 @@ class uscProcessDetails {
         if (fascicle.FascicleRoles.filter(x => x.IsMaster === true).map(x => x.Role).length > 0) {
             uscProcessDetails.responsibleRole = fascicle.FascicleRoles.filter(x => x.IsMaster === true).map(x => x.Role)[0];
             this._uscResponsibleRoles.renderRolesTree([uscProcessDetails.responsibleRole]);
+            PageClassHelper.callUserControlFunctionSafe<uscContattiSelRest>(this.uscContactRestId).done((instance) => {
+                instance.setContactFilterFromEntity(ContactFilterEntityType.Role, uscProcessDetails.responsibleRole.IdRole);
+                instance.setToolbarVisibility(true);
+            });
         }
         uscProcessDetails.authorizedRoles = fascicle.FascicleRoles.filter(x => x.IsMaster === false).map(x => x.Role);
         uscProcessDetails.raciRoles = fascicle.FascicleRoles
@@ -914,6 +945,9 @@ class uscProcessDetails {
 
     setFascicleTypeItem(comboBox: Telerik.Web.UI.RadComboBox, fascicleTypes: FascicleType[]): void {
         for (let itemType of fascicleTypes) {
+            if (!this.activityFascicleEnabled && itemType === FascicleType.Activity) {
+                continue;
+            }
             let item = new Telerik.Web.UI.RadComboBoxItem();
             item.set_text(this._enumHelper.getFascicleTypeDescription(itemType));
             item.set_value(FascicleType[itemType]);
@@ -983,7 +1017,6 @@ class uscProcessDetails {
     rcbFascicleType_selectedIndexChanged = (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
         let fascicleIsProcedureOrDefault: boolean = ["", FascicleType[FascicleType.Procedure]].indexOf(args.get_item().get_value()) > -1;
         $("#uscContactRestFieldset").toggle(fascicleIsProcedureOrDefault);
-        $("#responsibleRoleFieldset").toggle(fascicleIsProcedureOrDefault);
         this._rbFascicleVisibilityType.set_visible(fascicleIsProcedureOrDefault);
     }
 

@@ -11,17 +11,6 @@
     <script type="text/javascript">
         //<![CDATA[
 
-        function OpenParerDetail(id) {
-            var wnd = window.radopen("<%=ParerDetailUrl() %>?Type=Resl&id=" + id, "parerDetailWindow");
-            wnd.setSize(400, 300);
-            wnd.set_behaviors(Telerik.Web.UI.WindowBehaviors.Close);
-            wnd.set_visibleStatusbar(false);
-            wnd.set_modal(true);
-            // wnd.add_close(OnClientClose);
-            wnd.center();
-            return false;
-        }
-
         function OnClientClose(sender, eventArgs) {
             var returnValue = sender.argument;
             if (returnValue) {
@@ -56,7 +45,7 @@
     <%--resolution--%>
     <table id="tblResolution" class="datatable" runat="server">
         <tr>
-            <th colspan="4"></th>
+            <th colspan="4">Informazioni</th>
         </tr>
         <tr>
             <td class="label" style="width: 20%">
@@ -90,6 +79,109 @@
             <td></td>
             <td style="vertical-align: middle;" colspan="3">
                 <b><%=GetAdoptionTrasmissionLabel()%></b>
+            </td>
+        </tr>
+        <tr runat="server" id="tblAmount" visible="false">
+            <td runat="server" class="label">
+                <asp:Label ID="lblAmount" runat="server" Text="Importo / impegno di spesa:" />
+            </td>
+            <td runat="server">
+                <asp:Label runat="server" ID="lblAmountValue" />
+            </td>
+            <td class="label"></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="label" style="width: 20%" id="tdStatusDescription" runat="server">Stato:</td>
+            <td style="width: 30%" id="tdStatusDescriptionValue" runat="server">
+                <%= GetStatusDescription() %>
+            </td>
+            <td class="label" style="width: 20%">Causale:</td>
+            <td style="width: 30%" id="tdAccountingSectional">
+                <%=CurrentResolution.LastChangedReason%>
+            </td>
+        </tr>
+        <tr>
+            <td class="label" style="width: 20%" id="tdConservationDescription" runat="server" visible="false">Collaborazione:</td>
+            <td>
+                <asp:HyperLink runat="server" ID="collaborationLink"></asp:HyperLink>
+            </td>
+        </tr>
+        <tr>
+            <td class="label" style="width: 20%" id="tdLastConfirmView" runat="server">Controllato/vistato da:</td>
+            <td style="width: 30%" id="tdLastConfirmViewValue" runat="server" colspan="3">
+                <%=GetLastResolutioLog%>
+            </td>
+            <td id="tdTakeCharge" runat="server" class="label" style="width: 20%" visible="false">Preso in carico da:</td>
+            <td style="width: 30%">
+                <asp:Label runat="server" ID="lblUserTakeCharge" Visible="false"></asp:Label>
+            </td>
+        </tr>
+        <tr>
+            <td class="label" style="width: 20%">Contenitore:</td>
+            <td style="width: 30%; vertical-align: middle;">
+                <%=CurrentResolution.Container.Name%>
+            </td>
+            <td id="tdPubblication" runat="server" class="label" style="width: 20%">Pubb. Internet:</td>
+            <td style="width: 30%">
+                <asp:CheckBox ID="chkPublication" runat="server" Enabled="false" />
+            </td>
+        </tr>
+        <tr runat="server" id="tblWebPubblicationState">
+            <td class="label" style="width: 20%; height: 21px;"></td>
+            <td style="vertical-align: middle; width: 30%; height: 21px;"></td>
+            <td runat="server" class="label" style="width: 20%; height: 21px;">
+                <asp:Label ID="lbStatoWeb" runat="server" Text="Albo Online:" />
+            </td>
+            <td id="WebStateTD" style="width: 30%; height: 21px;">
+                <asp:Label runat="server" ID="_webStateLabel" />
+            </td>
+        </tr>
+        <tr runat="server" id="tblWebPublicationData">
+            <td class="label" style="width: 20%"></td>
+            <td style="vertical-align: middle; width: 30%"></td>
+            <td runat="server" class="label" style="width: 20%">
+                <asp:Label ID="lbDataPubbWeb" runat="server" Text="Data pub. Albo Online:" />
+            </td>
+            <td runat="server" style="width: 30%">
+                <asp:Label runat="server" ID="_webPublicationDateLabel" />
+            </td>
+        </tr>
+        <tr runat="server" id="tblWebRetireData">
+            <td class="label" style="width: 20%; height: 21px;"></td>
+            <td style="vertical-align: middle; width: 30%; height: 21px;"></td>
+            <td runat="server" class="label" style="width: 20%; height: 21px;">
+                <asp:Label ID="lbDataRetireWeb" runat="server" Text="Data ritiro Albo Online:" />
+            </td>
+            <td runat="server" style="width: 30%; height: 21px;">
+                <asp:Label runat="server" ID="_webRevokeDateLabel" />
+            </td>
+        </tr>
+        <tr>
+            <td id="tdCollaboration" runat="server" class="label" style="width: 20%" visible="false">Collaborazione:</td>
+            <td style="width: 30%; vertical-align: middle;" colspan="3">
+                <asp:HyperLink runat="server" ID="cmdCollaboration" Visible="false" />
+            </td>
+            <td class="label" style="width: 20%"></td>
+            <td style="vertical-align: middle; width: 30%"></td>
+        </tr>
+        <tr id="trConservationStatus" runat="server">
+            <td class="label" style="width: 15%">Stato conservazione:</td>
+            <td style="width: 35%">
+                <asp:Image ID="imgConservationIcon" runat="server"></asp:Image>
+                <asp:HyperLink ID="lblConservationStatus" runat="server" Target="_blank"></asp:HyperLink>
+            </td>
+            <td class="label" style="width: 15%">
+                <asp:Label ID="conservationUriLabel" Visible="false" runat="server">URI:</asp:Label>
+            </td>
+            <td style="width: 35%">
+                <asp:Label ID="lblConservationUri" Visible="false" runat="server"></asp:Label>
+            </td>
+        </tr>
+        <tr id="trUltimaPagina" runat="server">
+            <td class="label" style="width: 20%">Atto dematerializzato:</td>
+            <td style="width: 30%">
+                <asp:Label ID="lbDataDematerializzazione" runat="server"></asp:Label>
             </td>
         </tr>
     </table>
@@ -181,30 +273,6 @@
             </td>
         </tr>
     </table>
-    <%--Stato--%>
-    <table id="tblStatus" class="datatable" runat="server">
-        <tr id="trStatusTitle">
-            <th colspan="2">Stato</th>
-        </tr>
-        <tr id="trStatusDescrition" runat="server">
-            <td class="label" style="width: 20%">Stato:</td>
-            <td style="width: 80%" id="tdStatusDescription">
-                <%= GetStatusDescription() %>
-            </td>
-        </tr>
-        <tr id="trLastChangedReason" runat="server">
-            <td class="label" style="width: 20%">Causale:</td>
-            <td style="width: 80%" id="tdAccountingSectional">
-                <%=CurrentResolution.LastChangedReason%>
-            </td>
-        </tr>
-        <tr id="trLastConfrimView" runat="server">
-            <td class="label" style="width: 20%">Controllato da:</td>
-            <td style="width: 80%">
-                <%=GetLastResolutioLog%>
-            </td>
-        </tr>
-    </table>
     <%--Oggetto Privacy--%>
     <table id="tblObjectPrivacy" runat="server" class="datatable" visible="false">
         <tr>
@@ -258,9 +326,9 @@
     <%--Dati Economici--%>
     <table class="datatable" id="tblEconomicData" runat="server">
         <tr>
-            <th colspan="4">Dati Economici</th>
+            <th colspan="4" id="lblEconomicDataTitle" runat="server">Dati Economici</th>
         </tr>
-        <tr>
+        <tr Visible="true" id="rowEconomicDataContratto" runat="server">
             <td style="width: 20%;" class="label">Posizione:
             </td>
             <td style="width: 20%;">
@@ -273,13 +341,13 @@
             </td>
         </tr>
         <tr>
-            <td style="width: 20%;" class="label">Tipo di Gara:
+            <td style="width: 20%;" class="label" id="lblBidType">Tipo di Gara:
             </td>
             <td style="width: 80%;" colspan="3">
                 <%=GetBidTypeDescription()%>
             </td>
         </tr>
-        <tr>
+        <tr Visible="true" id="rowEconomicDataFornitore" runat="server">
             <td style="width: 20%;" class="label">Fornitore:
             </td>
             <td style="width: 80%;" colspan="3">
@@ -396,95 +464,6 @@
     </table>
     <%--Multiclassificazioni--%>
     <usc:uscMulticlassificationRest runat="server" ID="uscMulticlassificationRest" Type="Resl" Visible="false" />
-    <%--PARER e Atto dematerializzato--%>
-    <table id="tblParer" class="datatable" runat="server" visible="false">
-        <tr>
-            <th colspan="3" style="width: 100%; border-right: 0;">Stato di conservazione</th>
-            <th>
-                <asp:ImageButton runat="server" ID="parerInfo" Style="float: right;" ImageUrl="~/Comm/Images/info.png" /></th>
-        </tr>
-        <tr>
-            <td colspan="4" style="margin: 5px">
-                <asp:Image runat="server" ID="parerIcon" Style="vertical-align: middle" />
-                <asp:Label runat="server" ID="parerLabel" Text="" />
-            </td>
-        </tr>
-        <tr>
-            <th colspan="4">Atto dematerializzato</th>
-        </tr>
-        <tr>
-            <td class="label" style="width: 20%">Atto dematerializzato:</td>
-            <td colspan="3" style="width: 80%">
-                <asp:Label ID="lbDataDematerializzazione" runat="server"></asp:Label></td>
-        </tr>
-        <tr>
-            <td class="label" style="width: 20%">Data versamento:</td>
-            <td style="width: 20%">
-                <asp:Label ID="lbDataVersamento" runat="server"></asp:Label></td>
-            <td class="label" style="width: 20%">Collegamento:</td>
-            <td style="width: 40%">
-                <asp:HyperLink ID="linkUriVersamento" runat="server" Text="Parer"></asp:HyperLink></td>
-        </tr>
-    </table>
-    <%--Altre--%>
-    <table class="datatable" id="tblOther" runat="server">
-        <tr>
-            <th colspan="4">Altre</th>
-        </tr>
-        <tr>
-            <td class="label" style="width: 20%">Contenitore:</td>
-            <td style="width: 30%; vertical-align: middle;">
-                <%=CurrentResolution.Container.Name%>
-            </td>
-            <td id="tbPublicationLabel" runat="server" class="label" style="width: 20%">
-                <asp:Label runat="server" ID="lblPubblication" Text="Pubb. Internet:" />
-            </td>
-            <td id="tbPublication" runat="server" style="width: 30%">
-                <asp:CheckBox ID="chkPublication" runat="server" Enabled="false" />
-            </td>
-        </tr>
-        <tr runat="server" id="tblWebPubblicationState">
-            <td class="label" style="width: 20%; height: 21px;"></td>
-            <td style="vertical-align: middle; width: 30%; height: 21px;"></td>
-            <td runat="server" class="label" style="width: 20%; height: 21px;">
-                <asp:Label ID="lbStatoWeb" runat="server" Text="Albo Online:" />
-            </td>
-            <td id="WebStateTD" style="width: 30%; height: 21px;">
-                <asp:Label runat="server" ID="_webStateLabel" />
-            </td>
-        </tr>
-        <tr runat="server" id="tblWebPublicationData">
-            <td class="label" style="width: 20%"></td>
-            <td style="vertical-align: middle; width: 30%"></td>
-            <td runat="server" class="label" style="width: 20%">
-                <asp:Label ID="lbDataPubbWeb" runat="server" Text="Data pub. Albo Online:" />
-            </td>
-            <td runat="server" style="width: 30%">
-                <asp:Label runat="server" ID="_webPublicationDateLabel" />
-            </td>
-        </tr>
-        <tr runat="server" id="tblWebRetireData">
-            <td class="label" style="width: 20%; height: 21px;"></td>
-            <td style="vertical-align: middle; width: 30%; height: 21px;"></td>
-            <td runat="server" class="label" style="width: 20%; height: 21px;">
-                <asp:Label ID="lbDataRetireWeb" runat="server" Text="Data ritiro Albo Online:" />
-            </td>
-            <td runat="server" style="width: 30%; height: 21px;">
-                <asp:Label runat="server" ID="_webRevokeDateLabel" />
-            </td>
-        </tr>
-        <tr runat="server" id="tblSettoriAutoriz">
-            <td class="label" style="width: 20%">Settori Autoriz.:</td>
-            <td style="width: 80%; vertical-align: middle;" colspan="3">&nbsp;
-            </td>
-        </tr>
-        <tr id="collaborationPanel" runat="server" visible="false">
-            <td class="label" style="width: 20%">Collaborazione:</td>
-            <td style="width: 80%; vertical-align: middle;" colspan="3">
-                <asp:HyperLink runat="server" ID="cmdCollaboration" />
-            </td>
-        </tr>
-    </table>
     <%--Web Publication Piacenza--%>
     <asp:Panel ID="AuslPcWebPublication" runat="server">
         <table id="tblWebPublication" class="datatable" runat="server" visible="false" border="1">

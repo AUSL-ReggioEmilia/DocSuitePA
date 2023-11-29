@@ -293,7 +293,7 @@ Public Class ReslJournalAdd
             item.LastPage = Integer.Parse(PagTo.Text)
         End If
 
-        item.IsActive = 1
+        item.IsActive = True
 
         ' Salvo tutte le Resolution
         For Each r As Resolution In ResolutionJournalPrinter.GetResolutionsForReport(CurrentTemplate, d)

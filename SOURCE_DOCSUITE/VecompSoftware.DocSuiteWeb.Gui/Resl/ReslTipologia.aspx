@@ -21,6 +21,7 @@
                     reslTipologia.wndResolutionKindId = "<%= wndResolutionKind.ClientID %>";
                     reslTipologia.txtKindNameId = "<%= txtKindName.ClientID %>";
                     reslTipologia.rcbKindActiveId = "<%= rcbKindActive.ClientID %>";
+                    reslTipologia.rcbKindAmountEnabledId = "<%= rcbKindAmountEnabled.ClientID %>";
                     reslTipologia.btnConfirmId = "<%= btnConfirm.ClientID %>";
                     reslTipologia.uscResolutionKindDetailsId = "<%= uscResolutionKindDetails.PageContent.ClientID %>";
                     reslTipologia.uscResolutionKindSeriesId = "<%= uscResolutionKindSeries.PageContent.ClientID %>";
@@ -46,6 +47,7 @@
                             <b>Tipologia:</b>
                             <telerik:RadTextBox runat="server" ID="txtKindName" Style="margin-bottom: 5px;" Width="100%"></telerik:RadTextBox>
                             <asp:CheckBox runat="server" ID="rcbKindActive" Text="Attivo"></asp:CheckBox>
+                            <asp:CheckBox runat="server" ID="rcbKindAmountEnabled" Text="Abilita gestione importo"></asp:CheckBox>
                             <div class="window-footer-wrapper">
                                 <telerik:RadButton runat="server" ID="btnConfirm" SingleClick="true" SingleClickText="Attendere..." AutoPostBack="false" Text="Conferma" />
                             </div>

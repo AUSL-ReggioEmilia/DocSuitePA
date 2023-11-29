@@ -96,7 +96,7 @@ namespace VecompSoftware.DocSuiteWeb.API
             {
                 return ActionHelper.ImpersonatedAction(() =>
                 {
-                    var dtos = FacadeFactory.Instance.PosteOnLineAccountFacade.GetUserAccounts().Select(m => new MailboxDTO().CopyFrom(m)).ToArray();
+                    var dtos = FacadeFactory.Instance.PosteOnLineAccountFacade.GetUserAccounts(ConfigurationHelper.CurrentTenantAOOId).Select(m => new MailboxDTO().CopyFrom(m)).ToArray();
                     return dtos.SerializeAsResponse();
                 });
             }
@@ -459,7 +459,7 @@ namespace VecompSoftware.DocSuiteWeb.API
 
         private string SearchEmailAddressFromCode(string code)
         {
-            IList<Contact> contacts = FacadeFactory.Instance.ContactFacade.GetContactBySearchCode(code, 1);
+            IList<Contact> contacts = FacadeFactory.Instance.ContactFacade.GetContactBySearchCode(code, true);
             if(contacts.Count != 1)
             {
                 throw new Exception("Il contatto scelto non esiste o è ambiguo");

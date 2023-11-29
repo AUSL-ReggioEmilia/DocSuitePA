@@ -23,96 +23,6 @@ Partial Public Class TbltTenant
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
 
     '''<summary>
-    '''rwContainerSelector control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rwContainerSelector As Global.Telerik.Web.UI.RadWindow
-
-    '''<summary>
-    '''ContainerSelectorUpdatePanel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ContainerSelectorUpdatePanel As Global.System.Web.UI.UpdatePanel
-
-    '''<summary>
-    '''cbContainer control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cbContainer As Global.Telerik.Web.UI.RadComboBox
-
-    '''<summary>
-    '''btnContainerSelectorOk control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnContainerSelectorOk As Global.Telerik.Web.UI.RadButton
-
-    '''<summary>
-    '''btnContainerSelectorCancel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnContainerSelectorCancel As Global.Telerik.Web.UI.RadButton
-
-    '''<summary>
-    '''rwPECMailBoxSelector control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rwPECMailBoxSelector As Global.Telerik.Web.UI.RadWindow
-
-    '''<summary>
-    '''PECMailBoxSelectorUpdatePanel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents PECMailBoxSelectorUpdatePanel As Global.System.Web.UI.UpdatePanel
-
-    '''<summary>
-    '''cbPECMailBoxSelector control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents cbPECMailBoxSelector As Global.Telerik.Web.UI.RadComboBox
-
-    '''<summary>
-    '''btnPECMailBoxSelectorOk control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnPECMailBoxSelectorOk As Global.Telerik.Web.UI.RadButton
-
-    '''<summary>
-    '''btnPECMailBoxSelectorCancel control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnPECMailBoxSelectorCancel As Global.Telerik.Web.UI.RadButton
-
-    '''<summary>
     '''rwRoleSelector control.
     '''</summary>
     '''<remarks>
@@ -698,49 +608,13 @@ Partial Public Class TbltTenant
     Protected WithEvents lblTenantDataDiDisattivazione As Global.System.Web.UI.WebControls.Label
 
     '''<summary>
-    '''tbContainersControl control.
+    '''uscContainer control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents tbContainersControl As Global.Telerik.Web.UI.RadToolBar
-
-    '''<summary>
-    '''rtvContainers control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rtvContainers As Global.Telerik.Web.UI.RadTreeView
-
-    '''<summary>
-    '''tbPECMailBoxControl control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents tbPECMailBoxControl As Global.Telerik.Web.UI.RadToolBar
-
-    '''<summary>
-    '''rtvPECMailBoxes control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rtvPECMailBoxes As Global.Telerik.Web.UI.RadTreeView
-
-    '''<summary>
-    '''uscRoles control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscRoles As Global.VecompSoftware.DocSuiteWeb.Gui.uscRoleRest
+    Protected WithEvents uscContainer As Global.VecompSoftware.DocSuiteWeb.Gui.uscContainerRest
 
     '''<summary>
     '''tbWorkflowControl control.
@@ -777,13 +651,4 @@ Partial Public Class TbltTenant
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rtvTenantConfigurations As Global.Telerik.Web.UI.RadTreeView
-
-    '''<summary>
-    '''uscContattiSelRest control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents uscContattiSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscContattiSelRest
 End Class

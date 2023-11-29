@@ -12,6 +12,7 @@ Public Class ResolutionRole
     Public Overridable Property Resolution As Resolution
     Public Overridable Property Role As Role
     Public Overridable Property ResolutionRoleType As ResolutionRoleType
+    Public Overridable Property UniqueIdResolution As Guid
 #End Region
 
 #Region "Ctor/init"

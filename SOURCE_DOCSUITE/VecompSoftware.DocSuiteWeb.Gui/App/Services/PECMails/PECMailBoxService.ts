@@ -6,6 +6,7 @@ import PECMailBoxViewModelMapper = require('App/Mappers/PECMails/PECMailBoxViewM
 import PECMailBoxModel = require('App/Models/PECMails/PECMailBoxModel');
 import InvoiceTypeEnum = require("App/Models/PECMails/InvoiceTypeEnum");
 import ODATAResponseModel = require('App/Models/ODATAResponseModel');
+import PaginationModel = require('App/Models/Commons/PaginationModel');
 
 class PECMailBoxService extends BaseService {
     _configuration: ServiceConfiguration;
@@ -15,21 +16,51 @@ class PECMailBoxService extends BaseService {
         this._configuration = configuration;
     }
 
-    getPECMailBoxes(searchFilter: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getPECMailBoxes(mailBoxRecipient: string, loginError: boolean, includeNotHandled: boolean, callback?: (data: PECMailBoxViewModel[] | ODATAResponseModel<PECMailBoxViewModel>) => any, error?: (exception: ExceptionDTO) => any, paginationModel?: PaginationModel): void {
         let urlPart: string = this._configuration.ODATAUrl;
-        let url: string =
-            searchFilter === ""
-                ? urlPart.concat(`?$filter=IncomingServer ne null and OutgoingServer ne null`)
-                : urlPart.concat(`?$filter=indexof(MailBoxRecipient,'${searchFilter}') gt -1 and IncomingServer ne null and OutgoingServer ne null`);
-        this.getRequest(url, null, (response: any) => {
-            if (callback && response) {
-                let viewModelMapper = new PECMailBoxViewModelMapper();
-                let pecMailBoxes: PECMailBoxViewModel[] = [];
-                $.each(response.value, function (i, value) {
-                    pecMailBoxes.push(viewModelMapper.Map(value));
-                });
+
+        let filters: string = '';
+
+        if (loginError) {
+            filters = `${filters}LoginError eq ${loginError} `;
+        }
+
+        if (includeNotHandled === false) {
+            filters = filters !== '' ? `${filters} and ` : filters;
+            filters = `${filters}IncomingServer ne null and OutgoingServer ne null`
+        }
+
+        if (mailBoxRecipient) {
+            filters = filters !== '' ? `${filters} and ` : filters;
+            filters = `${filters} indexof(MailBoxRecipient,'${mailBoxRecipient}') gt -1 `
+        }
+
+        let baseOdataURL: string = filters === '' ? `${urlPart}?` : `${urlPart}?$filter=${filters}&`;
+        baseOdataURL = `${baseOdataURL}$orderby=MailBoxRecipient&$expand=Location`;
+
+        let odataQuery: string = paginationModel
+            ? `${baseOdataURL}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}&$count=true`
+            : `${baseOdataURL}`;
+
+        this.getRequest(odataQuery, null, (response: any) => {
+            if (!callback && !response) {
+                return;
+            }
+
+            let pecMailBoxes: PECMailBoxViewModel[] = [];
+            if (response && response.value) {
+                let mapper = new PECMailBoxViewModelMapper();
+                pecMailBoxes = mapper.MapCollection(response.value);
+            }
+
+            if (!paginationModel) {
                 callback(pecMailBoxes);
-            };
+                return;
+            }
+
+            const odataResult: ODATAResponseModel<PECMailBoxViewModel> = new ODATAResponseModel<PECMailBoxViewModel>(response)
+            odataResult.value = pecMailBoxes;
+            callback(odataResult);
         }, error);
     }
 

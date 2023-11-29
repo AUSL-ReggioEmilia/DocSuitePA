@@ -1,6 +1,8 @@
 ﻿Imports System.Linq
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Entity.Conservations
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations
 
 Public Class ResolutionRights
 
@@ -23,6 +25,13 @@ Public Class ResolutionRights
     Private _isFlushAnnexedEnable As Boolean?
     Private _isPrivacyViewable As Boolean?
     Private _canExecutiveModifyOC As Boolean?
+    Private _hasCurrentStepVisibilityRights As Boolean?
+    Private _isResponsibleUser As Boolean?
+    Private _isAccountedUser As Boolean?
+    Private _isConsultedUser As Boolean?
+    Private _isInformedUser As Boolean?
+    Private _hasCurrentStepFlowResponsabilityRights As Boolean?
+    Private _currentConservation As Conservation
 #End Region
 
 #Region "[ _ctor ]"
@@ -98,7 +107,7 @@ Public Class ResolutionRights
             End If
 
             ' Condizioni di verifica per cui ad un operatore viene negato l'accesso al documento di proposta
-            If Not DocSuiteContext.Current.ResolutionEnv.ProposalViewable AndAlso _
+            If Not DocSuiteContext.Current.ResolutionEnv.ProposalViewable AndAlso
                 Not CommonUtil.UserConnectedBelongsTo(DocSuiteContext.Current.ResolutionEnv.EnvGroupPropostaAtto) Then
 
                 Return VerifyResolutionProposer()
@@ -200,7 +209,7 @@ Public Class ResolutionRights
         End Get
     End Property
 
-    Public ReadOnly Property IsResolutionExecutive As Boolean
+    Public ReadOnly Property IsExecutiveViewable As Boolean
         Get
             If Not _isResolutionExecutive.HasValue Then
                 _isResolutionExecutive = False
@@ -218,6 +227,116 @@ Public Class ResolutionRights
                 _isPrivacyViewable = (CurrentResolution.Container.Privacy.HasValue AndAlso Convert.ToBoolean(CurrentResolution.Container.Privacy.Value)) AndAlso IsDocumentViewable()
             End If
             Return _isPrivacyViewable.Value
+        End Get
+    End Property
+
+    Public ReadOnly Property HasCurrentStepVisibilityRights As Boolean
+        Get
+            If Not _hasCurrentStepVisibilityRights.HasValue Then
+                _hasCurrentStepVisibilityRights = False
+                Dim stepVisibilityRoles As ICollection(Of Integer) = Facade.TabWorkflowFacade.GetOperationStepVisibilityRoles(CurrentResolution)
+                Dim stepVisibilityContainers As IList(Of Integer) = Facade.TabWorkflowFacade.GetOperationStepVisibilityContainers(CurrentResolution).ToList()
+                If (stepVisibilityRoles.Count = 0 AndAlso stepVisibilityContainers.Count = 0) Then
+                    _hasCurrentStepVisibilityRights = True
+                    Return _hasCurrentStepVisibilityRights.Value
+                End If
+
+                If (stepVisibilityRoles.Count > 0) Then
+                    Dim roles As IList(Of Role) = Facade.RoleFacade.GetByIds(stepVisibilityRoles)
+                    _hasCurrentStepVisibilityRights = Facade.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.Resolution, roles)
+                End If
+
+                If (Not _hasCurrentStepVisibilityRights AndAlso stepVisibilityContainers.Count > 0) Then
+                    Dim userActiveContainers As Dictionary(Of ResolutionRightPositions, IList(Of Integer)) = Facade.ContainerFacade.GetCurrentUserReolutionContainers(DSWEnvironment.Resolution, Nothing)
+                    _hasCurrentStepVisibilityRights = userActiveContainers.Any(Function(x) x.Value.Any(Function(xx) stepVisibilityContainers.Contains(xx)))
+                End If
+            End If
+            Return _hasCurrentStepVisibilityRights.Value
+        End Get
+    End Property
+
+    Public ReadOnly Property HasCurrentStepFlowResponsabilityRights As Boolean
+        Get
+            If Not _hasCurrentStepFlowResponsabilityRights.HasValue Then
+                _hasCurrentStepFlowResponsabilityRights = False
+                Dim stepFlowResponsabilityRoles As ICollection(Of Integer) = Facade.TabWorkflowFacade.GetOperationStepFlowResponsabilityRoles(CurrentResolution)
+                If (stepFlowResponsabilityRoles.Count = 0) Then
+                    _hasCurrentStepFlowResponsabilityRights = True
+                    Return _hasCurrentStepFlowResponsabilityRights.Value
+                End If
+
+                If (stepFlowResponsabilityRoles.Count > 0) Then
+                    Dim roles As IList(Of Role) = Facade.RoleFacade.GetByIds(stepFlowResponsabilityRoles)
+                    _hasCurrentStepFlowResponsabilityRights = Facade.RoleFacade.CurrentUserBelongsToRoles(DSWEnvironment.Resolution, roles)
+                End If
+            End If
+            Return _hasCurrentStepFlowResponsabilityRights.Value
+        End Get
+    End Property
+
+    Public ReadOnly Property IsResponsibleUser As Boolean
+        Get
+            If Not _isResponsibleUser.HasValue Then
+                Dim stepActiveUsers As ICollection(Of ResolutionWorkflowUser) = Facade.ResolutionWorkflowUserFacade.GetUsersByResolution(CurrentResolution)
+                _isResponsibleUser = stepActiveUsers.Any(Function(x) x.Account.Eq(DocSuiteContext.Current.User.FullUserName) _
+                    AndAlso x.AuthorizationType.Equals(AuthorizationRoleType.Responsible))
+            End If
+            Return _isResponsibleUser.Value
+        End Get
+    End Property
+
+    Public ReadOnly Property IsAccountedUser As Boolean
+        Get
+            If Not _isAccountedUser.HasValue Then
+                Dim stepActiveUsers As ICollection(Of ResolutionWorkflowUser) = Facade.ResolutionWorkflowUserFacade.GetUsersByResolution(CurrentResolution)
+                _isAccountedUser = stepActiveUsers.Any(Function(x) x.Account.Eq(DocSuiteContext.Current.User.FullUserName) _
+                    AndAlso x.AuthorizationType.Equals(AuthorizationRoleType.Accounted))
+            End If
+            Return _isAccountedUser.Value
+        End Get
+    End Property
+
+    Public ReadOnly Property IsConsultedUser As Boolean
+        Get
+            If Not _isConsultedUser.HasValue Then
+                Dim stepActiveUsers As ICollection(Of ResolutionWorkflowUser) = Facade.ResolutionWorkflowUserFacade.GetUsersByResolution(CurrentResolution)
+                _isConsultedUser = stepActiveUsers.Any(Function(x) x.Account.Eq(DocSuiteContext.Current.User.FullUserName) _
+                    AndAlso x.AuthorizationType.Equals(AuthorizationRoleType.Consulted))
+            End If
+            Return _isConsultedUser.Value
+        End Get
+    End Property
+
+    Public ReadOnly Property IsInformedUser As Boolean
+        Get
+            If Not _isInformedUser.HasValue Then
+                Dim stepActiveUsers As ICollection(Of ResolutionWorkflowUser) = Facade.ResolutionWorkflowUserFacade.GetUsersByResolution(CurrentResolution)
+                _isInformedUser = stepActiveUsers.Any(Function(x) x.Account.Eq(DocSuiteContext.Current.User.FullUserName) _
+                     AndAlso x.AuthorizationType.Equals(AuthorizationRoleType.Informed))
+            End If
+            Return _isInformedUser.Value
+        End Get
+    End Property
+
+    Private ReadOnly Property CurrentConservation As Conservation
+        Get
+            If _currentConservation Is Nothing Then
+                Dim conservation As Conservation = WebAPIImpersonatorFacade.ImpersonateFinder(New ConservationFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.UniqueId = CurrentResolution.UniqueId
+                        finder.EnablePaging = False
+                        Return finder.DoSearch().Select(Function(x) x.Entity).FirstOrDefault()
+                    End Function)
+
+                _currentConservation = conservation
+            End If
+            Return _currentConservation
+        End Get
+    End Property
+
+    Public ReadOnly Property IsConservated As Boolean
+        Get
+            Return CurrentConservation IsNot Nothing AndAlso CurrentConservation.Status = ConservationStatus.Conservated
         End Get
     End Property
 #End Region

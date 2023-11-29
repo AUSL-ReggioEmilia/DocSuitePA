@@ -35,7 +35,7 @@
     <div id="componentCheckbox" style="margin-bottom: 5px;" data-type="CheckBox" runat="server">
         <div>
             <label id="labelNameCheckBox" style="font-weight: bold"></label>
-            <input type="radio" class="form-control" name="required" id="checkboxValue" aria-readonly="true" />
+            <input type="checkbox" class="form-control" name="required" id="checkboxValue" aria-readonly="true" />
         </div>
     </div>
 
@@ -44,10 +44,10 @@
 </div>
 
 <div id="summaryContainer" style="max-height: 1px!important; visibility: hidden">
-    <div id="summaryComponentCheckbox" style="margin-bottom: 5px;" data-type="CheckBox" runat="server">
+    <div id="summaryComponentCheckbox" style="margin-bottom: 5px;" data-type="s" runat="server">
         <div>
             <label id="summaryLabelNameCheckBox" style="font-weight: bold"></label>
-            <input type="radio" class="form-control" name="required" id="summaryCheckboxValue" disabled="disabled" aria-readonly="true" />
+            <input type="checkbox" class="form-control" name="required" id="summaryCheckboxValue" disabled="disabled" aria-readonly="true" />
         </div>
     </div>
     <div id="summaryComponentIcon" data-type="Icon" runat="server">

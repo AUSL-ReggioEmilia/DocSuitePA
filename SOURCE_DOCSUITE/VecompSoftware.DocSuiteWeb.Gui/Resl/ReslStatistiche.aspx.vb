@@ -199,7 +199,7 @@ Partial Public Class ReslStatistiche
     End Sub
 
     Protected Sub BindContainers()
-        Dim containers As IList(Of ContainerRightsDto) = Facade.ContainerFacade.GetAllRights("Resl", 1)
+        Dim containers As IList(Of ContainerRightsDto) = Facade.ContainerFacade.GetAllRights("Resl", True)
         If containers.Count > 0 Then
             For Each container As ContainerRightsDto In containers
                 ddlContainer.Items.Add(New ListItem(container.Name, container.ContainerId.ToString()))

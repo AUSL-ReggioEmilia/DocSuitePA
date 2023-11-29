@@ -244,7 +244,7 @@ Public Class CommonUtil
     End Function
 
 
-    Public Function VerifyProtocolSecurity(ByRef sRoles As String, ByRef sContainers As String, ByRef accounts As String, ByVal securityType As SecurityType) As Boolean
+    Public Function VerifyProtocolSecurity(ByRef sRoles As String, ByRef sContainers As String, ByRef accounts As String, securityType As SecurityType, idTenantAOO As Guid) As Boolean
         Dim rf As New RoleFacade("ProtDB")
         Dim cf As New ContainerFacade("ProtDB")
 
@@ -272,7 +272,7 @@ Public Class CommonUtil
 
         Dim onlyActive As Boolean?
 
-        If (securityType <> SecurityType.Read) Then
+        If (securityType <> securityType.Read) Then
             onlyActive = True
         End If
 
@@ -280,7 +280,7 @@ Public Class CommonUtil
             onlyActive = Nothing
         End If
 
-        Dim roles As IList(Of Role) = rf.GetUserRoles(DSWEnvironment.Protocol, rightRoles, onlyActive)
+        Dim roles As IList(Of Role) = rf.GetUserRoles(DSWEnvironment.Protocol, rightRoles, onlyActive, idTenantAOO)
         Dim idRoles As New List(Of String)
         If Not roles.IsNullOrEmpty() Then
             idRoles = roles.Select(Function(r) r.Id.ToString()).ToList()
@@ -294,17 +294,17 @@ Public Class CommonUtil
         Return Not String.IsNullOrEmpty(sContainers) OrElse Not String.IsNullOrEmpty(sRoles) OrElse Not String.IsNullOrEmpty(accounts)
     End Function
 
-    Public Sub InitializeDistributionRoles()
+    Public Sub InitializeDistributionRoles(idTenantAOO As Guid)
         If (DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled OrElse DocSuiteContext.Current.ProtocolEnv.RolesUserProfileEnabled) Then
             If (GroupProtocolManagerSelected Is Nothing) Then
-                Dim managers As IList(Of Role) = FacadeFactory.Instance.RoleFacade().GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Manager, True)
+                Dim managers As IList(Of Role) = FacadeFactory.Instance.RoleFacade().GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Manager, True, idTenantAOO)
                 GroupProtocolManagerSelected = String.Empty
                 If managers IsNot Nothing AndAlso managers.Count > 0 Then
                     GroupProtocolManagerSelected = String.Concat(String.Join("|,", managers.Select(Function(s) String.Concat("|", s.Id))), "|")
                 End If
             End If
             If (GroupProtocolNotManagerSelected Is Nothing) Then
-                Dim nonManagers As IList(Of Role) = FacadeFactory.Instance.RoleFacade().GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Enabled, True)
+                Dim nonManagers As IList(Of Role) = FacadeFactory.Instance.RoleFacade().GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Enabled, True, idTenantAOO)
                 GroupProtocolNotManagerSelected = String.Empty
                 If nonManagers IsNot Nothing AndAlso nonManagers.Count > 0 Then
                     GroupProtocolNotManagerSelected = String.Concat(String.Join("|,", nonManagers.Select(Function(s) String.Concat("|", s.Id))), "|")
@@ -314,7 +314,7 @@ Public Class CommonUtil
     End Sub
 
     ''' <summary> Inizializzazione utente. </summary>
-    Public Function InitializeUser() As Boolean
+    Public Function InitializeUser(idTenantAOO As Guid) As Boolean
 
         ' Description
         UserDescription = CommonAD.GetDisplayName(DocSuiteContext.Current.User.FullUserName)
@@ -322,7 +322,7 @@ Public Class CommonUtil
             UserDescription = DocSuiteContext.Current.User.FullUserName
         End If
         UserMail = FacadeFactory.Instance.UserLogFacade.EmailOfUser(DocSuiteContext.Current.User.UserName, UserDomain, DocSuiteContext.Current.ProtocolEnv.UserLogEmail)
-        InitializeDistributionRoles()
+        InitializeDistributionRoles(idTenantAOO)
     End Function
 
     Public Sub ExcludeInvoiceContainer(ByRef finder As NHibernateProtocolFinder)
@@ -346,7 +346,7 @@ Public Class CommonUtil
         End If
     End Sub
 
-    Public Function ApplyProtocolFinderSecurity(ByRef finder As NHibernateProtocolFinder, ByVal secType As SecurityType, Optional IsProtocolSearch As Boolean = False) As Boolean
+    Public Function ApplyProtocolFinderSecurity(ByRef finder As NHibernateProtocolFinder, ByVal secType As SecurityType, idTenantAOO As Guid, Optional IsProtocolSearch As Boolean = False) As Boolean
         If Not DocSuiteContext.Current.ProtocolEnv.IsSecurityEnabled Then
             Return True
         End If
@@ -354,7 +354,7 @@ Public Class CommonUtil
         Dim roles As String = String.Empty
         Dim containers As String = String.Empty
         Dim account As String = String.Empty
-        If Not VerifyProtocolSecurity(roles, containers, account, secType) Then
+        If Not VerifyProtocolSecurity(roles, containers, account, secType, idTenantAOO) Then
             Throw New DocSuiteException("Problema in verifica diritti", "Mancanza di diritti per eseguire ricerche nel modulo Protocollo.")
         End If
 
@@ -365,7 +365,7 @@ Public Class CommonUtil
         finder.RoleUser = account
 
         If (GroupProtocolManagerSelected Is Nothing OrElse GroupProtocolNotManagerSelected Is Nothing) Then
-            InitializeDistributionRoles()
+            InitializeDistributionRoles(idTenantAOO)
         End If
 
         Dim manageableRoles As String = String.Empty
@@ -388,16 +388,15 @@ Public Class CommonUtil
         End If
 
         If IsProtocolSearch Then
-            Dim temproles As IList(Of Role) = rf.GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Manager, onlyActive)
+            Dim temproles As IList(Of Role) = rf.GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Manager, onlyActive, idTenantAOO)
             managerRoleIds = temproles.Select(Function(x) x.Id.ToString()).ToList()
             manageableRoles = String.Join(",", managerRoleIds)
 
-            temproles = rf.GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Enabled, onlyActive)
+            temproles = rf.GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.Enabled, onlyActive, idTenantAOO)
             nonManageableRoleIds = temproles.Select(Function(x) x.Id.ToString()).ToList()
             nonManageableRoleIds = nonManageableRoleIds.Except(managerRoleIds).ToList()
             nonManageableRoles = String.Join(",", nonManageableRoleIds)
         End If
-
 
         If DocSuiteContext.Current.ProtocolEnv.RolesUserProfileEnabled Then
             finder.SecurityRoles = nonManageableRoles
@@ -406,7 +405,6 @@ Public Class CommonUtil
         If Not DocSuiteContext.Current.ProtocolEnv.IsDistributionEnabled Then
             Return True
         End If
-
 
         finder.SecurityRoles = manageableRoles
         finder.SecurityNonManageableRoles = nonManageableRoles
@@ -419,7 +417,7 @@ Public Class CommonUtil
     ''' <remarks> 
     ''' TODO: togliere <see cref="page"/> e mettere una <see cref="DocSuiteException"/>
     ''' </remarks>
-    Public Function ApplyResolutionFinderSecurity(ByRef page As Page, ByRef finder As NHibernateResolutionFinder, Optional right As ResolutionRightPositions = ResolutionRightPositions.Preview) As Boolean
+    Public Function ApplyResolutionFinderSecurity(ByRef page As Page, ByRef finder As NHibernateResolutionFinder, idTenantAOO As Guid, Optional right As ResolutionRightPositions = ResolutionRightPositions.Preview, Optional fromRicercaFlusso As Boolean = False) As Boolean
         If Not DocSuiteContext.Current.ResolutionEnv.Security Then
             Return True
         End If
@@ -427,14 +425,37 @@ Public Class CommonUtil
         Dim resolutionContainers As IList(Of Container) = New ContainerFacade("ReslDB").GetContainers(DSWEnvironment.Resolution, right, Nothing)
 
         Dim roles As String
-        Dim userRoles As IList(Of Role) = New RoleFacade("ReslDB").GetUserRoles(DSWEnvironment.Resolution, ResolutionRoleRightPositions.Enabled, True)
+        Dim userRoles As IList(Of Role) = New RoleFacade("ReslDB").GetUserRoles(DSWEnvironment.Resolution, ResolutionRoleRightPositions.Enabled, True, idTenantAOO)
         Dim roleIds As List(Of String) = userRoles.Select(Function(x) x.Id.ToString()).ToList()
         roles = String.Join(",", roleIds)
-        'If String.IsNullOrEmpty(ResolutionUtil.GetInstance.EnvGroupSelected) Then
 
-        'Else
-        '    roles = Replace(ResolutionUtil.GetInstance.EnvGroupSelected, "|", String.Empty)
-        'End If
+        Dim excludedSteps As ICollection(Of Tuple(Of String, Integer)) = New List(Of Tuple(Of String, Integer))
+        Dim forceVisibilitySteps As ICollection(Of Tuple(Of String, Integer)) = New List(Of Tuple(Of String, Integer))
+        Dim tabWorkflowFacade As TabWorkflowFacade = New TabWorkflowFacade()
+        Dim workflowSteps As IList(Of TabWorkflow) = tabWorkflowFacade.GetByResolutionType(ResolutionType.IdentifierDelibera)
+        workflowSteps = workflowSteps.Concat(tabWorkflowFacade.GetByResolutionType(ResolutionType.IdentifierDetermina)).ToList()
+        Dim stepRoles As ICollection(Of Integer) = New List(Of Integer)
+        Dim stepContainers As ICollection(Of Integer)
+        Dim responsabilityRoles As ICollection(Of Integer)
+        For Each workflowStep As TabWorkflow In workflowSteps
+            If fromRicercaFlusso Then
+                stepRoles = tabWorkflowFacade.GetOperationStepFlowResponsabilityRoles(workflowStep)
+            End If
+            stepContainers = tabWorkflowFacade.GetOperationStepVisibilityContainers(workflowStep)
+            responsabilityRoles = tabWorkflowFacade.GetOperationStepFlowResponsabilityRoles(workflowStep)
+            If ((stepRoles.Count > 0 OrElse stepContainers.Count > 0) AndAlso
+                Not stepContainers.Any(Function(x) resolutionContainers.Any(Function(xx) xx.Id = x)) AndAlso
+                Not stepRoles.Any(Function(x) userRoles.Any(Function(xx) xx.Id = x))) Then
+
+                excludedSteps.Add(New Tuple(Of String, Integer)(workflowStep.Id.WorkflowType, workflowStep.Id.ResStep))
+            End If
+
+            If (responsabilityRoles.Count > 0 AndAlso responsabilityRoles.Any(Function(x) userRoles.Any(Function(xx) xx.Id = x))) Then
+                forceVisibilitySteps.Add(New Tuple(Of String, Integer)(workflowStep.Id.WorkflowType, workflowStep.Id.ResStep))
+            End If
+        Next
+        finder.WorkflowStepsExcluded = excludedSteps
+        finder.WorkflowStepsForceVisibility = forceVisibilitySteps
 
         'Verifica diritti + ruoli
         If Not resolutionContainers.IsNullOrEmpty() OrElse Not String.IsNullOrEmpty(roles) Then
@@ -456,18 +477,17 @@ Public Class CommonUtil
         Return False
     End Function
 
-    Public Function ApplyPecMailFinderSecurity(ByRef finder As NHibernatePECMailFinder) As Boolean
-        Dim userRoles As IList(Of Role) = New RoleFacade().GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.PEC, True)
+    Public Function ApplyPecMailFinderSecurity(ByRef finder As NHibernatePECMailFinder, idTenantAOO As Guid) As Boolean
+        Dim userRoles As IList(Of Role) = New RoleFacade().GetUserRoles(DSWEnvironment.Protocol, ProtocolRoleRightPositions.PEC, True, idTenantAOO)
         Dim roleIds As List(Of String) = userRoles.Select(Function(x) x.Id.ToString()).ToList()
         If (Not String.IsNullOrEmpty(GroupProtocolNotManagerSelected)) Then
             Dim ids As List(Of String) = GroupProtocolNotManagerSelected.Split("|".ToCharArray()).Select(Function(f) f).ToList()
             roleIds = roleIds.Intersect(ids).ToList()
-            'roleIds = roleIds.Where(Function(f) ids.Contains(f)).ToList()
         End If
         finder.Roles = String.Join(",", roleIds)
     End Function
 
-    Public Function VerifyDocumentSecurity(ByRef sRoles As String, ByRef sContainers As String, ByVal securityType As SecurityType) As Boolean
+    Public Function VerifyDocumentSecurity(ByRef sRoles As String, ByRef sContainers As String, securityType As SecurityType, idTenantAOO As Guid) As Boolean
         Dim roleFacade As New RoleFacade("DocmDB")
         Dim containerFacade As New ContainerFacade("DocmDB")
 
@@ -485,18 +505,18 @@ Public Class CommonUtil
             sContainers = String.Join(",", ids)
         End If
 
-        If String.IsNullOrEmpty(CommonShared.GroupPaperworkSelected) Then
-            Dim roles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True)
+        If String.IsNullOrEmpty(GroupPaperworkSelected) Then
+            Dim roles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True, idTenantAOO)
             sRoles = String.Join(",", roles.Select(Function(x) x.Id.ToString()))
         Else
-            sRoles = Replace(CommonShared.GroupPaperworkSelected, "|", "")
+            sRoles = Replace(GroupPaperworkSelected, "|", "")
         End If
 
         'Verifica diritti + ruoli
         Return Not (String.IsNullOrEmpty(sContainers) AndAlso String.IsNullOrEmpty(sRoles))
     End Function
 
-    Public Function ApplyDocumentFinderSecurity(ByRef finder As NHibernateDocumentFinder) As Boolean
+    Public Function ApplyDocumentFinderSecurity(ByRef finder As NHibernateDocumentFinder, idTenantAOO As Guid) As Boolean
         Dim roles As String = String.Empty
         Dim containers As String = String.Empty
 
@@ -504,7 +524,7 @@ Public Class CommonUtil
             Return True
         End If
 
-        If VerifyDocumentSecurity(roles, containers, SecurityType.Read) Then
+        If VerifyDocumentSecurity(roles, containers, SecurityType.Read, idTenantAOO) Then
             finder.SecurityEnabled = DocSuiteContext.Current.DocumentEnv.IsSecurityEnabled
             finder.SecurityRoles = roles
             finder.SecurityContainers = containers

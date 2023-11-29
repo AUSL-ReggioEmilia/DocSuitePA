@@ -42,6 +42,15 @@
                 fascicleLink.dossierSummaryContainerId = "<%=dossierSummaryContainer.ClientID%>";
 
                 fascicleLink.initialize();
+
+                new ResizeSensor($(".details-column")[0], function () {
+                    var height = $(".details-column").height();
+
+                    if (height > 0) {
+                        $(".folders-column").height(height);
+                        $(".dossierFolderCotainer").height(height - 4);
+                    }
+                });
             });
 
         </script>
@@ -173,13 +182,13 @@
 
             <telerik:LayoutRow HtmlTag="Div">
                 <Columns>
-                        <telerik:LayoutColumn Span="8" CssClass="details-column" Style="padding-left: 5px; padding-right: 5px;">
-                            <asp:Panel runat="server" ID="dossierSummaryContainer" Style="display: none;">
+                        <telerik:LayoutColumn Span="8" CssClass="details-column" Style="padding-left: 5px; padding-right: 5px; ">
+                            <asp:Panel runat="server" ID="dossierSummaryContainer" Style="display: none; height: 70px;">
                                 <usc1:uscDossierSummary runat="server" ID="uscDossierSummary"></usc1:uscDossierSummary>
                             </asp:Panel>
                         </telerik:LayoutColumn>
                         <telerik:LayoutColumn Span="4" CssClass="folders-column" Height="100%" Style="padding: 0px 5px 0px;">
-                            <asp:Panel runat="server" ID="dossierFolderCotainer" Style="display: none;">
+                            <asp:Panel runat="server" ID="dossierFolderCotainer" Style="display: none; border: 1px solid #999; background: #f5f5f5; min-height: 68px; max-height: 80px; overflow-y: auto;">
                                 <usc:uscDossierFolder ID="uscDossierFolder" ViewOnlyFolders="true" runat="server"></usc:uscDossierFolder>
                             </asp:Panel>
                         </telerik:LayoutColumn>

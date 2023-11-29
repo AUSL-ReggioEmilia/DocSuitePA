@@ -65,7 +65,7 @@ Public Class CollaborationSignsFacade
             unitOfWork.BeginTransaction()
 
             Dim activeSigner As CollaborationSign = coll.GetFirstCollaborationSignActive()
-            activeSigner.IsActive = 0S
+            activeSigner.IsActive = False
             If DocSuiteContext.Current.ProtocolEnv.ForceCollaborationSignDateEnabled AndAlso Not activeSigner.SignDate.HasValue Then
                 activeSigner.SignDate = _dao.GetServerDate()
             End If
@@ -74,7 +74,7 @@ Public Class CollaborationSignsFacade
             Dim signers As List(Of CollaborationSign) = coll.CollaborationSigns.OrderBy(Function(s) s.Incremental).ToList()
             For Each item As CollaborationSign In signers
                 If item.Incremental > activeSigner.Incremental AndAlso (Not item.IsAbsent.HasValue OrElse Not item.IsAbsent.Value) Then
-                    item.IsActive = 1S
+                    item.IsActive = True
                     UpdateOnly(item)
                     Exit For
                 End If
@@ -88,7 +88,7 @@ Public Class CollaborationSignsFacade
         End Try
     End Sub
 
-    Public Sub Insert(ByVal idColl As Integer, ByVal isActive As Short, ByVal idStatus As String, ByVal signUser As String, ByVal signName As String, ByVal signEMail As String, ByVal isRequired As Boolean)
+    Public Sub Insert(ByVal idColl As Integer, ByVal isActive As Boolean, ByVal idStatus As String, ByVal signUser As String, ByVal signName As String, ByVal signEMail As String, ByVal isRequired As Boolean)
         FileLogger.Info(LoggerName, String.Format("Inserimento firmatario collaborazione [{0}]", idColl))
         Dim collSign As New CollaborationSign()
         collSign.IdCollaboration = idColl
@@ -118,11 +118,11 @@ Public Class CollaborationSignsFacade
             ' Disattivo collaborationSigns
             Dim collSignList As IList(Of CollaborationSign) = SearchFull(coll.Id, True)
             For Each collSign As CollaborationSign In collSignList
-                collSign.IsActive = 0
+                collSign.IsActive = False
                 UpdateOnly(collSign)
             Next
 
-            Insert(coll.Id, 1, "", contactForward(0).Account, contactForward(0).DestinationName, contactForward(0).DestinationEMail, False)
+            Insert(coll.Id, True, "", contactForward(0).Account, contactForward(0).DestinationName, contactForward(0).DestinationEMail, False)
 
             unitOfWork.Commit()
         Catch ex As Exception
@@ -141,20 +141,20 @@ Public Class CollaborationSignsFacade
             Dim shiftedSigns As IList(Of CollaborationSign) = GetCollaborationSignsByGeActiveIncremental(idCollaboration)
             Dim activeSign As CollaborationSign = shiftedSigns.Item(0)
             With activeSign
-                .IsActive = 0
+                .IsActive = False
                 .SignName &= " (D)"
             End With
             ' Disattivo il precedente firmatario
-            UpdateOnly(activeSign)
+            UpdateOnlyWithoutTransaction(activeSign)
 
             'Dim delta As Short = shiftedSigns.Item(shiftedSigns.Count - 1).Incremental
             shiftedSigns.RemoveAt(0) ' Rimuovo il firmatario disattivato dalla lista delle firme da spostare
-            For Each item As CollaborationSign In shiftedSigns
+            For Each item As CollaborationSign In shiftedSigns.OrderByDescending(Function(x) x.Incremental).ToList()
                 Dim shifted As CollaborationSign = getNewCollaborationSigns(item)
                 shifted.Incremental += 1S
-                Save(shifted)
+                SaveWithoutTransaction(shifted)
                 coll.CollaborationSigns.Remove(item) ' Vedi inverse="true" su mapping
-                Delete(item)
+                DeleteWithoutTransaction(item)
             Next
 
             ' Inserisco il nuovo firmatario in posizione del precedente firmatario +1
@@ -162,7 +162,7 @@ Public Class CollaborationSignsFacade
             With newActiveSign
                 .IdCollaboration = activeSign.IdCollaboration
                 .Incremental = activeSign.Incremental + 1S
-                .IsActive = 1
+                .IsActive = True
                 .IdStatus = String.Empty
                 .SignUser = contact.Account
                 .SignName = contact.DestinationName
@@ -171,7 +171,7 @@ Public Class CollaborationSignsFacade
                 .RegistrationUser = userConnected
                 .RegistrationDate = _dao.GetServerDate()
             End With
-            Save(newActiveSign)
+            SaveWithoutTransaction(newActiveSign)
 
             unitOfWork.Commit()
         Catch ex As Exception
@@ -205,11 +205,11 @@ Public Class CollaborationSignsFacade
         Return GetByIdCollaboration(collaboration.Id)
     End Function
 
-    Public Function GetCollaborationSignsBy(ByVal idCollaboration As Integer, ByVal signUser As String, ByVal isActive As Short) As IList(Of CollaborationSign)
+    Public Function GetCollaborationSignsBy(ByVal idCollaboration As Integer, ByVal signUser As String, ByVal isActive As Boolean) As IList(Of CollaborationSign)
         Return _dao.GetCollaborationSignsBy(idCollaboration, signUser, isActive)
     End Function
 
-    Public Function GetCollaborationSignsBy(ByVal idCollaboration As Integer, ByVal isActive As Short) As IList(Of CollaborationSign)
+    Public Function GetCollaborationSignsBy(ByVal idCollaboration As Integer, ByVal isActive As Boolean) As IList(Of CollaborationSign)
         Return _dao.GetCollaborationSignsBy(idCollaboration, isActive)
     End Function
 
@@ -268,7 +268,7 @@ Public Class CollaborationSignsFacade
     End Function
 
     Public Function SetAbsentManagers(collaboration As Collaboration, managersAccounts As AbsentManager()) As Boolean
-        Dim currentCollaborationSign As CollaborationSign = collaboration.CollaborationSigns.Where(Function(s) s.IsActive = 1).FirstOrDefault()
+        Dim currentCollaborationSign As CollaborationSign = collaboration.CollaborationSigns.Where(Function(s) s.IsActive).FirstOrDefault()
         If currentCollaborationSign Is Nothing Then
             Return False
         End If
@@ -304,7 +304,7 @@ Public Class CollaborationSignsFacade
         Return _dao.GetEffectiveSigners(idCollaboration)
     End Function
 
-    Public Function GetCollaborationSignModel(idCollaboration As Integer) As List(Of CollaborationSignModel)
+    Public Function GetCollaborationSignModel(idCollaboration As Integer, documentVersiningList As List(Of CollaborationVersioningModel)) As List(Of CollaborationSignModel)
         Dim colSignModel As CollaborationSignModel
         Dim CollaborationSigners As IList(Of CollaborationSign) = SearchFull(idCollaboration)
         Dim signerModels As New List(Of CollaborationSignModel)
@@ -316,7 +316,8 @@ Public Class CollaborationSignsFacade
               .SignEmail = collaborationSign.SignEMail,
               .IsRequired = collaborationSign.IsRequired,
               .SignDate = collaborationSign.SignDate,
-              .Incremental = collaborationSign.Incremental
+              .Incremental = collaborationSign.Incremental,
+              .CollaborationVersioningModels = documentVersiningList
               }
             signerModels.Add(colSignModel)
         Next

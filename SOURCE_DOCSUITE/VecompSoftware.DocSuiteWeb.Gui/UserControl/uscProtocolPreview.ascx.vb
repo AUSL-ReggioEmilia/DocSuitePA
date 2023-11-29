@@ -67,7 +67,7 @@ Partial Public Class uscProtocolPreview
 
         ' Numero e data
         cmdProtocol.Icon.PrimaryIconUrl = ""
-        cmdProtocol.Icon.PrimaryIconUrl = "../Comm/Images/DocSuite/Protocollo16.gif"
+        cmdProtocol.Icon.PrimaryIconUrl = "../Comm/Images/DocSuite/Protocollo16.png"
         cmdProtocol.Icon.PrimaryIconHeight = Unit.Pixel(16)
         cmdProtocol.Icon.PrimaryIconWidth = Unit.Pixel(16)
         cmdProtocol.Text = String.Format("{0} del {1}", CurrentProtocol.FullNumber, String.Format(ProtocolEnv.ProtRegistrationDateFormat, CurrentProtocol.RegistrationDate.ToLocalTime()))

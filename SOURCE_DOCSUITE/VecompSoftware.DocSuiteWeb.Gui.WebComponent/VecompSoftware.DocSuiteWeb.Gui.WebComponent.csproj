@@ -48,8 +48,8 @@
     <Reference Include="Iesi.Collections, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\Iesi.Collections.4.0.4\lib\net461\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.9.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.9\lib\net45\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=5.1.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <HintPath>..\packages\NHibernate.5.1.3\lib\net461\NHibernate.dll</HintPath>
@@ -72,17 +72,17 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Telerik.Web.UI, Version=2020.1.114.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.Web.UI.2020.1.114.45\lib\net45\Telerik.Web.UI.dll</HintPath>
+    <Reference Include="Telerik.Web.UI, Version=2021.1.119.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Web.UI.2021.1.119.45\lib\net45\Telerik.Web.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Telerik.Web.UI.Skins, Version=2020.1.114.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Telerik.Web.UI.Skins.2020.1.114.45\lib\net45\Telerik.Web.UI.Skins.dll</HintPath>
+    <Reference Include="Telerik.Web.UI.Skins, Version=2021.1.119.45, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.Web.UI.Skins.2021.1.119.45\lib\net45\Telerik.Web.UI.Skins.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers, Version=9.9.20267.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.9.9.20267.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers, Version=9.22.23292.1, Culture=neutral, PublicKeyToken=bea6ad8812d06015, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.9.22.23292.1\lib\net48\VecompSoftware.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Logging, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Logging.9.9.20267.1\lib\net48\VecompSoftware.Services.Logging.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Logging, Version=9.22.23292.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Logging.9.22.23292.1\lib\net48\VecompSoftware.Services.Logging.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

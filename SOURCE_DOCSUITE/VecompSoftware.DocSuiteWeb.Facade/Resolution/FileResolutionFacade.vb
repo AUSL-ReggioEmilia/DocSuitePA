@@ -1,8 +1,5 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports VecompSoftware.Services.Biblos
+﻿Imports System.IO
 Imports VecompSoftware.DocSuiteWeb.Data
-Imports System.IO
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.Services.Biblos.Models
 
@@ -37,7 +34,7 @@ Public Class FileResolutionFacade
             impersonator = CommonAD.ImpersonateSuperUser()
 
             ' directory temporanea
-            Dim shareDirectory As String = DocSuiteContext.Current.ProtocolEnv.FDQMultipleShare.Replace("%ServerName%", CommonUtil.MachineName)
+            Dim shareDirectory As String = DocSuiteContext.Current.ProtocolEnv.FDQMultipleShare.Replace("%ServerName%", CommonShared.MachineName)
             If Not Directory.Exists(shareDirectory) Then
                 Throw New DirectoryNotFoundException("Impossibile trovare la directory temporanea: reimpostare FDQMultipleShare.")
             End If

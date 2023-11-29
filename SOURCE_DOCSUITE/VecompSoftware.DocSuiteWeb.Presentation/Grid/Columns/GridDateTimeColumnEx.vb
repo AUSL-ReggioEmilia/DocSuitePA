@@ -24,12 +24,17 @@ Public Class GridDateTimeColumnEx
 
 #Region " Methods "
 
-    Public Overridable Function GetSQLExpression(ByVal sqlParameter As String, ByVal command As String)
+    Public Overridable Function GetSQLExpression(ByVal sqlParameter As String, ByVal command As String, ByVal parameterName As String)
         Dim op As String = GetFilterOperator(command)
 
         If String.IsNullOrEmpty(SQLExpression) And Not String.IsNullOrEmpty(op) Then
-            Dim param As String = String.Format("{0:yyyyMMdd}", DateTime.Parse(sqlParameter))
-            _sql = "{alias}.StartDate " & op & " '" & param & "' OR {alias}.EndDate " & op & " '" & param & "'"
+            Dim fromDate As String = String.Format("{0:yyyyMMdd}", DateTime.Parse(sqlParameter))
+            If op.Equals("=") Then
+                Dim toDate As String = String.Format("{0:yyyyMMdd}", DateTime.Parse(sqlParameter).AddDays(1))
+                _sql = String.Format("{{alias}}.{0} between '{1}' and '{2}'", parameterName, fromDate, toDate)
+            Else
+                _sql = String.Format("{{alias}}.{0} {1} '{2}'", parameterName, op, fromDate)
+            End If
         End If
 
         Return _sql

@@ -72,17 +72,17 @@ Public Class CategorySchemaFacade
         Dim docmSession As IStatelessSession = Nothing
         Try
             protSession = NHibernateSessionManager.Instance.OpenStatelessSession(ProtDB)
-            Dim protTransaction As ITransaction = protSession.BeginTransaction()
+            Dim protTransaction As ITransaction = protSession.BeginTransaction(IsolationLevel.ReadCommitted)
 
             Dim reslTransaction As ITransaction = Nothing
             Dim docmTransaction As ITransaction = Nothing
             If DocSuiteContext.Current.IsResolutionEnabled Then
                 reslSession = NHibernateSessionManager.Instance.OpenStatelessSession(ReslDB)
-                reslTransaction = reslSession.BeginTransaction()
+                reslTransaction = reslSession.BeginTransaction(IsolationLevel.ReadCommitted)
             End If
             If DocSuiteContext.Current.IsDocumentEnabled Then
                 docmSession = NHibernateSessionManager.Instance.OpenStatelessSession(DocmDB)
-                docmTransaction = docmSession.BeginTransaction()
+                docmTransaction = docmSession.BeginTransaction(IsolationLevel.ReadCommitted)
             End If
 
             Try
@@ -169,17 +169,17 @@ Public Class CategorySchemaFacade
         Dim docmSession As IStatelessSession = Nothing
         Try
             protSession = NHibernateSessionManager.Instance.OpenStatelessSession(ProtDB)
-            Dim protTransaction As ITransaction = protSession.BeginTransaction()
+            Dim protTransaction As ITransaction = protSession.BeginTransaction(IsolationLevel.ReadCommitted)
 
             Dim reslTransaction As ITransaction = Nothing
             Dim docmTransaction As ITransaction = Nothing
             If DocSuiteContext.Current.IsResolutionEnabled Then
                 reslSession = NHibernateSessionManager.Instance.OpenStatelessSession(ReslDB)
-                reslTransaction = reslSession.BeginTransaction()
+                reslTransaction = reslSession.BeginTransaction(IsolationLevel.ReadCommitted)
             End If
             If DocSuiteContext.Current.IsDocumentEnabled Then
                 docmSession = NHibernateSessionManager.Instance.OpenStatelessSession(DocmDB)
-                docmTransaction = docmSession.BeginTransaction()
+                docmTransaction = docmSession.BeginTransaction(IsolationLevel.ReadCommitted)
             End If
 
             Try

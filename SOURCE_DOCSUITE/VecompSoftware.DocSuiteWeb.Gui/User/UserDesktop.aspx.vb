@@ -130,7 +130,7 @@ Public Class UserDesktop
             RadTreeMenu.Nodes.Add(AddNode(nodo, New UserDesktopNodeAction("Documentazione", "T", "T", PageZenDeskHelp, "", "../Comm/Images/Help16.gif"), False))
         End If
 
-        If Not DocSuiteContext.Current.ProtocolEnv.MoveCollaborationMenu AndAlso CollaborationRights.GetIsCollaborationEnabled() Then
+        If Not DocSuiteContext.Current.ProtocolEnv.MoveCollaborationMenu AndAlso CollaborationRights.GetIsCollaborationEnabled(CurrentTenant.TenantAOO.UniqueId) Then
             'Creazione Menu Collaborazione
             RadTreeMenu.Nodes.Add(CreateCollaborationGeneralNode())
 
@@ -210,11 +210,7 @@ Public Class UserDesktop
 
         AddNode(node, New UserDesktopNodeAction("Attività in corso", CollaborationMainAction.AttivitaInCorso, "N", PageCollRisultati, "Prot", "../Comm/Images/FolderClose16.gif"), False)
         AddNode(node, New UserDesktopNodeAction(DocSuiteContext.Current.ProtocolEnv.MieiCheckOutMenuLabel, CollaborationMainAction.MieiCheckOut, "N", PageCollRisultati, "Prot", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Check In multiplo", CollaborationMainAction.CheckInMultiplo, "N", "CollaborationVersioningManagement.aspx", "", "../Comm/Images/FolderClose16.gif"), False)
-
-        If DocSuiteContext.Current.ProtocolEnv.IsUserCollOfflineEnabled Then
-            AddNode(node, New UserDesktopNodeAction("Scarica visualizzatore offline", CollaborationMainAction.VisualizzatoreOffline, "N", "Offline.zip", "Docm", "../Comm/Images/FolderClose16.gif"), False)
-        End If
+        'AddNode(node, New UserDesktopNodeAction("Check In multiplo", CollaborationMainAction.CheckInMultiplo, "N", "CollaborationVersioningManagement.aspx", "", "../Comm/Images/FolderClose16.gif"), False)
 
         If DocSuiteContext.Current.ProtocolEnv.MultiDomainEnabled Then
             Dim tenantModel As TenantModel = DocSuiteContext.Current.Tenants.FirstOrDefault(Function(x) Not x.CurrentTenant AndAlso x.Entities.Any(Function(t) t.Key.Eq("Protocol")))
@@ -334,9 +330,6 @@ Public Class UserDesktop
 
             Case "C"
                 Select Case action
-                    Case CollaborationMainAction.VisualizzatoreOffline
-                        parameters.Append("Type=Docm")
-                        url = "Offline.zip"
                     Case CollaborationMainAction.CheckInMultiplo
                         url = "CollaborationVersioningManagement.aspx"
                     Case Else
@@ -369,6 +362,9 @@ Public Class UserDesktop
                     Case "Z"
                         parameters.Append("Type=Resl&")
                         parameters.Append("AmmTras=True")
+                        url = "UserScrivaniaD.aspx"
+                    Case "ZAFF"
+                        parameters.Append("Type=Resl&")
                         url = "UserScrivaniaD.aspx"
                 End Select
             Case "G"
@@ -444,56 +440,59 @@ Public Class UserDesktop
         If DocumentEnv.IsEnvLogEnabled Then
             AddNode(node, New UserDesktopNodeAction("Diario", "DY", "N", PageDiario, "Docm", "../Comm/Images/FolderClose16.gif"), False)
         End If
-        AddNode(node, New UserDesktopNodeAction("Da leggere", "DL", "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Aperte da leggere", "DAL", "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Documenti checkOut", "DK", "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Richiesta presa in Car.", "DR", "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Inserimento oggi", "DO", "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Inserimento settimana", "DS", "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Inserimento mese", "DM", "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Scadenziario", "DE", "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Da leggere", UserScrivaniaD.ACTION_NAME_DOCUMENT_TO_READ, "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Aperte da leggere", UserScrivaniaD.ACTION_NAME_DOCUMENT_OPEN_TO_READ, "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Documenti checkOut", UserScrivaniaD.ACTION_NAME_DOCUMENT_CHECKOUT, "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Richiesta presa in Car.", UserScrivaniaD.ACTION_NAME_DOCUMENT_TAKE_IN_CHARGE, "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Inserimento oggi", UserScrivaniaD.ACTION_NAME_DOCUMENT_INSERT_TODAY, "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Inserimento settimana", UserScrivaniaD.ACTION_NAME_DOCUMENT_INSERT_THIS_WEEK, "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Inserimento mese", UserScrivaniaD.ACTION_NAME_DOCUMENT_INSERT_THIS_MONTH, "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Scadenziario", UserScrivaniaD.ACTION_NAME_DOCUMENT_TIMETABLE, "N", PageScrivania, "Docm", "../Comm/Images/FolderClose16.gif"), False)
         Return node
     End Function
 
     Private Function CreateProtocolNodes() As RadTreeNode
         Dim node As New RadTreeNode()
-        RadTreeMenu.Nodes.Add(AddNode(node, New UserDesktopNodeAction("Protocolli", "", "T", "", "", "../Comm/Images/DocSuite/Protocollo16.gif"), True))
+        RadTreeMenu.Nodes.Add(AddNode(node, New UserDesktopNodeAction("Protocolli", "", "T", "", "", "../Comm/Images/DocSuite/Protocollo16.png"), True))
         AddNode(node, New UserDesktopNodeAction("Diario", "PY", "N", PageDiario, "Prot", "../Comm/Images/FolderClose16.gif"), False)
 
         If ProtocolEnv.ProtocolHighlightEnabled Then
-            AddNode(node, New UserDesktopNodeAction("In evidenza", "PE", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("In evidenza", UserScrivaniaD.ACTION_NAME_PROTOCOL_IN_EVIDENCE, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
         End If
 
         If ProtocolEnv.IsDistributionEnabled Then
-            AddNode(node, New UserDesktopNodeAction("Da leggere", "PL", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("Da distribuire", "PD", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("Da lavorare", "PDL", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("In assegnazione", "PA", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("Recenti", "PR", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("Da leggere", UserScrivaniaD.ACTION_NAME_PROTOCOL_TO_READ, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("Da distribuire", UserScrivaniaD.ACTION_NAME_PROTOCOL_TO_DISTRIBUTE, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("Da lavorare", UserScrivaniaD.ACTION_NAME_PROTOCOL_TO_WORK, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("In assegnazione", UserScrivaniaD.ACTION_NAME_PROTOCOL_IN_ASSIGNMENT, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("Recenti", UserScrivaniaD.ACTION_NAME_PROTOCOL_RECENT, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+            If (ProtocolEnv.DistributionRejectableEnabled) Then
+                AddNode(node, New UserDesktopNodeAction("Mai distribuiti", UserScrivaniaD.ACTION_NAME_PROTOCOL_NEVER_DISTRIBUTED, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+            End If
         Else
             If ProtocolEnv.IsLogStatusEnabled Then
-                AddNode(node, New UserDesktopNodeAction("Da leggere", "PL", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+                AddNode(node, New UserDesktopNodeAction("Da leggere", UserScrivaniaD.ACTION_NAME_PROTOCOL_TO_READ, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
             End If
             If ProtocolEnv.InvoiceSDIEnabled Then
-                AddNode(node, New UserDesktopNodeAction("Fatture da leggere", "IPL", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+                AddNode(node, New UserDesktopNodeAction("Fatture da leggere", UserScrivaniaD.ACTION_NAME_PROTOCOL_INVOICE_TO_READ, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
             End If
             If ProtocolEnv.IsStatusEnabled Then
-                AddNode(node, New UserDesktopNodeAction("Assegnato", "PV", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+                AddNode(node, New UserDesktopNodeAction("Assegnato", UserScrivaniaD.ACTION_NAME_PROTOCOL_ASSIGNED, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
             End If
         End If
 
         If ProtocolEnv.RefusedProtocolAuthorizationEnabled Then
             AddNode(node, New UserDesktopNodeAction("Da Accettare", "PDA", "N", PageAuthorized, "Prot", "../Comm/Images/FolderClose16.gif"), False)
-            If ProtocolEnv.IsSecurityGroupEnabled AndAlso CommonShared.HasRefusedProtocolGroupsRight Then
+            If CommonShared.HasRefusedProtocolGroupsRight Then
                 AddNode(node, New UserDesktopNodeAction("Autorizzati non accettati", "PANA", "N", PageAuthorized, "Prot", "../Comm/Images/FolderClose16.gif"), False)
                 AddNode(node, New UserDesktopNodeAction("Respinti", "PRS", "N", PageAuthorized, "Prot", "../Comm/Images/FolderClose16.gif"), False)
             End If
         End If
 
-        AddNode(node, New UserDesktopNodeAction("Aggiornati", "PU", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Inserimento oggi", "PO", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Inserimento settimana", "PS", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Inserimento mese", "PM", "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Aggiornati", UserScrivaniaD.ACTION_NAME_PROTOCOL_UPDATED, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Inserimento oggi", UserScrivaniaD.ACTION_NAME_PROTOCOL_INSERT_TODAY, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Inserimento settimana", UserScrivaniaD.ACTION_NAME_PROTOCOL_INSERT_THIS_WEEK, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Inserimento mese", UserScrivaniaD.ACTION_NAME_PROTOCOL_INSERT_THIS_MONTH, "N", PageScrivania, "Prot", "../Comm/Images/FolderClose16.gif"), False)
 
         If ProtocolEnv.ProtocolKindEnabled Then
             If ProtocolEnv.InvoicePAEnabled AndAlso ProtocolEnv.IsInvoiceEnabled Then
@@ -509,7 +508,7 @@ Public Class UserDesktop
 
     Private Function CreateResolutionNodes() As RadTreeNode
         Dim node As New RadTreeNode()
-        RadTreeMenu.Nodes.Add(AddNode(node, New UserDesktopNodeAction(Facade.TabMasterFacade.TreeViewCaption, "", "T", "", "", "../Comm/Images/DocSuite/Resolution16.gif"), True))
+        RadTreeMenu.Nodes.Add(AddNode(node, New UserDesktopNodeAction(Facade.TabMasterFacade.TreeViewCaption, "", "T", "", "", "../Comm/Images/DocSuite/Resolution16.png"), True))
         If ResolutionEnv.IsLogEnabled Then
             If ResolutionEnv.Configuration.Eq("AUSL-PC") Then
                 AddNode(node, New UserDesktopNodeAction("Diario giornaliero", "RY", "N", PageDiario, "Resl", "../Comm/Images/FolderClose16.gif"), False)
@@ -518,28 +517,74 @@ Public Class UserDesktop
             End If
         End If
         If ResolutionEnv.Configuration.Eq("AUSL-PC") Then
-            AddNode(node, New UserDesktopNodeAction("Non conformi", "RNC", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("Da controllare per conformità", "RICC", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("Conformi da adottare", "RCDA", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("Adottate", "RA", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("Non conformi", UserScrivaniaD.ACTION_NAME_RESOLUTION_NOT_COMPLIANT, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("Da controllare per conformità", UserScrivaniaD.ACTION_NAME_RESOLUTION_CHECK_COMPLIANT, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("Conformi da adottare", UserScrivaniaD.ACTION_NAME_RESOLUTION_COMPLIANT_TO_ADOPTION, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("Adottate", UserScrivaniaD.ACTION_NAME_RESOLUTION_ADOPTED, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
             AddNode(node, New UserDesktopNodeAction("Adottate non esecutive", ActionNameAdottateNonEsecutive, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("Pubblicate", "RP", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("Esecutive", "RE", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("Pubblicate", UserScrivaniaD.ACTION_NAME_RESOLUTION_PUBLISHED, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction("Esecutive", UserScrivaniaD.ACTION_NAME_RESOLUTION_EXECUTIVE, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
         Else
-            AddNode(node, New UserDesktopNodeAction("In proposta", "RPO", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("In adozione", "RA", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("In pubblicazione", "RP", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
-            AddNode(node, New UserDesktopNodeAction("In esecutività", "RE", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            Dim labelRPO As String = "In proposta"
+            Dim labelRA As String = "In adozione"
+            Dim labelRP As String = "In pubblicazione"
+            Dim labelRE As String = "In esecutività"
+            Dim labelRVRP As String = String.Empty
+            Dim labelROCR As String = String.Empty
+            Dim labelROCP As String = String.Empty
+
+            If ResolutionEnv.ResolutionSearchableSteps IsNot Nothing AndAlso ResolutionEnv.ResolutionSearchableSteps.Count > 0 Then
+                If ResolutionEnv.ResolutionSearchableSteps.Any(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_PROPOSED)) Then
+                    labelRPO = ResolutionEnv.ResolutionSearchableSteps.FirstOrDefault(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_PROPOSED)).Label
+                End If
+                If ResolutionEnv.ResolutionSearchableSteps.Any(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_ADOPTED)) Then
+                    labelRA = ResolutionEnv.ResolutionSearchableSteps.FirstOrDefault(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_ADOPTED)).Label
+                End If
+                If ResolutionEnv.ResolutionSearchableSteps.Any(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_PUBLISHED)) Then
+                    labelRP = ResolutionEnv.ResolutionSearchableSteps.FirstOrDefault(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_PUBLISHED)).Label
+                End If
+                If ResolutionEnv.ResolutionSearchableSteps.Any(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_EXECUTIVE)) Then
+                    labelRE = ResolutionEnv.ResolutionSearchableSteps.FirstOrDefault(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_EXECUTIVE)).Label
+                End If
+                If ResolutionEnv.ResolutionSearchableSteps.Any(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_ACCOUNTING)) Then
+                    labelRVRP = ResolutionEnv.ResolutionSearchableSteps.FirstOrDefault(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_ACCOUNTING)).Label
+                End If
+                If ResolutionEnv.ResolutionSearchableSteps.Any(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_PROVISION_REGION_CONTROL)) Then
+                    labelROCR = ResolutionEnv.ResolutionSearchableSteps.FirstOrDefault(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_PROVISION_REGION_CONTROL)).Label
+                End If
+                If ResolutionEnv.ResolutionSearchableSteps.Any(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_PROVISION_TO_BE_PUBLISHED)) Then
+                    labelROCP = ResolutionEnv.ResolutionSearchableSteps.FirstOrDefault(Function(f) f.FilterAction.Equals(UserScrivaniaD.ACTION_NAME_RESOLUTION_PROVISION_TO_BE_PUBLISHED)).Label
+                End If
+            End If
+            AddNode(node, New UserDesktopNodeAction(labelRPO, UserScrivaniaD.ACTION_NAME_RESOLUTION_PROPOSED, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction(labelRA, UserScrivaniaD.ACTION_NAME_RESOLUTION_ADOPTED, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            If Not String.IsNullOrEmpty(labelRVRP) Then
+                AddNode(node, New UserDesktopNodeAction(labelRVRP, UserScrivaniaD.ACTION_NAME_RESOLUTION_ACCOUNTING, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            End If
+            If Not String.IsNullOrEmpty(labelROCR) Then
+                AddNode(node, New UserDesktopNodeAction(labelROCR, UserScrivaniaD.ACTION_NAME_RESOLUTION_PROVISION_REGION_CONTROL, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            End If
+            If Not String.IsNullOrEmpty(labelROCP) Then
+                AddNode(node, New UserDesktopNodeAction(labelROCP, UserScrivaniaD.ACTION_NAME_RESOLUTION_PROVISION_TO_BE_PUBLISHED, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            End If
+            AddNode(node, New UserDesktopNodeAction(labelRP, UserScrivaniaD.ACTION_NAME_RESOLUTION_PUBLISHED, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            AddNode(node, New UserDesktopNodeAction(labelRE, UserScrivaniaD.ACTION_NAME_RESOLUTION_EXECUTIVE, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            Dim currentDeterminaTabMaster As TabMaster = Facade.TabMasterFacade.GetByConfigurationAndType(DocSuiteContext.Current.ResolutionEnv.Configuration, ResolutionType.IdentifierDetermina)
+            Dim affGenStep As TabWorkflow = Facade.TabWorkflowFacade.GetByDescription(WorkflowStep.AFF_GEN_CHECK_STEP_DESCRIPTION, currentDeterminaTabMaster.WorkflowType)
+            If affGenStep IsNot Nothing Then
+                AddNode(node, New UserDesktopNodeAction("Assegnate a SC Affari Generali", UserScrivaniaD.ACTION_NAME_RESOLUTION_AFF_GEN, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+            End If
             If (ResolutionEnv.ResolutionKindEnabled) Then
-                AddNode(node, New UserDesktopNodeAction("Atti per Amministrazione Trasparente", "Z", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+                AddNode(node, New UserDesktopNodeAction("Atti per Amministrazione Trasparente", UserScrivaniaD.ACTION_NAME_RESOLUTION_AMM_TRASP, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
             End If
         End If
         If ResolutionEnv.ViewResolutionProposedByRoleEnabled Then
             AddNode(node, New UserDesktopNodeAction("Proposte dai singoli settori", "ResolutionProposedByRole", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
         End If
-        AddNode(node, New UserDesktopNodeAction("Inserimento oggi", "RO", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Inserimento settimana", "RS", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
-        AddNode(node, New UserDesktopNodeAction("Inserimento mese", "RM", "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+
+        AddNode(node, New UserDesktopNodeAction("Inserimento oggi", UserScrivaniaD.ACTION_NAME_RESOLUTION_INSERT_TODAY, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Inserimento settimana", UserScrivaniaD.ACTION_NAME_RESOLUTION_INSERT_THIS_WEEK, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
+        AddNode(node, New UserDesktopNodeAction("Inserimento mese", UserScrivaniaD.ACTION_NAME_RESOLUTION_INSERT_THIS_MONTH, "N", PageScrivania, "Resl", "../Comm/Images/FolderClose16.gif"), False)
         Return node
     End Function
 #End Region

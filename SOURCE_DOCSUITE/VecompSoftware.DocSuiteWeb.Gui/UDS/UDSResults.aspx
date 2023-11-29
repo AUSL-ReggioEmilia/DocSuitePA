@@ -281,7 +281,7 @@
                             <asp:CheckBox AutoPostBack="False" ID="cbSelect" runat="server" />
                         </ItemTemplate>
                     </telerik:GridTemplateColumn>
-                    <telerik:GridTemplateColumn UniqueName="colHasRead" HeaderText="Da leggere" HeaderStyle-Width="20px" HeaderImageUrl="../Comm/Images/File/Mail16.gif" AllowFiltering="false" Groupable="false">
+                    <telerik:GridTemplateColumn UniqueName="colHasRead" HeaderText="Da leggere" HeaderStyle-Width="20px" HeaderImageUrl="../App_Themes/DocSuite2008/imgset16/mail.png" AllowFiltering="false" Groupable="false">
                         <HeaderStyle HorizontalAlign="Center" CssClass="headerImage" />
                         <ItemStyle HorizontalAlign="Center" CssClass="headerImage" />
                         <ItemTemplate>

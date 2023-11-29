@@ -168,13 +168,6 @@ Public Class DeskToCollaboration
             .OnClientClick = String.Format(OPEN_WINDOW_SCRIPT, ID, url, windowPreviewDocument.ClientID, "")
         End With
 
-
-        If dto.IsJustInCollaboration Then
-            Dim currentCheckBox As CheckBox = CType(CType(e.Item, GridDataItem)("Select").Controls(0), CheckBox)
-            currentCheckBox.Enabled = False
-            currentCheckBox.ToolTip = "La scelta del documento è disabilitata in quanto sul documento è stata avviata una collaborazione non ancora conclusa."
-        End If
-
         With DirectCast(e.Item.FindControl("lblDocumentName"), Label)
             .Text = dto.Name
         End With
@@ -182,9 +175,8 @@ Public Class DeskToCollaboration
         Dim documentTypeModControl As RadDropDownList = DirectCast(e.Item.FindControl("ddlDocumentType"), RadDropDownList)
         documentTypeModControl.Items.Add(New DropDownListItem("Allegato", ATTACHMENT_CODE))
         documentTypeModControl.Items.Add(New DropDownListItem("Annesso", ANNEXED_CODE))
-        If Not dto.IsJustInCollaboration Then
-            e.Item.Selected = True
-        End If
+
+        e.Item.Selected = True
 
     End Sub
 
@@ -254,7 +246,7 @@ Public Class DeskToCollaboration
 
     Private Sub InitializeDocuments()
         Dim documentDtos As ICollection(Of DeskDocumentResult) = New Collection(Of DeskDocumentResult)
-        For Each deskDocument As DeskDocument In CurrentDesk.DeskDocuments.Where(Function(x) x.IsActive = 0)
+        For Each deskDocument As DeskDocument In CurrentDesk.DeskDocuments.Where(Function(x) x.IsActive)
             Dim docInfos As IList(Of BiblosDocumentInfo) = BiblosDocumentInfo.GetDocuments(deskDocument.IdDocument.Value)
             If Not docInfos.Any() Then
                 Exit Sub
@@ -289,11 +281,11 @@ Public Class DeskToCollaboration
         Select Case template.DocumentType
             Case CollaborationDocumentType.P.ToString(),
                  CollaborationDocumentType.U.ToString()
-                listItem.ImageUrl = "~/Comm/Images/DocSuite/Protocollo16.gif"
+                listItem.ImageUrl = "~/Comm/images/DocSuite/Protocollo16.png"
             Case CollaborationDocumentType.D.ToString()
-                listItem.ImageUrl = "~/Comm/images/Docsuite/Delibera16.gif"
+                listItem.ImageUrl = "~/Comm/Images/DocSuite/Delibera16.png"
             Case CollaborationDocumentType.A.ToString()
-                listItem.ImageUrl = "~/Comm/images/Docsuite/Atto16.gif"
+                listItem.ImageUrl = "~/Comm/images/Docsuite/Atto16.png"
             Case CollaborationDocumentType.S.ToString(),
                  CollaborationDocumentType.UDS.ToString()
                 listItem.ImageUrl = ImagePath.SmallDocumentSeries

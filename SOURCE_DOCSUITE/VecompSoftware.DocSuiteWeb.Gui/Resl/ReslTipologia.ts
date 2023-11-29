@@ -20,6 +20,7 @@ class ReslTipologia {
     wndResolutionKindId: string;
     txtKindNameId: string;
     rcbKindActiveId: string;
+    rcbKindAmountEnabledId: string;
     btnConfirmId: string;   
     uscResolutionKindDetailsId: string;
     uscResolutionKindSeriesId: string;
@@ -45,8 +46,9 @@ class ReslTipologia {
 
     private static ADD_KIND_COMMAND: string = "createKind";
     private static EDIT_KIND_COMMAND: string = "editKind";
-    private static DELETE_KIND_COMMAND: string = "deleteKind";    
+    private static DELETE_KIND_COMMAND: string = "deleteKind";
     private static ISACTIVE_ATTRIBUTE_NODE: string = "isActive";
+    private static AMOUNTENABLED_ATTRIBUTE_NODE: string = "amountEnabled";
 
     private searchDisabled(): boolean {
         let toolBarButton: Telerik.Web.UI.RadToolBarButton = this._tlbStatusSearch.findItemByValue("searchDisabled") as Telerik.Web.UI.RadToolBarButton;
@@ -82,6 +84,7 @@ class ReslTipologia {
     private btnAdd_Click = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonEventArgs) => {
         this._txtKindName.set_value('');
         $("#".concat(this.rcbKindActiveId)).prop("checked", true);
+        $("#".concat(this.rcbKindAmountEnabledId)).prop("checked", false);
         this._btnConfirm.set_commandArgument(ReslTipologia.ADD_KIND_COMMAND);
         this.openWindow(this.wndResolutionKindId, "Inserimento nuova tipologia di atto");
     }
@@ -94,7 +97,9 @@ class ReslTipologia {
 
         this._txtKindName.set_value(this.currentSelectedNode().get_text());
         let isActive: boolean = this.currentSelectedNode().get_attributes().getAttribute(ReslTipologia.ISACTIVE_ATTRIBUTE_NODE);
+        let amountEnabled: boolean = this.currentSelectedNode().get_attributes().getAttribute(ReslTipologia.AMOUNTENABLED_ATTRIBUTE_NODE);
         $("#".concat(this.rcbKindActiveId)).prop("checked", isActive);
+        $("#".concat(this.rcbKindAmountEnabledId)).prop("checked", amountEnabled);
         this._btnConfirm.set_commandArgument(ReslTipologia.EDIT_KIND_COMMAND);
         this.openWindow(this.wndResolutionKindId, "Modifica tipologia di atto");
     }
@@ -191,6 +196,7 @@ class ReslTipologia {
             let model: ResolutionKindModel = {} as ResolutionKindModel;
             model.Name = this._txtKindName.get_value();
             model.IsActive = $("#".concat(this.rcbKindActiveId)).is(':checked');
+            model.AmountEnabled = $("#".concat(this.rcbKindAmountEnabledId)).is(':checked');
             switch (sender.get_commandArgument()) {
                 case ReslTipologia.EDIT_KIND_COMMAND:
                     {
@@ -289,6 +295,7 @@ class ReslTipologia {
                         node.set_text(resolutionKind.Name);
                         node.set_value(resolutionKind.UniqueId);
                         node.get_attributes().setAttribute(ReslTipologia.ISACTIVE_ATTRIBUTE_NODE, resolutionKind.IsActive);
+                        node.get_attributes().setAttribute(ReslTipologia.AMOUNTENABLED_ATTRIBUTE_NODE, resolutionKind.AmountEnabled);
                         if (resolutionKind.IsActive) {
                             node.set_imageUrl("../App_Themes/DocSuite2008/imgset16/type_definition.png");
                         } else {

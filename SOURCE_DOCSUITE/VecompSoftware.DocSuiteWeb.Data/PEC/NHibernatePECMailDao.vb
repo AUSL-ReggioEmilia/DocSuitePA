@@ -4,6 +4,7 @@ Imports NHibernate.Criterion
 Imports NHibernate.SqlCommand
 Imports NHibernate.Transform
 Imports NHibernate.Util
+Imports VecompSoftware.DaoManager
 Imports VecompSoftware.Helpers
 Imports VecompSoftware.NHibernateManager
 Imports VecompSoftware.NHibernateManager.Dao
@@ -50,7 +51,7 @@ Public Class NHibernatePECMailDao
 
     Public Function LogicDelete(ByRef pecs As ICollection(Of Integer)) As Integer
         Using statelessSession As IStatelessSession = NHibernateSessionManager.Instance.OpenStatelessSession(System.Enum.GetName(GetType(EnvironmentDataCode), EnvironmentDataCode.ProtDB))
-            Using transaction As ITransaction = statelessSession.BeginTransaction()
+            Using transaction As ITransaction = statelessSession.BeginTransaction(IsolationLevel.ReadCommitted)
                 Dim updateQueryString As String = "update PECMail p set p.IsActive = 2 WHERE p.Id in (:pecIds)"
                 Dim updated As Integer = statelessSession.CreateQuery(updateQueryString) _
                                          .SetParameterList("pecIds", pecs) _
@@ -58,8 +59,8 @@ Public Class NHibernatePECMailDao
                 If Not updated > 0 Then
                     Return 0
                 End If
-                Dim insertQueryString As String = "insert into PECMailLog (Mail, Description, Type, Date, SystemComputer, SystemUser) " &
-                            " select p, (:description), (:type), (:date), (:systemComputer), (:systemUser) from PECMail p WHERE p.Id in (:pecIds) "
+                Dim insertQueryString As String = "insert into PECMailLog (Mail, Description, Type, Date, SystemComputer, SystemUser, Hash) " &
+                            " select p, (:description), (:type), (:date), (:systemComputer), (:systemUser), (:hash) from PECMail p WHERE p.Id in (:pecIds) "
                 Dim inserted As Integer = statelessSession.CreateQuery(insertQueryString) _
                             .SetParameterList("pecIds", pecs) _
                             .SetParameter("type", PECMailLogType.Delete.ToString()) _
@@ -67,6 +68,7 @@ Public Class NHibernatePECMailDao
                             .SetParameter("date", Date.UtcNow) _
                             .SetParameter("systemComputer", DocSuiteContext.Current.UserComputer) _
                             .SetParameter("systemUser", DocSuiteContext.Current.User.FullUserName) _
+                            .SetParameter("hash", "TODO") _
                             .ExecuteUpdate()
 
                 transaction.Commit()
@@ -339,6 +341,17 @@ Public Class NHibernatePECMailDao
         Return crit
     End Function
 
+    Public Function GetLastPECMailIdCreatedFromSplit(originalPecMailId As Integer) As Integer
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
+        criteria.Add(Restrictions.Eq("SplittedFrom", originalPecMailId))
+        criteria.SetProjection(Projections.Max("Id"))
+        Return criteria.UniqueResult(Of Integer)()
+    End Function
 
+    Public Function GetByUniqueId(uniqueId As Guid) As PECMail
+        Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persitentType)
+        criteria.Add(Restrictions.Eq("UniqueId", uniqueId))
+        Return criteria.UniqueResult(Of PECMail)()
+    End Function
 
 End Class

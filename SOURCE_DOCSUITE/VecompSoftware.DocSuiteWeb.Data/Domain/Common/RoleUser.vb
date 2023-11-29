@@ -19,8 +19,6 @@ Public Class RoleUser
     Public Overridable Property IsMainRole As Boolean?
     Public Overridable Property DSWEnvironment As DSWEnvironment
     Public Overridable Property IdUDSRepository As Guid?
-
-    Public Overridable Property OChartItemWorkflow As OChartItemWorkflow
 #End Region
 
 #Region " Constructor "

@@ -109,7 +109,7 @@ Public Class ReslPecOcSummary
 
     Private Sub DeletePecOc()
         Try
-            CurrentPecOc.IsActive = 0
+            CurrentPecOc.IsActive = False
             CurrentPecOc.Status = PECOCStatus.Cancellato
             Facade.PECOCFacade.Update(CurrentPecOc)
             Facade.PECOCLogFacade.InsertLog(CurrentPecOc)

@@ -439,16 +439,16 @@
   </wsdl:binding>
   <wsdl:service name="eSignEngine">
     <wsdl:port name="eSignEngineSoap" binding="tns:eSignEngineSoap">
-      <soap:address location="http://srvbiblos/ESignEngine/eSignEngine.asmx" />
+      <soap:address location="http://./ESignEngine/eSignEngine.asmx" />
     </wsdl:port>
     <wsdl:port name="eSignEngineSoap12" binding="tns:eSignEngineSoap12">
-      <soap12:address location="http://srvbiblos/ESignEngine/eSignEngine.asmx" />
+      <soap12:address location="http://./ESignEngine/eSignEngine.asmx" />
     </wsdl:port>
     <wsdl:port name="eSignEngineHttpGet" binding="tns:eSignEngineHttpGet">
-      <http:address location="http://srvbiblos/ESignEngine/eSignEngine.asmx" />
+      <http:address location="http://./ESignEngine/eSignEngine.asmx" />
     </wsdl:port>
     <wsdl:port name="eSignEngineHttpPost" binding="tns:eSignEngineHttpPost">
-      <http:address location="http://srvbiblos/ESignEngine/eSignEngine.asmx" />
+      <http:address location="http://./ESignEngine/eSignEngine.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

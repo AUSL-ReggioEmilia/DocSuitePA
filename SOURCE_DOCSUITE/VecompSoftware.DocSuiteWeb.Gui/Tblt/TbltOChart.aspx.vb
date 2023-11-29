@@ -16,13 +16,10 @@ Public Class TbltOChart
 #Region " Properties "
     Private Property _currentOChart As OChart = Nothing
     Private Property _currentOChartItem As OChartItem = Nothing
-
     Private Property _currentOChartId As Guid? = Nothing
     Private Property _currentOChartItemId As Guid? = Nothing
-
     Private Property DisabledRiseContactControl As Boolean
 
-    Private Property DisabledRisePECMailBoxControl As Boolean
 
     Private Property SessionOChart() As OChart
         Get
@@ -55,10 +52,6 @@ Public Class TbltOChart
         Set(value As OChart)
             If value IsNot Nothing Then
                 SessionOChart = value
-                If (DocSuiteContext.Current.ProtocolEnv.RoleContactHistoricizing AndAlso SelectedOChart IsNot Nothing) Then
-                    myRolecontrol.HistoricizeDate = SelectedOChart.RegistrationDate.Date
-                    myContactControl.HistoricizeDate = SelectedOChart.RegistrationDate.Date
-                End If
                 ddlOCharts.SelectedValue = value.Id.ToString()
                 DdlOChartsSelectedIndexChanged(ddlOCharts, New EventArgs())
             Else
@@ -129,8 +122,12 @@ Public Class TbltOChart
 
 #Region " Events "
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not CommonShared.HasGroupOChartAdminRight Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         MasterDocSuite.TitleVisible = False
-        InitializeAjaxSettings()
+        InitializeAjax()
 
         tbItem.OnClientButtonClicking = String.Format("{0}_tbItemButtonClicking", ID)
         If Not IsPostBack Then
@@ -165,9 +162,9 @@ Public Class TbltOChart
                             Dim role As Role = Facade.RoleFacade.GetById(Integer.Parse(arg))
                             roles.Add(role)
                         Next
-                        myRolecontrol.AddItems(roles, Function(r) r.IsActive <> 1 OrElse Not r.IsActiveRange())
+                        myRolecontrol.AddItems(roles, Function(r) Not r.IsActive OrElse Not r.IsActiveRange())
                     Case "NEW"
-                        Dim alreadyExists As Boolean = Facade.RoleFacade.AlreadyExists(argValue)
+                        Dim alreadyExists As Boolean = Facade.RoleFacade.AlreadyExists(argValue, CurrentTenant.TenantAOO.UniqueId)
                         If alreadyExists Then
                             Me.AjaxAlert("Settore già esistente con questo nome.")
                             Return
@@ -175,12 +172,9 @@ Public Class TbltOChart
 
                         Dim role As New Role()
                         role.Name = argValue
-                        role.TenantId = DocSuiteContext.Current.CurrentTenant.TenantId
-
-                        role.ActiveFrom = SelectedOChart.StartDate.GetValueOrDefault(CType(SqlTypes.SqlDateTime.MinValue, Date))
-                        role.ActiveTo = CType(SqlTypes.SqlDateTime.MaxValue, Date)
+                        role.IdTenantAOO = CurrentTenant.TenantAOO.UniqueId
                         Facade.RoleFacade.Save(role)
-                        myRolecontrol.AddItem(role, role.IsActive <> 1 OrElse Not role.IsActiveRange())
+                        myRolecontrol.AddItem(role, Not role.IsActive OrElse Not role.IsActiveRange())
                 End Select
             Case "CONTAINERS"
                 Select Case actionName
@@ -193,15 +187,13 @@ Public Class TbltOChart
 
                         Dim cont As New Container()
                         cont.Name = argValue
-                        cont.ActiveFrom = SelectedOChart.StartDate.GetValueOrDefault(CType(SqlTypes.SqlDateTime.MinValue, Date))
-                        cont.ActiveTo = CType(SqlTypes.SqlDateTime.MaxValue, Date)
                         Facade.ContainerFacade.Save(cont)
-                        myContainersControl.AddItem(cont, cont.IsActive = 0)
+                        myContainersControl.AddItem(cont, Not cont.IsActive)
                 End Select
             Case "CONTACTS"
                 For Each arg As String In argValue.Split(",".ToCharArray(), StringSplitOptions.RemoveEmptyEntries)
                     Dim contact As Contact = Facade.ContactFacade.GetById(Integer.Parse(arg))
-                    myContactControl.AddItem(contact, contact.IsActive <> 1 OrElse Not contact.IsActiveRange())
+                    myContactControl.AddItem(contact, Not contact.IsActive OrElse Not contact.IsActiveRange())
                 Next
             Case "NODES"
                 Select Case actionName
@@ -231,19 +223,6 @@ Public Class TbltOChart
         cbContainer.Items.Clear()
         For Each container As Container In items
             cbContainer.Items.Add(New RadComboBoxItem(container.Name, container.Id.ToString()))
-        Next
-    End Sub
-
-    Private Sub CbPecMailBoxSelectorItemsRequested(sender As Object, e As RadComboBoxItemsRequestedEventArgs) Handles cbPECMailBoxSelector.ItemsRequested
-        Dim boxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.GetAll()
-
-        If Not String.IsNullOrEmpty(e.Text) Then
-            boxes = FilterBoxes(boxes, e.Text)
-        End If
-
-        cbPECMailBoxSelector.Items.Clear()
-        For Each box As PECMailBox In boxes
-            cbPECMailBoxSelector.Items.Add(New RadComboBoxItem(box.MailBoxName, box.Id.ToString()))
         Next
     End Sub
 
@@ -283,7 +262,6 @@ Public Class TbltOChart
         tbContactControl.Enabled = Not SelectedOChart.IsEnded
         tbContainersControl.Enabled = Not SelectedOChart.IsEnded
         tbRoleControl.Enabled = Not SelectedOChart.IsEnded
-        tbPECMailBoxControl.Enabled = Not SelectedOChart.IsEnded
     End Sub
 
     Private Sub OChartTreeNodeClick(sender As Object, e As RadTreeNodeEventArgs) Handles OChartTree.NodeClick
@@ -457,7 +435,7 @@ Public Class TbltOChart
         ' Contenitori
         myContainersControl.Clear()
         If Not SelectedOChartItem.Containers.IsNullOrEmpty() Then
-            myContainersControl.LoadItems(SelectedOChartItem.Containers.Distinct().Select(Function(ci) ci.Container), Function(c) c.IsActive = 0)
+            myContainersControl.LoadItems(SelectedOChartItem.Containers.Distinct().Select(Function(ci) ci.Container), Function(c) Not c.IsActive)
         End If
     End Sub
 
@@ -468,16 +446,6 @@ Public Class TbltOChart
             Case "REMOVE"
                 Dim contact As Contact = myContactControl.GetSelectedItem()
                 myContactControl.RemoveItem(contact)
-        End Select
-    End Sub
-
-    Private Sub TbPECMailBoxcontrolButtonClick(sender As Object, e As RadToolBarEventArgs) Handles tbPECMailBoxControl.ButtonClick
-        Dim sourceControl As RadToolBarButton = DirectCast(e.Item, RadToolBarButton)
-
-        Select Case sourceControl.CommandName
-            Case "REMOVE"
-                Dim box As PECMailBox = myPECMailBoxControl.GetSelectedItem()
-                myPECMailBoxControl.RemoveItem(box)
         End Select
     End Sub
 
@@ -625,7 +593,7 @@ Public Class TbltOChart
         Dim idContainer As Integer = Integer.Parse(selectedContainer)
         If Not SelectedOChartItem.Containers.Any(Function(ic) ic.Container.Id.Equals(idContainer)) Then
             Dim container As Container = Facade.ContainerFacade.GetById(idContainer)
-            myContainersControl.AddItem(container, container.IsActive = 0)
+            myContainersControl.AddItem(container, Not container.IsActive)
         End If
 
         AjaxManager.ResponseScripts.Add(String.Format("CloseWindow('{0}');", rwContainerSelector.ClientID))
@@ -633,19 +601,6 @@ Public Class TbltOChart
 
     Private Sub CmdContainerSelectorCancelClick(sender As Object, e As EventArgs) Handles cmdContainerSelectorCancel.Click
         AjaxManager.ResponseScripts.Add(String.Format("CloseWindow('{0}');", rwContainerSelector.ClientID))
-    End Sub
-
-    Private Sub CmdPECMailBoxSelectorOkClick(sender As Object, e As EventArgs) Handles cmdPECMailBoxSelectorOk.Click
-        Dim ibBox As String = cbPECMailBoxSelector.SelectedValue
-        If Not ibBox.IsNullOrEmpty() Then
-            Dim box As PECMailBox = Facade.PECMailboxFacade.GetById(Short.Parse(ibBox))
-            myPECMailBoxControl.AddItem(box, False)
-            AjaxManager.ResponseScripts.Add(String.Format("CloseWindow('{0}');", rwPECMailBoxSelector.ClientID))
-        End If
-    End Sub
-
-    Private Sub CmdPECMailBoxSelectorCancelClick(sender As Object, e As EventArgs) Handles cmdPECMailBoxSelectorCancel.Click
-        AjaxManager.ResponseScripts.Add(String.Format("CloseWindow('{0}');", rwPECMailBoxSelector.ClientID))
     End Sub
 
     Private Sub MyRolecontrolRolesAdding(sender As Object, args As ItemControlEventArgs(Of Role)) Handles myRolecontrol.ItemsAdding
@@ -661,22 +616,13 @@ Public Class TbltOChart
             Return
         End If
 
-        ' verifico se devo aggiungere anche le relative PEC e/o contatti
-        Dim mailboxes As IList(Of PECMailBox) = Facade.PECMailboxFacade.GetByRoles(New List(Of Role) From {args.Item})
         Dim contacts As IList(Of Contact) = Facade.RoleFacade.GetContacts(New List(Of Role) From {args.Item})
 
-        SessionOChart = Facade.OChartItemFacade.AddRole(args.Item, SelectedOChartItem, mailboxes, contacts)
-
-        If Not mailboxes.IsNullOrEmpty() Then
-            DisabledRisePECMailBoxControl = True
-            myPECMailBoxControl.AddItems(mailboxes, Function(r) False)
-            DisabledRisePECMailBoxControl = False
-            AjaxAlert(String.Format("Aggiunte {0} caselle PEC collegate", mailboxes.Count))
-        End If
+        SessionOChart = Facade.OChartItemFacade.AddRole(args.Item, SelectedOChartItem, contacts)
 
         If Not contacts.IsNullOrEmpty() Then
             DisabledRiseContactControl = True
-            myContactControl.AddItems(contacts, Function(r) r.IsActive <> 1 OrElse Not r.IsActiveRange())
+            myContactControl.AddItems(contacts, Function(r) Not r.IsActive OrElse Not r.IsActiveRange())
             DisabledRiseContactControl = False
             AjaxAlert(String.Format("Aggiunti {0} contatti collegati", contacts.Count))
         End If
@@ -692,32 +638,6 @@ Public Class TbltOChart
         SessionOChart = Facade.OChartItemFacade.RemoveRole(args.Item, SelectedOChartItem)
     End Sub
 
-    Private Sub MyPecMailBoxControlPecMailBoxesAdded(sender As Object, args As ItemControlEventArgs(Of PECMailBox)) Handles myPECMailBoxControl.ItemsAdded
-        If args.Item Is Nothing Then
-            args.Cancel = True
-            Return
-        End If
-        If (DisabledRisePECMailBoxControl) Then
-            Return
-        End If
-
-        SessionOChart = Facade.OChartItemFacade.AddPECMailBox(args.Item, SelectedOChartItem)
-    End Sub
-
-    Private Sub MyPecMailBoxControlNodeCreated(sender As Object, args As ItemNodeEventArgs(Of PECMailBox)) Handles myPECMailBoxControl.NodeCreated
-        If SelectedOChart.Items.FindByResource(args.Item).Count > 1 Then
-            args.Group = SharedGroupName
-        End If
-    End Sub
-
-    Private Sub MyPecMailBoxControlPecMailBoxesRemoved(sender As Object, args As ItemControlEventArgs(Of PECMailBox)) Handles myPECMailBoxControl.ItemsRemoved
-        If args.Item Is Nothing Then
-            args.Cancel = True
-            Return
-        End If
-
-        SessionOChart = Facade.OChartItemFacade.RemovePECMailBox(args.Item, SelectedOChartItem)
-    End Sub
 
     Private Sub myContactControl_ItemsAdding(sender As Object, args As ItemControlEventArgs(Of Contact)) Handles myContactControl.ItemsAdding
         If SelectedOChartItem.Contacts.Any(Function(c) c.Contact.Id.Equals(args.Item.Id)) Then
@@ -794,8 +714,7 @@ Public Class TbltOChart
             myContactControl.ItemsAdded, myContactControl.ItemsRemoved,
             myRolecontrol.ItemsAdded, myRolecontrol.ItemsRemoved,
             myContainersControl.ItemsAdded, myContainersControl.ItemsRemoved,
-            tbContainersControl.ButtonClick,
-            myPECMailBoxControl.ItemsAdded, myPECMailBoxControl.ItemsRemoved
+            tbContainersControl.ButtonClick
 
         If TypeOf sender Is RadToolBar Then
             Dim tbSender As RadToolBar = DirectCast(sender, RadToolBar)
@@ -819,7 +738,7 @@ Public Class TbltOChart
 
 #Region " Methods "
 
-    Private Sub InitializeAjaxSettings()
+    Private Sub InitializeAjax()
         AddHandler AjaxManager.AjaxRequest, AddressOf OChartAjaxRequest
         AjaxManager.AjaxSettings.AddAjaxSetting(tbItem, windowSelOChart, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(windowSelOChart, OChartTree, MasterDocSuite.AjaxDefaultLoadingPanel)
@@ -871,10 +790,6 @@ Public Class TbltOChart
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, myContainersControl, MasterDocSuite.AjaxDefaultLoadingPanel)
         AjaxManager.AjaxSettings.AddAjaxSetting(cmdContainerSelectorOk, myContainersControl, MasterDocSuite.AjaxDefaultLoadingPanel)
 
-        AjaxManager.AjaxSettings.AddAjaxSetting(tbPECMailBoxControl, myPECMailBoxControl, MasterDocSuite.AjaxDefaultLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, myPECMailBoxControl, MasterDocSuite.AjaxDefaultLoadingPanel)
-        AjaxManager.AjaxSettings.AddAjaxSetting(cmdPECMailBoxSelectorOk, myPECMailBoxControl, MasterDocSuite.AjaxDefaultLoadingPanel)
-
     End Sub
 
     Private Sub ResetItemDetailWindow(imported As Boolean)
@@ -914,8 +829,6 @@ Public Class TbltOChart
         myContainersControl.Clear()
         ' Roles
         myRolecontrol.Clear()
-        ' MailBox
-        myPECMailBoxControl.Clear()
         ' Contatti
         myContactControl.Clear()
     End Sub
@@ -940,23 +853,18 @@ Public Class TbltOChart
         ' Contatti
         myContactControl.Clear()
         If Not item.Contacts.IsNullOrEmpty() Then
-            myContactControl.LoadItems(item.Contacts.Distinct().Select(Function(ci) ci.Contact), Function(r) r.IsActive <> 1 OrElse Not r.IsActiveRange())
+            myContactControl.LoadItems(item.Contacts.Distinct().Select(Function(ci) ci.Contact), Function(r) Not r.IsActive OrElse Not r.IsActiveRange())
         End If
         ' Contenitori
         myContainersControl.Clear()
         If Not item.Containers.IsNullOrEmpty() Then
-            myContainersControl.LoadItems(item.Containers.Distinct().Select(Function(ci) ci.Container), Function(r) r.IsActive = 0)
+            myContainersControl.LoadItems(item.Containers.Distinct().Select(Function(ci) ci.Container), Function(r) Not r.IsActive)
         End If
 
         ' Roles
         myRolecontrol.Clear()
         If Not item.Roles.IsNullOrEmpty() Then
-            myRolecontrol.LoadItems(item.Roles.Distinct().Select(Function(ri) ri.Role), Function(r) r.IsActive <> 1 OrElse Not r.IsActiveRange())
-        End If
-        ' MailBox
-        myPECMailBoxControl.Clear()
-        If Not item.Mailboxes.IsNullOrEmpty() Then
-            myPECMailBoxControl.LoadItems(item.Mailboxes.Distinct().Select(Function(mbi) mbi.Mailbox), Function(r) False)
+            myRolecontrol.LoadItems(item.Roles.Distinct().Select(Function(ri) ri.Role), Function(r) Not r.IsActive OrElse Not r.IsActiveRange())
         End If
 
     End Sub
@@ -1005,19 +913,6 @@ Public Class TbltOChart
         End If
 
         Return parameters.ToString()
-    End Function
-    Public Function FilterBoxes(ByVal boxes As IList(Of PECMailBox), filter As String) As IList(Of PECMailBox)
-        Dim filtered As New List(Of PECMailBox)
-
-        For Each box As PECMailBox In boxes
-            If box.MailBoxName.IndexOf(filter, StringComparison.OrdinalIgnoreCase) <> -1 Then
-                If Not filtered.Contains(box) Then
-                    filtered.Add(box)
-                End If
-            End If
-        Next
-
-        Return filtered
     End Function
 
     Private Function DoesCodeExist(code As String) As Boolean

@@ -30,6 +30,14 @@ namespace VecompSoftware.DocSuiteWeb.Facade.WebAPI.Workflows
         #endregion
 
         #region [ Methods ]
+        public ICollection<WorkflowRepository> GetAllUserWorkflowRepository()
+        {
+            return WebAPIImpersonatorFacade.ImpersonateDao<WorkflowRepositoryDao, WorkflowRepository, ICollection<WorkflowRepository>>(this.CurrentTenantConfiguration.Dao,
+            (impersonationType, dao) =>
+            {
+                return dao.GetAllUserWorkflowRepository();
+            });
+        }
         #endregion
     }
 }

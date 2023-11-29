@@ -104,13 +104,10 @@ Public Class DossierFascicleFolderInserimento
                 If UscFascicleInsert.RespContactDTO IsNot Nothing AndAlso UscFascicleInsert.RespContactDTO.Contact IsNot Nothing Then
                     contactId = UscFascicleInsert.RespContactDTO.Contact.Id
                 End If
-                Dim metadataModel As Tuple(Of MetadataDesignerModel, ICollection(Of MetadataValueModel)) = Nothing
-                If ProtocolEnv.MetadataRepositoryEnabled Then
-                    metadataModel = UscFascicleInsert.GetDynamicValues()
-                End If
-                AjaxManager.ResponseScripts.Add(String.Format(DOSSIERFOLDER_INSERT_CALLBACK, contactId,
-                                                              If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item1).Replace("'", "\'"), Nothing),
-                                                              If(metadataModel IsNot Nothing, JsonConvert.SerializeObject(metadataModel.Item2).Replace("'", "\'"), Nothing)))
+
+                Dim metadataDesigner As String = ajaxModel.Value(0)
+                Dim metadataValues As String = ajaxModel.Value(1)
+                AjaxManager.ResponseScripts.Add(String.Format(DOSSIERFOLDER_INSERT_CALLBACK, contactId, metadataDesigner, metadataValues))
                 Exit Select
         End Select
     End Sub

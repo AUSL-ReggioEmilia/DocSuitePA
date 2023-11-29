@@ -528,6 +528,15 @@ Namespace Series
         Protected WithEvents ItemPublishingDate As Global.Telerik.Web.UI.RadDatePicker
 
         '''<summary>
+        '''lblItemPublishingDate control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents lblItemPublishingDate As Global.Telerik.Web.UI.RadLabel
+
+        '''<summary>
         '''ItemPublishingDateLabel control.
         '''</summary>
         '''<remarks>

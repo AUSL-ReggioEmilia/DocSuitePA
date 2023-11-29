@@ -51,7 +51,7 @@ Public Class NHibernateDocumentSeriesDao
     Public Function GetPublicationEnabledDocumentSeries() As IList(Of DocumentSeries)
         criteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Eq("PublicationEnabled", True))
-        criteria.Add(Restrictions.Eq("Container.IsActive", 1))
+        criteria.Add(Restrictions.Eq("Container.IsActive", True))
         Return criteria.List(Of DocumentSeries)()
     End Function
 
@@ -98,7 +98,7 @@ Public Class NHibernateDocumentSeriesDao
     Public Function GetDocumentSeries() As IList(Of DocumentSeries)
         criteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Eq("PublicationEnabled", True))
-        criteria.Add(Restrictions.Eq("Container.IsActive", 1))
+        criteria.Add(Restrictions.Eq("Container.IsActive", True))
         Return criteria.List(Of DocumentSeries)()
     End Function
 

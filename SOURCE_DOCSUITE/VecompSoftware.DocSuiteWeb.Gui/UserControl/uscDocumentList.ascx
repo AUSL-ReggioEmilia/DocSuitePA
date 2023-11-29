@@ -24,13 +24,19 @@
     <table class="datatable">
         <tr>
             <th>
-                <asp:Label runat="server" ID="DocumentsCaption"></asp:Label></th>
+                <div style="display: flex; align-items: center">
+                    <asp:CheckBox Style="margin-right: 25px" Checked="false" ID="chkSelectAllOriginals" runat="server" Text="Seleziona tutti gli originali" OnCheckedChanged="CheckedSelectAllOriginalsChanged" AutoPostBack="True"/>
+                    <asp:CheckBox Checked="false" ID="chkSelectAllCertifiedCopies" runat="server" Text="Seleziona tutte le copie conformi" OnCheckedChanged="CheckedSelectAllCertifiedCopiesChanged" AutoPostBack="True"/>
+                </div>
+                <asp:Label runat="server" ID="DocumentsCaption">
+                </asp:Label>
+            </th>
         </tr>
         <tr>
             <td>
                 <telerik:RadAjaxPanel ID="RadAjaxDefaultLoadingPanel" runat="server" LoadingPanelID="DefaultLoadingPanel">
                     <telerik:RadGrid runat="server" ID="DocumentListGrid" Width="100%" AllowMultiRowSelection="true" EnableViewState="true" EnableColumnsViewState="true">
-                        <MasterTableView AutoGenerateColumns="False" DataKeyNames="Serialized">
+                        <MasterTableView AutoGenerateColumns="False" DataKeyNames="Item1.Serialized">
                             <Columns>
                                 <telerik:GridTemplateColumn HeaderImageUrl="../App_Themes/DocSuite2008/imgset16/documentPreview.png" HeaderText="Tipo Documento">
                                     <ItemTemplate>

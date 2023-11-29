@@ -12,7 +12,6 @@ Partial Public Class Protocol
 
     Private _checkPublication As String
     Private _advancedProtocol As AdvancedProtocol
-    Private _conservationStatus As Char?
 
 #End Region
 
@@ -268,8 +267,6 @@ Partial Public Class Protocol
 
     Public Overridable Property ProtocolParentLinks As IList(Of ProtocolLink)
 
-    Public Overridable Property Recipients As IList(Of Recipient)
-
     Public Overridable Property Contacts As IList(Of ProtocolContact)
 
     Public Overridable Property ContactIssues As IList(Of ProtocolContactIssue)
@@ -349,23 +346,6 @@ Partial Public Class Protocol
 
     Public Overridable Property CheckDate As Date?
 
-    'Conservation
-    Public Overridable Property ConservationStatus As Char?
-        Get
-            Return Me._conservationStatus.GetValueOrDefault("M"c)
-        End Get
-        Set(ByVal value As Char?)
-            Me._conservationStatus = value
-        End Set
-    End Property
-
-    Public Overridable Property LastConservationDate As Date?
-
-    Public Overridable Property HasConservatedDocs As Boolean
-
-    ' ProtocolParer
-    Public Overridable Property ProtocolParer As ProtocolParer
-
     ' Guid catena allegati annexed
     Public Overridable Property IdAnnexed As Guid
 
@@ -377,7 +357,6 @@ Partial Public Class Protocol
     Public Overridable Property Users As IList(Of ProtocolUser)
 
     Public Overridable Property RejectedRoles As IList(Of ProtocolRejectedRole)
-
 
     Public Overridable Property IdProtocolKind As Short
 
@@ -400,7 +379,6 @@ Partial Public Class Protocol
         Roles = New List(Of ProtocolRole)
         ProtocolLinks = New List(Of ProtocolLink)
         ProtocolParentLinks = New List(Of ProtocolLink)
-        Recipients = New List(Of Recipient)
         Contacts = New List(Of ProtocolContact)
         ManualContacts = New List(Of ProtocolContactManual)
         ContactIssues = New List(Of ProtocolContactIssue)

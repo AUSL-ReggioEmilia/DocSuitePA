@@ -59,7 +59,7 @@ Public Class NHibernateDocumentTokenUserDao
             End If
 
             If bAddIsActive Then
-                criteria.Add(Restrictions.Eq("IsActive", 1S))
+                criteria.Add(Restrictions.Eq("IsActive", True))
             End If
 
             If Account <> String.Empty Then
@@ -119,7 +119,7 @@ Public Class NHibernateDocumentTokenUserDao
         End If
 
         If IsActive Then
-            criteria.Add(Restrictions.Eq("T.IsActive", Int16.Parse(1)))
+            criteria.Add(Restrictions.Eq("T.IsActive", True))
         End If
 
         If Account <> "" Then

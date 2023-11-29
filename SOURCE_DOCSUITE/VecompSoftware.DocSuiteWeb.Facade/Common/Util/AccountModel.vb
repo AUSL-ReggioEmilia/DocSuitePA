@@ -19,7 +19,7 @@ Public Class AccountModel
 #End Region
 
 #Region " Property "
-    Public Property PrincipalName As String
+    Public Property UserPrincipalName As String
     Public Property Domain As String
     Public Property FirstName As String
     Public Property LastName As String
@@ -71,7 +71,7 @@ Public Class AccountModel
         SchemaClassName = String.Empty
         Company = String.Empty
         Description = If(user.Description, String.Empty)
-        PrincipalName = If(user.UserPrincipalName, String.Empty)
+        UserPrincipalName = If(user.UserPrincipalName, String.Empty)
         _jsonFormat = JsonConvert.SerializeObject(user, _serializerSettings)
     End Sub
 
@@ -88,8 +88,8 @@ Public Class AccountModel
         SchemaClassName = If(properties("schemaClassName").Count = 1 AndAlso properties("schemaClassName")(0) IsNot Nothing, properties("schemaClassName")(0).ToString(), String.Empty)
         Company = If(properties("company").Count = 1 AndAlso properties("company")(0) IsNot Nothing, properties("company")(0).ToString(), String.Empty)
         Description = If(properties("Description").Count = 1 AndAlso properties("Description")(0) IsNot Nothing, properties("Description")(0).ToString(), String.Empty)
-        PrincipalName = If(properties("msDS-PrincipalName").Count = 1 AndAlso properties("msDS-PrincipalName")(0) IsNot Nothing, properties("msDS-PrincipalName")(0).ToString(), String.Empty)
-        PrincipalName = If(String.IsNullOrEmpty(PrincipalName) AndAlso properties("userPrincipalName").Count = 1 AndAlso properties("userPrincipalName")(0) IsNot Nothing, properties("userPrincipalName")(0).ToString(), String.Empty)
+        UserPrincipalName = If(properties("msDS-PrincipalName").Count = 1 AndAlso properties("msDS-PrincipalName")(0) IsNot Nothing, properties("msDS-PrincipalName")(0).ToString(), String.Empty)
+        UserPrincipalName = If(String.IsNullOrEmpty(UserPrincipalName) AndAlso properties("userPrincipalName").Count = 1 AndAlso properties("userPrincipalName")(0) IsNot Nothing, properties("userPrincipalName")(0).ToString(), String.Empty)
         If properties.Contains(DocSuiteContext.Current.ProtocolEnv.ADDisplayProperty) Then
             Name = properties(DocSuiteContext.Current.ProtocolEnv.ADDisplayProperty)(0).ToString()
         End If
@@ -109,7 +109,7 @@ Public Class AccountModel
             .Description = _Name,
             .EmailAddress = _Email,
             .TelephoneNumber = _TelephoneNumber,
-            .Note = PrincipalName
+            .Note = UserPrincipalName
         }
         If addFiscal Then
             contact.FiscalCode = _Account

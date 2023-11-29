@@ -34,6 +34,7 @@ import uscCustomActionsRest = require('UserControl/uscCustomActionsRest');
 import FascicleCustomActionModel = require('App/Models/Commons/FascicleCustomActionModel');
 import CategoryFascicleViewModel = require("App/ViewModels/Commons/CategoryFascicleViewModel");
 import AuthorizationRoleType = require("App/Models/Commons/AuthorizationRoleType");
+import ContactFilterEntityType = require("App/Models/Commons/ContactFilterEntityType");
 
 class uscFascicleProcessInsert {
     clientId: string;
@@ -52,6 +53,7 @@ class uscFascicleProcessInsert {
     rcbFascicleTypeId: string;
     pnlContactId: string;
     pnlRoleMasterId: string;
+    pnlRoleId: string;
     pnlConservationId: string;
     pnlFascProcessInsertId: string;
     activityFascicleEnabled: boolean;
@@ -75,6 +77,7 @@ class uscFascicleProcessInsert {
     private _txtNote: Telerik.Web.UI.RadTextBox;
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
     private _rcbFascicleType: Telerik.Web.UI.RadComboBox;
+    private _fascicleVisibilityType: VisibilityType;
 
     private _pnlContact(): JQuery {
         return $(`#${this.pnlContactId}`);
@@ -82,6 +85,10 @@ class uscFascicleProcessInsert {
 
     private _pnlRoleMaster(): JQuery {
         return $(`#${this.pnlRoleMasterId}`);
+    }
+
+    private _pnlRole(): JQuery {
+        return $(`#${this.pnlRoleId}`);
     }
 
     private _pnlConservation(): JQuery {
@@ -109,7 +116,7 @@ class uscFascicleProcessInsert {
     */
 
     rcbFascicleType_selectedIndexChanged = (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxItemEventArgs) => {
-        let elements: JQuery[] = [this._pnlContact(), this._pnlRoleMaster(), this._pnlConservation()];
+        let elements: JQuery[] = [this._pnlContact(), this._pnlRole(), this._pnlConservation()];
         let procedureSelected: boolean = args.get_item().get_value() === FascicleType[FascicleType.Procedure];
         this.setVisibilityForManyElements(elements, procedureSelected);
         PageClassHelper.callUserControlFunctionSafe<uscContattiSelREST>(this.uscContactId)
@@ -120,24 +127,23 @@ class uscFascicleProcessInsert {
 
         PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
             .done((instance) => {
-                instance.forceBehaviourValidationState(procedureSelected);
-                instance.enableValidators(procedureSelected);
+                instance.forceBehaviourValidationState(true);
+                instance.enableValidators(true);
             });
 
         PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleId)
             .done((instance) => {
-                instance.forceBehaviourValidationState(!procedureSelected);
-                instance.enableValidators(!procedureSelected);
-                instance.disableRaciRoleButton();
+                instance.forceBehaviourValidationState(false);
+                instance.enableValidators(false);
             });
     }
 
     uscCategory_CategoryAdded = (eventObject: JQueryEventObject): void => {
         PageClassHelper.callUserControlFunctionSafe<uscCategoryRest>(this.uscCategoryId)
             .done((instance) => {
+                this.clearFascicleFields();
                 switch (instance.getSelectedNode().get_attributes().getAttribute("NodeType")) {
                     case ProcessNodeType.ProcessFascicleTemplate: {
-                        this.clearFascicleFields();
                         this._processFascicleTemplateService.getById(instance.getSelectedNode().get_value(), (data: ProcessFascicleTemplateModel) => {
                             this.setFascicleTemplateToSession(data);
                             this.loadFascicleFields(data);
@@ -194,6 +200,29 @@ class uscFascicleProcessInsert {
                             });
                     }
                 }
+                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((uscRoleMasterinstance) => {
+                    uscRoleMasterinstance.clearRoleTreeView(true);
+                    uscRoleMasterinstance.setToolbarVisibility(true);
+                    uscRoleMasterinstance.persistToolbarVisibilityOnClick(instance.getSelectedNode().get_attributes().getAttribute("NodeType") == ProcessNodeType.ProcessFascicleTemplate);
+                });
+                PageClassHelper.callUserControlFunctionSafe<uscContattiSelREST>(this.uscContactId).done((uscContactinstance) => {
+                    uscContactinstance.deleteAllContacts(false);
+                    uscContactinstance.setToolbarVisibility(false);
+                });
+            });
+    }
+
+    uscCategory_CategoryRemoved = (eventObject: JQueryEventObject): void => {
+        PageClassHelper.callUserControlFunctionSafe<uscCategoryRest>(this.uscCategoryId)
+            .done((instance) => {
+                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((instance) => {
+                    instance.clearRoleTreeView(true);
+                    instance.setToolbarVisibility(false);
+                });
+                PageClassHelper.callUserControlFunctionSafe<uscContattiSelREST>(this.uscContactId).done((instance) => {
+                    instance.deleteAllContacts(false);
+                    instance.setToolbarVisibility(false);
+                });
             });
     }
 
@@ -219,7 +248,10 @@ class uscFascicleProcessInsert {
         this.setMetadataRepositorySelectedIndexEvent();
         this.loadFascicleTypes();
 
+        this._fascicleVisibilityType = VisibilityType.Confidential;
+
         $(`#${this.uscCategoryId}`).bind(uscCategoryRest.ADDED_EVENT, this.uscCategory_CategoryAdded);
+        $(`#${this.uscCategoryId}`).bind(uscCategoryRest.REMOVED_EVENT, this.uscCategory_CategoryRemoved);
 
         /*event for filing out the fields with the chosen Seti contact*/
         $("#".concat(this.uscMetadataRepositorySelId)).on(uscMetadataRepositorySel.SELECTED_SETI_CONTACT_EVENT, (sender, args: SetiContactModel) => {
@@ -230,12 +262,14 @@ class uscFascicleProcessInsert {
         PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
             .done((instance) => {
                 instance.loadItems(<FascicleCustomActionModel>{
-                    AutoClose: false,
                     AutoCloseAndClone: false
                 });
             });
 
         this.bindLoaded();
+
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((instance) => instance.setToolbarVisibility(false));
+        PageClassHelper.callUserControlFunctionSafe<uscContattiSelREST>(this.uscContactId).done((instance) => instance.setToolbarVisibility(false));
     }
 
     private bindLoaded(): void {
@@ -263,12 +297,20 @@ class uscFascicleProcessInsert {
                     });
                     return $.Deferred<RoleModel>().resolve(existedRole);
                 });
+                instance.registerEventHandler(UscRoleRestEventType.SetFascicleVisibilityType, (visibilityType: VisibilityType) => {
+                    this._fascicleVisibilityType = visibilityType;
+                    return $.Deferred<void>().resolve();
+                });
             });
 
         PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId)
             .done((instance) => {
                 instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, (roleId: number) => {
                     this.deleteRoleFromModel(roleId);
+                    PageClassHelper.callUserControlFunctionSafe<uscContattiSelREST>(this.uscContactId).done((instance) => {
+                        instance.deleteAllContacts(false);
+                        instance.setToolbarVisibility(false);
+                    });
                     return $.Deferred<void>().resolve();
                 });
                 instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, (newAddedRoles: RoleModel[]) => {
@@ -279,6 +321,11 @@ class uscFascicleProcessInsert {
                     if (!existedRole) {
                         this.selectedResponsibleRole = newAddedRoles[0];
                     }
+                    PageClassHelper.callUserControlFunctionSafe<uscContattiSelREST>(this.uscContactId).done((instance) => {
+                        instance.deleteAllContacts(false);
+                        instance.setContactFilterFromEntity(ContactFilterEntityType.Role, this.selectedResponsibleRole.IdRole);
+                        instance.setToolbarVisibility(true);
+                    });
                     return $.Deferred<RoleModel>().resolve(existedRole, true);
                 });
             });
@@ -310,7 +357,7 @@ class uscFascicleProcessInsert {
                         instance.clearPage();
                     }
                 });
-            
+
         });
     }
 
@@ -475,6 +522,7 @@ class uscFascicleProcessInsert {
         PageClassHelper.callUserControlFunctionSafe<uscContattiSelREST>(this.uscContactId).done((instance) => instance.setToolbarVisibility(true));
         PageClassHelper.callUserControlFunctionSafe<uscMetadataRepositorySel>(this.uscMetadataRepositorySelId).done((instance) => instance.clearComboboxText());
         PageClassHelper.callUserControlFunctionSafe<uscDynamicMetadataRest>(this.uscDynamicMetadataRestId).done((instance) => instance.clearPage());
+        PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId).done((instance) => instance.loadItems(<FascicleCustomActionModel>{ AutoCloseAndClone: false }));
     }
 
     private loadRoles(items: FascicleRoleModel[]) {
@@ -550,7 +598,7 @@ class uscFascicleProcessInsert {
     }
 
     loadActivityFascicleFields(fascicleTemplateModel: FascicleModel, generateMetadataInputs: boolean = true): void {
-        let elements: JQuery[] = [this._pnlContact(), this._pnlRoleMaster(), this._pnlConservation()];
+        let elements: JQuery[] = [this._pnlContact(), this._pnlConservation()];
         this.setVisibilityForManyElements(elements, false);
 
         this._txtObject.set_value(fascicleTemplateModel.FascicleObject);
@@ -568,13 +616,14 @@ class uscFascicleProcessInsert {
         if (fascicleTemplateModel.CustomActions) {
             PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
                 .done((instance) => {
-                    instance.loadItems(<FascicleCustomActionModel>JSON.parse(fascicleTemplateModel.CustomActions));
+                    let fascicleTemplateCustomActions: FascicleCustomActionModel = <FascicleCustomActionModel>JSON.parse(fascicleTemplateModel.CustomActions);
+                    instance.loadItems(<FascicleCustomActionModel>{ AutoCloseAndClone: fascicleTemplateCustomActions.AutoCloseAndClone });
                 });
         }
     }
 
     loadProcedureFascicleFields(fascicleTemplateModel: FascicleModel, generateMetadataInputs: boolean = true): void {
-        let elements: JQuery[] = [this._pnlContact(), this._pnlRoleMaster(), this._pnlConservation()];
+        let elements: JQuery[] = [this._pnlContact(), this._pnlConservation()];
         this.setVisibilityForManyElements(elements, true);
 
         this._txtObject.set_value(fascicleTemplateModel.FascicleObject);
@@ -588,7 +637,10 @@ class uscFascicleProcessInsert {
         }
 
         if (fascicleTemplateModel.FascicleRoles.filter(x => x.IsMaster)[0]) {
-            PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((instance) => instance.setToolbarVisibility(false));
+            PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleMasterId).done((instance) => {
+                instance.setToolbarVisibility(false);
+                instance.persistToolbarVisibilityOnClick(true);
+            });
         }
         else {
             PageClassHelper.callUserControlFunctionSafe<uscCategoryRest>(this.uscCategoryId).done((instance) => {
@@ -608,7 +660,8 @@ class uscFascicleProcessInsert {
         if (fascicleTemplateModel.CustomActions) {
             PageClassHelper.callUserControlFunctionSafe<uscCustomActionsRest>(this.uscCustomActionsRestId)
                 .done((instance) => {
-                    instance.loadItems(<FascicleCustomActionModel>JSON.parse(fascicleTemplateModel.CustomActions));
+                    let fascicleTemplateCustomActions: FascicleCustomActionModel = <FascicleCustomActionModel>JSON.parse(fascicleTemplateModel.CustomActions);
+                    instance.loadItems(<FascicleCustomActionModel>{ AutoCloseAndClone: fascicleTemplateCustomActions.AutoCloseAndClone });
                 });
         }
     }
@@ -653,6 +706,7 @@ class uscFascicleProcessInsert {
         let promise: JQueryDeferred<FascicleModel> = $.Deferred<FascicleModel>();
         let fascicle: FascicleModel = new FascicleModel();
         fascicle.FascicleType = this.getSelectedFascicleType();
+        fascicle.VisibilityType = this._fascicleVisibilityType;
         fascicle.Category = this.getCategory();
         fascicle.FascicleObject = this._txtObject.get_textBoxValue();
         fascicle.Note = this._txtNote.get_textBoxValue();
@@ -818,23 +872,35 @@ class uscFascicleProcessInsert {
                     else {
                         this.loadProcedureFascicleFields(fascicleTemplateModel, false);
                     }
+
+                    if (fascicleTemplateModel.FascicleTemplate) {
+                        this.setFascicleTemplateToSession(fascicleTemplateModel.FascicleTemplate);
+                    }
+
+                    if (fascicleTemplateModel.FascicleTemplate && fascicleTemplateModel.FascicleTemplate.Process) {
+                        this.setProcessToSession(fascicleTemplateModel.FascicleTemplate.Process);
+                    }
+
+                    if (fascicleTemplateModel.DossierFolders && fascicleTemplateModel.DossierFolders.length > 0) {
+                        this.setDossierFolderToSession(fascicleTemplateModel.DossierFolders[0]);
+                    }
+
+                    this._txtNote.set_value(fascicleTemplateModel.Note);
+                    if (fascicleTemplateModel.Conservation) {
+                        this._txtConservation.set_value(fascicleTemplateModel.Conservation.toString());
+                    }
+
+                    if (fascicleTemplateModel.MetadataDesigner && fascicleTemplateModel.MetadataValues) {
+                        PageClassHelper.callUserControlFunctionSafe<uscDynamicMetadataRest>(this.uscDynamicMetadataRestId)
+                            .done((instance) => {
+                                instance.loadMetadataRepository(fascicleTemplateModel.MetadataRepository.UniqueId, fascicleTemplateModel.MetadataValues);
+                            });
+                    }
                 })
                 .fail((exception: ExceptionDTO) => this.showNotificationException(exception))
         });
         if (fascicleTemplateModel.FascicleType) {
             this._rcbFascicleType.findItemByValue(FascicleType[fascicleTemplateModel.FascicleType]).select();
-        }
-
-        this._txtNote.set_value(fascicleTemplateModel.Note);
-        if (fascicleTemplateModel.Conservation) {
-            this._txtConservation.set_value(fascicleTemplateModel.Conservation.toString());
-        }
-
-        if (fascicleTemplateModel.MetadataDesigner && fascicleTemplateModel.MetadataValues) {
-            PageClassHelper.callUserControlFunctionSafe<uscDynamicMetadataRest>(this.uscDynamicMetadataRestId)
-                .done((instance) => {
-                    instance.loadPageItems(fascicleTemplateModel.MetadataDesigner, fascicleTemplateModel.MetadataValues);
-                });
         }
     }
 }

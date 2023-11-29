@@ -203,51 +203,6 @@ Partial Public Class WorkflowActivityManage
     Protected WithEvents grdUD As Global.Telerik.Web.UI.RadGrid
 
     '''<summary>
-    '''rbtMainDocument control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rbtMainDocument As Global.System.Web.UI.WebControls.RadioButton
-
-    '''<summary>
-    '''ImageFile control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ImageFile As Global.System.Web.UI.WebControls.Image
-
-    '''<summary>
-    '''lblFileName control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblFileName As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblUDRegistrationDate control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblUDRegistrationDate As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''lblUDObject control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents lblUDObject As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
     '''uscNotification control.
     '''</summary>
     '''<remarks>

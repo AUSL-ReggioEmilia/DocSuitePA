@@ -1,11 +1,16 @@
 ﻿Imports System.Collections.Generic
 Imports System.Xml
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.UDSDesigner
 
 Public Class DownloadXml
     Inherits CommonBasePage
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
 
         Response.AddHeader("Content-Disposition", "attachment; filename=uds.xml")
         Response.ContentType = "application/xml"

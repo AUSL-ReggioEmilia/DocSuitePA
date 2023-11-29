@@ -25,13 +25,8 @@ Partial Public Class DocmTokenUser
     End Sub
 
 
-    Public Function SetImageUrl(ByVal isActive As Integer) As String
-        Dim s As String = String.Empty
-        Select Case isActive
-            Case 0 : s = "../Comm/Images/Remove16.gif"
-            Case 1 : s = "../Comm/Images/User16.gif"
-        End Select
-        Return s
+    Public Function SetImageUrl(ByVal isActive As Boolean) As String
+        Return If(isActive, "../Comm/Images/User16.gif", "../Comm/Images/Remove16.gif")
     End Function
 
     Protected Sub RadGrid1_ItemDataBound(sender As Object, e As Telerik.Web.UI.GridItemEventArgs) Handles RadGrid1.ItemDataBound

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using iTextSharp.text.pdf;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
 using Microsoft.Reporting.WebForms;
 using VecompSoftware.DocSuiteWeb.Report.Dynamic;
-using VecompSoftware.Helpers.ExtensionMethods;
 using VecompSoftware.Services.Biblos.Models;
 using VecompSoftware.Services.Logging;
 
@@ -163,6 +165,7 @@ namespace VecompSoftware.DocSuiteWeb.Report
 
             // Svuoto i dataSource per caricarli con gli appositi metodi
             TablePrint.LocalReport.DataSources.Clear();
+            TablePrint.LocalReport.SetBasePermissionsForSandboxAppDomain(new System.Security.PermissionSet(System.Security.Permissions.PermissionState.Unrestricted));
 
             // Gestisco la tipologia di report
             FileLogger.Debug(LoggerName, "ReportBase.InitReportViewer.ReportType");
@@ -283,20 +286,15 @@ namespace VecompSoftware.DocSuiteWeb.Report
 
         private static void SetPrintingProperties(ref byte[] reportByte)
         {
-            using (var reader = new PdfReader(reportByte))
+            using (MemoryStream readerms = new MemoryStream(reportByte))
+            using (MemoryStream writerms = new MemoryStream())
             {
-                using (var ms = new MemoryStream())
-                {
-                    var stamper = new PdfStamper(reader, ms);
-                    // Disattivo il ridimensionamento
-                    stamper.AddViewerPreference(PdfName.PRINTSCALING, PdfName.NONE);
-                    var info = reader.Info;
-                    info.AddSafe("Creator", "Dgroove Srl");
-                    info.AddSafe("Author", "Dgroove Srl");
-                    stamper.MoreInfo = info;
-                    stamper.Close();
-                    reportByte = ms.ToArray();
-                }
+                PdfDocument pdf = new PdfDocument(new PdfReader(readerms), new PdfWriter(writerms));
+                PdfDocumentInfo pdfInfo = pdf.GetDocumentInfo();
+                pdfInfo.SetCreator("Dgroove Srl");
+                pdfInfo.SetAuthor("Dgroove Srl");
+                pdf.Close();
+                reportByte = writerms.ToArray();
             }
         }
 

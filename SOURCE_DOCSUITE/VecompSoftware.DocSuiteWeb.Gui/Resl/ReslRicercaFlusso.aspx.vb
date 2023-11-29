@@ -1,4 +1,5 @@
 ﻿Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.Helpers.ExtensionMethods
 
 Partial Public Class ReslRicercaFlusso
     Inherits ReslBasePage
@@ -20,7 +21,7 @@ Partial Public Class ReslRicercaFlusso
 
     Private Sub Search()
         Dim finder As NHibernateResolutionFinder = CType(uscResWorkflowFinder.Finder, NHibernateResolutionFinder)
-        If (CommonInstance.ApplyResolutionFinderSecurity(Me, finder)) Then
+        If (CommonInstance.ApplyResolutionFinderSecurity(Me, finder, CurrentTenant.TenantAOO.UniqueId, fromRicercaFlusso:=ResolutionEnv.Configuration.Eq(ConfTo))) Then
             'Setto le proprietà del controllo in sessione
             Session.Add("CurrentStep", uscResWorkflowFinder.MyStep)
             Session.Add("CurrentTipo", uscResWorkflowFinder.Tipologia)

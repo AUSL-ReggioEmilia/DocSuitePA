@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="VecompSoftware.DocSuiteWeb.API.APIService" CodeBehind="APIService.svc.cs" %>

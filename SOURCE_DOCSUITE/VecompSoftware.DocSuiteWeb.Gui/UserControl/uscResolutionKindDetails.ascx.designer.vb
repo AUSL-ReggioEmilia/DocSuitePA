@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class uscResolutionKindDetails
-    
+
     '''<summary>
     '''pnlInformations control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class uscResolutionKindDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlInformations As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''lblStatus control.
     '''</summary>
@@ -30,4 +30,13 @@ Partial Public Class uscResolutionKindDetails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblStatus As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''lblAmount control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents lblAmount As Global.System.Web.UI.WebControls.Label
 End Class

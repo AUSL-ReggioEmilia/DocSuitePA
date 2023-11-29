@@ -6,6 +6,7 @@ Imports VecompSoftware.Helpers.Web
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports System.Web
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.Services.Biblos.Models
 
 Public Class MailFacade
 
@@ -44,21 +45,6 @@ Public Class MailFacade
         End If
         Return parameterValue
     End Function
-
-    ''' <summary></summary>
-    ''' <remarks>Attenzione: i parametri vanno generati attraverso questa facade per consentire uso querystring/sessione</remarks>
-    <Obsolete("Per togliere dalla facade la GUI è consigliabile spostare questi metodi.")>
-    Public Shared Function GetOpenMailWindowScript(ByVal parameters As String) As String
-        Dim URL As String = "../Comm/CommMessage.aspx?" & parameters
-        Return String.Format("return OpenMailWindow(""{0}"",{1},{2});", URL, 800, 600)
-    End Function
-
-    ''' <summary></summary>
-    ''' <remarks>Attenzione: i parametri vanno generati attraverso questa facade per consentire uso querystring/sessione</remarks>
-    <Obsolete("Per togliere dalla facade la GUI è consigliabile spostare questi metodi.")>
-    Public Shared Sub RegisterOpenerMailWindow(ByRef opener As WebControls.Button, ByVal parameters As String)
-        opener.OnClientClick = GetOpenMailWindowScript(parameters)
-    End Sub
 
     ''' <summary> Crea i parametri di base per l'invio di una mail </summary>
     ''' <param name="type">Sezione della DWS: Prot, Resl e Docm</param>
@@ -383,12 +369,17 @@ Public Class MailFacade
         Return mailSubject.ToString()
     End Function
 
-    Public Shared Function GetFascicleListBody(fascicleList As IList(Of Entity.Fascicles.Fascicle)) As String
+    Public Shared Function GetFascicleListBody(fascicleList As IList(Of Entity.Fascicles.Fascicle), documentsList As IList(Of DocumentInfo)) As String
         Dim mailBody As New StringBuilder()
         mailBody.AppendFormat(String.Format("<b>{0} - Gestione Documentale</b><br /><br />", DocSuiteContext.ProductName))
         For Each item As Entity.Fascicles.Fascicle In fascicleList
             mailBody.AppendFormat(GetFascicleBody(item))
         Next
+
+        For Each document As DocumentInfo In documentsList
+            mailBody.AppendFormat(GetDocumentBody(document))
+        Next
+
         Return mailBody.ToString()
     End Function
 
@@ -402,6 +393,21 @@ Public Class MailFacade
         Dim mailBody As New StringBuilder()
 
         mailBody.AppendFormat("<a href='{0}?Tipo=Fasc&Azione=Apri&IdFascicle={1}'>{2}</a><br />", DocSuiteContext.Current.CurrentTenant.DSWUrl, fascicle.UniqueId, GetFascicleTitle(fascicle))
+
+        Return mailBody.ToString()
+    End Function
+
+    Public Shared Function GetDocumentBody(ByRef document As DocumentInfo) As String
+        Dim mailBody As New StringBuilder()
+        Dim fascicleId As String = document.Attributes(BiblosFacade.BIBLOS_ATTRIBUTE_FascicleId)
+
+        If TypeOf document Is BiblosDocumentInfo Then
+            Dim biblosDocument As BiblosDocumentInfo = CType(document, BiblosDocumentInfo)
+            Dim documentId As String = biblosDocument.DocumentId.ToString()
+            Dim documentName As String = biblosDocument.Caption
+
+            mailBody.AppendFormat("<a href='{0}?Tipo=Fasc&Azione=Documenti&IdFascicle={1}&DefaultDocumentId={2}'>Documento {3}</a><br />", DocSuiteContext.Current.CurrentTenant.DSWUrl, fascicleId, documentId, documentName)
+        End If
 
         Return mailBody.ToString()
     End Function
@@ -424,7 +430,13 @@ Public Class MailFacade
 
     Public Shared Function GetDossierBody(ByRef dossier As Entity.Dossiers.Dossier) As String
         Dim mailBody As New StringBuilder()
-        mailBody.AppendFormat("<b>{0} - Gestione Documentale</b><br /><br /> <a href='{1}?Tipo=Dossier&Azione=Apri&IdDossier={2}&DossierTitle={3}>{4}</a><br />", DocSuiteContext.ProductName, DocSuiteContext.Current.CurrentTenant.DSWUrl, dossier.UniqueId, GetDossierTitleFormatted(dossier), GetDossierTitle(dossier))
+
+        Dim dossierTitle As String = GetDossierTitle(dossier)
+        Dim formattedDossierTitle As String = GetDossierTitleFormatted(dossier)
+        Dim dossierLink As String = $"<a href='{DocSuiteContext.Current.CurrentTenant.DSWUrl}?Tipo=Dossier&Azione=Apri&IdDossier={dossier.UniqueId}&DossierTitle={formattedDossierTitle}'>{dossierTitle}</a>"
+        Dim mailBodyFormat As String = $"<b>{DocSuiteContext.ProductName} - Gestione Documentale</b> <br /> {dossierLink}"
+
+        mailBody.AppendLine(mailBodyFormat)
         Return mailBody.ToString()
     End Function
 #End Region

@@ -2,6 +2,7 @@ Imports System.IO
 Imports System.Web
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports VecompSoftware.DocSuiteWeb.Facade
 
 Public MustInherit Class BaseCommImport : Implements ICommImport
 
@@ -75,14 +76,12 @@ Public MustInherit Class BaseCommImport : Implements ICommImport
 
     Public ReadOnly Property CurrentTenant As Tenant
         Get
-            If HttpContext.Current.Session("CurrentTenant") IsNot Nothing Then
-                Return DirectCast(HttpContext.Current.Session("CurrentTenant"), Tenant)
+            If HttpContext.Current.Session(CommonShared.USER_CURRENT_TENANT) IsNot Nothing Then
+                Return DirectCast(HttpContext.Current.Session(CommonShared.USER_CURRENT_TENANT), Tenant)
             End If
             Return Nothing
         End Get
     End Property
-
-    Public MustOverride Function InserimentoProtocollo(ByVal Protocollo As Protocol, ByVal all As Boolean) As Boolean Implements ICommImport.InserimentoProtocollo
 
     Public MustOverride Function CheckFiles() As DataTable Implements ICommImport.CheckFiles
 

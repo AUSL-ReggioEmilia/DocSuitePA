@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Data.NHibernate.Dao.Resolutions;
 using VecompSoftware.Services.Biblos.Models;
@@ -74,7 +75,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Resolutions
                 }
                 else
                 {
-                    FacadeFactory.Instance.DocumentSeriesItemFacade.SendInsertDocumentSeriesItemCommand(avcpSeriesItem);
+                    FacadeFactory.Instance.DocumentSeriesItemFacade.SendInsertDocumentSeriesItemCommand(avcpSeriesItem, new List<IWorkflowAction>());
                 }
             }           
         }
@@ -141,7 +142,7 @@ namespace VecompSoftware.DocSuiteWeb.Facade.NHibernate.Resolutions
                                 }
                                 else
                                 {
-                                    FacadeFactory.Instance.DocumentSeriesItemFacade.SendInsertDocumentSeriesItemCommand(seriesItem);
+                                    FacadeFactory.Instance.DocumentSeriesItemFacade.SendInsertDocumentSeriesItemCommand(seriesItem, new List<IWorkflowAction>());
                                 }
                             }
                         }

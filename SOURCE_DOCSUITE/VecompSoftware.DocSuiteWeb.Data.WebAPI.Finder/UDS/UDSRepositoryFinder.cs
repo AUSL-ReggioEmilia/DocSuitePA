@@ -15,12 +15,34 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
         #endregion [ Fields ]
 
         #region [ Properties ]
-        public string UserName { get; set; }
-        public string Domain { get; set; }
-        public Guid? IdUDSTypology { get; set; }
-        public bool PECAnnexedEnabled { get; set; }
-        public bool ExpandProperties { get; set; }
-        public UDSRepositoryFinderActionType ActionType { get; set; }
+        public string UserName
+        {
+            get; set;
+        }
+        public string Domain
+        {
+            get; set;
+        }
+        public Guid? IdUDSTypology
+        {
+            get; set;
+        }
+        public int? Environment
+        {
+            get; set;
+        }
+        public bool PECAnnexedEnabled
+        {
+            get; set;
+        }
+        public bool ExpandProperties
+        {
+            get; set;
+        }
+        public UDSRepositoryFinderActionType ActionType
+        {
+            get; set;
+        }
 
         #endregion [ Properties ]
 
@@ -56,6 +78,14 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
                 case UDSRepositoryFinderActionType.FindElement:
                     {
                         odataQuery = UniqueId.HasValue ? odataQuery.Filter(string.Concat("UniqueId eq ", UniqueId.Value.ToString())) : odataQuery;
+                        break;
+                    }
+                case UDSRepositoryFinderActionType.FindCurrentRepository:
+                    {
+                        if (Environment.HasValue)
+                        {
+                            odataQuery = odataQuery.Filter($"Status eq 'Confirmed' and ExpiredDate eq null and DSWEnvironment eq {Environment.Value}");
+                        }
                         break;
                     }
             }

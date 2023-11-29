@@ -173,7 +173,7 @@ Public Class DocmTokenPresaCarico
 #Region "Conferma Token RP"
     Private Sub ConfermaRP(ByVal documentToken As DocumentToken)
 
-        Facade.DocumentTokenFacade.UpdateIsActive(documentToken, 0)
+        Facade.DocumentTokenFacade.UpdateIsActive(documentToken, False)
 
         Dim source As New List(Of Role) : source.Add(documentToken.RoleSource)
         Dim destination As New List(Of Role) : destination.Add(documentToken.RoleDestination)
@@ -181,7 +181,7 @@ Public Class DocmTokenPresaCarico
         Dim newDocumentToken As DocumentToken = Facade.DocumentTokenFacade.CreateDocumentToken(CurrentDocumentYear, CurrentDocumentNumber)
         With newDocumentToken
             .IncrementalOrigin = 0
-            .IsActive = If(pnlSettoriInAttesa.Visible, 0S, 1S)
+            .IsActive = pnlSettoriInAttesa.Visible
             .Response = String.Empty
             .DocStep = documentToken.DocStep
             .SubStep = documentToken.SubStep
@@ -212,7 +212,7 @@ Public Class DocmTokenPresaCarico
     Private Sub ConfermaRCRR(ByVal documentToken As DocumentToken)
         Dim aSource As New List(Of Role)
         Dim aDestination As New List(Of Role)
-        Dim _isActive As Short = 0
+        Dim _isActive As Boolean = False
         Dim _type As String = String.Empty
         Dim newDocumentToken As DocumentToken = Nothing
         Dim roleDestination As Role = Nothing
@@ -236,8 +236,8 @@ Public Class DocmTokenPresaCarico
         End If
 
         Dim originToken As DocumentToken = Facade.DocumentTokenFacade.GetById(CurrentDocumentYear, CurrentDocumentNumber, documentToken.IncrementalOrigin)
-        Facade.DocumentTokenFacade.UpdateIsActive(originToken, 0)
-        Facade.DocumentTokenFacade.UpdateIsActive(documentToken, 0)
+        Facade.DocumentTokenFacade.UpdateIsActive(originToken, False)
+        Facade.DocumentTokenFacade.UpdateIsActive(documentToken, False)
 
         Dim rDestination As Role = Nothing
         Select Case Distribution
@@ -246,8 +246,8 @@ Public Class DocmTokenPresaCarico
                 aDestination.Add(documentToken.RoleDestination)
                 rDestination = documentToken.RoleDestination
                 Select Case documentToken.DocumentTabToken.Id
-                    Case "RC" : _type = "PC" : _isActive = 1
-                    Case "RR" : _type = "PT" : _isActive = 2
+                    Case "RC" : _type = "PC" : _isActive = True
+                    Case "RR" : _type = "PT" : _isActive = False
                 End Select
                 newDocumentToken = Facade.DocumentTokenFacade.CreateDocumentToken(CurrentDocumentYear, CurrentDocumentNumber)
                 SaveDocumentToken(newDocumentToken, documentToken, _isActive, documentToken.RoleSource, documentToken.RoleDestination, _type)
@@ -256,12 +256,12 @@ Public Class DocmTokenPresaCarico
                 aSource.Add(documentToken.RoleSource)
                 aDestination.Add(roleDestination)
                 newDocumentToken = Facade.DocumentTokenFacade.CreateDocumentToken(CurrentDocumentYear, CurrentDocumentNumber)
-                SaveDocumentToken(newDocumentToken, documentToken, 0, roleMaster, roleDestination, "MP")
+                SaveDocumentToken(newDocumentToken, documentToken, False, roleMaster, roleDestination, "MP")
 
                 rDestination = roleDestination
                 Select Case documentToken.DocumentTabToken.Id
-                    Case "RC" : _type = "PC" : _isActive = 1
-                    Case "RR" : _type = "PT" : _isActive = 2
+                    Case "RC" : _type = "PC" : _isActive = True
+                    Case "RR" : _type = "PT" : _isActive = False
                 End Select
                 newDocumentToken = Facade.DocumentTokenFacade.CreateDocumentToken(CurrentDocumentYear, CurrentDocumentNumber)
                 SaveDocumentToken(newDocumentToken, documentToken, _isActive, documentToken.RoleSource, roleDestination, _type)
@@ -326,9 +326,9 @@ Public Class DocmTokenPresaCarico
 
         'token di origine non attivo
         _originToken = Facade.DocumentTokenFacade.GetById(CurrentDocumentYear, CurrentDocumentNumber, _currentToken.IncrementalOrigin)
-        Facade.DocumentTokenFacade.UpdateIsActive(_originToken, 0)
+        Facade.DocumentTokenFacade.UpdateIsActive(_originToken, False)
         'token corrente non attivo
-        Facade.DocumentTokenFacade.UpdateIsActive(_currentToken, 0)
+        Facade.DocumentTokenFacade.UpdateIsActive(_currentToken, False)
 
         Dim _roleSourceList As New List(Of Role) : _roleSourceList.Add(_currentToken.RoleSource)
         Dim _roleDestinationList As New List(Of Role) : _roleDestinationList.Add(_currentToken.RoleDestination)
@@ -340,7 +340,7 @@ Public Class DocmTokenPresaCarico
         Dim newDocumentToken As DocumentToken = Facade.DocumentTokenFacade.CreateDocumentToken(CurrentDocumentYear, CurrentDocumentNumber)
         With newDocumentToken
             .IncrementalOrigin = _currentToken.IncrementalOrigin
-            .IsActive = 1
+            .IsActive = True
             .Response = "N"
             .DocStep = _currentToken.DocStep + 1
             .SubStep = _currentToken.SubStep
@@ -367,7 +367,7 @@ Public Class DocmTokenPresaCarico
 #End Region
 
 #Region "Private Function"
-    Private Sub SaveDocumentToken(ByRef newToken As DocumentToken, ByVal currentToken As DocumentToken, ByVal isActive As Short, ByVal RoleSource As Role, ByVal RoleDestination As Role, ByVal Type As String)
+    Private Sub SaveDocumentToken(ByRef newToken As DocumentToken, ByVal currentToken As DocumentToken, ByVal isActive As Boolean, ByVal RoleSource As Role, ByVal RoleDestination As Role, ByVal Type As String)
         With newToken
             .IncrementalOrigin = 0
             .IsActive = isActive

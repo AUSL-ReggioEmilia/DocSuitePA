@@ -31,6 +31,10 @@ Public Class PECMailBoxModuliMonitor
 
 #Region " Events "
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not CommonShared.HasGroupAdministratorRight Then
+            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
+            Exit Sub
+        End If
         InitializeAjax()
 
         If Not IsPostBack Then
@@ -106,9 +110,9 @@ Public Class PECMailBoxModuliMonitor
             report.MailBoxName = mailbox.MailBoxName
             report.LastJSProcessed = Nothing
 
-            If (Not mailbox.IdJeepServiceOutgoingHost.HasValue) Then
+            If (Not mailbox.IdJeepServiceOutgoingHost.HasValue AndAlso defaultJS IsNot Nothing) Then
                 report.ModuleName = defaultJS.Hostname
-            Else
+            ElseIf (mailbox.IdJeepServiceOutgoingHost IsNot Nothing) Then
                 report.ModuleName = jeepServiceHosts.Single(Function(f) f.Id = mailbox.IdJeepServiceOutgoingHost.Value).Hostname
             End If
 

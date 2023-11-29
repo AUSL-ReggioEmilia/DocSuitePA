@@ -74,7 +74,7 @@ class CommonDomainUserSelRest {
             for (let domainUserModel of domainUsersModel) {
                 let node: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
                 node.set_text(`${domainUserModel.Account} - (${domainUserModel.DisplayName})`);
-                node.set_value(domainUserModel.EmailAddress);
+                node.set_value(domainUserModel.Account);
                 this._tvwContactDomain.get_nodes().getNode(0).get_nodes().add(node);
 
                 let newContact: ContactModel = <ContactModel>{
@@ -117,7 +117,7 @@ class CommonDomainUserSelRest {
     btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
         args.set_cancel(true);
         let selNode = this._tvwContactDomain.get_selectedNode();
-        let selectedContact: ContactModel[] = this.contactList.filter(x => x.EmailAddress == selNode.get_value());
+        let selectedContact: ContactModel[] = this.contactList.filter(x => x.Code == selNode.get_value());
         let wnd: Telerik.Web.UI.RadWindow = this.getRadWindow();
         wnd.close(selectedContact);
     }

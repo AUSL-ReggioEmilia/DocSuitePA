@@ -5,7 +5,6 @@ Public Class ResolutionHeader
 
     Private _proxiedContainer As Container
     Private _proxiedLocation As Location
-    Private _proxiedResolutionParer As ResolutionParer
 
 #End Region
 
@@ -64,35 +63,13 @@ Public Class ResolutionHeader
         End Get
     End Property
 
-    Public Property ParerUri As String
-    Public Property ParerHasError As Boolean?
-    Public Property ParerLastError As String
     Public Property ReturnFromCollaboration As Integer
     Public Property ConfirmViewBy As String
     Public Property ReturnFromRetroStep As Integer
-    Public ReadOnly Property ProxiedResolutionParer As ResolutionParer
-        Get
-            If HasParer AndAlso _proxiedResolutionParer Is Nothing Then
-                _proxiedResolutionParer = New ResolutionParer()
-                With _proxiedResolutionParer
-                    .HasError = ParerHasError
-                    .LastError = ParerLastError
-                    .ParerUri = ParerUri
-                End With
-            End If
-            Return _proxiedResolutionParer
-        End Get
-    End Property
 
 #End Region
 
 #Region " Calculated Properties "
-
-    Public ReadOnly Property HasParer As Nullable(Of Boolean)
-        Get
-            Return ParerHasError.HasValue
-        End Get
-    End Property
 
 #End Region
 
@@ -297,6 +274,8 @@ Public Class ResolutionHeader
 
     Public Overridable Property WorkflowStepDate As DateTimeOffset?
 
+    Public Overridable Property Note As String
+
 #End Region
 
 #Region "Objects Fields"
@@ -478,6 +457,7 @@ Public Class ResolutionHeader
         End Set
     End Property
 
+    Public Overridable Property CurrentUserTakeCharge As String
 #End Region
 
 #Region "AUSL-PC Fields"

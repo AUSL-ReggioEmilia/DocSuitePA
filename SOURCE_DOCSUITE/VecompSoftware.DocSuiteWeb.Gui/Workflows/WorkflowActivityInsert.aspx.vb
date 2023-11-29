@@ -22,4 +22,30 @@ Public Class WorkflowActivityInsert
             Return FacadeFactory.Instance.UserLogFacade.EmailOfUser(DocSuiteContext.Current.User.UserName, DocSuiteContext.Current.User.Domain, DocSuiteContext.Current.ProtocolEnv.UserLogEmail)
         End Get
     End Property
+
+    Protected ReadOnly Property WorkflowArchiveName As String
+        Get
+            Dim workflowLocation As Location = Facade.LocationFacade.GetById(ProtocolEnv.WorkflowLocation.Value)
+            Return workflowLocation.ProtBiblosDSDB
+        End Get
+    End Property
+
+    Protected ReadOnly Property TenantName As String
+        Get
+            Return CurrentTenant.TenantName
+        End Get
+    End Property
+
+    Protected ReadOnly Property TenantId As String
+        Get
+            Return CurrentTenant.UniqueId.ToString()
+        End Get
+    End Property
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If Not ProtocolEnv.WorkflowLocation.HasValue Then
+            Throw New ArgumentNullException("Parameter WorkflowLocation is not defined")
+        End If
+    End Sub
+
 End Class

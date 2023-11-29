@@ -5,6 +5,8 @@ Imports System.ComponentModel
 Imports VecompSoftware.NHibernateManager.Transformer
 Imports VecompSoftware.Helpers.NHibernate
 Imports NHibernate.Dialect.Function
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports System.Linq
 
 <Serializable(), DataObject()>
 Public Class NHibernateResolutionWorkflowFinder
@@ -23,6 +25,7 @@ Public Class NHibernateResolutionWorkflowFinder
     Public Property NumberFrom As Integer?
     Public Property NumberTo As Integer?
     Public Property CheckLastPageDate As Boolean
+    Public Property WorkflowResponsibleStep As Tuple(Of String, Integer)
 
 #End Region
 
@@ -31,6 +34,8 @@ Public Class NHibernateResolutionWorkflowFinder
         Dim criteria As ICriteria = NHibernateSession.CreateCriteria(persistentType, "R")
         criteria.CreateAlias("R.ControllerStatus", "ControllerStatus", SqlCommand.JoinType.LeftOuterJoin)
         criteria.CreateAlias("R.Location", "Location", JoinType.InnerJoin)
+        criteria.CreateAliasIfNotExists("R.ResolutionWorkflows", "RW", JoinType.LeftOuterJoin)
+        criteria.CreateAlias("RW.ResolutionWorkflowUsers", "RWU", JoinType.LeftOuterJoin)
 
         If Delibera Xor Determina Then
             'Filtro Delibera
@@ -51,9 +56,9 @@ Public Class NHibernateResolutionWorkflowFinder
                                                              Projections.Property("TW.Id.ResStep"),
                                                              Projections.Constant(1)))
 
-        Dim dcResolutionWorkflow As DetachedCriteria = DetachedCriteria.For(Of ResolutionWorkflow)("RW")
+        Dim dcResolutionWorkflow As DetachedCriteria = DetachedCriteria.For(Of ResolutionWorkflow)("RWW")
         dcResolutionWorkflow.Add(Subqueries.PropertyIn("ResStep", dcStepWorkflow))
-        dcResolutionWorkflow.Add(Restrictions.Eq("IsActive", Convert.ToInt16(1)))
+        dcResolutionWorkflow.Add(Restrictions.Eq("IsActive", 1S))
         dcResolutionWorkflow.SetProjection(Projections.Property("Resolution.Id"))
 
         'Passo del Flusso
@@ -82,6 +87,36 @@ Public Class NHibernateResolutionWorkflowFinder
                 criteria.Add(Subqueries.PropertyIn("Id", dcResolutionWorkflow))
 
                 criteria.Add(propConju) 'Aggiungo il conjunction criteria al disjunction
+
+            Case TOWorkflow.RicercaFlussoAssegnaAffariGenerali
+                'Creo un conjunction criteria per mettere in AND i criteria del passo
+                Dim propConju As Conjunction = Restrictions.Conjunction()
+                propConju.Add(Restrictions.IsNotNull("R.AdoptionDate"))
+
+                If DateFrom.HasValue Then
+                    CreateDateGeExpression(propConju, "AdoptionDate", DateFrom.Value)
+                End If
+                If DateTo.HasValue Then
+                    CreateDateLeExpression(propConju, "AdoptionDate", DateTo.Value)
+                End If
+
+                'Controllo che non sia attivo lo step successivo
+                If StepAttivo Then
+                    propConju.Add(Restrictions.IsNull("R.SupervisoryBoardProtocolLink"))
+                    propConju.Add(Restrictions.IsNull("R.SupervisoryBoardProtocolCollaboration"))
+                    propConju.Add(Restrictions.IsNull("R.PublishingDate"))
+                End If
+
+                Dim detachedCriteria As DetachedCriteria = DetachedCriteria.For(Of TabWorkflow)("TW2")
+                detachedCriteria.Add(Restrictions.Eq("Description", DescriptionStep))
+                detachedCriteria.Add(Restrictions.EqProperty("Id.WorkflowType", "R.WorkflowType"))
+                detachedCriteria.Add(Restrictions.EqProperty("TW2.Id.ResStep", "RW.ResStep"))
+                detachedCriteria.SetProjection(Projections.Constant(1))
+                detachedCriteria.SetMaxResults(1)
+
+                criteria.Add(Subqueries.Exists(detachedCriteria))
+
+                criteria.Add(propConju)
 
             Case TOWorkflow.RicercaFlussoInvioAvvenutaAdozione
                 'Creo un conjunction criteria per mettere in AND i criteria del passo
@@ -238,22 +273,59 @@ Public Class NHibernateResolutionWorkflowFinder
         End Select
 
         'Filtro Container
+        Dim disjunctionRightsCriteria As Disjunction = New Disjunction()
         If Not (String.IsNullOrEmpty(ContainerIds)) Then
-            Dim words As String()
-            Dim disju As New Disjunction
-            words = ContainerIds.Split(","c)
-
-            For Each word As String In words
-                disju.Add(Restrictions.Eq("R.Container.Id", Integer.Parse(word)))
-            Next
-            criteria.Add(disju)
+            disjunctionRightsCriteria.Add(Restrictions.In("R.Container.Id", ContainerIds.Split(","c).Select(Function(s) Integer.Parse(s)).ToArray()))
         End If
+
+        If Not WorkflowStepsForceVisibility.IsNullOrEmpty() Then
+            Dim stepDisj As Disjunction = Restrictions.Disjunction()
+            Dim tmpConj As Conjunction
+            For Each stepToExcelude As Tuple(Of String, Integer) In WorkflowStepsForceVisibility
+                tmpConj = Restrictions.Conjunction()
+                tmpConj.Add(Restrictions.Eq("RW.ResStep", Convert.ToInt16(stepToExcelude.Item2)))
+                tmpConj.Add(Restrictions.Eq("WorkflowType", stepToExcelude.Item1))
+                stepDisj.Add(tmpConj)
+            Next
+            disjunctionRightsCriteria.Add(stepDisj)
+        End If
+        criteria.Add(disjunctionRightsCriteria)
 
         If SelectedContainerId.HasValue Then
             criteria.Add(Restrictions.Eq("R.Container.Id", SelectedContainerId.Value))
         End If
         'Creo la join per la colonna di filtro
         MyBase.AddJoinAlias(criteria, "R.Container", "Container", JoinType.LeftOuterJoin)
+
+        Dim isActDisju As Disjunction = Restrictions.Disjunction()
+        isActDisju.Add(Restrictions.Eq("RW.IsActive", 1S))
+        isActDisju.Add(Restrictions.IsNull("RW.IsActive"))
+        criteria.Add(isActDisju)
+
+        If Not WorkflowStepsExcluded.IsNullOrEmpty() Then
+            Dim stepDisj As Disjunction
+            Dim tmpConj As Conjunction
+            For Each stepToExclude As Tuple(Of String, Integer) In WorkflowStepsExcluded
+                stepDisj = Restrictions.Disjunction()
+                tmpConj = Restrictions.Conjunction()
+                tmpConj.Add(Restrictions.Not(Restrictions.Eq("RW.ResStep", Convert.ToInt16(stepToExclude.Item2))))
+                tmpConj.Add(Restrictions.Eq("WorkflowType", stepToExclude.Item1))
+                stepDisj.Add(tmpConj)
+                stepDisj.Add(Restrictions.Not(Restrictions.Eq("WorkflowType", stepToExclude.Item1)))
+                criteria.Add(stepDisj)
+            Next
+        End If
+
+        If WorkflowResponsibleStep IsNot Nothing Then
+            Dim stepDisj As Disjunction = Restrictions.Disjunction()
+            Dim tmpConj As Conjunction = Restrictions.Conjunction()
+            tmpConj.Add(Restrictions.Eq("RW.ResStep", Convert.ToInt16(WorkflowResponsibleStep.Item2)))
+            tmpConj.Add(Restrictions.Eq("WorkflowType", WorkflowResponsibleStep.Item1))
+            tmpConj.Add(Restrictions.Eq("RWU.AuthorizationType", AuthorizationRoleType.Responsible))
+            stepDisj.Add(tmpConj)
+            stepDisj.Add(Restrictions.Not(Restrictions.Eq("WorkflowType", WorkflowResponsibleStep.Item1)))
+            criteria.Add(stepDisj)
+        End If
 
         'InteropProposer
         If Not String.IsNullOrEmpty(InteropProposers) Then
@@ -304,10 +376,6 @@ Public Class NHibernateResolutionWorkflowFinder
             statDisju.Add(Restrictions.Eq("Status.Id", 0S))
             statDisju.Add(Expression.Between("Status.Id", -4S, -2S))
             criteria.Add(statDisju)
-        End If
-
-        If DocSuiteContext.Current.ResolutionEnv.ParerEnabled Then
-            criteria.CreateAliasIfNotExists("R.ResolutionParer", "RP", JoinType.LeftOuterJoin)
         End If
 
         AttachFilterExpressions(criteria)

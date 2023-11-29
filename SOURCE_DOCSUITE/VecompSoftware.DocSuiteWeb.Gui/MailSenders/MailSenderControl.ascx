@@ -158,7 +158,7 @@
             </tr>
             <tr>
                 <td>
-                    <usc:UploadDocument TreeViewCaption="Documenti" HeaderVisible="false" ID="uscAttachment" IsDocumentRequired="false" MultipleDocuments="true" runat="server" ShowDocumentsSize="true" ShowTotalSize="True" />
+                    <usc:UploadDocument TreeViewCaption="Documenti" HeaderVisible="false" ID="uscAttachment" IsDocumentRequired="false" MultipleDocuments="true" HideScannerMultipleDocumentButton="true" runat="server" ShowDocumentsSize="true" ShowTotalSize="True" />
                 </td>
             </tr>
         </table>

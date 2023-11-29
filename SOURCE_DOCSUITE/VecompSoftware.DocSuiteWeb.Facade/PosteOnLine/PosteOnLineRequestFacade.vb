@@ -21,7 +21,7 @@ Public Class PosteOnLineRequestFacade
 #Region " Methods "
 
     Sub SaveAll(ByVal request As POLRequest, Optional ByVal excludeSender As Boolean = False)
-        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction()
+        Dim transaction As ITransaction = NHibernateSessionManager.Instance.GetSessionFrom("ProtDB").BeginTransaction(IsolationLevel.ReadCommitted)
         Try
             Me.Save(request, ProtDB, needTransaction:=False)
 

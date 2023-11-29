@@ -77,13 +77,11 @@ Partial Class TbltSettoreGes
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As System.Object, ByVal e As EventArgs) Handles MyBase.Load
-        MasterDocSuite.TitleVisible = False
-
-        If Not CommonShared.HasGroupAdministratorRight AndAlso Not CommonShared.HasGroupTblRoleAdminRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            AjaxManager.ResponseScripts.Add("CloseWindow();")
-            Exit Sub
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblRoleAdminRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
+
+        MasterDocSuite.TitleVisible = False
 
         InitializeAjax()
         If Not IsPostBack Then
@@ -118,7 +116,7 @@ Partial Class TbltSettoreGes
                     Exit Sub
                 End If
 
-                If Facade.RoleFacade.AlreadyExists(txtName.Text) Then
+                If Facade.RoleFacade.AlreadyExists(txtName.Text, CurrentTenant.TenantAOO.UniqueId) Then
                     AjaxAlert("Esiste già un settore con lo stesso nome")
                     Exit Sub
                 End If
@@ -130,22 +128,10 @@ Partial Class TbltSettoreGes
 
                 'Se ha una role padre allora la imposto
                 MainRole.Father = ParentRole
-                MainRole.TenantId = DocSuiteContext.Current.CurrentTenant.TenantId
-                MainRole.IdRoleTenant = MainRole.Id
-
-                If cbNewCollapsed.Checked Then
-                    MainRole.Collapsed = 1
-                Else
-                    MainRole.Collapsed = 0
-                End If
-
+                MainRole.IdTenantAOO = CurrentTenant.TenantAOO.UniqueId
+                MainRole.Id = MainRole.Id
+                MainRole.Collapsed = cbNewCollapsed.Checked
                 Facade.RoleFacade.Save(MainRole)
-
-                Dim currentTenant As Tenant = CType(Session("CurrentTenant"), Tenant)
-                currentTenant.Roles.Add(New Entity.Commons.Role With {.EntityShortId = CType(MainRole.Id, Short)})
-                Dim currentTenantFacade As WebAPI.Tenants.TenantFacade = New WebAPI.Tenants.TenantFacade(DocSuiteContext.Current.Tenants, currentTenant)
-                currentTenantFacade.Update(currentTenant, UpdateActionType.TenantRoleAdd.ToString())
-                currentTenant.Roles.Clear()
 
                 Dim pecMailBoxesToUpdate As New Dictionary(Of Short, Boolean)()
                 If PecEnabled Then
@@ -178,69 +164,19 @@ Partial Class TbltSettoreGes
                     Exit Sub
                 End If
 
-                If Facade.RoleFacade.AlreadyExists(txtNewNome.Text) AndAlso Not txtOldName.Text.Eq(txtNewNome.Text) Then
+                If Facade.RoleFacade.AlreadyExists(txtNewNome.Text, CurrentTenant.TenantAOO.UniqueId) AndAlso Not txtOldName.Text.Eq(txtNewNome.Text) Then
                     AjaxAlert("Esiste già un settore con lo stesso nome")
                     Exit Sub
-                End If
-
-                ' Salvo il ruolo prima di eseguire il rename
-                Dim roleToHistoricize As Role = Nothing
-                If ProtocolEnv.RoleContactHistoricizing Then
-                    roleToHistoricize = CType(MainRole.Clone(), Role)
                 End If
 
                 MainRole.Name = txtNewNome.Text
                 MainRole.EMailAddress = txtNewMail.Text
                 MainRole.ServiceCode = txtNewServ.Text
                 MainRole.UriSharepoint = txtOldSharepoint.Text
-
-
-                If cbCollapsed.Checked Then
-                    MainRole.Collapsed = 1
-                Else
-                    MainRole.Collapsed = 0
-                End If
-
-                'Cerco in RoleNames se esiste già un contatto con lo stesso idRole. Se lo trovo aggiorno il campo ToDate
-                'AltrimentiInserisco prima di modificarlo il contatto vecchio nella RoleNames
-                ''
-                If ProtocolEnv.RoleContactHistoricizing Then
-
-                    Dim sd As Date? = txtHistoryDate.SelectedDate
-                    Dim roleToSplit As RoleName = Nothing
-                    MainRole.IsChanged = 1S
-
-                    If sd.HasValue Then
-                        ' cerco il ruolo in cui la data selezionata è compresa (cerco anche nei ruoli validi attualmente -> ToDate IS NULL)
-                        roleToSplit = Facade.RoleNameFacade.GetRoleNamesHistoryByValidDate(MainRole.Id, sd.Value)
-                        If roleToSplit IsNot Nothing Then
-                            '' Se trovo un ruolo nella data selezionata, devo spaccarlo in 2 nuovi ruolo storicizzati.
-                            HistoryLogic(sd.Value, roleToSplit, MainRole)
-                        Else
-                            Dim roleOlder As RoleName = Facade.RoleNameFacade.GetRoleNamesOlder(MainRole.Id)
-                            If roleOlder Is Nothing Then
-                                '' Se non è mai stato storicizzato un ruolo allora eseguo la prima storicizzazione
-                                AddFirstOldHistory(sd, MainRole, roleToHistoricize)
-                            Else
-                                '' Se non trovo un ruolo nella data selezionata, devo inserirlo prima del contatto più vecchio e devo impostarli la data di fine.
-                                AddNewBeforeHistory(roleOlder.FromDate, MainRole)
-                            End If
-                        End If
-                    End If
-
-                    ' Salvo nella tabella ROLE il dato attualmente valido oppure salvo i dati appena inseriti
-                    If ProtocolEnv.RoleContactHistoricizing Then
-                        ' Solo se esiste un ROLE storicizzato, Aggiorno la description con l'ultimo contatto valido.
-                        Dim roleToUpdate As RoleName = Facade.RoleNameFacade.GetRoleNameByIdRole(MainRole.Id)
-                        If roleToUpdate IsNot Nothing Then
-                            MainRole.Name = roleToUpdate.Name
-                        End If
-                    End If
-
-                End If
-
+                MainRole.Collapsed = cbCollapsed.Checked
                 Facade.RoleFacade.Update(MainRole)
-
+                MainRole.IdTenantAOO = CurrentTenant.TenantAOO.UniqueId
+                Facade.RoleFacade.SendUpdateRoleCommand(MainRole)
                 Dim pecMailBoxesToUpdate As New Dictionary(Of Short, Boolean)()
                 If PecEnabled Then
                     For Each item As KeyValuePair(Of Short, Boolean) In GetSelectedMailboxes(grdMailboxes)
@@ -326,131 +262,8 @@ Partial Class TbltSettoreGes
         AjaxManager.AjaxSettings.AddAjaxSetting(btnConferma, btnConferma, MasterDocSuite.AjaxFlatLoadingPanel)
     End Sub
 
-    Private Sub EditOldRole(ByVal MainRole As Role, ByVal isChanged As Short)
-
-        MainRole.Name = txtNewNome.Text
-        MainRole.EMailAddress = txtNewMail.Text
-        MainRole.ServiceCode = txtNewServ.Text
-        MainRole.IsChanged = isChanged
-
-
-        If cbCollapsed.Checked Then
-            MainRole.Collapsed = 1
-        Else
-            MainRole.Collapsed = 0
-        End If
-        Facade.RoleFacade.UpdateOnly(MainRole)
-
-    End Sub
-
-
-    Private Sub AddNewBeforeHistory(ByVal ToDate As Date, role As Role)
-
-        Dim roleHistorical As New RoleName With
-        {
-            .Name = txtNewNome.Text,
-            .Role = role,
-            .FromDate = txtHistoryDate.SelectedDate.Value,
-            .ToDate = ToDate.AddSeconds(-1)
-        }
-
-        Facade.RoleNameFacade.Save(roleHistorical)
-
-    End Sub
-
-    ''' <summary>
-    ''' Esegue la prima storicizzazione del ruolo.
-    ''' 
-    ''' Crea un nuovo ruolo
-    ''' FROM: RegistrationDate
-    ''' TO:   NULL
-    ''' 
-    ''' Crea un nuovo ruolo storicizzato
-    ''' FROM: DataInserita
-    ''' TO:   RegistrationDate
-    ''' </summary>
-    ''' <param name="fromDate"></param>
-    Private Sub AddFirstOldHistory(fromDate As Date?, role As Role, roleToHistoricize As Role)
-        Dim contactHistorical As RoleName
-        Dim contactActual As RoleName
-
-        If DateTime.Compare(role.RegistrationDate.DateTime.Date, fromDate.Value) < 0 Then
-            contactHistorical = New RoleName With
-            {
-                .Name = role.Name,
-                .Role = role,
-                .FromDate = role.RegistrationDate.DateTime.Date,
-                .ToDate = fromDate.Value.AddMilliseconds(-1)
-            }
-
-            contactActual = New RoleName With
-            {
-                .Name = roleToHistoricize.Name,
-                .Role = roleToHistoricize,
-                .FromDate = fromDate.Value,
-                .ToDate = Nothing
-            }
-        Else
-            contactHistorical = New RoleName With
-            {
-                .Name = role.Name,
-                .Role = role,
-                .FromDate = fromDate.Value,
-                .ToDate = role.RegistrationDate.DateTime.Date.AddMilliseconds(-1)
-            }
-
-            contactActual = New RoleName With
-            {
-                .Name = roleToHistoricize.Name,
-                .Role = roleToHistoricize,
-                .FromDate = role.RegistrationDate.DateTime.Date,
-                .ToDate = Nothing
-            }
-        End If
-        Facade.RoleNameFacade.Save(contactHistorical)
-        Facade.RoleNameFacade.Save(contactActual)
-    End Sub
-
-    Private Sub AddNewBetweenHistory(fromDate As DateTime, toDate As DateTime)
-
-        Dim roleNew As New RoleName
-        roleNew.Name = txtNewNome.Text
-        roleNew.Role = MainRole
-        roleNew.FromDate = fromDate
-        roleNew.ToDate = toDate
-        Facade.RoleNameFacade.Save(roleNew)
-
-    End Sub
-
-    Private Sub HistoryLogic(sd As DateTime, roleToSplit As RoleName, role As Role)
-        ' salvo il vecchio to date 
-        Dim dateToNewRole As Date? = roleToSplit.ToDate
-
-        roleToSplit.ToDate = sd.AddSeconds(-1)
-        roleToSplit.Role = role
-        Facade.RoleNameFacade.UpdateOnly(roleToSplit)
-
-        'aggiungo sul db il ruolo con le date corrette
-        Dim roleToCreate As New RoleName With
-        {
-            .Name = role.Name,
-            .Role = role,
-            .FromDate = sd.Date,
-            .ToDate = dateToNewRole
-        }
-        Facade.RoleNameFacade.Save(roleToCreate)
-
-    End Sub
-
-
-
-
     Private Sub InitializePage()
         InitializeTreeView()
-
-        txtHistoryDate.Visible = ProtocolEnv.RoleContactHistoricizing
-        txtHistoryDate.Enabled = ProtocolEnv.RoleContactHistoricizing
-        'TODO: pagina da rivedere, troppi doppioni per medesime funzionalità
         Select Case Action.ToLower()
             Case "add"
                 Title = "Settori - Aggiungi"
@@ -491,7 +304,7 @@ Partial Class TbltSettoreGes
                 txtOldServ.Text = MainRole.ServiceCode
                 lblNewServ.Text = "Nuovo codice di servizio:"
                 txtNewServ.Text = MainRole.ServiceCode
-                cbCollapsed.Checked = MainRole.Collapsed = 1
+                cbCollapsed.Checked = MainRole.Collapsed = True
                 txtOldSharepoint.Text = MainRole.UriSharepoint
 
 
@@ -695,8 +508,7 @@ Partial Class TbltSettoreGes
                 .ContactType = New ContactType() With {
                     .Id = "S"c
                 },
-                .IsChanged = 0,
-                .IsActive = 1
+                .IsActive = True
             }
     End Function
 #End Region

@@ -4,7 +4,6 @@ Imports System.Linq
 Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
 Imports VecompSoftware.DocSuiteWeb.Facade.PEC.Util
 Imports VecompSoftware.Helpers.ExtensionMethods
-Imports itextsharp.text
 Imports VecompSoftware.Services.Logging
 Imports VecompSoftware.NHibernateManager
 Imports VecompSoftware.DocSuiteWeb.Data
@@ -26,6 +25,12 @@ Imports VecompSoftware.Services.Command.CQRS
 Imports VecompSoftware.Services.Command.CQRS.Events.Entities.PECMails
 Imports VecompSoftware.Helpers.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Entity.Tenants
+Imports iText.Layout.Element
+Imports Newtonsoft.Json
+Imports VecompSoftware.DocSuiteWeb.DTO.WorkflowsElsa
+Imports VecompSoftware.Core.Command.CQRS.Commands.Models.PECMails
+Imports VecompSoftware.DocSuiteWeb.Model.Workflow.Actions
+Imports VecompSoftware.Services.Command.CQRS.Commands.Models.PECMails
 
 <DataObject()>
 Public Class PECMailFacade
@@ -36,6 +41,7 @@ Public Class PECMailFacade
     ''' <summary> Nuova riga </summary>
     Private Shared ReadOnly NewLine As New Paragraph(" ")
     Private _commandInsertFacade As CommandFacade(Of ICommandCreatePECMail)
+    Private _commandBuildFacade As CommandFacade(Of ICommandBuildPECMail)
     Private _mapperPECMailEntity As MapperPECMailEntity
     Private _webAPIHelper As WebAPIHelper
 
@@ -54,6 +60,15 @@ Public Class PECMailFacade
                 _commandInsertFacade = New CommandFacade(Of ICommandCreatePECMail)
             End If
             Return _commandInsertFacade
+        End Get
+    End Property
+
+    Private ReadOnly Property CommandBuildFacade As CommandFacade(Of ICommandBuildPECMail)
+        Get
+            If _commandBuildFacade Is Nothing Then
+                _commandBuildFacade = New CommandFacade(Of ICommandBuildPECMail)
+            End If
+            Return _commandBuildFacade
         End Get
     End Property
 
@@ -226,8 +241,8 @@ Public Class PECMailFacade
         If Not documents.HasSingle() Then
             Throw New DocSuiteException("Errore in fase di recupero Busta PEC.")
         End If
-
         Return documents.First()
+
     End Function
 
     Private Shared Function ArchiveAttachedDocument(ByRef pec As PECMail, ByRef document As DocumentInfo) As Guid
@@ -650,43 +665,6 @@ Public Class PECMailFacade
         Return _dao.GetDsw7StoredMail(idPecMailBox, maxResults, startDate, endDate)
     End Function
 
-    Public Sub CheckPecMailBoxHashes(ByVal idPecMailBox As Short)
-        'Carico tutte le PEC della casella che non hanno un hash (a regime dovrebbero essere 0)
-        Dim pecMailContentFacade As New PECMailContentFacade()
-        Dim notHashedMails As IList(Of PECMail) = _dao.GetNotHashedMails(idPecMailBox)
-        While (notHashedMails.Count > 0)
-            For Each pecMail As PECMail In notHashedMails
-                ' Utilizzo primariamente il MailContent storico
-                Dim contentToHash As String = pecMail.MailContent
-
-                ' Se è vuoto utilizzo il nuovo PecMailContent
-                If String.IsNullOrEmpty(contentToHash) Then
-                    Dim pecMailContent As PECMailContent = pecMailContentFacade.GetByMail(pecMail)
-                    If (pecMailContent Is Nothing) Then
-                        '' Se non esiste anche il PECMailContent allora utilizzo il MailBody
-                        contentToHash = pecMail.MailBody
-                    Else
-                        '' Altrimenti utilizzo correttamente il PECMailContenta
-                        contentToHash = pecMailContent.MailContent
-                    End If
-                End If
-
-
-                If (Not String.IsNullOrEmpty(contentToHash)) Then
-                    ' Calcolo l'SHA256 e aggiorno il campo
-                    pecMail.Checksum = contentToHash.ComputeSHA256Hash()
-                Else
-                    pecMail.Checksum = "NO_CONTENT_TO_HASH"
-                End If
-
-                Update(pecMail)
-            Next
-
-            'Libero la memoria di NHibernate e ricalcolo
-            NHibernateSessionManager.Instance.CloseTransactionAndSessions()
-            notHashedMails = _dao.GetNotHashedMails(idPecMailBox)
-        End While
-    End Sub
     ''' <summary>
     ''' Genera la lista degli allegati univoci partendo da una lista di DocumentInfo
     ''' </summary>
@@ -775,7 +753,7 @@ Public Class PECMailFacade
                 postaCert.Caption = Path.GetFileNameWithoutExtension(postaCert.Caption)
             End If
         ElseIf pecmail.MailContent IsNot Nothing Then
-            Dim mailContent As BiblosDocumentInfo = pecmail.MailContent
+            Dim mailContent As DocumentInfo = pecmail.MailContent
             Dim parentFolder As New FolderInfo() With {.Name = documentoPrincipaleLabel, .Parent = tor}
             mailContent.Parent = parentFolder
             mailContent.Caption = pecmail.MailContent.Caption
@@ -830,14 +808,6 @@ Public Class PECMailFacade
                 End If
                 attachmentsTec.AddChild(daticert)
             End If
-            Dim oChartCommunicationData As DocumentInfo = pecmail.OChartCommunicationData
-            '' Aggiungo OChartCommunicationData.xml solo se non è stato escluso
-            If oChartCommunicationData IsNot Nothing AndAlso Not filesToHide.Any(Function(x) x = oChartCommunicationData.Caption) Then
-                If extensionsToHide.Any(Function(ex) ex.Eq(Path.GetExtension(oChartCommunicationData.Caption))) OrElse hideExtensions Then
-                    oChartCommunicationData.Caption = Path.GetFileNameWithoutExtension(oChartCommunicationData.Caption)
-                End If
-                attachmentsTec.AddChild(oChartCommunicationData)
-            End If
             If attachmentsTec.Children.Count > 0 Then
                 tor.AddChild(attachmentsTec)
             End If
@@ -846,9 +816,14 @@ Public Class PECMailFacade
         '' Se la cartella (con il nome preferito) non è stata citata allora la inserisco
         If Not foldersToHide.Any(Function(x) x = ricevuteLabel) Then
             Dim receipts As New FolderInfo() With {.Name = ricevuteLabel}
+            Dim currentReceipt As PECMail = Nothing
             For Each receipt As BiblosPecMailReceiptWrapper In pecmail.Receipts
-                Dim temp As BiblosDocumentInfo = receipt.Parent.Envelope
-                If Not temp Is Nothing AndAlso Not filesToHide.Any(Function(x) x = temp.Caption) Then
+                currentReceipt = GetById(Integer.Parse(receipt.Parent.Id))
+                Dim temp As DocumentInfo = receipt.Parent.Envelope
+                If currentReceipt.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager Then
+                    temp = receipt.Parent.MailContent
+                End If
+                If temp IsNot Nothing AndAlso Not filesToHide.Any(Function(x) x = temp.Caption) Then
                     temp.Caption = String.Format("{0}.eml", receipt.ReceiptType)
                     temp.Parent = receipts
                     '' Rimuovo l'estensione dalle ricevute nel caso in cui non sia da considerare
@@ -1032,10 +1007,20 @@ Public Class PECMailFacade
 
     ''' <summary> Ritorna il file originale della mail. </summary>
     ''' <remarks> In caso di errore ritorna Nothing </remarks>
-    Public Function GetOriginalEml(ByVal pec As PECMail) As DocumentInfo
+    Public Function GetOriginalEml(ByVal pec As PECMail, action As Action) As DocumentInfo
         If pec.Direction = PECMailDirection.Ingoing Then
             If pec.Location Is Nothing Then
                 Return Nothing
+            End If
+            If pec.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager Then
+                If Not String.IsNullOrEmpty(pec.MailContent) Then
+                    Dim docs As List(Of DocumentInfoModel) = JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(pec.MailContent)
+                    Dim documentInfoModel As DocumentInfoModel = docs.Single(Function(f) f.DocumentId = pec.IDMailContent)
+                    Return New DocumentProxyDocumentInfo(pec.UniqueId, documentInfoModel.DocumentId, DSWEnvironment.PECMail, documentInfoModel.Filename, documentInfoModel.FileExtension, documentInfoModel.Size, documentInfoModel.ReferenceType, documentInfoModel.VirtualPath) With {
+                        .DelegateExternalInitializer = action
+                    }
+                End If
+                Return New DocumentProxyDocumentInfo(pec.UniqueId, pec.IDMailContent, DSWEnvironment.PECMail)
             End If
             Return GetPecMailContent(pec)
         End If
@@ -1046,6 +1031,16 @@ Public Class PECMailFacade
 
         '' altrimenti carico solo l'eml effettivamente inviato
         If pec.IDPostacert <> Guid.Empty Then
+            If pec.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager Then
+                If Not String.IsNullOrEmpty(pec.MailContent) Then
+                    Dim docs As List(Of DocumentInfoModel) = JsonConvert.DeserializeObject(Of List(Of DocumentInfoModel))(pec.MailContent)
+                    Dim documentInfoModel As DocumentInfoModel = docs.Single(Function(f) f.DocumentId = pec.IDMailContent)
+                    Return New DocumentProxyDocumentInfo(pec.UniqueId, documentInfoModel.DocumentId, DSWEnvironment.PECMail, documentInfoModel.Filename, documentInfoModel.FileExtension, documentInfoModel.Size, documentInfoModel.ReferenceType, documentInfoModel.VirtualPath) With {
+                        .DelegateExternalInitializer = action
+                    }
+                End If
+                Return New DocumentProxyDocumentInfo(pec.UniqueId, pec.IDPostacert, DSWEnvironment.PECMail)
+            End If
             Return New BiblosDocumentInfo(pec.IDPostacert)
         End If
 
@@ -1057,11 +1052,11 @@ Public Class PECMailFacade
     ''' <summary> Dimensione della PECMail originale </summary>
     ''' <remarks> Se non è mai stato calcolato aggiorna il campo </remarks>
     ''' <returns> Stringa con dimensione dinamica ("byte", "KB"...). </returns>
-    Public Function GetCalculatedSize(ByVal pec As PECMail) As String
+    Public Function GetCalculatedSize(ByVal pec As PECMail, action As Action) As String
         ' TODO: necessario refactoring per separare ritiro, aggiornamento e visualizzazione
         ''leggo il size corrente e se non ha valore lo valorizzo
         If Not pec.Size.HasValue Then
-            Dim originalEml As DocumentInfo = GetOriginalEml(pec)
+            Dim originalEml As DocumentInfo = GetOriginalEml(pec, action)
             If originalEml IsNot Nothing Then
                 '' Memorizzo la grandezza del documentInfo
                 pec.Size = originalEml.Size
@@ -1073,45 +1068,6 @@ Public Class PECMailFacade
         End If
         Return pec.Size.ToByteFormattedString(2)
     End Function
-
-    Public Function GetElementsWithoutOriginalRecipient(ByVal idMailBox As Short) As IList(Of PecMailHeader)
-        Dim pecFinder As New NHibernatePECMailFinder()
-        ' tutte le pec
-        pecFinder.EnablePaging = False
-        ' della casella corrente
-        pecFinder.MailboxIds = {idMailBox}
-        ' che sono attive
-        pecFinder.Actives = True
-        ' che sono state scaricate
-        pecFinder.Direction = PECMailDirection.Ingoing
-        ' che hanno il checksum calcolato
-        pecFinder.WithChecksum = True
-        ' che non hanno l'OriginalRecipient
-        pecFinder.WithOriginalRecipient = False
-
-        Return CType(pecFinder.DoSearchHeader(), IList(Of PecMailHeader))
-    End Function
-
-    Public Sub CalculateMissingOriginalRecipient(ByVal idMailBox As Short)
-        Dim pecsToProcess As IList(Of PecMailHeader) = GetElementsWithoutOriginalRecipient(idMailBox)
-
-        For Each pecMailHeader As PecMailHeader In pecsToProcess
-            Dim currentPec As PECMail = GetById(pecMailHeader.Id.Value)
-            If Not pecMailHeader.HasMove.HasValue OrElse Not pecMailHeader.HasMove.Value Then
-                ''se la PEC non è mai stata spostata posso aggiornarla senza problemi con il valore della sua casella corrente
-                currentPec.OriginalRecipient = currentPec.MailBox.MailBoxName
-            Else
-                ''altrimenti devo cercare il valore del log di download
-                Dim pmbLog As PECMailBoxLog = Factory.PECMailboxLogFacade.GetImportItem(currentPec)
-                If pmbLog IsNot Nothing Then
-                    Dim originalMailBox As PECMailBox = Factory.PECMailboxFacade.GetById(pmbLog.IDMailBox)
-                    currentPec.OriginalRecipient = originalMailBox.MailBoxName
-                End If
-            End If
-            '' aggiorno subito
-            UpdateNoLastChange(currentPec)
-        Next
-    End Sub
 
 #Region " Methods "
 
@@ -1336,6 +1292,57 @@ Public Class PECMailFacade
         Return PreparePECMessage(Of T)(pecMail, protocol, collaboration, Function(tenantName, tenantId, tenantAOOId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, identity, apiPECMail)
                                                                              Return eventInitializeFunc(tenantName, tenantId, tenantAOOId, collaborationUniqueId, collaboraitonId, collaborationTemplateName, protocolUniqueId, protocolYear, protocolNumber, isInvoice, identity, apiPECMail)
                                                                          End Function)
+    End Function
+
+    Public Function SendAutomaticPECFromProtocolCommand(protocol As Protocol, pecBody As String, pecSubject As String, pecRecipients As ICollection(Of String), pecMailBox As PECMailBox) As Guid?
+        Try
+            Dim tenantName As String = CurrentTenant.TenantName
+            Dim tenantId As Guid = CurrentTenant.UniqueId
+            Dim tenantAOOId As Guid = CurrentTenant.TenantAOO.UniqueId
+            Dim identity As IdentityContext = New IdentityContext(DocSuiteContext.Current.User.FullUserName)
+            Dim pecMailBuildModel As Model.Entities.PECMails.PECMailBuildModel = New Model.Entities.PECMails.PECMailBuildModel() With {
+                .PECMail = New Model.Entities.PECMails.PECMailModel() With {
+                    .UniqueId = Guid.NewGuid(),
+                    .Direction = Model.Entities.PECMails.PECMailDirection.Outgoing,
+                    .IsActive = Model.Entities.PECMails.PECMailActiveType.Active,
+                    .MailRecipients = String.Join(";", pecRecipients),
+                    .MailSenders = pecMailBox.MailBoxName,
+                    .MailSubject = pecSubject,
+                    .MailBody = pecBody,
+                    .PECMailBox = New Model.Entities.PECMails.PECMailBoxModel() With {
+                        .PECMailBoxId = pecMailBox.Id,
+                        .UniqueId = pecMailBox.UniqueId,
+                        .MailBoxRecipient = pecMailBox.MailBoxName,
+                        .Location = New Model.Entities.Commons.LocationModel() With {
+                            .IdLocation = pecMailBox.Location.Id,
+                            .ProtocolArchive = pecMailBox.Location.ProtBiblosDSDB,
+                            .UniqueId = pecMailBox.Location.UniqueId
+                        }
+                    }
+                },
+                .WorkflowAutoComplete = True
+            }
+
+            Dim pecMailReference As Model.Entities.DocumentUnits.DocumentUnitModel = New Model.Entities.DocumentUnits.DocumentUnitModel() With {.UniqueId = pecMailBuildModel.PECMail.UniqueId, .Environment = Model.Entities.Commons.DSWEnvironmentType.PECMail}
+            Dim protocolReference As Model.Entities.DocumentUnits.DocumentUnitModel = New Model.Entities.DocumentUnits.DocumentUnitModel() With {.UniqueId = protocol.Id, .Year = protocol.Year, .Number = protocol.Number.ToString(), .Environment = Model.Entities.Commons.DSWEnvironmentType.Protocol}
+
+            pecMailBuildModel.WorkflowActions.Add(New WorkflowActionDocumentUnitLinkModel(referenced:=protocolReference, destinationLink:=pecMailReference))
+
+            Dim commandBuild As ICommandBuildPECMail = New CommandBuildPECMail(tenantName, tenantId, tenantAOOId, identity, pecMailBuildModel)
+            CommandBuildFacade.Push(commandBuild)
+            Return commandBuild.Id
+        Catch ex As Exception
+            FileLogger.Error(LoggerName, String.Concat("SendInsertProtocolCommand => ", ex.Message), ex)
+        End Try
+        Return Nothing
+    End Function
+
+    Public Function GetLastPECMailIdCreatedFromSplit(originalPecMailId As Integer) As Integer
+        Return _dao.GetLastPECMailIdCreatedFromSplit(originalPecMailId)
+    End Function
+
+    Public Function GetByUniqueId(uniqueId As Guid) As PECMail
+        Return _dao.GetByUniqueId(uniqueId)
     End Function
 #End Region
 

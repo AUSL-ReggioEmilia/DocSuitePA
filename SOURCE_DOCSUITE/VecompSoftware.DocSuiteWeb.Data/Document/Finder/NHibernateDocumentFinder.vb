@@ -78,7 +78,6 @@ Public Class NHibernateDocumentFinder
 
     'Configuration
     Protected _webService As Boolean
-    Protected _conservation As Boolean
     Protected _addDcDO As Boolean = False
 
     'Paginazione
@@ -468,19 +467,6 @@ Public Class NHibernateDocumentFinder
         End Set
     End Property
 
-    Public Property Conservation() As Boolean
-        Get
-            Return _conservation
-        End Get
-        Set(ByVal value As Boolean)
-            _conservation = value
-            If (_conservation) Then
-                _enableTableJoin = True
-                _enablePaging = False
-            End If
-        End Set
-    End Property
-
     Public ReadOnly Property UsedDocumentObject() As Boolean
         Get
             Return _addDcDO
@@ -636,7 +622,7 @@ Public Class NHibernateDocumentFinder
             dcDocToken.Add([Property].ForName("Document.Id").EqProperty("D.Id"))
             dcDocToken.SetProjection(Projections.Id())
             dcDocToken.Add(Expression.In("DocumentTabToken.Id", New String() {"RC", "RR", "RP"}))
-            dcDocToken.Add(Restrictions.Eq("IsActive", 1S))
+            dcDocToken.Add(Restrictions.Eq("IsActive", True))
             Dim aIdRoleDestination(IdRoleDestination.Count - 1) As String
             IdRoleDestination.CopyTo(aIdRoleDestination, 0)
             dcDocToken.Add(Expression.In("RoleDestination.Id", aIdRoleDestination))
@@ -791,12 +777,6 @@ Public Class NHibernateDocumentFinder
             End If
         End If
 
-        'CONSERVATION
-        If Conservation AndAlso DocSuiteContext.Current.ProtocolEnv.IsConservationEnabled Then
-            criteria.Add(Restrictions.Eq("ConservationStatus", "M"c))
-            criteria.Add(Restrictions.Eq("Container.Conservation", CType(1, Byte)))
-        End If
-
         AttachFilterExpressions(criteria)
         AttachSQLExpressions(criteria)
 
@@ -891,7 +871,7 @@ Public Class NHibernateDocumentFinder
         End If
 
         'Configurazione WebService
-        If _webService OrElse _conservation Then
+        If _webService Then
             projList.Add(Projections.Property("Location"), "Location")
         End If
 

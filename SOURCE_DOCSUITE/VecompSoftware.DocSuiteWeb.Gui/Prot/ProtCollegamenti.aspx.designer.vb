@@ -95,15 +95,6 @@ Partial Public Class ProtCollegamenti
     Protected WithEvents ContextMenuCollegamenti As Global.Telerik.Web.UI.RadTreeViewContextMenu
 
     '''<summary>
-    '''btnMail control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents btnMail As Global.System.Web.UI.WebControls.Button
-
-    '''<summary>
     '''btnStampa control.
     '''</summary>
     '''<remarks>

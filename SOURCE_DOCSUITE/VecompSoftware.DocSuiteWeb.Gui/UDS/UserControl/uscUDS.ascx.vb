@@ -1,14 +1,17 @@
 ﻿Imports System.Collections.Generic
 Imports System.Linq
+Imports System.Text.RegularExpressions
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.PEC
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
+Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Conservations
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Tenants
 Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Entity.Conservations
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
 Imports VecompSoftware.DocSuiteWeb.Model.DocumentGenerator
@@ -24,8 +27,8 @@ Public Class uscUDS
 #Region "Fields"
     Private _udsRepositoryFacade As UDSRepositoryFacade
     Private _udsUserFinder As UDSUserFinder
-    Private authorizedUsers As ICollection(Of WebAPIUDS.UDSUser)
     Private _currentTenantFinder As TenantFinder
+    Private _currentConservation As Conservation
     Public Const ACTION_TYPE_INSERT As String = "Insert"
     Public Const ACTION_TYPE_EDIT As String = "Edit"
     Public Const ACTION_TYPE_VIEW As String = "View"
@@ -72,26 +75,6 @@ Public Class uscUDS
                 _udsUserFinder = New UDSUserFinder(DocSuiteContext.Current.Tenants)
             End If
             Return _udsUserFinder
-        End Get
-    End Property
-
-    Public ReadOnly Property AuhtorizedUsers As ICollection(Of WebAPIUDS.UDSUser)
-        Get
-            If authorizedUsers Is Nothing Then
-                authorizedUsers = New List(Of WebAPIUDS.UDSUser)
-                Dim result As ICollection(Of WebAPIDto(Of WebAPIUDS.UDSUser)) = WebAPIImpersonatorFacade.ImpersonateFinder(UDSUserFinder,
-                    Function(impersonationType, finder)
-                        finder.ResetDecoration()
-                        finder.IdUDS = UDSId.Value
-                        finder.EnablePaging = False
-                        Return finder.DoSearch()
-                    End Function)
-
-                If result IsNot Nothing AndAlso result.Count() > 0 Then
-                    authorizedUsers = result.Select(Function(x) x.Entity).ToList()
-                End If
-            End If
-            Return authorizedUsers
         End Get
     End Property
 
@@ -330,7 +313,7 @@ Public Class uscUDS
         End Set
     End Property
 
-    Public Property VisibleParer As Boolean
+    Public Property VisibleConservation As Boolean
         Get
             If ViewState(String.Format("{0}_VisibleParer", ID)) IsNot Nothing Then
                 Return DirectCast(ViewState(String.Format("{0}_VisibleParer", ID)), Boolean)
@@ -365,6 +348,22 @@ Public Class uscUDS
     End Property
 
     Public Property SessionIsEmpty As Boolean
+
+    Public ReadOnly Property CurrentConservation As Conservation
+        Get
+            If _currentConservation Is Nothing AndAlso UDSId.HasValue Then
+                Dim conservation As Conservation = WebAPIImpersonatorFacade.ImpersonateFinder(New ConservationFinder(DocSuiteContext.Current.CurrentTenant),
+                    Function(impersonationType, finder)
+                        finder.UniqueId = UDSId.Value
+                        finder.EnablePaging = False
+                        Return finder.DoSearch().Select(Function(x) x.Entity).FirstOrDefault()
+                    End Function)
+
+                _currentConservation = conservation
+            End If
+            Return _currentConservation
+        End Get
+    End Property
 #End Region
 
 #Region "Events"
@@ -400,12 +399,18 @@ Public Class uscUDS
         udsDataFinder.SetUDSBehaviour(schemaRepository)
 
         udsDynamicControls.ResetState()
+        udsDynamicControls.IdUDSRepository = CurrentUDSRepositoryId
+        udsDynamicControls.MyAuthorizedRolesEnabled = True
         udsDynamicControls.LoadDynamicControls(schemaRepository.Model, True)
         udsDynamicControls.InitializeDynamicFilters()
         udsDynamicControls.LoadDefaultData()
 
         If FromUDSLink Then
             AjaxManager.ResponseScripts.Add(String.Concat("UDSRepositoryOnChange('", CurrentUDSRepositoryId, "');"))
+        End If
+
+        If ActionType.Eq(ACTION_TYPE_INSERT) OrElse ActionType.Eq(ACTION_TYPE_EDIT) Then
+            AjaxManager.ResponseScripts.Add("RemovePostbackSessionState();")
         End If
     End Sub
 
@@ -612,13 +617,12 @@ Public Class uscUDS
         End If
         udsDynamicControls.WorkflowSignedDocRequired = WorkflowSignedDocRequired
 
-        If Request.QueryString("ArchiveTypeId") IsNot Nothing Then
+        If Not String.IsNullOrEmpty(Request.QueryString("ArchiveTypeId")) Then
             CurrentUDSRepositoryId = Guid.Parse(Request.QueryString("ArchiveTypeId").ToString())
         End If
 
         If CurrentUDSRepositoryId IsNot Nothing Then
             ddlUds.SelectedValue = CurrentUDSRepositoryId.ToString()
-            ddlUds.Enabled = False
             Call ddlUds_ItemsChanged(Me, New RadComboBoxSelectedIndexChangedEventArgs(String.Empty, String.Empty, CurrentUDSRepositoryId.ToString(), String.Empty))
         End If
 
@@ -672,7 +676,7 @@ Public Class uscUDS
 
         If CurrentUDSTypologyId.HasValue AndAlso CurrentUDSTypologyId.Value <> Guid.Empty Then
             ddlTypology.SelectedValue = CurrentUDSTypologyId.Value.ToString()
-            ddlTypology.Enabled = False
+            Call ddlTypology_ItemsChanged(ddlTypology, New RadComboBoxSelectedIndexChangedEventArgs(Nothing, Nothing, CurrentUDSTypologyId.Value.ToString(), Nothing))
         End If
 
         If CurrentUDSRepositoryId.HasValue AndAlso CurrentUDSRepositoryId.Value <> Guid.Empty Then
@@ -687,6 +691,7 @@ Public Class uscUDS
 
         rowUDSArchive.SetDisplay(False)
         rowUDSInfo.SetDisplay(True)
+        rowUDSContacts.SetDisplay(False)
         tblAnnullamento.Visible = False
         lblDddlUds.Visible = True
         tblSubject.Visible = False
@@ -701,10 +706,6 @@ Public Class uscUDS
         rowUDSArchive.SetDisplay(False)
         rowUDSContacts.Visible = True
         tblClassificazione.Visible = True
-        uscDocumentUnitConservationRest.Visible = VisibleParer
-        If UDSId.HasValue Then
-            uscDocumentUnitConservationRest.IdDocumentUnit = UDSId.Value
-        End If
         udsDataInsert.Visible = True
         udsDataInsert.ActionType = ACTION_TYPE_VIEW
         CurrentStaticDataControl.ResetControls()
@@ -729,6 +730,7 @@ Public Class uscUDS
         lblDddlUds.Visible = True
         CurrentStaticDataControl.InitializeControls()
         DirectCast(CurrentStaticDataControl, IUDSInsertStaticData).RegistrationDate = UDSRegistrationDate
+        LoadConservation()
 
         If UDSItemSource Is Nothing Then
             RaiseEvent NeedRepositorySource(Me, New EventArgs())
@@ -764,8 +766,12 @@ Public Class uscUDS
                 Next
                 metadata.Add(New StringParameter("_subject", Server.HtmlEncode(UDSItemSource.Model.Subject.Value)))
                 metadata.Add(New StringParameter("_filename", $"{UDSItemSource.Model.Alias}_{UDSYear.Value}_{UDSNumber.Value:0000000}"))
+                metadata.Add(New BooleanParameter("Documents", True))
 
-                RadScriptManager.RegisterStartupScript(Page, Page.GetType(), "InitializePageFromWorkflowUI", String.Concat("$(document).ready(function() {SetMetadataSessionStorage('", JsonConvert.SerializeObject(metadata, DocSuiteContext.DefaultWebAPIJsonSerializerSettings), "','", Server.HtmlEncode(UDSItemSource.SerializeToXml()), "')});"), True)
+                Dim udsHtmlEncode As String = Server.HtmlEncode(UDSItemSource.SerializeToXml())
+                udsHtmlEncode = udsHtmlEncode.Replace("\", "%5C")
+
+                RadScriptManager.RegisterStartupScript(Page, Page.GetType(), "InitializePageFromWorkflowUI", String.Concat("$(document).ready(function() {SetMetadataSessionStorage('", JsonConvert.SerializeObject(metadata, DocSuiteContext.DefaultWebAPIJsonSerializerSettings), "','", udsHtmlEncode, "')});"), True)
             End If
             Exit Sub
         End If
@@ -777,16 +783,32 @@ Public Class uscUDS
         RepositoryBind()
     End Sub
 
+
+
     ''' <summary>
     ''' Abilita la sezione elementi collegati e mostra il link verso il link di protocollo
     ''' </summary>
     Public Sub InitializeUscDocumentUnitReferences()
         uscDocumentUnitReferences.Visible = True
-        uscDocumentUnitReferences.ShowActiveWorkflowActivities = ProtocolEnv.WorkflowManagerEnabled AndAlso ProtocolEnv.WorkflowStateSummaryEnabled
+        uscDocumentUnitReferences.ShowWorkflowActivities = ProtocolEnv.WorkflowManagerEnabled AndAlso ProtocolEnv.WorkflowStateSummaryEnabled
+        uscDocumentUnitReferences.ShowFascicleLinks = Not ProtocolEnv.ProcessEnabled AndAlso ProtocolEnv.FascicleEnabled
+        uscDocumentUnitReferences.ShowDocumentUnitFascicleLinks = ProtocolEnv.ProcessEnabled
         If UDSId.HasValue Then
-            uscDocumentUnitReferences.IdDocumentUnit = UDSId.Value.ToString()
+            uscDocumentUnitReferences.ReferenceUniqueId = UDSId.Value.ToString()
             uscDocumentUnitReferences.DocumentUnitYear = UDSYear?.ToString()
             uscDocumentUnitReferences.DocumentUnitNumber = UDSNumber?.ToString()
+        End If
+
+        If ProtocolEnv.IsPECEnabled Then
+            If ProtocolEnv.UnifiedPECLinksPanelEnabled Then
+                uscDocumentUnitReferences.ShowPECUnified = True
+                uscDocumentUnitReferences.ShowPECIncoming = False
+                uscDocumentUnitReferences.ShowPECOutgoing = False
+            Else
+                uscDocumentUnitReferences.ShowPECUnified = False
+                uscDocumentUnitReferences.ShowPECIncoming = True
+                uscDocumentUnitReferences.ShowPECOutgoing = True
+            End If
         End If
     End Sub
 
@@ -837,18 +859,6 @@ Public Class uscUDS
             If Not UDSLastChangedUser.IsNullOrEmpty() Then
                 lblLastChangedUser.Text = String.Format("{0} {1:dd/MM/yyyy}", CommonAD.GetDisplayName(UDSLastChangedUser), UDSLastChangedDate.Value.ToLocalTime())
             End If
-
-            If AuhtorizedUsers.Count() > 0 Then
-                lblAuthorized.Visible = True
-                Dim userLabel As String = ""
-                For Each user As WebAPIUDS.UDSUser In AuhtorizedUsers
-                    userLabel = CommonAD.GetDisplayName(user.Account)
-                    If String.IsNullOrEmpty(userLabel) Then
-                        userLabel = user.Account
-                    End If
-                Next
-                lblAuthorized.Text = userLabel
-            End If
         End If
 
         'Oggetto
@@ -862,8 +872,25 @@ Public Class uscUDS
 
         CurrentStaticDataControl.SetData(UDSItemSource)
 
+        If UDSItemSource.Model.Metadata IsNot Nothing _
+            AndAlso UDSItemSource.Model.Metadata.Any() _
+            AndAlso UDSItemSource.Model.Metadata.First().Items IsNot Nothing _
+            AndAlso UDSItemSource.Model.Metadata.First().Items.Any(Function(x) x.GetType().Name = uscUDSDynamics.CTL_TREE_LIST_FIELD) Then
+
+            Dim udsFieldLists As List(Of TreeListField) = DirectCast(UDSItemSource.Model.Metadata.First().Items _
+                .Where(Function(x) x.GetType().Name = uscUDSDynamics.CTL_TREE_LIST_FIELD) _
+                .Select(Function(x) DirectCast(x, TreeListField)).ToList(), List(Of TreeListField))
+            Dim udsFieldListChildren As New List(Of KeyValuePair(Of String, Guid))
+            For Each udsFieldList As TreeListField In udsFieldLists
+                If Not String.IsNullOrEmpty(udsFieldList.Value) AndAlso Guid.Parse(udsFieldList.Value) <> Guid.Empty Then
+                    udsFieldListChildren.Add(New KeyValuePair(Of String, Guid)(udsFieldList.ColumnName, Guid.Parse(udsFieldList.Value)))
+                End If
+            Next
+            udsDynamicControls.UDSFieldListChildren = udsFieldListChildren
+        End If
         udsDynamicControls.LoadDynamicControls(schemaRepositoryModel.Model, True)
         udsDynamicControls.InitializeDynamicFilters()
+        udsDynamicControls.IdUDSRepository = CurrentUDSRepositoryId
         udsDynamicControls.LoadDefaultData()
 
         ' Contatti
@@ -968,6 +995,32 @@ Public Class uscUDS
         Return udsDynamicControls.GetControlsBetween(fieldToGet)
     End Function
 
+    Private Sub LoadConservation()
+        trConservationStatus.Visible = False
+
+        If VisibleConservation AndAlso CurrentConservation IsNot Nothing Then
+            trConservationStatus.Visible = True
+            imgConservationIcon.ImageUrl = ConservationHelper.StatusSmallIcon(CurrentConservation.Status)
+            lblConservationStatus.Text = ConservationHelper.StatusDescription(CurrentConservation.Status)
+
+            If String.IsNullOrEmpty(CurrentConservation.Uri) Then
+                Exit Sub
+            End If
+
+            If Not Regex.IsMatch(CurrentConservation.Uri, ProtocolEnv.ConservationURIValidationRegex) Then
+                lblConservationUri.Visible = True
+                conservationUriLabel.Visible = True
+
+                lblConservationStatus.ToolTip = "Url non compatibile con il portale ingestor"
+                lblConservationUri.Text = CurrentConservation.Uri
+                Exit Sub
+            End If
+            If Not String.IsNullOrWhiteSpace(ProtocolEnv.IngestorBaseURL) Then
+                lblConservationStatus.NavigateUrl = $"{ProtocolEnv.IngestorBaseURL}/{CurrentConservation.Uri}"
+            End If
+        End If
+    End Sub
+
     Private Sub ToggleFinderBorderStyle(setBorder As Boolean)
         If setBorder Then
             AjaxManager.ResponseScripts.Add("setBorderBottom();")
@@ -1070,19 +1123,27 @@ Public Class uscUDS
                                     .Expression = String.Format("Documents/any(d:contains(d/DocumentName,'{0}') and d/DocumentType eq 1)", finderControl.DocumentName)})
         End If
 
-        If finderControl.GenericDocument = True Then
+        If finderControl.GenericDocument = "1" Then
             finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "",
-                                    .Expression = String.Format("not Documents/any()")})
-        Else
+                                    .Expression = "not Documents/any()"})
+        End If
+        If finderControl.GenericDocument = "2" Then
             finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "",
-                                .Expression = String.Format("Documents/any()")})
+                                .Expression = "Documents/any()"})
         End If
 
-        finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "_status", .Expression = String.Format("_status eq {0}", Convert.ToInt32(Not finderControl.ViewDeletedUDS))})
+        If finderControl.ViewDeletedUDS = "1" Then
+            finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "_status",
+                                    .Expression = "_status eq 0"})
+        End If
+        If finderControl.ViewDeletedUDS = "2" Then
+            finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "_status",
+                                .Expression = "_status eq 1"})
+        End If
 
         If model IsNot Nothing Then
             If Not String.IsNullOrEmpty(model.Model.Subject.Value) Then
-                finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "_subject", .Expression = String.Format("contains(_subject, '{0}')", model.Model.Subject.Value)})
+                finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = "_subject", .Expression = String.Format("contains(_subject, '{0}')", model.Model.Subject.Value.Replace("'", "''"))})
             End If
 
             If model.Model.Category IsNot Nothing AndAlso model.Model.Category.Searchable AndAlso Not String.IsNullOrEmpty(model.Model.Category.IdCategory) Then
@@ -1251,6 +1312,14 @@ Public Class uscUDS
                                     End If
 
                                     finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = field.ColumnName, .Expression = String.Format("{0} eq {1}", field.ColumnName, field.Value.ToString().ToLower())})
+
+                                Case uscUDSDynamics.CTL_TREE_LIST_FIELD
+                                    Dim field As TreeListField = DirectCast(item, TreeListField)
+                                    If Not field.Searchable OrElse String.IsNullOrEmpty(field.Value) Then
+                                        Continue For
+                                    End If
+                                    Dim selectedItem As Guid = Guid.Parse(field.Value)
+                                    finderModel.Filters.Add(New UDSFinderExpressionDto() With {.FieldName = field.ColumnName, .Expression = $"{field.ColumnName} eq {selectedItem}"})
 
                             End Select
                         Next

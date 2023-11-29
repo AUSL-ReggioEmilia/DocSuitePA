@@ -1,8 +1,4 @@
-﻿Imports System
-Imports System.Linq
-Imports NHibernate
-Imports VecompSoftware.Helpers.NHibernate
-Imports NHibernate.Criterion
+﻿Imports NHibernate.Criterion
 Imports VecompSoftware.NHibernateManager.Dao
 
 Public Class NHibernateSecurityGroupsDao
@@ -27,7 +23,6 @@ Public Class NHibernateSecurityGroupsDao
     Public Function GetGroupByName(groupName As String) As SecurityGroups
         criteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Eq("GroupName", groupName))
-        criteria.Add(Restrictions.Eq("TenantId", DocSuiteContext.Current.CurrentTenant.TenantId))
 
         Return criteria.UniqueResult(Of SecurityGroups)()
     End Function
@@ -35,9 +30,7 @@ Public Class NHibernateSecurityGroupsDao
     ''' <summary> Restituisce tutti i gruppi ROOT (senza padre) filtrando per nome del gruppo. </summary>
     Public Function GetRootGroups(name As String) As IList(Of SecurityGroups)
         criteria = NHibernateSession.CreateCriteria(persitentType)
-        criteria.Add(Restrictions.IsNull("Parent"))
         criteria.Add(Restrictions.Like("GroupName", name, MatchMode.Anywhere))
-        criteria.Add(Restrictions.Eq("TenantId", DocSuiteContext.Current.CurrentTenant.TenantId))
         criteria.AddOrder(Order.Asc("GroupName"))
 
         Return criteria.List(Of SecurityGroups)()
@@ -47,7 +40,6 @@ Public Class NHibernateSecurityGroupsDao
     Public Function GetGroupsFlat(name As String) As IList(Of SecurityGroups)
         criteria = NHibernateSession.CreateCriteria(persitentType)
         criteria.Add(Restrictions.Like("GroupName", name, MatchMode.Anywhere))
-        criteria.Add(Restrictions.Eq("TenantId", DocSuiteContext.Current.CurrentTenant.TenantId))
         criteria.AddOrder(Order.Asc("GroupName"))
 
         Return criteria.List(Of SecurityGroups)()

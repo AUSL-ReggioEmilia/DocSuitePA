@@ -12,6 +12,7 @@ class UserLogsService extends BaseService {
         this._configuration = configuration;
     }
 
+    //The method will return an encrypted UserProfile
     getUserDetailBySystemUser(name: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any) {
         let url: string = `${this._configuration.ODATAUrl}?$filter=SystemUser eq '${name}'`;
         this.getRequest(url, null,
@@ -24,6 +25,20 @@ class UserLogsService extends BaseService {
                     });
 
                     callback(userLogs);
+                }
+            }, error);
+    }
+
+    //The method will return the current UserLog with decrypted UserProfile but with the PIN, Password and OTP information blanked out
+    getCurrentUserDetailSecure(callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any) {
+        let url: string = `${this._configuration.ODATAUrl}/UserLogService.GetCurrentUserLogSecure()`;
+        this.getRequest(url, null,
+            (response: any) => {
+                if (callback) {
+                    let modelMapper = new UserLogsMapper();
+                    let userLog = new UserLogsModel();
+                    userLog = modelMapper.Map(response, true);
+                    callback(userLog);
                 }
             }, error);
     }

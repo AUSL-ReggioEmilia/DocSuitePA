@@ -29,9 +29,11 @@ namespace VecompSoftware.DocSuiteWeb.EntityMapper.Protocols
             if (entity == null)
                 throw new ArgumentException("Impossibile trasformare ProtocolRole se l'entità non è inizializzata");
 
-            APIProtocol.ProtocolRole apiProtocolRole = new APIProtocol.ProtocolRole();
-            apiProtocolRole.Role = _mapperRoleEntity.MappingDTO(entity.Role);
-            apiProtocolRole.Protocol = new APIProtocol.Protocol();
+            APIProtocol.ProtocolRole apiProtocolRole = new APIProtocol.ProtocolRole
+            {
+                Role = _mapperRoleEntity.MappingDTO(entity.Role),
+                Protocol = new APIProtocol.Protocol()
+            };
             apiProtocolRole.Protocol.Year = entity.Year;
             apiProtocolRole.Protocol.Number = entity.Number;
             apiProtocolRole.RegistrationUser = entity.RegistrationUser;

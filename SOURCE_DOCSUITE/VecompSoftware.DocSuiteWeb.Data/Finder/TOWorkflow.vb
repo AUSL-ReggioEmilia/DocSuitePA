@@ -7,4 +7,5 @@
     RicercaFlussoPubblicazione = 10
     RicercaFlussoUltimaPagina = 11
     RicercaRaccoltaFirmeAdozione = 12
+    RicercaFlussoAssegnaAffariGenerali = 13
 End Enum

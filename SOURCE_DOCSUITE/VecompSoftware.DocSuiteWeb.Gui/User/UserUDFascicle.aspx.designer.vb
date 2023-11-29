@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class UserUDFascicle
-
+    
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-
+    
     '''<summary>
     '''rowDate control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowDate As Global.Telerik.Web.UI.LayoutRow
-
+    
     '''<summary>
     '''lblRegistrationDate control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblRegistrationDate As Global.System.Web.UI.WebControls.Label
-
+    
     '''<summary>
     '''rdpDateFrom control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpDateFrom As Global.Telerik.Web.UI.RadDatePicker
-
+    
     '''<summary>
     '''cfvDateFrom control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cfvDateFrom As Global.System.Web.UI.WebControls.CompareValidator
-
+    
     '''<summary>
     '''rfvDateFrom control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvDateFrom As Global.System.Web.UI.WebControls.RequiredFieldValidator
-
+    
     '''<summary>
     '''rdpDateTo control.
     '''</summary>
@@ -75,7 +75,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rdpDateTo As Global.Telerik.Web.UI.RadDatePicker
-
+    
     '''<summary>
     '''cfvDateTo control.
     '''</summary>
@@ -84,7 +84,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents cfvDateTo As Global.System.Web.UI.WebControls.CompareValidator
-
+    
     '''<summary>
     '''rfvDateTo control.
     '''</summary>
@@ -93,7 +93,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rfvDateTo As Global.System.Web.UI.WebControls.RequiredFieldValidator
-
+    
     '''<summary>
     '''chkRedThreshold control.
     '''</summary>
@@ -102,7 +102,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkRedThreshold As Global.System.Web.UI.WebControls.CheckBox
-
+    
     '''<summary>
     '''rowExcludeLinked control.
     '''</summary>
@@ -111,7 +111,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rowExcludeLinked As Global.Telerik.Web.UI.LayoutRow
-
+    
     '''<summary>
     '''lblExcludeLinked control.
     '''</summary>
@@ -120,7 +120,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblExcludeLinked As Global.System.Web.UI.WebControls.Label
-
+    
     '''<summary>
     '''chkExcludeLinked control.
     '''</summary>
@@ -129,7 +129,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents chkExcludeLinked As Global.System.Web.UI.WebControls.CheckBox
-
+    
     '''<summary>
     '''btnUpdate control.
     '''</summary>
@@ -138,7 +138,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnUpdate As Global.System.Web.UI.WebControls.Button
-
+    
     '''<summary>
     '''pnlUD control.
     '''</summary>
@@ -147,7 +147,7 @@ Partial Public Class UserUDFascicle
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlUD As Global.System.Web.UI.WebControls.Panel
-
+    
     '''<summary>
     '''uscUDFascicleGrid control.
     '''</summary>

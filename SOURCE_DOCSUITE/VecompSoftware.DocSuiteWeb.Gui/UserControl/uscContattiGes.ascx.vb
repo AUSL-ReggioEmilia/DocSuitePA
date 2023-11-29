@@ -25,7 +25,6 @@ Partial Public Class uscContattiGes
     Private _saveToDb As Boolean
     Private _manualContactMode As Boolean
     Private _contact As Contact
-    Private _contactToHistoricize As Contact
     Private _contactManual As ProtocolContactManual
     Private _simpleMode As Boolean
 
@@ -240,12 +239,6 @@ Partial Public Class uscContattiGes
             End If
         End If
 
-        If ProtocolEnv.RoleContactHistoricizing AndAlso Not IsReadOnly AndAlso Not ManualContactMode Then
-            pnlHistory.Visible = True
-            txtHistoryDate.Enabled = True
-            txtHistoryDate.Visible = True
-        End If
-
         If DocSuiteContext.Current.ProtocolEnv.SpidEnabled Then
             pnlBirthPlace.Visible = True
         End If
@@ -423,10 +416,6 @@ Partial Public Class uscContattiGes
         If _contact IsNot Nothing AndAlso _contact.ContactType IsNot Nothing Then
             tn.ImageUrl = ImagePath.ContactTypeIcon(_contact.ContactType.Id)
         End If
-        If _contact IsNot Nothing AndAlso _contact.IsChanged.Equals(1S) Then
-            tn.Style.Add("color", "blue")
-            tn.Attributes.Add("Changed", "blue")
-        End If
         tn.Expanded = True
         Tvw.Nodes.Add(tn)
 
@@ -465,7 +454,6 @@ Partial Public Class uscContattiGes
         pnlSimpleMode.Visible = Not SimpleMode
 
         If BasePage.Action.Eq("clone") Then
-            pnlHistory.Visible = False
             pnlCertifiedMail.Visible = False
             pnlContactRubrica.Visible = False
             pnlFiscalCode.Visible = False
@@ -503,120 +491,6 @@ Partial Public Class uscContattiGes
         End If
     End Sub
 
-    Private Sub EditOldRole(ByVal _contact As Contact, ByVal isChanged As Short)
-
-        'Il description lo modifico in quanto è già salvato in ContactNames
-        ''
-        _contact.Description = StringHelper.ConvertToNothing(If((CurrentType = ContactType.Person), txtLastName.Text.Trim() & "|" & txtFirstName.Text.Trim(), txtDescription.Text))
-        _contact.IsChanged = isChanged
-
-    End Sub
-
-
-    Private Sub AddNewBeforeHistory(ByVal ToDate As Date, contact As Contact)
-
-        Dim contactHistorical As New ContactName With
-        {
-            .Name = contact.Description,
-            .Contact = contact,
-            .FromDate = txtHistoryDate.SelectedDate.Value,
-            .ToDate = ToDate.AddSeconds(-1)
-        }
-
-        Facade.ContactNameFacade.Save(contactHistorical)
-    End Sub
-
-    ''' <summary>
-    ''' Esegue la prima storicizzazione del contatto.
-    ''' 
-    ''' Crea un nuovo contatto
-    ''' FROM: RegistrationDate
-    ''' TO:   NULL
-    ''' 
-    ''' Crea un nuovo contatto storicizzato
-    ''' FROM: DataInserita
-    ''' TO:   RegistrationDate
-    ''' </summary>
-    ''' <param name="fromDate"></param>
-    Private Sub AddFirstOldHistory(fromDate As Date?, contact As Contact, contactToHistoricize As Contact)
-        Dim contactHistorical As ContactName
-        Dim contactActual As ContactName
-
-        If DateTime.Compare(_contact.RegistrationDate.DateTime.Date, fromDate.Value) < 0 Then
-            contactHistorical = New ContactName With
-            {
-                .Name = _contact.Description,
-                .Contact = _contact,
-                .FromDate = _contact.RegistrationDate.DateTime.Date,
-                .ToDate = fromDate.Value.AddMilliseconds(-1)
-            }
-
-            contactActual = New ContactName With
-            {
-                .Name = _contactToHistoricize.Description,
-                .Contact = _contactToHistoricize,
-                .FromDate = fromDate.Value,
-                .ToDate = Nothing
-            }
-        Else
-            contactHistorical = New ContactName With
-            {
-                .Name = _contact.Description,
-                .Contact = _contact,
-                .FromDate = fromDate.Value,
-                .ToDate = _contact.RegistrationDate.DateTime.Date.AddMilliseconds(-1)
-            }
-
-            contactActual = New ContactName With
-            {
-                .Name = _contactToHistoricize.Description,
-                .Contact = _contactToHistoricize,
-                .FromDate = _contact.RegistrationDate.DateTime.Date,
-                .ToDate = Nothing
-            }
-        End If
-
-        Facade.ContactNameFacade.Save(contactHistorical)
-        Facade.ContactNameFacade.Save(contactActual)
-
-    End Sub
-    ''' <summary>
-    ''' Splitto il contatto esistente in 2 nuovi contatti.
-    ''' Abbiamo a disposizione il contatto attuale (FromAct - ToAct) e la data in cui lo si deve spezzare (splitDate)
-    ''' 
-    ''' Il risultato finale sarà:
-    ''' ContattoAggiornato
-    ''' FROM: FromAct
-    ''' TO: splitDate
-    ''' 
-    ''' ContattoNuovo
-    ''' FROM splitDate
-    ''' TO: ToAct (o Null)
-    ''' 
-    ''' </summary>
-    ''' <param name="sd"></param>
-    ''' <param name="contactToSplit"></param>
-    ''' <param name="contatto"></param>
-    Private Sub HistoryLogic(sd As Date, contactToSplit As ContactName, contatto As Contact)
-        ' salvo il vecchio to date 
-        Dim dateToNewRole As Date? = contactToSplit.ToDate
-
-        contactToSplit.ToDate = sd.AddSeconds(-1)
-        contactToSplit.Contact = contatto
-        Facade.ContactNameFacade.UpdateOnly(contactToSplit)
-
-        'aggiungo sul db il ruolo con le date corrette
-        Dim contactToCreate As New ContactName With
-        {
-            .Name = contatto.Description,
-            .Contact = contatto,
-            .FromDate = sd.Date,
-            .ToDate = dateToNewRole
-        }
-        Facade.ContactNameFacade.Save(contactToCreate)
-
-    End Sub
-
     Private Sub PropagateRoleContact(contact As Contact, role As Role)
         If contact Is Nothing OrElse contact.Children.IsNullOrEmpty() OrElse role Is Nothing Then
             Return
@@ -645,19 +519,12 @@ Partial Public Class uscContattiGes
 
         If newContact Then
             _contact = New Contact()
-            _contact.IsActive = 1S
+            _contact.IsActive = True
             If IdContact.HasValue Then
                 _contact.Parent = Facade.ContactFacade.GetById(IdContact.Value, False)
             End If
         Else
-            If ProtocolEnv.RoleContactHistoricizing Then
-                Facade.ContactFacade.Evict(_contact)
-                _contact = Facade.ContactFacade.GetById(IdContact.Value, True)
-                _contactToHistoricize = CType(_contact.Clone(), Contact)
-            Else
-                _contact = Facade.ContactFacade.GetById(IdContact.Value, True)
-            End If
-
+            _contact = Facade.ContactFacade.GetById(IdContact.Value, True)
         End If
 
         _contact.ContactType = New ContactType(CurrentType)
@@ -733,31 +600,6 @@ Partial Public Class uscContattiGes
             PropagateRoleContact(_contact, _contact.RoleRootContact)
             PropagateRoleContactUpdate(_contact, _contact.RoleRootContact)
         End If
-
-        ' Storicizzazione contatti
-        If ProtocolEnv.RoleContactHistoricizing Then
-            Dim sd As Date? = txtHistoryDate.SelectedDate
-            Dim contactToSplit As ContactName = Nothing
-            _contact.IsChanged = 1S
-
-            If sd.HasValue Then
-                ' cerco il ruolo in cui la data selezionata è compresa (cerco anche nei contatti validi attualmente -> ToDate IS NULL)
-                contactToSplit = Facade.ContactNameFacade.GetContactNamesHistoryByValidDate(_contact.Id, sd.Value)
-                If contactToSplit IsNot Nothing Then
-                    '' Se trovo un contatto nella data selezionata, devo spaccarlo in 2 nuovi contatti storicizzati.
-                    HistoryLogic(sd.Value, contactToSplit, _contact)
-                Else
-                    Dim contactOlder As ContactName = Facade.ContactNameFacade.GetContactNamesOlder(_contact.Id)
-                    If contactOlder Is Nothing Then
-                        '' Se non è mai stato storicizzato un contatto allora eseguo la prima storicizzazione
-                        AddFirstOldHistory(sd, _contact, _contactToHistoricize)
-                    Else
-                        '' Se non trovo un contatto nella data selezionata, devo inserirlo prima del contatto più vecchio e devo impostarli la data di fine.
-                        AddNewBeforeHistory(contactOlder.FromDate, _contact)
-                    End If
-                End If
-            End If
-        End If
     End Sub
 
     Dim escaping As Func(Of String, String) = Function(s) HttpUtility.HtmlEncode(s)
@@ -777,7 +619,7 @@ Partial Public Class uscContattiGes
 
                 Case "Add" ' Inserimento Contatto Rubrica
                     If Not String.IsNullOrEmpty(txtSearchCode.Text) Then
-                        Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(txtSearchCode.Text, -1)
+                        Dim contacts As IList(Of Contact) = Facade.ContactFacade.GetContactBySearchCode(txtSearchCode.Text, False)
                         If Not contacts.IsNullOrEmpty() Then
                             Dim code As String = contacts.First().SearchCode
                             Dim description As String = If(String.IsNullOrEmpty(contacts.First().Description), "", contacts.First().Description.Replace("|"c, " "c))
@@ -795,16 +637,8 @@ Partial Public Class uscContattiGes
                         End If
                     End If
                     ValidateEmailAdresses(_contact)
-                    Facade.ContactFacade.DuplicationCheck(_contact)
+                    Facade.ContactFacade.DuplicationCheck(_contact, CurrentTenant.TenantAOO.UniqueId)
                     Facade.ContactFacade.Save(_contact)
-
-                    If ProtocolEnv.MultiTenantEnabled Then
-                        Dim currentTenant As Tenant = CType(Session("CurrentTenant"), Tenant)
-                        currentTenant.Contacts.Add(New Entity.Commons.Contact With {.EntityId = _contact.Id})
-                        Dim currentTenantFacade As WebAPI.Tenants.TenantFacade = New WebAPI.Tenants.TenantFacade(DocSuiteContext.Current.Tenants.ToList(), currentTenant)
-                        currentTenantFacade.Update(currentTenant, UpdateActionType.TenantContactAdd.ToString())
-                        currentTenant.Contacts.Clear()
-                    End If
 
                 Case "Rename" ' Modifica Contatto Rubrica
 
@@ -821,14 +655,6 @@ Partial Public Class uscContattiGes
                         End If
                     End If
                     ValidateEmailAdresses(_contact)
-
-                    If ProtocolEnv.RoleContactHistoricizing Then
-                        ' Solo se esiste un contatto storicizzato, Aggiorno la description con l'ultimo contatto valido.
-                        Dim contactToUpdate As ContactName = Facade.ContactNameFacade.GetContactNameByIncremental(_contact.Id)
-                        If contactToUpdate IsNot Nothing Then
-                            _contact.Description = contactToUpdate.Name
-                        End If
-                    End If
                     Facade.ContactFacade.Update(_contact)
 
                 Case "Del" ' Elimina Contatto Rubrica

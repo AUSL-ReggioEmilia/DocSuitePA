@@ -368,7 +368,7 @@ Public Class CollaborationVersioningFacade
 
         cv.IdDocument = saved
         cv.DocumentName = document.Name
-        cv.IsActive = 1
+        cv.IsActive = True
         cv.RegistrationUser = DocSuiteContext.Current.User.FullUserName
         cv.RegistrationDate = _dao.GetServerDate()
         cv.DocumentChecksum = Nothing ' todo: non ancora implementato. - FG
@@ -384,7 +384,7 @@ Public Class CollaborationVersioningFacade
     ''' <param name="versioning">CV di riferimento.</param>
     ''' <remarks></remarks>
     Public Sub DiscardVersioning(versioning As CollaborationVersioning)
-        versioning.IsActive = 0
+        versioning.IsActive = False
         UpdateOnly(versioning)
     End Sub
 
@@ -555,7 +555,7 @@ Public Class CollaborationVersioningFacade
 
         cv.IdDocument = checkedInChainId
         cv.DocumentName = document.Name
-        cv.IsActive = 1
+        cv.IsActive = True
         cv.RegistrationUser = user
         cv.RegistrationDate = _dao.GetServerDate()
         cv.CheckedOut = False
@@ -580,7 +580,7 @@ Public Class CollaborationVersioningFacade
 
         cv.IdDocument = idDocument
         cv.DocumentName = documentName
-        cv.IsActive = 1S
+        cv.IsActive = True
         cv.RegistrationUser = registrationUser
         cv.RegistrationDate = _dao.GetServerDate()
 
@@ -651,8 +651,12 @@ Public Class CollaborationVersioningFacade
                 CheckOut(collaborationVersioning, DocSuiteContext.Current.User.FullUserName)
                 CheckIn(collaborationVersioning, DocSuiteContext.Current.User.FullUserName, document.DocumentInfo)
                 rollback = True
+                Dim effectiveSigner As String = DocSuiteContext.Current.User.FullUserName
 
-                Factory.CollaborationFacade.SetSignedByUser(coll, DocSuiteContext.Current.User.FullUserName, serverDate)
+                If (Not String.IsNullOrEmpty(document.EffectiveSigner) AndAlso document.EffectiveSigner <> DocSuiteContext.Current.User.FullUserName) Then
+                    effectiveSigner = document.EffectiveSigner
+                End If
+                Factory.CollaborationFacade.SetSignedByUser(coll, effectiveSigner, serverDate)
 
                 Dim chainId As Integer = GetLastVersionings(coll.Id).Where(Function(x) x.CollaborationIncremental = collaborationVersioning.CollaborationIncremental).FirstOrDefault().IdDocument
 

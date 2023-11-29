@@ -41,6 +41,15 @@ Partial Public Class PECOutgoingMails
     Protected WithEvents RadCodeBlock1 As Global.Telerik.Web.UI.RadCodeBlock
 
     '''<summary>
+    '''pnlFilterLeft control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents pnlFilterLeft As Global.System.Web.UI.WebControls.Panel
+
+    '''<summary>
     '''ddlMailbox control.
     '''</summary>
     '''<remarks>
@@ -48,6 +57,15 @@ Partial Public Class PECOutgoingMails
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ddlMailbox As Global.Telerik.Web.UI.RadComboBox
+
+    '''<summary>
+    '''ddlPECMailBoxIncluded control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents ddlPECMailBoxIncluded As Global.Telerik.Web.UI.RadComboBox
 
     '''<summary>
     '''txtFilterRecipient control.

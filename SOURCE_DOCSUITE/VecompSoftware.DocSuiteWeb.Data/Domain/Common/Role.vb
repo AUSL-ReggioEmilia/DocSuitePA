@@ -1,33 +1,24 @@
 Imports Newtonsoft.Json
 Imports System.Linq
 
-<Serializable()> _
+<Serializable()>
 Public Class Role
     Inherits DomainObject(Of Integer)
-    Implements IAuditable, ISupportLogicDelete, ISupportRangeDelete, ISupportChanged
+    Implements IAuditable, ISupportBooleanLogicDelete, ISupportRangeDelete
 
 #Region " Properties "
 
     Public Overridable Property Name As String
-
     Public Overridable Property UriSharepoint As String
+    Public Overridable Property IsActive As Boolean Implements ISupportBooleanLogicDelete.IsActive
 
-    Public Overridable Property IsActive As Short Implements ISupportLogicDelete.IsActive
-
-    Public Overridable Property ActiveFrom As Date? Implements ISupportRangeDelete.ActiveFrom
-
-    Public Overridable Property ActiveTo As Date? Implements ISupportRangeDelete.ActiveTo
-
-    Public Overridable Property Collapsed As Short
+    Public Overridable Property Collapsed As Boolean
 
     Public Overridable Property EMailAddress As String
-
-    Public Overridable Property TenantId As Guid
-
-    Public Overridable Property IdRoleTenant As Short
+    Public Overridable Property IdTenantAOO As Guid
+    Public Overridable Property RoleTypology As RoleTypology
     <JsonIgnore()>
     Public Overridable Property Father As Role
-
     Public Overridable Property FullIncrementalPath As String
     Public Overridable Property RegistrationUser As String Implements IAuditable.RegistrationUser
     Public Overridable Property RegistrationDate As DateTimeOffset Implements IAuditable.RegistrationDate
@@ -42,17 +33,11 @@ Public Class Role
     <JsonIgnore()>
     Public Overridable Property Protocols As IList(Of ProtocolRole)
     <JsonIgnore()>
-    Public Overridable Property TenantRoles As IList(Of TenantRole)
-    <JsonIgnore()>
     Public Overridable Property RoleUsers As IList(Of RoleUser)
     <JsonIgnore()>
     Public Overridable Property Mailboxes As IList(Of PECMailBox)
     <JsonIgnore()>
-    Public Overridable Property RoleNames As IList(Of RoleName)
-    <JsonIgnore()>
     Public Overridable Property Children As IList(Of Role)
-    <JsonIgnore()>
-    Public Overridable Property IsChanged As Short Implements ISupportChanged.IsChanged
     <JsonIgnore()>
     Public Overridable ReadOnly Property Level As Short
         Get
@@ -96,7 +81,7 @@ Public Class Role
     End Function
 
     Public Overridable Function IsActiveRange() As Boolean Implements ISupportRangeDelete.IsActiveRange
-        Return (Not ActiveFrom.HasValue AndAlso Not ActiveTo.HasValue) OrElse (ActiveFrom.Value < DateTime.Now AndAlso DateTime.Now < ActiveTo.Value)
+        Return IsActive = True
     End Function
 
 #End Region

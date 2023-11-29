@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
+using VecompSoftware.WebAPIManager;
 using VecompSoftware.WebAPIManager.Finder;
 
 namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
@@ -11,6 +12,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
         #endregion
 
         #region [ Properties ]
+        public bool? OnlyUserWorkflow { get; set; }
+
         #endregion
 
         #region [ Constructor ]
@@ -26,6 +29,15 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Workflows
         #endregion
 
         #region [ Methods ]
+        public override IODATAQueryManager DecorateFinder(IODATAQueryManager odataQuery)
+        {
+            if (OnlyUserWorkflow.HasValue && OnlyUserWorkflow.Value)
+            {
+                odataQuery = odataQuery.Filter($"DSWEnvironment ne 'Any'").Sorting("Name");
+            }
+            return base.DecorateFinder(odataQuery);
+        }
+
         public override void ResetDecoration()
         {
 

@@ -344,7 +344,7 @@ Partial Public Class DocmVisualizza
         '---sicurezza user
         Dim roleFacade As New RoleFacade()
 
-        Dim enabledRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True)
+        Dim enabledRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True, CurrentTenant.TenantAOO.UniqueId)
         Dim txtAll As String = String.Empty
         For Each role As Role In enabledRoles
             If txtAll <> "" Then
@@ -354,7 +354,7 @@ Partial Public Class DocmVisualizza
         Next
         enabledRoles.Clear()
 
-        Dim workflowRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True)
+        Dim workflowRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True, CurrentTenant.TenantAOO.UniqueId)
         Dim txtWorkFlow As String = String.Empty
         For Each role As Role In workflowRoles
             If txtWorkFlow <> "" Then txtWorkFlow += SEP
@@ -362,7 +362,7 @@ Partial Public Class DocmVisualizza
         Next
         workflowRoles.Clear()
 
-        Dim managerRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True)
+        Dim managerRoles As IList(Of Role) = roleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True, CurrentTenant.TenantAOO.UniqueId)
         Dim txtManager As String = String.Empty
         For Each role As Role In managerRoles
             If txtManager <> "" Then
@@ -374,7 +374,7 @@ Partial Public Class DocmVisualizza
         ' Verifica Contenitori
         Dim containerFacade As New ContainerFacade()
 
-        Dim previewContainers As IList(Of Container) = containerFacade.GetSecurityGroupsContainerRights(Type, Facade.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName), 1, DocumentContainerRightPositions.Preview, CurrentDocument.Container.Id)
+        Dim previewContainers As IList(Of Container) = containerFacade.GetSecurityGroupsContainerRights(Type, Facade.SecurityUsersFacade.GetGroupsByAccount(DocSuiteContext.Current.User.UserName), True, DocumentContainerRightPositions.Preview, CurrentDocument.Container.Id)
 
         Dim enableView As Boolean = previewContainers.Count > 0
 
@@ -620,7 +620,7 @@ Partial Public Class DocmVisualizza
         Textboxes(TextboxAction.Clean)
 
         ' Controlla diritti
-        Dim roleRightsList As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True)
+        Dim roleRightsList As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True, CurrentTenant.TenantAOO.UniqueId)
         If roleRightsList.Count > 0 Then
             Dim roles As New StringBuilder
             For Each role As Role In roleRightsList
@@ -633,7 +633,7 @@ Partial Public Class DocmVisualizza
         End If
         roleRightsList.Clear()
 
-        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True)
+        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True, CurrentTenant.TenantAOO.UniqueId)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -645,7 +645,7 @@ Partial Public Class DocmVisualizza
         End If
         roleRightsList.Clear()
 
-        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True)
+        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True, CurrentTenant.TenantAOO.UniqueId)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -662,16 +662,15 @@ Partial Public Class DocmVisualizza
         If documentTokenList.Count > 0 Then
 
             For Each docToken As DocumentToken In documentTokenList
-                Select Case docToken.IsActive
-                    Case 1
-                        WriteStep(docToken, txtPStep, txtPIdOwner, "")
-                    Case 2
-                        If docToken.DocumentTabToken.Id = "PT" Then
-                            WriteStep(docToken, txtRRStep, txtRRIdOwner, "")
-                        Else
-                            WriteStep(docToken, txtPRStep, txtPRIdOwner, "")
-                        End If
-                End Select
+
+                If docToken.IsActive Then
+                    WriteStep(docToken, txtPStep, txtPIdOwner, "")
+                Else
+                    Dim txtStep As TextBox = If(docToken.DocumentTabToken.Id = "PT", txtRRStep, txtPRStep)
+                    Dim txtIdOwner As TextBox = If(docToken.DocumentTabToken.Id = "PT", txtRRIdOwner, txtPRIdOwner)
+
+                    WriteStep(docToken, txtStep, txtIdOwner, "")
+                End If
 
                 Dim documentTokenUserList As IList(Of DocumentTokenUser) = Facade.DocumentTokenUserFacade.GetDocumentTokenUserList(CurrentDocumentYear, CurrentDocumentNumber, docToken, , , True, True, True, True)
 

@@ -1,4 +1,5 @@
 ﻿Imports System.Web
+Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Facade
 
 Public Class TbltWorkflowEvaluationPropertyGes
@@ -12,9 +13,9 @@ Public Class TbltWorkflowEvaluationPropertyGes
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
         MasterDocSuite.TitleVisible = False
         If Not CommonShared.HasGroupAdministratorRight Then
-            AjaxAlert("Sono necessari diritti amministrativi per vedere la pagina.")
-            Exit Sub
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
         End If
+
 
     End Sub
 

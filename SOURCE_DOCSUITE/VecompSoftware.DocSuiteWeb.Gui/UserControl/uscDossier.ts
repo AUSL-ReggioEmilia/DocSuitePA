@@ -59,6 +59,9 @@ class uscDossier extends DossierBase {
     uscCategoryRestId: string;
     lblDossierTypeId: string;
     lblDossierStatusId: string;
+    dossierTypologyEnabled: boolean;
+    columnDossierTypeKeyId: string;
+    columnDossierTypeValueId: string;
 
     public static LOADED_EVENT: string = "onLoaded";
     public static DATA_LOADED_EVENT: string = "onDataLoaded"
@@ -120,6 +123,9 @@ class uscDossier extends DossierBase {
         this._loadingPanel = <Telerik.Web.UI.RadAjaxLoadingPanel>$find(this.ajaxLoadingPanelId);
         this._lblDossierType = $(`#${this.lblDossierTypeId}`);
         this._lblDossierStatus = $(`#${this.lblDossierStatusId}`);
+
+        $(`#${this.columnDossierTypeKeyId}`).hide();
+        $(`#${this.columnDossierTypeValueId}`).hide();
 
         this._loadingPanel.show(this.pageId);
         this._rowMetadataRepository = $("#".concat(this.rowMetadataId));
@@ -250,7 +256,11 @@ class uscDossier extends DossierBase {
         this._lblNumber.html(dossier.Number);
         this._lblContainer.html(dossier.ContainerName);
         this._lblStartDate.html(dossier.FormattedStartDate);
-        this._lblDossierType.html(this._enumHelper.getDossierTypeDescription(dossier.DossierType));
+        if (this.dossierTypologyEnabled) {
+            $(`#${this.columnDossierTypeKeyId}`).show();
+            $(`#${this.columnDossierTypeValueId}`).show();
+            this._lblDossierType.html(this._enumHelper.getDossierTypeDescription(dossier.DossierType));
+        }
         this._lblDossierStatus.html(this._enumHelper.getDossierStatusDescription(dossier.Status));
 
         this._lblWorkflowHandlerUser.html("");

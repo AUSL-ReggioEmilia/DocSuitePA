@@ -1,11 +1,11 @@
 ﻿Imports System.Collections.Generic
-Imports VecompSoftware.Helpers.ExtensionMethods
 Imports System.Linq
-Imports Telerik.Web.UI
+Imports System.Web
 Imports Newtonsoft.Json
+Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.Helpers
-Imports System.Web
+Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
 
 Partial Public Class UserCambioResponsabile
@@ -180,10 +180,10 @@ Partial Public Class UserCambioResponsabile
 
         Dim roles As IList(Of Role) = New List(Of Role)
         If Not ProtocolEnv.CollaborationRightsEnabled Then
-            roles = Facade.RoleUserFacade.GetSecretaryRolesByAccount(DocSuiteContext.Current.User.FullUserName, Nothing)
+            roles = Facade.RoleUserFacade.GetSecretaryRolesByAccount(DocSuiteContext.Current.User.FullUserName, Nothing, CurrentTenant.TenantAOO.UniqueId)
         End If
         If (ProtocolEnv.CollaborationRightsEnabled AndAlso Not CurrentEnvironment.Equals(DSWEnvironment.Any)) Then
-            roles = Facade.RoleUserFacade.GetSecretaryRolesByAccount(DocSuiteContext.Current.User.FullUserName, CurrentEnvironment)
+            roles = Facade.RoleUserFacade.GetSecretaryRolesByAccount(DocSuiteContext.Current.User.FullUserName, CurrentEnvironment, CurrentTenant.TenantAOO.UniqueId)
         End If
 
         If roles.IsNullOrEmpty() Then

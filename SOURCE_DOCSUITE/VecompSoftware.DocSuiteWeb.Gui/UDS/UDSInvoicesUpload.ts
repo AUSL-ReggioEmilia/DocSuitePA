@@ -4,6 +4,10 @@
 
 import WorkflowStorage = require("App/Core/WorkflowStorage/WorkflowStorage");
 import MessageWorkflowResumeStatus = require("App/Core/WorkflowStorage/MessageWorkflowResumeStatus");
+import UDSConstants = require("App/Core/UDS/UDSConstants");
+import WorkflowStartModel = require("App/Models/Workflows/WorkflowStartModel");
+import WorkflowPropertyHelper = require("App/Models/Workflows/WorkflowPropertyHelper");
+import ArgumentType = require("App/Models/Workflows/ArgumentType");
 
 class UDSInvoicesUpload {
 
@@ -14,17 +18,7 @@ class UDSInvoicesUpload {
     private wStorageEnabled: boolean = false;
     private correlationId: string = null;
     private correlatedChainId: string = null;
-
-    private static hubMethodWorkflowStatusDone = "workflowStatusDone";
-    private static hubMethodWorkflowStatusError = "workflowStatusError";
-    private static hubMethodWorkflowNotificationInfo = "workflowNotificationInfo";
-    private static hubMehtodWorkflowNotificationInfoAsModel = "workflowNotificationInfoAsModel";
-    private static hubMethodWorkflowNotificationWarning = "workflowNotificationWarning";
-    private static hubMethodWorkflowNotificationError = "workflowNotificationError";
-    private static hubMethodWorkflowResumeStatus = "workflowResumeStatus"
-
-    private static serverFunctionSubscribeResumeWorkflow = "SubscribeResumeWorkflowUncoupled";
-    private static serverFunctionSubscribeStartWorkflow = "SubscribeStartWorkflowUncoupled";
+    private rdtpDataRicezioneSdiId: string;
 
     /**
      * If the resume status is returning with a "NotResumed" status, we will disconnect all created listeners
@@ -32,9 +26,12 @@ class UDSInvoicesUpload {
      * with this flag we prevent the unwanted behaviour
      */
     private plannedConnectionStop: boolean = false;
+    private _rdtpDataRicezioneSdi: Telerik.Web.UI.RadDateTimePicker;
 
     //- populated from UDSInvoicesUpload.aspx
     public currentUserTenantName: string;
+    public currentUserTenantId: string;
+    public currentUserTenantAOOId: string;
     public signalRServerAddress: string;
 
     /*
@@ -82,7 +79,26 @@ class UDSInvoicesUpload {
             this.correlatedChainId = this.wstorage.GetCorrelatedChainId();
             this.resumeWorkflowImport();
         }
+        this.initializeDateRange();
     };
+
+    private initializeDateRange = (): void => {
+        this._rdtpDataRicezioneSdi = <Telerik.Web.UI.RadDateTimePicker>$find(this.rdtpDataRicezioneSdiId);
+
+        var today = new Date();
+        this._rdtpDataRicezioneSdi.set_selectedDate(today);
+    }
+    private validateDataRicezioneSdi = (): boolean => {
+        this._rdtpDataRicezioneSdi = <Telerik.Web.UI.RadDateTimePicker>$find(this.rdtpDataRicezioneSdiId);
+
+        var today = new Date();
+        if (this._rdtpDataRicezioneSdi.get_selectedDate() > today) {
+            alert("Non è possibile inserire una data dal futuro");
+            return false;
+        }
+
+        return true;
+    }
 
     private getBtnSave: () => Telerik.Web.UI.RadButton = () => <Telerik.Web.UI.RadButton>$find(this.btnSaveId);
     private getBtnPreview: () => Telerik.Web.UI.RadButton = () => <Telerik.Web.UI.RadButton>$find(this.btnPreviewId);
@@ -114,12 +130,16 @@ class UDSInvoicesUpload {
             return;
         }
 
-        this.startWorkflowImport(false);
+        if (this.validateDataRicezioneSdi()) {
+            this.startWorkflowImport(false);
+        }
     }
 
     public previewImport = (sender: any, args: any) => {
         this.isPreview = true;
-        this.startWorkflowImport(true);
+        if (this.validateDataRicezioneSdi()) {
+            this.startWorkflowImport(true);
+        }
     }
 
     public resumeWorkflowImport = () => {
@@ -132,13 +152,13 @@ class UDSInvoicesUpload {
             'correlationId': this.correlationId
         });
 
-        this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowStatusDone, this.actionHubWorkflowStatusDone);
-        this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowStatusError, this.actionHubWorkflowStatusError);
-        this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowNotificationInfo, this.actionHubWorkflowNotificationInfo);
-        this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowNotificationWarning, this.actionHubWorkflowNotificationWarning);
-        this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowNotificationError, this.actionHubWorkflowNotificationError);
+        this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowStatusDone, this.actionHubWorkflowStatusDone);
+        this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowStatusError, this.actionHubWorkflowStatusError);
+        this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowNotificationInfo, this.actionHubWorkflowNotificationInfo);
+        this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowNotificationWarning, this.actionHubWorkflowNotificationWarning);
+        this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowNotificationError, this.actionHubWorkflowNotificationError);
         //connect to resume channel and wait for response
-        this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowResumeStatus, this.actionHubWorkflowResumeStatus);
+        this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowResumeStatus, this.actionHubWorkflowResumeStatus);
 
         this.dswSignalR.startConnection(this.onDoneResumeSignalRConnectionCallback, this.onErrorSignalRCallback);
     }
@@ -159,14 +179,14 @@ class UDSInvoicesUpload {
             });
 
             if (this.isPreview && this.isPreview === true) {
-                this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMehtodWorkflowNotificationInfoAsModel, this.actionHubWorkflowNotificationInfoAsModel);
+                this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowNotificationInfoAsModel, this.actionHubWorkflowNotificationInfoAsModel);
             } else {
 
-                this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowStatusDone, this.actionHubWorkflowStatusDone);
-                this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowStatusError, this.actionHubWorkflowStatusError);
-                this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowNotificationInfo, this.actionHubWorkflowNotificationInfo);
-                this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowNotificationWarning, this.actionHubWorkflowNotificationWarning);
-                this.dswSignalR.registerClientMessage(UDSInvoicesUpload.hubMethodWorkflowNotificationError, this.actionHubWorkflowNotificationError);
+                this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowStatusDone, this.actionHubWorkflowStatusDone);
+                this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowStatusError, this.actionHubWorkflowStatusError);
+                this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowNotificationInfo, this.actionHubWorkflowNotificationInfo);
+                this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowNotificationWarning, this.actionHubWorkflowNotificationWarning);
+                this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowNotificationError, this.actionHubWorkflowNotificationError);
             }
             this.dswSignalR.startConnection(this.onDoneSignalRConnectionCallback, this.onErrorSignalRCallback);
         }
@@ -209,7 +229,7 @@ class UDSInvoicesUpload {
             this.wstorage.Set(this.correlationId, this.correlatedChainId);
         }
 
-        var serverFunction = UDSInvoicesUpload.serverFunctionSubscribeResumeWorkflow;
+        var serverFunction = UDSConstants.HubMethods.SubscribeResumeWorkflow;
 
         this.addItemInfo("Una attività di importazione è già stata avviata ed è in corso. Attendere prego...");
         this.dswSignalR.sendServerMessage(serverFunction, this.correlationId, this.onDoneSignalRSubscriptionCallback, this.onErrorSignalRCallback);
@@ -221,7 +241,7 @@ class UDSInvoicesUpload {
             this.wstorage.Set(this.correlationId, this.correlatedChainId);
         }
 
-        var serverFunction = UDSInvoicesUpload.serverFunctionSubscribeStartWorkflow;
+        var serverFunction = UDSConstants.HubMethods.SubscribeStartWorkflow;
 
         this.addItemInfo("Preparazione importazione in corso. Attendere prego...");
 
@@ -230,9 +250,28 @@ class UDSInvoicesUpload {
         var obj = { "ArchiveName": this.currentUserTenantName, "ArchiveChainId": this.correlatedChainId, "Simulation": this.isPreview };
         workflowReferenceBiblos.push(obj);
 
-        workflowReferenceBiblos = JSON.stringify(workflowReferenceBiblos);
+        let startImportModel: any = { "Documents": workflowReferenceBiblos };
+        const serializedModel = JSON.stringify(startImportModel);
 
-        this.dswSignalR.sendServerMessages(serverFunction, this.correlationId, workflowReferenceBiblos, 'workflow_integration', 'DocumentAdE',
+        const workflowName: string = "Fatturazione elettronica - Importa da cassetto fiscale"
+        let evt: any = {
+            "WorkflowName": workflowName, "WorkflowAutoComplete": true, "EventModel": { "CustomProperties": {} }
+        };
+        evt.EventModel.CustomProperties["DocumentManagementRequestModel"] = serializedModel;
+        evt.EventModel.CustomProperties["DataRicezioneSdi"] = moment(this._rdtpDataRicezioneSdi.get_selectedDate()).format("YYYY-MM-DD HH:mm:ss");
+
+        let referenceModel: any = { "ReferenceId": this.correlationId, "ReferenceModel": JSON.stringify(evt) };
+
+        let workflowStartModel: WorkflowStartModel = <WorkflowStartModel>{};
+        workflowStartModel.WorkflowName = workflowName;
+        workflowStartModel.Arguments = {};
+        workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ACTIVITY_NAME] = { "PropertyType": ArgumentType.PropertyString, "Name": WorkflowPropertyHelper.DSW_PROPERTY_ACTIVITY_NAME, "ValueString": "Importa da cassetto fiscale" };
+        workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = { "PropertyType": ArgumentType.PropertyGuid, "Name": WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, "ValueGuid": this.currentUserTenantId };
+        workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = { "PropertyType": ArgumentType.PropertyGuid, "Name": WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, "ValueGuid": this.currentUserTenantAOOId };
+        workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = { "PropertyType": ArgumentType.PropertyString, "Name": WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, "ValueString": this.currentUserTenantName };
+        workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL] = { "PropertyType": ArgumentType.Json, "Name": WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL, "ValueString": JSON.stringify(referenceModel) };
+
+        this.dswSignalR.sendServerMessages(serverFunction, this.correlationId, JSON.stringify(workflowStartModel),
             this.onDoneSignalRSubscriptionCallback, this.onErrorSignalRCallback);
     }
 

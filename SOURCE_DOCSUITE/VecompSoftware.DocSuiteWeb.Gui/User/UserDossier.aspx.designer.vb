@@ -68,6 +68,15 @@ Partial Public Class UserDossier
     Protected WithEvents rowExcludeLinked As Global.Telerik.Web.UI.LayoutRow
 
     '''<summary>
+    '''columnDossierTypeKey control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents columnDossierTypeKey As Global.Telerik.Web.UI.LayoutColumn
+
+    '''<summary>
     '''lblExcludeLinked control.
     '''</summary>
     '''<remarks>
@@ -75,6 +84,15 @@ Partial Public Class UserDossier
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblExcludeLinked As Global.System.Web.UI.WebControls.Label
+
+    '''<summary>
+    '''columnDossierTypeValue control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents columnDossierTypeValue As Global.Telerik.Web.UI.CompositeLayoutColumn
 
     '''<summary>
     '''ddlDossierType control.

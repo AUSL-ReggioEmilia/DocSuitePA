@@ -8,6 +8,8 @@ import UpdateActionType = require("App/Models/UpdateActionType");
 import CategorySearchFilterDTO = require('App/DTOs/CategorySearchFilterDTO');
 import CategoryTreeViewModel = require('App/ViewModels/Commons/CategoryTreeViewModel');
 import CategoryTreeViewModelMapper = require('App/Mappers/Commons/CategoryTreeViewModelMapper');
+import PaginationModel = require('App/Models/Commons/PaginationModel');
+import ODATAResponseModel = require('App/Models/ODATAResponseModel');
 
 class CategoryService extends BaseService {
     _configuration: ServiceConfiguration;
@@ -29,10 +31,21 @@ class CategoryService extends BaseService {
         }, error);
     }
 
-    getById(categoryId: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getById(categoryId: number, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, tenantAOOId?: string, includeProperties: string[] = []): void {
         let url: string = this._configuration.ODATAUrl;
-        let qs: string = "$filter=EntityShortId eq ".concat(categoryId.toString(), "&$expand=Parent");
-        this.getRequest(url, qs, (response: any) => {
+        let filterQueries: string[] = [`EntityShortId eq ${categoryId}`];
+
+        if (tenantAOOId) {
+            filterQueries.push(`TenantAOO/UniqueId eq ${tenantAOOId}`);
+        }
+
+        let odataFilter: string = `$filter=${filterQueries.join(" and ")}`;
+
+        if (includeProperties && includeProperties.length) {
+            odataFilter = `${odataFilter}&$expand=${includeProperties.join(",")}`;
+        }
+
+        this.getRequest(url, odataFilter, (response: any) => {
             if (callback) {
                 let instance: CategoryModel = new CategoryModel();
                 let categoryMapper: CategoryModelMapper = new CategoryModelMapper();
@@ -89,18 +102,22 @@ class CategoryService extends BaseService {
         }, error);
     }
 
-    findTreeCategories(finder: CategorySearchFilterDTO, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
-        let url: string = this._configuration.ODATAUrl;
-        url = url.concat(`/CategoryService.FindCategories(finder=@p0)?@p0=${JSON.stringify(finder)}&$orderby=FullCode,Name`);
-        this.getRequest(url, undefined, (response: any) => {
-            if (callback) {
-                let instances: CategoryTreeViewModel[] = [];
-                if (response && response.value) {
-                    let categoryMapper: CategoryTreeViewModelMapper = new CategoryTreeViewModelMapper();
-                    instances = categoryMapper.MapCollection(response.value);
-                }
-                callback(instances);
+    findTreeCategories(finder: CategorySearchFilterDTO, callback?: (data: CategoryTreeViewModel[]) => any, error?: (exception: ExceptionDTO) => any): void {
+        let odataUrl: string = this._configuration.ODATAUrl;
+        let odataQuery = `${odataUrl}/CategoryService.FindCategories(finder=@p0)?@p0=${JSON.stringify(finder)}&$orderby=FullCode,Name`;
+
+        this.getRequest(odataQuery, undefined, (response: any) => {
+
+            if (!callback) {
+                return;
             }
+
+            let instances: CategoryTreeViewModel[] = [];
+            if (response && response.value) {
+                let categoryMapper: CategoryTreeViewModelMapper = new CategoryTreeViewModelMapper();
+                instances = categoryMapper.MapCollection(response.value);
+            }
+            callback(instances);
         }, error);
     }
 
@@ -120,31 +137,142 @@ class CategoryService extends BaseService {
         }, error);
     }
 
-    getOnlyFascicolableCategories(tenantAOOId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getOnlyFascicolableCategories(tenantAOOId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, paginationModel?: PaginationModel): void {
         let url: string = `${this._configuration.ODATAUrl}?$expand=CategoryFascicles,Parent&$filter=TenantAOO/UniqueId eq ${tenantAOOId} and(CategoryFascicles/any(cf:cf/FascicleType ne 'SubFascicle'))&$orderby=FullCode,Name`;
+
+        if (paginationModel) {
+            url = `${url}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}&$count=true`;
+        }
+
         this.getRequest(url, null, (response: any) => {
-            if (callback) {
-                let categories: CategoryModel[] = [];
-                if (response && response.value) {
-                    let categoryMaper: CategoryModelMapper = new CategoryModelMapper();
-                    categories = categoryMaper.MapCollection(response.value);
-                }
-                callback(categories);
+            if (!callback) {
+                return;
             }
+
+            let categories: CategoryModel[] = [];
+
+            if (response && response.value) {
+                let categoryMaper: CategoryModelMapper = new CategoryModelMapper();
+                categories = categoryMaper.MapCollection(response.value);
+            }
+
+            if (!paginationModel) {
+                callback(categories);
+                return;
+            }
+
+            const odataResult: ODATAResponseModel<CategoryModel> = new ODATAResponseModel<CategoryModel>(response);
+            odataResult.value = categories;
+            callback(odataResult);
         }, error);
     }
 
-    getCategoriesByIds(categoryIds: number[], tenantAOOId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any): void {
+    getCategoriesByIds(categoryIds: number[], tenantAOOId: string, callback?: (data: any) => any, error?: (exception: ExceptionDTO) => any, paginationModel?: PaginationModel): void {
         let url: string = `${this._configuration.ODATAUrl}?$filter=TenantAOO/UniqueId eq ${tenantAOOId} and EntityShortId in [${categoryIds.join(",")}]&$expand=CategoryFascicles,Parent&$orderby=FullCode,Name`;
+
+        if (paginationModel) {
+            url = `${url}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}&$count=true`;
+        }
+
         this.getRequest(url, null, (response: any) => {
-            if (callback) {
-                let categories: CategoryModel[] = [];
-                if (response && response.value) {
-                    let categoryMaper: CategoryModelMapper = new CategoryModelMapper();
-                    categories = categoryMaper.MapCollection(response.value);
-                }
-                callback(categories);
+
+            if (!callback) {
+                return;
             }
+
+            let categories: CategoryModel[] = [];
+
+            if (response && response.value) {
+                let categoryMaper: CategoryModelMapper = new CategoryModelMapper();
+                categories = categoryMaper.MapCollection(response.value);
+            }
+
+            if (!paginationModel) {
+                callback(categories);
+                return;
+            }
+
+            const odataResult: ODATAResponseModel<CategoryModel> = new ODATAResponseModel<CategoryModel>(response);
+            odataResult.value = categories;
+            callback(odataResult);
+        }, error);
+    }
+
+    getTenantAOORootCategory(tenantAOOId: string, callback?: (rootCategory: CategoryModel) => any, error?: (exception: ExceptionDTO) => any){
+        const odataQuery: string = `${this._configuration.ODATAUrl}?$filter=TenantAOO/UniqueId eq ${tenantAOOId} and Code eq 0`;
+
+        this.getRequest(odataQuery, null, (response: any) => {
+            if (!callback) {
+                return;
+            }
+
+            let tenantAOOCategory: CategoryModel = null;
+            if (response && response.value) {
+                let categoryMaper: CategoryModelMapper = new CategoryModelMapper();
+                tenantAOOCategory = categoryMaper.Map(response.value[0]);
+            }
+
+            callback(tenantAOOCategory);
+        }, error);
+    }
+
+    countSubCategories(parentCategoryId: number, callback?: (childrenCount: number) => any, error?: (exception: ExceptionDTO) => any)
+    countSubCategories(parentCategoryId: number, callback?: (childrenCount: number) => any, error?: (exception: ExceptionDTO) => any, tenantAOOId?: string)
+    countSubCategories(parentCategoryId: number, callback?: (childrenCount: number) => any, error?: (exception: ExceptionDTO) => any, tenantAOOId?: string): void {
+        const baseOdataURL: string = `${this._configuration.ODATAUrl}/$count`;
+        let filterQueries: string[] = [`Parent/EntityShortId eq ${parentCategoryId}`];
+
+        if (tenantAOOId) {
+            filterQueries.push(`TenantAOO/UniqueId eq ${tenantAOOId}`);
+        }
+
+        let odataFilterQuery: string = `$filter=${filterQueries.join(" and ")}`;
+        this.getRequest(baseOdataURL, odataFilterQuery,
+            (response: any) => {
+                if (callback) {
+                    callback(response);
+                }
+            }, error);
+    }
+
+    getSubCategories(parentCategoryId: number, callback?: (data: CategoryModel[] | ODATAResponseModel<CategoryModel>) => any, error?: (exception: ExceptionDTO) => any, paginationModel?: PaginationModel)
+    getSubCategories(parentCategoryId: number, callback?: (data: CategoryModel[] | ODATAResponseModel<CategoryModel>) => any, error?: (exception: ExceptionDTO) => any, paginationModel?: PaginationModel, tenantAOOId?: string, includeProperties?: string[])
+    getSubCategories(parentCategoryId: number, callback?: (data: CategoryModel[] | ODATAResponseModel<CategoryModel>) => any, error?: (exception: ExceptionDTO) => any, paginationModel?: PaginationModel, tenantAOOId?: string, includeProperties?: string[]) {
+        let baseOdataURL: string = this._configuration.ODATAUrl;
+        let filterQueries: string[] = [`Parent/EntityShortId eq ${parentCategoryId}`];
+
+        if (tenantAOOId) {
+            filterQueries.push(`TenantAOO/UniqueId eq ${tenantAOOId}`);
+        }
+
+        let odataFilterQuery: string = `$filter=${filterQueries.join(" and ")}`;
+        let odataQuery: string = paginationModel
+            ? `${baseOdataURL}?${odataFilterQuery}&$skip=${paginationModel.Skip}&$top=${paginationModel.Take}&$count=true&$orderby=Code asc`
+            : `${baseOdataURL}?${odataFilterQuery}&$orderby=Code asc`;
+
+        if (includeProperties && includeProperties.length) {
+            odataQuery = `${odataQuery}&$expand=${includeProperties.join(",")}`;
+        }
+
+        this.getRequest(odataQuery, null, (response: any) => {
+            if (!callback && !response) {
+                return;
+            }
+
+            let subCategories: CategoryModel[] = [];
+            if (response.value) {
+                let categoryMaper: CategoryModelMapper = new CategoryModelMapper();
+                subCategories = categoryMaper.MapCollection(response.value);
+            }
+
+            if (!paginationModel) {
+                callback(subCategories);
+                return;
+            }
+
+            const odataResult: ODATAResponseModel<CategoryModel> = new ODATAResponseModel<CategoryModel>(response);
+            odataResult.value = subCategories;
+            callback(odataResult);
         }, error);
     }
 }

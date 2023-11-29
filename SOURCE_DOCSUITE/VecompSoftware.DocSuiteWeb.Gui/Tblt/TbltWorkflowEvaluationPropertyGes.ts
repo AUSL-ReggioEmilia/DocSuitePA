@@ -32,6 +32,7 @@ import WorkflowAuthorizationType = require('App/Models/Workflows/WorkflowAuthori
 import uscWorkflowDesignerValidations = require('UserControl/uscWorkflowDesignerValidations');
 import DSWEnvironmentType = require('App/Models/Workflows/WorkflowDSWEnvironmentType');
 import WorkflowRuleDefinitionModel = require('App/Models/Workflows/WorkflowRuleDefinitionModel');
+import UscTemplateCollaborationSelRest = require('UserControl/uscTemplateCollaborationSelRest');
 
 class TbltWorkflowEvaluationPropertyGes {
     rcbNameId: string;
@@ -59,7 +60,7 @@ class TbltWorkflowEvaluationPropertyGes {
     uscWorkflowDesignerValidationsContainerId: string;
 
     //template di collaborazione - View Rendering
-    ddlTemplateCollaborationId: string;
+    uscTemplateCollaborationSelRestId: string;
     uscTemplateCollaborationContainerId: string;
 
     //template collaboration sign summary
@@ -78,7 +79,6 @@ class TbltWorkflowEvaluationPropertyGes {
     private _rdpValueDate: Telerik.Web.UI.RadDatePicker;
     private _rntbValueDouble: Telerik.Web.UI.RadNumericTextBox;
     private _rdbGuid: Telerik.Web.UI.RadTextBox;
-    private _ddlTemplateCollaboration: Telerik.Web.UI.RadComboBox;
     private _ddlTemplateCollaborationSignSummary: Telerik.Web.UI.RadComboBox;
     private _ddlTemplateGenerate: Telerik.Web.UI.RadComboBox;;
 
@@ -153,10 +153,8 @@ class TbltWorkflowEvaluationPropertyGes {
         this._rntbValueDouble = <Telerik.Web.UI.RadNumericTextBox>$find(this.rntbValueDoubleId);
         this._rdbGuid = <Telerik.Web.UI.RadTextBox>$find(this.rdbGuidId);
 
-        // combobox that shows a list of collaboration templates. Will render the value of the property  WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_DEFAULT
-        this._ddlTemplateCollaboration = <Telerik.Web.UI.RadComboBox>$find(this.ddlTemplateCollaborationId);
-        // handler for _ddlTemplateCollaboration , that will load templates and manages updateing the underlying rtbValue storage
-        this._templateCollabUIHandler = new UIHandlerEvalPropertyTemplateCollaboration(this._rtbValueString, this._ddlTemplateCollaboration, this._templateCollaborationService);
+        // handler for uscTemplatecollaborationSelRest , that will load templates and manages updateing the underlying rtbValue storage
+        this._templateCollabUIHandler = new UIHandlerEvalPropertyTemplateCollaboration(this._rtbValueString, this.uscTemplateCollaborationSelRestId);
 
         // combobox that shows a list of deposito documentale templates. 
         this._ddlTemplateCollaborationSignSummary = <Telerik.Web.UI.RadComboBox>$find(this.ddlCollaborationSignSummaryId);
@@ -181,6 +179,7 @@ class TbltWorkflowEvaluationPropertyGes {
 
         this.getQueryParameters(window.location.search);
         this.initializeEditOperation();
+
     }
 
     rcbName_OnClientItemsRequested = (sender: Telerik.Web.UI.RadComboBox, args: Telerik.Web.UI.RadComboBoxRequestEventArgs) => {
@@ -189,7 +188,7 @@ class TbltWorkflowEvaluationPropertyGes {
             $.each(WorkflowEvalutionPropertyHelper, (key, value) => {
                 if (value.Name != undefined || value.Type != undefined) {
 
-                    filteringList.push({ Key: key, Name: value.Name, Type: value.Type });
+                    filteringList.push({ Key: key, Name: `${value.Name} (${key})`, Type: value.Type });
                 }
             });
             let filteredList = filteringList.filter(x => x.Name.toLowerCase().indexOf(sender.get_text().toLowerCase()) !== -1);
@@ -273,8 +272,10 @@ class TbltWorkflowEvaluationPropertyGes {
         }
 
         if (model.Name === TbltWorkflowEvaluationPropertyGes.PROPERTY_NAME_TEMPLATE_COLLABORATION_DEFAULT) {
+            this._templateCollabUIHandler.InitializeTemplateTreeviewControl(false);
             this._templateCollabUIHandler.SetSelectedItem(model.ValueGuid);
             this._templateCollabUIHandler.UpdateSelection();
+            this._templateCollabUIHandler.InitializeDisableButtonEvent(this.btnConfirm);
             this._rtbValueString.set_value(model.ValueGuid);
             return;
         }
@@ -339,7 +340,7 @@ class TbltWorkflowEvaluationPropertyGes {
             json.Role = <WorkflowRoleModel>{
                 IdRole: newAddedRoles[newAddedRoles.length - 1].EntityShortId,
                 Name: newAddedRoles[newAddedRoles.length - 1].Name,
-                TenantId: newAddedRoles[newAddedRoles.length - 1].TenantId,
+                IdTenantAOO: newAddedRoles[newAddedRoles.length - 1].IdTenantAOO,
                 UniqueId: newAddedRoles[newAddedRoles.length - 1].UniqueId
             }
 
@@ -496,7 +497,7 @@ class TbltWorkflowEvaluationPropertyGes {
         $.each(workflowEvaluationPropertyHelper, function (index, item) {
             if (item.Value.Name != undefined || item.Value.Type != undefined) {
                 cmbItem = new Telerik.Web.UI.RadComboBoxItem();
-                cmbItem.set_text(item.Value.Name);
+                cmbItem.set_text(`${item.Value.Name} (${item.Key})`);
                 cmbItem.set_value(item.Key);
                 obj._rcbName.get_items().add(cmbItem);
             }
@@ -523,6 +524,8 @@ class TbltWorkflowEvaluationPropertyGes {
         this.resetValueVisibility();
         let vals = args.get_item().get_value();
         this.dynamicallyAdjustInputFields(vals);
+
+        this.btnConfirm.set_enabled(true);
     }
 
     private dynamicallyAdjustInputFields(propertyFieldName: string): void {
@@ -578,7 +581,11 @@ class TbltWorkflowEvaluationPropertyGes {
             this._templateCollabUIHandler.SetSelectedItem(null);
             this._rtbValueString.clear();
             this._uscTemplateCollaborationContainer.show();
-            this._templateCollabUIHandler.LoadTemplateCollaborations();
+
+            if (this.queryParameters.Action === "Add") {
+                this._templateCollabUIHandler.InitializeTemplateTreeviewControl();
+                this._templateCollabUIHandler.InitializeDisableButtonEvent(this.btnConfirm);
+            }
             return;
         }
 

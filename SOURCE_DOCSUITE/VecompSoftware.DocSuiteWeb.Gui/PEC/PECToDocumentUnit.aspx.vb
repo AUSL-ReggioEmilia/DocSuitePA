@@ -1,34 +1,32 @@
 ﻿Imports System.Collections.Generic
-Imports System.Linq
-Imports System.Text
 Imports System.Collections.Specialized
 Imports System.IO
-Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Helpers
-Imports VecompSoftware.DocSuiteWeb.Facade
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports Telerik.Web.UI
-Imports VecompSoftware.Services.Biblos
+Imports System.Linq
+Imports System.Text
 Imports System.Web
-Imports VecompSoftware.DocSuiteWeb.Gui.Viewers
-Imports VecompSoftware.Helpers.Web
-Imports VecompSoftware.DocSuiteWeb.Data.OrganizationChart.xml
-Imports VecompSoftware.DocSuiteWeb.Facade.PEC
-Imports VecompSoftware.Services.Logging
-Imports VecompSoftware.Services.Biblos.Models
-Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
-Imports VecompSoftware.Helpers.UDS
 Imports Newtonsoft.Json
-Imports VecompSoftware.DocSuiteWeb.DTO.UDS
-Imports VecompSoftware.Helpers.Compress
+Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.BusinessRule.Rules.Rights.UDS
-Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.Commons
+Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
-Imports VecompSoftware.DocSuiteWeb.Facade.Common.WebAPI
-Imports VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
+Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
+Imports VecompSoftware.DocSuiteWeb.Facade.PEC
+Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI
+Imports VecompSoftware.DocSuiteWeb.Gui.Viewers
+Imports VecompSoftware.Helpers
+Imports VecompSoftware.Helpers.Compress
+Imports VecompSoftware.Helpers.ExtensionMethods
+Imports VecompSoftware.Helpers.UDS
+Imports VecompSoftware.Helpers.Web
+Imports VecompSoftware.Services.Biblos
+Imports VecompSoftware.Services.Biblos.Models
+Imports VecompSoftware.Services.Logging
 
 Public Class PECToDocumentUnit
     Inherits PECBasePage
@@ -40,11 +38,11 @@ Public Class PECToDocumentUnit
     Private _whiteList() As String
     Private _blackList() As String
     Private _allDocuments As List(Of DocumentInfo)
-    Private _oChartItemData As OChartProtocolXml
     Private _segnaturaReader As SegnaturaReader
     Private _mailboxes As IList(Of PECMailBox)
     Private _currentUDSRepositoryFacade As UDSRepositoryFacade
     Private _currentFascicleFolderFinder As Data.WebAPI.Finder.Fascicles.FascicleFolderFinder
+    Private _facadeElsaWebAPI As IFacadeElsaWebAPI
 
     Private Const LOG_WORKFLOW_ACTIVITY As String = "pecToDocumentUnit.insertWorkflowActivity({0},{1},{2});"
     Private Const CONFIRM_CALLBACK As String = "pecToDocumentUnit.confirmCallback('{0}','{1}',{2},'{3}','{4}');"
@@ -96,6 +94,10 @@ Public Class PECToDocumentUnit
                 If radio Is Nothing OrElse Not radio.Checked Then
                     Dim documentInfo As DocumentInfo = DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(CType(selectedItem.GetDataKeyValue("Serialized"), String)))
                     Dim fileName As String = DirectCast(selectedItem.FindControl("txtNewFileName"), TextBox).Text
+
+                    If TypeOf documentInfo Is DocumentProxyDocumentInfo AndAlso String.IsNullOrEmpty(fileName) Then
+                        fileName = FileHelper.ReplaceUnicode(documentInfo.Name)
+                    End If
                     If Not String.IsNullOrEmpty(fileName) Then
                         Dim newTempDoc As FileInfo = documentInfo.SaveUniqueToTemp()
                         documentInfo = New TempFileDocumentInfo(fileName, newTempDoc)
@@ -117,6 +119,10 @@ Public Class PECToDocumentUnit
                     Dim temp As NameValueCollection = HttpUtility.ParseQueryString(key)
                     Dim documentInfo As DocumentInfo = DocumentInfoFactory.BuildDocumentInfo(temp)
                     Dim fileName As String = DirectCast(item.FindControl("txtNewFileName"), TextBox).Text
+
+                    If TypeOf documentInfo Is DocumentProxyDocumentInfo AndAlso String.IsNullOrEmpty(fileName) Then
+                        fileName = FileHelper.ReplaceUnicode(documentInfo.Name)
+                    End If
                     If Not String.IsNullOrEmpty(fileName) Then
                         Dim newTempDoc As FileInfo = documentInfo.SaveUniqueToTemp()
                         documentInfo = New TempFileDocumentInfo(fileName, newTempDoc)
@@ -152,15 +158,6 @@ Public Class PECToDocumentUnit
                 End If
             End If
             Return _blackList
-        End Get
-    End Property
-
-    Public ReadOnly Property OChartItemData As OChartProtocolXml
-        Get
-            If _oChartItemData Is Nothing Then
-                _oChartItemData = Facade.OChartFacade.GetOChartItem(CurrentPecMailWrapper)
-            End If
-            Return _oChartItemData
         End Get
     End Property
 
@@ -219,6 +216,10 @@ Public Class PECToDocumentUnit
             For Each selectedItem As GridDataItem In DocumentListGrid.MasterTableView.Items
                 Dim documentInfo As DocumentInfo = DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(CType(selectedItem.GetDataKeyValue("Serialized"), String)))
                 Dim fileName As String = DirectCast(selectedItem.FindControl("txtNewFileName"), TextBox).Text
+
+                If TypeOf documentInfo Is DocumentProxyDocumentInfo AndAlso String.IsNullOrEmpty(fileName) Then
+                    fileName = FileHelper.ReplaceUnicode(documentInfo.Name)
+                End If
                 If Not String.IsNullOrEmpty(fileName) Then
                     Dim newTempDoc As FileInfo = documentInfo.SaveUniqueToTemp()
                     documentInfo = New TempFileDocumentInfo(fileName, newTempDoc)
@@ -234,8 +235,9 @@ Public Class PECToDocumentUnit
     Public ReadOnly Property CurrentFascicleFolderFinder() As Data.WebAPI.Finder.Fascicles.FascicleFolderFinder
         Get
             If _currentFascicleFolderFinder Is Nothing Then
-                _currentFascicleFolderFinder = New Data.WebAPI.Finder.Fascicles.FascicleFolderFinder(DocSuiteContext.Current.CurrentTenant)
-                _currentFascicleFolderFinder.EnablePaging = False
+                _currentFascicleFolderFinder = New WebAPI.Finder.Fascicles.FascicleFolderFinder(DocSuiteContext.Current.CurrentTenant) With {
+                    .EnablePaging = False
+                }
             End If
             Return _currentFascicleFolderFinder
         End Get
@@ -243,6 +245,15 @@ Public Class PECToDocumentUnit
     Public ReadOnly Property FolderSelectionEnabled As Boolean
         Get
             Return GetKeyValueOrDefault("FolderSelectionEnabled", True)
+        End Get
+    End Property
+
+    Public ReadOnly Property FacadeElsaWebAPI As IFacadeElsaWebAPI
+        Get
+            If _facadeElsaWebAPI Is Nothing Then
+                _facadeElsaWebAPI = New FacadeElsaWebAPI(ProtocolEnv.DocSuiteNextElsaBaseURL)
+            End If
+            Return _facadeElsaWebAPI
         End Get
     End Property
 #End Region
@@ -270,13 +281,13 @@ Public Class PECToDocumentUnit
                 cmdAnnulla.Enabled = False
                 Return
             End If
-            If (PreviousPage Is Nothing) OrElse Not (TypeOf PreviousPage Is PECBasePage) OrElse Not PreviousPage.IsCrossPagePostBack Then
+            If IsWorkflowOperation = False AndAlso (PreviousPage Is Nothing OrElse Not (TypeOf PreviousPage Is PECBasePage Or TypeOf PreviousPage Is WorkflowActivityManage) OrElse Not PreviousPage.IsCrossPagePostBack) Then
                 Throw New DocSuiteException("Pec to Protocol", "Pagina di provenienza mancante o non corretta.")
             End If
-
             InitializePecToProtocol()
         End If
     End Sub
+
     Private Sub InitializeAjaxHandlers()
         AddHandler AjaxManager.AjaxRequest, AddressOf pecToDocumentUnit_AjaxRequest
     End Sub
@@ -311,10 +322,15 @@ Public Class PECToDocumentUnit
                     Next
 
                     Dim results As IList(Of DocumentInfo) = BonificaDocumenti(documenti)
+
                     Dim zip As DocumentInfo = results.FirstOrDefault(Function(f) (TypeOf f Is BiblosDocumentInfo) AndAlso DirectCast(f, BiblosDocumentInfo).DocumentId = documentId)
+                    If zip Is Nothing Then
+                        zip = results.FirstOrDefault(Function(f) (TypeOf f Is DocumentProxyDocumentInfo) AndAlso DirectCast(f, DocumentProxyDocumentInfo).DocumentId = documentId)
+                    End If
                     If zip IsNot Nothing Then
                         results.Remove(zip)
                     End If
+
                     DocumentListGrid.DataSource = results.ToList()
                     DocumentListGrid.DataBind()
                 Catch ex As BadPasswordException
@@ -357,8 +373,11 @@ Public Class PECToDocumentUnit
                         imgDecrypt.Visible = True
                         imgDecrypt.OnClientClick = String.Format("showDialogInitially('{0}','{1}');return false;", txtPassword.ClientID, btnUnzip.ClientID)
                         btnUnzip.Visible = True
-                        If (TypeOf bound Is BiblosDocumentInfo) Then
+                        If TypeOf bound Is BiblosDocumentInfo Then
                             btnUnzip.CommandArgument = DirectCast(bound, BiblosDocumentInfo).DocumentId.ToString()
+                        End If
+                        If TypeOf bound Is DocumentProxyDocumentInfo Then
+                            btnUnzip.CommandArgument = DirectCast(bound, DocumentProxyDocumentInfo).DocumentId.ToString()
                         End If
                     End If
                 Catch ex As ExtractException
@@ -389,9 +408,6 @@ Public Class PECToDocumentUnit
 
     Private Sub ChbEMailCertifiedCheckedChanged(sender As Object, e As EventArgs) Handles chbEMailCertified.CheckedChanged
         UpdateContact()
-    End Sub
-
-    Private Sub ChkUseOChartCheckedChanged(sender As Object, e As EventArgs) Handles chkUseOChart.CheckedChanged
     End Sub
 
     Private Sub UscUploadDocumentiDocumentUploaded(sender As Object, e As DocumentEventArgs) Handles uscUploadDocumenti.DocumentUploaded
@@ -428,6 +444,9 @@ Public Class PECToDocumentUnit
         protocolParams.Append("Type=Prot&Action=Interop")
         protocolParams.AppendFormat("&IdPECMail={0}", CurrentPecMail.Id)
         protocolParams.AppendFormat("&ProtocolBox={0}", ProtocolBoxEnabled)
+        If CurrentPecMail.ProcessStatus = PECMailProcessStatus.ArchivedInDocSuiteNext AndAlso IsWorkflowOperation AndAlso CurrentIdWorkflowActivity IsNot Nothing Then
+            protocolParams.AppendFormat("&IsWorkflowOperation=True&IdWorkflowActivity={0}", CurrentIdWorkflowActivity)
+        End If
 
         If Not String.IsNullOrEmpty(ddlTemplateProtocol.SelectedValue) Then
             protocolParams.AppendFormat("&IdTemplateProtocol={0}", ddlTemplateProtocol.SelectedValue)
@@ -520,6 +539,9 @@ Public Class PECToDocumentUnit
         udsParams.Append("Type=UDS&Action=Insert")
         udsParams.AppendFormat("&IdPECMail={0}", CurrentPecMail.Id)
         udsParams.AppendFormat("&ArchiveTypeId={0}", ddlUDSArchives.SelectedValue)
+        If CurrentPecMail.ProcessStatus = PECMailProcessStatus.ArchivedInDocSuiteNext AndAlso IsWorkflowOperation AndAlso CurrentIdWorkflowActivity IsNot Nothing Then
+            udsParams.AppendFormat("&IsWorkflowOperation=True&IdWorkflowActivity={0}", CurrentIdWorkflowActivity)
+        End If
 
         Dim udsUrl As String = String.Format("../UDS/UDSInsert.aspx?{0}", CommonShared.AppendSecurityCheck(udsParams.ToString()))
         Dim udsCloneUrl As String = String.Format("../UDS/UDSInsert.aspx?{0}&needClone=1", CommonShared.AppendSecurityCheck(udsParams.ToString()))
@@ -699,42 +721,6 @@ Public Class PECToDocumentUnit
 
         Dim allSelectedDocument As List(Of DocumentInfo) = AllAttachmentDocuments
         Select Case True
-            Case Me.chkUseOChart.Checked AndAlso Me.OChartItemData.OChartItem IsNot Nothing
-                '' Oggetto
-                tor.Subject = OChartItemData.ProtocolXmlData.ProtocolObject
-
-                '' Note del protocollo
-                tor.Notes = OChartItemData.ProtocolXmlData.Notes
-
-                '' Classificazione (del mittente) del settore [match su fullCode]
-                tor.Category = Facade.OChartFacade.GetCategory(OChartItemData)
-
-                '' Dati del protocollo mittente
-                '' FullNumber
-                tor.SenderProtocolNumber = String.Format("{0}/{1:0000000}", OChartItemData.ProtocolXmlData.Year, OChartItemData.ProtocolXmlData.Number)
-                '' Data di registrazione
-                tor.SenderProtocolDate = OChartItemData.ProtocolXmlData.ProtocolDate
-                '' Tipo di documento
-                tor.DocumentTypeLabel = OChartItemData.ProtocolXmlData.DocumentType.Description
-
-                '' Gestione documenti
-                '' Documento principale                
-                tor.MainDocument = Facade.OChartFacade.GetMainDocuments(OChartItemData, allSelectedDocument).FirstOrDefault()
-                '' Allegati
-                tor.Attachments = Facade.OChartFacade.GetAttachments(OChartItemData, allSelectedDocument)
-                '' Annessi
-                tor.Annexed = Facade.OChartFacade.GetAnnexed(OChartItemData, allSelectedDocument)
-
-                '' Dati legati all'OChart
-                '' Contenitori legati all'OChart
-                tor.Containers = OChartItemData.OChartItem.Containers.Select(Function(e) e.Container).ToList()
-                '' Destinatari legati all'OChart
-                tor.Recipients = OChartItemData.OChartItem.Contacts.Select(Function(e) New ContactDTO(e.Contact, ContactDTO.ContactType.Address)).ToList()
-                '' Settori legati all'OChart
-                tor.Roles = OChartItemData.OChartItem.Roles.Select(Function(e) e.Role).ToList()
-
-
-
             Case Me.UseInterop
                 tor.Subject = CheckInteropSubject(SegnaturaReader)
                 tor.SenderProtocolNumber = SegnaturaReader.GetNumeroRegistrazione()
@@ -819,8 +805,16 @@ Public Class PECToDocumentUnit
     Private Function BonificaDocumenti(documents As IList(Of DocumentInfo)) As List(Of DocumentInfo)
         Dim bonificati As List(Of DocumentInfo) = New List(Of DocumentInfo)
         For Each doc As DocumentInfo In documents
-            If FileHelper.MatchExtension(doc.Name, FileHelper.EML) AndAlso TypeOf doc Is BiblosDocumentInfo Then
-                bonificati.Add(New BiblosPdfDocumentInfo(CType(doc, BiblosDocumentInfo)))
+            If FileHelper.MatchExtension(doc.Name, FileHelper.EML) Then
+                If TypeOf doc Is BiblosDocumentInfo Then
+                    bonificati.Add(New BiblosPdfDocumentInfo(CType(doc, BiblosDocumentInfo)))
+                ElseIf TypeOf doc Is DocumentProxyDocumentInfo Then
+                    Dim documentProxyDoc As DocumentProxyDocumentInfo = CType(doc, DocumentProxyDocumentInfo)
+                    Dim newTempDoc As FileInfo = documentProxyDoc.SaveUniquePdfToTemp()
+                    bonificati.Add(New TempFileDocumentInfo($"CC_{documentProxyDoc.PDFName}", newTempDoc))
+                Else
+                    bonificati.Add(doc)
+                End If
             Else
                 bonificati.Add(doc)
             End If
@@ -843,6 +837,9 @@ Public Class PECToDocumentUnit
             If Not String.IsNullOrEmpty(ddlTemplateProtocol.SelectedValue) Then
                 params.AppendFormat("&IdTemplateProtocol={0}", ddlTemplateProtocol.SelectedValue)
             End If
+        End If
+        If IsWorkflowOperation AndAlso CurrentIdWorkflowActivity IsNot Nothing Then
+            params.AppendFormat("&IsWorkflowOperation=True&IdWorkflowActivity={0}", CurrentIdWorkflowActivity)
         End If
 
         cmdInit.PostBackUrl = String.Format("../Prot/ProtInserimento.aspx?{0}", CommonShared.AppendSecurityCheck(params.ToString()))
@@ -888,13 +885,9 @@ Public Class PECToDocumentUnit
         DocumentListGrid.DataSource = BonificaDocumenti(documents)
 
         ' Nome del documento principale
-        Dim mainDocName As String
-        If Not OChartItemData Is Nothing AndAlso Not OChartItemData.ProtocolXmlData Is Nothing AndAlso Not OChartItemData.ProtocolXmlData.MainDocuments.IsNullOrEmpty Then
-            mainDocName = OChartItemData.ProtocolXmlData.MainDocuments.FirstOrDefault().Caption
-        ElseIf UseInterop Then
+        Dim mainDocName As String = ProtocolEnv.PECDefaultMainDocument
+        If UseInterop Then
             mainDocName = SegnaturaReader.GetNomeDocumentoPrincipale()
-        Else
-            mainDocName = ProtocolEnv.PECDefaultMainDocument
         End If
 
         DocumentListGrid.DataBind()
@@ -921,10 +914,6 @@ Public Class PECToDocumentUnit
 
         chbEMailCertified.Enabled = Not chkInteropMittente.Checked
         chbEMailCertified.Checked = (CurrentPecMail.PECType.GetValueOrDefault(PECMailType.Anomalia) = PECMailType.PEC)
-
-        'Visualizzo la scelta da OChart solo se presente
-        chkUseOChart.Visible = OChartItemData IsNot Nothing
-        chkUseOChart.Checked = chkUseOChart.Visible
 
         CheckDocuments()
 
@@ -1111,7 +1100,12 @@ Public Class PECToDocumentUnit
                     documentStored = document.ArchiveInBiblos(CommonShared.CurrentWorkflowLocation.ProtBiblosDSDB, Guid.Empty)
                     documentInstances.Add(New DocumentInstance() With {.IdDocumentToStore = documentStored.DocumentId.ToString(), .DocumentName = document.Name})
                 Else
-                    documentInstances.Add(New DocumentInstance() With {.StoredChainId = DirectCast(document, BiblosDocumentInfo).DocumentId.ToString()})
+                    If TypeOf document Is TempFileDocumentInfo Then
+                        documentStored = document.ArchiveInBiblos(CommonShared.CurrentWorkflowLocation.ProtBiblosDSDB, Guid.Empty)
+                        documentInstances.Add(New DocumentInstance() With {.IdDocumentToStore = documentStored.DocumentId.ToString(), .DocumentName = document.Name})
+                    Else
+                        documentInstances.Add(New DocumentInstance() With {.StoredChainId = DirectCast(document, BiblosDocumentInfo).DocumentId.ToString()})
+                    End If
                 End If
             Next
         End If
@@ -1175,6 +1169,10 @@ Public Class PECToDocumentUnit
         Next
         AjaxManager.ResponseScripts.Add(String.Format(CONFIRM_CALLBACK, chainId, idFascicle, isNewIdArchiveChain.ToString().ToLower(), String.Empty, currentFascicleFolder.UniqueId))
     End Sub
+
+    Private Function GetIdFascicle() As Guid? Implements IUDSInitializer.GetIdFascicle
+        Return Nothing
+    End Function
 #End Region
 
 End Class

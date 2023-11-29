@@ -59,7 +59,7 @@ Public Class TbltCreaFascicolo
 
 #Region " Events "
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
-        InitializeAjaxSettings()
+        InitializeAjax()
         If Not IsPostBack Then
             InitializePeriods()
         End If
@@ -69,7 +69,7 @@ Public Class TbltCreaFascicolo
 
 #Region " Methods "
 
-    Private Sub InitializeAjaxSettings()
+    Private Sub InitializeAjax()
         AjaxManager.AjaxSettings.AddAjaxSetting(btnSave, btnSave, MasterDocSuite.AjaxFlatLoadingPanel)
 
     End Sub

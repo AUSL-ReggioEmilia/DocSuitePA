@@ -24,6 +24,9 @@ class UserDossier {
     public uscDossierGridId: string;
     public uscNotificationId: string;
     public actionType: string;
+    public dossierTypologyEnabled: boolean;
+    public columnDossierTypeKeyId: string;
+    public columnDossierTypeValueId: string;
 
     //PAGE CONTROLS
     private _rdpDateFrom: Telerik.Web.UI.RadDatePicker;
@@ -50,7 +53,13 @@ class UserDossier {
         this._btnSearch = <Telerik.Web.UI.RadButton>$find(this.btnSearchId);
         this._ddlDossierType = <Telerik.Web.UI.RadDropDownList>$find(this.ddlDossierTypeId);
 
-        this.initializeDropDownListItems();
+        $(`#${this.columnDossierTypeKeyId}`).hide();
+        $(`#${this.columnDossierTypeValueId}`).hide();
+        if (this.dossierTypologyEnabled) {
+            this.initializeDropDownListItems();
+            $(`#${this.columnDossierTypeKeyId}`).show();
+            $(`#${this.columnDossierTypeValueId}`).show();
+        }
         this.initializeSearchDateRanges();
         this.initializeMouseEvents();
         this.initializePageEvents();
@@ -65,7 +74,9 @@ class UserDossier {
     private initializeResultsByActionType(action: string): void {
         if (action === UserDossier.ACTION_DOP) {
             let uscDossierGrid: UscDossierGrid = <UscDossierGrid>$(`#${this.uscDossierGridId}`).data();
-            this._currentDossierType = DossierType.Procedure;
+            if (this.dossierTypologyEnabled) {
+                this._currentDossierType = DossierType.Procedure;
+            }
             this.loadDossierResults(uscDossierGrid, 0);
         }
     }
@@ -171,8 +182,9 @@ class UserDossier {
         searchDTO.StartDateTo = toDateFilter;
 
         searchDTO.Status = DossierStatus[DossierStatus.Open]
-        searchDTO.DossierType = DossierType[this._currentDossierType]
-
+        if (this.dossierTypologyEnabled) {
+            searchDTO.DossierType = DossierType[this._currentDossierType]
+        }
         searchDTO.Skip = skip;
         searchDTO.Top = top;
 

@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="VecompSoftware_JeepService_SignEngineFacade_SignEngineService_eSignEngine" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://srvbiblos/ESignEngine/eSignEngine.asmx</Value>
+      <Value Profile="(Default)">http://./ESignEngine/eSignEngine.asmx</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -44,5 +44,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Workflows
         DocumentUnitLinks = 18,
         [Description("Attività")]
         GenericActivity = 19,
+        [Description("Modifica protocollo")]
+        ProtocolUpdate = 20
     }
 }

@@ -5,6 +5,7 @@ Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.Data.Formatter
 Imports VecompSoftware.DocSuiteWeb.Facade
+Imports VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Services.Biblos
 Imports VecompSoftware.Services.Biblos.Models
@@ -88,6 +89,9 @@ Public Class ProtModifica
         If CurrentProtocol Is Nothing Then
             Exit Sub
         End If
+
+        Dim annexedDocumentsUpdated As Boolean = False
+        Dim attachmentDocumentsUpdated As Boolean = False
 
         ' Verifico che l'utente abbia i permessi di modifica
         If CurrentProtocolRights.IsEditable OrElse (Action.Eq("Repair") AndAlso CurrentProtocolRights.IsErrorEditable) Then
@@ -200,11 +204,17 @@ Public Class ProtModifica
             End Try
 
             Dim info As New ProtocolSignatureInfo(uscAllegati.DocumentInfosAdded.Count)
-            UpdateDocuments(True, info)
 
+            annexedDocumentsUpdated = TryUpdateAnnexedDocuments(info)
+
+            If Action.Eq("Repair") AndAlso CurrentProtocolRights.IsErrorEditable Then
+                TryUpdateMainDocument(info)
+                attachmentDocumentsUpdated = TryUpdateAttachmentDocuments(info)
+            End If
         ElseIf CurrentProtocolRights.IsEditableAttachment Then
             ' Qualora il gruppo abbinato all'utente abbia solo permessi di lettura gestisco il salvataggio del solo allegato.
-            UpdateDocuments(False)
+            annexedDocumentsUpdated = TryUpdateAnnexedDocuments()
+            attachmentDocumentsUpdated = TryUpdateAttachmentDocuments()
         End If
 
         If Action.Eq("Repair") OrElse (CurrentProtocol.IdDocument.GetValueOrDefault(0) > 0 AndAlso CurrentProtocol.IdStatus = ProtocolStatusId.Incompleto) Then
@@ -213,7 +223,10 @@ Public Class ProtModifica
 
         Facade.ProtocolFacade.Update(CurrentProtocol)
         Facade.ProtocolFacade.RaiseAfterEdit(CurrentProtocol, uscAllegati.DocumentInfosAdded)
-        Facade.ProtocolFacade.SendUpdateProtocolCommand(CurrentProtocol)
+
+        ' NOTE: Although the UpdatedPropertyType contains also a value for protocol attachment documents update (ProtocolAttachmentDocumentsUpdated)
+        ' only ProtocolAnnexedDocumentsUpdated is currently used
+        Facade.ProtocolFacade.SendUpdateProtocolCommand(CurrentProtocol, If(annexedDocumentsUpdated, UpdatedPropertyType.ProtocolAnnexedDocumentsUpdated, Nothing))
         Response.Redirect($"../Prot/ProtVisualizza.aspx?{CommonShared.AppendSecurityCheck($"UniqueId={CurrentProtocol.Id}&Type=Prot")}")
     End Sub
 
@@ -282,19 +295,11 @@ Public Class ProtModifica
             End If
 
             CurrentContainerControl.Enabled = ProtocolEnv.ProtocolContainerEditable
-            'Contenitori con diritto di Inserimento
-            If CurrentProtocol.Container.IsInvoiceEnable OrElse CurrentProtocolRights.IsRejected OrElse ProtocolEnv.ProtocolRejectionEnabled Then
-                ' Con gestione fatture o in caso di rigetto il contenitore è solo una label
-                CurrentContainerControl.AddItem(CurrentProtocol.Container.Name, CurrentProtocol.Container.Id.ToString())
-                CurrentContainerControl.Enabled = False
-            Else
-                ' Senza gestione fatture aggiungo tutti i contenitori
-                CurrentContainerControl.ClearItems()
-                Dim availableContainers As IList(Of Container) = Facade.ContainerFacade.GetManageableContainers("", CurrentProtocol.Container)
-                For Each c As Container In availableContainers
-                    CurrentContainerControl.AddItem(c.Name, c.Id.ToString())
-                Next
-            End If
+            CurrentContainerControl.ClearItems()
+            Dim availableContainers As IList(Of Container) = Facade.ContainerFacade.GetManageableContainers("", CurrentProtocol.Container)
+            For Each c As Container In availableContainers
+                CurrentContainerControl.AddItem(c.Name, c.Id.ToString())
+            Next
             CurrentContainerControl.SelectedValue = CurrentProtocol.Container.Id.ToString()
 
             ' Protocol status
@@ -584,31 +589,45 @@ Public Class ProtModifica
         Facade.ProtocolLogFacade.Insert(CurrentProtocol, ProtocolLogEvent.PM, message & " (new): " & newValue)
     End Sub
 
-    Private Overloads Sub UpdateDocuments(ByVal updateMainDocuments As Boolean)
-        UpdateDocuments(updateMainDocuments, New ProtocolSignatureInfo())
-    End Sub
-
-    Private Overloads Sub UpdateDocuments(ByVal updateMainDocuments As Boolean, ByVal signatureInfo As ProtocolSignatureInfo)
+    Private Function TryUpdateMainDocument(Optional ByVal signatureInfo As ProtocolSignatureInfo = Nothing) As Boolean
         Try
-            If updateMainDocuments Then
-                If uscDocumento.DocumentInfosAdded.Count > 0 Then
-                    CurrentProtocol.DocumentCode = uscDocumento.DocumentInfosAdded(0).Name
-                    Dim attributes As Dictionary(Of String, String) = Facade.ProtocolFacade.GetDocumentAttributes(CurrentProtocol)
-                    Facade.ProtocolFacade.AddDocument(CurrentProtocol, uscDocumento.DocumentInfosAdded(0), signatureInfo, attributes)
-                End If
+            If Not uscDocumento.DocumentInfosAdded.Any() Then
+                Return False
             End If
 
-            'verifico se ci sono allegati aggiunti
-            If uscAllegati.DocumentsAddedCount > 0 Then
-                If DocSuiteContext.Current.ProtocolEnv.IsConservationEnabled Then
-                    CurrentProtocol.ConservationStatus = "M"c
-                End If
-                Facade.ProtocolFacade.AddAttachments(CurrentProtocol, uscAllegati.DocumentInfosAdded, signatureInfo)
+            CurrentProtocol.DocumentCode = uscDocumento.DocumentInfosAdded(0).Name
+            Dim attributes As Dictionary(Of String, String) = Facade.ProtocolFacade.GetDocumentAttributes(CurrentProtocol)
+            Facade.ProtocolFacade.AddDocument(CurrentProtocol, uscDocumento.DocumentInfosAdded(0), If(signatureInfo, New ProtocolSignatureInfo()), attributes)
+
+            Return True
+        Catch ex As Exception
+            Throw New DocSuiteException("Modifica Protocollo", "Errore in fase di salvataggio documento principale", ex)
+        End Try
+    End Function
+
+    Private Function TryUpdateAttachmentDocuments(Optional ByVal signatureInfo As ProtocolSignatureInfo = Nothing) As Boolean
+        Try
+            If uscAllegati.DocumentsAddedCount = 0 Then
+                Return False
             End If
 
-            'verifico se ci sono "Allegati non parte integrante (Annessi)" aggiunti
+            Facade.ProtocolFacade.AddAttachments(CurrentProtocol, uscAllegati.DocumentInfosAdded, If(signatureInfo, New ProtocolSignatureInfo()))
+
+            Return True
+        Catch ex As Exception
+            Throw New DocSuiteException("Modifica Protocollo", "Errore in fase di salvataggio documenti allegati", ex)
+        End Try
+    End Function
+
+    Private Function TryUpdateAnnexedDocuments(Optional ByVal signatureInfo As ProtocolSignatureInfo = Nothing) As Boolean
+
+        Try
+            If Not ProtocolEnv.EnableFlushAnnexed AndAlso Not uscAnnexes.DocumentInfosAdded.Any() Then
+                Return False
+            End If
+
             If ProtocolEnv.EnableFlushAnnexed Then
-                If uscAnnexes.DocumentsToDelete.Count > 0 Then
+                If uscAnnexes.DocumentsToDelete.Any() Then
                     Dim annexes As ICollection(Of BiblosDocumentInfo) = ProtocolFacade.GetAnnexes(CurrentProtocol)
                     For Each idDocument As Guid In uscAnnexes.DocumentsToDelete
                         Dim annexed As BiblosDocumentInfo = annexes.FirstOrDefault(Function(x) x.DocumentId = idDocument)
@@ -626,17 +645,15 @@ Public Class ProtModifica
                 End If
             End If
 
-            If uscAnnexes.DocumentInfosAdded.Count > 0 Then
-                If DocSuiteContext.Current.ProtocolEnv.IsConservationEnabled Then
-                    CurrentProtocol.ConservationStatus = "M"c
-                End If
-                Facade.ProtocolFacade.AddAnnexes(CurrentProtocol, uscAnnexes.DocumentInfosAdded, signatureInfo)
+            If uscAnnexes.DocumentInfosAdded.Any() Then
+                Facade.ProtocolFacade.AddAnnexes(CurrentProtocol, uscAnnexes.DocumentInfosAdded, If(signatureInfo, New ProtocolSignatureInfo()))
             End If
 
+            Return True
         Catch ex As Exception
-            Throw New DocSuiteException("Modifica Protocollo", "Errore in fase di salvataggio documenti", ex)
+            Throw New DocSuiteException("Modifica Protocollo", "Errore in fase di salvataggio documenti annessi", ex)
         End Try
-    End Sub
+    End Function
 
 #End Region
 

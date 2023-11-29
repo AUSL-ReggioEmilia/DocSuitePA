@@ -16,9 +16,10 @@ import CategoryService = require('App/Services/Commons/CategoryService');
 import CategoryModel = require('App/Models/Commons/CategoryModel');
 import DossierFolderModel = require('App/Models/Dossiers/DossierFolderModel');
 import DossierFolderRoleModel = require('App/Models/Dossiers/DossierFolderRoleModel');
-import uscRoleRest = require('./uscRoleRest');
+import uscRoleRest = require('UserControl/uscRoleRest');
 import GenericHelper = require('App/Helpers/GenericHelper');
 import DSWEnvironmentType = require('App/Models/Workflows/WorkflowDSWEnvironmentType');
+import RoleTypologyType = require('App/Models/Commons/RoleTypologyType');
 
 class CommonSelRoleRest {
     public pnlMainContentId: string;
@@ -33,13 +34,12 @@ class CommonSelRoleRest {
     public uscNotificationId: string;
     public ajaxLoadingPanelId: string;
     public onlyMyRoles: boolean;
-    public tenantId: string;
-    public loadAllRoles: boolean;
+    public idTenantAOO: string;
     private _initialRoleCollection: RoleModel[] = [];
     public entityType: string;
     public entityId: string;
     private allProcessRoles: RoleModel[];
-    private allDossierFolderRoles: DossierFolderRoleModel[];
+    private allDossierFolderRoles: RoleModel[];
     private allCategoryRoles: RoleModel[];
     categoryModel: CategoryModel;
     private _savedRoles: RoleModel[];
@@ -128,9 +128,8 @@ class CommonSelRoleRest {
         } else {
             defaultSearchRoleFinderModel = this.getDefaultFinderModel();
         }
-        if (localStorage.getItem(uscRoleRest.LOCAL_STORAGE_ROLE_REST)) {
+        if (localStorage.getItem(uscRoleRest.LOCAL_STORAGE_ROLE_REST) && localStorage.getItem(uscRoleRest.LOCAL_STORAGE_ROLE_REST) != "undefined") {
             this._savedRoles = JSON.parse(localStorage.getItem(uscRoleRest.LOCAL_STORAGE_ROLE_REST));
-            localStorage.removeItem(uscRoleRest.LOCAL_STORAGE_ROLE_REST);
         }
         if (this.entityType) {
             let externalSourceAction = this._getRolesFromExternalSourceActionsDictionary[this.entityType];
@@ -155,12 +154,17 @@ class CommonSelRoleRest {
         roleNode.get_attributes().setAttribute("UniqueId", roleModel.UniqueId);
         roleNode.get_attributes().setAttribute("EntityShortId", roleModel.EntityShortId ? roleModel.EntityShortId : roleModel.IdRole);
         roleNode.get_attributes().setAttribute("Name", roleModel.Name);
-        roleNode.get_attributes().setAttribute("IdRoleTenant", roleModel.IdRoleTenant);
-        roleNode.get_attributes().setAttribute("TenantId", roleModel.TenantId);
+        roleNode.get_attributes().setAttribute("IdTenantAOO", roleModel.IdTenantAOO);
         roleNode.get_attributes().setAttribute("IsActive", roleModel.IsActive);
         roleNode.get_attributes().setAttribute("ServiceCode", roleModel.ServiceCode);
-        roleNode.get_attributes().setAttribute("ActiveFrom", roleModel.ActiveFrom);
         roleNode.get_attributes().setAttribute("FullIncrementalPath", roleModel.FullIncrementalPath);
+        roleNode.get_attributes().setAttribute("RoleTypology", roleModel.RoleTypology);
+        let isSelectable: boolean = true;
+        if (roleModel.IsRealResult != undefined && roleModel.IsRealResult != null) {
+            roleNode.get_attributes().setAttribute("IsRealResult", roleModel.IsRealResult);
+            isSelectable = roleModel.IsRealResult;
+        }
+        roleNode.get_attributes().setAttribute("IsSelectable", isSelectable);
     }
 
     private getRoleModelFromNode(roleNode: Telerik.Web.UI.RadTreeNode): RoleModel {
@@ -171,14 +175,14 @@ class CommonSelRoleRest {
             UniqueId: roleNode.get_attributes().getAttribute("UniqueId"),
             EntityShortId: roleNode.get_attributes().getAttribute("EntityShortId"),
             Name: roleNode.get_attributes().getAttribute("Name"),
-            IdRoleTenant: roleNode.get_attributes().getAttribute("IdRoleTenant"),
-            TenantId: roleNode.get_attributes().getAttribute("TenantId"),
+            IdTenantAOO: roleNode.get_attributes().getAttribute("IdTenantAOO"),
             IsActive: roleNode.get_attributes().getAttribute("IsActive"),
             ServiceCode: roleNode.get_attributes().getAttribute("ServiceCode"),
-            ActiveFrom: roleNode.get_attributes().getAttribute("ActiveFrom"),
             FullIncrementalPath: roleNode.get_attributes().getAttribute("FullIncrementalPath"),
+            RoleTypology: roleNode.get_attributes().getAttribute("RoleTypology"),
             Children: [],
-            CategoryFascicleRights: []
+            CategoryFascicleRights: [],
+            IsRealResult: roleNode.get_attributes().getAttribute("IsRealResult") ? true : false
         };
 
         return roleModel;
@@ -210,6 +214,18 @@ class CommonSelRoleRest {
 
                 if (roleModel.Children.length)
                     currentNode.set_expanded(true);
+            }
+
+            if (roleModel.IsRealResult != undefined && roleModel.IsRealResult != null) {
+                let currentNodeClass: string = currentNode.get_cssClass();
+                if (roleModel.IsRealResult) {
+                    currentNode.set_cssClass(`${currentNodeClass} ${CommonSelRoleRest.BOLD_CSSCLASS}`);
+                }
+                else {
+                    currentNode.set_cssClass(`${currentNodeClass} node-disabled`);
+                    currentNode.get_attributes().setAttribute("isReadOnly", true);
+                    currentNode.set_checkable(false);
+                }
             }
 
             if (roleModel.Children.length)
@@ -251,7 +267,7 @@ class CommonSelRoleRest {
                     break;
                 }
                 case ExternalSourceActionEnum.DossierFolder: {
-                    filteredRolesByCode = this.allDossierFolderRoles.filter(x => x.Role.ServiceCode.toLowerCase() === codeSearchRoleFinderModel.ServiceCode.toLowerCase()).map(x => x.Role);
+                    filteredRolesByCode = this.allDossierFolderRoles.filter(x => x.ServiceCode.toLowerCase() === codeSearchRoleFinderModel.ServiceCode.toLowerCase());
                     break;
                 }
                 case ExternalSourceActionEnum.Category: {
@@ -343,14 +359,35 @@ class CommonSelRoleRest {
         let treeNodes: Telerik.Web.UI.RadTreeNode[] = rootNode.get_allNodes();
 
         treeNodes.forEach(treeNode => {
+            const treeNodeIsNotCheckable: boolean = treeNode.get_attributes().getAttribute("isReadOnly") || !treeNode.get_checkable();
+            if (treeNodeIsNotCheckable) {
+                return;
+            }
+
             let currentTreeNodeClass: string = treeNode.get_cssClass();
 
             treeNode.set_checked(true);
             treeNode.set_cssClass(`${currentTreeNodeClass} ${CommonSelRoleRest.BOLD_CSSCLASS}`);
-            treeNode.set_expanded(true);
+
+            this._expandAllParentNodes(treeNode);
         });
 
         this._btnConfirm.set_enabled(true);
+    }
+
+    private _expandAllParentNodes(currentNode: Telerik.Web.UI.RadTreeNode): void {
+        if (currentNode.get_expanded()) {
+            return;
+        }
+
+        currentNode.set_expanded(true);
+        let currentParentNode: Telerik.Web.UI.RadTreeNode = currentNode.get_parent();
+
+        if (!currentParentNode) {
+            return;
+        }
+
+        this._expandAllParentNodes(currentParentNode);
     }
 
     private uncheckAllNodes = (): void => {
@@ -381,11 +418,12 @@ class CommonSelRoleRest {
             Name: null,
             ParentId: null,
             ServiceCode: null,
-            TenantId: this.loadAllRoles ? null : this.tenantId,
+            IdTenantAOO: this.idTenantAOO ? this.idTenantAOO : null,
             Environment: Environment.Any,
             LoadOnlyRoot: false,
             LoadOnlyMy: this.onlyMyRoles,
-            LoadAlsoParent: true
+            LoadAlsoParent: true,
+            RoleTypology: null
         };
     }
 
@@ -422,17 +460,11 @@ class CommonSelRoleRest {
 
         this._getRolesFromExternalSourceActionsDictionary[ExternalSourceActionEnum.Category] = (categoryId: number): void => {
             if (categoryId) {
-                this._categoryService.getRolesByCategoryId(categoryId, (data) => {
-                    this.categoryModel = data;
-                    let categoryFascicleModel: CategoryFascicleViewModel = this.categoryModel.CategoryFascicles[0];
-                    if (categoryFascicleModel) {
-                        let roleArray: RoleModel[] = [];
-                        for (let cfrm of categoryFascicleModel.CategoryFascicleRights) {
-                            roleArray.push(cfrm.Role)
-                        }
-                        this.allCategoryRoles = roleArray;
-                        this.renderRolesTree(roleArray);
-                    }
+                let searchFilter: RoleSearchFilterDTO = this.getDefaultFinderModel();
+                searchFilter.IdCategory = categoryId;
+                this._roleService.findRoles(searchFilter, (data: RoleModel[]) => {
+                    this.allCategoryRoles = data;
+                    this.buildRolesTreeNodes(data);
                 }, (exception: ExceptionDTO) => {
                     this.showNotificationException(exception);
                 });
@@ -440,10 +472,13 @@ class CommonSelRoleRest {
         }
 
         this._getRolesFromExternalSourceActionsDictionary[ExternalSourceActionEnum.DossierFolder] = (dossierFolderId: string): void => {
-            this._dossierFolderService.getDossierFolderById(dossierFolderId, (data) => {
-                let dossierFolder: DossierFolderModel = data[0];
-                this.allDossierFolderRoles = dossierFolder.DossierFolderRoles;
-                this.renderRolesTree(dossierFolder.DossierFolderRoles.map(x => x.Role));
+            let searchFilter: RoleSearchFilterDTO = this.getDefaultFinderModel();
+            searchFilter.IdDossierFolder = dossierFolderId;
+            this._roleService.findRoles(searchFilter, (data: RoleModel[]) => {
+                this.allDossierFolderRoles = data;
+                this.buildRolesTreeNodes(data);
+            }, (exception: ExceptionDTO) => {
+                this.showNotificationException(exception);
             });
         }
     }
@@ -507,6 +542,10 @@ class CommonSelRoleRest {
     }
 
     private setNodeAsBoldIfFromInitialCollection(treeNode: Telerik.Web.UI.RadTreeNode): void {
+        if (this._savedRoles.some(x => x.IdRole === +treeNode.get_value())) {
+            return;
+        }
+
         let roleIsFromDatabase: boolean = this._initialRoleCollection.some(roleModel => roleModel.IdRole === +treeNode.get_value());
         treeNode.set_contentCssClass(roleIsFromDatabase ? "dsw-text-bold" : "node-disabled");
         treeNode.get_attributes().setAttribute("isReadOnly", !roleIsFromDatabase);
@@ -517,7 +556,7 @@ class CommonSelRoleRest {
 
     private createTreeNodeFromRoleModel(roleModel: RoleModel, isExpanded: boolean): Telerik.Web.UI.RadTreeNode {
         let treeNode: Telerik.Web.UI.RadTreeNode = new Telerik.Web.UI.RadTreeNode();
-        let treeNodeDescription: string = roleModel.ActiveFrom ? `${roleModel.Name} - autorizzato il ${roleModel.ActiveFrom}` : `${roleModel.Name}`;
+        let treeNodeDescription: string = `${roleModel.Name}`;
         let treeNodeImageUrl: string = roleModel.IdRoleFather === null ? ImageHelper.roleRootNodeImageUrl : ImageHelper.roleChildNodeImageUrl;
 
         treeNode.set_text(treeNodeDescription);
@@ -525,7 +564,7 @@ class CommonSelRoleRest {
         treeNode.set_imageUrl(treeNodeImageUrl);
         treeNode.set_contentCssClass(roleModel.IsActive ? "dsw-text-bold" : "node-disabled");
         treeNode.set_expanded(isExpanded);
-        treeNode.get_attributes().setAttribute("isReadOnly", roleModel.IsActive !== 1);
+        treeNode.get_attributes().setAttribute("isReadOnly", !roleModel.IsActive);
         if (!roleModel.IsActive) {
             treeNode.set_checkable(false);
         }
@@ -544,11 +583,12 @@ class CommonSelRoleRest {
             Name: null,
             ParentId: null,
             ServiceCode: null,
-            TenantId: this.loadAllRoles ? null : this.tenantId,
+            IdTenantAOO: this.idTenantAOO ? this.idTenantAOO : null,
             Environment: Environment.Document,
             LoadOnlyRoot: false,
             LoadOnlyMy: this.onlyMyRoles,
-            LoadAlsoParent: true
+            LoadAlsoParent: true,
+            RoleTypology: null
         };
     }
 
@@ -574,7 +614,7 @@ class CommonSelRoleRest {
                 break;
             }
             case ExternalSourceActionEnum.DossierFolder.toString(): {
-                filteredRoles = this.allDossierFolderRoles.filter(x => x.Role.Name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1).map(x => x.Role);
+                filteredRoles = this.allDossierFolderRoles.filter(x => x.Name.toLowerCase().indexOf(searchText.toLowerCase()) !== -1);
                 break;
             }
             case ExternalSourceActionEnum.Category.toString(): {
@@ -587,7 +627,7 @@ class CommonSelRoleRest {
 
     rolesTree_onNodeClicked = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => {
         let clickedNode: Telerik.Web.UI.RadTreeNode = args.get_node();
-        this._btnConfirm.set_enabled(clickedNode.get_value());
+        this._btnConfirm.set_enabled(clickedNode.get_value() && clickedNode.get_attributes().getAttribute("IsSelectable"));
     }
 
     rolesTree_onNodeChecked = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => {
@@ -596,11 +636,13 @@ class CommonSelRoleRest {
     }
 
     rolesTree_onNodeClicking = (sender: Telerik.Web.UI.RadTreeView, args: Telerik.Web.UI.RadTreeNodeCancelEventArgs) => {
-        if (args.get_node().get_attributes().getAttribute("isReadOnly")) {
+        const clickedNode: Telerik.Web.UI.RadTreeNode = args.get_node();
+
+        if (clickedNode.get_attributes().getAttribute("isReadOnly")) {
             args.set_cancel(true);
         }
         else {
-            args.get_node().check();
+            clickedNode.check();
         }
     }
 }

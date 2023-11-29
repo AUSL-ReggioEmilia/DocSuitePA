@@ -157,7 +157,7 @@ Namespace Series
         ''' <summary> Istanza il finder per la ricerca </summary>
         ''' <returns>Restituisce il Finder popolato con i valori inseriti dall'operatore</returns>
         Private Function GetFinder() As DocumentSeriesItemFinder
-            Dim finder As New DocumentSeriesItemFinder()
+            Dim finder As New DocumentSeriesItemFinder(CurrentTenant.TenantAOO.UniqueId)
 
             finder.ItemStatusIn = New List(Of DocumentSeriesItemStatus)()
             finder.ItemStatusIn.Add(DocumentSeriesItemStatus.Active)

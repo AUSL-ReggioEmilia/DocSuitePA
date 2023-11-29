@@ -3,13 +3,13 @@ Imports Newtonsoft.Json
 <Serializable()> _
 Public Class ContactTitle
     Inherits DomainObject(Of Int32)
-    Implements ISupportLogicDelete, IAuditable
+    Implements ISupportBooleanLogicDelete, IAuditable
 
 #Region "private data"
 
     Private _code As String
     Private _description As String
-    Private _isActive As Short
+    Private _isActive As Boolean
     Private _registrationUser As String
     Private _registrationDate As DateTimeOffset
     Private _lastChangedUser As String
@@ -48,12 +48,12 @@ Public Class ContactTitle
         End Set
     End Property
 
-    <JsonProperty("ContactTitleIsActive")> _
-    Public Overridable Property IsActive() As Short Implements ISupportLogicDelete.IsActive
+    <JsonProperty("ContactTitleIsActive")>
+    Public Overridable Property IsActive() As Boolean Implements ISupportBooleanLogicDelete.IsActive
         Get
             Return _isActive
         End Get
-        Set(ByVal value As Short)
+        Set(ByVal value As Boolean)
             _isActive = value
         End Set
     End Property

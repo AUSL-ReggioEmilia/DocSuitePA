@@ -40,8 +40,8 @@ Public Class ContactTitleFacade
 
     Public Overrides Function Delete(ByRef obj As ContactTitle) As Boolean
 
-        If obj.GetType().GetInterface("ISupportLogicDelete") IsNot Nothing And IsUsed(obj) Then
-            obj.IsActive = 0
+        If obj.GetType().GetInterface("ISupportBooleanLogicDelete") IsNot Nothing And IsUsed(obj) Then
+            obj.IsActive = False
             MyBase.UpdateOnly(obj)
         Else
             MyBase.Delete(obj)

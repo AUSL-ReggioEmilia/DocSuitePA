@@ -42,6 +42,7 @@
       <column name="RegistrationDate" not-null="true" />
     </property>
     <property name="UserProfile" column="UserProfile"/>
+    <property name="UserPrincipalName" column="UserPrincipalName"/>
   </class>
 
 

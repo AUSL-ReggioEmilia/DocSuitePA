@@ -1,7 +1,7 @@
 {
-  "apiOdataAddress": "http://srvgeddev9999.cloudapp.net/DSW.PublicWebAPI/odata/",
-  "apiRestAddress": "http://srvgeddev9999.cloudapp.net/DSW.PublicWebAPI/api/",
-  "apiAuthAddress": "http://srvgeddev9999.cloudapp.net/DSW.PublicWebAPI/Auth/Token",
+  "apiOdataAddress": "http://localhost/DSW.PublicWebAPI/odata/",
+  "apiRestAddress": "http://localhost/DSW.PublicWebAPI/api/",
+  "apiAuthAddress": "http://localhost/DSW.PublicWebAPI/Auth/Token",
   "apiOdataControllers": {
     "protocol": true,
     "protocolAuthorized": false,
@@ -19,7 +19,7 @@
   },
   "appLogo": "app/images/app-logo.png",
   "title": "DocSuite - External Viewer",
-  "documentHandler": "http://srvgeddev9999.cloudapp.net/DocumentUnitHandler/DocumentUnitHandler.ashx/",
+  "documentHandler": "http://localhost/DocumentUnitHandler/DocumentUnitHandler.ashx/",
   "toastLife": 5000,
   "applicationName": "DocSuite - External Viewer",
   "gridItemsNumber": 10,

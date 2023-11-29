@@ -3,10 +3,6 @@ Imports VecompSoftware.DocSuiteWeb.Data.Entity.UDS
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.UDS
 Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.UDS
-Imports VecompSoftware.DocSuiteWeb.Facade.NHibernate.Workflows
-Imports VecompSoftware.Helpers.ExtensionMethods
-Imports VecompSoftware.Helpers.Web.ExtensionMethods
-Imports VecompSoftware.Helpers.WebAPI
 
 Public Class UDSBasePage
     Inherits CommonBasePage

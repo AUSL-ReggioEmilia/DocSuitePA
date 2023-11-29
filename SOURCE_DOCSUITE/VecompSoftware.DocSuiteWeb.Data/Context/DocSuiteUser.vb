@@ -54,6 +54,9 @@ Public Class DocSuiteUser
                     FileLogger.Info(LogName.FileLog, String.Concat("Attenzione UserName vuoto : Identity ", Identity Is Nothing, " Identity.IsAuthenticated ", IIf(Identity Is Nothing, False, Identity.IsAuthenticated)))
                     Return String.Empty
                 End If
+                If Not identityName.Contains("\") Then
+                    identityName = $"{Domain}\{identityName}"
+                End If
                 _fullUserName = identityName
             End If
             Return _fullUserName

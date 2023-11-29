@@ -17,6 +17,10 @@ Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.DocSuiteWeb.UDSDesigner
 Imports VecompSoftware.Services.Logging
 Imports VecompSoftware.Helpers.Compress
+Imports VecompSoftware.DocSuiteWeb.Facade.WebAPI
+Imports Newtonsoft.Json
+Imports VecompSoftware.DocSuiteWeb.DTO.WorkflowsElsa
+Imports VecompSoftware.DocSuiteWeb.Facade.ExtensionMethods
 
 Public Class PECAttachToDocumentUnit
     Inherits PECBasePage
@@ -31,6 +35,7 @@ Public Class PECAttachToDocumentUnit
     Public Const NOTIFICATION_ERROR_ICON As String = "delete"
     Public Const CONFIRM_UDS_CLICK As String = "confirmUds"
     Public Const COMMAND_SUCCESS As String = "Attendere il termine dell'attività di {0}."
+    Private _allDocuments As List(Of DocumentInfo) = Nothing
 #End Region
 
 #Region " Properties "
@@ -63,13 +68,22 @@ Public Class PECAttachToDocumentUnit
 
     Public ReadOnly Property AllDocuments As List(Of DocumentInfo)
         Get
+            If _allDocuments Is Nothing Then
+                _allDocuments = New List(Of DocumentInfo)()
+                If CurrentPecMail.ProcessStatus = PECMailProcessStatus.StoredInDocumentManager OrElse CurrentPecMail.ProcessStatus = PECMailProcessStatus.ArchivedInDocSuiteNext Then
+                    For Each selectedItem As GridDataItem In DocumentListGrid.MasterTableView.GetSelectedItems()
+                        Dim documentInfo As DocumentInfo = DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(CType(selectedItem.GetDataKeyValue("Serialized"), String)))
+                        Dim newTempDoc As FileInfo = documentInfo.SaveUniqueToTemp()
+                        _allDocuments.Add(New TempFileDocumentInfo(documentInfo.Name, newTempDoc))
+                    Next
+                Else
+                    For Each selectedItem As GridDataItem In DocumentListGrid.MasterTableView.GetSelectedItems()
+                        _allDocuments.Add(DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(CType(selectedItem.GetDataKeyValue("Serialized"), String))))
+                    Next
+                End If
 
-            Dim list As New List(Of DocumentInfo)
-            For Each selectedItem As GridDataItem In DocumentListGrid.MasterTableView.GetSelectedItems()
-                list.Add(DocumentInfoFactory.BuildDocumentInfo(HttpUtility.ParseQueryString(CType(selectedItem.GetDataKeyValue("Serialized"), String))))
-            Next
-            Return list
-
+            End If
+            Return _allDocuments
         End Get
     End Property
 
@@ -127,9 +141,9 @@ Public Class PECAttachToDocumentUnit
             Title = String.Format("{0} - Allega", PecLabel)
             cmdCancel.PostBackUrl = PreviousPageUrl
 
-            txtYear.Text = DateTime.Today.Year.ToString()
+            txtYear.Text = Date.Today.Year.ToString()
             txtNumber.Focus()
-            lbSelectedDocumentUnit.Text = "Selezione Protocollo"
+            lbSelectedDocumentUnit.Text = "Selezione protocollo"
 
             Dim protocolItem As ListItem = New ListItem("Protocollo", DSWEnvironment.Protocol.ToString())
             Dim UDSItem As ListItem = New ListItem("Archivio", DSWEnvironment.UDS.ToString())
@@ -207,10 +221,15 @@ Public Class PECAttachToDocumentUnit
                     file.Name = item.Filename
                     documenti.Add(file)
                 Next
+
                 Dim zip As DocumentInfo = documenti.FirstOrDefault(Function(f) (TypeOf f Is BiblosDocumentInfo) AndAlso DirectCast(f, BiblosDocumentInfo).DocumentId = documentId)
+                If zip Is Nothing Then
+                    zip = documenti.FirstOrDefault(Function(f) (TypeOf f Is DocumentProxyDocumentInfo) AndAlso DirectCast(f, DocumentProxyDocumentInfo).DocumentId = documentId)
+                End If
                 If zip IsNot Nothing Then
                     documenti.Remove(zip)
                 End If
+
                 DocumentListGrid.DataSource = documenti.ToList()
                 DocumentListGrid.DataBind()
             Catch ex As BadPasswordException
@@ -247,8 +266,11 @@ Public Class PECAttachToDocumentUnit
                         imgDecrypt.Visible = True
                         imgDecrypt.OnClientClick = String.Format("showDialogInitially('{0}','{1}');return false;", txtPassword.ClientID, btnUnzip.ClientID)
                         btnUnzip.Visible = True
-                        If (TypeOf bound Is BiblosDocumentInfo) Then
+                        If TypeOf bound Is BiblosDocumentInfo Then
                             btnUnzip.CommandArgument = DirectCast(bound, BiblosDocumentInfo).DocumentId.ToString()
+                        End If
+                        If TypeOf bound Is DocumentProxyDocumentInfo Then
+                            btnUnzip.CommandArgument = DirectCast(bound, DocumentProxyDocumentInfo).DocumentId.ToString()
                         End If
                     End If
                 Catch ex As ExtractException
@@ -270,12 +292,12 @@ Public Class PECAttachToDocumentUnit
             btnAdd.AutoPostBack = False
             btnAdd.OnClientClicked = CONFIRM_UDS_CLICK
             pnlUDSSelected.Visible = True
-            lbSelectedDocumentUnit.Text = "Selezione Archivio"
+            lbSelectedDocumentUnit.Text = "Selezione archivio"
         Else
             btnAdd.AutoPostBack = True
             btnAdd.OnClientClicked = Nothing
             pnlUDSSelected.Visible = False
-            lbSelectedDocumentUnit.Text = "Selezione Protocollo"
+            lbSelectedDocumentUnit.Text = "Selezione protocollo"
         End If
     End Sub
 
@@ -487,6 +509,10 @@ Public Class PECAttachToDocumentUnit
             Dim documents As ICollection(Of DocumentInstance) = New List(Of DocumentInstance)
             Dim documentStored As BiblosDocumentInfo = Nothing
             For Each document As DocumentInfo In docs
+                If TypeOf document Is DocumentProxyDocumentInfo Then
+                    Dim newTempDoc As FileInfo = document.SaveUniqueToTemp()
+                    document = New TempFileDocumentInfo(document.Name, newTempDoc)
+                End If
                 documentStored = document.ArchiveInBiblos(CommonShared.CurrentWorkflowLocation.ProtBiblosDSDB, Guid.Empty)
                 documents.Add(New DocumentInstance() With {.IdDocumentToStore = documentStored.DocumentId.ToString(), .DocumentName = document.Name})
             Next

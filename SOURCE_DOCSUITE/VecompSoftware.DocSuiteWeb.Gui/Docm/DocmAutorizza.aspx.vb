@@ -48,7 +48,7 @@ Public Class DocmAutorizza
 
                 With documentToken
                     .IncrementalOrigin = CurrentDocument.DocumentTokens(0).IncrementalOrigin
-                    .IsActive = 0
+                    .IsActive = False
                     .Response = String.Empty
                     .DocStep = CurrentDocument.DocumentTokens(0).DocStep
                     .SubStep = CurrentDocument.DocumentTokens(0).SubStep

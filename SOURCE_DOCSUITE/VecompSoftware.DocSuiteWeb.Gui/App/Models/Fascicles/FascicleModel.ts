@@ -51,6 +51,8 @@ class FascicleModel {
     DossierFolders: DossierFolderModel[];
     WorkflowActions: WorkflowActionModel[];
     CustomActions: string;
+    ProcessLabel: string;
+    DossierFolderLabel: string;
     TenantAOO: TenantAOOModel
 
     /**

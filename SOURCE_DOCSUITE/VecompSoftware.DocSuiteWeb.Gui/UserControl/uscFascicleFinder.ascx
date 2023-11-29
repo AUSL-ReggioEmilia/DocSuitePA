@@ -1,10 +1,10 @@
 <%@ Control Language="vb" AutoEventWireup="false" CodeBehind="uscFascicleFinder.ascx.vb"
     Inherits="VecompSoftware.DocSuiteWeb.Gui.uscFascicleFinder" %>
 
-<%@ Register Src="uscClassificatore.ascx" TagName="uscClassificatore" TagPrefix="uc1" %>
 <%@ Register Src="uscContattiSel.ascx" TagName="uscContattiSel" TagPrefix="uc3" %>
 <%@ Register Src="uscMetadataRepositorySel.ascx" TagName="uscMetadataRepositorySel" TagPrefix="usc" %>
 <%@ Register Src="uscSettori.ascx" TagName="uscSettori" TagPrefix="uc2" %>
+<%@ Register Src="uscCategoryRest.ascx" TagName="uscCategoryRest" TagPrefix="usc" %>
 
 <telerik:RadAjaxManagerProxy runat="server" ID="ctrlAjaxManager">
 </telerik:RadAjaxManagerProxy>
@@ -16,12 +16,6 @@
             // nascondi riga per ricerca nei sottocontatti
             var row = document.getElementById("<%= rowCategorySearch.ClientID %>");
             row.style.display = "";
-        }
-
-        function HideCategorySearch() {
-            // nascondi riga per ricerca nei sottocontatti
-            var row = document.getElementById("<%= rowCategorySearch.ClientID %>");
-            row.style.display = "none";
         }
     </script>
 </telerik:RadScriptBlock>
@@ -115,7 +109,7 @@
     <tr>
         <td class="label">Classificazione:</td>
         <td style="width: 500px;">
-            <uc1:uscClassificatore HeaderVisible="false" ID="UscClassificatore1" Action="Search" Required="false" runat="server" />
+            <usc:uscCategoryRest HeaderVisible="false" ID="uscCategoryRest" ShowAuthorizedFascicolable="false" IsRequired="false" runat="server" />
         </td>
     </tr>
     <tr id="rowCategorySearch" runat="server">
@@ -124,13 +118,20 @@
             <asp:CheckBox ID="chbCategoryChild" runat="server" Text="Estendi ricerca alle sottocategorie" />
         </td>
     </tr>
+    <tr id="settResp" runat="server">
+        <td class="label">Settore responsabile:
+        </td>
+        <td style="width: 100%">
+            <uc2:uscSettori HeaderVisible="false" ID="uscSettoriResp" MultiSelect="false" Required="false" runat="server" />
+        </td>
+    </tr>
     <tr id="sett" runat="server">
         <td class="label">Settore autorizzato:
         </td>
         <td style="width: 100%">
             <uc2:uscSettori HeaderVisible="false" ID="uscSettori" MultiSelect="false" Required="false" runat="server" />
         </td>
-    </tr>
+    </tr>    
 </table>
 <table class="datatable">
     <tr>

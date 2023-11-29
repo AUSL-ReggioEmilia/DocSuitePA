@@ -1,4 +1,5 @@
 ﻿Imports System.Linq
+Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
 Imports VecompSoftware.DocSuiteWeb.DTO.UDS
 Imports VecompSoftware.Helpers.UDS
@@ -32,9 +33,10 @@ Public Class uscUDSStaticDataFinder
             Return txtDocumentName.Text
         End Get
     End Property
-    Public ReadOnly Property GenericDocument As Boolean Implements IUDSFinderStaticData.GenericDocument
+
+    Public ReadOnly Property GenericDocument As String Implements IUDSFinderStaticData.GenericDocument
         Get
-            Return chkGenericDocument.Checked
+            Return rddlGenericDocument.SelectedValue
         End Get
     End Property
 
@@ -53,9 +55,9 @@ Public Class uscUDSStaticDataFinder
         End Get
     End Property
 
-    Public ReadOnly Property ViewDeletedUDS As Boolean Implements IUDSFinderStaticData.ViewDeletedUDS
+    Public ReadOnly Property ViewDeletedUDS As String Implements IUDSFinderStaticData.ViewDeletedUDS
         Get
-            Return chkStatus.Checked
+            Return chkStatus.SelectedValue
         End Get
     End Property
 
@@ -151,8 +153,8 @@ Public Class uscUDSStaticDataFinder
         End If
         txtSubject.Text = DetailsSearchModel.Subject
         txtDocumentName.Text = DetailsSearchModel.DocumentName
-        chkGenericDocument.Checked = DetailsSearchModel.GenericDocument
-        chkStatus.Checked = DetailsSearchModel.IsCancelledArchive
+        rddlGenericDocument.SelectedValue = DetailsSearchModel.GenericDocument
+        chkStatus.SelectedValue = DetailsSearchModel.IsCancelledArchive
         uscSelCategory.CategoryID = DetailsSearchModel.CategoryId
         uscSelCategory.InitializeRadTreeCategory()
     End Sub

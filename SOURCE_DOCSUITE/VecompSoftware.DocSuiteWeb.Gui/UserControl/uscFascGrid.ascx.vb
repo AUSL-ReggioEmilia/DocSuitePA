@@ -1,3 +1,5 @@
+Imports System.Collections.Generic
+Imports System.Linq
 Imports Newtonsoft.Json
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
@@ -6,6 +8,7 @@ Imports VecompSoftware.DocSuiteWeb.DTO.WebAPI
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.DocSuiteWeb.Facade.Common.OData
 Imports VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
+Imports VecompSoftware.DocSuiteWeb.Model.Metadata
 
 Partial Public Class uscFascGrid
     Inherits DocSuite2008BaseControl
@@ -28,6 +31,8 @@ Partial Public Class uscFascGrid
     Public Const COLUMN_UNREAD As String = "cUnread"
     Private _currentODataFacade As ODataFacade
     Private _currentTenantFinder As TenantFinder
+    Private _currentMetadataModel As MetadataDesignerModel
+    Private _currentMetadataColumns As List(Of BaseFieldModel)
 #End Region
 
 #Region " Properties "
@@ -168,6 +173,24 @@ Partial Public Class uscFascGrid
         End Set
     End Property
 
+    Public Property CurrentMetadataModel As MetadataDesignerModel
+        Get
+            Return _currentMetadataModel
+        End Get
+        Set(ByVal value As MetadataDesignerModel)
+            _currentMetadataModel = value
+        End Set
+    End Property
+
+    Public Property CurrentMetadataColumns As List(Of BaseFieldModel)
+        Get
+            Return _currentMetadataColumns
+        End Get
+        Set(ByVal value As List(Of BaseFieldModel))
+            _currentMetadataColumns = value
+        End Set
+    End Property
+
     Private ReadOnly Property CurrentODataFacade As ODataFacade
         Get
             If _currentODataFacade Is Nothing Then
@@ -193,12 +216,12 @@ Partial Public Class uscFascGrid
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
-
         End If
     End Sub
 
     Private Sub gvFascicles_PreRender(sender As Object, e As EventArgs) Handles gvFascicles.PreRender
         WebAPIImpersonatorFacade.ImpersonateFinder(CurrentTenantFinder, AddressOf SetTenantAOONameColumnVisibility)
+        gvFascicles.MasterTableView.GetColumn("ProcessAndDossierFolderLabels").Visible = ProtocolEnv.ProcessEnabled
     End Sub
 
     Private Sub SetTenantAOONameColumnVisibility(impersonationType As ImpersonationType, finder As TenantFinder)
@@ -255,6 +278,42 @@ Partial Public Class uscFascGrid
         Dim lblManager As Label = DirectCast(e.Item.FindControl("lblManager"), Label)
         If lblManager IsNot Nothing AndAlso Not String.IsNullOrEmpty(entity.Entity.Manager) Then
             lblManager.Text = entity.Entity.Manager.Replace("|", " ")
+        End If
+
+        Dim lblProcessAdDossierFolderLabels As Label = DirectCast(e.Item.FindControl("lblProcessAdDossierFolderLabels"), Label)
+        If lblProcessAdDossierFolderLabels IsNot Nothing Then
+            lblProcessAdDossierFolderLabels.Text = String.Empty
+            If Not String.IsNullOrEmpty(entity.Entity.ProcessLabel) AndAlso Not String.IsNullOrEmpty(entity.Entity.DossierFolderLabel) Then
+                lblProcessAdDossierFolderLabels.Text = $"{entity.Entity.ProcessLabel}/{entity.Entity.DossierFolderLabel}"
+            End If
+        End If
+
+        If entity.Entity.MetadataValues IsNot Nothing AndAlso CurrentMetadataColumns IsNot Nothing AndAlso CurrentMetadataModel IsNot Nothing Then
+            Dim metadataValuesModel As List(Of MetadataValueModel) = New List(Of MetadataValueModel)
+            metadataValuesModel = JsonConvert.DeserializeObject(Of List(Of MetadataValueModel))(entity.Entity.MetadataValues)
+
+            If CurrentMetadataColumns.Count() > 0 AndAlso metadataValuesModel IsNot Nothing Then
+                For index As Integer = 0 To e.Item.Controls.Count - 1
+                    Dim columnName As String = CType(e.Item.Controls(index), GridTableCell).Column.UniqueName
+                    If metadataValuesModel.Any(Function(x) Not String.IsNullOrWhiteSpace(x.KeyName) AndAlso x.KeyName.Replace(" ", "").Equals(columnName)) _
+                        AndAlso CurrentMetadataColumns.Any(Function(x) Not String.IsNullOrWhiteSpace(x.KeyName) AndAlso x.KeyName.Replace(" ", "").Equals(columnName)) Then
+
+                        Dim value As String = metadataValuesModel.FirstOrDefault(Function(x) x.KeyName.Replace(" ", "").Equals(columnName)).Value
+                        If CurrentMetadataModel.BoolFields.Any(Function(x) x.KeyName.Replace(" ", "").Equals(columnName)) Then
+                            If String.IsNullOrEmpty(value) = False Then
+                                value = If(value.ToLower().Equals("true"), "Vero", "Falso")
+                            End If
+                        End If
+                        If CurrentMetadataModel.DateFields.Any(Function(x) x.KeyName.Replace(" ", "").Equals(columnName)) Then
+                            Dim data As Date
+                            If DateTime.TryParseExact(value, "yyyy-MM-dd", Globalization.CultureInfo.CurrentCulture, Globalization.DateTimeStyles.None, data) Then
+                                value = data.ToString("dd/MM/yyyy")
+                            End If
+                        End If
+                        CType(e.Item.Controls(index), GridTableCell).Text = value
+                    End If
+                Next
+            End If
         End If
     End Sub
 

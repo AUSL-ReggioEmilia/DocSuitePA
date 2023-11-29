@@ -1,6 +1,6 @@
 ﻿/// <reference path="../scripts/typings/telerik/telerik.web.ui.d.ts" />
 /// <reference path="../scripts/typings/telerik/microsoft.ajax.d.ts" />
-/// <reference path="../scripts/typings/dsw/dsw.signalr.d.ts" />
+/// <reference path="../scripts/typings/dsw/dsw.signalR.d.ts" />
 /// <reference path="../Scripts/typings/moment/moment.d.ts" />
 
 import ServiceConfiguration = require('App/Services/ServiceConfiguration');
@@ -36,17 +36,27 @@ import WorkflowReferenceBiblosModel = require('App/Models/Workflows/WorkflowRefe
 import ChainType = require("App/Models/DocumentUnits/ChainType");
 import EnumHelper = require('App/Helpers/EnumHelper');
 import TenantModelSelection = require('App/Models/Tenants/TenantModelSelection');
-import uscTenantsSelRest = require('./uscTenantsSelRest');
-import uscRoleRest = require('./uscRoleRest');
+import uscTenantsSelRest = require('UserControl/uscTenantsSelRest');
+import uscRoleRest = require('UserControl/uscRoleRest');
+import uscRoleUserSelRest = require('UserControl/uscRoleUserSelRest');
 import PageClassHelper = require('App/Helpers/PageClassHelper');
 import UscRoleRestEventType = require('App/Models/Commons/UscRoleRestEventType');
-import uscDomainUserSelRest = require('./uscDomainUserSelRest');
-import uscWorkflowFolderSelRest = require('./uscWorkflowFolderSelRest');
+import uscDomainUserSelRest = require('UserControl/uscDomainUserSelRest');
+import uscWorkflowFolderSelRest = require('UserControl/uscWorkflowFolderSelRest');
 import DSWEnvironmentType = require('App/Models/Workflows/WorkflowDSWEnvironmentType');
 import WorfklowFolderPropertiesModel = require('App/Models/Workflows/WorfklowFolderPropertiesModel');
 import SessionStorageKeysHelper = require('App/Helpers/SessionStorageKeysHelper');
 import FascicleBuildModel = require("App/Models/Fascicles/FascicleBuildModel");
 import Guid = require("App/Helpers/GuidHelper");
+import WorkflowReferenceDocumentUnitModel = require('App/Models/Workflows/WorkflowReferenceDocumentUnitModel');
+import UscTemplateCollaborationSelRest = require('UserControl/uscTemplateCollaborationSelRest');
+import uscErrorNotification = require('UserControl/uscErrorNotification');
+import UDSConstants = require('App/Core/UDS/UDSConstants');
+import WorkflowStorage = require('App/Core/WorkflowStorage/WorkflowStorage');
+import MessageWorkflowResumeStatus = require('App/Core/WorkflowStorage/MessageWorkflowResumeStatus');
+import GuidHelper = require('App/Helpers/GuidHelper');
+import RoleUserModel = require('App/Models/RoleUsers/RoleUserModel');
+import DocumentUnitRoleModel = require('App/Models/DocumentUnits/DocumentUnitRoleModel');
 
 declare var Page_ClientValidate: any;
 class uscStartWorkflow {
@@ -81,7 +91,6 @@ class uscStartWorkflow {
     dueDateId: string;
     lblTemplateCollaborationRowId: string;
     ddlTemplateCollaborationRowId: string;
-    ddlTemplateCollaborationId: string;
     templateCollaborationRequired: boolean;
 
     lblChainTypeRowId: string;
@@ -96,6 +105,8 @@ class uscStartWorkflow {
     copiaConformeRowId: string;
     documentOriginalTypeRequired: boolean;
     workflowStartTenantRequired: boolean;
+    roleUserRequired: boolean;
+    roleUserSelectionEnabled: boolean;
 
     showOnlyNoInstanceWorkflows: boolean;
     docSuiteVersion: string;
@@ -109,14 +120,25 @@ class uscStartWorkflow {
     uscWorkflowFolderSelRestId: string;
     lrUscWorkflowFolderSelRestId: string;
     lblDossierTitleId: string;
+    uscTemplateCollaborationSelRestId: string;
+    signalRServerAddress: string;
+    radListMessagesId: string;
+    pnlWorkflowId: string;
+    pnlNotificationMessagesId: string;
+
+    roleUserSelRowId: string;
+    uscRoleUserSelRestId: string;
 
     roleInsertId: number[];
     sourceProposerRoles: RoleModel[];
     sourceRecipientRoles: RoleModel[];
 
+    private wstorage: WorkflowStorage;
+    private wStorageEnabled: boolean = false;
 
     public static LOADED_EVENT: string = "onLoaded";
     public static DATA_LOADED_EVENT: string = "onDataLoaded";
+    public static TENANT_CHANGE_EVENT: string = "OnTenantChange";
 
     private static WORKFLOWSTART_TYPE_NAME: string = "WorkflowStart";
     private static LOAD_EXTERNAL_DATA: string = "LoadExternalData";
@@ -131,6 +153,8 @@ class uscStartWorkflow {
     private static ENVIRONMENT: string = "Environment";
     private static GET_RECIPIENT_CONTACT: string = "Get_Recipient_Contact";
     private static SET_RECIPIENT_PROPERTIES: string = "SetRecipientProperties";
+    private static CONFIRM_BUTTON_CONFIRM_TEXT: string = "Conferma";
+    private static CONFIRM_BUTTON_CLOSE_TEXT: string = "Chiudi";
 
     private _loadingPanel: Telerik.Web.UI.RadAjaxLoadingPanel;
     private _ajaxManager: Telerik.Web.UI.RadAjaxManager;
@@ -147,16 +171,21 @@ class uscStartWorkflow {
     private _workflowEvaluationProperties: WorkflowEvaluationProperty[];
     private _masterRoles: RoleModel[];
     private _uscUploadDocumentRest: Telerik.Web.UI.RadAsyncUpload;
-    private _ddlTemplateCollaboration: Telerik.Web.UI.RadComboBox;
     private _templateCollaborationService: TemplateCollaborationService;
     private _rgvDocumentLists: Telerik.Web.UI.RadGrid;
     private _rgvDocumentMasterTableView: Telerik.Web.UI.GridTableView;
+    private _radListMessages: Telerik.Web.UI.RadListBox;
 
     private _uscRoleProposerRest: uscRoleRest;
     private _uscRoleRecipientRest: uscRoleRest;
     private _uscRecipientContactRest: uscDomainUserSelRest;
     private _uscProposerContactRest: uscDomainUserSelRest;
     private _uscWorkflowFolderSelRest: uscWorkflowFolderSelRest;
+    private _currentSelectedTemplateCollaborationId: string;
+    private _uscRoleUserSelRest: uscRoleUserSelRest;
+
+    private dswSignalR: DSWSignalR;
+    private correlationId: string = null;
 
     /**
     * Costruttore
@@ -180,6 +209,11 @@ class uscStartWorkflow {
         * @returns
     */
     btnConfirm_OnClick = (sender: Telerik.Web.UI.RadButton, args: Telerik.Web.UI.ButtonCancelEventArgs) => {
+        if (this._btnConfirm.get_text() === uscStartWorkflow.CONFIRM_BUTTON_CLOSE_TEXT) {
+            this.closeWindow();
+            return;
+        }
+
         this._loadingPanel.show(this.contentId);
         this._btnConfirm.set_enabled(false);
         let selectedWorkflowRepository: Telerik.Web.UI.RadComboBoxItem = this._rdlWorkflowRepository.get_selectedItem();
@@ -192,27 +226,43 @@ class uscStartWorkflow {
         let documentTypeRequired: boolean = this.documentHasSelectedType();
 
         let uscTenantSelRest: uscTenantsSelRest = <uscTenantsSelRest>$(`#${this.uscTenantsSelRestId}`).data();
-        if (!isValid || selectedWorkflowRepository == null
-            || String.isNullOrEmpty(selectedWorkflowRepository.get_value())
-            || documentTypeRequired === false
-            || (this.workflowStartTenantRequired && !uscTenantSelRest.hasValue())) {
+        if (!isValid) {
             args.set_cancel(true);
-            if (selectedWorkflowRepository == null && !String.isNullOrEmpty(this._rdlWorkflowRepository.get_text())) {
-                this.onError("Selezionare una attività valida");
-            }
-            if (documentTypeRequired === false) {
-                this.onError("E' necessario specificare il tipo di documento per tutti i documenti");
-            }
-            if (this.workflowStartTenantRequired && !uscTenantSelRest.hasValue()) {
-                this.onError("E' necessario selezionare una UO");
-            }
-            this._loadingPanel.hide(this.contentId);
-            this._btnConfirm.set_enabled(true);
+            this.hideLoadingAndEnableConfirmBtn();
+            return;
+        }
+        if (selectedWorkflowRepository == null && !String.isNullOrEmpty(this._rdlWorkflowRepository.get_text())) {
+            this.onError("Selezionare una attività valida");
             args.set_cancel(true);
+            this.hideLoadingAndEnableConfirmBtn();
+            return;
+        }
+        if (documentTypeRequired === false) {
+            this.onError("E' necessario specificare il tipo di documento per tutti i documenti");
+            args.set_cancel(true);
+            this.hideLoadingAndEnableConfirmBtn();
+            return;
+        }
+        if (this.workflowStartTenantRequired && !uscTenantSelRest.hasValue()) {
+            this.onError("E' necessario selezionare una UO");
+            args.set_cancel(true);
+            this.hideLoadingAndEnableConfirmBtn();
+            return;
+        }
+
+        if (this.roleUserRequired && !this._uscRoleUserSelRest.roleUserSelected()) {
+            this.onError("E' necessario selezionare un utente dal disegno di funzione");
+            args.set_cancel(true);
+            this.hideLoadingAndEnableConfirmBtn();
             return;
         }
 
         this.startWorkflow();
+    }
+
+    private hideLoadingAndEnableConfirmBtn(): void {
+        this._loadingPanel.hide(this.contentId);
+        this._btnConfirm.set_enabled(true);
     }
 
     private documentHasSelectedType(): boolean {
@@ -245,14 +295,14 @@ class uscStartWorkflow {
         this._rdlWorkflowRepository.add_itemsRequesting(this.loadWorkflowRepository);
         this._rdlWorkflowRepository.add_selectedIndexChanged(this.onRdlWorkflowRepository_SelectedIndexChanged);
         this._txtObject = <Telerik.Web.UI.RadTextBox>$find(this.txtObjectId);
-        this._dueDate = $("#".concat(this.dueDateId));
+        this._dueDate = $(`#${this.dueDateId}`);
         let workflowRepositoryConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "WorkflowRepository");
         this._workflowRepositoryService = new WorkflowRepositoryService(workflowRepositoryConfiguration);
         let workflowStartConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, uscStartWorkflow.WORKFLOWSTART_TYPE_NAME)
         this._workflowStartService = new WorkflowStartService(workflowStartConfiguration);
         this._btnConfirm = <Telerik.Web.UI.RadButton>$find(this.btnConfirmId);
         this._btnConfirm.add_clicking(this.btnConfirm_OnClick);
-        this._ddlTemplateCollaboration = <Telerik.Web.UI.RadComboBox>$find(this.ddlTemplateCollaborationId);
+        this._radListMessages = <Telerik.Web.UI.RadListBox>$find(this.radListMessagesId);
 
         this.clearSessionStorage();
 
@@ -266,6 +316,7 @@ class uscStartWorkflow {
         this._uscRoleRecipientRest = <uscRoleRest>$(`#${this.uscRoleRecipientRestId}`).data();
         this._uscRecipientContactRest = <uscDomainUserSelRest>$(`#${this.uscRecipientContactRestId}`).data();
         this._uscProposerContactRest = <uscDomainUserSelRest>$(`#${this.uscProposerContactRestId}`).data();
+        this._uscRoleUserSelRest = <uscRoleUserSelRest>$(`#${this.uscRoleUserSelRestId}`).data();
 
         let templateCollaborationConfiguration: ServiceConfiguration = ServiceConfigurationHelper.getService(this._serviceConfigurations, "TemplateCollaboration");
         this._templateCollaborationService = new TemplateCollaborationService(templateCollaborationConfiguration);
@@ -308,25 +359,23 @@ class uscStartWorkflow {
                     roleModel.EntityShortId = role.EntityShortId;
                     roleModel.IdRole = role.EntityShortId;
                     roleModel.Name = role.Name;
-                    roleModel.IdRoleTenant = role.EntityShortId;
                     this._masterRoles.push(roleModel);
                 }
                 break;
             }
         }
 
-        if (env >= 100) {
+        if (env >= 100 || env == 1) {
             let documentUnit: DocumentUnitModel = JSON.parse(sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_MODEL));
             this._txtObject.set_value(documentUnit.Subject);
-            let documentUnitRoles: RoleModel[] = documentUnit.Roles;
-            for (let role of documentUnitRoles) {
-                let roleModel: RoleModel = <RoleModel>{};
-                roleModel.EntityShortId = role.EntityShortId;
-                roleModel.IdRole = role.EntityShortId;
-                roleModel.Name = role.Name;
-                roleModel.IdRoleTenant = role.EntityShortId;
-                this._masterRoles.push(roleModel);
-            }
+            //let documentUnitRoles: DocumentUnitRoleModel[] = documentUnit.DocumentUnitRoles;
+            //for (let role of documentUnitRoles) {
+            //    let roleModel: RoleModel = <RoleModel>{};
+            //    roleModel.EntityShortId = role.EntityShortId;
+            //    roleModel.IdRole = role.EntityShortId;
+            //    roleModel.Name = role.RoleLabel;
+            //    this._masterRoles.push(roleModel);
+            //}
         }
 
         ajaxModel.ActionName = uscStartWorkflow.LOAD_EXTERNAL_DATA;
@@ -337,6 +386,8 @@ class uscStartWorkflow {
         this.setRecipientValidation();
         this.setProposerValidation();
         this.bindLoaded();
+        $(`#${this.uscTenantsSelRestId}`).on(uscStartWorkflow.TENANT_CHANGE_EVENT, this.uscTenantSel_selectedTenantAOO);
+        $(`#${this.pnlNotificationMessagesId}`).hide();
     }
 
     /**
@@ -360,8 +411,20 @@ class uscStartWorkflow {
         if (sessionStorageValue && sessionStorageValue !== "[]") {
             onlyDocumentWorkflows = true;
         }
+
+        let onlyDocumentUnitWorkflows: boolean = false;
+        let sessionStorageDocumentUnitValue: string = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_DOCUMENT_UNITS_REFERENCE_MODEL);
+        if (sessionStorageDocumentUnitValue && sessionStorageDocumentUnitValue !== "[]") {
+            const documentUnits: WorkflowReferenceDocumentUnitModel[] = JSON.parse(sessionStorageDocumentUnitValue) as WorkflowReferenceDocumentUnitModel[];
+            const filteredResults = documentUnits.filter((value, index, source) => {
+                return value.Environment != DSWEnvironment.Document;
+            });
+            if (filteredResults.length > 0) {
+                onlyDocumentUnitWorkflows = true;
+            }
+        }
         //il false dovrà essere gestito da un checkbox
-        this._workflowRepositoryService.getByEnvironment(env, args.get_text(), false, onlyDocumentWorkflows, this.showOnlyNoInstanceWorkflows, this.showOnlyHasIsFascicleClosedRequired,
+        this._workflowRepositoryService.getByEnvironment(env, args.get_text(), false, onlyDocumentWorkflows, onlyDocumentUnitWorkflows, this.showOnlyNoInstanceWorkflows, this.showOnlyHasIsFascicleClosedRequired,
             (data: any) => {
                 this._rdlWorkflowRepository.clearItems();
                 let repositories: WorkflowRepositoryModel[] = <WorkflowRepositoryModel[]>data;
@@ -372,36 +435,6 @@ class uscStartWorkflow {
                 this.showNotificationException(this.uscNotificationId, exception, "Anomalia nel recupero dei WorkflowRepositories autorizzati all'utente.");
             });
         this._loadingPanel.hide(this.contentId);
-    }
-
-    loadTemplateCollaborations = () => {
-        this._templateCollaborationService.getTemplates((data) => {
-            let templateCollaborations: TemplateCollaborationModel[] = data;
-            let item: Telerik.Web.UI.RadComboBoxItem;
-            let defaultTemplate: Array<WorkflowEvaluationProperty> = this._workflowEvaluationProperties.filter(function (item) {
-                return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_DEFAULT;
-            });
-            let readonlyTemplate: Array<WorkflowEvaluationProperty> = this._workflowEvaluationProperties.filter(function (item) {
-                return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_READONLY;
-            });
-            for (let templateCollaboration of templateCollaborations) {
-                item = new Telerik.Web.UI.RadComboBoxItem();
-                item.set_text(templateCollaboration.Name);
-                item.set_value(templateCollaboration.UniqueId.toString());
-                this._ddlTemplateCollaboration.get_items().add(item);
-                if (defaultTemplate && defaultTemplate.length > 0) {
-                    if (templateCollaboration.UniqueId === defaultTemplate[0].ValueGuid) {
-                        let selectedItem: Telerik.Web.UI.RadComboBoxItem = this._ddlTemplateCollaboration.findItemByValue(templateCollaboration.UniqueId);
-                        selectedItem.select();
-                    }
-                }
-            }
-            this._ddlTemplateCollaboration.enable();
-            if (readonlyTemplate && readonlyTemplate.length > 0
-                && readonlyTemplate[0].ValueBoolean && this._ddlTemplateCollaboration.get_selectedItem()) {
-                this._ddlTemplateCollaboration.disable();
-            }
-        });
     }
 
     setToolbarRoleVisibility(isReadOnly: boolean, uscID: string) {
@@ -435,11 +468,46 @@ class uscStartWorkflow {
     * Scateno l'evento di "Load Completed" del controllo
     */
     private bindLoaded(): void {
-        $("#".concat(this.contentId)).data(this);
-        $("#".concat(this.contentId)).triggerHandler(uscStartWorkflow.LOADED_EVENT);
-        $("#".concat(this.contentId)).triggerHandler(uscStartWorkflow.DATA_LOADED_EVENT);
+        $(`#${this.contentId}`).data(this);
+        $(`#${this.contentId}`).triggerHandler(uscStartWorkflow.LOADED_EVENT);
+        $(`#${this.contentId}`).triggerHandler(uscStartWorkflow.DATA_LOADED_EVENT);
     }
 
+    public InitializeCollaborationTreeview(): void {
+        PageClassHelper.callUserControlFunctionSafe<UscTemplateCollaborationSelRest>(this.uscTemplateCollaborationSelRestId)
+            .done((instance) => {
+                instance.clearCurrentSelection();
+
+                let defaultTemplate: WorkflowEvaluationProperty = this._workflowEvaluationProperties.filter(function (item) {
+                    return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_DEFAULT;
+                })[0];
+
+                this._currentSelectedTemplateCollaborationId = defaultTemplate ? defaultTemplate.ValueGuid : null;
+                if (defaultTemplate && defaultTemplate.ValueGuid) {
+                    instance.SelectAndForceLoadNode(defaultTemplate.ValueGuid);
+                } else {
+                    instance.ReloadRoot();
+                }
+
+                let readonlyTemplate: WorkflowEvaluationProperty = this._workflowEvaluationProperties.filter(function (item) {
+                    return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION_READONLY;
+                })[0];
+
+                if (readonlyTemplate && readonlyTemplate.ValueBoolean && this._currentSelectedTemplateCollaborationId) {
+                    instance.disableTreeview();
+                } else {
+                    instance.OnFixedTemplateClick(this.uscTemplateCollaborationSelRestId, (fixedTemplate) => {
+                        this._currentSelectedTemplateCollaborationId = fixedTemplate.UniqueId;
+                    });
+                    instance.OnTemplateClick(this.uscTemplateCollaborationSelRestId, (fixedTemplate, template) => {
+                        this._currentSelectedTemplateCollaborationId = template.UniqueId;
+                    });
+                    instance.OnFolderClick_DisableConfirmaButton(this.uscTemplateCollaborationSelRestId, (disableButton) => {
+                        this._btnConfirm.set_enabled(!disableButton);
+                    });
+                }
+            });
+    }
 
     onRdlWorkflowRepository_SelectedIndexChanged = () => {
         if (this._rdlWorkflowRepository.get_selectedItem() == null) {
@@ -452,9 +520,9 @@ class uscStartWorkflow {
     }
 
     clearSessionContacts() {
-        let uscRecipientDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscRecipientContactRestId)).data();
+        let uscRecipientDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$(`#${this.uscRecipientContactRestId}`).data();
         uscRecipientDomainUserContacts.clearDomainUsersContactsTree();
-        let uscProposerDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscRecipientContactRestId)).data();
+        let uscProposerDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$(`#${this.uscRecipientContactRestId}`).data();
         uscProposerDomainUserContacts.clearDomainUsersContactsTree();
     }
 
@@ -489,8 +557,9 @@ class uscStartWorkflow {
 
                 this.setRecipientProperties();
                 this.setProposerProperties();
+
                 if (this.templateCollaborationRequired) {
-                    this.loadTemplateCollaborations();
+                    this.InitializeCollaborationTreeview();
                 }
 
                 this.setUscWorkflowFolderProperties(fascicle.UniqueId);
@@ -554,14 +623,16 @@ class uscStartWorkflow {
 
     checkWorkflowEvaluationPropertyValues = () => {
         let results: Array<WorkflowEvaluationProperty>;
-        let proposerRoleRow: any = $('#'.concat(this.proposerRoleRowId));
-        let proposerContactRow: any = $('#'.concat(this.proposerContactRowId));
-        let lblProposerContact: any = $('#'.concat(this.proposerContactRowLabelId));
-        let recipientRoleRow: any = $('#'.concat(this.recipientRoleRowId));
-        let recipientContactRow: any = $('#'.concat(this.recipientContactRowId));
-        let lblRecipientContact: any = $('#'.concat(this.recipientContactRowLabelId));
+        let proposerRoleRow: any = $(`#${this.proposerRoleRowId}`);
+        let proposerContactRow: any = $(`#${this.proposerContactRowId}`);
+        let lblProposerContact: any = $(`#${this.proposerContactRowLabelId}`);
+        let recipientRoleRow: any = $(`#${this.recipientRoleRowId}`);
+        let recipientContactRow: any = $(`#${this.recipientContactRowId}`);
+        let lblRecipientContact: any = $(`#${this.recipientContactRowLabelId}`);
         let lrUscWorkflowFolderSelRest: any = $(`#${this.lrUscWorkflowFolderSelRestId}`);
         let lblDossierTitle: any = $(`#${this.lblDossierTitleId}`);
+        let tenantRow: any = $(`#${this.tenantRowId}`);
+        let roleUserSelRow: any = $(`#${this.roleUserSelRowId}`);
 
         //motivazione avvia workflow obbligatorietà
         let startMotivationRequired: boolean = false;
@@ -617,8 +688,8 @@ class uscStartWorkflow {
         });
         if (results && results.length > 0) {
             if (results[0].ValueBoolean == true) {
-                $('#'.concat(this.uploadDocumentId)).show();
-                $('#'.concat(this.lblUploadDocumentId)).show();
+                $(`#${this.uploadDocumentId}`).show();
+                $(`#${this.lblUploadDocumentId}`).show();
             }
         }
 
@@ -651,6 +722,14 @@ class uscStartWorkflow {
             lblDossierTitle.hide();
         }
 
+        if (tenantRow) {
+            tenantRow.hide();
+        }
+
+        if (roleUserSelRow) {
+            roleUserSelRow.hide();
+        }
+
         if (isProposerRoleType && proposerRoleRow) {
             proposerRoleRow.show();
         }
@@ -660,23 +739,35 @@ class uscStartWorkflow {
         }
         if (isRecipientRoleType && recipientRoleRow) {
             recipientRoleRow.show();
+            this.registerUscRecipientRoleRestEventHandlers();
+
+            results = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_ROLE_RECIPIENT_VALIDATION_TOOLTIP;
+            });
+
+            if (results && results.length > 0) {
+                PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRecipientRestId)
+                    .done((instance) => {
+                        instance.setAddActionTooltip(results[0].ValueString);
+                    });
+            }
         }
         if (isRecipientContactType && recipientContactRow && lblRecipientContact) {
             recipientContactRow.show();
             lblRecipientContact.show();
         }
 
-        $('#'.concat(this.uploadDocumentId)).hide();
-        $('#'.concat(this.lblUploadDocumentId)).hide();
-        $('#'.concat(this.chainTypeRowId)).hide();
-        $('#'.concat(this.lblChainTypeRowId)).hide();
+        $(`#${this.uploadDocumentId}`).hide();
+        $(`#${this.lblUploadDocumentId}`).hide();
+        $(`#${this.chainTypeRowId}`).hide();
+        $(`#${this.lblChainTypeRowId}`).hide();
 
-        $('#'.concat(this.lblTemplateCollaborationRowId)).hide();
-        $('#'.concat(this.ddlTemplateCollaborationRowId)).hide();
+        $(`#${this.lblTemplateCollaborationRowId}`).hide();
+        $(`#${this.ddlTemplateCollaborationRowId}`).hide();
 
         if (this.templateCollaborationRequired) {
-            $('#'.concat(this.lblTemplateCollaborationRowId)).show();
-            $('#'.concat(this.ddlTemplateCollaborationRowId)).show();
+            $(`#${this.lblTemplateCollaborationRowId}`).show();
+            $(`#${this.ddlTemplateCollaborationRowId}`).show();
         }
 
         results = this._workflowEvaluationProperties.filter(function (item) {
@@ -693,14 +784,14 @@ class uscStartWorkflow {
             for (let i = 0; i < documents.length; i++) {
                 this.createChangeEvent(`${documents[i].ArchiveDocumentId}_chainTypes`, documents);
             }
-            $('#'.concat(this.lblChainTypeRowId)).show();
-            $('#'.concat(this.chainTypeRowId)).show();
+            $(`#${this.lblChainTypeRowId}`).show();
+            $(`#${this.chainTypeRowId}`).show();
             this.chainTypeRequired = true;
 
         }
 
         if (this.documentOriginalTypeRequired) {
-            $('#'.concat(this.copiaConformeRowId)).show();
+            $(`#${this.copiaConformeRowId}`).show();
         }
 
         results = this._workflowEvaluationProperties.filter(function (item) {
@@ -712,9 +803,60 @@ class uscStartWorkflow {
         }
 
         if (this.workflowStartTenantRequired) {
-            $('#'.concat(this.tenantRowId)).show();
-        } else {
-            $('#'.concat(this.tenantRowId)).hide();
+            tenantRow.show();
+        }
+
+        results = this._workflowEvaluationProperties.filter(function (item) {
+            return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_SET_RECIPIENT_FROM_ROLE_USER;
+        });
+        this.roleUserRequired = false;
+        this.roleUserSelectionEnabled = false;
+        if (results && results.length > 0) {
+            this.roleUserSelectionEnabled = true;
+            this.roleUserRequired = <boolean>results[0].ValueBoolean;
+        }
+
+        if (this.roleUserSelectionEnabled) {
+            results = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_ROLE_USER_TYPE;
+            });
+            if (results && results.length > 0) {
+                this._uscRoleUserSelRest.setRoleUserType(<string>results[0].ValueString);
+            }
+            results = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_MULTIPLE_RECIPIENT_FROM_ROLE_USER;
+            });
+            if (results && results.length > 0) {
+                this._uscRoleUserSelRest.setMultipleSelectionEnabled(<boolean>results[0].ValueBoolean);
+            }
+            results = this._workflowEvaluationProperties.filter(function (item) {
+                return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_ROLE_USER_RECIPIENT_SELECTION_AUTO_EXPAND;
+            });
+            if (results && results.length > 0) {
+                this._uscRoleUserSelRest.setAutoExpandTreeEnabled(<boolean>results[0].ValueBoolean);
+            }
+        }
+
+        PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRecipientRestId)
+            .done((instance) => {
+                instance.setOnlyMyRole(this.roleUserSelectionEnabled);
+            });
+
+        results = this._workflowEvaluationProperties.filter(function (item) {
+            return item.Name == WorkflowPropertyHelper.DSW_PROPERTY_ROLE_RECIPIENT_LABEL;
+        });
+        if (results && results.length > 0) {
+            PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRecipientRestId)
+                .done((instance) => {
+                    instance.setCaption(results[0].ValueString);
+                });
+        }
+
+        if (this.workflowStartTenantRequired && recipientRoleRow.is(":visible")) {
+            PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRecipientRestId)
+                .done((instance) => {
+                    instance.disableButtons();
+                });
         }
     }
 
@@ -768,10 +910,25 @@ class uscStartWorkflow {
 
         if (isProposerContact) {
             proposerType = uscStartWorkflow.USC_PROPOSER_ACCOUNT
-            let uscProposerDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscProposerContactRestId)).data();
+            let uscProposerDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$(`#${this.uscProposerContactRestId}`).data();
             uscProposerDomainUserContacts.setImageButtonsVisibility(!proposerDisabled);
 
             proposerModel = new Array<WorkflowAccountModel>();
+
+            uscProposerDomainUserContacts.setCurrentUser(!proposerDefault.length);
+
+            if (proposerDefault.length) {
+                let account: WorkflowAccountModel = this.buildContactDefault(proposerDefault[0].ValueString);
+                let contacts: ContactModel[] = [];
+                let contactModel: ContactModel = <ContactModel>{
+                    Description: account.DisplayName,
+                    Code: account.AccountName,
+                    EmailAddress: account.EmailAddress
+                };
+                contacts.push(contactModel);
+                uscProposerDomainUserContacts.createDomainUsersContactsTree(contacts);
+            }
+
             let contactsModel: ContactModel[] = uscProposerDomainUserContacts.getContacts();
 
             for (let contactModel of contactsModel) {
@@ -822,8 +979,7 @@ class uscStartWorkflow {
         role.EntityShortId = workflowRole.Role.IdRole;
         role.IdRole = workflowRole.Role.IdRole;
         role.Name = workflowRole.Role.Name;
-        role.TenantId = workflowRole.Role.TenantId;
-        role.IdRoleTenant = workflowRole.Role.IdRole;
+        role.IdTenantAOO = workflowRole.Role.IdTenantAOO;
         role.UniqueId = workflowRole.Role.UniqueId;
         return role;
     }
@@ -850,7 +1006,7 @@ class uscStartWorkflow {
         let isRecipientRole: boolean = this.hasCurrentWorkflowRecipientRole();
 
         if (isRecipientContact) {
-            let uscDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscRecipientContactRestId)).data();
+            let uscDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$(`#${this.uscRecipientContactRestId}`).data();
             uscDomainUserContacts.setImageButtonsVisibility(!recipientDisabled);
 
             let accountRecipient: Array<WorkflowEvaluationProperty> = this._workflowEvaluationProperties.filter(function (item) {
@@ -864,13 +1020,13 @@ class uscStartWorkflow {
                 let contacts: ContactModel[] = [];
                 let contactModel: ContactModel = <ContactModel>{
                     Description: account.DisplayName,
-                    Code: account.AccountName.split("\\")[1],
+                    Code: account.AccountName,
                     EmailAddress: account.EmailAddress,
 
                 };
                 contacts.push(contactModel);
 
-                let uscDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscRecipientContactRestId)).data();
+                let uscDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$(`#${this.uscRecipientContactRestId}`).data();
                 uscDomainUserContacts.createDomainUsersContactsTree(contacts);
                 workflowRecipients.push(account);
             }
@@ -959,8 +1115,7 @@ class uscStartWorkflow {
             });
 
         if ($(`#${this.uscWorkflowFolderSelRestId}`).is(":visible") && !nodeSelectedFromUscWorkflowFolder) {
-            this._loadingPanel.hide(this.contentId);
-            this._btnConfirm.set_enabled(true);
+            this.hideLoadingAndEnableConfirmBtn();
             return;
         }
     }
@@ -1012,6 +1167,13 @@ class uscStartWorkflow {
     }
 
     /**
+    * Metodo che determina se il workflow ha il destinatario di tipo utente da disegno di funzione
+    */
+    hasCurrentWorkflowRecipientRoleUser = (): boolean => {
+        return this.hasCurrentWorkflowPropValueBool(WorkflowPropertyHelper.DSW_PROPERTY_SET_RECIPIENT_FROM_ROLE_USER);
+    }
+
+    /**
     * Metodo che determina se il workflow ha il destinatario di tipo "contatto"
     */
     hasCurrentWorkflowProposerRole = (): boolean => {
@@ -1024,14 +1186,28 @@ class uscStartWorkflow {
     hasCurrentWorkflowFascicleBuildModel = (): boolean => {
         return this.hasCurrentWorkflowPropValueBool(WorkflowPropertyHelper.DSW_PROPERTY_BUILD_MODEL_CREATE);
     }
+
+    hasWorkflowWaitCompletionEnabled = (): boolean => {
+        return this.hasCurrentWorkflowPropValueBool(WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_WAITCOMPLETION_ENABLED);
+    }
+
+    hasWorkflowStartTenantEnabled = (): boolean => {
+        return this.hasCurrentWorkflowPropValueBool(WorkflowPropertyHelper.DSW_PROPERTY_WORKFLOW_START_TENANT_REQUIRED);
+    }
+
     /**
     * Metodo che completa il modello per avviare un workflow e spedisce il comando di avvio
     */
     startWorkflow = () => {
         let isRecipientContact: boolean = this.hasCurrentWorkflowRecipientContact();
-        let isRecipientRole: boolean = this.hasCurrentWorkflowRecipientRole();
+        let isRecipientRoleUser: boolean = this.hasCurrentWorkflowRecipientRoleUser();
+        let isRecipientRole: boolean = this.hasCurrentWorkflowRecipientRole() && !isRecipientRoleUser;
         let isProposerContact: boolean = this.hasCurrentWorkflowProposerContact();
         let isProposerRole: boolean = this.hasCurrentWorkflowProposerRole();
+        let isWorkflowWaitCompletionEnabled: boolean = this.hasWorkflowWaitCompletionEnabled();
+        let isWorkflowStartTenantEnabled: boolean = this.hasWorkflowStartTenantEnabled();
+        let tenants: string = "";
+        let roles: string = "";
 
         this._workflowStartModel = <WorkflowStartModel>{};
         this._workflowStartModel.Arguments = {};
@@ -1046,6 +1222,7 @@ class uscStartWorkflow {
             this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, ArgumentType.PropertyGuid, this.tenantAOOId);
         } else {
             for (let i = 0; i < currentTenantModelSelection.length; i++) {
+                tenants = `${tenants}${currentTenantModelSelection[i].TenantName} `;
                 this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME, ArgumentType.PropertyString, currentTenantModelSelection[i].TenantName);
                 this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_ID, ArgumentType.PropertyGuid, currentTenantModelSelection[i].IdTenant);
                 this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID, ArgumentType.PropertyGuid, currentTenantModelSelection[i].IdTenantAOO);
@@ -1083,8 +1260,9 @@ class uscStartWorkflow {
             if (proposerRoleFromUscRole.length > 0) {
                 //ce ne sarà solo uno
                 proposerRoleFromUscRole.forEach(function (item) {
-                    workflowProposerRole.TenantId = item.TenantId;
+                    workflowProposerRole.IdTenantAOO = item.IdTenantAOO;
                     workflowProposerRole.IdRole = item.IdRole;
+                    workflowProposerRole.UniqueId = item.UniqueId;
                 });
 
                 let argumentProposer: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_ROLE, ArgumentType.Json, JSON.stringify(workflowProposerRole));
@@ -1092,7 +1270,7 @@ class uscStartWorkflow {
             }
         }
         if (isProposerContact) {
-            let uscProposerDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscProposerContactRestId)).data();
+            let uscProposerDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$(`#${this.uscProposerContactRestId}`).data();
             let contactsModel: ContactModel[] = uscProposerDomainUserContacts.getContacts();
             let accountName: string = "";
             let displayName: string = "";
@@ -1118,6 +1296,12 @@ class uscStartWorkflow {
         if (isRecipientContact) {
             this.setStartWorkflowRecipientContacts();
         }
+        if (isRecipientRoleUser) {
+            this.setStartWorkflowRecipientRoleUser();
+        }
+        if (this.workflowStartTenantRequired) {
+            this.setStartWorkflowRecipientRoles();
+        }
         if (this.hasCurrentWorkflowFascicleBuildModel()) {
             const fascicleBuildModel: FascicleBuildModel = {
                 WorkflowAutoComplete: true,
@@ -1138,7 +1322,10 @@ class uscStartWorkflow {
 
         const workflowReferenceModel: WorkflowReferenceModel = {} as WorkflowReferenceModel;
         const env: number = parseInt(this.dswEnvironment);
-        workflowReferenceModel.ReferenceId = sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID);
+        this.correlationId = GuidHelper.newGuid();
+        workflowReferenceModel.ReferenceId = isWorkflowWaitCompletionEnabled
+            ? this.correlationId
+            : sessionStorage.getItem(SessionStorageKeysHelper.SESSION_KEY_REFERENCE_ID);
         workflowReferenceModel.ReferenceType = DSWEnvironment[this.dswEnvironment];
         if (env >= 100) {
             workflowReferenceModel.ReferenceType = DSWEnvironment.UDS;
@@ -1182,7 +1369,7 @@ class uscStartWorkflow {
         }
 
         if (this.templateCollaborationRequired) {
-            const templateCollaboration: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION, ArgumentType.PropertyGuid, this._ddlTemplateCollaboration.get_selectedItem().get_value());
+            const templateCollaboration: WorkflowArgumentModel = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION, ArgumentType.PropertyGuid, this._currentSelectedTemplateCollaborationId);
             this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_TEMPLATE_COLLABORATION] = templateCollaboration;
         }
 
@@ -1199,6 +1386,14 @@ class uscStartWorkflow {
             });
         }
 
+        if (isWorkflowStartTenantEnabled) {
+            this.sourceRecipientRoles.forEach(function (item: RoleModel) {
+                roles = `${roles}${item.Name} `
+            });
+            let workflowActivityName = `${this._workflowStartModel.WorkflowName} - AOO: ${tenants}- Settori: ${roles}`;
+            this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ACTIVITY_NAME] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_ACTIVITY_NAME, ArgumentType.PropertyString, workflowActivityName);
+        }
+
         if (this.redirectToCollaboration) {
             sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_REFERENCE_MODEL, JSON.stringify(workflowReferenceModel));
             sessionStorage.setItem(SessionStorageKeysHelper.SESSION_KEY_WORKFLOW_START_MODEL, JSON.stringify(this._workflowStartModel));
@@ -1213,7 +1408,7 @@ class uscStartWorkflow {
             let result: AjaxModel = <AjaxModel>{};
             result.ActionName = "redirect";
             result.Value = new Array<string>();
-            result.Value.push(`../User/UserCollGestione.aspx?Titolo=Inserimento&Action=Add&Title2=Ins.%20alla%20visione/firma&Action2=CI&DefaultTemplateId=${defaultTemplateId}&Type=Prot&Action2=CI&FromWorkflowUI=True`);
+            result.Value.push(`../User/UserCollGestione.aspx?Titolo=Inserimento&Action=Add&Title2=Ins.%20alla%20visione/firma&DefaultTemplateId=${defaultTemplateId}&Type=Prot&Action2=CI&FromWorkflowUI=True`);
             this.closeWindow(result);
             return;
         }
@@ -1229,20 +1424,57 @@ class uscStartWorkflow {
             return;
         }
 
-        (<WorkflowStartService>this._workflowStartService).startWorkflow(this._workflowStartModel,
-            (data: any) => {
-                this._loadingPanel.hide(this.contentId);
-                let result: AjaxModel = <AjaxModel>{};
-                result.ActionName = "Attività avviata correttamente";
-                result.Value = new Array<string>();
-                this.closeWindow(result);
-            },
-            (exception: ExceptionDTO) => {
-                this._loadingPanel.hide(this.contentId);
-                this.showNotificationException(this.uscNotificationId, exception, "Anomalia nel avvio dell'attività.");
-                this._btnConfirm.set_enabled(true);
-            }
-        );
+        if (isWorkflowWaitCompletionEnabled) {
+            this.initializeWorkflowStorage();
+            this.dswSignalR = new DSWSignalR(this.signalRServerAddress);
+            this.dswSignalR.setup("WorkflowHub", {
+                'correlationId': this.correlationId
+            });
+
+            this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowStatusDone, this.actionHubWorkflowStatusDone);
+            this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowStatusError, this.actionHubWorkflowStatusError);
+            //this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowNotificationInfo, this.actionHubWorkflowNotificationInfo);
+            //this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowNotificationWarning, this.actionHubWorkflowNotificationWarning);
+            //this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowNotificationError, this.actionHubWorkflowNotificationError);
+            ////connect to resume channel and wait for response
+            //this.dswSignalR.registerClientMessage(UDSConstants.HubMessageEvents.WorkflowResumeStatus, this.actionHubWorkflowResumeStatus);
+
+            this.dswSignalR.startConnection(this.onDoneSignalRConnection, this.onErrorSignalRCallback);
+        }
+        else {
+            (<WorkflowStartService>this._workflowStartService).startWorkflow(this._workflowStartModel,
+                (data: any) => {
+                    this._loadingPanel.hide(this.contentId);
+                    let result: AjaxModel = <AjaxModel>{};
+                    result.ActionName = "Attività avviata correttamente";
+                    result.Value = new Array<string>();
+                    this.closeWindow(result);
+                },
+                (exception: ExceptionDTO) => {
+                    this.hideLoadingAndEnableConfirmBtn();
+                    this.showNotificationException(this.uscNotificationId, exception, "Anomalia nel avvio dell'attività.");
+                }
+            );
+        }
+    }
+
+    //lamba function to solve scoping of a callback 
+    public onDoneSignalRConnection = () => {
+        $(`#${this.pnlWorkflowId}`).hide();
+        $(`#${this.pnlNotificationMessagesId}`).show();
+
+        let serverFunction: string = UDSConstants.HubMethods.SubscribeStartWorkflow;
+        this.dswSignalR.sendServerMessages(serverFunction, this.correlationId, JSON.stringify(this._workflowStartModel),
+            this.onDoneSignalRSubscriptionCallback, this.onErrorSignalRCallback);
+    }
+
+    private onErrorSignalRCallback = (error) => {
+        this.dswSignalR.stopClient();
+        this.hideLoadingAndEnableConfirmBtn();
+        this.showNotificationException(this.uscNotificationId, error, "Anomalia nel avvio dell'attività.");
+    }
+
+    private onDoneSignalRSubscriptionCallback = (error) => {
     }
 
     onError = (message) => {
@@ -1269,7 +1501,7 @@ class uscStartWorkflow {
 
     protected showNotificationException(uscNotificationId: string, exception: ExceptionDTO, customMessage?: string) {
         if (exception && exception instanceof ExceptionDTO) {
-            let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(uscNotificationId)).data();
+            let uscNotification: UscErrorNotification = <UscErrorNotification>$(`#${uscNotificationId}`).data();
             if (!jQuery.isEmptyObject(uscNotification)) {
                 uscNotification.showNotification(exception);
             }
@@ -1281,7 +1513,7 @@ class uscStartWorkflow {
     }
 
     protected showNotificationMessage(uscNotificationId: string, customMessage: string) {
-        let uscNotification: UscErrorNotification = <UscErrorNotification>$("#".concat(uscNotificationId)).data();
+        let uscNotification: UscErrorNotification = <UscErrorNotification>$(`#${uscNotificationId}`).data();
         if (!jQuery.isEmptyObject(uscNotification)) {
             uscNotification.showNotificationMessage(customMessage);
         }
@@ -1295,7 +1527,8 @@ class uscStartWorkflow {
             for (let s of source) {
                 let role: WorkflowRoleModel = <WorkflowRoleModel>{};
                 role.IdRole = s.EntityShortId;
-                role.TenantId = s.TenantId;
+                role.IdTenantAOO = s.IdTenantAOO;
+                role.UniqueId = s.UniqueId;
                 workflowRoles.push(role);
             }
         }
@@ -1310,7 +1543,7 @@ class uscStartWorkflow {
     }
 
     setStartWorkflowRecipientContacts(): void {
-        let uscDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$("#".concat(this.uscRecipientContactRestId)).data();
+        let uscDomainUserContacts: uscDomainUserSelRest = <uscDomainUserSelRest>$(`#${this.uscRecipientContactRestId}`).data();
         let contactsModel: ContactModel[] = uscDomainUserContacts.getContacts();
         let workflowAccounts: WorkflowAccountModel[] = [];
 
@@ -1328,9 +1561,28 @@ class uscStartWorkflow {
         this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS, ArgumentType.Json, JSON.stringify(workflowAccounts));
     }
 
+    setStartWorkflowRecipientRoleUser(): void {
+        let workflowAccounts: WorkflowAccountModel[] = [];
+
+        this._uscRoleUserSelRest = <uscRoleUserSelRest>$(`#${this.uscRoleUserSelRestId}`).data();
+        let roleUsers: RoleUserModel[] = this._uscRoleUserSelRest.getSelectedRoleUsers();
+
+        for (let roleUser of roleUsers) {
+            let workflowAccount: WorkflowAccountModel = {
+                AccountName: roleUser.Account,
+                DisplayName: roleUser.Description,
+                EmailAddress: roleUser.Email,
+                Required: false
+            };
+            workflowAccounts.push(workflowAccount);
+        }
+
+        this._workflowStartModel.Arguments[WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS] = this.buildWorkflowArgument(WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS, ArgumentType.Json, JSON.stringify(workflowAccounts));
+    }
+
     getUscDocument = (uscId: string) => {
         let workflowDocuments: Array<DocumentModel> = new Array<DocumentModel>();
-        let uscDocuments: UscUploadDocumentRest = <UscUploadDocumentRest>$("#".concat(uscId)).data();
+        let uscDocuments: UscUploadDocumentRest = <UscUploadDocumentRest>$(`#${uscId}`).data();
         if (!jQuery.isEmptyObject(uscDocuments)) {
             let source: any = JSON.parse(uscDocuments.getDocument());
             if (source != null) {
@@ -1416,15 +1668,105 @@ class uscStartWorkflow {
         PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRecipientRestId)
             .done((instance) => {
                 instance.registerEventHandler(UscRoleRestEventType.RoleDeleted, (roleId: number) => {
+                    if (this.roleUserSelectionEnabled) {
+                        PageClassHelper.callUserControlFunctionSafe<uscRoleUserSelRest>(this.uscRoleUserSelRestId)
+                            .done((instance) => {
+                                instance.clearTree();
+                            });
+                        let roleUserSelRow: any = $(`#${this.roleUserSelRowId}`);
+                        roleUserSelRow.hide();
+                    }
                     return $.Deferred<void>().resolve();
                 });
                 instance.registerEventHandler(UscRoleRestEventType.NewRolesAdded, (newAddedRoles: RoleModel[]) => {
                     let existedRole: RoleModel;
                     this.roleInsertId = [newAddedRoles[0].IdRole];
                     this.sourceRecipientRoles = newAddedRoles;
+                    if (this.roleUserSelectionEnabled) {
+                        PageClassHelper.callUserControlFunctionSafe<uscRoleUserSelRest>(this.uscRoleUserSelRestId)
+                            .done((instance) => {
+                                instance.populateDropdownTree(newAddedRoles[0].UniqueId);
+                            });
+                        let roleUserSelRow: any = $(`#${this.roleUserSelRowId}`);
+                        roleUserSelRow.show();
+                    }
                     return $.Deferred<RoleModel>().resolve(existedRole);
                 });
             });
+    }
+
+    uscTenantSel_selectedTenantAOO = (eventObject: JQueryEventObject, idTenantAOO: string) => {
+        if ($(`#${this.uscRoleRecipientRestId}`).is(":visible")) {
+            PageClassHelper.callUserControlFunctionSafe<uscRoleRest>(this.uscRoleRecipientRestId)
+                .done((instance) => {
+                    instance.countRoles(idTenantAOO).then(countRoles => {
+                        if (countRoles == 0) {
+                            instance.disableButtons();
+                            return;
+                        }
+                        instance.setAddActionTooltip("Selezionare settori");
+                        $(`#${this.uscRoleRecipientRestId}`).triggerHandler(uscRoleRest.TENANT_CHANGE_EVENT, idTenantAOO);
+                    }).fail(exception => { this.showNotificationException(this.uscNotificationId, exception); });
+                });
+        }
+    }
+
+    initializeWorkflowStorage(): void {
+        try {
+            //initializing a store to keep track of started activities
+            this.wstorage = new WorkflowStorage();
+            if (this.wstorage.IsValid) {
+                this.wStorageEnabled = true;
+
+                //now that we have the store, let's check if there is pending item in storage
+            }
+        }
+        catch (err) {
+            this.wStorageEnabled = false;
+            //disabling the confirm button if the client does not support local or session storage
+            this._btnConfirm.set_enabled(false);
+            window.alert("Questa funzionalità non è supportata con l'attuale browser. E' necessario utilizzare un browser moderno come IE10+, Edge o Chrome");
+        }
+    }
+
+    public actionHubWorkflowStatusDone = (model) => {
+        if (this.wStorageEnabled) {
+            this.wstorage.Unset();
+        }
+
+        this.addItemDone(model);
+        this.dswSignalR.stopClient();
+        this._loadingPanel.hide(this.contentId);
+        this._btnConfirm.set_text(uscStartWorkflow.CONFIRM_BUTTON_CLOSE_TEXT);
+        this._btnConfirm.set_enabled(true);
+    }
+
+    public actionHubWorkflowStatusError = (model) => {
+        if (this.wStorageEnabled) {
+            this.wstorage.Unset();
+        }
+
+        this.addItemError(model);
+        this.dswSignalR.stopClient();
+        this._loadingPanel.hide(this.contentId);
+        this._btnConfirm.set_text(uscStartWorkflow.CONFIRM_BUTTON_CLOSE_TEXT);
+        this._btnConfirm.set_enabled(true);
+    }
+
+    public addItemDone = (text: string) => {
+        this.addItem(text, "../App_Themes/DocSuite2008/imgset16/star.png");
+    }
+
+    public addItemError = (text: string) => {
+        this.addItem(text, "../App_Themes/DocSuite2008/imgset16/StatusSecurityCritical_16x.png");
+    }
+
+    public addItem = (text: string, imageUrl: string) => {
+        var item = new Telerik.Web.UI.RadListBoxItem();
+        item.set_text(text);
+        item.set_imageUrl(imageUrl)
+        this._radListMessages.get_items().add(item);
+        this._radListMessages.commitChanges();
     }
 }
 

@@ -86,15 +86,6 @@ Partial Public Class TbltSettore
     Protected WithEvents windowPropagation As Global.Telerik.Web.UI.RadWindow
 
     '''<summary>
-    '''windowHistory control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents windowHistory As Global.Telerik.Web.UI.RadWindow
-
-    '''<summary>
     '''windowAddUsers control.
     '''</summary>
     '''<remarks>

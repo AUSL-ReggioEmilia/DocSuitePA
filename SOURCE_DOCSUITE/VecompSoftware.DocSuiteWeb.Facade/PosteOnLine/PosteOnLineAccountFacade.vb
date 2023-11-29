@@ -1,8 +1,6 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports VecompSoftware.DocSuiteWeb.Data
-Imports System.ComponentModel
+﻿Imports System.ComponentModel
 Imports System.Linq
+Imports VecompSoftware.DocSuiteWeb.Data
 
 <DataObject()>
 Public Class PosteOnLineAccountFacade
@@ -12,12 +10,12 @@ Public Class PosteOnLineAccountFacade
         MyBase.New()
     End Sub
 
-    Public Function GetUserAccounts() As IList(Of POLAccount)
+    Public Function GetUserAccounts(idTenantAOO As Guid) As IList(Of POLAccount)
         Dim accounts As IList(Of POLAccount) = New List(Of POLAccount)
         If CommonShared.HasGroupAdministratorRight Then
             accounts = GetAll()
         Else
-            Dim roles As IList(Of Role) = New RoleFacade().GetUserRoles(DSWEnvironment.Protocol, 1, Nothing)
+            Dim roles As IList(Of Role) = New RoleFacade().GetUserRoles(DSWEnvironment.Protocol, 1, Nothing, idTenantAOO)
             accounts = GetByRoles(roles)
         End If
         Return accounts.OrderBy(Function(o) o.Name).ToList()

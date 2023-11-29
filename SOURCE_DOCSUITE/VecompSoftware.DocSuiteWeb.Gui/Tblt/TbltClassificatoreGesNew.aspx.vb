@@ -77,6 +77,10 @@ Partial Public Class TbltClassificatoreGesNew
 #Region " Events "
 
     Private Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblCategoryRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
+
         InitializeAjax()
         If Not Page.IsPostBack Then
             InitializePage()
@@ -237,7 +241,7 @@ Partial Public Class TbltClassificatoreGesNew
         Dim currentCategorySchema As CategorySchema = Facade.CategorySchemaFacade.GetActiveCategorySchema(New DateTimeOffset(rdpStartDate.SelectedDate.Value, DateTimeOffset.UtcNow.Offset))
         Dim category As Category = New Category With {
             .Name = txtName.Text,
-            .IsActive = 1,
+            .IsActive = True,
             .Code = GetCategoryCode(txtCode.Text),
             .StartDate = (New DateTimeOffset(rdpStartDate.SelectedDate.Value, DateTimeOffset.UtcNow.Offset)),
             .CategorySchema = currentCategorySchema,
@@ -301,7 +305,7 @@ Partial Public Class TbltClassificatoreGesNew
     Private Function DeleteCategory() As Boolean
         With CurrentCategory
             .EndDate = rdpStartDate.SelectedDate
-            .IsActive = 0
+            .IsActive = False
         End With
 
         Dim validator As CategoryValidator = New CategoryValidator(CurrentCategory, CategoryRuleset.Delete)
@@ -343,7 +347,7 @@ Partial Public Class TbltClassificatoreGesNew
 
         With CurrentCategory
             .EndDate = Nothing
-            .IsActive = 1
+            .IsActive = True
         End With
 
         Facade.CategoryFacade.UpdateOnly(CurrentCategory)

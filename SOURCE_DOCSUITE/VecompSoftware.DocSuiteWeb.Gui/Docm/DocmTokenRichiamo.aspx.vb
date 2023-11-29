@@ -54,13 +54,13 @@ Public Class DocmTokenRichiamo
             For Each documentToken In DocumentTokensRoleRList
                 i += 1
                 If i = 1 Then
-                    Facade.DocumentTokenFacade.UpdateIsActive(Facade.DocumentTokenFacade.GetById(CurrentDocumentYear, CurrentDocumentNumber, documentToken.IncrementalOrigin), 0)
+                    Facade.DocumentTokenFacade.UpdateIsActive(Facade.DocumentTokenFacade.GetById(CurrentDocumentYear, CurrentDocumentNumber, documentToken.IncrementalOrigin), False)
                     _step = documentToken.DocStep
                     _originalTokenType = documentToken.DocumentTabToken
                     _roleSource = documentToken.RoleSource
                     _roleSourceList.Add(documentToken.RoleSource)
                 End If
-                Facade.DocumentTokenFacade.UpdateIsActive(documentToken, 0)
+                Facade.DocumentTokenFacade.UpdateIsActive(documentToken, False)
                 Facade.DocumentTokenFacade.UpdateResponse(documentToken, "A")
                 RemoveToken(documentToken)
                 _roleDestinationList.Add(documentToken.RoleDestination)
@@ -70,7 +70,7 @@ Public Class DocmTokenRichiamo
             With newDocumentToken
                 .IncrementalOrigin = 0
                 .Response = String.Empty
-                .IsActive = 1
+                .IsActive = True
                 .DocStep = _step + 1S
                 .SubStep = 0
                 .DocumentTabToken = Facade.DocumentTabTokenFacade.GetById("PM")

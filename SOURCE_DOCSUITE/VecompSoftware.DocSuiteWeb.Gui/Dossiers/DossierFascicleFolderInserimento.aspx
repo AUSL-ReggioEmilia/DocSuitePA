@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="Cartella - Inserimento" Language="vb" AutoEventWireup="false" CodeBehind="DossierFascicleFolderInserimento.aspx.vb" MasterPageFile="~/MasterPages/DocSuite2008.Master" Inherits="VecompSoftware.DocSuiteWeb.Gui.DossierFascicleFolderInserimento" %>
 
 <%@ Register Src="~/UserControl/uscSettori.ascx" TagName="settori" TagPrefix="usc" %>
-<%@ Register Src="../UserControl/uscFascicleLink.ascx" TagName="uscFascicleLink" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscFascicleProcessInsert.ascx" TagName="uscFascicleProcessInsert" TagPrefix="usc" %>
 <%@ Register Src="~/UserControl/uscFascicleInsert.ascx" TagName="uscFascicleInsert" TagPrefix="usc" %>

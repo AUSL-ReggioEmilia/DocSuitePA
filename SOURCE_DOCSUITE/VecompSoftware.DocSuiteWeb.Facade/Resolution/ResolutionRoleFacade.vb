@@ -44,6 +44,7 @@ Public Class ResolutionRoleFacade
         If rr Is Nothing Then
             rr = New ResolutionRole()
             rr.Id = id
+            rr.UniqueIdResolution = resl.UniqueId
             Save(rr, _dbName, needTransaction)
         Else
             Update(rr, _dbName, needTransaction)

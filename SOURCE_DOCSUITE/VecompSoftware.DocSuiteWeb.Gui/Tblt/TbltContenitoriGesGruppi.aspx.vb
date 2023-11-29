@@ -189,8 +189,11 @@ Partial Public Class TbltContenitoriGesGruppi
 #Region " Events "
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
+        If Not (CommonShared.HasGroupAdministratorRight OrElse CommonShared.HasGroupTblContainerAdminRight) Then
+            Throw New DocSuiteException("Sono necessari diritti amministrativi per vedere la pagina.")
+        End If
 
-        InitializeAjaxSettings()
+        InitializeAjax()
         InitializeControls()
 
         If Not Page.IsPostBack Then
@@ -277,10 +280,10 @@ Partial Public Class TbltContenitoriGesGruppi
         Dim containers As ICollection(Of Container) = finder.List()
         For Each item As Container In containers
 
-            If Active = True AndAlso item.IsActive = 1 Then
+            If Active = True AndAlso item.IsActive Then
                 AddNode(item)
             End If
-            If Active = False AndAlso item.IsActive = 0 Then
+            If Active = False AndAlso Not item.IsActive Then
                 AddNode(item)
             End If
 
@@ -288,7 +291,7 @@ Partial Public Class TbltContenitoriGesGruppi
 
         If Active = True Then
             For Each item As Container In containers
-                If item.IsActive = 1 Then
+                If item.IsActive Then
                     AddNode(item)
                 End If
             Next
@@ -297,7 +300,7 @@ Partial Public Class TbltContenitoriGesGruppi
         If Active = False Then
             For Each item As Container In containers
 
-                If item.IsActive = 0 Then
+                If Not item.IsActive Then
                     AddNode(item)
                 End If
 
@@ -442,7 +445,7 @@ Partial Public Class TbltContenitoriGesGruppi
         uscGruppi.ContainerImageURL = ImagePath.SmallBoxOpen
     End Sub
 
-    Private Sub InitializeAjaxSettings()
+    Private Sub InitializeAjax()
         AddHandler AjaxManager.AjaxRequest, AddressOf TbltContenitoriGesGruppi_AjaxRequest
         AjaxManager.AjaxSettings.AddAjaxSetting(uscGruppi, pnlDiritti)
         AjaxManager.AjaxSettings.AddAjaxSetting(AjaxManager, pnlDiritti)

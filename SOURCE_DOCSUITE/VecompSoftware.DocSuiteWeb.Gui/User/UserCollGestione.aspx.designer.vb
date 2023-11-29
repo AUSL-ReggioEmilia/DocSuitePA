@@ -95,49 +95,31 @@ Partial Public Class UserCollGestione
     Protected WithEvents deskLink As Global.System.Web.UI.WebControls.HyperLink
 
     '''<summary>
-    '''ddlDocumentType control.
+    '''uscTemplateCollaborationSelRest control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents ddlDocumentType As Global.Telerik.Web.UI.RadDropDownList
+    Protected WithEvents uscTemplateCollaborationSelRest As Global.VecompSoftware.DocSuiteWeb.Gui.uscTemplateCollaborationSelRest
 
     '''<summary>
-    '''rfvDocumentType control.
+    '''hfCurrentFixedTemplate control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents rfvDocumentType As Global.System.Web.UI.WebControls.RequiredFieldValidator
+    Protected WithEvents hfCurrentFixedTemplate As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
-    '''trSpecificDocumentType control.
+    '''hfCurrentTemplate control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents trSpecificDocumentType As Global.System.Web.UI.HtmlControls.HtmlTableRow
-
-    '''<summary>
-    '''ddlSpecificDocumentType control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents ddlSpecificDocumentType As Global.Telerik.Web.UI.RadDropDownList
-
-    '''<summary>
-    '''rfvSpecificDocumentType control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents rfvSpecificDocumentType As Global.System.Web.UI.WebControls.RequiredFieldValidator
+    Protected WithEvents hfCurrentTemplate As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
     '''pnlMainPanel control.
@@ -680,6 +662,24 @@ Partial Public Class UserCollGestione
     Protected WithEvents hdfLastTemplateNote As Global.System.Web.UI.WebControls.HiddenField
 
     '''<summary>
+    '''tResolution control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents tResolution As Global.System.Web.UI.HtmlControls.HtmlTableRow
+
+    '''<summary>
+    '''resolutionLink control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents resolutionLink As Global.System.Web.UI.WebControls.HyperLink
+
+    '''<summary>
     '''tEditCollaborationData control.
     '''</summary>
     '''<remarks>
@@ -759,6 +759,15 @@ Partial Public Class UserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscUDS As Global.VecompSoftware.DocSuiteWeb.Gui.uscUDS
+
+    '''<summary>
+    '''uscNotification control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents uscNotification As Global.VecompSoftware.DocSuiteWeb.Gui.uscErrorNotification
 
     '''<summary>
     '''buttonPanel control.
@@ -921,6 +930,15 @@ Partial Public Class UserCollGestione
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnMultiSign As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''btnDgrooveSigns control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnDgrooveSigns As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
     '''btnRefresh control.

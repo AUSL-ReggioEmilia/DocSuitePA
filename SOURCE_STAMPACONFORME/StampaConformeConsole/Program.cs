@@ -112,7 +112,7 @@ namespace StampaConformeConsole
                     };
 #if Ws
                    StampaConformeSvc.BiblosDSConv conv = new StampaConformeSvc.BiblosDSConv();
-                   //conv.Url = "http://srvbiblos/StampaConforme/BiblosDSConv.asmx";// "http://win2k8sc.rmvsw.local/StampaConforme2010/BiblosDSConv.asmx";//"http://localhost/StampaConforme/BiblosDSConv.asmx"; //
+                   //conv.Url = "http://./StampaConforme/BiblosDSConv.asmx";// "http://win2k8sc.rmvsw.local/StampaConforme2010/BiblosDSConv.asmx";//"http://localhost/StampaConforme/BiblosDSConv.asmx"; //
                    //Console.Write(conv.Test(item.Extension));
                    //var doc = conv.ToRasterFormat(new StampaConformeSvc.stDoc { Blob = Convert.ToBase64String(FileBlob), FileExtension = fileName }, "PDF");                  
                    //var doc = conv.ToRasterFormatExParameters(new StampaConformeSvc.stDoc { Blob = Convert.ToBase64String(FileBlob), FileExtension = fileName }, "PDF", label, new StampaConformeSvc.stParameter[]{ new StampaConformeSvc.stParameter{ Name = StampaConformeSvc.stParameterOption.AttachMode, Value = "3" }});

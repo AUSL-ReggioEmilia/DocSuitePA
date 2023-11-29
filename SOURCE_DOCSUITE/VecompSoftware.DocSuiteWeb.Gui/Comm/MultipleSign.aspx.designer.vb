@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class MultipleSign
-    
+
     '''<summary>
     '''RadScriptBlock1 control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class MultipleSign
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents RadScriptBlock1 As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''ToolBar control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class MultipleSign
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents ToolBar As Global.Telerik.Web.UI.RadToolBar
-    
+
     '''<summary>
     '''hdnHasError control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class MultipleSign
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents hdnHasError As Global.System.Web.UI.HtmlControls.HtmlInputHidden
-    
+
     '''<summary>
     '''DocumentListGrid control.
     '''</summary>

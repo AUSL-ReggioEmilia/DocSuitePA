@@ -8,8 +8,9 @@ Imports System.IO
 Public Class ProtCollegamenti
     Inherits ProtBasePage
     ' Icone email
-    Private Const iconMailI As String = "~/Prot/images/mail16_i.gif"
-    Private Const iconMailU As String = "~/Prot/images/mail16_u.gif"
+    Private Const iconMailI As String = "~/App_Themes/DocSuite2008/imgset16/ingoing.png"
+    Private Const iconMailU As String = "~/App_Themes/DocSuite2008/imgset16/outgoing.png"
+    Private Const iconMailIU As String = "~/App_Themes/DocSuite2008/imgset16/inout.png"
     Private Const iconRemove As String = "~/comm/images/remove16.gif"
 
 #Region "Page events"
@@ -18,18 +19,11 @@ Public Class ProtCollegamenti
         If Not Me.IsPostBack Then
             ' Iniazializza gli elementi di pagina
             Initialize()
-            InitializeMail()
         End If
     End Sub
 #End Region
 
 #Region "Initialize"
-    Private Sub InitializeMail()
-        If DocSuiteContext.Current.ProtocolEnv.EnableButtonLinkProtocolSend Then
-            btnMail.Visible = True
-            MailFacade.RegisterOpenerMailWindow(btnMail, MailFacade.CreateProtocolLinkMailParameters(CurrentProtocol.Id, btnMail.ID))
-        End If
-    End Sub
 
     Private Sub InitializeAjaxSetting()
         ' Inizializza ajax events
@@ -40,10 +34,6 @@ Public Class ProtCollegamenti
     ''' <summary> Inizializza gli oggetti della pagina </summary>
     Private Sub Initialize()
         Dim rootList As New List(Of Protocol)
-
-        If DocSuiteContext.Current.ProtocolEnv.EnableButtonLinkProtocolSend Then
-            btnMail.Visible = True
-        End If
 
         If DocSuiteContext.Current.ProtocolEnv.EnableButtonLinkProtocolPrint Then
             btnStampa.Visible = True
@@ -104,6 +94,7 @@ Public Class ProtCollegamenti
         childNode.Text &= protocol.Number.ToString.PadLeft(7, "0"c) & " del "
         childNode.Text &= String.Format("{0:dd/MM/yyyy}", protocol.RegistrationDate.ToLocalTime())
         childNode.Text &= " (" & protocol.ProtocolObject & ")"
+        childNode.ImageUrl = iconMailIU
         ' Icona protocollo in entrata
         If protocol.Type.Id = 1 Then
             childNode.ImageUrl = iconMailU

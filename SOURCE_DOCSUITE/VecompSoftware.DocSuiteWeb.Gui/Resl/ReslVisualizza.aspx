@@ -2,6 +2,7 @@
 
 <%@ Register Src="../UserControl/uscResolution.ascx" TagName="uscResolution" TagPrefix="usc" %>
 <%@ Register Src="../UserControl/uscResolutionBar.ascx" TagName="uscResolutionBar" TagPrefix="usc" %>
+<%@ Register Src="~/UserControl/uscErrorNotification.ascx" TagName="uscErrorNotification" TagPrefix="usc" %>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphContent">
     <telerik:RadScriptBlock runat="server" ID="RadScriptBlock1" EnableViewState="false">
@@ -65,6 +66,15 @@
                     manager.ajaxRequest(type + "|" + argument);
                 }
             }
+
+            function btnWorkflow_OnClick() {
+                reslVisualizza.btnWorkflow_OnClick();
+                return false;
+            }
+
+            function SetMetadataSessionStorage(metadatas) {
+                sessionStorage.setItem('DocumentMetadatas', metadatas);
+            }
         </script>
     </telerik:RadScriptBlock>
     <telerik:RadScriptBlock runat="server" EnableViewState="false">
@@ -72,7 +82,11 @@
             var reslVisualizza;
             require(["Resl/ReslVisualizza"], function (ReslVisualizza) {
                 $(function () {
-                    reslVisualizza = new ReslVisualizza(tenantModelConfiguration.serviceConfiguration);                    
+                    reslVisualizza = new ReslVisualizza(tenantModelConfiguration.serviceConfiguration);
+                    reslVisualizza.uscNotificationId = "<%= uscNotification.PageContentDiv.ClientID %>";
+                    reslVisualizza.btnWorkflowId = "<%= resolutionBottomBar.ButtonWorkflow.ClientID %>";
+                    reslVisualizza.radWindowManagerReslId = "<%= RadWindowManagerResl.ClientID %>";
+                    reslVisualizza.resolutionUniqueId = "<%= CurrentResolution.UniqueId %>";
                     reslVisualizza.initialize();
                 });
             });
@@ -85,6 +99,7 @@
             <telerik:RadWindow Height="300" ID="windowDuplica" OnClientClose="CloseDuplica" runat="server" Title="Duplicazione Atto" Width="500" />
             <telerik:RadWindow Height="300" ID="windowDocmSceltaPratica" OnClientClose="CloseSelPratica" runat="server" Title="Pratiche - Seleziona" Width="500" />
             <telerik:RadWindow Height="380" ID="windowLastPage" OnClientClose="CloseLastPage" runat="server" Width="650" />
+            <telerik:RadWindow Height="450" ID="windowStartWorkflow" runat="server" Title="Avvia attività" Width="600" />
         </Windows>
     </telerik:RadWindowManager>
 
@@ -104,6 +119,7 @@
             </tr>
         </table>
     </div>
+    <usc:uscErrorNotification runat="server" ID="uscNotification"></usc:uscErrorNotification>
 </asp:Content>
 
 <asp:Content runat="server" ContentPlaceHolderID="cphFooter">

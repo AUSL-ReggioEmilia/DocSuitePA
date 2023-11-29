@@ -23,18 +23,27 @@ namespace VecompSoftware.DocSuiteWeb.Data.WebAPI.Finder
 
             public static class CollaborationService
             {
-                public const string FX_GetAtVisionSignCollaborations = "CollaborationService.GetAtVisionSignCollaborations()";
-                public const string FX_GetToVisionSignCollaborations = "CollaborationService.GetToVisionSignCollaborations(isRequired=null)";
-                public const string FX_GetToVisionSignRequiredCollaborations = "CollaborationService.GetToVisionSignCollaborations(isRequired=true)";
-                public const string FX_GetToVisionSignNoRequiredCollaborations = "CollaborationService.GetToVisionSignCollaborations(isRequired=false)";
-                public const string FX_GetAtProtocolAdmissionCollaborations = "CollaborationService.GetAtProtocolAdmissionCollaborations()";
-                public const string FX_GetCurrentActivitiesAllCollaborations = "CollaborationService.GetCurrentActivitiesAllCollaborations()";
-                public const string FX_GetCurrentActivitiesActiveCollaborations = "CollaborationService.GetCurrentActivitiesActiveCollaborations()";
-                public const string FX_GetCurrentActivitiesPastCollaborations = "CollaborationService.GetCurrentActivitiesPastCollaborations()";
-                public const string FX_GetToManageCollaborations = "CollaborationService.GetToManageCollaborations()";
-                public const string FX_GetRegisteredCollaborations = "CollaborationService.GetRegisteredCollaborations(dateFrom='{0}',dateTo='{1}')";
-                public const string FX_GetMyCheckedOutCollaborations = "CollaborationService.GetMyCheckedOutCollaborations()";
-                public const string FX_GetToVisionDelegateSignCollaborations = "CollaborationService.GetToVisionDelegateSignCollaborations()";
+                public const string FX_GetAtVisionSignCollaborations = "CollaborationService.GetAtVisionSignCollaborations";
+                public const string FX_GetToVisionSignCollaborations = "CollaborationService.GetToVisionSignCollaborations";
+                public const string FX_GetAtProtocolAdmissionCollaborations = "CollaborationService.GetAtProtocolAdmissionCollaborations";
+                public const string FX_GetCurrentActivitiesAllCollaborations = "CollaborationService.GetCurrentActivitiesAllCollaborations";
+                public const string FX_GetCurrentActivitiesActiveCollaborations = "CollaborationService.GetCurrentActivitiesActiveCollaborations";
+                public const string FX_GetCurrentActivitiesPastCollaborations = "CollaborationService.GetCurrentActivitiesPastCollaborations";
+                public const string FX_GetToManageCollaborations = "CollaborationService.GetToManageCollaborations";
+                public const string FX_GetRegisteredCollaborations = "CollaborationService.GetRegisteredCollaborations";
+                public const string FX_GetMyCheckedOutCollaborations = "CollaborationService.GetMyCheckedOutCollaborations";
+                public const string FX_GetToVisionDelegateSignCollaborations = "CollaborationService.GetToVisionDelegateSignCollaborations";
+
+                public const string FX_CountAtVisionSignCollaborations = "CollaborationService.CountAtVisionSignCollaborations";
+                public const string FX_CountToVisionSignCollaborations = "CollaborationService.CountToVisionSignCollaborations";
+                public const string FX_CountAtProtocolAdmissionCollaborations = "CollaborationService.CountAtProtocolAdmissionCollaborations";
+                public const string FX_CountCurrentActivitiesAllCollaborations = "CollaborationService.CountCurrentActivitiesAllCollaborations";
+                public const string FX_CountCurrentActivitiesActiveCollaborations = "CollaborationService.CountCurrentActivitiesActiveCollaborations";
+                public const string FX_CountCurrentActivitiesPastCollaborations = "CollaborationService.CountCurrentActivitiesPastCollaborations";
+                public const string FX_CountToManageCollaborations = "CollaborationService.CountToManageCollaborations";
+                public const string FX_CountRegisteredCollaborations = "CollaborationService.CountRegisteredCollaborations";
+                public const string FX_CountMyCheckedOutCollaborations = "CollaborationService.CountMyCheckedOutCollaborations";
+                public const string FX_CountToVisionDelegateSignCollaborations = "CollaborationService.CountToVisionDelegateSignCollaborations";
             }
 
             public static class TemplateCollaborationService

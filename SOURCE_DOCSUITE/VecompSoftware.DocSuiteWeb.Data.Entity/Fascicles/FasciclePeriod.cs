@@ -2,7 +2,7 @@
 
 namespace VecompSoftware.DocSuiteWeb.Data.Entity.Fascicles
 {
-    public class FasciclePeriod : AuditableDomainObject<Guid>, ISupportLogicDelete
+    public class FasciclePeriod : AuditableDomainObject<Guid>, ISupportBooleanLogicDelete
     {
         #region [ Constructors ]
         /// <summary>
@@ -16,7 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.Entity.Fascicles
 
         #region [ Properties ]
 
-        public virtual short IsActive { get; set; }
+        public virtual bool IsActive { get; set; }
 
         public virtual string PeriodName { get; set; }
 

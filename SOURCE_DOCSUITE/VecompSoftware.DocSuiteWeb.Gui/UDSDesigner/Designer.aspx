@@ -16,6 +16,11 @@
     <link href="Content/nprogress.css" rel="stylesheet" />
     <link href="Content/site.css" rel="stylesheet" />
 
+    <link rel="stylesheet" href="../Scripts/kendo/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="../Scripts/kendo/styles/kendo.default.min.css" />
+    <link rel="stylesheet" href="../Scripts/kendo/styles/kendo.default.mobile.min.css" />
+
+
     <style>
         .maintable {
             width: 100%;
@@ -115,6 +120,7 @@
                         <div class="component" data-type="Document"><span class="fa fa-file-text-o fa-lg" aria-hidden="true"></span>&nbsp; Documenti</div>
                         <div class="component" data-type="Contact"><span class="fa fa-user-plus fa-lg" aria-hidden="true"></span>&nbsp; Contatti</div>
                         <div class="component" data-type="Authorization"><span class="fa fa-arrow-circle-o-right fa-lg" aria-hidden="true"></span>&nbsp; Autorizzazione</div>
+                        <div class="component hide" data-type="TreeList" id="treeListId"><span class="fa fa-sitemap fa-lg" aria-hidden="true"></span>&nbsp; Elenco dei campi</div>
                     </div>
                 </td>
 
@@ -122,12 +128,15 @@
                     <div class="tabbable">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#editor-tab" data-toggle="tab">Form</a></li>
-                            <li style="display:none"><a href="#source-tab" data-toggle="tab">Sorgente</a></li>
+                            <li style="display: none"><a href="#source-tab" data-toggle="tab">Sorgente</a></li>
                         </ul>
 
                         <label for="enabledProtocol">
                             <input type="hidden" name="workflowManager" value="false" id="workflowManager" runat="server" />
+                            <input type="hidden" name="conservationManager" value="false" id="conservationManager" runat="server" />
                         </label>
+                        <input type="hidden" name="odataUrl" value="false" id="odataUrl" runat="server" />
+                        <input type="hidden" name="restUrl" value="false" id="restUrl" runat="server" />
 
                         <div class="tab-content">
                             <div class="tab-pane active" id="editor-tab">
@@ -156,8 +165,8 @@
 
                                 <form class="form-horizontal">
                                     <div id="content"></div>
-                                    <div >
-                                        <table style="width: 100%; height: 100%; word-wrap:break-word;" id="tableLayoutColumns">
+                                    <div>
+                                        <table style="width: 100%; height: 100%; word-wrap: break-word;" id="tableLayoutColumns">
                                         </table>
                                     </div>
                                 </form>
@@ -254,7 +263,7 @@
             </div>
 
             <div rv-hidden="true" id="layoutColumns" rv-text="ctrl.selectedItem"></div>
-                       
+
             <div rv-class-hidden="ctrl.categoryName | isEmpty" style="margin-top: 10px;">
                 <span><small>Classificatore</small></span><br />
                 <label class="" rv-text="ctrl.categoryName" />
@@ -394,7 +403,7 @@
             <span class="fa fa-list fa-lg" aria-hidden="true"></span>
             <label class="" rv-text="ctrl.label" />
         </div>
-        
+
         <div id="component-Status" data-type="Status" style="padding: 5px;">
             <div class="component-toolbar">
                 <span class="label" rv-enabled="ctrl.readOnly" rv-class-label-info="ctrl.readOnly">Sola lettura</span>
@@ -406,6 +415,16 @@
             <span rv-text="ctrl.label" style="font-weight: bold;"></span>
         </div>
 
+        <div id="component-TreeList" data-type="TreeList" style="padding: 5px;">
+            <div class="component-toolbar">
+                <span class="label" rv-enabled="ctrl.readOnly" rv-class-label-info="ctrl.readOnly">Sola lettura</span>
+                <span class="label" rv-enabled="ctrl.required" rv-class-label-info="ctrl.required">Richiesto</span>
+                <span class="label" rv-enabled="ctrl.searchable" rv-class-label-info="ctrl.searchable">Ricercabile</span>
+            </div>
+
+            <span class="fa fa-sitemap fa-lg" aria-hidden="true"></span>
+            <span rv-text="ctrl.label" style="font-weight: bold;"></span>
+        </div>
 
     </div>
 
@@ -432,6 +451,12 @@
 
     <script type="text/javascript" src="Scripts/App/utils.js"></script>
     <script type="text/javascript" src="Scripts/App/main.js"></script>
+
+    <script type="text/javascript" src="../Scripts/kendo/js/jszip.min.js"></script>
+    <script type="text/javascript" src="../Scripts/kendo/js/kendo.all.min.js"></script>
+    <script type="text/javascript" src="../Scripts/kendo/js/messages/kendo.messages.it-IT.min.js"></script>
+    <script type="text/javascript" src="../Scripts/kendo/js/cultures/kendo.culture.it-IT.min.js"></script>
+    <script type="text/javascript" src="Scripts/App/Utils/KendoConfig.js"></script>
 
 </body>
 </html>

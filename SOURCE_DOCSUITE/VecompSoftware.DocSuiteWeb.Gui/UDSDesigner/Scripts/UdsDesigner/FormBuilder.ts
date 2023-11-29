@@ -21,6 +21,12 @@ module UdsDesigner {
         columns: number;
         rows: number;
         differentCols: number = -1; //check if columns layout is changed, if not, don't delete the existing components
+        idUDSRepository: string;
+        udsRepositoryVersion: number;
+        udsFieldListRoot: any;
+        udsFieldListRoots: any[];
+        odataUrl: string = $("#odataUrl")[0].getAttribute("value");
+        restUrl: string = $("#restUrl")[0].getAttribute("value");
 
         setup() {
             this.initEvents();
@@ -82,7 +88,11 @@ module UdsDesigner {
                 this.jsonEdit.editor.resize();
                 this.jsonEdit.editor.renderer.updateFull();
                 document.dispatchEvent(this.modelChanged);
-            })
+            });
+
+            if (window.location.search !== "" && $("#treeListId")) {
+                $("#treeListId").removeClass("hide");
+            }
         }
 
 
@@ -100,7 +110,35 @@ module UdsDesigner {
                     if (spanElement.id === "deleteSelectedItem" && ctrl.getValues().defaultValue === "") {
                         $(`#${spanElement.id}`).hide();
                     }
+                    if (ctrl.ctrlType === "Text") {
+                        $("#customActionId").hide();
+                        (<TextCtrl>ctrl).setCustomActionBehaviour("");
+                        if ($("#tableLayoutColumns").find("[data-type='Authorization']").length > 0) {
+                            let authorizationCtrl = CtrlBase.getElementCtrl($("#tableLayoutColumns").find("[data-type='Authorization']")[0]);
+                            if (!(<AuthorizationCtrl>authorizationCtrl).allowMultiUserAuthorization && (<AuthorizationCtrl>authorizationCtrl).userAuthorizationEnabled) {
+                                $("#customActionId").show();
+                                (<TextCtrl>ctrl).setCustomActionBehaviour(ctrl.getValues().customActionSelected);
+                            }
+                        }
+                    }
                 });
+                if ($(e.currentTarget).find("#treelist")[0]) {
+                    let ctrl = CtrlBase.getElementCtrl(this.getElement());
+                    if (this.udsFieldListRoot && this.udsFieldListRoot.Name === $(e.currentTarget).find("#fieldNameId").val()) {
+                        (<TreeListCtrl>ctrl).udsFieldListRoot = this.udsFieldListRoot;
+                        (<TreeListCtrl>ctrl).loadTreeList(this.odataUrl, this.restUrl);
+                    }
+                    else if (this.idUDSRepository) {
+                        UdsDesigner.Service.loadUDSFieldListChildren(this.odataUrl, this.idUDSRepository, (data: any) => {
+                            this.udsFieldListRoot = data.value.filter(x => x.Name === $(e.currentTarget).find("#fieldNameId").val())[0];
+                            this.udsFieldListRoot.Repository = {
+                                UniqueId: this.udsFieldListRoot.IdUDSRepository
+                            };
+                            (<TreeListCtrl>ctrl).udsFieldListRoot = this.udsFieldListRoot;
+                            (<TreeListCtrl>ctrl).loadTreeList(this.odataUrl, this.restUrl);
+                        });
+                    }
+                }
             });
 
             $("#options_modal").submit(function (e) {
@@ -133,7 +171,16 @@ module UdsDesigner {
                     else {
                         this.createLayoutColumns(false);
                     }
-
+                if (component === "TreeList") {
+                    let treeListName: string = (<TreeListCtrl>ctrl).label;
+                    let newTreeListName: string = (<TreeListCtrl>newValue).label;
+                    if (treeListName !== newTreeListName) {
+                        let idUDSFieldList: string = this.udsFieldListRoot.UniqueId;
+                        UdsDesigner.Service.updateUDSFieldListRootNode(idUDSFieldList, newTreeListName, (data: any) => {
+                            this.loadUDSFieldListChildren();
+                        });
+                    }
+                }
             });
         }
 
@@ -258,6 +305,13 @@ module UdsDesigner {
                             }
                             document.dispatchEvent(this.modelChanged);
                         }
+                        if (ui.draggable[0].dataset.type === "TreeList") {
+                            let treeListName: string = ui.draggable[0].innerText.trim();
+                            UdsDesigner.Service.addUDSFieldListCtrlNode(this.idUDSRepository, treeListName, (data: any) => {
+                                this.udsFieldListRoot = data.d;
+                                this.loadUDSFieldListChildren();
+                            });
+                        }
                     }
                 });
             }
@@ -325,10 +379,35 @@ module UdsDesigner {
 
                 $(e.currentTarget).parent().fadeOut('normal', () => {
                     var ctrl = CtrlBase.getElementCtrl($(e.currentTarget).parent()[0]);
+                    let canRemoveTreeList: boolean = true;
+                    let removeTreeListConfirmed: boolean = false;
+                    if (ctrl.ctrlType === "TreeList") {
+                        let treeListName: string = $(e.currentTarget.parentElement).find('[rv-text="ctrl.label"]')[0].innerText;
+                        (<TreeListCtrl>ctrl).treeListName = treeListName;
+                        (<TreeListCtrl>ctrl).idUDSRepository = this.idUDSRepository;
+                        (<TreeListCtrl>ctrl).udsFieldListRoot = this.udsFieldListRoots.filter(x => x.Name === treeListName)[0];
+                        (<TreeListCtrl>ctrl).odataUrl = this.odataUrl;
+                        (<TreeListCtrl>ctrl).restUrl = this.restUrl;
+                        canRemoveTreeList = false;
+                        if (!this.udsRepositoryVersion || this.udsRepositoryVersion === 0) {
+                            canRemoveTreeList = confirm(`Sei sicuro di voler rimuovere il campo '${treeListName}'?`);
+                            removeTreeListConfirmed = true;
+                        }
+                        (<TreeListCtrl>ctrl).canRemoveTreeList = canRemoveTreeList;
+                    }
                     ctrl.beforeRemoval();
-                    $(e.currentTarget).parent().remove();
-                    this.refreshElementsLayoutPosition(ctrl.columns); //update specific column when delete occured
-                    document.dispatchEvent(this.modelChanged);
+                    if (canRemoveTreeList) {
+                        $(e.currentTarget).parent().remove();
+                        this.refreshElementsLayoutPosition(ctrl.columns); //update specific column when delete occured
+                        document.dispatchEvent(this.modelChanged);
+                    }
+                    else {
+                        $(e.currentTarget).parent().fadeIn(0, () => {
+                            if (ctrl.ctrlType === "TreeList" && !removeTreeListConfirmed) {
+                                alert("L'elemento non può essere rimosso perché contiene nodi utilizzati dell'archivio");
+                            }
+                        });
+                    }
                 });
             });
 
@@ -582,6 +661,27 @@ module UdsDesigner {
                 }
             });
 
+        }
+
+        initializeTreeLists() {
+            if ($('[data-type="TreeList"]') && (<any>$('[data-type="TreeList"]')).filter(document.getElementsByClassName("ui-droppable"))) {
+                if (this.idUDSRepository) {
+                    this.loadUDSFieldListChildren();
+                    this.loadUDSRepositoryVersion();
+                }
+            }
+        }
+
+        private loadUDSFieldListChildren() {
+            UdsDesigner.Service.loadUDSFieldListChildren(this.odataUrl, this.idUDSRepository, (data: any) => {
+                this.udsFieldListRoots = data.value;
+            });
+        }
+
+        private loadUDSRepositoryVersion() {
+            UdsDesigner.Service.loadRepositoryVersionByRepositoryId(this.idUDSRepository, (data: any) => {
+                this.udsRepositoryVersion = data.d.Version;
+            });
         }
     }
 

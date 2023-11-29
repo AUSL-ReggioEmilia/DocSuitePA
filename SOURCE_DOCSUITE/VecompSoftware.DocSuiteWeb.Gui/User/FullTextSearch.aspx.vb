@@ -7,7 +7,7 @@ Public Class FullTextSearch
 #Region " Properties "
     Public ReadOnly Property IdTenant() As String
         Get
-            Return DirectCast(Session("CurrentTenant"), Tenant).UniqueId.ToString()
+            Return CurrentTenant.UniqueId.ToString()
         End Get
     End Property
 #End Region

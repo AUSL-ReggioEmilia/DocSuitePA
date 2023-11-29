@@ -84,7 +84,7 @@ class FascMoveItems extends FascBase {
             sender.enableAfterSingleClick();
             return;
         }
-
+        let labelAction: string = this.moveToFascicle ? "la copia " :  "lo spostamento";
         if (selectedFolder.UniqueId == this.idFascicleFolder) {
             this.showWarningMessage(this.uscNotificationId, "Selezionare una cartella di destinazione differente dalla cartella originale");
             sender.enableAfterSingleClick();
@@ -95,11 +95,11 @@ class FascMoveItems extends FascBase {
             .map((item: [string, (folderId: string) => JQueryPromise<void>]) => item[1]);
 
         if (!moveActions || moveActions.length == 0) {
-            this.showNotificationMessage(this.uscNotificationId, "E' avvenuto un errore durante la procedura di sposta");
+            this.showNotificationMessage(this.uscNotificationId, `E' avvenuto un errore durante ${labelAction} degli elementi`);
             return;
         }
 
-        this._manager.radconfirm(`Sei sicuro di voler eseguire lo spostamento degli elementi selezionati nella cartella ${selectedFolder.Name}?`, (arg) => {
+        this._manager.radconfirm(`Sei sicuro di voler eseguire ${labelAction} degli elementi selezionati nella cartella ${selectedFolder.Name}?`, (arg) => {
             if (!arg) {
                 sender.enableAfterSingleClick();
                 return;
@@ -211,9 +211,9 @@ class FascMoveItems extends FascBase {
     private getIconByEnvironment(env: Environment): string {
         switch (env) {
             case Environment.Protocol:
-                return "../Comm/Images/DocSuite/Protocollo16.gif";
+                return "../Comm/Images/DocSuite/Protocollo16.png";
             case Environment.Resolution:
-                return "../Comm/Images/DocSuite/Atti16.gif";
+                return "../Comm/Images/DocSuite/Atti16.png";
             case Environment.DocumentSeries:
                 return "../App_Themes/DocSuite2008/imgset16/document_copies.png";
             case Environment.UDS:
@@ -258,33 +258,8 @@ class FascMoveItems extends FascBase {
 
     private moveDocuments(folderId: string): JQueryPromise<void> {
         let promise: JQueryDeferred<void> = $.Deferred<void>();
-        let deferredActions: JQueryPromise<void>[] = [];
         try {
-            for (let toMoveItem of this._toMoveItems.filter((item: FascicleMoveItemViewModel) => item.environment != Environment.Document)) {
-                const deferredMoveAction = () => {
-                    let promise = $.Deferred<void>();
-                    this._fascicleDocumentUnitService.getByDocumentUnitAndFascicle(toMoveItem.uniqueId, this.idFascicle,
-                        (data: any) => {
-                            data.FascicleFolder = {} as FascicleFolderModel;
-                            data.FascicleFolder.UniqueId = folderId;
-                            if (this.moveToFascicle) { // Copia in
-                                data.UniqueId = "";
-                                data.Fascicle.UniqueId = this.destinationFascicleId;
-                                this._fascicleDocumentUnitService.insertFascicleUD(data, FascicolableActionType.AutomaticDetection, (data: any) => promise.resolve(),
-                                    (exception: ExceptionDTO) => promise.reject(exception));
-                            }
-                            else {
-                                this._fascicleDocumentUnitService.updateFascicleUD(data, UpdateActionType.FascicleMoveToFolder, (data: any) => promise.resolve(),
-                                    (exception: ExceptionDTO) => promise.reject(exception));
-                            }
-                        },
-                        (exception: ExceptionDTO) => promise.reject(exception));
-                    return promise.promise();
-                };
-                deferredActions.push(deferredMoveAction());
-            }
-
-            $.when.apply(null, deferredActions)
+            this.executeMove(folderId)
                 .done(() => {
                     this._fascicleDocumentService.getByFolder(this.moveToFascicle ? this.destinationFascicleId : this.idFascicle, folderId,
                         (data: any) => {
@@ -304,6 +279,52 @@ class FascMoveItems extends FascBase {
             console.error(error);
             this.showNotificationMessage(this.uscNotificationId, "E' avvenuto un errore durante il processo di sposta documenti");
         }
+        return promise.promise();
+    }
+
+    private executeMove(folderId: string): JQueryPromise<void> {
+        let promise: JQueryDeferred<void> = $.Deferred<void>();
+
+        for (let toMoveItem of this._toMoveItems.filter((item: FascicleMoveItemViewModel) => item.environment != Environment.Document)) {
+            $(document).queue((next) => {
+                this.moveSingleDocument(toMoveItem.uniqueId, folderId)
+                    .done(() => {
+                        next();
+                    })
+                    .fail((exception: ExceptionDTO) => {
+                        $(document).clearQueue();
+                        promise.reject(exception);
+                        return;
+                    });
+            });
+        }
+
+        $(document).queue((next) => {
+            this._loadingPanel.hide(this.pnlPageId);
+            promise.resolve();
+            next();
+        });
+        return promise.promise();
+    }
+
+    private moveSingleDocument(uniqueId: string, folderId: string): JQueryPromise<void> {
+        let promise: JQueryDeferred<void> = $.Deferred<void>();
+        this._fascicleDocumentUnitService.getByDocumentUnitAndFascicle(uniqueId, this.idFascicle,
+            (data: any) => {
+                data.FascicleFolder = {} as FascicleFolderModel;
+                data.FascicleFolder.UniqueId = folderId;
+                if (this.moveToFascicle) { // Copia in
+                    data.UniqueId = "";
+                    data.Fascicle.UniqueId = this.destinationFascicleId;
+                    this._fascicleDocumentUnitService.insertFascicleUD(data, FascicolableActionType.AutomaticDetection, (data: any) => promise.resolve(),
+                        (exception: ExceptionDTO) => promise.reject(exception));
+                }
+                else {
+                    this._fascicleDocumentUnitService.updateFascicleUD(data, UpdateActionType.FascicleMoveToFolder, (data: any) => promise.resolve(),
+                        (exception: ExceptionDTO) => promise.reject(exception));
+                }
+            },
+            (exception: ExceptionDTO) => promise.reject(exception));
         return promise.promise();
     }
 
@@ -371,10 +392,10 @@ class FascMoveItems extends FascBase {
         fascicleDocumentModel.ChainType = ChainType.Miscellanea;
         fascicleDocumentModel.IdArchiveChain = idArchiveChain;
         fascicleDocumentModel.Fascicle = new FascicleModel();
-        fascicleDocumentModel.Fascicle.UniqueId = this.idFascicle;
+        fascicleDocumentModel.Fascicle.UniqueId = this.moveToFascicle ? this.destinationFascicleId : this.idFascicle;
 
         let uscFascicleFolder: uscFascicleFolders = <uscFascicleFolders>$(`#${this.uscFascicleFoldersId}`).data();
-        let selectedFolder: FascicleSummaryFolderViewModel = uscFascicleFolder.getSelectedFascicleFolder(this.idFascicle);
+        let selectedFolder: FascicleSummaryFolderViewModel = uscFascicleFolder.getSelectedFascicleFolder(this.moveToFascicle ? this.destinationFascicleId : this.idFascicle);
         fascicleDocumentModel.FascicleFolder = <FascicleFolderModel>{};
         fascicleDocumentModel.FascicleFolder.UniqueId = selectedFolder.UniqueId;
 

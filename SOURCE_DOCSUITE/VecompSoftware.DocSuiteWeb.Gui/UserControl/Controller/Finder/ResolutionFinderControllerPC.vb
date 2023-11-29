@@ -27,7 +27,7 @@ Public Class ResolutionFinderControllerPC
         _uscFinder.VisibleIdResolution = False
         _uscFinder.VisibleCategory = Facade.ResolutionFacade.IsManagedProperty("Category", ResolutionType.IdentifierDelibera)
 
-        _uscFinder.VisibleImmediatelyExecutive = False
+        _uscFinder.VisibleImmediatelyExecutive = DocSuiteContext.Current.ResolutionEnv.ImmediatelyExecutiveEnabled
         _uscFinder.VisibleAdoptionDate = True
         _uscFinder.VisibleProposerDate = True
 
@@ -56,5 +56,7 @@ Public Class ResolutionFinderControllerPC
         _uscFinder.VisibileOC_Region = Facade.ResolutionFacade.IsManagedProperty("OCData", ResolutionType.IdentifierDelibera, "REG") Or Facade.ResolutionFacade.IsManagedProperty("OCData", ResolutionType.IdentifierDetermina, "REG")
 
         _uscFinder.VisibilePrivacyPublication = DocSuiteContext.Current.ResolutionEnv.WebPublicationPrint
+
+        _uscFinder.VisibleStatoContabilita = DocSuiteContext.Current.ResolutionEnv.ResolutionAccountingEnabled
     End Sub
 End Class

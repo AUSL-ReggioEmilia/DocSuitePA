@@ -1,7 +1,7 @@
 <Serializable()>
 Public Class CollaborationSign
     Inherits AuditableDomainObject(Of Guid)
-    Implements ISupportLogicDelete
+    Implements ISupportBooleanLogicDelete
 
 #Region " Fields "
 
@@ -13,7 +13,7 @@ Public Class CollaborationSign
 
     Public Overridable Property Incremental As Short
 
-    Public Overridable Property IsActive As Short Implements ISupportLogicDelete.IsActive
+    Public Overridable Property IsActive As Boolean Implements ISupportBooleanLogicDelete.IsActive
 
     Public Overridable Property IdStatus As String
 

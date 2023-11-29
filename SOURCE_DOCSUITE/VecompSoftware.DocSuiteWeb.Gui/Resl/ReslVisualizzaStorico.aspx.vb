@@ -145,7 +145,6 @@ Partial Public Class ReslVisualizzaStorico
         uscResolution.VisibleComunicationDestProp = True
         uscResolution.VisibleComunicationDestPropAlternative = True
         uscResolution.VisibleRoles = True
-        uscResolution.VisibleOther = True
 
         'Scrittura Log
         Facade.ResolutionLogFacade.Log(CurrentResolution, ResolutionLogType.RS)
@@ -182,8 +181,6 @@ Partial Public Class ReslVisualizzaStorico
     Private Sub SetDocumento()
         cmdFrontespizio.Visible = False
 
-        'Invio Mail
-        MailFacade.RegisterOpenerMailWindow(cmdMail, MailFacade.CreateResolutionMailParameters(IdResolution, cmdMail.ID))
         'Imposta pulsanti
         Dim visibleRight As Boolean = CurrentResolutionRight.IsViewable
                 Dim proposalMode As Boolean = CurrentResolutionRight.CanInsertInContainer
@@ -192,10 +189,9 @@ Partial Public Class ReslVisualizzaStorico
                 cmdDocumento.Visible = visibleRight AndAlso CurrentResolution.File.IdResolutionFile.HasValue
                 cmdAllegati.Visible = visibleRight
                 cmdFrontespizio.Visible = visibleRight
-                cmdOrganoControllo.Visible = visibleRight
-                cmdMail.Visible = visibleRight
-                '--Abilitazione
-                cmdProposta.Enabled = CurrentResolution.File.IdProposalFile.HasValue
+        cmdOrganoControllo.Visible = visibleRight
+        '--Abilitazione
+        cmdProposta.Enabled = CurrentResolution.File.IdProposalFile.HasValue
                 Select Case True
                     Case CurrentResolution.File.IdResolutionFile.HasValue
                         Select Case CurrentResolution.EffectivenessDate.HasValue
@@ -217,7 +213,6 @@ Partial Public Class ReslVisualizzaStorico
             cmdFrontespizio.Enabled = CurrentResolution.File.IdResolutionFile.HasValue
             cmdAllegati.Enabled = CurrentResolution.File.IdAttachements.HasValue
             cmdOrganoControllo.Enabled = CurrentResolution.File.IdControllerFile.HasValue
-            cmdMail.Visible = True
         End If
     End Sub
 
@@ -226,6 +221,12 @@ Partial Public Class ReslVisualizzaStorico
             AjaxAlert("Registrazione n. " & String.Format("{0:0000000}", IdResolution) & " Registrazione Inesistente")
             Return False
         End If
+
+        If Not CurrentResolutionRight.HasCurrentStepVisibilityRights Then
+            Throw New DocSuiteException("Errore verifica registrazione",
+                String.Format("Non è possibile visualizzare la registrazione [{0:0000000}]. Verificare se si dispone di sufficienti autorizzazioni.", IdResolution))
+        End If
+
         If Not CurrentResolutionRight.IsViewable Then
             Dim err As String = "Non è possibile visualizzare il Documento richiesto. Verificare se si dispone di sufficienti autorizzazioni."
             AjaxAlert("Registrazione n. " & String.Format("{0:0000000}", IdResolution), err)

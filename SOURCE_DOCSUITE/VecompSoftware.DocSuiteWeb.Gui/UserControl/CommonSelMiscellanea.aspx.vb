@@ -2,6 +2,7 @@ Imports System.Collections.Generic
 Imports System.Linq
 Imports Telerik.Web.UI
 Imports VecompSoftware.DocSuiteWeb.Data
+Imports VecompSoftware.DocSuiteWeb.Entity.Fascicles
 Imports VecompSoftware.DocSuiteWeb.Facade
 Imports VecompSoftware.Helpers.ExtensionMethods
 Imports VecompSoftware.Helpers.Web.ExtensionMethods
@@ -16,7 +17,10 @@ Partial Public Class CommonSelMiscellanea
     Public Const ADD_ACTION As String = "Add"
     Public Const EDIT_ACTION As String = "Edit"
     Private Const CONFIRM_CALLBACK As String = "commonSelMiscellanea.confirmCallback('{0}')"
+    Private Const UPDATE_FASCICLEDOCUMENT As String = "Modificato documento con nome {0} ed id {1}. Nome: {2}, Id {3}, Note {4}"
+    Private Const INSERT_FASCICLEDOCUMENT As String = "Inserito documento. Nome: {0}, Id {1}"
     Private _location As Location
+    Private _fascicleLogFacade As Facade.WebAPI.Fascicles.FascicleLogFacade
 
 #End Region
 
@@ -51,6 +55,12 @@ Partial Public Class CommonSelMiscellanea
         End Get
     End Property
 
+    Public ReadOnly Property DocumentName As String
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of String)("DocumentName", String.Empty)
+        End Get
+    End Property
+
     Public ReadOnly Property IdArchiveChain As Guid?
         Get
             Return Request.QueryString.GetValueOrDefault(Of Guid)("IdArchiveChain", Nothing)
@@ -68,6 +78,27 @@ Partial Public Class CommonSelMiscellanea
     Public ReadOnly Property ArchiveName As String
         Get
             Return Request.QueryString.GetValueOrDefault(Of String)("ArchiveName", String.Empty)
+        End Get
+    End Property
+
+    Protected ReadOnly Property Environment As DSWEnvironment
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of DSWEnvironment)("Environment", DSWEnvironment.Any)
+        End Get
+    End Property
+
+    Public ReadOnly Property DocumentUnitId As Guid?
+        Get
+            Return Request.QueryString.GetValueOrDefault(Of Guid)("DocumentUnitId", Nothing)
+        End Get
+    End Property
+
+    Public ReadOnly Property FascicleLogFacade As Facade.WebAPI.Fascicles.FascicleLogFacade
+        Get
+            If _fascicleLogFacade Is Nothing Then
+                _fascicleLogFacade = New Facade.WebAPI.Fascicles.FascicleLogFacade(DocSuiteContext.Current.Tenants, Nothing)
+            End If
+            Return _fascicleLogFacade
         End Get
     End Property
 
@@ -99,6 +130,15 @@ Partial Public Class CommonSelMiscellanea
                     Dim biblosFunc As Func(Of DocumentInfo, BiblosDocumentInfo) = If(Action.Eq(ADD_ACTION), Function(d As DocumentInfo) SaveBiblosDocument(d, chainId), Function(d As DocumentInfo) UpdateBiblosDocument(d))
                     Dim savedTemplate As BiblosDocumentInfo = biblosFunc(addedDocument)
                     chainId = savedTemplate.ChainId
+
+
+                    If Environment.Equals(DSWEnvironment.Fascicle) Then
+                        If Action.Eq(ADD_ACTION) Then
+                            FascicleLogFacade.InsertFascicleDocumentLog(DocumentUnitId, FascicleLogType.Insert, String.Format(INSERT_FASCICLEDOCUMENT, savedTemplate.Name, savedTemplate.DocumentId))
+                        Else
+                            FascicleLogFacade.InsertFascicleDocumentLog(DocumentUnitId, FascicleLogType.Insert, String.Format(UPDATE_FASCICLEDOCUMENT, DocumentName, IdDocument, savedTemplate.Name, savedTemplate.DocumentId, txtNote.Text))
+                        End If
+                    End If
                 Next
             End If
             AjaxManager.ResponseScripts.Add(String.Format(CONFIRM_CALLBACK, chainId))

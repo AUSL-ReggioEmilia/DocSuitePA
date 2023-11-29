@@ -152,7 +152,7 @@ Public Class DocmProtocollo
             Else
                 AjaxManager.ResponseScripts.Add("CloseWindow('');")
                 AjaxManager.ResponseScripts.Add("if(parent.parent.RefreshFolderAjax) parent.parent.RefreshFolderAjax();")
-                ' **REMOVE** 20100702: Aggiunta la IF perché andava in errore, non verificato se la chiamata ha senso o se si tratta di un refuso.
+                ' GONZALEZ 20100702: Aggiunta la IF perché andava in errore, non verificato se la chiamata ha senso o se si tratta di un refuso.
                 AjaxManager.ResponseScripts.Add("if(parent.parent.parent.DC_Visualizza) parent.parent.parent.DC_Visualizza('" & CommonShared.AppendSecurityCheck(String.Format("Year={0}&Number={1}", txtSelYear.Text, txtSelNumber.Text)) & "');")
             End If
         End If
@@ -293,7 +293,7 @@ Public Class DocmProtocollo
 
     Private Sub RoleTvw()
         ' Controlla i diritti
-        Dim roleRightsList As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True)
+        Dim roleRightsList As IList(Of Role) = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Enabled, True, CurrentTenant.TenantAOO.UniqueId)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -304,7 +304,7 @@ Public Class DocmProtocollo
             Next
         End If
         roleRightsList.Clear()
-        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True)
+        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Workflow, True, CurrentTenant.TenantAOO.UniqueId)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -315,7 +315,7 @@ Public Class DocmProtocollo
             Next
         End If
         roleRightsList.Clear()
-        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True)
+        roleRightsList = Facade.RoleFacade.GetUserRoles(DSWEnvironment.Document, DossierRoleRightPositions.Manager, True, CurrentTenant.TenantAOO.UniqueId)
 
         If roleRightsList.Count > 0 Then
             For Each role As Role In roleRightsList
@@ -331,16 +331,16 @@ Public Class DocmProtocollo
         If documentTokenList.Count > 0 Then
 
             For Each docToken As DocumentToken In documentTokenList
-                Select Case docToken.IsActive
-                    Case 1
-                        WriteStep(docToken, txtPStep, txtPIdOwner, "")
-                    Case 2
-                        If docToken.DocumentTabToken.Id = "PT" Then
-                            WriteStep(docToken, txtRRStep, txtRRIdOwner, "")
-                        Else
-                            WriteStep(docToken, txtPRStep, txtPRIdOwner, "")
-                        End If
-                End Select
+
+                If docToken.IsActive Then
+                    WriteStep(docToken, txtPStep, txtPIdOwner, "")
+                Else
+                    If docToken.DocumentTabToken.Id = "PT" Then
+                        WriteStep(docToken, txtRRStep, txtRRIdOwner, "")
+                    Else
+                        WriteStep(docToken, txtPRStep, txtPRIdOwner, "")
+                    End If
+                End If
 
                 Dim documentTokenUserList As IList(Of DocumentTokenUser) = Facade.DocumentTokenUserFacade.GetDocumentTokenUserList(CurrentDocumentYear, CurrentDocumentNumber, docToken, , , True, True, True, True)
 

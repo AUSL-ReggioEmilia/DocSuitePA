@@ -1,5 +1,5 @@
 ﻿Public Class ScannerRest
-    Inherits System.Web.UI.Page
+    Inherits CommBasePage
     Public ReadOnly Property MultipleEnabled As String
         Get
             Return Request.QueryString.Item("multipleEnabled")

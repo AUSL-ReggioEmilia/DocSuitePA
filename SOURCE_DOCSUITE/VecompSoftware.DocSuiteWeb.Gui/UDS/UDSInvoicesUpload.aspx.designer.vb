@@ -12,7 +12,7 @@ Option Explicit On
 
 
 Partial Public Class UDSInvoicesUpload
-    
+
     '''<summary>
     '''radScriptBlock control.
     '''</summary>
@@ -21,7 +21,7 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents radScriptBlock As Global.Telerik.Web.UI.RadScriptBlock
-    
+
     '''<summary>
     '''pnlContentInvoice control.
     '''</summary>
@@ -30,7 +30,7 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlContentInvoice As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''insertsPageContent control.
     '''</summary>
@@ -39,7 +39,7 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents insertsPageContent As Global.Telerik.Web.UI.RadPageLayout
-    
+
     '''<summary>
     '''InsertsDataRow control.
     '''</summary>
@@ -48,7 +48,7 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents InsertsDataRow As Global.Telerik.Web.UI.LayoutRow
-    
+
     '''<summary>
     '''HFcorrelatedChainId control.
     '''</summary>
@@ -57,7 +57,7 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents HFcorrelatedChainId As Global.System.Web.UI.WebControls.HiddenField
-    
+
     '''<summary>
     '''HFcorrelatedIdDocument control.
     '''</summary>
@@ -66,7 +66,7 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents HFcorrelatedIdDocument As Global.System.Web.UI.WebControls.HiddenField
-    
+
     '''<summary>
     '''uscDocumentUpload control.
     '''</summary>
@@ -75,7 +75,25 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents uscDocumentUpload As Global.VecompSoftware.DocSuiteWeb.Gui.uscDocumentUpload
-    
+
+    '''<summary>
+    '''rdtpDataRicezioneSdi control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents rdtpDataRicezioneSdi As Global.Telerik.Web.UI.RadDateTimePicker
+
+    '''<summary>
+    '''RequiredFieldValidator1 control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents RequiredFieldValidator1 As Global.System.Web.UI.WebControls.RequiredFieldValidator
+
     '''<summary>
     '''rgvPreviewDocuments control.
     '''</summary>
@@ -84,7 +102,7 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents rgvPreviewDocuments As Global.Telerik.Web.UI.RadGrid
-    
+
     '''<summary>
     '''radListMessages control.
     '''</summary>
@@ -93,7 +111,7 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents radListMessages As Global.Telerik.Web.UI.RadListBox
-    
+
     '''<summary>
     '''pnlButtons control.
     '''</summary>
@@ -102,7 +120,7 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents pnlButtons As Global.System.Web.UI.WebControls.Panel
-    
+
     '''<summary>
     '''btnPreview control.
     '''</summary>
@@ -111,7 +129,7 @@ Partial Public Class UDSInvoicesUpload
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents btnPreview As Global.Telerik.Web.UI.RadButton
-    
+
     '''<summary>
     '''btnSave control.
     '''</summary>

@@ -159,7 +159,7 @@
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>ProtocolDataSet</rd:DataSetName>
-        <rd:SchemaPath>C:\Users\**REMOVE**\Source\Workspaces\DocSuiteWeb_main\VecompSoftware.DocSuiteWeb.Report\Templates\Protocol\ProtocolDataSet.xsd</rd:SchemaPath>
+        <rd:SchemaPath>C:\Users\Fabrizio.Lazzarotto\Source\Workspaces\DocSuiteWeb_main\VecompSoftware.DocSuiteWeb.Report\Templates\Protocol\ProtocolDataSet.xsd</rd:SchemaPath>
         <rd:TableName>PECMailOutgoingDataTable</rd:TableName>
         <rd:TableAdapterFillMethod />
         <rd:TableAdapterGetDataMethod />

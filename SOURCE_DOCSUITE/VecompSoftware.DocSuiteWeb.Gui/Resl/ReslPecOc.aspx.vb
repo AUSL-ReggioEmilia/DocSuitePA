@@ -40,10 +40,10 @@ Public Class ReslPecOc
                 .OnClientClicked = "OpenViewer"
                 .CommandArgument = pecOc.IdMail.ToString()
                 If pecOc.Status <> PECOCStatus.Spedito Then
-                    .Image.ImageUrl = "../Comm/images/file/Mail16.gif"
+                    .Image.ImageUrl = "../App_Themes/DocSuite2008/imgset16/mail.png"
                     .ToolTip = "Visualizza la mail da spedire"
                 Else
-                    .Image.ImageUrl = "../Prot/images/mail16_U.gif"
+                    .Image.ImageUrl = "../App_Themes/DocSuite2008/imgset16/sendEmail.png"
                     .ToolTip = "Visualizza la mail spedita"
                 End If
             End If

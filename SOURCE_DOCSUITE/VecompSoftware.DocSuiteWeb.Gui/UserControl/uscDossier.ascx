@@ -36,6 +36,9 @@
                 uscDossier.uscCategoryRestId = "<%= uscCategoryRest.MainContent.ClientID %>";
                 uscDossier.lblDossierTypeId = "<%= lblDossierType.ClientID %>";
                 uscDossier.lblDossierStatusId = "<%= lblDossierStatus.ClientID %>";
+                uscDossier.dossierTypologyEnabled = <%= ProtocolEnv.DossierTypologyEnabled.ToString().ToLower() %>;
+                uscDossier.columnDossierTypeKeyId = "<%= columnDossierTypeKey.ClientID %>";
+                uscDossier.columnDossierTypeValueId = "<%= columnDossierTypeValue.ClientID %>";
                 uscDossier.initialize();
             });
         });
@@ -73,10 +76,10 @@
                                 </telerik:LayoutRow>
                                 <telerik:LayoutRow HtmlTag="Div">
                                     <Columns>
-                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">
+                                        <telerik:LayoutColumn Span="3" CssClass="dsw-text-right" ID="columnDossierTypeKey">
                                             <b>Tipologia:</b>
                                         </telerik:LayoutColumn>
-                                        <telerik:LayoutColumn Span="2" CssClass="t-col-left-padding">
+                                        <telerik:LayoutColumn Span="2" CssClass="t-col-left-padding" ID="columnDossierTypeValue">
                                             <asp:Label ID="lblDossierType" runat="server"></asp:Label>
                                         </telerik:LayoutColumn>
                                         <telerik:LayoutColumn Span="3" CssClass="dsw-text-right">

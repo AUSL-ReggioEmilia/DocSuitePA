@@ -3,7 +3,7 @@
 <Serializable()> _
 Public Class ResolutionJournal
     Inherits AuditableDomainObject(Of Int32)
-    Implements ISupportLogicDelete
+    Implements ISupportBooleanLogicDelete
 
 #Region " Fields "
     Private _year As Integer
@@ -16,7 +16,7 @@ Public Class ResolutionJournal
     Private _signdate As Date?
     Private _signUser As String
     Private _resolutionJournalDetails As IList(Of ResolutionJournalDetail)
-    Private _isActive As String
+    Private _isActive As Boolean
     Private _startID As Integer?
     Private _endID As Integer?
 #End Region
@@ -165,12 +165,12 @@ Public Class ResolutionJournal
 
 #End Region
 
-#Region " ISupportLogicDelete "
-    Public Overridable Property IsActive() As Short Implements ISupportLogicDelete.IsActive
+#Region " ISupportBooleanLogicDelete "
+    Public Overridable Property IsActive() As Boolean Implements ISupportBooleanLogicDelete.IsActive
         Get
             Return _isActive
         End Get
-        Set(ByVal value As Short)
+        Set(ByVal value As Boolean)
             _isActive = value
         End Set
     End Property

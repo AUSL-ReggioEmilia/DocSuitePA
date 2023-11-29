@@ -24,10 +24,10 @@
   </log4net>
   <connectionStrings>
     <!--<add name="BiblosDS" connectionString="metadata=res://*/Model.BiblosDSEntityFramework.csdl|res://*/Model.BiblosDSEntityFramework.ssdl|res://*/Model.BiblosDSEntityFramework.msl;provider=System.Data.SqlClient;provider connection string=&quot;Data Source=cs5lgricdl.database.windows.net;initial catalog=DEV-BIBLOSDS;user id=TioAdmin@cs5lgricdl;password=Passw0rd;multipleactiveresultsets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" />-->
-    <add name="BiblosDS" connectionString="metadata=res://*/Model.BiblosDSEntityFramework.csdl|res://*/Model.BiblosDSEntityFramework.ssdl|res://*/Model.BiblosDSEntityFramework.msl;provider=System.Data.SqlClient;provider connection string=&quot;Data Source=srvbiblos;initial catalog=DevBiblosDS2010;user id=DocSuite;password=DocSuite;multipleactiveresultsets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" />
+    <add name="BiblosDS" connectionString="metadata=res://*/Model.BiblosDSEntityFramework.csdl|res://*/Model.BiblosDSEntityFramework.ssdl|res://*/Model.BiblosDSEntityFramework.msl;provider=System.Data.SqlClient;provider connection string=&quot;Data Source=.;initial catalog=DevBiblosDS2010;User ID=utente;password=DocSuite;multipleactiveresultsets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" />
   </connectionStrings>
   <appSettings>
-    <add key="ServerName" value="srvbiblosFullProxy" />
+    <add key="ServerName" value=".FullProxy" />
     <add key="PathCache" value="C:\BiblosDs" />
     <add key="BoblosDSConvWs.BiblosDSConv" value="" />
     <add key="VerifyDocumentMainDate" value="true" />
