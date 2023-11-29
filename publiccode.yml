@@ -80,7 +80,7 @@ maintenance:
       name: Simone Bonato
   contractors:
     - name: Dgroove Srl
-      until: '2022-12-31'
+      until: '2025-12-31'
   type: contract
 
 dependsOn:
@@ -95,17 +95,20 @@ dependsOn:
       optional: no
     - name: Dynamic Web Twain
       versionMin: "8"
-      versionMax: "15"
+      versionMax: "17"
       optional: yes
     - name: ITextSharp (developer)
-      versionMin: ""
-      versionMax: ""
+      versionMin: "7"
+      versionMax: "7"
       optional: no
     - name: Comped DigitaL Sign
-      versionMin: "3.x"
+      versionMin: "5.x"
       versionMax: "5.x"
       optional: yes
-
+    - name: Dgroove Signer App
+      versionMin: "1.x"
+      versionMax: "2.x"
+      optional: yes
   hardware:
     - name: Smart Card Reader
       optional: yes
@@ -122,7 +125,7 @@ releaseDate: '2021-04-26'
 logo: docsuite-pa.png
 roadmap: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/projects/1'
 softwareType: standalone/web
-softwareVersion: '9.17'
+softwareVersion: '9.25'
 url: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA.git'
 usedBy:
   - (auslre)    AUSL Reggio Emilia
@@ -138,7 +141,7 @@ usedBy:
   - (enas)      ENAS - Ente Acque della Sardegna
   - (izsp_to)   Istituto Zooprofilattico Sperimentale del Piemonte, Liguria e Valle D'Aosta
   - (uirnet)    Uirnet Spa
-  -             AFOL Monza Brianza
+  - (afolmb)    AFOL Monza Brianza
   -             Pubblica Amministrazione e degli Enti e delle Aziende del settore pubblico
                 allargato nella Repubblica di San Marino
   -             One Scarl, Compagnia Toscana Trasporti (CTT) e altre aziende pubbliche del gruppo
