@@ -88,10 +88,10 @@ dependsOn:
     - name: Microsoft SQL Server
       versionMin: "2014"
       versionMax: "2019"
-      optional: yes
+      optional: no
     - name: LimiLabs Mail.dll (developer)
-      versionMin: ""
-      versionMax: ""
+      versionMin: "3.x"
+      versionMax: "3.x"
       optional: no
     - name: Dynamic Web Twain
       versionMin: "8"
