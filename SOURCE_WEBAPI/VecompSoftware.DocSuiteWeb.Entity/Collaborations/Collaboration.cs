@@ -142,24 +142,12 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Collaborations
         /// Get or set Location reference
         /// </summary>
         public virtual Location Location { get; set; }
-
-        /// <summary>
-        /// Get or set DocumentSeriesItem
-        /// </summary>
-        public virtual DocumentSeriesItem DocumentSeriesItem { get; set; }
-
-        /// <summary>
-        /// Get or set Resolution
-        /// </summary>
-        public virtual Resolution Resolution { get; set; }
-
         /// <summary>
         /// Get or sert WorkflowInstance
         /// </summary>
         public virtual WorkflowInstance WorkflowInstance { get; set; }
 
         public virtual DocumentUnit DocumentUnit { get; set; }
-
         /// <summary>
         /// Get or set CollaborationLog reference
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
@@ -12,34 +13,23 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Workflows
 {
     public class WorkflowActivityValidator : ObjectValidator<WorkflowActivity, WorkflowActivityValidator>, IWorkflowActivityValidator
     {
-        public WorkflowActivityValidator(ILogger logger, IWorkflowActivityValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public WorkflowActivityValidator(ILogger logger, IWorkflowActivityValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #region [ Properties ]
         public Guid UniqueId { get; set; }
-
         public string Name { get; set; }
-
         public WorkflowActivityType ActivityType { get; set; }
-
         public WorkflowActivityAction ActivityAction { get; set; }
-
         public WorkflowActivityArea ActivityArea { get; set; }
-
         public WorkflowStatus Status { get; set; }
-
         public DateTimeOffset? DueDate { get; set; }
-
         public string Subject { get; set; }
-
-        public byte[] Timestamp { get; set; }
-
         public Guid? IdArchiveChain { get; set; }
-
         public WorkflowPriorityType? Priority { get; set; }
-
         public string Note { get; set; }
-
+        public bool IsVisible { get; set; }
+        public byte[] Timestamp { get; set; }
         #endregion
 
         #region [ Navigation Properties ]

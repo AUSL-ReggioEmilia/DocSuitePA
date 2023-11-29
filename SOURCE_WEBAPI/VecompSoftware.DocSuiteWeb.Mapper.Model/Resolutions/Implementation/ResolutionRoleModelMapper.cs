@@ -10,19 +10,22 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Resolutions
 
         #region [ Fields ]
         private readonly IRoleModelMapper _roleModelMapper;
+        private readonly IResolutionModelMapper _resolutionModelMapper;
         #endregion
 
         #region [ Constructor ]
-        public ResolutionRoleModelMapper(IRoleModelMapper roleModelMapper)
+        public ResolutionRoleModelMapper(IRoleModelMapper roleModelMapper, IResolutionModelMapper resolutionModelMapper)
         {
             _roleModelMapper = roleModelMapper;
+            _resolutionModelMapper = resolutionModelMapper;
         }
         #endregion
 
 
         public override ResolutionRoleModel Map(ResolutionRole entity, ResolutionRoleModel entityTransformed)
         {
-            entityTransformed.IdResolution = entity.EntityId;
+            entityTransformed.UniqueId = entity.UniqueId;
+            entityTransformed.Resolution = _resolutionModelMapper.Map(entity.Resolution, new ResolutionModel());
             entityTransformed.Role = _roleModelMapper.Map(entity.Role, new RoleModel());
             entityTransformed.IdResolutionRoleType = entity.IdResolutionRoleType;
             entityTransformed.RegistrationDate = entity.RegistrationDate;

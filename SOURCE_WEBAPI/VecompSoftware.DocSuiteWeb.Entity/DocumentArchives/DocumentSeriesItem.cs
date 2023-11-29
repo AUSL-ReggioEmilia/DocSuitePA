@@ -6,6 +6,7 @@ using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Messages;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
+using VecompSoftware.DocSuiteWeb.Entity.Tenders;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.DocumentArchives
 {
@@ -22,6 +23,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.DocumentArchives
             DocumentSeriesItemLinks = new HashSet<DocumentSeriesItemLink>();
             Messages = new HashSet<Message>();
             Protocols = new HashSet<Protocol>();
+            TenderHeaders = new HashSet<TenderHeader>();
             WorkflowActions = new List<IWorkflowAction>();
         }
         #endregion
@@ -59,6 +61,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.DocumentArchives
         public virtual ICollection<Message> Messages { get; set; }
         public virtual ICollection<Protocol> Protocols { get; set; }
         public virtual ICollection<ResolutionDocumentSeriesItem> ResolutionDocumentSeriesItems { get; set; }
+        public virtual ICollection<TenderHeader> TenderHeaders { get; set; }
 
         #endregion
 

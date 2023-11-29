@@ -1,4 +1,5 @@
-﻿using VecompSoftware.DocSuiteWeb.Common.Loggers;
+﻿using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
+using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Mapper;
@@ -28,7 +29,10 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.DocumentUnits
         #endregion
 
         #region [ Methods ]
-
+        protected override bool ExecuteDelete()
+        {
+            return false;
+        }
         #endregion
 
     }

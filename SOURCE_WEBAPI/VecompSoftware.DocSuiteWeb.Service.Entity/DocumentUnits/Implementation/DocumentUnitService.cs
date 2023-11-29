@@ -63,6 +63,19 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.DocumentUnits
                 entity.TenantAOO = _unitOfWork.Repository<TenantAOO>().Find(entity.TenantAOO.UniqueId);
             }
 
+            if (entity.DocumentUnitContacts != null && entity.DocumentUnitContacts.Count > 0)
+            {
+                foreach (DocumentUnitContact item in entity.DocumentUnitContacts)
+                {
+                    if (item.Contact != null && item.Contact.EntityId != 0)
+                    {
+                        item.Contact = _unitOfWork.Repository<Contact>().Find(item.Contact.EntityId);
+                    }
+                    item.DocumentUnit = entity;
+                }
+                _unitOfWork.Repository<DocumentUnitContact>().InsertRange(entity.DocumentUnitContacts);
+            }
+
             if (entity.DocumentUnitChains != null && entity.DocumentUnitChains.Count > 0)
             {
                 foreach (DocumentUnitChain item in entity.DocumentUnitChains)
@@ -89,6 +102,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.DocumentUnits
                 }
                 _unitOfWork.Repository<DocumentUnitUser>().InsertRange(entity.DocumentUnitUsers);
             }
+
             return base.BeforeCreate(entity);
         }
 
@@ -97,6 +111,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.DocumentUnits
             query.Include(f => f.DocumentUnitChains)
                  .Include(f => f.DocumentUnitRoles)
                  .Include(f => f.DocumentUnitUsers)
+                 .Include(f => f.DocumentUnitContacts)
                  .Include(f => f.Fascicle)
                  .Include(f => f.Category)
                  .Include(f => f.Container)
@@ -136,6 +151,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.DocumentUnits
             {
                 foreach (DocumentUnitChain item in entityTransformed.DocumentUnitChains.Where(f => !entity.DocumentUnitChains.Any(c => c.UniqueId == f.UniqueId)).ToList())
                 {
+                    if (item.ChainType == ChainType.DematerialisationChain || item.ChainType == ChainType.MetadataChain)
+                    {
+                        _logger.WriteInfo(new LogMessage($"DocumentUnitService:User={CurrentDomainUser.Account}:Skipping deletion of DocumentUnitChain with ChainType={item.ChainType}, UniqueId={item.UniqueId}, IdArchiveChain={item.IdArchiveChain}"), LogCategories);
+                        continue;
+                    }
                     _unitOfWork.Repository<DocumentUnitChain>().Delete(item);
                 }
                 foreach (DocumentUnitChain item in entity.DocumentUnitChains.Where(f => !entityTransformed.DocumentUnitChains.Any(c => c.UniqueId == f.UniqueId)))
@@ -175,6 +195,24 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.DocumentUnits
                 {
                     item.DocumentUnit = entityTransformed;
                     _unitOfWork.Repository<DocumentUnitUser>().Insert(item);
+                }
+            }
+
+            if (entity.DocumentUnitContacts != null)
+            {
+                foreach (DocumentUnitContact resolutionDocumentUnitContact in entityTransformed.DocumentUnitContacts.Where(f => !entity.DocumentUnitContacts.Any(c => c.UniqueId == f.UniqueId)).ToList())
+                {
+                    _unitOfWork.Repository<DocumentUnitContact>().Delete(resolutionDocumentUnitContact);
+                }
+
+                foreach (DocumentUnitContact resolutionDocumentUnitContact in entity.DocumentUnitContacts.Where(f => !entityTransformed.DocumentUnitContacts.Any(c => c.UniqueId == f.UniqueId)))
+                {
+                    if (resolutionDocumentUnitContact.Contact != null && resolutionDocumentUnitContact.Contact.EntityId != 0)
+                    {
+                        resolutionDocumentUnitContact.Contact = _unitOfWork.Repository<Contact>().Find(resolutionDocumentUnitContact.Contact.EntityId);
+                    }
+                    resolutionDocumentUnitContact.DocumentUnit = entityTransformed;
+                    _unitOfWork.Repository<DocumentUnitContact>().Insert(resolutionDocumentUnitContact);
                 }
             }
 

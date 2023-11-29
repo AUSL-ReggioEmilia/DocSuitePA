@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using VecompSoftware.Core.Command.CQRS;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Model.Validations;
@@ -89,6 +90,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.ServiceBus
 
             InitializeMessage(message);
             await _queueClient.SendAsync(message);
+            _logger.WriteInfo(new LogMessage($"Message {message.MessageId} has been sent successfully by {(message.Properties.ContainsKey(CustomPropertyName.EXECUTOR_USER) ? message.Properties[CustomPropertyName.EXECUTOR_USER] : "SYSTEM")}"), LogCategories);
             return message;
         }
 

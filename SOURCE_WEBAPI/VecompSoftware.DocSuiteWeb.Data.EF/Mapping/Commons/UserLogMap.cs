@@ -100,6 +100,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                .HasColumnName("UserProfile")
                .IsOptional();
 
+            Property(x => x.UserPrincipalName)
+               .HasColumnName("UserPrincipalName")
+               .IsOptional();
+
             Property(x => x.Timestamp)
                 .HasColumnName("Timestamp")
                 .IsRequired();

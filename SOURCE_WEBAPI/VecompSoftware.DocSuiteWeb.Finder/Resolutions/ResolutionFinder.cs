@@ -17,8 +17,8 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Resolutions
 
         public static IQueryable<Resolution> GetByUniqueId(this IRepository<Resolution> repository, Guid uniqueIdResolution)
         {
-            return repository.Query(x => x.UniqueId == uniqueIdResolution)
-                .Include(i => i.Category)
+            return repository
+                .Query(x => x.UniqueId == uniqueIdResolution)
                 .SelectAsQueryable();
         }
 
@@ -27,6 +27,19 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Resolutions
             return repository.Query(t => t.UniqueId == uniqueIdResolution)
                 .Include(t => t.Category.CategoryFascicles.Select(f => f.FasciclePeriod))
                 .Include(t => t.Container.ReslLocation)
+                .Include(i => i.FileResolution)
+                .Include(i => i.ResolutionRoles)
+                .SelectAsQueryable();
+        }
+
+        public static IQueryable<Resolution> GetByUniqueIdWithRoleAndContact(this IRepository<Resolution> repository, Guid uniqueIdResolution)
+        {
+            return repository.Query(t => t.UniqueId == uniqueIdResolution)
+                .Include(t => t.Category.CategoryFascicles.Select(f => f.FasciclePeriod))
+                .Include(t => t.Container.ReslLocation)
+                .Include(i => i.FileResolution)
+                .Include(i => i.ResolutionRoles)
+                .Include(i => i.ResolutionContacts)
                 .SelectAsQueryable();
         }
 

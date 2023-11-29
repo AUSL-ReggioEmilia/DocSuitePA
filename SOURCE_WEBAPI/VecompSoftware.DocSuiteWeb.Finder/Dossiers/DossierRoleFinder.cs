@@ -11,7 +11,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
         {
             return repository.Query(d => d.Dossier.UniqueId == idDossier && d.Status == DossierRoleStatus.Active,
                 optimization: optimization)
-                .Include(d => d.Role)
+                .Include(d => d.Role.TenantAOO)
                 .SelectAsQueryable();
         }
 

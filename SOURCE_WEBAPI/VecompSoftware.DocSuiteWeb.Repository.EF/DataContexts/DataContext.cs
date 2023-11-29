@@ -167,6 +167,11 @@ namespace VecompSoftware.DocSuiteWeb.Repository.EF.DataContexts
             foreach (DbEntityEntry dbEntityEntry in ChangeTracker.Entries())
             {
                 entityBase = (IEntity)dbEntityEntry.Entity;
+                if (_currentIdentity.IsServiceAccount && !string.IsNullOrEmpty(entityBase.LastChangedUser))
+                {
+                    _logger.WriteInfo(new LogMessage($"SyncObjectsStatePreCommit -> Current identity is IsServiceAccount. It will use '{entityBase.LastChangedUser}' to entity {entityBase.UniqueId}/{entityBase.GetType().Name}"), LogCategories);
+                    currentChangedUser = entityBase.LastChangedUser;
+                }
                 dbEntityEntry.State = StateHelper.ConvertState(entityBase.ObjectState);
                 if (_type_IUnauditableEntity.IsAssignableFrom(entityBase.GetType()) &&
                     !string.IsNullOrEmpty(entityBase.RegistrationUser))
@@ -192,7 +197,7 @@ namespace VecompSoftware.DocSuiteWeb.Repository.EF.DataContexts
 
                 if (entityBase.ObjectState == ObjectState.Modified)
                 {
-                    entityBase.LastChangedDate = currentDate;
+                    entityBase.LastChangedDate = DateTimeOffset.UtcNow;
                     entityBase.LastChangedUser = currentChangedUser;
                 }
             }

@@ -26,6 +26,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Dossiers
             modelTransformed.EndDate = model.EndDate;
             modelTransformed.ContainerId = model.Container_Id;
             modelTransformed.ContainerName = model.Container_Name;
+            modelTransformed.MetadataDesigner = model.MetadataDesigner;
+            modelTransformed.MetadataValues = model.MetadataValues;
 
             return modelTransformed;
         }

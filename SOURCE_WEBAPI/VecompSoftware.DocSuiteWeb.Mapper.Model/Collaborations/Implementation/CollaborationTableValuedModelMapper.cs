@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations;
-using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentArchives;
-using VecompSoftware.DocSuiteWeb.Model.Entities.Resolutions;
+using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Collaborations
 {
@@ -28,15 +27,15 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Collaborations
             modelTransformed.PublicationUser = model.PublicationUser;
             modelTransformed.RegistrationName = model.RegistrationName;
             modelTransformed.RegistrationUser = model.RegistrationUser;
+            modelTransformed.RegistrationDate = model.RegistrationDate;
             modelTransformed.LastChangedDate = model.LastChangedDate;
             modelTransformed.SignCount = model.SignCount;
             modelTransformed.Subject = model.Subject;
             modelTransformed.Year = model.Year;
             modelTransformed.TemplateName = model.TemplateName;
 
-            modelTransformed.Resolution = _mapperUnitOfWork.Repository<IDomainMapper<CollaborationTableValuedModel, ResolutionModel>>().Map(model, null);
-            modelTransformed.DocumentSeriesItem = _mapperUnitOfWork.Repository<IDomainMapper<CollaborationTableValuedModel, DocumentSeriesItemModel>>().Map(model, null);
-
+            modelTransformed.DocumentUnit = _mapperUnitOfWork.Repository<IDomainMapper<CollaborationTableValuedModel, DocumentUnitModel>>().Map(model, null);
+            
             return modelTransformed;
         }
         public override ICollection<CollaborationModel> MapCollection(ICollection<CollaborationTableValuedModel> model)

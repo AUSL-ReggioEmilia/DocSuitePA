@@ -62,26 +62,50 @@
     <Compile Include="DocumentGenerator\Parameters\StringParameter.cs" />
     <Compile Include="DocumentGenerator\XMLModelKind.cs" />
     <Compile Include="Documents\ArchiveDocument.cs" />
+    <Compile Include="Documents\ArchiveDocumentProxy.cs" />
     <Compile Include="Documents\AttributeValue.cs" />
     <Compile Include="Documents\AttributeValueType.cs" />
     <Compile Include="Documents\Document.cs" />
+    <Compile Include="Documents\DocumentProxyStoreActionType.cs" />
+    <Compile Include="Documents\DocumentProxyCreateActionType.cs" />
+    <Compile Include="Documents\DocumentSuiteInfo.cs" />
     <Compile Include="Documents\SearchableDocumentModel.cs" />
     <Compile Include="Documents\FilterDocumentModel.cs" />
     <Compile Include="Documents\Signs\DelegateUser.cs" />
     <Compile Include="Documents\Signs\OTPType.cs" />
     <Compile Include="Entities\Audits\AuditBuildModel.cs" />
     <Compile Include="Entities\Audits\AuditModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationActionType.cs" />
     <Compile Include="Entities\Collaborations\CollaborationBuildModel.cs" />
     <Compile Include="Entities\Collaborations\CollaborationDocumentGroupName.cs" />
+    <Compile Include="Entities\Collaborations\EvaluateCollaborationDocumentModel.cs" />
+    <Compile Include="Entities\Collaborations\EvaluateCollaborationModel.cs" />
+    <Compile Include="Entities\Collaborations\CollaborationFinderModel.cs" />
+    <Compile Include="Entities\Collaborations\SynchronizeCollaborationModel.cs" />
+    <Compile Include="Entities\Collaborations\DraftReferenceType.cs" />
     <Compile Include="Entities\Commons\CategoryFascicleRightTableValuedModel.cs" />
     <Compile Include="Entities\Commons\CategoryModelType.cs" />
     <Compile Include="Entities\Commons\ContactBuildModel.cs" />
     <Compile Include="Entities\Commons\RoleFinderModel.cs" />
     <Compile Include="Entities\Commons\RoleFullTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\RoleTypology.cs" />
+    <Compile Include="Entities\Commons\UpdatedPropertyType.cs" />
+    <Compile Include="Entities\Conservations\ConservationModel.cs" />
+    <Compile Include="Entities\Conservations\ConservationStatus.cs" />
+    <Compile Include="Entities\Conservations\ConservationType.cs" />
+    <Compile Include="Entities\DocumentUnits\DocumentUnitContactModel.cs" />
     <Compile Include="Entities\Dossiers\DossierStatus.cs" />
     <Compile Include="Entities\Dossiers\DossierType.cs" />
     <Compile Include="Entities\Commons\RoleUserFinderModel.cs" />
     <Compile Include="Entities\Commons\RoleUserModel.cs" />
+    <Compile Include="Entities\Fascicles\EvaluateFascicleModel.cs" />
+    <Compile Include="Entities\Fascicles\FascicleDocumentUnitTableValuedModel.cs" />
+    <Compile Include="Entities\Commons\RoleBuildModel.cs" />
+    <Compile Include="Entities\Fascicles\ViewableFascicleTableValuedModel.cs" />
+    <Compile Include="Entities\Resolutions\WebPubblicationModel.cs" />
+    <Compile Include="Entities\Templates\TemplateCollaborationRepresentationType.cs" />
+    <Compile Include="Entities\UDS\UDSFieldListStatus.cs" />
+    <Compile Include="Entities\UDS\UDSFieldListTableValuedModel.cs" />
     <Compile Include="Entities\Workflows\WorkflowMetadataDraftModel.cs" />
     <Compile Include="Entities\Dossiers\DossierBuildModel.cs" />
     <Compile Include="Integrations\GenericProcesses\FascicleCustomAction.cs" />
@@ -113,6 +137,7 @@
     <Compile Include="Integrations\ZenDesk\SectionModel.cs" />
     <Compile Include="Integrations\ZenDesk\CategoriesModel.cs" />
     <Compile Include="Integrations\ZenDesk\SectionsModel.cs" />
+    <Compile Include="Metadata\NumberFieldFormatType.cs" />
     <Compile Include="Parameters\JsonParameterNames.cs" />
     <Compile Include="Metadata\MetadataValueModel.cs" />
     <Compile Include="Parameters\ODATA\Finders\CategoryFinderModel.cs" />
@@ -131,7 +156,7 @@
     <Compile Include="Entities\PECMails\PECMailBoxConfigurationTableValuedModel.cs" />
     <Compile Include="Entities\PECMails\PECMailBoxModel.cs" />
     <Compile Include="Entities\PECMails\PECMailBoxTableValuedModel.cs" />
-    <Compile Include="Entities\Collaborations\ICollaborationDraftModel.cs" />
+    <Compile Include="Entities\Protocols\IProtocolDraftModel.cs" />
     <Compile Include="Entities\PECMails\PECMailBuildModel.cs" />
     <Compile Include="Entities\PECMails\PECMailDirection.cs" />
     <Compile Include="Entities\PECMails\PECMailModel.cs" />
@@ -314,7 +339,6 @@
     <Compile Include="Entities\Protocols\ProtocolContactManualModel.cs" />
     <Compile Include="Entities\Protocols\ProtocolTypeModel.cs" />
     <Compile Include="Entities\Protocols\ProtocolTableValuedModel.cs" />
-    <Compile Include="Entities\Protocols\ProtocolParerModel.cs" />
     <Compile Include="Entities\Protocols\ProtocolModel.cs" />
     <Compile Include="Entities\Resolutions\ResolutionModel.cs" />
     <Compile Include="Entities\UDS\UDSBuildModel.cs" />
@@ -403,7 +427,6 @@
   <ItemGroup>
     <Folder Include="Commons\" />
     <Folder Include="Entities\Reportings\" />
-    <Folder Include="Processes\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">

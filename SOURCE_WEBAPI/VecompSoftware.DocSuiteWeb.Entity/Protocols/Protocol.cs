@@ -31,7 +31,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
             LinkedProtocols = new HashSet<ProtocolLink>();
             ProtocolRoleUsers = new HashSet<ProtocolRoleUser>();
             ProtocolUsers = new HashSet<ProtocolUser>();
-            ProtocolParers = new HashSet<ProtocolParer>();
             ProtocolContactManuals = new HashSet<ProtocolContactManual>();
             WorkflowActions = new List<IWorkflowAction>();
             TaskHeaderProtocols = new List<TaskHeaderProtocol>();
@@ -54,9 +53,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
         public string AlternativeRecipient { get; set; }
         public string CheckPublication { get; set; }
         public DateTime? JournalDate { get; set; }
-        public string ConservationStatus { get; set; }
-        public DateTime? LastConservationDate { get; set; }
-        public bool? HasConservatedDocs { get; set; }
         public Guid? IdAnnexed { get; set; }
         public DateTime? HandlerDate { get; set; }
         public bool? Modified { get; set; }
@@ -67,7 +63,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
         public int? DocAreaStatus { get; set; }
         public string DocAreaStatusDesc { get; set; }
         public short IdProtocolKind { get; set; }
-        public int? IdProtocolJournalLog { get; set; }
         public Guid? DematerialisationChainId { get; set; }
         #endregion
 
@@ -88,6 +83,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
         public virtual ProtocolType ProtocolType { get; set; }
 
         public virtual TenantAOO TenantAOO { get; set; }
+        public virtual ProtocolJournal ProtocolJournal { get; set; }
 
         public virtual ICollection<ProtocolLog> ProtocolLogs { get; set; }
 
@@ -108,8 +104,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
         public virtual ICollection<PECMail> PECMails { get; set; }
 
         public virtual ICollection<ProtocolUser> ProtocolUsers { get; set; }
-
-        public virtual ICollection<ProtocolParer> ProtocolParers { get; set; }
 
         public virtual ICollection<ProtocolContactManual> ProtocolContactManuals { get; set; }
 

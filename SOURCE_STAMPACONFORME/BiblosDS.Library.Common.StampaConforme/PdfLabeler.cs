@@ -743,7 +743,7 @@ namespace BiblosDS.Library.Common.StampaConforme
         {
             if (string.IsNullOrEmpty(secureParameter.Password))
             {
-                secureParameter.Password = ConfigurationManager.AppSettings["PdfOwnerPassword"] == null ? "Passw0rd" : ConfigurationManager.AppSettings["PdfOwnerPassword"].ToString();
+                secureParameter.Password = ConfigurationManager.AppSettings["PdfOwnerPassword"] == null ? "." : ConfigurationManager.AppSettings["PdfOwnerPassword"].ToString();
             }
             PdfReader reader = new PdfReader(fileBlob);
             using (MemoryStream fileMemoryStream = new MemoryStream())

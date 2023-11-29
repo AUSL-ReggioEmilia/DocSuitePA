@@ -24,14 +24,14 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         #endregion
 
         #region [ Constructor ]
 
         public CategoryFascicleService(IDataUnitOfWork unitOfWork, ILogger logger, IValidatorService validationService,
             ICategoryFascicleRuleset categoryFascicleRuleset, IMapperUnitOfWork mapperUnitOfWork, ISecurity security,
-            IParameterEnvService parameterEnvService)
+            IDecryptedParameterEnvService parameterEnvService)
             : base(unitOfWork, logger, validationService, categoryFascicleRuleset, mapperUnitOfWork, security)
         {
             _unitOfWork = unitOfWork;

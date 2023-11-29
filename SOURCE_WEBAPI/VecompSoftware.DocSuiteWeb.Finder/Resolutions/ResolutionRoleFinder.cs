@@ -13,7 +13,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Resolutions
         public static IQueryable<ResolutionRole> GetByResolution(this IRepository<ResolutionRole> repository, int idResolution)
         {
             IQueryable<ResolutionRole> results = repository.Query(t => t.EntityId == idResolution)
-                .Include(i => i.Role)
+                .Include(i => i.Role.TenantAOO)
                 .SelectAsQueryable();
             return results;
         }

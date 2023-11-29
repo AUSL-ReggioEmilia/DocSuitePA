@@ -36,13 +36,13 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols
         private readonly ICurrentIdentity _currentIdentity;
         private readonly IQueueService _queueService;
         private readonly ICQRSMessageMapper _cqrsMapper;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         #endregion
 
         #region [ Constructor ]
 
         public ProtocolController(IProtocolService service, IDataUnitOfWork unitOfWork, ILogger logger, ICurrentIdentity currentIdentity, IQueueService queueService, 
-            ICQRSMessageMapper cqrsMapper, IParameterEnvService parameterEnvService)
+            ICQRSMessageMapper cqrsMapper, IDecryptedParameterEnvService parameterEnvService)
             : base(service, unitOfWork, logger)
         {
             _unitOfWork = unitOfWork;
@@ -57,12 +57,12 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols
 
         #region [ Methods ]
 
-        protected override void AfterSave(Protocol entity)
+        protected override void AfterSave(Protocol entity, Protocol existingEntity)
         {
             try
             {
                 _logger.WriteDebug(new LogMessage($"VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols.AfterSave with entity UniqueId {entity.UniqueId}"), LogCategories);
-                Protocol protocol = _unitOfWork.Repository<Protocol>().GetByUniqueIdWithRole(entity.UniqueId).FirstOrDefault();
+                Protocol protocol = _unitOfWork.Repository<Protocol>().GetByUniqueIdWithRoleAndContact(entity.UniqueId).FirstOrDefault();
                 if (protocol != null)
                 {
                     IList<CategoryFascicle> categoryFascicles = protocol.Category.CategoryFascicles.Where(f => f.DSWEnvironment == (int)DSWEnvironmentType.Protocol || f.DSWEnvironment == 0).ToList();
@@ -71,7 +71,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols
                     {
                         categoryFascicle = categoryFascicles.FirstOrDefault(f => f.FascicleType == FascicleType.Period);
                     }
-                    IIdentityContext identity = new IdentityContext(_currentIdentity.FullUserName);
+                    IIdentityContext identity = new IdentityContext(protocol.LastChangedUser);
                     ICQRS command = null;
 
                     if (CurrentUpdateActionType.HasValue && CurrentUpdateActionType == UpdateActionType.ActivateProtocol)
@@ -126,7 +126,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Protocols
             {
                 _logger.WriteError(ex, LogCategories);
             }
-            base.AfterSave(entity);
+            base.AfterSave(entity, existingEntity);
         }
 
         #endregion

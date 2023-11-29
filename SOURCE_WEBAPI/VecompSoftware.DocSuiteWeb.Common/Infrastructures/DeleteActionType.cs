@@ -27,5 +27,14 @@ namespace VecompSoftware.DocSuiteWeb.Common.Infrastructures
 
         [Description("CancelProcess")]
         CancelProcess = DeleteCategoryFascicle * 2,
+
+        [Description("DeleteDocumentSeriesItem")]
+        DeleteDocumentSeriesItem = CancelProcess * 2,
+
+        [Description("DeleteUDSFieldList")]
+        DeleteUDSFieldList = DeleteDocumentSeriesItem * 2,
+
+        [Description("DeleteCollaboration")]
+        DeleteCollaboration = DeleteUDSFieldList * 2,
     }
 }

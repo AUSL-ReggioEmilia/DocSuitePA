@@ -13,8 +13,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Commons
             #region [ Base ]
             entityTransformed.EntityId = entity.EntityId;
             entityTransformed.IdContactType = entity.IdContactType;
-            entityTransformed.ActiveFrom = entity.ActiveFrom;
-            entityTransformed.ActiveTo = entity.ActiveTo;
             entityTransformed.isActive = entity.IsActive;
             entityTransformed.IncrementalFather = entity.IncrementalFather;
             entityTransformed.Description = entity.Description;
@@ -36,7 +34,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Commons
             entityTransformed.isLocked = entity.IsLocked;
             entityTransformed.isNotExpandable = entity.IsNotExpandable;
             entityTransformed.FullIncrementalPath = entity.FullIncrementalPath;
-            entityTransformed.isChanged = entity.IsChanged;
             entityTransformed.UniqueId = entity.UniqueId;
             entityTransformed.RegistrationDate = entity.RegistrationDate;
             entityTransformed.RegistrationUser = entity.RegistrationUser;

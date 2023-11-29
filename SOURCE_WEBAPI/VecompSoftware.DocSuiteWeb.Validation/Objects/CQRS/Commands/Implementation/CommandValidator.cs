@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Security;
@@ -10,8 +11,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.CQRS.Commands
     public class CommandValidator : ObjectValidator<ICommand, CommandValidator>, ICommandValidator
     {
         #region [ Constructor ]
-        public CommandValidator(ILogger logger, ICommandValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public CommandValidator(ILogger logger, ICommandValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService  parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         { }
 
         #endregion

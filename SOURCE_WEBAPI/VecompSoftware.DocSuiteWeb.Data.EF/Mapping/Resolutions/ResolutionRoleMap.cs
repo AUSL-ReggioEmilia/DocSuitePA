@@ -14,8 +14,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Resolutions
 
             #region [ Configure Properties ]
 
-            Property(x => x.EntityId)
-                .HasColumnName("idResolution")
+            Property(x => x.UniqueId)
+                .HasColumnName("UniqueId")
                 .IsRequired();
 
             Property(x => x.IdResolutionRoleType)
@@ -26,20 +26,24 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Resolutions
                 .HasColumnName("RegistrationDate")
                 .IsRequired();
 
-            Property(t => t.RegistrationUser)
+            Property(x => x.RegistrationUser)
                 .HasColumnName("RegistrationUser")
                 .IsRequired();
 
-            Property(t => t.LastChangedUser)
+            Property(x => x.LastChangedUser)
                 .HasColumnName("LastChangedUser")
                 .IsOptional();
 
-            Property(t => t.LastChangedDate)
+            Property(x => x.LastChangedDate)
                 .HasColumnName("LastChangedDate")
                 .IsOptional();
 
-            Ignore(x => x.Timestamp)
-                .Ignore(x => x.EntityShortId);
+            Property(x => x.Timestamp)
+                .HasColumnName("Timestamp")
+                .IsRequired();
+
+            Ignore(x => x.EntityId);
+            Ignore(x => x.EntityShortId);
 
             #endregion
 
@@ -49,6 +53,9 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Resolutions
                 .WithMany(t => t.ResolutionRoles)
                 .Map(m => m.MapKey("idRole"));
 
+            HasRequired(t => t.Resolution)
+                .WithMany(t => t.ResolutionRoles)
+                .Map(m => m.MapKey("UniqueIdResolution"));
             #endregion
         }
     }

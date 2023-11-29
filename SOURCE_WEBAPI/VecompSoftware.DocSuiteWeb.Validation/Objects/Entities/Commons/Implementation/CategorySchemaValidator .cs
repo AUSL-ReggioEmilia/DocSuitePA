@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -11,8 +12,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
     public class CategorySchemaValidator : ObjectValidator<CategorySchema, CategorySchemaValidator>, ICategorySchemaValidator
     {
         #region [ Constructor ]
-        public CategorySchemaValidator(ILogger logger, ICategorySchemaValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public CategorySchemaValidator(ILogger logger, ICategorySchemaValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         { }
 
         #endregion

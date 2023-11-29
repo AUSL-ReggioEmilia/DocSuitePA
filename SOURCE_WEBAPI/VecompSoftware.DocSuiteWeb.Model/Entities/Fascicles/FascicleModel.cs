@@ -50,6 +50,8 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
         public string MetadataValues { get; set; }
         public int? DSWEnvironment { get; set; }
         public string CustomActions { get; set; }
+        public string ProcessLabel { get; set; }
+        public string DossierFolderLabel { get; set; }
         public MetadataRepositoryModel MetadataRepository { get; set; }
         public ContactModel ManagerC { get; set; }
         public ICollection<ContactModel> Contacts { get; set; }

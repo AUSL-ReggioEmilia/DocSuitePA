@@ -13,11 +13,13 @@ namespace VecompSoftware.DocSuite.Document
 
         Task<ICollection<TArchiveDocument>> InsertDocumentsAsync(ICollection<TArchiveDocument> documents, Guid? idChain = null);
 
-        Task<Guid> GetDocumentIdAsync(string archiveName, int documentId);
+        Task<TArchiveDocument> UpdateDocumentAsync(TArchiveDocument documentModel, Dictionary<string, string> attributes);
 
         Task<IEnumerable<TContext>> GetDocumentLatestVersionFromChainAsync(Guid idChain);
 
         Task<byte[]> GetDocumentContentAsync(Guid idDocument);
+
+        Task<TContext> GetDocumentAsync(Guid idDocument);
 
         Task<bool> HasActiveDocumentsAsync(Guid idChain);
 
@@ -25,5 +27,9 @@ namespace VecompSoftware.DocSuite.Document
         Task<bool> IsDocumentsSignedAsync(List<Guid> idDocuments);
 
         Task<ICollection<Guid>> FullTextFindDocumentsAsync(IList<string> archiveNames, string filter);
+        
+        Task<Guid> GetDocumentIdAsync(int idBiblos, string archiveName);
+
+        Task DetachDocumentAsync(Guid idDocument);
     }
 }

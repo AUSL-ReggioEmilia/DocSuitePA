@@ -44,7 +44,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Commons
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
                 ICollection<RoleFullTableValuedModel> roles = _unitOfWork.Repository<Role>().FindRoles(Username, Domain, finder.Name, finder.UniqueId, finder.ParentId, finder.ServiceCode,
-                    finder.TenantId, finder.Environment, finder.LoadOnlyRoot, finder.LoadOnlyMy, finder.LoadAlsoParent);
+                    finder.IdTenantAOO, finder.Environment, finder.LoadOnlyRoot, finder.LoadOnlyMy, finder.LoadAlsoParent, finder.RoleTypology, finder.IdCategory, finder.IdDossierFolder);
                 ICollection<RoleModel> results = _mapperUnitOfWork.Repository<IDomainMapper<RoleFullTableValuedModel, RoleModel>>().MapCollection(roles);
 
                 // build tree model only if loading parents with children
@@ -55,6 +55,17 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Commons
                 }
 
                 return Ok(results);
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult CountFindRoles(ODataQueryOptions<Role> options, [FromODataUri]RoleFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                int rolesCount = _unitOfWork.Repository<Role>().CountFindRoles(Username, Domain, finder.Name, finder.UniqueId, finder.ParentId, finder.ServiceCode,
+                    finder.IdTenantAOO, finder.Environment, finder.LoadOnlyRoot, finder.LoadOnlyMy, finder.LoadAlsoParent, finder.RoleTypology, finder.IdCategory, finder.IdDossierFolder);
+                return Ok(rolesCount);
             }, _logger, LogCategories);
         }
 

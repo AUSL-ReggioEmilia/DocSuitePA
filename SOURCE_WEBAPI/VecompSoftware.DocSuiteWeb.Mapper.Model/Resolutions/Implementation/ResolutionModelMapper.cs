@@ -58,6 +58,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Resolutions
             modelTransformed.WarningUser = entity.WarningUser;
             modelTransformed.PublishingUser = entity.PublishingUser;
             modelTransformed.AdoptionUser = entity.AdoptionUser;
+            modelTransformed.Amount = entity.Amount;
             modelTransformed.UniqueId = entity.UniqueId;
             modelTransformed.RegistrationUser = entity.AdoptionUser;
             modelTransformed.LastChangedUser = entity.LastChangedUser;

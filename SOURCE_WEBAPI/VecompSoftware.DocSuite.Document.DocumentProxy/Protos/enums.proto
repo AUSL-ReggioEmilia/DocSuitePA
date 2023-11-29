@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dgroove.suite.documentproxy;
+option csharp_namespace = "VecompSoftware.DocSuite.Document.DocumentProxy";
+
+enum MessageStatus {
+  INVALID = 0;
+  SUCCESS = 1;
+  FAILURE = 2;
+}
+
+enum CreateActionType{
+	CREATE_NONE = 0;
+	EXTRACT_EML = 1;
+	EXTRACT_ZIP = 2;
+}
+
+enum GetActionType{
+	GET_NONE = 0;
+	GENERATE_ARCHIVE = 1;
+	GENERATE_ENCRYPTED_ARCHIVE = 2;
+}
+
+enum StoreActionType{
+	STORE_TEMPORARY = 0;
+	STORE_PERMANENT = 1;
+}

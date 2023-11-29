@@ -9,6 +9,11 @@
         internal const string Schema_WebApiPublic = "webapipublic";
         #endregion
 
+        #region [ Common ]
+        internal const string SQL_Param_UserName = "@UserName";
+        internal const string SQL_Param_Domain = "@Domain";
+        #endregion
+
         #region[ Fascicles]
         #region [ Function Names ]
         internal const string SQL_FX_Fascicle_AvailableFasciclesFromDocumentUnit = "[webapiprivate].Fascicles_FX_AvailableFasciclesFromDocumentUnit";
@@ -33,6 +38,11 @@
         internal const string SQL_FX_Fascicle_CountAuthorizedFasciclesFromDocumentUnit = "[webapiprivate].Fascicles_FX_CountAuthorizedFasciclesFromDocumentUnit";
         internal const string SQL_FX_Fascicle_AuthorizedFasciclesFromDocumentUnit = "[webapiprivate].Fascicles_FX_AuthorizedFasciclesFromDocumentUnit";
         internal const string SQL_FX_FascicleFolder_FX_FascicleFoldersWithSameName = "[webapiprivate].FascicleFolder_FX_FascicleFoldersWithSameName";
+        internal const string SQL_FX_FascicleFolder_GetChildren = "[webapiprivate].[FascicleFolder_FX_GetChildren]";
+        internal const string SQL_FX_Fascicle_FindAuthorizedCategoryFascicles = "[webapiprivate].[Fascicles_FX_FindAuthorizedCategoryFascicles]";
+        internal const string SQL_FX_Fascicle_CountAuthorizedCategoryFascicles = "[webapiprivate].[Fascicles_FX_CountAuthorizedCategoryFascicles]";
+        internal const string SQL_FX_FascicleDocumentUnit_FX_GetFascicleDocumentUnits = "[webapiprivate].[FascicleDocumentUnit_FX_GetFascicleDocumentUnits]";
+        internal const string SQL_FX_Fascicle_FX_FasciclesFromDocumentUnit = "[webapiprivate].[Fascicles_FX_FasciclesFromDocumentUnit]";
         #endregion
         #region [ Params ]
         internal const string SQL_Param_Fascicle_UserName = "@UserName";
@@ -64,6 +74,7 @@
         internal const string SQL_Param_Fascicle_Classifications = "@Classifications";
         internal const string SQL_Param_Fascicle_IncludeChildClassifications = "@IncludeChildClassifications";
         internal const string SQL_Param_Fascicle_Roles = "@Roles";
+        internal const string SQL_Param_Fascicle_MasterRole = "@MasterRole";
         internal const string SQL_Param_Fascicle_ApplySecurity = "@ApplySecurity";
         internal const string SQL_Param_Fascicle_Container = "@Container";
         internal const string SQL_Param_Fascicle_MetadataValues = "@MetadataValues";
@@ -73,6 +84,10 @@
         internal const string SQL_Param_Fascicle_Title = "@Title";
         internal const string SQL_Param_Fascicle_IsManager = "@IsManager";
         internal const string SQL_Param_Fascicle_IsSecretary = "@IsSecretary";
+        internal const string SQL_Param_Fascicle_IdProcess = "@IdProcess";
+        internal const string SQL_Param_Fascicle_IdDossierFolder = "@IdDossierFolder";
+        internal const string SQL_Param_Fascicle_ProcessLabel = "@ProcessLabel";
+        internal const string SQL_Param_Fascicle_DossierFolderLabel = "@DossierFolderLabel";
         internal const string SQL_Param_FascicleFolder_ReferenceFascicleId = "@ReferenceFascicleId";
         internal const string SQL_Param_FascicleFolder_DestinationFascicleId = "@DestinationFascicleId";
         internal const string SQL_Param_FascicleFolder_FascicleFolderLevel = "@FascicleFolderLevel";
@@ -151,6 +166,7 @@
         internal const string SQL_FX_Contact_GetContactParents = "[webapiprivate].Contact_FX_GetContactParents";
         internal const string SQL_FX_Contact_GetAuthorizedRoleContacts = "[webapiprivate].Contact_FX_GetAuthorizedRoleContacts";
         internal const string SQL_FX_Role_FindRoles = "[webapiprivate].Role_FX_FindRoles";
+        internal const string SQL_FX_Role_CountFindRoles = "[webapiprivate].Role_FX_CountFindRoles";
         internal const string SQL_FX_Category_FindFascicolableCategory = "[webapiprivate].Category_FX_FindFascicolableCategory";
         internal const string SQL_FX_UserDomain_UserRights = "[webapiprivate].UserDomain_FX_UserRights";
         internal const string SQL_FX_RoleUser_AllSecretariesFromDossier = "[webapiprivate].[RoleUser_FX_AllSecretariesFromDossier]";
@@ -188,17 +204,21 @@
         internal const string SQL_Param_Contact_FascicleParentId = "@FascicleParentId";
         internal const string SQL_Param_Contact_IdContact = "@IdContact";
         internal const string SQL_Param_Contact_AddressBookAdministratorGroups = "@AddressBookAdministratorGroups";
+        internal const string SQL_Param_Contact_IdRole = "@IdRole";
         internal const string SQL_Param_Role_UserName = "@UserName";
         internal const string SQL_Param_Role_Domain = "@Domain";
         internal const string SQL_Param_Role_Name = "@Name";
         internal const string SQL_Param_Role_UniqueId = "@UniqueId";
         internal const string SQL_Param_Role_ParentId = "@ParentId";
         internal const string SQL_Param_Role_ServiceCode = "@ServiceCode";
-        internal const string SQL_Param_Role_TenantId = "@TenantId";
+        internal const string SQL_Param_Role_IdTenantAOO = "@IdTenantAOO";
         internal const string SQL_Param_Role_Environment = "@Environment";
         internal const string SQL_Param_Role_LoadOnlyRoot = "@LoadOnlyRoot";
         internal const string SQL_Param_Role_LoadOnlyMy = "@LoadOnlyMy";
         internal const string SQL_Param_Role_LoadAlsoParent = "@LoadAlsoParent";
+        internal const string SQL_Param_Role_RoleTypology = "@RoleTypology";
+        internal const string SQL_Param_Role_IdCategory = "@IdCategory";
+        internal const string SQL_Param_Role_IdDossierFolder = "@IdDossierFolder";
         internal const string SQL_Param_UserDomain_UserName = "@UserName";
         internal const string SQL_Param_UserDomain_Domain = "@Domain";
         internal const string SQL_Param_UserDomain_RoleGroupPECRightEnabled = "@RoleGroupPECRightEnabled";
@@ -239,7 +259,9 @@
         internal const string SQL_FX_Template_CountInvalidTemplateUsers = "[webapiprivate].TemplateCollaboration_FX_CountInvalidTemplateUsers";
         internal const string SQL_FX_Template_CountInvalidTemplateRoles = "[webapiprivate].TemplateCollaboration_FX_CountInvalidTemplateRoles";
         internal const string SQL_FX_TemplateCollaboration_AuthorizedTemplates = "[webapiprivate].TemplateCollaboration_FX_AuthorizedTemplates";
+        internal const string SQL_FX_TemplateCollaboration_FX_GetAllParentsOfTemplate = "[webapiprivate].TemplateCollaboration_FX_GetAllParentsOfTemplate";
         internal const string SQL_FX_TemplateCollaboration_InvalidateTemplatesByUserAccounts = "[webapiprivate].TemplateCollaboration_FX_InvalidTemplatesByUserAccount";
+        internal const string SQL_FX_TemplateCollaboration_GetChildren = "[webapiprivate].TemplateCollaboration_FX_GetChildren";
         #endregion
 
         #region [ Params ]
@@ -248,13 +270,15 @@
         internal const string SQL_Param_Template_Domain = "@Domain";
         internal const string SQL_Param_Template_Account = "@Account";
         internal const string SQL_Param_Template_idRole = "@idRole";
+        internal const string SQL_Param_Template_IdParent = "@IdParent";
+        internal const string SQL_Param_Template_Status = "@Status";
         #endregion
         #endregion
 
         #region[Collaborations]
         #region[Function Name]
         internal const string SQL_FX_Collaboration_CollaborationsSigning = "[webapiprivate].Collaboration_FX_CollaborationsSigning";
-        internal const string SQL_FX_Collaboration_CollaborationsDelegationSigning = "[webapiprivate].Collaboration_FX_CollaborationsDeletationSigning";
+        internal const string SQL_FX_Collaboration_CollaborationsDelegationSigning = "[webapiprivate].Collaboration_FX_CollaborationsDelegationSigning";
         internal const string SQL_FX_Collaboration_ProposedCollaborations = "[webapiprivate].Collaboration_FX_ProposedCollaborations";
         internal const string SQL_FX_Collaboration_AllUserCollaborations = "[webapiprivate].Collaboration_FX_AllUserCollaborations";
         internal const string SQL_FX_Collaboration_ActiveUserCollaborations = "[webapiprivate].Collaboration_FX_ActiveUserCollaborations";
@@ -264,12 +288,32 @@
         internal const string SQL_FX_Collaboration_CollaborationsManaging = "[webapiprivate].Collaboration_FX_CollaborationsManaging";
         internal const string SQL_FX_Collaboration_CheckedOutCollaborations = "[webapiprivate].Collaboration_FX_CheckedOutCollaborations";
 
-
+        internal const string SQL_FX_Collaboration_CountCollaborationsSigning = "[webapiprivate].Collaboration_FX_CountCollaborationsSigning";
+        internal const string SQL_FX_Collaboration_CountCollaborationsDelegationSigning = "[webapiprivate].Collaboration_FX_CountCollaborationsDelegationSigning";
+        internal const string SQL_FX_Collaboration_CountProposedCollaborations = "[webapiprivate].Collaboration_FX_CountProposedCollaborations";
+        internal const string SQL_FX_Collaboration_CountAllUserCollaborations = "[webapiprivate].Collaboration_FX_CountAllUserCollaborations";
+        internal const string SQL_FX_Collaboration_CountActiveUserCollaborations = "[webapiprivate].Collaboration_FX_CountActiveUserCollaborations";
+        internal const string SQL_FX_Collaboration_CountRegisteredCollaborations = "[webapiprivate].Collaboration_FX_CountRegisteredCollaborations";
+        internal const string SQL_FX_Collaboration_CountAlreadySignedCollaborations = "[webapiprivate].Collaboration_FX_CountAlreadySignedCollaborations";
+        internal const string SQL_FX_Collaboration_CountProtocolAdmissionCollaborations = "[webapiprivate].Collaboration_FX_CountProtocolAdmissionCollaborations";
+        internal const string SQL_FX_Collaboration_CountCollaborationsManaging = "[webapiprivate].Collaboration_FX_CountCollaborationsManaging";
+        internal const string SQL_FX_Collaboration_CountCheckedOutCollaborations = "[webapiprivate].Collaboration_FX_CountCheckedOutCollaborations";
         #endregion
         #region[Params]
         internal const string SQL_Param_Collaboration_IsRequired = "@IsRequired";
+        internal const string SQL_Param_Collaboration_DateFrom = "@DateFrom";
+        internal const string SQL_Param_Collaboration_DateTo = "@DateTo";
         internal const string SQL_Param_Collaboration_UserName = "@UserName";
         internal const string SQL_Param_Collaboration_Signers = "@Signers";
+        internal const string SQL_Param_Collaboration_EntityId = "@EntityId";
+        internal const string SQL_Param_Collaboration_DocumentType = "@DocumentType";
+        internal const string SQL_Param_Collaboration_IdTenant = "@IdTenant";
+        internal const string SQL_Param_Collaboration_MemorandumDate = "@MemorandumDate";
+        internal const string SQL_Param_Collaboration_Object = "@Object";
+        internal const string SQL_Param_Collaboration_Note = "@Note";
+        internal const string SQL_Param_Collaboration_RegistrationName = "@RegistrationName";
+        internal const string SQL_Param_Collaboration_Skip = "@Skip";
+        internal const string SQL_Param_Collaboration_Top = "@Top";
         #endregion
         #endregion
 
@@ -292,6 +336,8 @@
         internal const string SQL_FX_DossierFolder_FindProcessFolders = "[webapiprivate].[DossierFolders_FX_FindProcessFolders]";
         internal const string SQL_FX_DossierFolder_GetAllParentsOfFascicle = "[webapiprivate].[DossierFolder_FX_GetAllParentsOfFascicle]";
         internal const string SQL_FX_DossierFolder_GetParent = "[webapiprivate].[DossierFolder_FX_GetParent]";
+        internal const string SQL_FX_DossierFolder_GetChildren = "[webapiprivate].[DossierFolder_FX_GetChildren]";
+        internal const string SQL_FX_DossierFolder_FX_GetAllDossierFolderLabelName = "[webapiprivate].[DossierFolders_FX_GetAllDossierFolderLabelName]";
         #endregion
 
         #region [ Params ]
@@ -312,6 +358,7 @@
         internal const string SQL_Param_Dossier_IdMetadataRepository = "@IdMetadataRepository";
         internal const string SQL_Param_Dossier_MetadataValue = "@MetadataValue";
         internal const string SQL_Param_Dossier_MetadataValues = "@MetadataValues";
+        internal const string SQL_Param_Dossier_DescendingOrder = "@DescendingOrder";
         internal const string SQL_Param_DossierFolder_IdDossierFolder = "@IdDossierFolder";
         internal const string SQL_Param_DossierFolder_IdDossierParentFolder = "@IdParent";
         internal const string SQL_Param_DossierFolder_Status = "@Status";
@@ -325,6 +372,9 @@
         internal const string SQL_Param_DossierFolder_LoadOnlyActive = "@LoadOnlyActive";
         internal const string SQL_Param_DossierFolder_LoadOnlyMy = "@LoadOnlyMy";
         internal const string SQL_Param_Dossier_DossierType = "@DossierType";
+        internal const string SQL_Param_DossierFolder_Skip = "@Skip";
+        internal const string SQL_Param_DossierFolder_Top = "@Top";
+        internal const string SQL_Param_DossierFolder_LoadOnlyFolders = "@LoadOnlyFolders";
 
         #endregion
         #endregion
@@ -340,6 +390,7 @@
         internal const string SQL_Param_WorkflowRepository_Environment = "@Environment";
         internal const string SQL_Param_WorkflowRepository_AnyEnvironment = "@AnyEnvironment";
         internal const string SQL_Param_WorkflowRepository_DocumentRequired = "@DocumentRequired";
+        internal const string SQL_Param_WorkflowRepository_DocumentUnitRequired = "@DocumentUnitRequired";
         internal const string SQL_Param_WorkflowRepository_ShowOnlyNoInstanceWorkflows = "@ShowOnlyNoInstanceWorkflows";
         internal const string SQL_Param_WorkflowRepository_ShowOnlyHasIsFascicleClosedRequired = "@ShowOnlyHasIsFascicleClosedRequired";
 
@@ -351,6 +402,9 @@
         internal const string SQL_FX_UDSRepository_ViewableRepositoriesByTypology = "[webapiprivate].[UDSRepository_FX_ViewableRepositoriesByTypology]";
         internal const string SQL_FX_UDSRepository_InsertableRepositoriesByTypology = "[webapiprivate].[UDSRepository_FX_InsertableRepositoriesByTypology]";
         internal const string SQL_FX_UDSRepository_AvailableCQRSPublishedUDSRepositories = "[webapiprivate].[UDSRepository_FX_AvailableCQRSPublishedUDSRepositories]";
+        internal const string SQL_FX_UDSFieldList_GetChildrenByParent = "[webapiprivate].[UDSFieldList_FX_GetChildrenByParent]";
+        internal const string SQL_FX_UDSFieldList_GetParent = "[webapiprivate].[UDSFieldList_FX_GetParent]";
+        internal const string SQL_FX_UDSFieldList_GetAllParents = "[webapiprivate].[UDSFieldList_FX_GetAllParents]";
         #endregion
         #region [Params ]
         internal const string SQL_Param_UDSRepository_UserName = "@UserName";
@@ -360,6 +414,7 @@
         internal const string SQL_Param_UDSRepository_Name = "@Name";
         internal const string SQL_Param_UDSRepository_Alias = "@Alias";
         internal const string SQL_Param_UDSRepository_Container = "@ContainerId";
+        internal const string SQL_Param_UDSFieldList_IdUDSFieldList = "@IdUDSFieldList";
         #endregion
         #endregion
 
@@ -420,6 +475,8 @@
         #region [ Function Names ]
 
         internal const string SQL_FX_Process_FindProcesses = "[webapiprivate].[Processes_FX_FindProcesses]";
+        internal const string SQL_FX_Process_FindCategoryProcesses = "[webapiprivate].[Processes_FX_FindCategoryProcesses]";
+        internal const string SQL_FX_Process_CountCategoryProcesses = "[webapiprivate].[Processes_FX_CountCategoryProcesses]";
 
         #endregion
 
@@ -431,6 +488,9 @@
         internal const string SQL_Param_Process_CategoryId = "@CategoryId";
         internal const string SQL_Param_Process_DossierId = "@DossierId";
         internal const string SQL_Param_Process_LoadOnlyMy = "@LoadOnlyMy";
+        internal const string SQL_Param_Process_IsProcessActive = "@IsProcessActive";
+        internal const string SQL_Param_Process_Skip = "@Skip";
+        internal const string SQL_Param_Process_Top = "@Top";
 
         #endregion
 

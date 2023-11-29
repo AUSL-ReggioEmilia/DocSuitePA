@@ -27,7 +27,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Securities
         private readonly ILogger _logger;
         private readonly Guid _instanceId;
         private readonly IDataUnitOfWork _unitOfWork;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
 
         #endregion
 
@@ -47,7 +47,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Securities
         #endregion
 
         #region [ Constructor ]
-        public DomainUsersController(ISecurity security, ILogger logger, IDataUnitOfWork unitOfWork, IParameterEnvService parameterEnvService)
+        public DomainUsersController(ISecurity security, ILogger logger, IDataUnitOfWork unitOfWork, IDecryptedParameterEnvService parameterEnvService)
         {
             _security = security;
             _logger = logger;

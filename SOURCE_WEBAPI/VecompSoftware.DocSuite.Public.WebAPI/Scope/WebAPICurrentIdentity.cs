@@ -51,6 +51,8 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Scope
             }
         }
 
+        public bool IsServiceAccount => false;
+
         #endregion
 
         #region [ Constructor ]

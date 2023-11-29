@@ -32,6 +32,8 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 
         public DateTime? PublicationDate { get; set; }
 
+        public DateTimeOffset RegistrationDate { get; set; }
+
         public DateTimeOffset? LastChangedDate { get; set; }
 
         public string PublicationUser { get; set; }
@@ -96,28 +98,25 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 
         #endregion
 
-        #region [ DocumentSeriesItem ]
-        public int? DocumentSeriesItem_IdDocumentSeriesItem { get; set; }
+        #region [ DocumentUnits ]
 
-        public int? DocumentSeriesItem_Number { get; set; }
+        public Guid? DocumentUnit_IdDocumentUnit { get; set; }
 
-        public int? DocumentSeriesItem_Year { get; set; }
+        public string DocumentUnit_DocumentUnitName { get; set; }
 
-        #endregion
+        public int? DocumentUnit_EntityId { get; set; }
 
-        #region [ Resolution ]
+        public DateTimeOffset? DocumentUnit_RegistrationDate { get; set; }
 
-        public int? Resolution_IdResolution { get; set; }
+        public string DocumentUnit_Title { get; set; }
 
-        public int? Resolution_Number { get; set; }
+        public short? DocumentUnit_Year { get; set; }
 
-        public short? Resolution_Year { get; set; }
+        public int? DocumentUnit_Number { get; set; }
 
-        public DateTime? Resolution_PublishingDate { get; set; }
+        public Guid? DocumentUnit_IdUDSRepository { get; set; }
 
-        public string Resolution_ServiceNumber { get; set; }
-
-        public DateTime? Resolution_AdoptionDate { get; set; }
+        public int? DocumentUnit_Environment { get; set; }
 
         #endregion
 

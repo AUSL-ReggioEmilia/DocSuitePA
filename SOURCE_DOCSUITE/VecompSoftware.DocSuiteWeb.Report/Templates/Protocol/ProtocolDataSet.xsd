@@ -4,7 +4,7 @@
     <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
       <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
         <Connections>
-          <Connection ConnectionStringObject="Data Source=SVILUPPO;Initial Catalog=ENPACLProtocollo;User ID=utente;Password=Passw0rd" IsAppSettingsProperty="false" Modifier="Assembly" Name="ProtConnection (VecompSoftware.DocSuiteWeb.API)" ParameterPrefix="@" Provider="System.Data.SqlClient" />
+          <Connection ConnectionStringObject="Data Source=SVILUPPO;Initial Catalog=ENPACLProtocollo;User ID=utente;Password=." IsAppSettingsProperty="false" Modifier="Assembly" Name="ProtConnection (VecompSoftware.DocSuiteWeb.API)" ParameterPrefix="@" Provider="System.Data.SqlClient" />
         </Connections>
         <Tables />
         <Sources />

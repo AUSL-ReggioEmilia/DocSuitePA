@@ -17,7 +17,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Protocols
             #endregion
 
             #region [ Navigation Properties ]
-            entityTransformed.Containers = entity.Containers;
             entityTransformed.Protocols = entity.Protocols;
             #endregion
 

@@ -48,11 +48,16 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Helpers.Security, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Security.9.22.23328.1\lib\net48\VecompSoftware.Helpers.Security.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ActionHelper.cs" />
+    <Compile Include="Helpers\EncryptionHelper.cs" />
     <Compile Include="Microsoft\ActiveDirectory.cs" />
     <Compile Include="ISecurity.cs" />
+    <Compile Include="Microsoft\AzureActiveDirectory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,7 +68,6 @@
   <ItemGroup>
     <Content Include="favicon.ico" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\VecompSoftware.DocSuite.Service.Models\VecompSoftware.DocSuite.Service.Models.csproj">
       <Project>{666bdbda-d461-4692-9cf7-ff03784a6e96}</Project>
@@ -85,6 +89,9 @@
       <Project>{df5935ca-367b-4124-9840-aafd3c419eba}</Project>
       <Name>VecompSoftware.DocSuiteWeb.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

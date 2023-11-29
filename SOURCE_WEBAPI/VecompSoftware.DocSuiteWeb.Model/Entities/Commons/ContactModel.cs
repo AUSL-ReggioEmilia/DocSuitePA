@@ -49,19 +49,16 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Commons
         public string SearchCode { get; set; }
         public short? IdPlaceName { get; set; }
         public short? IdRole { get; set; }
-        public byte IsActive { get; set; }
+        public bool IsActive { get; set; }
         public byte? IsLocked { get; set; }
         public byte? IsNotExpandable { get; set; }
         public int? IdTitle { get; set; }
         public short? IdRoleRootContact { get; set; }
-        public short IsChanged { get; set; }
         public string FullIncrementalPath { get; set; }
         public string RegistrationUser { get; set; }
         public DateTimeOffset RegistrationDate { get; set; }
         public string LastChangedUser { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
-        public DateTime? ActiveFrom { get; set; }
-        public DateTime? ActiveTo { get; set; }
         #endregion
 
         #region [ Methods ]

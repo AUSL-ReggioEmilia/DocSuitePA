@@ -56,8 +56,8 @@
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DocumentFormat.OpenXml, Version=2.11.3.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
-      <HintPath>..\packages\DocumentFormat.OpenXml.2.11.3\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.13.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.13.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -65,51 +65,54 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.OData, Version=7.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.OData.7.5.0\lib\net45\Microsoft.AspNet.OData.dll</HintPath>
+    <Reference Include="LinqKit, Version=1.1.26.0, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqKit.1.1.26\lib\net45\LinqKit.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.OData, Version=7.5.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.OData.7.5.8\lib\net45\Microsoft.AspNet.OData.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.4.1\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.4.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.WebApi.Versioning, Version=4.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Versioning.4.0.0\lib\net45\Microsoft.AspNet.WebApi.Versioning.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.4.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.4.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.WebApi.Versioning, Version=4.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Versioning.4.1.1\lib\net45\Microsoft.AspNet.WebApi.Versioning.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=3.1.8.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.3.1.8\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=5.0.0.1, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.5.0.1\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=3.1.8.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.3.1.8\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.5.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.OData.Core, Version=7.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.OData.Core.7.7.1\lib\net45\Microsoft.OData.Core.dll</HintPath>
+    <Reference Include="Microsoft.OData.Core, Version=7.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.OData.Core.7.9.0\lib\net45\Microsoft.OData.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.OData.Edm, Version=7.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.OData.Edm.7.7.1\lib\net45\Microsoft.OData.Edm.dll</HintPath>
+    <Reference Include="Microsoft.OData.Edm, Version=7.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.OData.Edm.7.9.0\lib\net45\Microsoft.OData.Edm.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.4.1.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.Owin, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.2.2\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Cors, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Cors.4.1.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Cors, Version=4.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Cors.4.2.0\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.4.1.1\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=4.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.HttpListener.4.2.0\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.1.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.2.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Hosting, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Hosting.4.1.1\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Hosting, Version=4.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Hosting.4.2.0\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.4.1.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    <Reference Include="Microsoft.Owin.Security, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.2.2\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
@@ -166,8 +169,8 @@
       <HintPath>..\packages\ServiceBus.v1_1.1.0.6\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Spatial, Version=7.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Spatial.7.7.1\lib\net45\Microsoft.Spatial.dll</HintPath>
+    <Reference Include="Microsoft.Spatial, Version=7.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Spatial.7.9.0\lib\net45\Microsoft.Spatial.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -176,33 +179,53 @@
     <Reference Include="Microsoft.WindowsAzure.Configuration, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.2.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Packaging, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Packaging.4.7.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    <Reference Include="System.IO.Packaging, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Packaging.5.0.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encodings.Web, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.5.0.1\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=5.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.5.0.2\lib\net461\System.Text.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Cors, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.7\lib\net45\System.Web.Cors.dll</HintPath>
@@ -233,17 +256,17 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="VecompSoftware.Core.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Core.Command.9.9.20267.1\lib\net48\VecompSoftware.Core.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Core.Command, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Core.Command.9.22.23328.1\lib\net48\VecompSoftware.Core.Command.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Shibboleth, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Shibboleth.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Shibboleth.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Shibboleth, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Shibboleth.9.22.23328.1\lib\net48\VecompSoftware.Helpers.Shibboleth.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.22.23328.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.22.23328.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
     </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
@@ -256,8 +279,11 @@
     <Compile Include="Controllers\Entity\Commons\CategoryFascicleRightController.cs" />
     <Compile Include="Controllers\Entity\Commons\ContactPlaceNameController.cs" />
     <Compile Include="Controllers\Entity\Commons\ContactTitleController.cs" />
+    <Compile Include="Controllers\Entity\Commons\RoleController.cs" />
     <Compile Include="Controllers\Entity\Commons\UserLogController.cs" />
     <Compile Include="Controllers\Entity\DocumentArchives\DocumentSeriesItemLinkController.cs" />
+    <Compile Include="Controllers\Entity\DocumentUnits\DocumentUnitChainController.cs" />
+    <Compile Include="Controllers\Entity\DocumentUnits\DocumentUnitContactController.cs" />
     <Compile Include="Controllers\Entity\Fascicles\FascicleDocumentUnitController.cs" />
     <Compile Include="Controllers\Entity\JeepServiceHosts\JeepServiceHostController.cs" />
     <Compile Include="Controllers\Entity\Parameters\IncrementalParameterController.cs" />
@@ -288,17 +314,24 @@
     <Compile Include="Controllers\Entity\Fascicles\FascicleDocumentController.cs" />
     <Compile Include="Controllers\Entity\Fascicles\FascicleRoleController.cs" />
     <Compile Include="Controllers\Entity\Monitors\TransparentAdministrationMonitorLogController.cs" />
+    <Compile Include="Controllers\Entity\Protocols\ProtocolJournalController.cs" />
     <Compile Include="Controllers\Entity\Protocols\ProtocolLogController .cs" />
     <Compile Include="Controllers\Entity\Resolutions\ResolutionDocumentSeriesItemController.cs" />
     <Compile Include="Controllers\Entity\Resolutions\ResolutionKindController.cs" />
     <Compile Include="Controllers\Entity\Resolutions\ResolutionKindDocumentSeriesController.cs" />
     <Compile Include="Controllers\Entity\Resolutions\ResolutionLogController.cs" />
+    <Compile Include="Controllers\Entity\Tasks\TaskDetailController.cs" />
+    <Compile Include="Controllers\Entity\Tasks\TaskHeaderController.cs" />
     <Compile Include="Controllers\Entity\Tenants\TenantAOOController.cs" />
     <Compile Include="Controllers\Entity\Tenants\TenantConfigurationController.cs" />
     <Compile Include="Controllers\Entity\Tenants\TenantController.cs" />
     <Compile Include="Controllers\Entity\Tenants\TenantWorkflowRepositoryController.cs" />
+    <Compile Include="Controllers\Entity\Tenders\TenderLotPaymentController.cs" />
+    <Compile Include="Controllers\Entity\Tenders\TenderLotController.cs" />
+    <Compile Include="Controllers\Entity\Tenders\TenderHeaderController.cs" />
     <Compile Include="Controllers\Entity\UDS\UDSContactController.cs" />
     <Compile Include="Controllers\Entity\UDS\UDSDocumentUnitController.cs" />
+    <Compile Include="Controllers\Entity\UDS\UDSFieldListController.cs" />
     <Compile Include="Controllers\Entity\UDS\UDSMessageController.cs" />
     <Compile Include="Controllers\Entity\UDS\UDSCollaborationController.cs" />
     <Compile Include="Controllers\Entity\UDS\UDSPECMailController.cs" />
@@ -317,6 +350,7 @@
     <Compile Include="Controllers\OData\Commons\UserLogsController.cs" />
     <Compile Include="Controllers\OData\DocumentArchives\DocumentSeriesItemLinksController.cs" />
     <Compile Include="Controllers\OData\DocumentUnits\BiblosDocumentsController.cs" />
+    <Compile Include="Controllers\OData\DocumentUnits\DocumentUnitContactsController.cs" />
     <Compile Include="Controllers\OData\DocumentUnits\DocumentUnitFascicleCategoriesController.cs" />
     <Compile Include="Controllers\OData\DocumentUnits\DocumentUnitFascicleHistoricizedCategoriesController.cs" />
     <Compile Include="Controllers\OData\Fascicles\FascicleDocumentUnitsController.cs" />
@@ -348,6 +382,8 @@
     <Compile Include="Controllers\OData\Fascicles\FascicleFolderssController.cs" />
     <Compile Include="Controllers\OData\Monitors\TransparentAdministrationMonitorLogsController.cs" />
     <Compile Include="Controllers\OData\ParametersController.cs" />
+    <Compile Include="Controllers\OData\Protocols\ProtocolJournalsController.cs" />
+    <Compile Include="Controllers\OData\Protocols\ProtocolStatusController.cs" />
     <Compile Include="Controllers\OData\Resolutions\FileResolutionsController.cs" />
     <Compile Include="Controllers\OData\Resolutions\ResolutionDocumentSeriesItemsController.cs" />
     <Compile Include="Controllers\OData\Resolutions\ResolutionLogsController.cs" />
@@ -360,7 +396,9 @@
     <Compile Include="Controllers\OData\Tenants\TenantConfigurationsController.cs" />
     <Compile Include="Controllers\OData\Tenants\TenantsController.cs" />
     <Compile Include="Controllers\OData\Tenants\TenantWorkflowRepositoriesController.cs" />
+    <Compile Include="Controllers\OData\Tenders\TenderHeadersController.cs" />
     <Compile Include="Controllers\OData\UDS\UDSContactsController.cs" />
+    <Compile Include="Controllers\OData\UDS\UDSFieldListsController.cs" />
     <Compile Include="Controllers\OData\UDS\UDSMessagesController.cs" />
     <Compile Include="Controllers\OData\UDS\UDSDocumentUnitsController.cs" />
     <Compile Include="Controllers\OData\UDS\UDSCollaborationsController.cs" />
@@ -379,70 +417,8 @@
     <Compile Include="Startup.cs" />
     <Content Include="App_Data\ConfigurationFiles\MessageConfiguration.json" />
     <Content Include="Global.asax" />
-    <Content Include="install\sql updates\8.53\AttiDB_migrations.sql" />
-    <Content Include="install\sql updates\8.53\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.53\update\ProtocolloDB_update.sql" />
-    <Content Include="install\sql updates\8.53\_readme.txt" />
-    <Content Include="install\sql updates\8.52\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.52\_readme.txt" />
-    <Content Include="install\sql updates\8.51\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.51\_readme.txt" />
-    <Content Include="install\sql updates\8.54\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.54\_readme.txt" />
-    <Content Include="install\sql updates\8.55\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.55\_readme.txt" />
-    <Content Include="install\sql updates\8.56\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.56\_readme.txt" />
-    <Content Include="install\sql updates\8.63\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.63\_readme.txt" />
-    <Content Include="install\sql updates\8.61\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.61\_readme.txt" />
-    <Content Include="install\sql updates\8.58\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.58\_readme.txt" />
-    <Content Include="install\sql updates\8.65\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.65\_readme.txt" />
-    <Content Include="install\sql updates\8.64\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.64\_readme.txt" />
-    <Content Include="install\sql updates\8.68\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.67\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.67\_readme.txt" />
-    <Content Include="install\sql updates\8.66\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.66\_readme.txt" />
-    <Content Include="install\sql updates\8.68\_readme.txt" />
-    <Content Include="install\sql updates\8.69\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.69\_readme.txt" />
-    <Content Include="install\sql updates\8.70\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.70\_readme.txt" />
-    <Content Include="install\sql updates\8.72\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.72\_readme.txt" />
-    <Content Include="install\sql updates\8.77\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.77\_readme.txt" />
-    <Content Include="install\sql updates\8.75\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.75\_readme.txt" />
-    <Content Include="install\sql updates\8.74\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.74\_readme.txt" />
-    <Content Include="install\sql updates\8.73\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.73\_readme.txt" />
-    <Content Include="install\sql updates\8.78\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.78\_readme.txt" />
-    <Content Include="install\sql updates\8.79\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.79\_readme.txt" />
-    <Content Include="install\sql updates\8.80\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.80\_readme.txt" />
-    <Content Include="install\sql updates\8.86\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.86\_readme.txt" />
-    <Content Include="install\sql updates\8.85\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.85\_readme.txt" />
-    <Content Include="install\sql updates\8.83\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.83\_readme.txt" />
-    <Content Include="install\sql updates\8.82\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.82\_readme.txt" />
-    <Content Include="install\sql updates\8.81\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.81\_readme.txt" />
     <Content Include="install\sql updates\9.00\ProtocolloDB_migrations.sql" />
     <Content Include="install\sql updates\9.00\_readme.txt" />
-    <Content Include="install\sql updates\8.87\ProtocolloDB_migrations.sql" />
-    <Content Include="install\sql updates\8.87\_readme.txt" />
     <Content Include="install\sql updates\9.02\ProtocolloDB_migrations.sql" />
     <Content Include="install\sql updates\9.02\_readme.txt" />
     <Content Include="install\sql updates\9.01\ProtocolloDB_migrations.sql" />
@@ -457,10 +433,41 @@
     <Content Include="install\sql updates\9.05\_readme.txt" />
     <Content Include="install\sql updates\9.07\ProtocolloDB_migrations.sql" />
     <Content Include="install\sql updates\9.07\_readme.txt" />
+    <Content Include="install\sql updates\9.10\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.10\_readme.txt" />
     <Content Include="install\sql updates\9.09\ProtocolloDB_migrations.sql" />
     <Content Include="install\sql updates\9.09\_readme.txt" />
     <Content Include="install\sql updates\9.08\ProtocolloDB_migrations.sql" />
     <Content Include="install\sql updates\9.08\_readme.txt" />
+    <Content Include="install\sql updates\9.11\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.11\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.11\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.11\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.11\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.11\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.11\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.11\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.11\_readme.txt" />
+    <Content Include="install\sql updates\9.13\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.13\_readme.txt" />
+    <Content Include="install\sql updates\9.19\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.19\_readme.txt" />
+    <Content Include="install\sql updates\9.18\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.18\_readme.txt" />
+    <Content Include="install\sql updates\9.17\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.17\_readme.txt" />
+    <Content Include="install\sql updates\9.15\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.15\_readme.txt" />
+    <Content Include="install\sql updates\9.14\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.14\_readme.txt" />
+    <Content Include="install\sql updates\9.24\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.24\_readme.txt" />
+    <Content Include="install\sql updates\9.22\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.22\_readme.txt" />
+    <Content Include="install\sql updates\9.20\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.20\_readme.txt" />
+    <Content Include="install\sql updates\9.25\ProtocolloDB_migrations.sql" />
+    <Content Include="install\sql updates\9.25\_readme.txt" />
     <Content Include="UDS\readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -469,483 +476,7 @@
     </Content>
     <Compile Include="App_Start\JsonSerializerConfig.cs" />
     <Compile Include="App_Start\Startup.WebAPI.cs" />
-    <Content Include="install\Piano_di_Lavoro_DSW.WebAPI_Installazione.pdf" />
-    <Content Include="install\sql updates\8.54\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.54\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.54\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.54\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.55\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.55\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.55\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.55\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.56\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.56\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.56\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.56\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="App_Data\ConfigurationFiles\WebAPI.Origin.Allow.Lists.json" />
-    <Content Include="install\sql updates\8.56\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.56\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.56\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.61\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.61\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.61\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.61\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.61\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.61\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.61\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.58\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.58\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.58\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.58\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.58\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.58\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.58\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.63\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.63\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.63\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.63\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.63\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.63\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.63\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.64\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.64\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.64\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.64\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.64\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.64\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.64\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.65\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.65\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.65\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.65\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.65\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.65\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.65\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.66\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.66\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.66\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.66\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.66\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.66\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.66\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.67\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.67\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.67\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.67\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.67\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.67\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.67\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.68\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.68\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.68\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.68\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.68\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.68\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.68\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.69\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.69\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.69\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.69\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.69\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.69\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.69\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.70\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.70\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.70\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.70\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.70\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.70\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.70\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.72\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.72\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.72\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.72\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.72\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.72\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.72\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.73\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.73\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.73\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.73\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.73\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.73\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.73\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.74\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.74\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.74\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.74\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.74\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.74\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.74\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.75\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.75\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.75\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.75\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.75\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.75\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.75\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.77\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.77\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.77\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.77\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.77\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.77\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.77\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.78\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.78\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.78\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.78\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.78\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.78\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.78\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.79\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.79\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.79\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.79\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.79\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.79\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.79\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <None Include="install\sql updates\8.80\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </None>
-    <Content Include="install\sql updates\8.80\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.80\default_configurations\WebApi.appSettings.config" />
-    <Content Include="install\sql updates\8.80\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="install\sql updates\8.80\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="install\sql updates\8.80\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="install\sql updates\8.80\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="install\sql updates\8.81\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.81\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.81\default_configurations\WebApi.appSettings.config" />
-    <Content Include="install\sql updates\8.81\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="install\sql updates\8.81\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="install\sql updates\8.81\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="install\sql updates\8.81\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="install\sql updates\8.82\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.82\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.82\default_configurations\WebApi.appSettings.config" />
-    <Content Include="install\sql updates\8.82\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="install\sql updates\8.82\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="install\sql updates\8.82\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="install\sql updates\8.82\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="install\sql updates\8.83\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.83\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.83\default_configurations\WebApi.appSettings.config" />
-    <Content Include="install\sql updates\8.83\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="install\sql updates\8.83\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="install\sql updates\8.83\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="install\sql updates\8.83\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="install\sql updates\8.85\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.85\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.85\default_configurations\WebApi.appSettings.config" />
-    <Content Include="install\sql updates\8.85\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="install\sql updates\8.85\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="install\sql updates\8.85\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="install\sql updates\8.85\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="install\sql updates\8.86\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.86\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="install\sql updates\8.86\default_configurations\WebApi.appSettings.config" />
-    <Content Include="install\sql updates\8.86\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="install\sql updates\8.86\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="install\sql updates\8.86\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="install\sql updates\8.86\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="install\sql updates\8.87\default_configurations\EnterpriseLibrary.Logging.config" />
-    <Content Include="install\sql updates\8.87\default_configurations\EnterpriseLibrary.Validation.config" />
-    <Content Include="install\sql updates\8.87\default_configurations\WebApi.appSettings.config" />
-    <Content Include="install\sql updates\8.87\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="install\sql updates\8.87\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="install\sql updates\8.87\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="install\sql updates\8.87\default_configurations\WebApi.system.servicemodel.client.config" />
     <Content Include="install\sql updates\9.00\default_configurations\EnterpriseLibrary.Logging.config" />
     <Content Include="install\sql updates\9.00\default_configurations\EnterpriseLibrary.Validation.config" />
     <Content Include="install\sql updates\9.00\default_configurations\WebApi.appSettings.config" />
@@ -1016,6 +547,83 @@
     <Content Include="install\sql updates\9.09\default_configurations\WebApi.system.servicemodel.behaviors.config" />
     <Content Include="install\sql updates\9.09\default_configurations\WebApi.system.servicemodel.bindings.config" />
     <Content Include="install\sql updates\9.09\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.10\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.10\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.10\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.10\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.10\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.10\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.10\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.13\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.13\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.13\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.13\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.13\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.13\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.13\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.14\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.14\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.14\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.14\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.14\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.14\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.14\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.15\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.15\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.15\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.15\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.15\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.15\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.15\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.17\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.17\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.17\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.17\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.17\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.17\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.17\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.18\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.18\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.18\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.18\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.18\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.18\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.18\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.19\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.19\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.19\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.19\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.19\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.19\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.19\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.20\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.20\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.20\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.20\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.20\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.20\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.20\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.22\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.22\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.22\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.22\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.22\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.22\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.22\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.24\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.24\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.24\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.24\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.24\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.24\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.24\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="install\sql updates\9.25\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="install\sql updates\9.25\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="install\sql updates\9.25\default_configurations\WebApi.appSettings.config" />
+    <Content Include="install\sql updates\9.25\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="install\sql updates\9.25\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="install\sql updates\9.25\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="install\sql updates\9.25\default_configurations\WebApi.system.servicemodel.client.config" />
     <None Include="Properties\PublishProfiles\LocalDeploy.pubxml" />
     <None Include="WebApi.appSettings.config">
       <SubType>Designer</SubType>
@@ -1062,7 +670,7 @@
     <Compile Include="Controllers\Entity\PECMails\PECMailController.cs" />
     <Compile Include="Controllers\Entity\PECMails\PECMailLogController.cs" />
     <Compile Include="Controllers\Entity\Protocols\ProtocolController.cs" />
-    <Compile Include="Controllers\Entity\Protocols\ProtocolDraftController.cs" />
+    <Compile Include="Controllers\Entity\Collaborations\CollaborationDraftController.cs" />
     <Compile Include="Controllers\Entity\Resolutions\ResolutionController.cs" />
     <Compile Include="Controllers\Entity\UDS\UDSRepositoryController.cs" />
     <Compile Include="Controllers\Entity\UDS\UDSSchemaRepositoryController.cs" />
@@ -1118,14 +726,13 @@
     <Compile Include="Controllers\OData\PECMails\PECMailReceiptsController.cs" />
     <Compile Include="Controllers\OData\PECMails\PECMailsController.cs" />
     <Compile Include="Controllers\OData\Fascicles\FasciclesController.cs" />
-    <Compile Include="Controllers\OData\Protocols\ProtocolDraftsController.cs" />
+    <Compile Include="Controllers\OData\Collaborations\CollaborationDraftsController.cs" />
     <Compile Include="Controllers\OData\Protocols\ProtocolLinksController.cs" />
     <Compile Include="Controllers\OData\Protocols\ProtocolRoleUsersController.cs" />
     <Compile Include="Controllers\OData\Protocols\ProtocolRolesController.cs" />
     <Compile Include="Controllers\OData\Protocols\ProtocolContactManualsController .cs" />
     <Compile Include="Controllers\OData\Protocols\ProtocolContactsController.cs" />
     <Compile Include="Controllers\OData\Protocols\ProtocolUsersController.cs" />
-    <Compile Include="Controllers\OData\Protocols\ProtocolParersController.cs" />
     <Compile Include="Controllers\OData\Protocols\ProtocolLogsController.cs" />
     <Compile Include="Controllers\OData\Protocols\ProtocolsController.cs" />
     <Compile Include="Controllers\OData\Resolutions\ResolutionsController.cs" />
@@ -1177,9 +784,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\Entity\Tasks\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
@@ -1191,6 +796,10 @@
     <ProjectReference Include="..\VecompSoftware.DocSuite.Document.BiblosDS\VecompSoftware.DocSuite.Document.BiblosDS.csproj">
       <Project>{1ea007b2-b9fe-4a04-aae4-f86366fb3036}</Project>
       <Name>VecompSoftware.DocSuite.Document.BiblosDS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.Document.Generator.OpenXml.Word\VecompSoftware.DocSuite.Document.Generator.OpenXml.Word.csproj">
+      <Project>{0c334c00-3b46-4a3a-b2c4-edc741487544}</Project>
+      <Name>VecompSoftware.DocSuite.Document.Generator.OpenXml.Word</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.DocSuite.Document.Generator.PDF\VecompSoftware.DocSuite.Document.Generator.PDF.csproj">
       <Project>{5f08f790-8c37-4575-82c2-5ffe91e6f214}</Project>

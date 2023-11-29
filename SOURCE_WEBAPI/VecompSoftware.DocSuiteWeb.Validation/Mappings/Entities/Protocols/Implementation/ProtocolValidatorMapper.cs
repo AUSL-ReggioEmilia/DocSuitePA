@@ -25,10 +25,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Protocols
             entityTransformed.AlternativeRecipient = entity.AlternativeRecipient;
             entityTransformed.CheckPublication = entity.CheckPublication;
             entityTransformed.JournalDate = entity.JournalDate;
-            entityTransformed.IdProtocolJournalLog = entity.IdProtocolJournalLog;
-            entityTransformed.ConservationStatus = entity.ConservationStatus;
-            entityTransformed.LastConservationDate = entity.LastConservationDate;
-            entityTransformed.HasConservatedDocs = entity.HasConservatedDocs;
             entityTransformed.IdAnnexed = entity.IdAnnexed;
             entityTransformed.HandlerDate = entity.HandlerDate;
             entityTransformed.Modified = entity.Modified;
@@ -61,7 +57,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Protocols
             entityTransformed.ProtocolContacts = entity.ProtocolContacts;
             entityTransformed.ProtocolRoles = entity.ProtocolRoles;
             entityTransformed.Messages = entity.Messages;
-            entityTransformed.ProtocolParers = entity.ProtocolParers;
             entityTransformed.PECMails = entity.PECMails;
             entityTransformed.ProtocolLinks = entity.ProtocolLinks;
             entityTransformed.LinkedProtocols = entity.LinkedProtocols;

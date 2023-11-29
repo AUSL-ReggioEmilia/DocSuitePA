@@ -73,14 +73,14 @@ namespace VecompSoftware.DocSuiteWeb.Common.Infrastructures
         [Description("TenantContainerAdd")]
         TenantContainerAdd = FascicleMoveToFolder * 2,
 
-        [Description("TenantRoleAdd")]
-        TenantRoleAdd = TenantContainerAdd * 2,
+        [Description("FREE_01")]
+        FREE_01 = TenantContainerAdd * 2,
 
-        [Description("TenantContactAdd")]
-        TenantContactAdd = TenantRoleAdd * 2,
+        [Description("FREE_02")]
+        FREE_02 = FREE_01 * 2,
 
         [Description("TenantConfigurationAdd")]
-        TenantConfigurationAdd = TenantContactAdd * 2,
+        TenantConfigurationAdd = FREE_02 * 2,
 
         [Description("TenantPECMailBoxAdd")]
         TenantPECMailBoxAdd = TenantConfigurationAdd * 2,
@@ -91,11 +91,11 @@ namespace VecompSoftware.DocSuiteWeb.Common.Infrastructures
         [Description("TenantContainerRemove")]
         TenantContainerRemove = TenantWorkflowRepositoryAdd * 2,
 
-        [Description("TenantRoleRemove")]
-        TenantRoleRemove = TenantContainerRemove * 2,
+        [Description("FREE_03")]
+        FREE_03 = TenantContainerRemove * 2,
 
         [Description("TenantConfigurationRemove")]
-        TenantConfigurationRemove = TenantRoleRemove * 2,
+        TenantConfigurationRemove = FREE_03 * 2,
 
         [Description("TenantPECMailBoxRemove")]
         TenantPECMailBoxRemove = TenantConfigurationRemove * 2,
@@ -103,11 +103,11 @@ namespace VecompSoftware.DocSuiteWeb.Common.Infrastructures
         [Description("TenantWorkflowRepositoryRemove")]
         TenantWorkflowRepositoryRemove = TenantPECMailBoxRemove * 2,
 
-        [Description("TenantContactRemove")]
-        TenantContactRemove = TenantWorkflowRepositoryRemove * 2,
+        [Description("FREE_08")]
+        FREE_08 = TenantWorkflowRepositoryRemove * 2,
 
         [Description("CollaborationManaged")]
-        CollaborationManaged = TenantContactRemove * 2,
+        CollaborationManaged = FREE_08 * 2,
 
         [Description("TenantContainerAddAll")]
         TenantContainerAddAll = CollaborationManaged * 2,
@@ -115,25 +115,31 @@ namespace VecompSoftware.DocSuiteWeb.Common.Infrastructures
         [Description("TenantContainerRemoveAll")]
         TenantContainerRemoveAll = TenantContainerAddAll * 2,
 
-        [Description("TenantRoleAddAll")]
-        TenantRoleAddAll = TenantContainerRemoveAll * 2,
+        [Description("FREE_04")]
+        FREE_04 = TenantContainerRemoveAll * 2,
 
-        [Description("TenantRoleRemoveAll")]
-        TenantRoleRemoveAll = TenantRoleAddAll * 2,
+        [Description("FREE_05")]
+        FREE_05 = FREE_04 * 2,
 
-        [Description("TenantContactAddAll")]
-        TenantContactAddAll = TenantRoleRemoveAll * 2,
+        [Description("FREE_06")]
+        FREE_06 = FREE_05 * 2,
 
-        [Description("TenantContactRemoveAll")]
-        TenantContactRemoveAll = TenantContactAddAll * 2,
+        [Description("FREE_07")]
+        FREE_07 = FREE_06 * 2,
 
         [Description("CloneProcessDetails")]
-        CloneProcessDetails = TenantContactRemoveAll * 2,
+        CloneProcessDetails = FREE_07 * 2,
 
         [Description("AssociatedProcessDossierFolderToFascicle")]
         AssociatedProcessDossierFolderToFascicle = CloneProcessDetails * 2,
 
         [Description("ChangeFascicleType")]
-        ChangeFascicleType = AssociatedProcessDossierFolderToFascicle * 2
+        ChangeFascicleType = AssociatedProcessDossierFolderToFascicle * 2,
+
+        [Description("PublishDocumentSeriesItem")]
+        PublishDocumentSeriesItem = ChangeFascicleType * 2,
+
+        [Description("ActivateDocumentSeriesItem")]
+        ActivateDocumentSeriesItem = PublishDocumentSeriesItem * 2
     }
 }

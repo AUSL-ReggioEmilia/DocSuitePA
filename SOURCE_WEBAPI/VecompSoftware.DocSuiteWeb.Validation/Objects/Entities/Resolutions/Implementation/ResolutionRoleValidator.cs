@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -11,8 +12,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Resolutions
     public class ResolutionRoleValidator : ObjectValidator<ResolutionRole, ResolutionRoleValidator>, IResolutionRoleValidator
     {
         #region [ Constructor ]
-        public ResolutionRoleValidator(ILogger logger, IResolutionRoleValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public ResolutionRoleValidator(ILogger logger, IResolutionRoleValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
         }
 
@@ -21,8 +22,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Resolutions
         #region [ Properties ]
 
         public Guid UniqueId { get; set; }
-
-        public int EntityId { get; set; }
 
         public int IdResolutionRoleType { get; set; }
 
@@ -39,7 +38,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Resolutions
 
         #region [ Navigation Properties ]
 
-        //public Resolution Resolution { get; set; }
+        public Resolution Resolution { get; set; }
 
         public Role Role { get; set; }
 

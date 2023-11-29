@@ -289,8 +289,9 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
 
         public static ICollection<FascicleTableValuedModel> GetAuthorized(this IRepository<Fascicle> repository, string userName, string domain, int skip, int top, short? year, DateTimeOffset? startDateFrom, DateTimeOffset? startDateTo,
             DateTimeOffset? endDateFrom, DateTimeOffset? endDateTo, int? fascicleStatus, string manager, string name, string subject, bool? viewConfidential, bool? viewAccessible,
-            string note, string rack, Guid? idMetadataRepository, string genericMetadataValue, IDictionary<string, string> metadataValues, string classifications, bool? includeChildClassifications, 
-            IEnumerable<int> roles, short? container, bool? applySecurity, bool descendingOrder, bool? viewOnlyClosable, DateTimeOffset? thresholdDate, string title, bool isManager, bool isSecretary, bool optimization = true)
+            string note, string rack, Guid? idMetadataRepository, string genericMetadataValue, IDictionary<string, string> metadataValues, string classifications, bool? includeChildClassifications,
+            IEnumerable<int> roles, int? masterRole, short? container, bool? applySecurity, bool descendingOrder, bool? viewOnlyClosable, DateTimeOffset? thresholdDate, string title, bool isManager, bool isSecretary,
+             Guid? idProcess, Guid? idDossierFolder, string processLabel, string dossierFolderLabel, bool optimization = true)
         {
             QueryParameter yearParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Year, DBNull.Value);
             QueryParameter startDateFromParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_StartDateFrom, DBNull.Value);
@@ -310,6 +311,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             QueryParameter classificationsParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Classifications, DBNull.Value);
             QueryParameter includeChildClassificationsParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IncludeChildClassifications, DBNull.Value);
             QueryParameter rolesParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Roles, DBNull.Value);
+            QueryParameter masterRoleParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_MasterRole, DBNull.Value);
             QueryParameter containerParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Container, DBNull.Value);
             QueryParameter applySecurityParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_ApplySecurity, DBNull.Value);
             QueryParameter metadataValuesParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_MetadataValues, DBNull.Value) { ParameterTypeName = "keyvalue_tbltype" };
@@ -318,6 +320,10 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             QueryParameter titleParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Title, DBNull.Value);
             QueryParameter isManagerParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IsManager, DBNull.Value);
             QueryParameter isSecretaryParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IsSecretary, DBNull.Value);
+            QueryParameter idProcessParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IdProcess, DBNull.Value);
+            QueryParameter idDossierFolderParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IdDossierFolder, DBNull.Value);
+            QueryParameter processLabelParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_ProcessLabel, DBNull.Value);
+            QueryParameter dossierFolderLabelParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_DossierFolderLabel, DBNull.Value);
 
             if (year.HasValue)
             {
@@ -403,6 +409,10 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             {
                 rolesParameter.ParameterValue = string.Join("|", roles);
             }
+            if (masterRole.HasValue)
+            {
+                masterRoleParameter.ParameterValue = masterRole.Value;
+            }
             if (container.HasValue)
             {
                 containerParameter.ParameterValue = container.Value;
@@ -414,15 +424,32 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             isManagerParameter.ParameterValue = isManager;
             isSecretaryParameter.ParameterValue = isSecretary;
 
+            if (idProcess.HasValue)
+            {
+                idProcessParameter.ParameterValue = idProcess.Value;
+            }
+            if (idDossierFolder.HasValue)
+            {
+                idDossierFolderParameter.ParameterValue = idDossierFolder.Value;
+            }
+            if (!string.IsNullOrEmpty(processLabel))
+            {
+                processLabelParameter.ParameterValue = processLabel;
+            }
+            if (!string.IsNullOrEmpty(dossierFolderLabel))
+            {
+                dossierFolderLabelParameter.ParameterValue = dossierFolderLabel;
+            }
+
             DataTable table = new DataTable();
             table.Columns.Add("KeyName", typeof(string));
             table.Columns.Add("Value", typeof(string));
             if (metadataValues != null && metadataValues.Any())
-            {                
+            {
                 foreach (KeyValuePair<string, string> metadataValue in metadataValues)
                 {
                     table.Rows.Add(metadataValue.Key, metadataValue.Value);
-                }                
+                }
             }
             metadataValuesParameter.ParameterValue = table;
 
@@ -431,19 +458,26 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
                 new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Skip, skip), new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Top, top),
                 yearParameter, startDateFromParameter, startDateToParameter, endDateFromParameter, endDateToParameter, fascicleStatusParameter, managerParameter, nameParameter, viewConfidentialParameter, viewAccessibleParameter,
                 subjectParameter, noteParameter, rackParameter, idMetadataRepositoryParameter, genericMetadataValueParameter, classificationsParameter, includeChildClassificationsParameter,
-                rolesParameter, containerParameter, applySecurityParameter, metadataValuesParameter, viewOnlyClosableParameter, thresholdDateParameter, titleParameter, isManagerParameter, isSecretaryParameter);
-            
-            if (descendingOrder)
-            {
-                return results.OrderByDescending(x => x.Year).OrderByDescending(x => x.Number).ToList();
-            }
-            return results.OrderBy(x => x.Year).OrderBy(x => x.Number).ToList();
+                rolesParameter, masterRoleParameter, containerParameter, applySecurityParameter, metadataValuesParameter, viewOnlyClosableParameter, thresholdDateParameter, titleParameter, isManagerParameter, isSecretaryParameter,
+                   idProcessParameter, idDossierFolderParameter, processLabelParameter, dossierFolderLabelParameter);
+
+            // L'ordinamento della lista dei fascicoli (StartDate DESC) deve essere determinato solo dalla funzione sql Fascicles_FX_AuthorizedFascicles.
+            // Il parametro ForceDescendingOrderElements non deve influenzare tale ordinamento.
+            //if (descendingOrder)
+            //{
+            //    return results.OrderByDescending(x => x.Year).OrderByDescending(x => x.Number).ToList();
+            //}
+
+            //return results.OrderBy(x => x.Year).OrderBy(x => x.Number).ToList();
+
+            return results;
         }
 
         public static int CountAuthorized(this IRepository<Fascicle> repository, string userName, string domain, short? year, DateTimeOffset? startDateFrom, DateTimeOffset? startDateTo,
             DateTimeOffset? endDateFrom, DateTimeOffset? endDateTo, int? fascicleStatus, string manager, string name, string subject, bool? viewConfidential, bool? viewAccessible,
-            string note, string rack, Guid? idMetadataRepository, string genericMetadataValue, IDictionary<string, string> metadataValues, string classifications, bool? includeChildClassifications, 
-            IEnumerable<int> roles, short? container, bool? applySecurity, bool? viewOnlyClosable, DateTimeOffset? thresholdDate, string title, bool isManager, bool isSecretary, bool optimization = true)
+            string note, string rack, Guid? idMetadataRepository, string genericMetadataValue, IDictionary<string, string> metadataValues, string classifications, bool? includeChildClassifications,
+            IEnumerable<int> roles, int? masterRole, short? container, bool? applySecurity, bool? viewOnlyClosable, DateTimeOffset? thresholdDate, string title, bool isManager, bool isSecretary,
+            Guid? idProcess, Guid? idDossierFolder, string processLabel, string dossierFolderLabel, bool optimization = true)
         {
             QueryParameter yearParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Year, DBNull.Value);
             QueryParameter startDateFromParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_StartDateFrom, DBNull.Value);
@@ -463,6 +497,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             QueryParameter classificationsParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Classifications, DBNull.Value);
             QueryParameter includeChildClassificationsParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IncludeChildClassifications, DBNull.Value);
             QueryParameter rolesParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Roles, DBNull.Value);
+            QueryParameter masterRoleParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_MasterRole, DBNull.Value);
             QueryParameter containerParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Container, DBNull.Value);
             QueryParameter applySecurityParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_ApplySecurity, DBNull.Value);
             QueryParameter metadataValuesParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_MetadataValues, DBNull.Value) { ParameterTypeName = "keyvalue_tbltype" };
@@ -471,6 +506,10 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             QueryParameter titleParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Title, DBNull.Value);
             QueryParameter isManagerParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IsManager, DBNull.Value);
             QueryParameter isSecretaryParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IsSecretary, DBNull.Value);
+            QueryParameter idProcessParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IdProcess, DBNull.Value);
+            QueryParameter idDossierFolderParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_IdDossierFolder, DBNull.Value);
+            QueryParameter processLabelParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_ProcessLabel, DBNull.Value);
+            QueryParameter dossierFolderLabelParameter = new QueryParameter(CommonDefinition.SQL_Param_Fascicle_DossierFolderLabel, DBNull.Value);
 
             if (year.HasValue)
             {
@@ -556,6 +595,10 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             {
                 rolesParameter.ParameterValue = string.Join("|", roles);
             }
+            if (masterRole.HasValue)
+            {
+                masterRoleParameter.ParameterValue = masterRole;
+            }
             if (container.HasValue)
             {
                 containerParameter.ParameterValue = container.Value;
@@ -566,6 +609,24 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             }
             isManagerParameter.ParameterValue = isManager;
             isSecretaryParameter.ParameterValue = isSecretary;
+
+            if (idProcess.HasValue)
+            {
+                idProcessParameter.ParameterValue = idProcess.Value;
+            }
+            if (idDossierFolder.HasValue)
+            {
+                idDossierFolderParameter.ParameterValue = idDossierFolder.Value;
+            }
+
+            if (!string.IsNullOrEmpty(processLabel))
+            {
+                processLabelParameter.ParameterValue = processLabel;
+            }
+            if (!string.IsNullOrEmpty(dossierFolderLabel))
+            {
+                dossierFolderLabelParameter.ParameterValue = dossierFolderLabel;
+            }
 
             DataTable table = new DataTable();
             table.Columns.Add("KeyName", typeof(string));
@@ -583,7 +644,8 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
                 new QueryParameter(CommonDefinition.SQL_Param_Fascicle_UserName, userName), new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Domain, domain),
                 yearParameter, startDateFromParameter, startDateToParameter, endDateFromParameter, endDateToParameter, fascicleStatusParameter, managerParameter, nameParameter, viewConfidentialParameter, viewAccessibleParameter,
                 subjectParameter, noteParameter, rackParameter, idMetadataRepositoryParameter, genericMetadataValueParameter, classificationsParameter, includeChildClassificationsParameter,
-                rolesParameter, containerParameter, applySecurityParameter, metadataValuesParameter, viewOnlyClosableParameter, thresholdDateParameter, titleParameter, isManagerParameter, isSecretaryParameter);
+                rolesParameter, masterRoleParameter, containerParameter, applySecurityParameter, metadataValuesParameter, viewOnlyClosableParameter, thresholdDateParameter, titleParameter, isManagerParameter, isSecretaryParameter,
+                idProcessParameter, idDossierFolderParameter, processLabelParameter, dossierFolderLabelParameter);
 
             return countFascicles;
         }
@@ -612,8 +674,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
 
         public static IQueryable<Fascicle> GetByMetadataIdentifier(this IRepository<Fascicle> repository, string name, string identifier, bool optimization = true)
         {
-            string filter = $"\"Label\":\"{name}\",\"Value\":\"{identifier}\"";
-            return repository.Query(x => x.MetadataValues != null && x.MetadataValues.Contains(filter), optimization)
+            return repository.Query(x => x.SourceMetadataValues.Any(xx => xx.Name == name && xx.ValueString == identifier), optimization)
                 .SelectAsQueryable();
         }
 
@@ -645,6 +706,37 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
             return repository.Query(x => x.UniqueId == idFascicle, optimization)
                 .Include(i => i.Contacts)
                 .SelectAsQueryable();
+        }
+
+        public static int CountAuthorizedCategoryFascicles(this IRepository<Fascicle> repository, string username, string domain, short idCategory)
+        {
+            return repository.ExecuteModelScalarFunction<int>(CommonDefinition.SQL_FX_Fascicle_CountAuthorizedCategoryFascicles,
+                new QueryParameter(CommonDefinition.SQL_Param_Fascicle_UserName, username),
+                new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Domain, domain),
+                new QueryParameter(CommonDefinition.SQL_Param_Category_IdCategory, idCategory));
+        }
+
+        public static ICollection<FascicleTableValuedModel> GetAuthorizedCategoryFascicles(this IRepository<Fascicle> repository, string username, string domain, short idCategory, int skip, int top)
+        {
+            return repository.ExecuteModelFunction<FascicleTableValuedModel>(CommonDefinition.SQL_FX_Fascicle_FindAuthorizedCategoryFascicles,
+                new QueryParameter(CommonDefinition.SQL_Param_Fascicle_UserName, username),
+                new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Domain, domain),
+                new QueryParameter(CommonDefinition.SQL_Param_Category_IdCategory, idCategory),
+                new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Skip, skip),
+                new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Top, top));
+        }
+
+        public static ICollection<ViewableFascicleTableValuedModel> FasciclesFromDocumentUnit(this IRepository<Fascicle> repository, string username, string domain, Guid idDocumentUnit) {
+            return repository.ExecuteModelFunction<ViewableFascicleTableValuedModel>(CommonDefinition.SQL_FX_Fascicle_FX_FasciclesFromDocumentUnit,
+                    new QueryParameter(CommonDefinition.SQL_Param_Fascicle_UserName, username),
+                    new QueryParameter(CommonDefinition.SQL_Param_Fascicle_Domain, domain),
+                    new QueryParameter(CommonDefinition.SQL_Param_DocumentUnit_IdDocumentUnit, idDocumentUnit));
+        }
+
+
+        public static string GetAllDossierFolderLabelName(this IRepository<Fascicle> repository, Guid idDossierFolder) 
+        {
+            return repository.ExecuteModelScalarFunction<string>(CommonDefinition.SQL_FX_DossierFolder_FX_GetAllDossierFolderLabelName, new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_IdDossierFolder, idDossierFolder));
         }
     }
 }

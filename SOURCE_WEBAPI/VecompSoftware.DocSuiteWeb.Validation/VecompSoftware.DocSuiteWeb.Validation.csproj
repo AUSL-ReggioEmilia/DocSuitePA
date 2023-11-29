@@ -60,8 +60,8 @@
       <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -72,8 +72,8 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.22.23328.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -90,8 +90,10 @@
     <Compile Include="Mappings\Entities\Commons\IUserLogValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\DocumentArchives\IDocumentSeriesItemLinkValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\DocumentArchives\Implementation\DocumentSeriesItemLinkValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\IDocumentUnitContactValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\DocumentUnits\IDocumentUnitFascicleCategoryValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\DocumentUnits\IDocumentUnitFascicleHistoricizedCategoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\DocumentUnits\Implementation\DocumentUnitContactValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\DocumentUnits\Implementation\DocumentUnitFascicleCategoryValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\DocumentUnits\Implementation\DocumentUnitFascicleHistoricizedCategoryValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Fascicles\IFascicleDocumentUnitValidatorMapper.cs" />
@@ -152,6 +154,8 @@
     <Compile Include="Mappings\Entities\Monitors\ITransparentAdministrationMonitorLogValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Parameters\Implementation\ParameterValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Parameters\IParameterValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolJournalValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Protocols\IProtocolJournalValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Resolutions\Implementation\ResolutionDocumentSeriesItemValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Resolutions\Implementation\ResolutionKindDocumentSeriesValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Resolutions\Implementation\ResolutionKindValidatorMapper.cs" />
@@ -161,8 +165,10 @@
     <Compile Include="Mappings\Entities\Resolutions\IResolutionKindValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Resolutions\IResolutionLogValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Tasks\Implementation\TaskHeaderProtocolValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tasks\Implementation\TaskDetailValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Tasks\Implementation\TaskHeaderValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Tasks\ITaskHeaderProtocolValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tasks\ITaskDetailValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Tasks\ITaskHeaderValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Templates\Implementation\TemplateDocumentRepositoryValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Templates\Implementation\TemplateCollaborationUserValidatorMapper.cs" />
@@ -232,22 +238,20 @@
     <Compile Include="Mappings\Entities\PECMails\IPECMailLogValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\PECMails\IPECMailReceiptValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolContactManualValidatorMapper .cs" />
-    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolDraftValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\Implementation\CollaborationDraftValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolContactValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolRoleUserValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolRoleValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolDocumentTypeValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolTypeValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolLogValidatorMapper.cs" />
-    <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolParerValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolLinkValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolUserValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\Implementation\ProtocolValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\IProtocolContactManualValidatorMapper .cs" />
-    <Compile Include="Mappings\Entities\Protocols\IProtocolDraftValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Collaborations\ICollaborationDraftValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\IProtocolContactValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\IProtocolLinkValidatorMapper.cs" />
-    <Compile Include="Mappings\Entities\Protocols\IProtocolParerValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\IProtocolRoleUserValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\IProtocolRoleValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Protocols\IProtocolTypeValidatorMapper.cs" />
@@ -270,7 +274,14 @@
     <Compile Include="Mappings\Entities\Tenants\ITenantConfigurationValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Tenants\ITenantValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\Tenants\ITenantWorkflowRepositoryValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenders\Implementation\TenderLotPaymentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenders\Implementation\TenderLotValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenders\Implementation\TenderHeaderValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenders\ITenderLotPaymentValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenders\ITenderLotValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\Tenders\ITenderHeaderValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\UDS\Implementation\UDSContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\Implementation\UDSFieldListValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\UDS\Implementation\UDSMessageValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\UDS\Implementation\UDSDocumentUnitValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\UDS\Implementation\UDSCollaborationValidatorMapper.cs" />
@@ -281,6 +292,7 @@
     <Compile Include="Mappings\Entities\UDS\Implementation\UDSTypologyValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\UDS\Implementation\UDSUserValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\UDS\IUDSContactValidatorMapper.cs" />
+    <Compile Include="Mappings\Entities\UDS\IUDSFieldListValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\UDS\IUDSMessageValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\UDS\IUDSDocumentUnitValidatorMapper.cs" />
     <Compile Include="Mappings\Entities\UDS\IUDSCollaborationValidatorMapper.cs" />
@@ -311,8 +323,10 @@
     <Compile Include="Objects\Entities\Commons\IUserLogValidator.cs" />
     <Compile Include="Objects\Entities\DocumentArchives\IDocumentSeriesItemLinkValidator.cs" />
     <Compile Include="Objects\Entities\DocumentArchives\Implementation\DocumentSeriesItemLinkValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\IDocumentUnitContactValidator.cs" />
     <Compile Include="Objects\Entities\DocumentUnits\IDocumentUnitFascicleCategoryValidator.cs" />
     <Compile Include="Objects\Entities\DocumentUnits\IDocumentUnitFascicleHistoricizedCategoryValidator.cs" />
+    <Compile Include="Objects\Entities\DocumentUnits\Implementation\DocumentUnitContactValidator.cs" />
     <Compile Include="Objects\Entities\DocumentUnits\Implementation\DocumentUnitFascicleCategoryValidator.cs" />
     <Compile Include="Objects\Entities\DocumentUnits\Implementation\DocumentUnitFascicleHistoricizedCategoryValidator.cs" />
     <Compile Include="Objects\Entities\Fascicles\IFascicleDocumentUnitValidator.cs" />
@@ -371,6 +385,8 @@
     <Compile Include="Objects\Entities\Monitors\ITransparentAdministrationMonitorLogValidator.cs" />
     <Compile Include="Objects\Entities\Parameters\Implementation\ParameterValidator.cs" />
     <Compile Include="Objects\Entities\Parameters\IParameterValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolJournalValidator.cs" />
+    <Compile Include="Objects\Entities\Protocols\IProtocolJournalValidator.cs" />
     <Compile Include="Objects\Entities\Resolutions\Implementation\ResolutionDocumentSeriesItemValidator.cs" />
     <Compile Include="Objects\Entities\Resolutions\Implementation\ResolutionKindDocumentSeriesValidator.cs" />
     <Compile Include="Objects\Entities\Resolutions\Implementation\ResolutionKindValidator.cs" />
@@ -380,8 +396,10 @@
     <Compile Include="Objects\Entities\Resolutions\IResolutionKindValidator.cs" />
     <Compile Include="Objects\Entities\Resolutions\IResolutionLogValidator.cs" />
     <Compile Include="Objects\Entities\Tasks\Implementation\TaskHeaderProtocolValidator.cs" />
+    <Compile Include="Objects\Entities\Tasks\Implementation\TaskDetailValidator.cs" />
     <Compile Include="Objects\Entities\Tasks\Implementation\TaskHeaderValidator.cs" />
     <Compile Include="Objects\Entities\Tasks\ITaskHeaderProtocolValidator.cs" />
+    <Compile Include="Objects\Entities\Tasks\ITaskDetailValidator.cs" />
     <Compile Include="Objects\Entities\Tasks\ITaskHeaderValidator.cs" />
     <Compile Include="Objects\Entities\Templates\Implementation\TemplateDocumentRepositoryValidator.cs" />
     <Compile Include="Objects\Entities\Templates\Implementation\TemplateCollaborationUserValidator.cs" />
@@ -550,17 +568,16 @@
     <Compile Include="Objects\Entities\PECMails\IPECMailReceiptValidator.cs" />
     <Compile Include="Objects\Entities\PECMails\IPECMailValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolContactManualValidator.cs" />
-    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolDraftValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\Implementation\CollaborationDraftValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolRoleUserValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolRoleValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolLogValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolContactValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolDocumentTypeValidator.cs" />
-    <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolParerValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolLinkValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolUserValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\IProtocolContactManualValidator .cs" />
-    <Compile Include="Objects\Entities\Protocols\IProtocolDraftValidator.cs" />
+    <Compile Include="Objects\Entities\Collaborations\ICollaborationDraftValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\IProtocolContactValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\IProtocolUserValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\IProtocolRoleUserValidator.cs" />
@@ -568,7 +585,6 @@
     <Compile Include="Objects\Entities\Protocols\IProtocolTypeValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\IProtocolLogValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\IProtocolDocumentTypeValidator.cs" />
-    <Compile Include="Objects\Entities\Protocols\IProtocolParerValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\IProtocolLinkValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\IProtocolValidator.cs" />
     <Compile Include="Objects\Entities\Protocols\Implementation\ProtocolTypeValidator.cs" />
@@ -589,6 +605,13 @@
     <Compile Include="Objects\Entities\Tenants\ITenantConfigurationValidator.cs" />
     <Compile Include="Objects\Entities\Tenants\ITenantValidator.cs" />
     <Compile Include="Objects\Entities\Tenants\ITenantWorkflowRepositoryValidator.cs" />
+    <Compile Include="Objects\Entities\Tenders\Implementation\TenderLotPaymentValidator.cs" />
+    <Compile Include="Objects\Entities\Tenders\Implementation\TenderLotValidator.cs" />
+    <Compile Include="Objects\Entities\Tenders\Implementation\TenderHeaderValidator.cs" />
+    <Compile Include="Objects\Entities\Tenders\ITenderLotPaymentValidator.cs" />
+    <Compile Include="Objects\Entities\Tenders\ITenderLotValidator.cs" />
+    <Compile Include="Objects\Entities\Tenders\ITenderHeaderValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\Implementation\UDSFieldListValidator.cs" />
     <Compile Include="Objects\Entities\UDS\Implementation\UDSMessageValidator.cs" />
     <Compile Include="Objects\Entities\UDS\IUDSContactValidator.cs" />
     <Compile Include="Objects\Entities\UDS\Implementation\UDSContactValidator.cs" />
@@ -602,6 +625,7 @@
     <Compile Include="Objects\Entities\UDS\Implementation\UDSRepositoryValidator.cs" />
     <Compile Include="Objects\Entities\UDS\Implementation\UDSSchemaRepositoryValidator.cs" />
     <Compile Include="Objects\Entities\UDS\Implementation\UDSUserValidator.cs" />
+    <Compile Include="Objects\Entities\UDS\IUDSFieldListValidator.cs" />
     <Compile Include="Objects\Entities\UDS\IUDSMessageValidator.cs" />
     <Compile Include="Objects\Entities\UDS\IUDSDocumentUnitValidator.cs" />
     <Compile Include="Objects\Entities\UDS\IUDSCollaborationValidator.cs" />
@@ -745,6 +769,8 @@
     <Compile Include="RulesetDefinitions\Entities\Tenants\ITenantConfigurationRuleset.cs" />
     <Compile Include="RulesetDefinitions\Entities\Tenants\ITenantRuleset.cs" />
     <Compile Include="RulesetDefinitions\Entities\Tenants\ITenantWorkflowRepositoryRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Tenders\Implementation\TenderRuleset.cs" />
+    <Compile Include="RulesetDefinitions\Entities\Tenders\ITenderRuleset.cs" />
     <Compile Include="RulesetDefinitions\ServiceBus\Implementation\TopicRuleset.cs" />
     <Compile Include="RulesetDefinitions\ServiceBus\ITopicRuleset.cs" />
     <Compile Include="RulesetDefinitions\Workflows\Implementation\WorkflowRuleset.cs" />
@@ -805,6 +831,14 @@
     <Folder Include="Objects\Workflows\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
+      <Project>{c6f323c0-c21b-433b-90c8-0b64a42115ab}</Project>
+      <Name>VecompSoftware.Commons.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.Service.Models\VecompSoftware.DocSuite.Service.Models.csproj">
+      <Project>{666BDBDA-D461-4692-9CF7-FF03784A6E96}</Project>
+      <Name>VecompSoftware.DocSuite.Service.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Common\VecompSoftware.DocSuiteWeb.Common.csproj">
       <Project>{58938aa6-b3d6-4256-8c5c-4bcab88517bb}</Project>
       <Name>VecompSoftware.DocSuiteWeb.Common</Name>

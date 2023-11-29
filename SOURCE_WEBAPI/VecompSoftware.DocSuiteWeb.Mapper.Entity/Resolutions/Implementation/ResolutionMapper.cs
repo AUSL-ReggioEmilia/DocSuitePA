@@ -38,6 +38,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Resolutions
             entityTransformed.Status = entity.Status;
             entityTransformed.InclusiveNumber = entity.InclusiveNumber;
             entityTransformed.WebPublicationDate = entity.WebPublicationDate;
+            entityTransformed.Amount = entity.Amount;
             #endregion
 
             return entityTransformed;

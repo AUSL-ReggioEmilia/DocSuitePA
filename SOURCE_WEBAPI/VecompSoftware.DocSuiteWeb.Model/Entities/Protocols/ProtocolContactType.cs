@@ -3,8 +3,12 @@
     public enum ProtocolContactType : short
     {
         /// <summary>
+        /// default
+        /// </summary>
+        None = 0,
+        /// <summary>
         /// In copia conoscenza
         /// </summary>
-        CarbonCopy = 0
+        CarbonCopy = 1
     }
 }

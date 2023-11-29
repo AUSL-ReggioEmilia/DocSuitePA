@@ -24,10 +24,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .IsOptional()
                 .HasMaxLength(256);
 
-            Property(x => x.FullIncrementalPath)
-                .HasColumnName("FullIncrementalPath")
-                .IsOptional();
-
             Property(x => x.LogDescription)
                 .HasColumnName("LogDescription")
                  .IsOptional();
@@ -57,14 +53,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .HasColumnName("UniqueId")
                 .IsRequired();
 
-            Property(x => x.TenantId)
-                .HasColumnName("TenantId")
-                .IsRequired();
-
-            Property(x => x.IdSecurityGroupTenant)
-                .HasColumnName("IdSecurityGroupTenant")
-                .IsRequired();
-
             Ignore(x => x.Timestamp)
                 .Ignore(x => x.EntityShortId);
             #endregion
@@ -74,10 +62,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
             HasMany(t => t.SecurityUsers)
                .WithOptional(t => t.Group)
                .Map(m => m.MapKey("idGroup"));
-
-            HasOptional(t => t.GroupFather)
-               .WithMany(t => t.GroupChildren)
-               .Map(m => m.MapKey("idGroupFather"));
 
             #endregion
 

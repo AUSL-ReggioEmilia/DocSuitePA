@@ -40,6 +40,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             return container.Initialize<UnityConfig, WebAPICurrentIdentity>(WebApiApplication.UDSAssemblyFullName,
                 WebApiApplication.UDSAssemblyFileName, WebApiConfiguration.ServiceBusConnectionString,
                 HostingEnvironment.MapPath(WebApiConfiguration.MESSAGE_CONFIGURATION_FILE_PATH), WebApiConfiguration.CustomInstanceName,
+                WebApiConfiguration.PasswordEncryptionKey,
                 WebApiConfiguration.AutoDeleteOnIdle, WebApiConfiguration.DefaultMessageTimeToLive, WebApiConfiguration.LockDuration,
                 WebApiConfiguration.MaxDeliveryCount);
         }

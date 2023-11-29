@@ -51,10 +51,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoMapper, Version=10.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.10.0.0\lib\net461\AutoMapper.dll</HintPath>
+      <HintPath>..\packages\AutoMapper.10.1.1\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="DocumentFormat.OpenXml, Version=2.11.3.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
-      <HintPath>..\packages\DocumentFormat.OpenXml.2.11.3\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.13.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.13.0\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -62,42 +62,84 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.OData, Version=7.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.OData.7.5.0\lib\net45\Microsoft.AspNet.OData.dll</HintPath>
+    <Reference Include="IronPdf, Version=2021.12.0.4495, Culture=neutral, PublicKeyToken=94e1c31412563c75, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPdf.Slim.2021.12.4495\lib\net40\IronPdf.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="LinqKit, Version=1.1.26.0, Culture=neutral, PublicKeyToken=bc217f8844052a91, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqKit.1.1.26\lib\net45\LinqKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.OData, Version=7.5.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.OData.7.5.8\lib\net45\Microsoft.AspNet.OData.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=3.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=3.1.8.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.3.1.8\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=5.0.0.1, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.5.0.1\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=3.1.8.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.3.1.8\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.5.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.OData.Core, Version=7.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.OData.Core.7.7.1\lib\net45\Microsoft.OData.Core.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=6.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.6.24.0\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.OData.Edm, Version=7.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.OData.Edm.7.7.1\lib\net45\Microsoft.OData.Edm.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=6.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.6.24.0\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.4.1.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=6.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.6.24.0\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Cors, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Cors.4.1.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Protocols, Version=6.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocols.6.24.0\lib\net472\Microsoft.IdentityModel.Protocols.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.1.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect, Version=6.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocols.OpenIdConnect.6.24.0\lib\net472\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.4.1.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Protocols.WsFederation, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocols.WsFederation.5.3.0\lib\net461\Microsoft.IdentityModel.Protocols.WsFederation.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security.OAuth, Version=4.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.1.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.6.24.0\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens.Saml, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.Saml.5.3.0\lib\net461\Microsoft.IdentityModel.Tokens.Saml.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Validators, Version=6.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Validators.6.24.0\lib\net472\Microsoft.IdentityModel.Validators.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Xml, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Xml.5.3.0\lib\net461\Microsoft.IdentityModel.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.OData.Core, Version=7.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.OData.Core.7.9.0\lib\net45\Microsoft.OData.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.OData.Edm, Version=7.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.OData.Edm.7.9.0\lib\net45\Microsoft.OData.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.2.2\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Cors, Version=4.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Cors.4.2.0\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.2.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.2.2\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.ActiveDirectory, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.ActiveDirectory.4.2.2\lib\net45\Microsoft.Owin.Security.ActiveDirectory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Jwt, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Jwt.4.2.2\lib\net45\Microsoft.Owin.Security.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.2.2\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
@@ -134,8 +176,8 @@
     <Reference Include="Microsoft.ServiceBus, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceBus.v1_1.1.0.6\lib\net40-full\Microsoft.ServiceBus.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Spatial, Version=7.7.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Spatial.7.7.1\lib\net45\Microsoft.Spatial.dll</HintPath>
+    <Reference Include="Microsoft.Spatial, Version=7.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Spatial.7.9.0\lib\net45\Microsoft.Spatial.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -144,33 +186,59 @@
     <Reference Include="Microsoft.WindowsAzure.Configuration, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.3.2.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=6.24.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.6.24.0\lib\net472\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.IO.Packaging, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.IO.Packaging.4.7.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    <Reference Include="System.IO.Packaging, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Packaging.5.0.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encodings.Web, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.5.0.1\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=5.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.5.0.2\lib\net461\System.Text.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Cors, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.7\lib\net45\System.Web.Cors.dll</HintPath>
@@ -201,20 +269,20 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="VecompSoftware.Core.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Core.Command.9.9.20267.1\lib\net48\VecompSoftware.Core.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Core.Command, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Core.Command.9.22.23328.1\lib\net48\VecompSoftware.Core.Command.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.UDS, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.UDS.9.9.20267.1\lib\net48\VecompSoftware.Helpers.UDS.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.UDS, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.UDS.9.22.23328.1\lib\net48\VecompSoftware.Helpers.UDS.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.22.23328.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Helpers.XML, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.XML.9.9.20267.1\lib\net48\VecompSoftware.Helpers.XML.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.XML, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.XML.9.22.23328.1\lib\net48\VecompSoftware.Helpers.XML.dll</HintPath>
     </Reference>
-    <Reference Include="VecompSoftware.Services.Command, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Services.Command.9.9.20267.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
+    <Reference Include="VecompSoftware.Services.Command, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Services.Command.9.22.23328.1\lib\net48\VecompSoftware.Services.Command.dll</HintPath>
     </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
@@ -226,38 +294,6 @@
     <Content Include="App_Data\ConfigurationFiles\MessageConfiguration.json" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Install\8.56\_readme.txt" />
-    <Content Include="Install\8.65\_readme.txt" />
-    <Content Include="Install\8.64\_readme.txt" />
-    <Content Include="Install\8.63\_readme.txt" />
-    <Content Include="Install\8.58\_readme.txt" />
-    <Content Include="Install\8.66\_readme.txt" />
-    <Content Include="Install\8.67\_readme.txt" />
-    <Content Include="Install\8.68\_readme.txt" />
-    <Content Include="Install\8.69\_readme.txt" />
-    <Content Include="Install\8.72\ProtocolloDB_migrations.sql" />
-    <Content Include="Install\8.72\_readme.txt" />
-    <Content Include="Install\8.70\ProtocolloDB_migrations.sql" />
-    <Content Include="Install\8.70\_readme.txt" />
-    <Content Include="Install\8.73\_readme.txt" />
-    <Content Include="Install\8.77\_readme.txt" />
-    <Content Include="Install\8.75\_readme.txt" />
-    <Content Include="Install\8.74\_readme.txt" />
-    <Content Include="Install\8.78\_readme.txt" />
-    <Content Include="Install\8.79\_readme.txt" />
-    <Content Include="Install\8.85\_readme.txt" />
-    <Content Include="Install\8.83\_readme.txt" />
-    <Content Include="Install\8.82\_readme.txt" />
-    <Content Include="Install\8.81\_readme.txt" />
-    <Content Include="Install\8.80\_readme.txt" />
-    <Content Include="Install\8.86\_readme.txt" />
-    <Content Include="Install\8.87\_readme.txt" />
-    <Content Include="Install\9.03\_readme.txt" />
-    <Content Include="Install\9.02\_readme.txt" />
-    <Content Include="Install\9.01\_readme.txt" />
-    <Content Include="Install\9.04\_readme.txt" />
-    <Content Include="Install\9.07\_readme.txt" />
-    <Content Include="Install\9.09\_readme.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -271,6 +307,10 @@
     <Compile Include="Controllers\CustomModules\AUSLRE_BandiDiGaraDocumentsController.cs" />
     <Compile Include="Controllers\CustomModules\AUSLRE_BandiDiGaraArchivesController.cs" />
     <Compile Include="Controllers\CustomModules\AUSLRE_BandiDiGaraMenuController.cs" />
+    <Compile Include="Controllers\CustomModules\AUSLRE_CommittenteArchivesController.cs" />
+    <Compile Include="Controllers\CustomModules\AUSLRE_CommittenteDocumentsController.cs" />
+    <Compile Include="Controllers\CustomModules\AUSLRE_CommittenteMenuController.cs" />
+    <Compile Include="Controllers\Securities\SecureUpdateDocumentUnit.cs" />
     <Compile Include="Controllers\Domains\BaseODataController.cs" />
     <Compile Include="Controllers\Domains\Commons\DocumentUnitsController.cs" />
     <Compile Include="Controllers\Domains\Dossiers\DossierFoldersController.cs" />
@@ -281,16 +321,21 @@
     <Compile Include="Controllers\Domains\PECMails\PECMailsController.cs" />
     <Compile Include="Controllers\Domains\Protocols\ProtocolsController.cs" />
     <Compile Include="Controllers\Domains\Resolutions\ResolutionController.cs" />
+    <Compile Include="Controllers\Securities\SecureCollaborationController.cs" />
+    <Compile Include="Controllers\Securities\SecureUpdateDocumentUnitController.cs" />
+    <Compile Include="Controllers\Securities\SecureDocumentsController.cs" />
     <Compile Include="Controllers\Securities\TokenSecuritiesController.cs" />
     <Compile Include="Controllers\Workflows\WorkflowsController.cs" />
     <Compile Include="Controllers\Workflows\StartWorkflowController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Handlers\AzureAuthorizeAttribute.cs" />
     <Compile Include="Handlers\DSWAuthorizationServerProvider.cs" />
     <Compile Include="Handlers\DSWAuthorizeAttribute.cs" />
     <Compile Include="Handlers\DSWAuthorizeClaimType.cs" />
     <Compile Include="Handlers\DSWAuthorizeType.cs" />
+    <Compile Include="Handlers\JwtClaimType.cs" />
     <Compile Include="Handlers\WebAPIDataBatchHandler.cs" />
     <Compile Include="Profiles\Domains\Commons\ActiveTypeTypeConverter.cs" />
     <Compile Include="Profiles\Domains\Commons\CategoryModelProfile.cs" />
@@ -334,385 +379,7 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Install\8.63\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.63\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.63\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.63\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.63\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.63\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.63\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.64\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.64\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.64\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.64\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.64\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.64\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.64\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.65\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.65\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.65\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.65\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.65\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.65\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.65\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.66\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.66\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.66\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.66\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.66\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.66\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.66\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.67\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.67\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.67\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.67\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.67\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.67\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.67\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.68\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.68\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.68\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.68\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.68\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.68\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.68\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.69\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.69\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.69\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.69\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.69\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.69\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.69\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.70\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.70\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.70\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.70\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.70\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.70\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.70\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.72\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.72\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.72\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.72\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.72\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.72\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.72\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.73\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.73\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.73\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.73\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.73\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.73\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.73\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.74\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.74\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.74\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.74\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.74\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.74\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.74\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.75\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.75\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.75\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.75\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.75\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.75\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.75\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="App_Data\ConfigurationFiles\WebAPI.Origin.Allow.Lists.json" />
-    <Content Include="Install\8.77\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.77\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.77\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.77\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.77\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.77\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.77\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.78\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.78\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.78\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.78\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.78\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.78\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.78\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.79\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.79\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.79\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.79\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.79\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.79\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.79\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.80\default_configurations\EnterpriseLibrary.Logging.config" />
-    <Content Include="Install\8.80\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.80\default_configurations\WebApi.appSettings.config" />
-    <Content Include="Install\8.80\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="Install\8.80\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="Install\8.80\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="Install\8.80\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="Install\8.81\default_configurations\EnterpriseLibrary.Logging.config" />
-    <Content Include="Install\8.81\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.81\default_configurations\WebApi.appSettings.config" />
-    <Content Include="Install\8.81\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="Install\8.81\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="Install\8.81\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="Install\8.81\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="Install\8.82\default_configurations\EnterpriseLibrary.Logging.config" />
-    <Content Include="Install\8.82\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.82\default_configurations\WebApi.appSettings.config" />
-    <Content Include="Install\8.82\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="Install\8.82\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="Install\8.82\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="Install\8.82\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="Install\8.83\default_configurations\EnterpriseLibrary.Logging.config" />
-    <Content Include="Install\8.83\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.83\default_configurations\WebApi.appSettings.config" />
-    <Content Include="Install\8.83\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="Install\8.83\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="Install\8.83\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="Install\8.83\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="Install\8.85\default_configurations\EnterpriseLibrary.Logging.config" />
-    <Content Include="Install\8.85\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.85\default_configurations\WebApi.appSettings.config" />
-    <Content Include="Install\8.85\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="Install\8.85\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="Install\8.85\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="Install\8.85\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="Install\8.86\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.87\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.86\default_configurations\EnterpriseLibrary.Logging.config" />
-    <Content Include="Install\8.86\default_configurations\WebApi.appSettings.config" />
-    <Content Include="Install\8.86\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="Install\8.86\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="Install\8.86\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="Install\8.86\default_configurations\WebApi.system.servicemodel.client.config" />
-    <Content Include="Install\8.87\default_configurations\EnterpriseLibrary.Logging.config" />
-    <Content Include="Install\8.87\default_configurations\WebApi.appSettings.config" />
-    <Content Include="Install\8.87\default_configurations\WebApi.connectionStrings.config" />
-    <Content Include="Install\8.87\default_configurations\WebApi.system.servicemodel.behaviors.config" />
-    <Content Include="Install\8.87\default_configurations\WebApi.system.servicemodel.bindings.config" />
-    <Content Include="Install\8.87\default_configurations\WebApi.system.servicemodel.client.config" />
     <Content Include="Install\9.01\default_configurations\EnterpriseLibrary.Logging.config" />
     <Content Include="Install\9.01\default_configurations\EnterpriseLibrary.Validation.config" />
     <Content Include="Install\9.01\default_configurations\WebApi.appSettings.config" />
@@ -763,59 +430,88 @@
     <Content Include="Install\9.09\default_configurations\WebApi.system.servicemodel.behaviors.config" />
     <Content Include="Install\9.09\default_configurations\WebApi.system.servicemodel.bindings.config" />
     <Content Include="Install\9.09\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="Install\9.10\default_configurations\EnterpriseLibrary.Logging.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.10\default_configurations\EnterpriseLibrary.Validation.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.10\default_configurations\WebApi.appSettings.config" />
+    <Content Include="Install\9.10\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="Install\9.10\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="Install\9.10\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="Install\9.10\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="Install\9.11\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="Install\9.11\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="Install\9.11\default_configurations\WebApi.appSettings.config" />
+    <Content Include="Install\9.11\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="Install\9.11\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="Install\9.11\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="Install\9.11\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="Install\9.14\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="Install\9.14\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="Install\9.14\default_configurations\WebApi.appSettings.config" />
+    <Content Include="Install\9.14\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="Install\9.14\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="Install\9.14\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="Install\9.14\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="Install\9.15\default_configurations\EnterpriseLibrary.Logging.config" />
+    <Content Include="Install\9.15\default_configurations\EnterpriseLibrary.Validation.config" />
+    <Content Include="Install\9.15\default_configurations\WebApi.appSettings.config" />
+    <Content Include="Install\9.15\default_configurations\WebApi.connectionStrings.config" />
+    <Content Include="Install\9.15\default_configurations\WebApi.system.servicemodel.behaviors.config" />
+    <Content Include="Install\9.15\default_configurations\WebApi.system.servicemodel.bindings.config" />
+    <Content Include="Install\9.15\default_configurations\WebApi.system.servicemodel.client.config" />
+    <Content Include="Install\9.20\default_configurations\EnterpriseLibrary.Validation.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.20\default_configurations\WebApi.connectionStrings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.20\default_configurations\WebApi.system.servicemodel.behaviors.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.20\default_configurations\WebApi.system.servicemodel.bindings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.20\default_configurations\WebApi.system.servicemodel.client.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.20\default_configurations\EnterpriseLibrary.Logging.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.20\default_configurations\WebApi.appSettings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.25\default_configurations\EnterpriseLibrary.Logging.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.25\default_configurations\EnterpriseLibrary.Validation.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.25\default_configurations\WebApi.appSettings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.25\default_configurations\WebApi.connectionStrings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.25\default_configurations\WebApi.system.servicemodel.behaviors.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.25\default_configurations\WebApi.system.servicemodel.bindings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Install\9.25\default_configurations\WebApi.system.servicemodel.client.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="WebApi.system.servicemodel.bindings.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="App_Data\ConfigurationFiles\Workflow.Client.Config.json" />
-    <Content Include="App_Data\ConfigurationFiles\Workflow.Client.Config.schema.json" />
     <None Include="EnterpriseLibrary.Logging.config">
       <SubType>Designer</SubType>
     </None>
     <Content Include="EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\Piano_di_Lavoro_DSW.WebAPI_Installazione.pdf" />
-    <Content Include="Install\8.56\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.56\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.56\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.56\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.56\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.56\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.56\default_configurations\WebApi.system.servicemodel.client.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.58\default_configurations\EnterpriseLibrary.Logging.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.58\default_configurations\EnterpriseLibrary.Validation.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.58\default_configurations\WebApi.appSettings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.58\default_configurations\WebApi.connectionStrings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.58\default_configurations\WebApi.system.servicemodel.behaviors.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.58\default_configurations\WebApi.system.servicemodel.bindings.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Install\8.58\default_configurations\WebApi.system.servicemodel.client.config">
       <SubType>Designer</SubType>
     </Content>
     <None Include="Web.Debug.config">
@@ -1007,9 +703,11 @@
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
     <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets'))" />
+    <Error Condition="!Exists('..\packages\IronPdf.Native.Chrome.Windows.2021.12.4389\build\net452\IronPdf.Native.Chrome.Windows.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\IronPdf.Native.Chrome.Windows.2021.12.4389\build\net452\IronPdf.Native.Chrome.Windows.targets'))" />
   </Target>
   <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />
+  <Import Project="..\packages\IronPdf.Native.Chrome.Windows.2021.12.4389\build\net452\IronPdf.Native.Chrome.Windows.targets" Condition="Exists('..\packages\IronPdf.Native.Chrome.Windows.2021.12.4389\build\net452\IronPdf.Native.Chrome.Windows.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

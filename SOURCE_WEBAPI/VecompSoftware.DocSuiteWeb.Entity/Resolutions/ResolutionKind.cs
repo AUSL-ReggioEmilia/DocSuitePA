@@ -18,6 +18,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Resolutions
         #region [ Properties ]
         public string Name { get; set; }
         public bool IsActive { get; set; }
+        public bool AmountEnabled { get; set; }
         #endregion
 
         #region [ Navigation Properties ]

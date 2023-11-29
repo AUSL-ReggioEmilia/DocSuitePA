@@ -21,11 +21,10 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Resolutions
 
         public Guid UniqueId { get; set; }
 
-        public int IdResolution { get; set; }
-
         public int? IdResolutionRoleType { get; set; }
 
         public RoleModel Role { get; set; }
+        public ResolutionModel Resolution { get; set; }
 
         public DateTimeOffset? LastChangedDate { get; set; }
 

@@ -75,18 +75,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Protocols
                .HasColumnName("JournalDate")
                .IsOptional();
 
-            Property(x => x.ConservationStatus)
-               .HasColumnName("ConservationStatus")
-               .IsRequired();
-
-            Property(x => x.LastConservationDate)
-               .HasColumnName("LastConservationDate")
-               .IsOptional();
-
-            Property(x => x.HasConservatedDocs)
-               .HasColumnName("HasConservatedDocs")
-               .IsOptional();
-
             Property(x => x.IdAnnexed)
                .HasColumnName("idAnnexed")
                .IsOptional();
@@ -142,10 +130,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Protocols
             Property(x => x.LastChangedUser)
                 .HasColumnName("LastChangedUser")
                 .IsOptional();
-
-            Property(x => x.IdProtocolJournalLog)
-              .HasColumnName("IdProtocolJournalLog")
-              .IsOptional();
 
             Property(x => x.DematerialisationChainId)
                 .HasColumnName("DematerialisationChainId")
@@ -205,6 +189,9 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Protocols
                .WithMany(t => t.Protocols)
                .Map(m => m.MapKey("IdTenantAOO"));
 
+            HasOptional(t => t.ProtocolJournal)
+               .WithMany(t => t.Protocols)
+               .Map(m => m.MapKey("IdProtocolJournalLog"));
             #endregion
         }
     }

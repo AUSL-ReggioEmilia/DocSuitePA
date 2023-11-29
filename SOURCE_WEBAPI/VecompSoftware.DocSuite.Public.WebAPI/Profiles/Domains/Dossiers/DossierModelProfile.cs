@@ -61,9 +61,9 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Profiles.Domains.Dossiers
                 AuthorizationType = DocSuiteWeb.Model.Commons.AuthorizationRoleType.Accounted,
                 FullIncrementalPath = role.FullIncrementalPath,
                 IdRole = role.EntityShortId,
+                EntityShortId = role.EntityShortId,
                 Name = role.Name,
                 RoleLabel = string.Empty,
-                TenantId = role.TenantId,
                 UniqueId = role.UniqueId
             };
             return roleModel;

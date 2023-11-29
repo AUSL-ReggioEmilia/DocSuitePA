@@ -7,6 +7,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Fascicles
         public override FascicleDocumentUnit Map(FascicleDocumentUnit entity, FascicleDocumentUnit entityTransformed)
         {
             entityTransformed.ReferenceType = entity.ReferenceType;
+            entityTransformed.SequenceNumber = entity.SequenceNumber;
             return entityTransformed;
         }
     }

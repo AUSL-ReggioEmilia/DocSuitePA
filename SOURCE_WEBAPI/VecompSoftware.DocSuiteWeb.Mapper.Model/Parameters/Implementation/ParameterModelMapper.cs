@@ -20,23 +20,14 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Parameters
             modelTransformed.LastUsedYear = entity.LastUsedYear;
             modelTransformed.LastUsedNumber = entity.LastUsedNumber;
             modelTransformed.Locked = entity.Locked;
-            modelTransformed.Password = entity.Password;
             modelTransformed.LastUsedidCategory = entity.LastUsedIdCategory;
-            modelTransformed.LastUsedidRecipient = entity.LastUsedIdRecipient;
             modelTransformed.LastUsedidContainer = entity.LastUsedIdContainer;
-            modelTransformed.Version = entity.Version;
-            modelTransformed.LastUsedidDistributionList = entity.LastUsedIdDistributionList;
-            modelTransformed.DomainName = entity.DomainName;
-            modelTransformed.AlternativePassword = entity.AlternativePassword;
-            modelTransformed.ServiceField = entity.ServiceField;
             modelTransformed.LastUsedidRole = entity.LastUsedIdRole;
             modelTransformed.LastUsedIdRoleUser = entity.LastUsedIdRoleUser;
             modelTransformed.LastUsedidResolution = entity.LastUsedIdResolution;
             modelTransformed.LastUsedResolutionYear = entity.LastUsedResolutionYear;
             modelTransformed.LastUsedResolutionNumber = entity.LastUsedResolutionNumber;
             modelTransformed.LastUsedBillNumber = entity.LastUsedBillNumber;
-            modelTransformed.LastUsedYearReg = entity.LastUsedYearReg;
-            modelTransformed.LastUsedNumberReg = entity.LastUsedNumberReg;
             modelTransformed.RegistrationUser = entity.RegistrationUser;
             modelTransformed.RegistrationDate = entity.RegistrationDate;
 

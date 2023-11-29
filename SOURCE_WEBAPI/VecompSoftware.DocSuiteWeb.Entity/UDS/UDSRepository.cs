@@ -26,6 +26,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.UDS
             UDSDocumentUnits = new HashSet<UDSDocumentUnit>();
             UDSPECMails = new HashSet<UDSPECMail>();
             UDSCollaborations = new HashSet<UDSCollaboration>();
+            UDSFieldLists = new HashSet<UDSFieldList>();
         }
         #endregion
 
@@ -85,6 +86,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.UDS
         public virtual ICollection<UDSPECMail> UDSPECMails { get; set; }
 
         public virtual ICollection<UDSCollaboration> UDSCollaborations { get; set; }
+        public virtual ICollection<UDSFieldList> UDSFieldLists { get; set; }
 
         #endregion
     }

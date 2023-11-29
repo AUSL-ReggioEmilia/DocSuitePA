@@ -40,11 +40,20 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.JeepServiceHosts
                 .HasColumnName("RegistrationDate")
                 .IsRequired();
 
-            Ignore(x => x.Timestamp)
-                .Ignore(x => x.EntityId)
-                .Ignore(x => x.EntityShortId)
-                .Ignore(x => x.LastChangedDate)
-                .Ignore(x => x.LastChangedUser);
+            Property(x => x.LastChangedDate)
+                .HasColumnName("LastChangedDate")
+                .IsOptional();
+
+            Property(x => x.LastChangedUser)
+                .HasColumnName("LastChangedUser")
+                .IsOptional();
+
+            Property(x => x.Timestamp)
+              .HasColumnName("Timestamp")
+              .IsRequired();
+
+            Ignore(x => x.EntityId)
+                .Ignore(x => x.EntityShortId);
 
             #endregion
 

@@ -49,6 +49,10 @@ namespace VecompSoftware.DocSuiteWeb.Model.Workflow
         [Description("GenerateReport")]
         GenerateReport = 21,
         [Description("CopyFascicleContents")]
-        CopyFascicleContents = 22
+        CopyFascicleContents = 22,
+        [Description("UpdateProtocol")]
+        UpdateProtocol = 23,
+        [Description("Authorize")]
+        Authorize = 24
     }
 }

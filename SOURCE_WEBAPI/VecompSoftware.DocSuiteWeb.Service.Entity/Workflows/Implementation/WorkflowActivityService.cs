@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
+using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
@@ -39,6 +41,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Workflows
             if (entity.WorkflowInstance != null)
             {
                 entity.WorkflowInstance = _unitOfWork.Repository<WorkflowInstance>().Find(entity.WorkflowInstance.UniqueId);
+            }
+
+            if (entity.Tenant != null)
+            {
+                entity.Tenant = _unitOfWork.Repository<Tenant>().Find(entity.Tenant.UniqueId);
             }
 
             if (entity.WorkflowActivityLogs != null && entity.WorkflowActivityLogs.Count > 0)
@@ -162,6 +169,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Workflows
                     item.Entity = entityTransformed;
                     _unitOfWork.Repository<WorkflowActivityLog>().Insert(item);
                 }
+            }
+
+            if (entity.DocumentUnitReferenced != null)
+            {
+                entityTransformed.DocumentUnitReferenced = _unitOfWork.Repository<DocumentUnit>().Find(entity.DocumentUnitReferenced.UniqueId);
             }
 
             return base.BeforeUpdate(entity, entityTransformed);

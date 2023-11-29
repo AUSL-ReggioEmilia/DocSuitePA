@@ -43,6 +43,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Workflows
 
         public string Note { get; set; }
 
+        public bool IsVisible { get; set; }
         #endregion
 
         #region [ Navigation Properties ]

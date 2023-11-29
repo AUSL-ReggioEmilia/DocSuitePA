@@ -9,6 +9,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Resolutions
             #region [ Base ]
             entityTransformed.Name = entity.Name;
             entityTransformed.IsActive = entity.IsActive;
+            entityTransformed.AmountEnabled = entity.AmountEnabled;
             #endregion
 
             return entityTransformed;

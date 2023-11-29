@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.OData.Query;
+using System;
 using System.Collections.Generic;
 using System.Web.Http;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
@@ -41,11 +42,31 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Templates
         }
 
         [HttpGet]
+        public IHttpActionResult GetAllParentsOfTemplate(ODataQueryOptions<TemplateCollaboration> options, Guid templateId)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<TemplateCollaborationModel> results = _unitOfWork.Repository<TemplateCollaboration>().GetAllParentsOfTemplate(templateId);
+                return Ok(results);
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
         public IHttpActionResult GetInvalidatingTemplatesByRoleUserAccount(ODataQueryOptions<TemplateCollaboration> options, string username, string domain, int idRole)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
                 ICollection<TemplateCollaborationModel> result = _unitOfWork.Repository<TemplateCollaboration>().GetInvalidatingTemplatesByRoleUserAccount(string.Format(@"{0}\{1}", domain, username), idRole);
+                return Ok(result);
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetChildren(ODataQueryOptions<TemplateCollaboration> options, Guid idParent, short? status)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<TemplateCollaborationModel> result = _unitOfWork.Repository<TemplateCollaboration>().GetChildren(Username, Domain, idParent, status);
                 return Ok(result);
             }, _logger, LogCategories);
         }

@@ -38,8 +38,8 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -68,8 +68,10 @@
     <Compile Include="Commons\IUserLogService.cs" />
     <Compile Include="DocumentArchives\IDocumentSeriesItemLinkService.cs" />
     <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemLinkService.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitContactService.cs" />
     <Compile Include="DocumentUnits\IDocumentUnitFascicleCategoryService.cs" />
     <Compile Include="DocumentUnits\IDocumentUnitFascicleHistoricizedCategoryService.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitContactService.cs" />
     <Compile Include="DocumentUnits\Implementation\DocumentUnitFascicleCategoryService.cs" />
     <Compile Include="DocumentUnits\Implementation\DocumentUnitFascicleHistoricizedCategoryService.cs" />
     <Compile Include="Fascicles\IFascicleDocumentUnitService.cs" />
@@ -141,6 +143,10 @@
     <Compile Include="Monitors\ITransparentAdministrationMonitorLogService.cs" />
     <Compile Include="Parameters\Implementation\ParameterService.cs" />
     <Compile Include="Parameters\IParameterService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolJournalService.cs" />
+    <Compile Include="Protocols\Implementation\ProtocolStatusService.cs" />
+    <Compile Include="Protocols\IProtocolJournalService.cs" />
+    <Compile Include="Protocols\IProtocolStatusService.cs" />
     <Compile Include="Resolutions\Implementation\ResolutionDocumentSeriesItemService.cs" />
     <Compile Include="Resolutions\Implementation\ResolutionKindService.cs" />
     <Compile Include="Resolutions\Implementation\ResolutionKindDocumentSeriesService.cs" />
@@ -150,8 +156,10 @@
     <Compile Include="Resolutions\IResolutionLogService.cs" />
     <Compile Include="Resolutions\IResolutionDocumentSeriesItemService.cs" />
     <Compile Include="Tasks\Implementation\TaskHeaderProtocolService.cs" />
+    <Compile Include="Tasks\Implementation\TaskDetailService.cs" />
     <Compile Include="Tasks\Implementation\TaskHeaderService.cs" />
     <Compile Include="Tasks\ITaskHeaderProtocolService.cs" />
+    <Compile Include="Tasks\ITaskDetailService.cs" />
     <Compile Include="Tasks\ITaskHeaderService.cs" />
     <Compile Include="Templates\Implementation\TemplateDocumentRepositoryService.cs" />
     <Compile Include="Templates\Implementation\TemplateCollaborationDocumentRepositoryService.cs" />
@@ -242,24 +250,22 @@
     <Compile Include="PECMails\Implementation\PECMailService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocols\Implementation\ProtocolContactManualService .cs" />
-    <Compile Include="Protocols\Implementation\ProtocolDraftService.cs" />
+    <Compile Include="Collaborations\Implementation\CollaborationDraftService.cs" />
     <Compile Include="Protocols\Implementation\ProtocolUserService.cs" />
     <Compile Include="Protocols\Implementation\ProtocolDocumentTypeService.cs" />
     <Compile Include="Protocols\Implementation\ProtocolLogService.cs" />
     <Compile Include="Protocols\Implementation\ProtocolContactService.cs" />
     <Compile Include="Protocols\Implementation\ProtocolRoleUserService.cs" />
     <Compile Include="Protocols\Implementation\ProtocolRoleService.cs" />
-    <Compile Include="Protocols\Implementation\ProtocolParerService.cs" />
     <Compile Include="Protocols\Implementation\ProtocolLinkService.cs" />
     <Compile Include="Protocols\Implementation\ProtocolTypeService.cs" />
     <Compile Include="Protocols\IProtocolContactManualService .cs" />
-    <Compile Include="Protocols\IProtocolDraftService.cs" />
+    <Compile Include="Collaborations\ICollaborationDraftService.cs" />
     <Compile Include="Protocols\IProtocolLogService.cs" />
     <Compile Include="Protocols\IProtocolContactService.cs" />
     <Compile Include="Protocols\IProtocolRoleUserService.cs" />
     <Compile Include="Protocols\IProtocolRoleService.cs" />
     <Compile Include="Protocols\IProtocolDocumentTypeService.cs" />
-    <Compile Include="Protocols\IProtocolParerService.cs" />
     <Compile Include="Protocols\IProtocolLinkService.cs" />
     <Compile Include="Protocols\IProtocolUserService.cs" />
     <Compile Include="Protocols\IProtocolTypeService.cs" />
@@ -282,8 +288,15 @@
     <Compile Include="Tenants\ITenantConfigurationService.cs" />
     <Compile Include="Tenants\ITenantService.cs" />
     <Compile Include="Tenants\ITenantWorkflowRepositoryService.cs" />
+    <Compile Include="Tenders\Implementation\TenderLotPaymentService.cs" />
+    <Compile Include="Tenders\Implementation\TenderLotService.cs" />
+    <Compile Include="Tenders\Implementation\TenderHeaderService.cs" />
+    <Compile Include="Tenders\ITenderLotPaymentService.cs" />
+    <Compile Include="Tenders\ITenderLotService.cs" />
+    <Compile Include="Tenders\ITenderHeaderService.cs" />
     <Compile Include="UDS\Implementation\BaseUDSService.cs" />
     <Compile Include="UDS\Implementation\UDSContactService.cs" />
+    <Compile Include="UDS\Implementation\UDSFieldListService.cs" />
     <Compile Include="UDS\Implementation\UDSMessageService.cs" />
     <Compile Include="UDS\Implementation\UDSDocumentUnitService.cs" />
     <Compile Include="UDS\Implementation\UDSCollaborationService.cs" />
@@ -296,6 +309,7 @@
     <Compile Include="UDS\Implementation\UDSRepositoryService.cs" />
     <Compile Include="UDS\Implementation\UDSUserService.cs" />
     <Compile Include="UDS\IUDSContactService.cs" />
+    <Compile Include="UDS\IUDSFieldListService.cs" />
     <Compile Include="UDS\IUDSMessageService.cs" />
     <Compile Include="UDS\IUDSDocumentUnitService.cs" />
     <Compile Include="UDS\IUDSCollaborationService.cs" />
@@ -394,10 +408,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="packages.config" />
     <Content Include="VecompSoftware.DocSuiteWeb.Service.Entity.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -16,14 +17,13 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Protocols
     public class ProtocolValidator : ObjectValidator<Protocol, ProtocolValidator>, IProtocolValidator
     {
         #region [ Constructor ]
-        public ProtocolValidator(ILogger logger, IProtocolValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public ProtocolValidator(ILogger logger, IProtocolValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
             ProtocolLogs = new Collection<ProtocolLog>();
             ProtocolContacts = new Collection<ProtocolContact>();
             ProtocolRoles = new Collection<ProtocolRole>();
             Messages = new Collection<Message>();
-            ProtocolParers = new Collection<ProtocolParer>();
             PECMails = new Collection<PECMail>();
             ProtocolLinks = new Collection<ProtocolLink>();
             LinkedProtocols = new Collection<ProtocolLink>();
@@ -54,9 +54,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Protocols
         public string AlternativeRecipient { get; set; }
         public string CheckPublication { get; set; }
         public DateTime? JournalDate { get; set; }
-        public string ConservationStatus { get; set; }
-        public DateTime? LastConservationDate { get; set; }
-        public bool? HasConservatedDocs { get; set; }
         public Guid? IdAnnexed { get; set; }
         public DateTime? HandlerDate { get; set; }
         public bool? Modified { get; set; }
@@ -68,7 +65,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Protocols
         public string DocAreaStatusDesc { get; set; }
         public short? IdAttachLocation { get; set; }
         public short IdProtocolKind { get; set; }
-        public int? IdProtocolJournalLog { get; set; }
         public byte[] Timestamp { get; set; }
         public Guid? DematerialisationChainId { get; set; }
         #endregion
@@ -85,7 +81,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Protocols
         public ICollection<ProtocolContact> ProtocolContacts { get; set; }
         public ICollection<ProtocolRole> ProtocolRoles { get; set; }
         public ICollection<Message> Messages { get; set; }
-        public ICollection<ProtocolParer> ProtocolParers { get; set; }
         public ICollection<PECMail> PECMails { get; set; }
         public ICollection<ProtocolLink> ProtocolLinks { get; set; }
         public ICollection<ProtocolLink> LinkedProtocols { get; set; }

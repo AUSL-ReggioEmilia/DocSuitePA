@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VecompSoftware.Core.Command;
 using VecompSoftware.Core.Command.CQRS.Events.Entities.Workflows;
 using VecompSoftware.Core.Command.CQRS.Events.Models.ExternalViewer;
 using VecompSoftware.DocSuite.Document.Generator.OpenXml.Word;
@@ -12,6 +13,7 @@ using VecompSoftware.DocSuiteWeb.Common.Configuration;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
+using VecompSoftware.DocSuiteWeb.Common.Securities;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
@@ -40,6 +42,7 @@ using VecompSoftware.DocSuiteWeb.Service.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Service.ServiceBus;
 using VecompSoftware.DocSuiteWeb.Validation;
 using VecompSoftware.Helpers.Workflow;
+using VecompSoftware.Services.Command;
 using VecompSoftware.Services.Command.CQRS.Events.Entities.Workflow;
 using ModelDocument = VecompSoftware.DocSuiteWeb.Model.Documents;
 using StorageDocument = VecompSoftware.DocSuite.Document;
@@ -56,7 +59,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
         private readonly ITopicService _topicService;
         private readonly IFascicleRoleService _fascicleRoleService;
         private readonly IDossierRoleService _dossierRoleService;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         private readonly ISecurity _security;
         private readonly StorageDocument.IDocumentContext<ModelDocument.Document, ModelDocument.ArchiveDocument> _documentService;
         #endregion
@@ -71,16 +74,16 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
             IWorkflowInstanceRoleService workflowInstanceRoleService, IWorkflowActivityService workflowActivityService,
             ITopicService topicService, ICQRSMessageMapper mapper_eventServiceBusMessage, IDataUnitOfWork unitOfWork, 
             StorageDocument.IDocumentContext<ModelDocument.Document, ModelDocument.ArchiveDocument> documentService, ICollaborationService collaborationService, 
-            ISecurity security, IParameterEnvService parameterEnvService, IFascicleRoleService fascicleRoleService, IMessageService messageService,
+            ISecurity security, IDecryptedParameterEnvService parameterEnvService, IFascicleRoleService fascicleRoleService, IMessageService messageService,
             IDossierRoleService dossierRoleService, IQueueService queueService, IWordOpenXmlDocumentGenerator wordOpenXmlDocumentGenerator,
             IMessageConfiguration messageConfiguration, IProtocolLogService protocolLogService, IPDFDocumentGenerator pdfDocumentGenerator,
             IFascicleService fascicleService, IFascicleDocumentService fascicleDocumentService, IFascicleFolderService fascicleFolderService,
-            IFascicleDocumentUnitService fascDocumentUnitService, IFascicleLinkService fascicleLinkService)
+            IFascicleDocumentUnitService fascDocumentUnitService, IFascicleLinkService fascicleLinkService, IEncryptionKey encryptionKey, StorageDocument.DocumentProxy.IDocumentProxyContext documentProxyContext)
             : base(logger, workflowInstanceService, workflowInstanceRoleService, workflowActivityService, topicService, mapper_eventServiceBusMessage, 
                   unitOfWork, documentService, collaborationService, security, parameterEnvService, fascicleRoleService,
                   messageService, dossierRoleService, queueService, wordOpenXmlDocumentGenerator, messageConfiguration,
                   protocolLogService, pdfDocumentGenerator, fascicleService, fascicleDocumentService, fascicleFolderService, fascDocumentUnitService,
-                  fascicleLinkService)
+                  fascicleLinkService, encryptionKey, documentProxyContext)
         {
             _unitOfWork = unitOfWork;
             _security = security;
@@ -179,7 +182,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
 
             WorkflowResult validationResult = new WorkflowResult();
             content.OutputArguments = content.OutputArguments ?? new Dictionary<string, WorkflowArgument>();
-            WorkflowActivity workflowActivity = _unitOfWork.Repository<WorkflowActivity>().Get(content.WorkflowActivityId).Single();
+            WorkflowActivity workflowActivity = _unitOfWork.Repository<WorkflowActivity>().Get(content.WorkflowActivityId).SingleOrDefault();
             if (workflowActivity == null)
             {
                 throw new DSWValidationException("Evaluate push notification",
@@ -217,17 +220,32 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
                 workflowActivity.WorkflowProperties.Add(workflowProperty);
                 evaluationWorkflowProperties.Add(workflowProperty);
             }
-
             WorkflowProperty dsw_p_CurrentStep = workflowActivity.WorkflowProperties.Single(f => f.Name == WorkflowPropertyHelper.DSW_PROPERTY_CURRENT_STEP);
             WorkflowStep currentStep = JsonConvert.DeserializeObject<WorkflowStep>(dsw_p_CurrentStep.ValueString, ServiceHelper.SerializerSettings);
+            WorkflowProperty dsw_a_Activity_SkipUpdateProperties = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_SKIP_UPDATE_PROPERTIES);
+            WorkflowProperty dsw_p_ProposerUser = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER);
+
             WorkflowProperty workflowPropertyToUpdate;
-            foreach (WorkflowArgument item in currentStep.OutputArguments.Where(f => content.OutputArguments.Any(x => x.Key == f.Name)))
+            string originalAccounts = string.Empty;
+            if (dsw_a_Activity_SkipUpdateProperties == null || 
+                (dsw_a_Activity_SkipUpdateProperties != null && dsw_a_Activity_SkipUpdateProperties.ValueBoolean.HasValue && !dsw_a_Activity_SkipUpdateProperties.ValueBoolean.Value)) 
             {
-                workflowPropertyToUpdate = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == item.Name);
-                if (workflowPropertyToUpdate != null)
+                foreach (WorkflowArgument item in currentStep.OutputArguments.Where(f => content.OutputArguments.Any(x => x.Key == f.Name)))
                 {
-                    workflowPropertyToUpdate = UpdateWorkflowProperty(content.OutputArguments[workflowPropertyToUpdate.Name], workflowPropertyToUpdate);
+                    workflowPropertyToUpdate = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == item.Name);
+                    if (workflowPropertyToUpdate != null)
+                    {
+                        if (workflowPropertyToUpdate.Name == WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS)
+                        {
+                            originalAccounts = workflowPropertyToUpdate.ValueString;
+                        }
+                        workflowPropertyToUpdate = UpdateWorkflowProperty(content.OutputArguments[workflowPropertyToUpdate.Name], workflowPropertyToUpdate);
+                    }
                 }
+            }
+            else
+            {
+                _logger.WriteDebug(new LogMessage($"Skip update properties requested."), LogCategories);
             }
 
             workflowActivity.Status = WorkflowStatus.Progress;
@@ -258,6 +276,22 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
                 EvaluateFascicleHandleDate(evaluationWorkflowProperties, workflowActivity);
             }
 
+            if (currentStep.EvaluationArguments.Any(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_SHARED_TO)
+                && content.OutputArguments.Any(x => x.Key == WorkflowPropertyHelper.DSW_ACTION_SHARED_TO))
+            {
+                workflowPropertyToUpdate = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_SHARED_TO);
+                if (workflowPropertyToUpdate != null)
+                {
+                    workflowPropertyToUpdate = UpdateWorkflowProperty(content.OutputArguments[WorkflowPropertyHelper.DSW_ACTION_SHARED_TO], workflowPropertyToUpdate);
+                }
+
+                WorkflowProperty shareToProperty = evaluationWorkflowProperties.SingleOrDefault(x => x.Name == WorkflowPropertyHelper.DSW_ACTION_SHARED_TO);
+                if (shareToProperty != null)
+                {
+                    shareToProperty.ValueString = content.OutputArguments.Single(x => x.Key == WorkflowPropertyHelper.DSW_ACTION_SHARED_TO).Value.ValueString;
+                }                
+            }
+
             bool hasAllArguments = currentStep.OutputArguments.All(f => evaluationWorkflowProperties.Any(x => x.Name == f.Name));
             _logger.WriteDebug(new LogMessage($"Current WorkflowActivity has all {hasAllArguments} OutputArguments"), LogCategories);
             if (!hasAllArguments)
@@ -279,48 +313,41 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
                 bool hasToContinue = EvaluateCollaborationSigns(currentStep, workflowActivity);
                 if (hasToContinue)
                 {
+
                     await PopulateActivityAsync(workflowActivity.WorkflowInstance, workflowActivity.WorkflowInstance.InstanceId.Value,
                         workflowActivity.WorkflowInstance.WorkflowRepository,
                         evaluationWorkflowProperties.Where(f => !f.Name.Equals(WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_MANUAL_COMPLETE)),
-                        currentStepNumber: currentStep.Position + 1, idArchiveChain: workflowActivity.IdArchiveChain);
-                }
-                WorkflowArgument dsw_p_Subject = content.OutputArguments.SingleOrDefault(f => f.Value != null && f.Value.Name == WorkflowPropertyHelper.DSW_PROPERTY_SUBJECT).Value;
-                if (dsw_p_Subject != null && !string.IsNullOrEmpty(dsw_p_Subject.ValueString))
-                {
-                    workflowActivity.Subject = dsw_p_Subject.ValueString;
+                        currentStepNumber: currentStep.Position + 1);
                 }
                 workflowActivity.Status = WorkflowStatus.Done;
             }
-            WorkflowProperty dsw_a_Shared_To = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_SHARED_TO);
 
-            if (workflowActivity.Status != WorkflowStatus.Done && dsw_a_Shared_To != null)
-            {
-                long? retrostep = currentStep.EvaluationArguments.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_FIELD_SHARED_TO_STEP)?.ValueInt;
-                retrostep = retrostep ?? currentStep.Position;
-                WorkflowProperty dsw_p_Accounts_instance = evaluationWorkflowProperties.SingleOrDefault(f => f.Name.Equals(WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS));
-                dsw_p_Accounts_instance.ValueString = string.Copy(dsw_a_Shared_To.ValueString);
-                await PopulateActivityAsync(workflowActivity.WorkflowInstance, workflowActivity.WorkflowInstance.InstanceId.Value,
-                    workflowActivity.WorkflowInstance.WorkflowRepository, evaluationWorkflowProperties, currentStepNumber: (int)retrostep.Value);
-            }
+            await ShareEvaluationActivity(workflowActivity, evaluationWorkflowProperties, currentStep);
 
             if (currentStep.EvaluationArguments.Any(f => f.Name == WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL))
             {
-                WorkflowProperty dsw_e_ActivityEndReferenceModel = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL);
-                if (dsw_e_ActivityEndReferenceModel != null && dsw_e_ActivityEndReferenceModel.PropertyType == WorkflowPropertyType.Json && !string.IsNullOrEmpty(dsw_e_ActivityEndReferenceModel.ValueString))
+                KeyValuePair<string, WorkflowArgument> dsw_e_ActivityEndReferenceModel = content.OutputArguments.SingleOrDefault(f => f.Key == WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_END_REFERENCE_MODEL);
+                if (dsw_e_ActivityEndReferenceModel.Key != null && dsw_e_ActivityEndReferenceModel.Value.PropertyType == ArgumentType.Json && !string.IsNullOrEmpty(dsw_e_ActivityEndReferenceModel.Value.ValueString))
                 {
-                    WorkflowReferenceModel activityReferenceModel = JsonConvert.DeserializeObject<WorkflowReferenceModel>(dsw_e_ActivityEndReferenceModel.ValueString, ServiceHelper.SerializerSettings);
+                    WorkflowReferenceModel activityReferenceModel = JsonConvert.DeserializeObject<WorkflowReferenceModel>(dsw_e_ActivityEndReferenceModel.Value.ValueString, ServiceHelper.SerializerSettings);
                     if (activityReferenceModel != null && !string.IsNullOrEmpty(activityReferenceModel.ReferenceModel))
                     {
-                        workflowActivity.IdArchiveChain = await ArchiveDocument(dsw_e_ActivityEndReferenceModel, activityReferenceModel, workflowActivity.IdArchiveChain);
+                        workflowActivity.IdArchiveChain = await ArchiveDocument((f) => dsw_e_ActivityEndReferenceModel.Value.ValueString = f, activityReferenceModel, workflowActivity.IdArchiveChain);
                     }
                 }
-            }            
+            }
 
             KeyValuePair<string, WorkflowArgument> dsw_a_Collaboration_ChangeSigner = content.OutputArguments.SingleOrDefault(f => f.Value.Name == WorkflowPropertyHelper.DSW_ACTION_COLLABORATION_CHANGE_SIGNER);
             if (dsw_a_Collaboration_ChangeSigner.Key != null && dsw_a_Collaboration_ChangeSigner.Value.PropertyType == ArgumentType.Json && !string.IsNullOrEmpty(dsw_a_Collaboration_ChangeSigner.Value.ValueString))
             {
                 workflowActivity.Status = WorkflowStatus.Todo;
                 workflowActivity.Name = EvaluateCollaborationChangeSigner(dsw_a_Collaboration_ChangeSigner.Value.ValueString, workflowActivity);
+            }
+            if (!string.IsNullOrEmpty(originalAccounts))
+            {
+                WorkflowProperty dsw_p_Accounts = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS);
+                dsw_p_Accounts.ValueString = originalAccounts;
+                _unitOfWork.Repository<WorkflowProperty>().Update(dsw_p_Accounts);
             }
 
             _unitOfWork.Repository<WorkflowActivity>().Update(workflowActivity);
@@ -331,6 +358,8 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
                 WorkflowProperty dsw_p_TenantName = workflowActivity.WorkflowInstance.WorkflowProperties.Single(f => f.Name == WorkflowPropertyHelper.DSW_PROPERTY_TENANT_NAME);
                 WorkflowProperty dsw_p_TenantAOOId = workflowActivity.WorkflowInstance.WorkflowProperties.Single(f => f.Name == WorkflowPropertyHelper.DSW_PROPERTY_TENANT_AOO_ID);
                 WorkflowArgument dsw_a_Activity_AutoComplete = currentStep.EvaluationArguments.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_ACTIVITY_AUTO_COMPLETE);
+                workflowActivity.WorkflowProperties.Clear();
+                workflowActivity.WorkflowInstance.WorkflowProperties.Clear();
                 IEventCompleteWorkflowActivity evt = new EventCompleteWorkflowActivity(dsw_p_TenantName.ValueString, dsw_p_TenantId.ValueGuid.Value, dsw_p_TenantAOOId.ValueGuid.Value,
                     CurrentIdentityContext, workflowActivity, dsw_a_Activity_AutoComplete == null || !dsw_a_Activity_AutoComplete.ValueBoolean.HasValue ? false : dsw_a_Activity_AutoComplete.ValueBoolean.Value);
                 ServiceBusMessage message = _mapper_cqrsMessageMapper.Map(evt, new ServiceBusMessage());
@@ -348,6 +377,32 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
             }
 
             return validationResult;
+        }
+
+        private async Task ShareEvaluationActivity(WorkflowActivity workflowActivity, List<WorkflowProperty> evaluationWorkflowProperties, WorkflowStep currentStep)
+        {
+            WorkflowProperty dsw_a_Shared_To = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_SHARED_TO);
+            WorkflowProperty dsw_e_ActivityStartMotivation = evaluationWorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_FIELD_ACTIVITY_START_MOTIVATION);
+            if (workflowActivity.Status != WorkflowStatus.Done && dsw_a_Shared_To != null)
+            {
+                long? retrostep = currentStep.EvaluationArguments.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_FIELD_SHARED_TO_STEP)?.ValueInt;
+                retrostep = retrostep ?? currentStep.Position;
+                WorkflowProperty dsw_p_Accounts = evaluationWorkflowProperties.SingleOrDefault(f => f.Name.Equals(WorkflowPropertyHelper.DSW_PROPERTY_ACCOUNTS));
+                dsw_p_Accounts.ValueString = string.Copy(dsw_a_Shared_To.ValueString);
+                ICollection<WorkflowAccount> workflowAccounts = JsonConvert.DeserializeObject<ICollection<WorkflowAccount>>(dsw_p_Accounts.ValueString);
+                WorkflowActivityLog workflowActivityLog = new WorkflowActivityLog()
+                {
+                    LogType = WorkflowActivityLogType.SharedTo,
+                    LogDescription = $"{string.Join(", ", workflowAccounts.Select(f => f.DisplayName))} il {DateTime.Now}{(dsw_e_ActivityStartMotivation == null ? string.Empty : $": {dsw_e_ActivityStartMotivation.ValueString}")}",
+                    SystemComputer = Environment.MachineName,
+                    RegistrationUser = _security.GetCurrentUser().Account,
+                    Entity = workflowActivity
+                };
+                _unitOfWork.Repository<WorkflowActivityLog>().Insert(workflowActivityLog);
+
+                await PopulateActivityAsync(workflowActivity.WorkflowInstance, workflowActivity.WorkflowInstance.InstanceId.Value,
+                    workflowActivity.WorkflowInstance.WorkflowRepository, evaluationWorkflowProperties, currentStepNumber: (int)retrostep.Value);
+            }
         }
 
         private bool EvaluateCollaborationSigns(WorkflowStep currentStep, WorkflowActivity workflowActivity)
@@ -456,14 +511,14 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
             _unitOfWork.Repository<WorkflowInstanceLog>().Insert(workflowInstanceLog);
             WorkflowActivityLog workflowActivityLog = new WorkflowActivityLog()
             {
-                LogType = WorkflowStatus.Todo,
+                LogType = WorkflowActivityLogType.Info,
                 LogDescription = $"Cambio responsabile da {collaborationSignToRemoveAccount} a {collaborationSign.SignName}",
                 SystemComputer = Environment.MachineName,
                 RegistrationUser = _security.GetCurrentUser().Account,
                 Entity = workflowActivity
             };
             _unitOfWork.Repository<WorkflowActivityLog>().Insert(workflowActivityLog);
-            return $"Documento '{collaborationModel.Subject}' in firma a {collaborationSignToRemoveAccount} nella collaborazione { collaborationModel.IdCollaboration}            ";
+            return $"Documento '{collaborationModel.Subject}' in firma a {collaborationSignToRemoveAccount} nella collaborazione { collaborationModel.IdCollaboration}";
         }
 
         /// <summary>
@@ -519,9 +574,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
         private void EvaluateFascicleHandleDate(List<WorkflowProperty> evaluationProperties, WorkflowActivity workflowActivity)
         {
             WorkflowProperty dsw_p_ReferenceModel = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_PROPERTY_REFERENCE_MODEL);
-            WorkflowProperty dsw_a_ToHandler = evaluationProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_TO_HANDLER);
-            WorkflowProperty dsw_a_Metadata_HandlerDate = evaluationProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_METADATA_HANDLER_DATE);
-
             if (dsw_p_ReferenceModel == null || dsw_p_ReferenceModel.PropertyType != WorkflowPropertyType.Json || string.IsNullOrEmpty(dsw_p_ReferenceModel.ValueString))
             {
                 throw new DSWValidationException("Assignment validation error",
@@ -529,17 +581,19 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
                     null, DSWExceptionCode.VA_RulesetValidation);
             }
 
-            if ((dsw_a_ToHandler == null || !dsw_a_ToHandler.ValueBoolean.HasValue || !dsw_a_ToHandler.ValueBoolean.Value)
-                || (dsw_a_Metadata_HandlerDate == null || string.IsNullOrEmpty(dsw_a_Metadata_HandlerDate.ValueString)) 
-                || !TryAuthorizeWorkflowActivityForCurrentUser(dsw_a_ToHandler, workflowActivity))
+            WorkflowProperty dsw_a_ToHandler = evaluationProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_TO_HANDLER);
+            bool authorized = TryAuthorizeWorkflowActivityForCurrentUser(dsw_a_ToHandler, workflowActivity);
+
+            WorkflowProperty dsw_a_Metadata_HandlerDate = evaluationProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_METADATA_HANDLER_DATE);
+            if (dsw_a_Metadata_HandlerDate == null || string.IsNullOrEmpty(dsw_a_Metadata_HandlerDate.ValueString) || !authorized)
             {
                 return;
             }
-            
+
             _logger.WriteDebug(new LogMessage($"Evaluating fascicle {WorkflowPropertyHelper.DSW_ACTION_METADATA_HANDLER_DATE} workflow evaluation property"), LogCategories);
 
             WorkflowReferenceModel workflowReferenceModel = JsonConvert.DeserializeObject<WorkflowReferenceModel>(dsw_p_ReferenceModel.ValueString, ServiceHelper.SerializerSettings);
-            
+
             if (workflowReferenceModel.ReferenceType != Model.Entities.Commons.DSWEnvironmentType.Fascicle)
             {
                 return;
@@ -569,16 +623,56 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
 
             MetadataValueModel handleDateMetadata = fascicleMetadataValues.SingleOrDefault(metadata => metadata.KeyName == dsw_a_Metadata_HandlerDate.ValueString);
             DateTime currentDatetime = DateTime.UtcNow;
-            handleDateMetadata.Value = currentDatetime.ToString("yyyy-MM-dd");
+            
+            if (handleDateMetadata != null && string.IsNullOrEmpty(handleDateMetadata.Value))
+            {
+                handleDateMetadata.Value = currentDatetime.ToString("yyyy-MM-dd");
+            }
 
             MetadataValue handleDateMetadataValue = _unitOfWork.Repository<MetadataValue>().GetByNameAndFascicle(dsw_a_Metadata_HandlerDate.ValueString, fascicle.UniqueId, true).SingleOrDefault();
-            handleDateMetadataValue.ValueDate = currentDatetime;
-            _unitOfWork.Repository<MetadataValue>().Update(handleDateMetadataValue);
+
+            if (handleDateMetadataValue != null && !handleDateMetadataValue.ValueDate.HasValue)
+            {
+                handleDateMetadataValue.ValueDate = currentDatetime;
+                _unitOfWork.Repository<MetadataValue>().Update(handleDateMetadataValue);
+            }
+
+            WorkflowProperty dsw_a_Metadata_HandlerEndDate = evaluationProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_METADATA_HANDLER_ENDDATE);
+            WorkflowProperty dsw_e_Metadata_HandleEndDateThreshold = evaluationProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_FIELD_HANDLERDATE_THRESHOLD);
+
+            bool validHandlerEndDateWorkflowProperties = (dsw_a_Metadata_HandlerEndDate != null && !string.IsNullOrEmpty(dsw_a_Metadata_HandlerEndDate.ValueString))
+                && (dsw_e_Metadata_HandleEndDateThreshold != null && dsw_e_Metadata_HandleEndDateThreshold.ValueInt.HasValue);
+            if (validHandlerEndDateWorkflowProperties)
+            {
+                double handlerEndDateThreshold = (double)dsw_e_Metadata_HandleEndDateThreshold.ValueInt;
+
+                MetadataValueModel handleEndDateMetadata = fascicleMetadataValues.SingleOrDefault(metadata => metadata.KeyName == dsw_a_Metadata_HandlerEndDate.ValueString);
+                if (handleEndDateMetadata != null && string.IsNullOrEmpty(handleEndDateMetadata.Value))
+                {
+                    DateTime handlerEndDate = currentDatetime.AddDays(handlerEndDateThreshold);
+                    handleEndDateMetadata.Value = handlerEndDate.ToString("yyyy-MM-dd");
+                }
+
+                MetadataValue handleEndDateMetadataValue = _unitOfWork.Repository<MetadataValue>().GetByNameAndFascicle(dsw_a_Metadata_HandlerEndDate.ValueString, fascicle.UniqueId, true).SingleOrDefault();
+                if (handleEndDateMetadataValue != null && !handleEndDateMetadataValue.ValueDate.HasValue)
+                {
+                    handleEndDateMetadataValue.ValueDate = currentDatetime.AddDays(handlerEndDateThreshold);
+                    _unitOfWork.Repository<MetadataValue>().Update(handleEndDateMetadataValue);
+                }
+            }
 
             fascicle.MetadataValues = JsonConvert.SerializeObject(fascicleMetadataValues);
-            _unitOfWork.Repository<Fascicle>().Update(fascicle);
 
-            _logger.WriteDebug(new LogMessage($"Fascicle {dsw_a_Metadata_HandlerDate.ValueString} metadata updated correctly"), LogCategories);
+            WorkflowProperty dsw_e_Identity_activity = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_FIELD_IDENTITY);
+            IIdentityContext identity = dsw_e_Identity_activity != null && dsw_e_Identity_activity.PropertyType == WorkflowPropertyType.Json && !string.IsNullOrEmpty(dsw_e_Identity_activity.ValueString)
+                    ? JsonConvert.DeserializeObject<IIdentityContext>(dsw_e_Identity_activity.ValueString, ServiceHelper.SerializerSettings) 
+                    : null;
+            if (identity != null)
+            {
+                fascicle.LastChangedUser = identity.User;
+            }
+            _unitOfWork.Repository<Fascicle>().Update(fascicle);
+            _logger.WriteDebug(new LogMessage($"Fascicle {dsw_a_Metadata_HandlerDate.ValueString} metadata has been successfully updated"), LogCategories);
 
             WorkflowInstanceLog workflowInstanceLog = new WorkflowInstanceLog()
             {
@@ -602,6 +696,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
                 WorkflowProperty dsw_p_AcceptanceModel = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_FIELD_ACCEPTANCE);
                 WorkflowProperty dsw_a_PublicFascicle_Temporary = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_FASCICLE_PUBLIC_TEMPORARY_ENFORCEMENT);
                 WorkflowProperty dsw_a_Metadata_Motivation_Label = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_ACTION_METADATA_MOTIVATION_LABEL);
+                WorkflowProperty dsw_e_Identity_activity = workflowActivity.WorkflowProperties.SingleOrDefault(f => f.Name == WorkflowPropertyHelper.DSW_FIELD_IDENTITY);
+
+                IIdentityContext identity = dsw_e_Identity_activity != null && dsw_e_Identity_activity.PropertyType == WorkflowPropertyType.Json && !string.IsNullOrEmpty(dsw_e_Identity_activity.ValueString)
+                    ? JsonConvert.DeserializeObject<IIdentityContext>(dsw_e_Identity_activity.ValueString, ServiceHelper.SerializerSettings) : null;
+
                 if (dsw_p_ReferenceModel == null || dsw_p_ReferenceModel.PropertyType != WorkflowPropertyType.Json || string.IsNullOrEmpty(dsw_p_ReferenceModel.ValueString))
                 {
                     throw new DSWValidationException("Assignment validation error",
@@ -684,7 +783,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
 
                             CommentFieldModel comment = new CommentFieldModel()
                             {
-                                Author = string.Concat(userModel.Domain, "\\", userModel.Name),
+                                Author = $"{userModel.Domain}\\{userModel.Name}",
                                 RegistrationDate = DateTimeOffset.UtcNow,
                                 Comment = acceptanceModel.AcceptanceReason
                             };
@@ -704,7 +803,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
                             dbActionMetadata(acceptanceMetadataValue);
 
                             fascicle.MetadataDesigner = JsonConvert.SerializeObject(metadataModel);
-                            fascicle.MetadataValues = JsonConvert.SerializeObject(metadataValues);                            
+                            fascicle.MetadataValues = JsonConvert.SerializeObject(metadataValues);
+                            if (identity != null)
+                            {
+                                fascicle.LastChangedUser = identity.User;
+                            }
                             _unitOfWork.Repository<Fascicle>().Update(fascicle);
                         }
                     }
@@ -770,12 +873,12 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
 
                     ICollection<WorkflowMapping> workflowMappings = JsonConvert.DeserializeObject<ICollection<WorkflowMapping>>(dsw_p_Roles.ValueString, ServiceHelper.SerializerSettings);
                     FascicleRole fascicleRole;
-                    foreach (WorkflowMapping workflowMapping in workflowMappings.Where(f => f.Role != null && f.Role.IdRole != 0))
+                    foreach (WorkflowMapping workflowMapping in workflowMappings.Where(f => f.Role != null && f.Role.UniqueId != Guid.Empty))
                     {
-                        fascicleRole = fascicle.FascicleRoles.SingleOrDefault(f => f.Role.EntityShortId == workflowMapping.Role.IdRole && f.AuthorizationRoleType == AuthorizationRoleType.Responsible);
+                        fascicleRole = fascicle.FascicleRoles.SingleOrDefault(f => f.Role.UniqueId == workflowMapping.Role.UniqueId && f.AuthorizationRoleType == AuthorizationRoleType.Responsible);
                         if (fascicleRole == null)
                         {
-                            _logger.WriteDebug(new LogMessage($"Role {workflowMapping.Role.IdRole} not founded in fascicle{fascicle.Title}"), LogCategories);
+                            _logger.WriteDebug(new LogMessage($"Role {workflowMapping.Role.UniqueId} not founded in fascicle{fascicle.Title}"), LogCategories);
                         }
                         else
                         {
@@ -784,18 +887,18 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
                                 if (needRemoveRole)
                                 {
                                     await _fascicleRoleService.DeleteAsync(fascicleRole);
-                                    _logger.WriteDebug(new LogMessage($"Role {fascicleRole.UniqueId} ({workflowMapping.Role.IdRole}) from fascicle {fascicle.Title} has been successfully removed."), LogCategories);
+                                    _logger.WriteDebug(new LogMessage($"Role {fascicleRole.UniqueId} ({workflowMapping.Role.UniqueId}) from fascicle {fascicle.Title} has been successfully removed."), LogCategories);
                                 }
                                 else
                                 {
                                     fascicleRole.AuthorizationRoleType = AuthorizationRoleType.Accounted;
                                     await _fascicleRoleService.UpdateAsync(fascicleRole);
-                                    _logger.WriteDebug(new LogMessage($"Role {fascicleRole.UniqueId} ({workflowMapping.Role.IdRole}) from fascicle {fascicle.Title} has been successfully setted to Accounted."), LogCategories);
+                                    _logger.WriteDebug(new LogMessage($"Role {fascicleRole.UniqueId} ({workflowMapping.Role.UniqueId}) from fascicle {fascicle.Title} has been successfully setted to Accounted."), LogCategories);
                                 }
                             }
                             else
                             {
-                                _logger.WriteDebug(new LogMessage($"Not removed role authorization identified {fascicleRole.UniqueId} ({workflowMapping.Role.IdRole}) because it's master for fascicle {fascicle.Title}"), LogCategories);
+                                _logger.WriteDebug(new LogMessage($"Not removed role authorization identified {fascicleRole.UniqueId} ({workflowMapping.Role.UniqueId}) because it's master for fascicle {fascicle.Title}"), LogCategories);
                             }
                         }
                     }
@@ -805,6 +908,10 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
                     dsw_a_PublicFascicle_Temporary.ValueBoolean.HasValue && dsw_a_PublicFascicle_Temporary.ValueBoolean.Value)
                 {
                     fascicle.VisibilityType = VisibilityType.Confidential;
+                    if (identity != null)
+                    {
+                        fascicle.LastChangedUser = identity.User;
+                    }
                     _unitOfWork.Repository<Fascicle>().Update(fascicle);
                     _logger.WriteDebug(new LogMessage($"Fascicle visivility changed to confidential during activity '{workflowActivity.Name}' of workflow '{workflowActivity.WorkflowInstance.WorkflowRepository.Name}'"), LogCategories);
                     _unitOfWork.Repository<FascicleLog>().Insert(FascicleService.CreateLog(fascicle, FascicleLogType.Workflow, $"Fascicolo reso privato durante completamento attività '{workflowActivity.Name}' - '{workflowActivity.WorkflowInstance.WorkflowRepository.Name}'", CurrentDomainUser.Account));

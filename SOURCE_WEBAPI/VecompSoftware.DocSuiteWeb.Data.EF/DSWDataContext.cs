@@ -34,6 +34,7 @@ using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Resolutions;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Tasks;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Templates;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Tenants;
+using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Tenders;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.UDS;
 using VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Workflows;
 using VecompSoftware.DocSuiteWeb.Repository.EF.DataContexts;
@@ -108,7 +109,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
                     .Add(new CollaborationAggregateMap())
                     .Add(new CollaborationVersioningMap())
                     .Add(new CollaborationSignMap())
-                    .Add(new CollaborationUserMap());
+                    .Add(new CollaborationUserMap())
+                    .Add(new CollaborationDraftMap());
 
                 #endregion
 
@@ -189,6 +191,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
                     .Add(new DocumentUnitMap())
                     .Add(new DocumentUnitRoleMap())
                     .Add(new DocumentUnitChainMap())
+                    .Add(new DocumentUnitContactMap())
                     .Add(new DocumentUnitFascicleHistoricizedCategoryMap())
                     .Add(new DocumentUnitFascicleCategoryMap())
                     .Add(new DocumentUnitUserMap());
@@ -240,13 +243,13 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
                     .Add(new ProtocolRoleMap())
                     .Add(new ProtocolRoleUserMap())
                     .Add(new ProtocolLogMap())
+                    .Add(new ProtocolJournalMap())
                     .Add(new ProtocolContactMap())
-                    .Add(new ProtocolParerMap())
                     .Add(new ProtocolLinkMap())
                     .Add(new ProtocolDocumentTypeMap())
+                    .Add(new ProtocolStatusMap())
                     .Add(new ProtocolUserMap())
                     .Add(new ProtocolContactManualMap())
-                    .Add(new ProtocolDraftMap())
                     .Add(new AdvancedProtocolMap()); ;
 
                 #endregion
@@ -265,7 +268,8 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
                     .Add(new ResolutionKindMap())
                     .Add(new ResolutionKindDocumentSeriesMap())
                     .Add(new ResolutionDocumentSeriesItemMap())
-                    .Add(new ResolutionLogMap());
+                    .Add(new ResolutionLogMap())
+                    .Add(new WebPublicationMap());
                 #endregion
 
                 #region [ Workflow ]
@@ -290,6 +294,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
                     .Add(new UDSTypologyMap())
                     .Add(new UDSLogMap())
                     .Add(new UDSRoleMap())
+                    .Add(new UDSFieldListMap())
                     .Add(new UDSUserMap())
                     .Add(new UDSContactMap())
                     .Add(new UDSMessageMap())
@@ -353,7 +358,15 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF
                 #region [ Tasks ]
                 modelBuilder.Configurations
                     .Add(new TaskHeaderMap())
-                    .Add(new TaskHeaderProtocolMap());
+                    .Add(new TaskHeaderProtocolMap())
+                    .Add(new TaskDetailMap());
+                #endregion
+
+                #region [ Tenders ]
+                modelBuilder.Configurations
+                    .Add(new TenderHeaderMap())
+                    .Add(new TenderLotMap())
+                    .Add(new TenderLotPaymentMap());
                 #endregion
             }
             catch (Exception ex)

@@ -5,7 +5,6 @@ using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
-using VecompSoftware.Helpers.Workflow;
 
 namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
 {
@@ -89,10 +88,10 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
                 {
                     workflowActivities = workflowActivities.Where(x => x.RegistrationDate <= finder.AuthorizeDateTo.Value);
                 }
-                if (!string.IsNullOrEmpty(finder.RequestorUsername))
-                {
-                    workflowActivities = workflowActivities.Where(x => x.WorkflowProperties.Any(y => y.Name == WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER && y.ValueString.Contains(finder.RequestorUsername)));
-                }
+                //if (!string.IsNullOrEmpty(finder.RequestorUsername))
+                //{
+                //    workflowActivities = workflowActivities.Where(x => x.WorkflowProperties.Any(y => y.Name == WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER && y.ValueString.Contains(finder.RequestorUsername)));
+                //}
                 if (!string.IsNullOrEmpty(finder.RequestorRoleName))
                 {
                     workflowActivities = workflowActivities.Where(x => x.DocumentUnitReferenced != null && x.DocumentUnitReferenced.Container.Name.Contains(finder.RequestorRoleName));
@@ -189,10 +188,10 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
                 {
                     workflowActivities = workflowActivities.Where(x => x.RegistrationDate <= finder.AuthorizeDateTo.Value);
                 }
-                if (finder.RequestorUsername != null && finder.RequestorUsername != string.Empty)
-                {
-                    workflowActivities = workflowActivities.Where(x => x.WorkflowProperties.Any(y => y.Name == WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER && y.ValueString.Contains(finder.RequestorUsername)));
-                }
+                //if (finder.RequestorUsername != null && finder.RequestorUsername != string.Empty)
+                //{
+                //    workflowActivities = workflowActivities.Where(x => x.WorkflowProperties.Any(y => y.Name == WorkflowPropertyHelper.DSW_PROPERTY_PROPOSER_USER && y.ValueString.Contains(finder.RequestorUsername)));
+                //}
                 if (finder.Status.HasValue)
                 {
                     WorkflowStatus workflowStatus = (WorkflowStatus)finder.Status.Value;

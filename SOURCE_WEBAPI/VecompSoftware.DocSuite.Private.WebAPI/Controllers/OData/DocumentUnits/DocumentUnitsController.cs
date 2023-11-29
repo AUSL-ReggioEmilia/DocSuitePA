@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using VecompSoftware.DocSuite.Document;
 using VecompSoftware.DocSuite.Document.BiblosDS;
@@ -37,7 +38,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.DocumentUnits
         private readonly ISecurity _security;
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly IDocumentContext<ModelDocuments.Document, ModelDocuments.ArchiveDocument> _documentClient;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
 
         #endregion
 
@@ -50,7 +51,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.DocumentUnits
         public DocumentUnitsController(IDSWDataContext dswDataContext, ILogger logger, ISecurity security,
             IDocumentUnitTableValuedModelMapper mapperTableValue, ICurrentIdentity currentIdentity,
             IDocumentUnitService service, IDataUnitOfWork unitOfWork,
-            IDocumentContext<ModelDocuments.Document, ModelDocuments.ArchiveDocument> documentClient, IParameterEnvService parameterEnvService)
+            IDocumentContext<ModelDocuments.Document, ModelDocuments.ArchiveDocument> documentClient, IDecryptedParameterEnvService parameterEnvService)
             : base(service, unitOfWork, logger, security)
         {
             _logger = logger;
@@ -119,7 +120,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.DocumentUnits
         }
 
         [HttpGet]
-        //TODO: Rivedere la funzione FascicolableDocumentUnits dopo la creazione dell'entità DocumentUnit
         public IHttpActionResult GetFascicolableDocumentUnits(string dateFrom, string dateTo, bool includeThreshold,
             string threshold, Guid idTenantAOO, bool excludeLinked = false)
         {
@@ -157,14 +157,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.DocumentUnits
         }
 
         [HttpGet]
-        public IHttpActionResult FullTextSearchDocumentUnits(string filter, Guid idTenant)
+        public async Task<IHttpActionResult> FullTextSearchDocumentUnits(string filter, Guid idTenant)
         {
-            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            return await CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(async () =>
             {
                 IList<string> archiveNames = _unitOfWork.Repository<Container>().GetAnyProtocolContainers(idTenant)
                     .Select(s => s.ProtLocation.ProtocolArchive)
                     .Distinct().ToList();
-                ICollection<Guid> chains = _documentClient.FullTextFindDocumentsAsync(archiveNames, filter).Result;
+                ICollection<Guid> chains = await _documentClient.FullTextFindDocumentsAsync(archiveNames, filter);
                 ICollection<DocumentUnitModel> results = new List<DocumentUnitModel>();
                 if (chains.Count > 0)
                 {

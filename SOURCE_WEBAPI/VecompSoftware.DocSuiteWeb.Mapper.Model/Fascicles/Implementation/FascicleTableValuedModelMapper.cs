@@ -40,6 +40,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Fascicles
             entityTransformed.MetadataDesigner = entity.MetadataDesigner;
             entityTransformed.DSWEnvironment = entity.DSWEnvironment;
             entityTransformed.LastChangedDate = entity.LastChangedDate;
+            entityTransformed.ProcessLabel = entity.ProcessLabel;
+            entityTransformed.DossierFolderLabel = entity.DossierFolderLabel;
 
             return entityTransformed;
         }

@@ -18,7 +18,7 @@ namespace VecompSoftware.DocSuite.Public
     public class StartWorkflowCommandUnitTest
     {
         //utente del gestionale che sta avviando il workflow
-        private const string accountName = "domain.local\\**REMOVE**";
+        private const string accountName = "domain.local\\fabrizio.lazzarotto";
         private const string tenantName = "CustomerTenant";
         private Guid tenantId = Guid.Parse("8BF7342D-FA1B-4EF9-9B44-84E66AFB77EA");
 

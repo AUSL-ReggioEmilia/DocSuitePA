@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+import "Protos/documentproxy.models.proto";
+
+package dgroove.suite.documentproxy.private.v1;
+option csharp_namespace = "VecompSoftware.DocSuite.Document.DocumentProxy";
+
+service DocumentProxy{
+	rpc Save(CreateDocumentRequest) returns (CreateDocumentReply);
+	rpc GetDocument(GetDocumentRequest) returns (GetDocumentReply);
+	rpc GetDocuments(GetDocumentsRequest) returns (GetDocumentsReply);
+	rpc GetReferenceInfo(GetReferenceInfoRequest) returns (GetReferenceInfoReply);
+	rpc DeleteFromCache(DeleteFromCacheRequest) returns (DeleteFromCacheReply);
+	rpc GetDocumentAsPDF(GetDocumentAsPDFRequest) returns (GetDocumentAsPDFReply);
+}

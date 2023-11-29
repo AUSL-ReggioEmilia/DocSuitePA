@@ -16,6 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.UDS
             Documents = new List<UDSDocumentModel>();
             Roles = new List<RoleModel>();
             Users = new List<UserModel>();
+            Contacts = new List<UDSContactModel>();
         }
 
         public UDSBuildModel(string xmlContent) : this()
@@ -51,6 +52,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.UDS
         public ICollection<RoleModel> Roles { get; set; }
         public ICollection<UserModel> Users { get; set; }
         public ICollection<UDSDocumentModel> Documents { get; set; }
+        public ICollection<UDSContactModel> Contacts { get; set; }
         public ICollection<IWorkflowAction> WorkflowActions { get; set; }
         #endregion
 

@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNet.OData;
 using Microsoft.AspNet.OData.Query;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Web.Http;
+using VecompSoftware.DocSuite.WebAPI.Common.Configurations;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
@@ -50,29 +49,48 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Collaboration
 
         #region [ Methods ]
 
-        [HttpGet]
-        public IHttpActionResult GetAtVisionSignCollaborations(ODataQueryOptions<Collaboration> options)
+        [HttpPost]
+        public IHttpActionResult GetAtVisionSignCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetProposed($"{Domain}\\{Username}");
+                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetProposed($"{Domain}\\{Username}", finder);
                 return Ok(_mapperTableValue.MapCollection(results));
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        public IHttpActionResult GetToVisionSignCollaborations(ODataQueryOptions<Collaboration> options, bool? isRequired)
+        [HttpPost]
+        public IHttpActionResult CountAtVisionSignCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetSigning($"{Domain}\\{Username}", isRequired);
+                int countResults = _unitOfWork.Repository<Collaboration>().CountProposed($"{Domain}\\{Username}", finder);
+                return Ok(countResults);
+            }, _logger, LogCategories);
+        }
 
+        [HttpPost]
+        public IHttpActionResult GetToVisionSignCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetSigning($"{Domain}\\{Username}", finder);
                 return Ok(_mapperTableValue.MapCollection(results));
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        public IHttpActionResult GetToVisionDelegateSignCollaborations(ODataQueryOptions<Collaboration> options)
+        [HttpPost]
+        public IHttpActionResult CountToVisionSignCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                int countResults = _unitOfWork.Repository<Collaboration>().CountSigning($"{Domain}\\{Username}", finder);
+                return Ok(countResults);
+            }, _logger, LogCategories);
+        }
+
+        [HttpPost]
+        public IHttpActionResult GetToVisionDelegateSignCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
@@ -81,12 +99,13 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Collaboration
                 UserLog userLog = _unitOfWork.Repository<UserLog>().Query(x => x.SystemUser == userAccount, true).SelectAsQueryable().ToList().FirstOrDefault();
                 if (userLog != null && !string.IsNullOrEmpty(userLog.UserProfile))
                 {
+                    userLog.UserProfile = EncryptionHelper.DecryptString(userLog.UserProfile, WebApiConfiguration.PasswordEncryptionKey);
                     DocSuiteWeb.Model.Documents.Signs.UserProfile userProfile = JsonConvert.DeserializeObject<DocSuiteWeb.Model.Documents.Signs.UserProfile>(userLog.UserProfile);
                     foreach (DocSuiteWeb.Model.Documents.Signs.RemoteSignProperty item in userProfile.Value.Values)
                     {
                         if (item.BeenDelegated != null)
-                        {                             
-                            foreach (KeyValuePair<string, DelegateUser>   contactDelegate in item.BeenDelegated)
+                        {
+                            foreach (KeyValuePair<string, DelegateUser> contactDelegate in item.BeenDelegated)
                             {
                                 if (!listDeletagions.Contains(contactDelegate.Key))
                                 {
@@ -96,82 +115,181 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Collaboration
                         }
                     }
                 }
-                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetDelegationSigning(listDeletagions);
+                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetDelegationSigning(listDeletagions, finder);
                 return Ok(_mapperTableValue.MapCollection(results));
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        public IHttpActionResult GetAtProtocolAdmissionCollaborations(ODataQueryOptions<Collaboration> options)
+        [HttpPost]
+        public IHttpActionResult CountToVisionDelegateSignCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetProtocolAdmissions($"{Domain}\\{Username}");
-                return Ok(_mapperTableValue.MapCollection(results));
+                string userAccount = $"{Domain}\\{Username}";
+                List<string> listDeletagions = new List<string>();
+                UserLog userLog = _unitOfWork.Repository<UserLog>().Query(x => x.SystemUser == userAccount, true).SelectAsQueryable().ToList().FirstOrDefault();
+                if (userLog != null && !string.IsNullOrEmpty(userLog.UserProfile))
+                {
+                    userLog.UserProfile = EncryptionHelper.DecryptString(userLog.UserProfile, WebApiConfiguration.PasswordEncryptionKey);
+                    DocSuiteWeb.Model.Documents.Signs.UserProfile userProfile = JsonConvert.DeserializeObject<DocSuiteWeb.Model.Documents.Signs.UserProfile>(userLog.UserProfile);
+                    foreach (DocSuiteWeb.Model.Documents.Signs.RemoteSignProperty item in userProfile.Value.Values)
+                    {
+                        if (item.BeenDelegated != null)
+                        {
+                            foreach (KeyValuePair<string, DelegateUser> contactDelegate in item.BeenDelegated)
+                            {
+                                if (!listDeletagions.Contains(contactDelegate.Key))
+                                {
+                                    listDeletagions.Add(contactDelegate.Key);
+                                }
+                            }
+                        }
+                    }
+                }
+                int countResults = _unitOfWork.Repository<Collaboration>().CountDelegationSigning(listDeletagions, finder);
+                return Ok(countResults);
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        public IHttpActionResult GetCurrentActivitiesAllCollaborations(ODataQueryOptions<Collaboration> options)
+        [HttpPost]
+        public IHttpActionResult GetAtProtocolAdmissionCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetAllUsers($"{Domain}\\{Username}");
+                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetProtocolAdmissions($"{Domain}\\{Username}", finder);
                 return Ok(_mapperTableValue.MapCollection(results));
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        public IHttpActionResult GetCurrentActivitiesActiveCollaborations(ODataQueryOptions<Collaboration> options)
+        [HttpPost]
+        public IHttpActionResult CountAtProtocolAdmissionCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                int countResults = _unitOfWork.Repository<Collaboration>().CountProtocolAdmissions($"{Domain}\\{Username}", finder);
+                return Ok(countResults);
+            }, _logger, LogCategories);
+        }
+
+        [HttpPost]
+        public IHttpActionResult GetCurrentActivitiesAllCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetAllUsers($"{Domain}\\{Username}", finder);
+                return Ok(_mapperTableValue.MapCollection(results));
+            }, _logger, LogCategories);
+        }
+
+        [HttpPost]
+        public IHttpActionResult CountCurrentActivitiesAllCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                int countResults = _unitOfWork.Repository<Collaboration>().CountAllUsers($"{Domain}\\{Username}", finder);
+                return Ok(countResults);
+            }, _logger, LogCategories);
+        }
+
+        [HttpPost]
+        public IHttpActionResult GetCurrentActivitiesActiveCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
                 ICollection<string> signers = _unitOfWork.Repository<RoleUser>().GetAccounts($"{Domain}\\{Username}").Select(s => s.Account).Distinct().ToList();
-                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetActiveUsers($"{Domain}\\{Username}", signers);
+                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetActiveUsers($"{Domain}\\{Username}", signers, finder);
                 return Ok(_mapperTableValue.MapCollection(results));
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        public IHttpActionResult GetCurrentActivitiesPastCollaborations(ODataQueryOptions<Collaboration> options)
+        [HttpPost]
+        public IHttpActionResult CountCurrentActivitiesActiveCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetAlreadySigned($"{Domain}\\{Username}");
+                ICollection<string> signers = _unitOfWork.Repository<RoleUser>().GetAccounts($"{Domain}\\{Username}").Select(s => s.Account).Distinct().ToList();
+                int countResults = _unitOfWork.Repository<Collaboration>().CountActiveUsers($"{Domain}\\{Username}", signers, finder);
+                return Ok(countResults);
+            }, _logger, LogCategories);
+        }
+
+        [HttpPost]
+        public IHttpActionResult GetCurrentActivitiesPastCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetAlreadySigned($"{Domain}\\{Username}", finder);
                 return Ok(_mapperTableValue.MapCollection(results));
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        public IHttpActionResult GetToManageCollaborations(ODataQueryOptions<Collaboration> options)
+        [HttpPost]
+        public IHttpActionResult CountCurrentActivitiesPastCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetManagings($"{Domain}\\{Username}");
+                int countResults = _unitOfWork.Repository<Collaboration>().CountAlreadySigned($"{Domain}\\{Username}", finder);
+                return Ok(countResults);
+            }, _logger, LogCategories);
+        }
+
+        [HttpPost]
+        public IHttpActionResult GetToManageCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetManagings($"{Domain}\\{Username}", finder);
                 return Ok(_mapperTableValue.MapCollection(results));
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        [EnableQuery]
-        public IHttpActionResult GetRegisteredCollaborations(ODataQueryOptions<Collaboration> options, string dateFrom, string dateTo)
+        [HttpPost]
+        public IHttpActionResult CountToManageCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetRegistered($"{Domain}\\{Username}",
-                    DateTimeOffset.ParseExact(dateFrom, "yyyyMMddHHmmss", CultureInfo.InvariantCulture),
-                    DateTimeOffset.ParseExact(dateTo, "yyyyMMddHHmmss", CultureInfo.InvariantCulture));
+                int countResults = _unitOfWork.Repository<Collaboration>().CountManagings($"{Domain}\\{Username}", finder);
+                return Ok(countResults);
+            }, _logger, LogCategories);
+        }
+
+        [HttpPost]
+        public IHttpActionResult GetRegisteredCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetRegistered($"{Domain}\\{Username}", finder);
                 return Ok(_mapperTableValue.MapCollection(results));
             }, _logger, LogCategories);
         }
 
-        [HttpGet]
-        public IHttpActionResult GetMyCheckedOutCollaborations(ODataQueryOptions<Collaboration> options)
+        [HttpPost]
+        public IHttpActionResult CountRegisteredCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetCheckedOuts($"{Domain}\\{Username}");
+                int countResults = _unitOfWork.Repository<Collaboration>().CountRegistered($"{Domain}\\{Username}", finder);
+                return Ok(countResults);
+            }, _logger, LogCategories);
+        }
+
+        [HttpPost]
+        public IHttpActionResult GetMyCheckedOutCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<CollaborationTableValuedModel> results = _unitOfWork.Repository<Collaboration>().GetCheckedOuts($"{Domain}\\{Username}", finder);
                 return Ok(_mapperTableValue.MapCollection(results));
+            }, _logger, LogCategories);
+        }
+
+        [HttpPost]
+        public IHttpActionResult CountMyCheckedOutCollaborations(ODataQueryOptions<Collaboration> options, CollaborationFinderModel finder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                int countResults = _unitOfWork.Repository<Collaboration>().CountCheckedOuts($"{Domain}\\{Username}", finder);
+                return Ok(countResults);
             }, _logger, LogCategories);
         }
 
@@ -181,7 +299,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Collaboration
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
                 bool checkSecretary = false;
-                Collaboration collaboration = _unitOfWork.Repository<Collaboration>().Find(idCollaboration);                                
+                Collaboration collaboration = _unitOfWork.Repository<Collaboration>().Find(idCollaboration);
                 TemplateCollaboration templateCollaboration = _unitOfWork.Repository<TemplateCollaboration>().GetByName(collaboration.TemplateName);
                 if (!string.IsNullOrEmpty(templateCollaboration?.JsonParameters))
                 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
@@ -10,8 +11,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Fascicles
 {
     public class FascicleDocumentUnitValidator : ObjectValidator<FascicleDocumentUnit, FascicleDocumentUnitValidator>, IFascicleDocumentUnitValidator
     {
-        public FascicleDocumentUnitValidator(ILogger logger, IFascicleDocumentUnitValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public FascicleDocumentUnitValidator(ILogger logger, IFascicleDocumentUnitValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
         }
 
@@ -23,6 +24,12 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Fascicles
         /// Get or set ReferenceType
         /// </summary>
         public ReferenceType ReferenceType { get; set; }
+ 
+        /// <summary>
+        /// Get or set SequenceNumber
+        /// </summary>
+        public short SequenceNumber { get; set; }
+        
         /// <summary>
         /// Get or set RegistrationUser
         /// </summary>

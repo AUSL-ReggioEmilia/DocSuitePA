@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
@@ -12,8 +13,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.UDS
     {
         #region [ Constructor ]
         public UDSPECMailValidator(ILogger logger, IUDSPECMailValidatorMapper mapper,
-            IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+            IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
         #endregion
 
         #region [ Properties ]

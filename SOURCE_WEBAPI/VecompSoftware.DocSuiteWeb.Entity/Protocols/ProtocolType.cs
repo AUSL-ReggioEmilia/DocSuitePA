@@ -13,7 +13,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
         public ProtocolType(Guid uniqueId)
             : base(uniqueId)
         {
-            Containers = new HashSet<Container>();
             Protocols = new HashSet<Protocol>();
         }
         #endregion
@@ -26,7 +25,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Protocols
         #endregion
 
         #region [ Navigation Properties ]
-        public virtual ICollection<Container> Containers { get; set; }
         public virtual ICollection<Protocol> Protocols { get; set; }
         #endregion
     }

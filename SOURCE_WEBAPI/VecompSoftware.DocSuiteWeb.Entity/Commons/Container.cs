@@ -38,16 +38,15 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
 
         public string Name { get; set; }
         public string Note { get; set; }
-        public byte? isActive { get; set; }
-        public byte? Massive { get; set; }
-        public short? Conservation { get; set; }
-        public byte? ProtocolRejection { get; set; }
-        public DateTime? ActiveFrom { get; set; }
-        public DateTime? ActiveTo { get; set; }
+        public bool isActive { get; set; }
         public int? idArchive { get; set; }
         public byte? Privacy { get; set; }
         public string HeadingFrontalino { get; set; }
         public string HeadingLetter { get; set; }
+        public int PrivacyLevel { get; set; }
+        public bool PrivacyEnabled { get; set; }
+
+        #region [fake properties]
         /// <summary>
         /// Proprietà fake per gestire l'inserimento automatico di gruppi
         /// </summary>
@@ -56,10 +55,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         /// Proprietà fake per gestire l'inserimento automatico di gruppi
         /// </summary>
         public string PrefixSecurityGroupName { get; set; }
-        /// <summary>
-        /// Proprietà fake per gestire l'inserimento automatico di gruppi
-        /// </summary>
-        public Guid? TenantId { get; set; }
         /// <summary>
         /// Proprietà fake per gestire l'inserimento automatico di gruppi
         /// </summary>
@@ -72,9 +67,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         /// Proprietà fake per gestire l'inserimento automatico in SecurityUser
         /// </summary>
         public string SecurityUserDisplayName { get; set; }
-        public bool ManageSecureDocument { get; set; }
-        public int PrivacyLevel { get; set; }
-        public bool PrivacyEnabled { get; set; }
+        #endregion
+
         #endregion
 
         #region [ Navigation Properties ]
@@ -87,7 +81,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         public virtual Location DocumentSeriesLocation { get; set; }
         public virtual Location DocumentSeriesUnpublishedAnnexedLocation { get; set; }
         public virtual Location DocumentSeriesAnnexedLocation { get; set; }
-        public virtual ProtocolType ProtocolType { get; set; }
         public virtual ICollection<Protocol> Protocols { get; set; }
         public virtual ICollection<Resolution> Resolutions { get; set; }
         public virtual ICollection<OChartItemContainer> OChartItemContainers { get; set; }

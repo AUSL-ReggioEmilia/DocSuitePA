@@ -49,7 +49,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
 
         protected override IQueryFluent<DossierRole> SetEntityIncludeOnDelete(IQueryFluent<DossierRole> query)
         {
-            return query.Include(x => x.Role);
+            return query.Include(x => x.Role.TenantAOO);
         }
 
         protected override DossierRole BeforeUpdate(DossierRole entity, DossierRole entityTransformed)

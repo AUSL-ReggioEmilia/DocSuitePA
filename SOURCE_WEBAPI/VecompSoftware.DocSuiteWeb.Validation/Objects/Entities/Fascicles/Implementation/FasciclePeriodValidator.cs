@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -12,8 +13,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Fascicles
     public class FasciclePeriodValidator : ObjectValidator<FasciclePeriod, FasciclePeriodValidator>, IFasciclePeriodValidator
     {
         #region [ Constructor ]
-        public FasciclePeriodValidator(ILogger logger, IFasciclePeriodValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public FasciclePeriodValidator(ILogger logger, IFasciclePeriodValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #endregion
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Tasks;
@@ -12,8 +13,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Tasks
     public class TaskHeaderValidator : ObjectValidator<TaskHeader, TaskHeaderValidator>, ITaskHeaderValidator
     {
         #region [ Constructor ]
-        public TaskHeaderValidator(ILogger logger, ITaskHeaderValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public TaskHeaderValidator(ILogger logger, ITaskHeaderValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
             TaskHeaderProtocols = new Collection<TaskHeaderProtocol>();
         }

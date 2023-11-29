@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
@@ -12,7 +13,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.PosteWeb
     {
         #region [ Constructor ]
 
-        public POLRequestValidator(ILogger logger, IValidatorMapper<PosteOnLineRequest, POLRequestValidator> mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity) : base(logger, mapper, unitOfWork, currentSecurity)
+        public POLRequestValidator(ILogger logger, IValidatorMapper<PosteOnLineRequest, POLRequestValidator> mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity) : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
         }
 

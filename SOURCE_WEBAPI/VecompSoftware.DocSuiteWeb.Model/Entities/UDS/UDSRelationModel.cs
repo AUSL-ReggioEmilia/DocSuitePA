@@ -17,6 +17,9 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.UDS
         }
         #endregion
 
+        #region [ Properties ]
+
+        public UDSRepositoryModel UDSRepository { get; set; }
         public ICollection<UDSUserModel> Users { get; set; }
         public ICollection<UDSRoleModel> Roles { get; set; }
         public ICollection<UDSDocumentUnitModel> DocumentUnits { get; set; }
@@ -24,5 +27,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.UDS
         public ICollection<UDSPECMailModel> PECMails { get; set; }
         public ICollection<UDSMessageModel> Messages { get; set; }
         public ICollection<UDSCollaborationModel> Collaborations { get; set; }
+
+        #endregion
     }
 }

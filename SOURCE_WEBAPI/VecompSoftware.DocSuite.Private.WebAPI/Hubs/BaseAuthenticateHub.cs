@@ -25,7 +25,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Hubs
 
         private readonly ITopicService _topicService;
         private readonly ILogger _logger;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         private static IEnumerable<LogCategory> _logCategories;
         private readonly IMessageConfiguration _messageConfiguration;
         private static readonly ConcurrentDictionary<string, string> _connections = new ConcurrentDictionary<string, string>();
@@ -53,7 +53,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Hubs
 
         protected ILogger Logger => _logger;
         protected ITopicService TopicService => _topicService;
-        protected IParameterEnvService ParameterEnvService => _parameterEnvService;
+        protected IDecryptedParameterEnvService ParameterEnvService => _parameterEnvService;
         protected IDataUnitOfWork UnitOfWork => _unitOfWork;
         #endregion
 
@@ -63,7 +63,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Hubs
         {
             _topicService = (ITopicService)UnityConfig.GetConfiguredContainer().GetService(typeof(ITopicService));
             _logger = (ILogger)UnityConfig.GetConfiguredContainer().GetService(typeof(ILogger));
-            _parameterEnvService = (IParameterEnvService)UnityConfig.GetConfiguredContainer().GetService(typeof(IParameterEnvService));
+            _parameterEnvService = (IDecryptedParameterEnvService)UnityConfig.GetConfiguredContainer().GetService(typeof(IDecryptedParameterEnvService));
             _messageConfiguration = (IMessageConfiguration)UnityConfig.GetConfiguredContainer().GetService(typeof(IMessageConfiguration));
             _messageMappings = _messageConfiguration.GetConfigurations();
             _unitOfWork = (IDataUnitOfWork)UnityConfig.GetConfiguredContainer().GetService(typeof(IDataUnitOfWork));

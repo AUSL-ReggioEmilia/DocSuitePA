@@ -75,10 +75,18 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
         }
 
 
-        public static int CountChildren(this IRepository<DossierFolder> repository, Guid idDossierFolder)
+        public static int CountChildren(this IRepository<DossierFolder> repository, Guid idDossierFolder, bool? loadOnlyFolders = null)
         {
+            QueryParameter loadOnlyFoldersParameter = new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_LoadOnlyFolders, DBNull.Value);
+
+            if (loadOnlyFolders.HasValue)
+            {
+                loadOnlyFoldersParameter.ParameterValue = loadOnlyFolders.Value;
+            }
+
             return repository.ExecuteModelScalarFunction<int>(CommonDefinition.SQL_FX_DossierFolder_CountChildren,
-                new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_IdDossierFolder, idDossierFolder));
+                new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_IdDossierFolder, idDossierFolder),
+                loadOnlyFoldersParameter);
         }
 
         public static bool HasFascicleInFolder(this IRepository<DossierFolder> repository, Guid idFascicle)
@@ -99,6 +107,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
         {
             return repository.Query(f => f.UniqueId == uniqueId, optimization: optimization)
                 .Include(i => i.Dossier)
+                .Include(i => i.Dossier.Processes)
                 .SelectAsQueryable()
                 .SingleOrDefault();
         }
@@ -113,6 +122,22 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
         public static bool HasAssociatedFascicles(this IRepository<DossierFolder> repository, Guid idDossier)
         {
             return repository.Queryable().Any(x => x.Dossier.UniqueId == idDossier && x.Fascicle != null);
+        }
+
+        public static ICollection<DossierFolderTableValuedModel> GetChildren(this IRepository<DossierFolder> repository, Guid idDossierFolder, int skip, int top, bool? loadOnlyFolders)
+        {
+            QueryParameter loadOnlyFoldersParameter = new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_LoadOnlyFolders, DBNull.Value);
+
+            if (loadOnlyFolders.HasValue)
+            {
+                loadOnlyFoldersParameter.ParameterValue = loadOnlyFolders.Value;
+            }
+
+            return repository.ExecuteModelFunction<DossierFolderTableValuedModel>(CommonDefinition.SQL_FX_DossierFolder_GetChildren,
+                new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_IdDossierFolder, idDossierFolder),
+                new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_Skip, skip),
+                new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_Top, top),
+                loadOnlyFoldersParameter);
         }
     }
 }

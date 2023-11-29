@@ -12,5 +12,13 @@ namespace VecompSoftware.DocSuiteWeb.Finder.DocumentUnits
                 .Include(i => i.DocumentUnit)
                 .SelectAsQueryable();
         }
+
+        public static DocumentUnitChain GetByDocumentUnitAndChainType(this IRepository<DocumentUnitChain> repository, DocumentUnit documentUnit, ChainType chainType, bool optimization = false)
+        {
+            return repository.Query(x => x.DocumentUnit.UniqueId == documentUnit.UniqueId && x.ChainType == chainType, optimization)
+                .Include(i => i.DocumentUnit)
+                .SelectAsQueryable()
+                .SingleOrDefault();
+        }
     }
 }

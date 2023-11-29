@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
@@ -10,8 +11,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Dossiers
     public class DossierLinkValidator : ObjectValidator<DossierLink, DossierLinkValidator>, IDossierLinkValidator
     {
         #region [ Constructor ]
-        public DossierLinkValidator(ILogger logger, IDossierLinkValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public DossierLinkValidator(ILogger logger, IDossierLinkValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #endregion
 

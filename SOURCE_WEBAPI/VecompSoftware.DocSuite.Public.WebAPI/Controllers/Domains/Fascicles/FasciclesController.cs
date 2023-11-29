@@ -68,7 +68,7 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Domains.Fascicles
                 FascicleFolder internetFolder = _unitOfWork.Repository<FascicleFolder>().GetInternetFolderByFascicle(uniqueId).SingleOrDefault();
                 if (internetFolder != null)
                 {
-                    ICollection<DocumentUnitTableValuedModel> documentUnits = _unitOfWork.Repository<DocumentUnit>().GetFascicleDocumentUnitsPrivate(fascicle, internetFolder.UniqueId, Guid.Empty);
+                    ICollection<DocumentUnitTableValuedModel> documentUnits = _unitOfWork.Repository<DocumentUnit>().GetFascicleDocumentUnitsPrivate(fascicle, internetFolder.UniqueId, null);
                     ICollection<GenericDocumentUnitModel> genericDocumentUnits = _mapper.Map<ICollection<DocumentUnitTableValuedModel>, ICollection<GenericDocumentUnitModel>>(documentUnits).ToList();
                     model.DocumentUnits = genericDocumentUnits;
                 }

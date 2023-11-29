@@ -2,25 +2,26 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>VecompSoftware.DocSuiteWeb.Service.ServiceBus</id>
-    <version>9.09.0.0</version>
+    <version>9.25.0.0</version>
     <authors>Dgroove Srl</authors>
     <owners>Dgroove Srl</owners>
     <iconUrl>https://vecompsoftwarenugetserver.azurewebsites.net/favicon.ico</iconUrl>
     <description>VecompSoftware.DocSuiteWeb.Service.ServiceBus</description>
-    <copyright>Copyright © Dgroove 2020</copyright>
+    <copyright>Copyright © Dgroove 2022</copyright>
     <tags>VecompSoftware.DocSuiteWeb.Service.ServiceBus, YAC, Project_WebAPI</tags>
     <dependencies>
       <group targetFramework="net48">
         <dependency id="Microsoft.WindowsAzure.ConfigurationManager" version="3.2.3" />
-        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
         <dependency id="ServiceBus.v1_1" version="1.0.6" />
-        <dependency id="VecompSoftware.Core.Command" version="9.09.0.0" />
-        <dependency id="VecompSoftware.DocSuiteWeb.Common" version="9.09.0.0" />
-        <dependency id="VecompSoftware.DocSuiteWeb.Mapper" version="9.09.0.0" />
-        <dependency id="VecompSoftware.DocSuiteWeb.Mapper.ServiceBus" version="9.09.0.0" />
-        <dependency id="VecompSoftware.DocSuiteWeb.Model" version="9.09.0.0" />
-        <dependency id="VecompSoftware.DocSuiteWeb.Service" version="9.09.0.0" />
-        <dependency id="VecompSoftware.DocSuiteWeb.Validation" version="9.09.0.0" />
+        <dependency id="VecompSoftware.Core.Command" version="9.25.0.0" />
+        <dependency id="VecompSoftware.Services.Command" version="9.25.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Common" version="9.25.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Mapper" version="9.25.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Mapper.ServiceBus" version="9.25.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Model" version="9.25.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Service" version="9.25.0.0" />
+        <dependency id="VecompSoftware.DocSuiteWeb.Validation" version="9.25.0.0" />
       </group>
     </dependencies>
     <frameworkAssemblies>

@@ -50,6 +50,8 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
         public string MetadataValues { get; set; }
         public string MetadataDesigner { get; set; }
         public int? DSWEnvironment { get; set; }
+        public string ProcessLabel { get; set; }
+        public string DossierFolderLabel { get; set; }
 
         #region [ Category ]
 

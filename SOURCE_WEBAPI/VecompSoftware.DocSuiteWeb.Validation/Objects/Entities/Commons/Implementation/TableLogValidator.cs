@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -10,8 +11,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
     public class TableLogValidator : ObjectValidator<TableLog, TableLogValidator>, ITableLogValidator
     {
         #region [ Constructor ]
-        public TableLogValidator(ILogger logger, ITableLogValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public TableLogValidator(ILogger logger, ITableLogValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         { }
         #endregion
 

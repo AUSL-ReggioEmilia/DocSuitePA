@@ -35,7 +35,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly IMapperUnitOfWork _mapperUnitOfwork;
         private readonly IMetadataFilterFactory _metadataFilterFactory;
-        private readonly IParameterEnvService _parameterEnvService; 
+        private readonly IDecryptedParameterEnvService _parameterEnvService; 
 
         #endregion
 
@@ -44,7 +44,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
         public FasciclesController(IFascicleService service, IDataUnitOfWork unitOfWork,
             ILogger logger, IFascicleModelMapper mapper, IMapperUnitOfWork mapperUnitOfwork, 
             IFascicleTableValuedModelMapper fascicleTableValuedModelMapper, ISecurity security, 
-            IMetadataFilterFactory metadataFilterFactory, IParameterEnvService parameterEnvService)
+            IMetadataFilterFactory metadataFilterFactory, IDecryptedParameterEnvService parameterEnvService)
             : base(service, unitOfWork, logger, security)
         {
             _mapper = mapper;
@@ -142,12 +142,12 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
         public IHttpActionResult GetFasciclesByCategory(ODataQueryOptions<FascicleModel> options, short idCategory, string name, bool? hasProcess)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
-             {
+            {
 
-                 ICollection<FascicleTableValuedModel> fasciclesModel = _unitOfWork.Repository<Fascicle>().GetByRight(Username, Domain, idCategory, name, hasProcess);
-                 ICollection<FascicleModel> fascicles = _mapperUnitOfwork.Repository<IDomainMapper<FascicleTableValuedModel, FascicleModel>>().MapCollection(fasciclesModel);
-                 return Ok(fascicles.OrderByDescending(x => x.RegistrationDate));
-             }, _logger, LogCategories);
+                ICollection<FascicleTableValuedModel> fasciclesModel = _unitOfWork.Repository<Fascicle>().GetByRight(Username, Domain, idCategory, name, hasProcess);
+                ICollection<FascicleModel> fascicles = _mapperUnitOfwork.Repository<IDomainMapper<FascicleTableValuedModel, FascicleModel>>().MapCollection(fasciclesModel);
+                return Ok(fascicles.OrderByDescending(x => x.RegistrationDate));
+            }, _logger, LogCategories);
         }
 
         [HttpGet]
@@ -212,8 +212,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
                 ICollection<FascicleTableValuedModel> fasciclesModel = _unitOfWork.Repository<Fascicle>().GetAuthorized(Username, Domain, finder.Skip, finder.Top, finder.Year, 
                     finder.StartDateFrom, finder.StartDateTo, finder.EndDateFrom, finder.EndDateTo, finder.FascicleStatus, finder.Manager, finder.Name, finder.Subject, 
                     finder.ViewConfidential, finder.ViewAccessible, finder.Note, finder.Rack, finder.IdMetadataRepository, finder.MetadataValue, metadataValues,
-                    finder.Classifications, finder.IncludeChildClassifications, finder.Roles, finder.Container, finder.ApplySecurity, _parameterEnvService.ForceDescendingOrderElements,
-                    finder.ViewOnlyClosable, thresholdDate, finder.Title, finder.IsManager, finder.IsSecretary);
+                    finder.Classifications, finder.IncludeChildClassifications, finder.Roles, finder.MasterRole, finder.Container, finder.ApplySecurity, _parameterEnvService.ForceDescendingOrderElements,
+                    finder.ViewOnlyClosable, thresholdDate, finder.Title, finder.IsManager, finder.IsSecretary, finder.IdProcess, finder.IdDossierFolder, finder.ProcessLabel, finder.DossierFolderLabel);
                 ICollection<FascicleModel> fascicles = _mapperUnitOfwork.Repository<IDomainMapper<FascicleTableValuedModel, FascicleModel>>().MapCollection(fasciclesModel);
                 return Ok(fascicles);
             }, _logger, LogCategories);
@@ -230,8 +230,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
                 IDictionary<string, string> metadataValues = finder.MetadataValues.ToDictionary(d => d.KeyName, d => _metadataFilterFactory.CreateMetadataFilter(d).ToFilter());
                 int countFascicles = _unitOfWork.Repository<Fascicle>().CountAuthorized(Username, Domain, finder.Year, finder.StartDateFrom, finder.StartDateTo,
                     finder.EndDateFrom, finder.EndDateTo, finder.FascicleStatus, finder.Manager, finder.Name, finder.Subject, finder.ViewConfidential, finder.ViewAccessible, finder.Note,
-                    finder.Rack, finder.IdMetadataRepository, finder.MetadataValue, metadataValues, finder.Classifications, finder.IncludeChildClassifications, finder.Roles, finder.Container, 
-                    finder.ApplySecurity, finder.ViewOnlyClosable, thresholdDate, finder.Title, finder.IsManager, finder.IsSecretary);
+                    finder.Rack, finder.IdMetadataRepository, finder.MetadataValue, metadataValues, finder.Classifications, finder.IncludeChildClassifications, finder.Roles, finder.MasterRole, finder.Container, 
+                    finder.ApplySecurity, finder.ViewOnlyClosable, thresholdDate, finder.Title, finder.IsManager, finder.IsSecretary, finder.IdProcess, finder.IdDossierFolder, finder.ProcessLabel, finder.DossierFolderLabel);
                 return Ok(countFascicles);
             }, _logger, LogCategories);
         }
@@ -277,6 +277,38 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
             {
                 int countFascicles = _unitOfWork.Repository<Fascicle>().CountAuthorizedFasciclesFromDocumentUnit(Username, Domain, uniqueIdDocumentUnit);
                 return Ok(countFascicles);
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult CountAuthorizedCategoryFascicles(short idCategory)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
+            {
+                int countFascicles = _unitOfWork.Repository<Fascicle>().CountAuthorizedCategoryFascicles(Username, Domain, idCategory);
+                return Ok(countFascicles);
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult AuthorizedCategoryFascicles(short idCategory, int skip, int top)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<FascicleTableValuedModel> fasciclesModel = _unitOfWork.Repository<Fascicle>().GetAuthorizedCategoryFascicles(Username, Domain, idCategory, skip, top);
+                ICollection<FascicleModel> fascicles = _mapperUnitOfwork.Repository<IDomainMapper<FascicleTableValuedModel, FascicleModel>>().MapCollection(fasciclesModel);
+                return Ok(fascicles);
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult FasciclesFromDocumentUnit(Guid idDocumentUnit)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<ViewableFascicleTableValuedModel> viewableFascicleTableValuedModel = _unitOfWork.Repository<Fascicle>().FasciclesFromDocumentUnit(Username, Domain, idDocumentUnit);
+                ICollection<FascicleModel> fascicles = _mapperUnitOfwork.Repository<IDomainMapper<ViewableFascicleTableValuedModel, FascicleModel>>().MapCollection(viewableFascicleTableValuedModel);
+                return Ok(fascicles);
             }, _logger, LogCategories);
         }
         #endregion

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -14,8 +15,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Tenants
     public class TenantValidator : ObjectValidator<Tenant, TenantValidator>, ITenantValidator
     {
         #region [ Constructor ]
-        public TenantValidator(ILogger logger, ITenantValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public TenantValidator(ILogger logger, ITenantValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #endregion
 
@@ -38,10 +39,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Tenants
 
         public ICollection<TenantConfiguration> Configurations { get; set; }
         public ICollection<Container> Containers { get; set; }
-        public ICollection<Role> Roles { get; set; }
         public ICollection<PECMailBox> PECMailBoxes { get; set; }
         public ICollection<TenantWorkflowRepository> TenantWorkflowRepositories { get; set; }
-        public ICollection<Contact> Contacts { get; set; }
         public ICollection<WorkflowActivity> WorkflowActivities { get; set; }
 
         #endregion

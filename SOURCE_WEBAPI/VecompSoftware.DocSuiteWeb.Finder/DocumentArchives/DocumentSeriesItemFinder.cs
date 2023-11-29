@@ -24,5 +24,10 @@ namespace VecompSoftware.DocSuiteWeb.Finder.DocumentArchives
                 .Include(t => t.DocumentSeries.Container.DocumentSeriesUnpublishedAnnexedLocation)
                 .SelectAsQueryable();
         }
+        public static int GetSeriesLastNumberByYear(this IRepository<DocumentSeriesItem> repository, int idDocumentSeries, int year)
+        {
+            return repository.Query(x => x.DocumentSeries.EntityId == idDocumentSeries && x.Year == year, true)
+                .Select(s => s.Number).DefaultIfEmpty().Max() ?? 0;
+        }
     }
 }

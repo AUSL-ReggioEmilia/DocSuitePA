@@ -39,6 +39,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Conservations
                 .HasColumnName("SendDate")
                 .IsOptional();
 
+            Property(x => x.ConservationDate)
+                .HasColumnName("ConservationDate")
+                .IsOptional();
+
             Property(x => x.Uri)
                 .HasColumnName("Uri")
                 .IsOptional();

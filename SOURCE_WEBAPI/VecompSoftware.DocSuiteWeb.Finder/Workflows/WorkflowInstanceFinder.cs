@@ -2,6 +2,7 @@
 using System.Linq;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
+using VecompSoftware.Helpers.Workflow;
 
 namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
 {
@@ -12,6 +13,15 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
             return repository
                 .Query(x => x.InstanceId.HasValue && x.WorkflowRepository.Name == name, optimization: true)
                 .Include(f => f.WorkflowRepository)
+                .SelectAsQueryable();
+        }
+
+        public static IQueryable<WorkflowInstance> GetByColllaborationReferenceId(this IRepository<WorkflowInstance> repository, Guid referenceId, Guid workflowRepositoryId)
+        {
+            return repository
+                .Query(x => x.InstanceId.Value == referenceId && x.WorkflowRepository.UniqueId == workflowRepositoryId &&
+                       x.WorkflowActivities.Any(f => f.WorkflowProperties.Any(p => p.Name == WorkflowPropertyHelper.DSW_FIELD_COLLABORATION_ID && p.ValueInt.HasValue)), optimization: true)
+                .Include( x => x.WorkflowRepository)
                 .SelectAsQueryable();
         }
 

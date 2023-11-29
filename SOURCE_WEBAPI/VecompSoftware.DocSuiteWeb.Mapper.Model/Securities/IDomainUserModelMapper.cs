@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using VecompSoftware.DocSuiteWeb.Model.Securities;
 
@@ -8,5 +9,6 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Securities
     {
         DomainUserModel Map(UserPrincipal entity, DomainUserModel entityTransformed, string domain);
         ICollection<DomainUserModel> MapCollection(IEnumerable<UserPrincipal> userPrincipal, string domain);
+        DomainUserModel Map(DirectoryEntry item, string domain);
     }
 }

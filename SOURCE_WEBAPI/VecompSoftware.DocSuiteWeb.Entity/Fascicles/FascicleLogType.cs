@@ -2,7 +2,7 @@
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Fascicles
 {
-    public enum FascicleLogType : short
+    public enum FascicleLogType : int
     {
         [Description("Inserimento fascicolo")]
         Insert = 0,
@@ -29,7 +29,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Fascicles
         [Description("Eliminazione inserto dal fascicolo")]
         DocumentDelete = DocumentInsert * 2,
         [Description("Workflow")]
-        Workflow = DocumentInsert * 2,
+        Workflow = DocumentDelete * 2,
         [Description("Autorizzazione fascicolo")]
         Authorize = Workflow * 2,
         [Description("Inserimento cartella")]

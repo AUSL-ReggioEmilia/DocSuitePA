@@ -33,6 +33,11 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             return repository.Query(x => x.UniqueId == uniqueId)
                 .SelectAsQueryable();
         }
+        
+        public static int Count(this IRepository<Category> repository, Guid uniqueId)
+        {
+            return repository.Queryable().Count(x => x.UniqueId == uniqueId);
+        }
 
         public static ICollection<CategoryFullTableValuedModel> FindByIdCategory(this IRepository<Category> repository, string username, string domain, short idCategory, FascicleType? fascicleType)
         {

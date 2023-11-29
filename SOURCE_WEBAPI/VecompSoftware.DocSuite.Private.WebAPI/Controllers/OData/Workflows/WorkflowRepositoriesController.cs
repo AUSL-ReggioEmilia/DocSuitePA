@@ -36,12 +36,12 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Workflows
 
         [HttpGet]
         public IHttpActionResult GetAuthorizedActiveWorkflowRepositories(ODataQueryOptions<WorkflowRepository> options, int environment, bool anyEnv, 
-            bool documentRequired, bool showOnlyNoInstanceWorkflows, bool showOnlyHasIsFascicleClosedRequired)
+            bool documentRequired, bool showOnlyNoInstanceWorkflows, bool showOnlyHasIsFascicleClosedRequired, bool documentUnitRequired)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
                 ICollection<WorkflowRepository> workflowRepositories = _unitOfWork.Repository<WorkflowRepository>().GetAuthorizedActiveWorkflowRepositories(Username, Domain, environment, anyEnv, 
-                    documentRequired, showOnlyNoInstanceWorkflows, showOnlyHasIsFascicleClosedRequired);
+                    documentRequired, showOnlyNoInstanceWorkflows, showOnlyHasIsFascicleClosedRequired, documentUnitRequired);
                 IQueryable<WorkflowRepository> results = options.ApplyTo(workflowRepositories.AsQueryable()) as IQueryable<WorkflowRepository>;
                 return Ok(results);
             }, _logger, LogCategories);

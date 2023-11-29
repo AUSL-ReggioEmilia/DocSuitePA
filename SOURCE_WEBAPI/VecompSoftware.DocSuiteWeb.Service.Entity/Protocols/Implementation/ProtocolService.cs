@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using VecompSoftware.DocSuite.Service.Models.Parameters;
@@ -17,6 +19,7 @@ using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation;
 using VecompSoftware.DocSuiteWeb.Validation.RulesetDefinitions.Entities.Protocols;
 using VecompSoftware.Helpers.Signer.Security;
+using VecompSoftware.DocSuiteWeb.Finder.Protocols;
 
 namespace VecompSoftware.DocSuiteWeb.Service.Entity.Protocols
 {
@@ -69,21 +72,30 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Protocols
             {
                 entity.IdStatus = -5;
                 Parameter parameter = _unitOfWork.Repository<Parameter>().GetParameters().First();
-                entity.Number = parameter.LastUsedNumber;
                 parameter.LastUsedNumber++;
+                entity.Number = parameter.LastUsedNumber;
                 _unitOfWork.Repository<Parameter>().Update(parameter);
                 entity.Year = (short)DateTime.Now.Year;
-                entity.ConservationStatus = "M";
-                entity.HasConservatedDocs = false;
                 string identificationSdi = entity.AdvancedProtocol?.IdentificationSdi;
                 string serviceCategory = entity.AdvancedProtocol?.ServiceCategory;
+                string note = entity.AdvancedProtocol?.Note;
+                string protocolStatus = null;
+                if (!string.IsNullOrEmpty(entity.AdvancedProtocol?.ProtocolStatus))
+                {
+                    ProtocolStatus protocolStatuses = _unitOfWork.Repository<ProtocolStatus>().GetByProtocolStatus(entity.AdvancedProtocol.ProtocolStatus).SingleOrDefault();
+                    protocolStatus = protocolStatuses.Status;
+                }
+
                 entity.AdvancedProtocol = new AdvancedProtocol
                 {
                     Year = entity.Year,
                     Number = entity.Number,
                     IdentificationSdi = identificationSdi,
-                    ServiceCategory = serviceCategory
+                    ServiceCategory = serviceCategory,
+                    Note = note,
+                    ProtocolStatus = protocolStatus
                 };
+
                 _unitOfWork.Repository<AdvancedProtocol>().Insert(entity.AdvancedProtocol);
                 entity.ProtocolLogs.Add(CreatProtocoloLog(entity, "PI", "Creato protocollo"));
                 if (entity.Category != null)
@@ -171,7 +183,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Protocols
 
         protected override IQueryFluent<Protocol> SetEntityIncludeOnUpdate(IQueryFluent<Protocol> query)
         {
-            query.Include(d => d.ProtocolRoles.Select(f => f.Role))
+            query.Include(d => d.ProtocolRoles.Select(f => f.Role.TenantAOO))
                 .Include(d => d.ProtocolUsers);
             return query;
         }
@@ -197,16 +209,20 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Protocols
                     }
                 }
             }
-
+            if ((!entityTransformed.IdAnnexed.HasValue || (entityTransformed.IdAnnexed.HasValue && entityTransformed.IdAnnexed.Value == Guid.Empty)) 
+                && entity.IdAnnexed.HasValue && entity.IdAnnexed.Value != Guid.Empty)
+            {
+                entityTransformed.IdAnnexed = entity.IdAnnexed;
+            }
             if (entity.ProtocolRoles != null)
             {
-                foreach (ProtocolRole item in entityTransformed.ProtocolRoles.Where(f => !entity.ProtocolRoles.Any(c => c.EntityShortId == f.EntityShortId)).ToList())
+                foreach (ProtocolRole item in entityTransformed.ProtocolRoles.Where(f => !entity.ProtocolRoles.Any(c => c.UniqueId == f.UniqueId)).ToList())
                 {
                     _unitOfWork.Repository<ProtocolLog>().Insert(CreatProtocoloLog(entityTransformed, "PZ", $"Autorizzazione (Del): {item.Role.EntityShortId} {item.Role.Name}"));
                     entityTransformed.ProtocolRoles.Remove(item);
                     _unitOfWork.Repository<ProtocolRole>().Delete(item);
                 }
-                foreach (ProtocolRole item in entity.ProtocolRoles.Where(f => !entityTransformed.ProtocolRoles.Any(c => c.EntityShortId == f.EntityShortId)))
+                foreach (ProtocolRole item in entity.ProtocolRoles.Where(f => !entityTransformed.ProtocolRoles.Any(c => c.UniqueId == f.UniqueId)))
                 {
                     if (item.Role != null)
                     {
@@ -219,6 +235,25 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Protocols
                 }
             }
 
+            if (entity.ProtocolUsers != null)
+            {
+                foreach (ProtocolUser item in entityTransformed.ProtocolUsers.Where(f => !entity.ProtocolUsers.Any(c => c.UniqueId == f.UniqueId)).ToList())
+                {
+                    _unitOfWork.Repository<ProtocolLog>().Insert(CreatProtocoloLog(entityTransformed, "PZ", $"Autorizzazione utente (Del): {item.Account}"));
+                    entityTransformed.ProtocolUsers.Remove(item);
+                    _unitOfWork.Repository<ProtocolUser>().Delete(item);
+                }
+                ICollection<ProtocolUser> toInsertUsers = new List<ProtocolUser>();
+                foreach (ProtocolUser item in entity.ProtocolUsers.Where(f => !entityTransformed.ProtocolUsers.Any(c => c.UniqueId == f.UniqueId)))
+                {
+                    toInsertUsers.Add(item);
+                    entityTransformed.ProtocolUsers.Add(item);
+                    _unitOfWork.Repository<ProtocolLog>().Insert(CreatProtocoloLog(entityTransformed, "PZ", $"Autorizzazione utente (Add): {item.Account}"));                    
+                }
+                _unitOfWork.Repository<ProtocolUser>().InsertRange(toInsertUsers);
+            }
+
+            entityTransformed.LastChangedUser = entity.LastChangedUser;
             return base.BeforeUpdate(entity, entityTransformed);
         }
 

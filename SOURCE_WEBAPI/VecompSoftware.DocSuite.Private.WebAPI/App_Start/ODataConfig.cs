@@ -32,6 +32,7 @@ using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
 using VecompSoftware.DocSuiteWeb.Entity.Tasks;
 using VecompSoftware.DocSuiteWeb.Entity.Templates;
 using VecompSoftware.DocSuiteWeb.Entity.Tenants;
+using VecompSoftware.DocSuiteWeb.Entity.Tenders;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations;
@@ -46,6 +47,7 @@ using VecompSoftware.DocSuiteWeb.Model.Entities.Monitors;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Processes;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Protocols;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Templates;
+using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
 using VecompSoftware.DocSuiteWeb.Model.Parameters;
 using VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders;
 using VecompSoftware.DocSuiteWeb.Model.Reports;
@@ -119,7 +121,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             MapJeepServiceHostsOData(builder);
 
             MapTenantsOData(builder);
-            
+
             MapReportsOData(builder);
 
             MapProcessesOData(builder);
@@ -127,6 +129,10 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             MapPosteWebOData(builder);
 
             MapTasksOData(builder);
+
+            MapTendersOData(builder);
+
+            MapUserLogOData(builder);
 
             config.AddODataQueryFilter();
             config.Filter(QueryOptionSetting.Allowed);
@@ -267,6 +273,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             findRoles.Returns<RoleModel>();
             findRoles.Parameter<RoleFinderModel>("finder");
 
+            FunctionConfiguration countRoles = builder
+             .EntityType<Role>().Collection
+             .Function("CountFindRoles");
+
+            countRoles.Namespace = "RoleService";
+            countRoles.Returns<int>();
+            countRoles.Parameter<RoleFinderModel>("finder");
+
             FunctionConfiguration getInsertAuthorizedContainers = builder
                 .EntityType<Container>().Collection
                 .Function("GetInsertAuthorizedContainers");
@@ -313,6 +327,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             getContactsByParentId.Namespace = "ContactService";
             getContactsByParentId.Returns<ContactModel>();
             getContactsByParentId.Parameter<int>("idContact");
+            getContactsByParentId.Parameter<short>("idRole");
 
 
             FunctionConfiguration findFascicolableCategory = builder
@@ -402,10 +417,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                .EntityType.HasKey(p => p.UniqueId);
 
             builder
-                .EntitySet<UserLog>("UserLogs")
-                .EntityType.HasKey(p => p.UniqueId);
-
-            builder
                 .EntitySet<MetadataValue>("MetadataValues")
                 .EntityType.HasKey(p => p.UniqueId);
 
@@ -465,14 +476,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .EntityType<RoleUser>().Collection
                 .Function("GetInvalidatingRoleUser");
             getInvalidatingRoleUser.Namespace = "RoleUserService";
-            getInvalidatingRoleUser.ReturnsCollection<RoleUser>();
+            getInvalidatingRoleUser.ReturnsCollectionFromEntitySet<RoleUser>("RoleUsers");
 
             FunctionConfiguration getRights = builder
                 .EntityType<DomainUserModel>().Collection
                 .Function("GetCurrentRights");
             getRights.Namespace = "DomainUserService";
             getRights.ReturnsFromEntitySet<DomainUserModel>("DomainUsers");
-            
+
             #endregion
 
         }
@@ -486,6 +497,10 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
             builder
                 .EntitySet<DocumentUnitChain>("DocumentUnitChains")
+                .EntityType.HasKey(p => p.UniqueId);
+
+            builder
+                .EntitySet<DocumentUnitContact>("DocumentUnitContacts")
                 .EntityType.HasKey(p => p.UniqueId);
 
             builder
@@ -510,6 +525,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
             #region [ Functions ]
 
+            FunctionConfiguration getBiblosDocumentContentFunc = builder
+                    .EntityType<DocumentModel>().Collection
+                    .Function("GetBiblosDocumentContent");
+
+            getBiblosDocumentContentFunc.Namespace = "DocumentUnitService";
+            getBiblosDocumentContentFunc.Parameter<Guid>("documentId");
+            getBiblosDocumentContentFunc.Returns<byte[]>();
+
             FunctionConfiguration getBiblosDocumentsFunc = builder
                     .EntityType<DocumentModel>().Collection
                     .Function("GetBiblosDocuments");
@@ -517,7 +540,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             getBiblosDocumentsFunc.Namespace = "DocumentUnitService";
             getBiblosDocumentsFunc.Parameter<Guid>("uniqueId");
             getBiblosDocumentsFunc.Parameter<Guid?>("workflowArchiveChainId");
-            getBiblosDocumentsFunc.ReturnsCollection<DocumentModel>();
+            getBiblosDocumentsFunc.ReturnsCollectionFromEntitySet<DocumentModel>("Documents");
 
             FunctionConfiguration getBiblosDocumentsByArchiveChain = builder
                     .EntityType<DocumentModel>().Collection
@@ -526,7 +549,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             getBiblosDocumentsByArchiveChain.Namespace = "DocumentUnitService";
             getBiblosDocumentsByArchiveChain.Parameter<Guid>("idArchiveChain");
 
-            getBiblosDocumentsByArchiveChain.ReturnsCollection<DocumentModel>();
+            getBiblosDocumentsByArchiveChain.ReturnsCollectionFromEntitySet<DocumentModel>("Documents");
 
             FunctionConfiguration fascicolableDocumentUnitsFunc = builder
                    .EntityType<DocumentUnit>().Collection
@@ -577,7 +600,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             authorizedDocumentsFunc.ReturnsCollection<DocumentUnitModel>();
             authorizedDocumentsFunc.Parameter<string>("dateFrom");
             authorizedDocumentsFunc.Parameter<string>("dateTo");
-            authorizedDocumentsFunc.Parameter<Guid>("idTenantAOO");            
+            authorizedDocumentsFunc.Parameter<Guid>("idTenantAOO");
 
             FunctionConfiguration hasViewableDocumentFunc = builder
                     .EntityType<DocumentUnit>().Collection
@@ -594,7 +617,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                     .Function("FullTextSearchDocumentUnits");
 
             fullTextSearchDocumentUnitsFunc.Namespace = "DocumentUnitService";
-            fullTextSearchDocumentUnitsFunc.ReturnsCollection<DocumentUnitModel>();            
+            fullTextSearchDocumentUnitsFunc.ReturnsCollection<DocumentUnitModel>();
             fullTextSearchDocumentUnitsFunc.Parameter<string>("filter");
             fullTextSearchDocumentUnitsFunc.Parameter<Guid>("idTenant");
 
@@ -682,6 +705,10 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
              .EntitySet<ResolutionDocumentSeriesItem>("ResolutionDocumentSeriesItems")
              .EntityType.HasKey(p => p.UniqueId);
 
+            builder
+                .EntitySet<WebPublication>("WebPublications")
+                .EntityType.HasKey(p => p.EntityId);
+
             #endregion
         }
 
@@ -751,7 +778,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
            .Function("GetProtocolToRead");
 
             getProtocolToRead.Namespace = "ProtocolService";
-            getProtocolToRead.ReturnsCollection<Protocol>();
+            getProtocolToRead.ReturnsCollectionFromEntitySet<Protocol>("Protocols");
 
 
 
@@ -764,12 +791,12 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .EntityType.HasKey(p => p.EntityShortId);
 
             builder
-                .EntitySet<ProtocolDraft>("ProtocolDrafts")
-                .EntityType.HasKey(p => p.UniqueId);
-
-            builder
               .EntitySet<ProtocolLog>("ProtocolLogs")
               .EntityType.HasKey(p => p.UniqueId);
+
+            builder
+              .EntitySet<ProtocolJournal>("ProtocolJournals")
+              .EntityType.HasKey(p => p.EntityId);
 
             builder
               .EntitySet<ProtocolContact>("ProtocolContacts")
@@ -790,10 +817,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             builder
              .EntitySet<ProtocolDocumentType>("ProtocolDocumentType")
                 .EntityType.HasKey(p => p.EntityShortId);
-
-            builder
-                .EntitySet<ProtocolParer>("ProtocolParers")
-                .EntityType.HasKey(p => p.UniqueId);
 
             builder
                 .EntitySet<ProtocolUser>("ProtocolUsers")
@@ -880,6 +903,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             getAuthorizedActiveWorkflowRepositories.Parameter<int>("environment");
             getAuthorizedActiveWorkflowRepositories.Parameter<bool>("anyEnv");
             getAuthorizedActiveWorkflowRepositories.Parameter<bool>("documentRequired");
+            getAuthorizedActiveWorkflowRepositories.Parameter<bool>("documentUnitRequired");
             getAuthorizedActiveWorkflowRepositories.Parameter<bool>("showOnlyNoInstanceWorkflows");
             getAuthorizedActiveWorkflowRepositories.Parameter<bool>("showOnlyHasIsFascicleClosedRequired");
 
@@ -1167,9 +1191,16 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .EntitySet<FascicleLog>("FascicleLogs")
                 .EntityType.HasKey(p => p.UniqueId);
 
+            #region [ Functions ]     
 
-
-            #region [ Functions ]            
+            FunctionConfiguration fascicleDocumentUnitsFunc = builder
+                .EntityType<FascicleDocumentUnit>().Collection
+                .Function("FascicleDocumentUnits");
+            fascicleDocumentUnitsFunc.Namespace = "FascicleDocumentUnitService";
+            fascicleDocumentUnitsFunc.ReturnsCollection<FascicleDocumentUnitModel>();
+            fascicleDocumentUnitsFunc.Parameter<Guid>("idFascicle");
+            fascicleDocumentUnitsFunc.Parameter<Guid?>("idFascicleFolder");
+            fascicleDocumentUnitsFunc.Parameter<Guid>("idTenantAOO");
 
             FunctionConfiguration availableFasciclesFunc = builder
                 .EntityType<Fascicle>().Collection
@@ -1288,7 +1319,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             FunctionConfiguration authorizedFasciclesFromDocumentUnitFunc = builder
                 .EntityType<Fascicle>().Collection
                 .Function("AuthorizedFasciclesFromDocumentUnit");
-           
+
             authorizedFasciclesFromDocumentUnitFunc.Namespace = "FascicleService";
             authorizedFasciclesFromDocumentUnitFunc.Returns<FascicleModel>().Parameter<Guid>("uniqueIdDocumentUnit");
 
@@ -1297,6 +1328,32 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .Function("CountAuthorizedFasciclesFromDocumentUnit");
             countAuthorizedFasciclesFromDocumentUnitFunc.Namespace = "FascicleService";
             countAuthorizedFasciclesFromDocumentUnitFunc.Returns<int>().Parameter<Guid>("uniqueIdDocumentUnit");
+
+            FunctionConfiguration findAuthorizedCategoryFascicles = builder
+                .EntityType<Fascicle>().Collection
+                .Function("AuthorizedCategoryFascicles");
+
+            findAuthorizedCategoryFascicles.Namespace = "FascicleService";
+            findAuthorizedCategoryFascicles.Returns<FascicleModel>();
+            findAuthorizedCategoryFascicles.Parameter<short>("idCategory");
+            findAuthorizedCategoryFascicles.Parameter<int>("skip");
+            findAuthorizedCategoryFascicles.Parameter<int>("top");
+
+            FunctionConfiguration countAuthorizedCategoryFascicles = builder
+                .EntityType<Fascicle>().Collection
+                .Function("CountAuthorizedCategoryFascicles");
+
+            countAuthorizedCategoryFascicles.Namespace = "FascicleService";
+            countAuthorizedCategoryFascicles.Returns<int>();
+            countAuthorizedCategoryFascicles.Parameter<short>("idCategory");
+
+            FunctionConfiguration fascicleFromDocumentUnitFunc = builder
+                .EntityType<Fascicle>().Collection
+                .Function("FasciclesFromDocumentUnit");
+
+            fascicleFromDocumentUnitFunc.Namespace = "FascicleService";
+            fascicleFromDocumentUnitFunc.Returns<FascicleModel>();
+            fascicleFromDocumentUnitFunc.Parameter<Guid>("idDocumentUnit");
             #endregion
 
             #region [ Navigation Properties ]
@@ -1378,6 +1435,23 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .Parameter<string>("username");
             getInvalidatingTemplatesByRoleUserAccount.Parameter<string>("domain");
             getInvalidatingTemplatesByRoleUserAccount.Parameter<int>("idRole");
+
+            FunctionConfiguration getAllParentsOfTemplate = builder
+                .EntityType<TemplateCollaboration>().Collection
+                .Function("GetAllParentsOfTemplate");
+
+            getAllParentsOfTemplate.Namespace = "TemplateCollaborationService";
+            getAllParentsOfTemplate.Returns<TemplateCollaborationModel>();
+            getAllParentsOfTemplate.Parameter<Guid>("templateId");
+
+            FunctionConfiguration getChildren = builder
+                .EntityType<TemplateCollaboration>().Collection
+                .Function("GetChildren");
+
+            getChildren.Namespace = "TemplateCollaborationService";
+            getChildren.Returns<TemplateCollaborationModel>();
+            getChildren.Parameter<Guid>("idParent");
+            getChildren.Parameter<short?>("status");
             #endregion
 
             #region [ Navigation Properties ]
@@ -1413,91 +1487,191 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .EntitySet<Collaboration>("Collaborations")
                 .EntityType.HasKey(p => p.EntityId);
 
+
+            builder
+                .EntitySet<CollaborationDraft>("CollaborationDrafts")
+                .EntityType.HasKey(p => p.UniqueId);
             #region [ Functions ]
 
             //GetToVisionSignCollaborations
-            FunctionConfiguration toActiveVisionFunc = builder
+            ActionConfiguration toActiveVisionFunc = builder
                 .EntityType<Collaboration>().Collection
-                .Function("GetToVisionSignCollaborations");
+                .Action("GetToVisionSignCollaborations");
 
             toActiveVisionFunc.Namespace = "CollaborationService";
             toActiveVisionFunc.Returns<CollaborationModel>()
-                .Parameter<bool?>("isRequired");
+                .Parameter<CollaborationFinderModel>("finder");
 
-            //GetToVisionSignCollaborations
-            FunctionConfiguration toActiveDelegateVisionFunc = builder
+            //CountToVisionSignCollaborations
+            ActionConfiguration countToActiveVisionFunc = builder
                 .EntityType<Collaboration>().Collection
-                .Function("GetToVisionDelegateSignCollaborations");
+                .Action("CountToVisionSignCollaborations");
+
+            countToActiveVisionFunc.Namespace = "CollaborationService";
+            countToActiveVisionFunc.Returns<int>()
+                .Parameter<CollaborationFinderModel>("finder");
+
+            //GetToVisionDelegateSignCollaborations
+            ActionConfiguration toActiveDelegateVisionFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Action("GetToVisionDelegateSignCollaborations");
 
             toActiveDelegateVisionFunc.Namespace = "CollaborationService";
             toActiveDelegateVisionFunc.Returns<CollaborationModel>()
-                .Parameter<bool?>("isRequired");
+                .Parameter<CollaborationFinderModel>("finder");
+
+            //CountToVisionDelegateSignCollaborations
+            ActionConfiguration countToActiveDelegateVisionFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Action("CountToVisionDelegateSignCollaborations");
+
+            countToActiveDelegateVisionFunc.Namespace = "CollaborationService";
+            countToActiveDelegateVisionFunc.Returns<int>()
+                .Parameter<CollaborationFinderModel>("finder");
 
             //GetAtVisionSignCollaborations
-            FunctionConfiguration atVisionFunc = builder
+            ActionConfiguration atVisionFunc = builder
                 .EntityType<Collaboration>().Collection
-                .Function("GetAtVisionSignCollaborations");
+                .Action("GetAtVisionSignCollaborations");
 
             atVisionFunc.Namespace = "CollaborationService";
-            atVisionFunc.Returns<CollaborationModel>();
+            atVisionFunc.Returns<CollaborationModel>()
+                .Parameter<CollaborationFinderModel>("finder");
+
+            //CountAtVisionSignCollaborations
+            ActionConfiguration countAtVisionFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Action("CountAtVisionSignCollaborations");
+
+            countAtVisionFunc.Namespace = "CollaborationService";
+            countAtVisionFunc.Returns<int>()
+                .Parameter<CollaborationFinderModel>("finder");
 
             //GetAtProtocolAdmissionCollaborations
-            FunctionConfiguration atProtocolAdmissionFunc = builder
+            ActionConfiguration atProtocolAdmissionFunc = builder
                 .EntityType<Collaboration>().Collection
-                .Function("GetAtProtocolAdmissionCollaborations");
+                .Action("GetAtProtocolAdmissionCollaborations");
 
             atProtocolAdmissionFunc.Namespace = "CollaborationService";
-            atProtocolAdmissionFunc.Returns<CollaborationModel>();
+            atProtocolAdmissionFunc.Returns<CollaborationModel>()
+                .Parameter<CollaborationFinderModel>("finder");
+
+            //CountAtProtocolAdmissionCollaborations
+            ActionConfiguration countAtProtocolAdmissionFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Action("CountAtProtocolAdmissionCollaborations");
+
+            countAtProtocolAdmissionFunc.Namespace = "CollaborationService";
+            countAtProtocolAdmissionFunc.Returns<int>()
+                .Parameter<CollaborationFinderModel>("finder");
 
             //GetCurrentActivitiesAllCollaborations
-            FunctionConfiguration currentActivitiesFunc = builder
+            ActionConfiguration currentActivitiesFunc = builder
                 .EntityType<Collaboration>().Collection
-                .Function("GetCurrentActivitiesAllCollaborations");
+                .Action("GetCurrentActivitiesAllCollaborations");
 
             currentActivitiesFunc.Namespace = "CollaborationService";
-            currentActivitiesFunc.Returns<CollaborationModel>();
+            currentActivitiesFunc.Returns<CollaborationModel>()
+                .Parameter<CollaborationFinderModel>("finder");
+
+            //CountCurrentActivitiesAllCollaborations
+            ActionConfiguration countCurrentActivitiesFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Action("CountCurrentActivitiesAllCollaborations");
+
+            countCurrentActivitiesFunc.Namespace = "CollaborationService";
+            countCurrentActivitiesFunc.Returns<int>()
+                .Parameter<CollaborationFinderModel>("finder");
 
             //GetCurrentActivitiesActiveCollaborations
-            FunctionConfiguration currentActivitiesActiveFunc = builder
+            ActionConfiguration currentActivitiesActiveFunc = builder
                 .EntityType<Collaboration>().Collection
-                .Function("GetCurrentActivitiesActiveCollaborations");
+                .Action("GetCurrentActivitiesActiveCollaborations");
 
             currentActivitiesActiveFunc.Namespace = "CollaborationService";
-            currentActivitiesActiveFunc.Returns<CollaborationModel>();
+            currentActivitiesActiveFunc.Returns<CollaborationModel>()
+                .Parameter<CollaborationFinderModel>("finder");
+
+            //CountCurrentActivitiesActiveCollaborations
+            ActionConfiguration countCurrentActivitiesActiveFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Action("CountCurrentActivitiesActiveCollaborations");
+
+            countCurrentActivitiesActiveFunc.Namespace = "CollaborationService";
+            countCurrentActivitiesActiveFunc.Returns<int>()
+                .Parameter<CollaborationFinderModel>("finder");
 
             //GetCurrentActivitiesPastCollaborations
-            FunctionConfiguration currentActivitiesPastFunc = builder
+            ActionConfiguration currentActivitiesPastFunc = builder
                 .EntityType<Collaboration>().Collection
-                .Function("GetCurrentActivitiesPastCollaborations");
+                .Action("GetCurrentActivitiesPastCollaborations");
 
             currentActivitiesPastFunc.Namespace = "CollaborationService";
-            currentActivitiesPastFunc.Returns<CollaborationModel>();
+            currentActivitiesPastFunc.Returns<CollaborationModel>()
+                .Parameter<CollaborationFinderModel>("finder");
 
-            //GetCurrentActivitiesPastCollaborations
-            FunctionConfiguration toManageFunc = builder
+            //CountCurrentActivitiesPastCollaborations
+            ActionConfiguration countCurrentActivitiesPastFunc = builder
                 .EntityType<Collaboration>().Collection
-                .Function("GetToManageCollaborations");
+                .Action("CountCurrentActivitiesPastCollaborations");
+
+            countCurrentActivitiesPastFunc.Namespace = "CollaborationService";
+            countCurrentActivitiesPastFunc.Returns<int>()
+                .Parameter<CollaborationFinderModel>("finder");
+
+            //GetToManageCollaborations
+            ActionConfiguration toManageFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Action("GetToManageCollaborations");
 
             toManageFunc.Namespace = "CollaborationService";
-            toManageFunc.Returns<CollaborationModel>();
+            toManageFunc.Returns<CollaborationModel>()
+                .Parameter<CollaborationFinderModel>("finder");
+
+            //CountToManageCollaborations
+            ActionConfiguration countToManageFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Action("CountToManageCollaborations");
+
+            countToManageFunc.Namespace = "CollaborationService";
+            countToManageFunc.Returns<int>()
+                .Parameter<CollaborationFinderModel>("finder");
 
             //GetRegisteredCollaborations
-            FunctionConfiguration registeredFunc = builder
+            ActionConfiguration registeredFunc = builder
                 .EntityType<Collaboration>().Collection
-                .Function("GetRegisteredCollaborations");
+                .Action("GetRegisteredCollaborations");
 
             registeredFunc.Namespace = "CollaborationService";
-            registeredFunc.Returns<CollaborationModel>();
-            registeredFunc.Parameter<string>("dateFrom");
-            registeredFunc.Parameter<string>("dateTo");
+            registeredFunc.Returns<CollaborationModel>()
+                .Parameter<CollaborationFinderModel>("finder");
+
+            //CountRegisteredCollaborations
+            ActionConfiguration countRegisteredFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Action("CountRegisteredCollaborations");
+
+            countRegisteredFunc.Namespace = "CollaborationService";
+            countRegisteredFunc.Returns<int>()
+                .Parameter<CollaborationFinderModel>("finder");
 
             //GetMyCheckedOutCollaborations
-            FunctionConfiguration myCheckOutyFunc = builder
+            ActionConfiguration myCheckOutyFunc = builder
                 .EntityType<Collaboration>().Collection
-                .Function("GetMyCheckedOutCollaborations");
+                .Action("GetMyCheckedOutCollaborations");
 
             myCheckOutyFunc.Namespace = "CollaborationService";
-            myCheckOutyFunc.Returns<CollaborationModel>();
+            myCheckOutyFunc.Returns<CollaborationModel>()
+                .Parameter<CollaborationFinderModel>("finder");
+
+            //CountMyCheckedOutCollaborations
+            ActionConfiguration countMyCheckOutyFunc = builder
+                .EntityType<Collaboration>().Collection
+                .Action("CountMyCheckedOutCollaborations");
+
+            countMyCheckOutyFunc.Namespace = "CollaborationService";
+            countMyCheckOutyFunc.Returns<int>()
+                .Parameter<CollaborationFinderModel>("finder");
 
             FunctionConfiguration hasViewableRightFunc = builder
                 .EntityType<Collaboration>().Collection
@@ -1538,6 +1712,9 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .EntitySet<UDSRepository>("UDSRepositories")
                 .EntityType.HasKey(p => p.UniqueId);
 
+            builder
+               .EntitySet<UDSFieldList>("UDSFieldLists")
+               .EntityType.HasKey(p => p.UniqueId);
             #region [ Functions ]
 
             FunctionConfiguration viewableFunc = builder
@@ -1601,6 +1778,26 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             GetMyLogs.Parameter<int>("skip");
             GetMyLogs.Parameter<int>("top");
 
+            FunctionConfiguration getChildrenByParent = builder
+                .EntityType<UDSFieldList>().Collection
+                .Function("GetChildrenByParent");
+            getChildrenByParent.Namespace = "UDSFieldListService";
+            getChildrenByParent.Returns<UDSFieldListTableValuedModel>();
+            getChildrenByParent.Parameter<Guid>("parentId");
+
+            FunctionConfiguration getParent = builder
+                .EntityType<UDSFieldList>().Collection
+                .Function("GetParent");
+            getParent.Namespace = "UDSFieldListService";
+            getParent.Returns<UDSFieldListTableValuedModel>();
+            getParent.Parameter<Guid>("childId");
+
+            FunctionConfiguration getAllParents = builder
+                .EntityType<UDSFieldList>().Collection
+                .Function("GetAllParents");
+            getAllParents.Namespace = "UDSFieldListService";
+            getAllParents.Returns<UDSFieldListTableValuedModel>();
+            getAllParents.Parameter<Guid>("childId");
             #endregion
 
             #region [ Navigation Properties ]
@@ -1620,6 +1817,9 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .EntitySet<UDSRole>("UDSRoles")
                 .EntityType.HasKey(p => p.UniqueId);
 
+            builder
+                .EntitySet<UDSFieldList>("UDSFieldLists")
+                .EntityType.HasKey(p => p.UniqueId);
             builder
                 .EntitySet<UDSUser>("UDSUsers")
                 .EntityType.HasKey(p => p.UniqueId);
@@ -1865,6 +2065,16 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             getProcessFolders.Parameter<bool>("loadOnlyActive");
             getProcessFolders.Parameter<bool>("loadOnlyMy");
 
+            FunctionConfiguration getChildrenByParentProcess = builder
+               .EntityType<DossierFolder>().Collection
+               .Function("GetChildrenByParentProcess");
+
+            getChildrenByParentProcess.Namespace = "DossierFolderService";
+            getChildrenByParentProcess.Returns<DossierFolderModel>();
+            getChildrenByParentProcess.Parameter<Guid>("idProcess");
+            getChildrenByParentProcess.Parameter<bool>("loadOnlyActive");
+            getChildrenByParentProcess.Parameter<bool>("loadOnlyMy");
+
             FunctionConfiguration getAllParentsOfFascicle = builder
                .EntityType<DossierFolder>().Collection
                .Function("GetAllParentsOfFascicle");
@@ -1889,6 +2099,26 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             getParent.Namespace = "DossierFolderService";
             getParent.Returns<DossierFolderModel>();
             getParent.Parameter<Guid>("idDossierFolder");
+
+            FunctionConfiguration countChildren = builder
+                .EntityType<DossierFolder>().Collection
+                .Function("CountDossierFolderChildren");
+
+            countChildren.Namespace = "DossierFolderService";
+            countChildren.Returns<int>();
+            countChildren.Parameter<Guid>("idDossierFolder");
+            countChildren.Parameter<bool?>("loadOnlyFolders");
+
+            FunctionConfiguration getChildren = builder
+               .EntityType<DossierFolder>().Collection
+               .Function("GetChildren");
+
+            getChildren.Namespace = "DossierFolderService";
+            getChildren.Returns<DossierFolderModel>();
+            getChildren.Parameter<Guid>("idDossierFolder");
+            getChildren.Parameter<int>("skip");
+            getChildren.Parameter<int>("top");
+            getChildren.Parameter<bool?>("loadOnlyFolders");
             #endregion
 
             #region [ Navigation Properties ]
@@ -1940,6 +2170,24 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             getByCategoryAndFascicle.Returns<FascicleFolderModel>();
             getByCategoryAndFascicle.Parameter<Guid>("idFascicle");
             getByCategoryAndFascicle.Parameter<short>("idCategory");
+
+            FunctionConfiguration getChildren = builder
+               .EntityType<FascicleFolder>().Collection
+               .Function("GetChildren");
+
+            getChildren.Namespace = "FascicleFolderService";
+            getChildren.Returns<FascicleFolderModel>();
+            getChildren.Parameter<Guid>("idFascicleFolder");
+            getChildren.Parameter<int>("skip");
+            getChildren.Parameter<int>("top");
+
+            FunctionConfiguration countChildren = builder
+                .EntityType<FascicleFolder>().Collection
+                .Function("CountFascicleFolderChildren");
+
+            countChildren.Namespace = "FascicleFolderService";
+            countChildren.Returns<int>();
+            countChildren.Parameter<Guid>("idFascicleFolder");
             #endregion
 
             #region [ Navigation Properties ]
@@ -2166,7 +2414,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 .EntityType.HasKey(p => p.UniqueId);
 
             #endregion
-        }      
+        }
 
         private static void MapReportsOData(ODataModelBuilder builder)
         {
@@ -2240,6 +2488,25 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             process.Parameter<short?>("categoryId");
             process.Parameter<Guid?>("dossierId");
             process.Parameter<bool>("loadOnlyMy");
+            process.Parameter<bool>("isProcessActive");
+
+            FunctionConfiguration categoryProcesses = builder
+                .EntityType<Process>().Collection
+                .Function("CategoryProcesses");
+            categoryProcesses.Namespace = "ProcessService";
+            categoryProcesses.Returns<ProcessModel>();
+            categoryProcesses.Parameter<short>("categoryId");
+            categoryProcesses.Parameter<bool>("loadOnlyMy");
+            categoryProcesses.Parameter<int>("skip");
+            categoryProcesses.Parameter<int>("top");
+
+            FunctionConfiguration countCategoryProcesses = builder
+                .EntityType<Process>().Collection
+                .Function("CountCategoryProcesses");
+            countCategoryProcesses.Namespace = "ProcessService";
+            countCategoryProcesses.Returns<int>();
+            countCategoryProcesses.Parameter<short>("categoryId");
+            countCategoryProcesses.Parameter<bool>("loadOnlyMy");
 
             #endregion
 
@@ -2267,5 +2534,43 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
             #endregion
         }
 
+        private static void MapTendersOData(ODataModelBuilder builder)
+        {
+            builder
+               .EntitySet<TenderHeader>("TenderHeaders")
+               .EntityType.HasKey(p => p.UniqueId);
+
+            #region [ Functions ]
+
+            #endregion
+
+            #region [ Navigation Properties ]
+            builder
+                 .EntitySet<TenderLot>("TenderLots")
+                 .EntityType.HasKey(p => p.UniqueId);
+
+            builder
+                 .EntitySet<TenderLotPayment>("TenderLotPayments")
+                 .EntityType.HasKey(p => p.UniqueId);
+            #endregion
+        }
+
+        private static void MapUserLogOData(ODataModelBuilder builder)
+        {
+            builder
+                .EntitySet<UserLog>("UserLogs")
+                .EntityType.HasKey(p => p.UniqueId);
+
+            #region [ Functions ]
+            FunctionConfiguration userLog = builder
+                .EntityType<UserLog>().Collection
+                .Function("GetCurrentUserLogSecure");
+            userLog.Namespace = "UserLogService";
+            userLog.ReturnsFromEntitySet<UserLog>("UserLogs");
+            #endregion
+
+            #region [ Navigation Properties ]
+            #endregion
+        }
     }
 }

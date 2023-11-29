@@ -16,7 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Commons
 
         public string Name { get; set; }
 
-        public byte? IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         public short? Code { get; set; }
 

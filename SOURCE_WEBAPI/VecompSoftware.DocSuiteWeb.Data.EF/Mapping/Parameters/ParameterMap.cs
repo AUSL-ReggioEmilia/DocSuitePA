@@ -36,10 +36,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Parameters
                 .HasColumnName("Locked")
                 .IsRequired();
 
-            Property(x => x.Password)
-                .HasColumnName("Password")
-                .IsOptional();
-
             Property(x => x.LastChangedUser)
                 .HasColumnName("LastChangedUser")
                 .IsOptional();
@@ -51,30 +47,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Parameters
             Property(x => x.LastUsedIdCategory)
                 .HasColumnName("LastUsedidCategory")
                 .IsRequired();
-
-            Property(x => x.LastUsedIdRecipient)
-                .HasColumnName("LastUsedidRecipient")
-                .IsRequired();
-
-            Property(x => x.Version)
-                .HasColumnName("Version")
-                .IsRequired();
-
-            Property(x => x.LastUsedIdDistributionList)
-                .HasColumnName("LastUsedidDistributionList")
-                .IsRequired();
-
-            Property(x => x.DomainName)
-                .HasColumnName("DomainName")
-                .IsOptional();
-
-            Property(x => x.AlternativePassword)
-                .HasColumnName("AlternativePassword")
-                .IsOptional();
-
-            Property(x => x.ServiceField)
-                .HasColumnName("ServiceField")
-                .IsOptional();
 
             Property(x => x.LastUsedIdRole)
                 .HasColumnName("LastUsedidRole")
@@ -102,10 +74,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Parameters
 
             Property(x => x.LastUsedResolutionNumber)
                 .HasColumnName("LastUsedResolutionNumber")
-                .IsOptional();
-
-            Property(x => x.LastUsedYearReg)
-                .HasColumnName("LastUsedYearReg")
                 .IsOptional();
 
             Property(x => x.RegistrationDate)

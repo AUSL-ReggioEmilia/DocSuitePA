@@ -97,6 +97,9 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Resolutions
         public string AdoptionUser { get; set; }
 
         public string LastChangedUser { get; set; }
+        
+        public string ResolutionKind { get; set; }
+        public float? Amount { get; set; }
 
         public DateTimeOffset? LastChangedDate { get; set; }
 

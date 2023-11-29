@@ -28,7 +28,7 @@
         /// <summary>
         /// Unità Organizzativa (AO)
         /// </summary>
-        public const string AO = "AO";
+        public const string AO = "U";
         /// <summary>
         /// Ruolo
         /// </summary>
@@ -56,6 +56,6 @@
         /// <summary>
         /// Area Organizzativa Omogenea (AOO) di contatto Manuale
         /// </summary>
-        public const string AOOManual = "DAO";
+        public const string AOOManual = "U";
     }
 }

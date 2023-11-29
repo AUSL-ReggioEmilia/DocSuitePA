@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Conservations;
@@ -10,8 +11,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Conservations
     public class ConservationValidator : ObjectValidator<Conservation, ConservationValidator>, IConservationValidator
     {
         #region [ Constructor ]
-        public ConservationValidator(ILogger logger, IConservationValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public ConservationValidator(ILogger logger, IConservationValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
 
         }

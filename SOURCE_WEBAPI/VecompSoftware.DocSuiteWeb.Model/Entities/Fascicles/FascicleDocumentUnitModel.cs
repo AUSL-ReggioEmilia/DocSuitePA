@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.Commons.Interfaces.CQRS.Commands;
 using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
@@ -14,16 +15,15 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
         public FascicleDocumentUnitModel() { }
 
         public ReferenceType ReferenceType { get; set; }
+        
+        public short SequenceNumber { get; set; }
 
         public Guid? UniqueId { get; set; }
-
-        public DocumentUnitModel DocumentUnit { get; set; }
-
         #endregion
 
         #region [ Navigation Properties ]
 
-
+        public DocumentUnitModel DocumentUnit { get; set; }
 
         #endregion
     }

@@ -13,7 +13,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Resolutions
             #region [ Base ]
 
             entityTransformed.UniqueId = entity.UniqueId;
-            entityTransformed.EntityId = entity.EntityId;
             entityTransformed.IdResolutionRoleType = entity.IdResolutionRoleType;
             entityTransformed.RegistrationUser = entity.RegistrationUser;
             entityTransformed.RegistrationDate = entity.RegistrationDate;
@@ -23,8 +22,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Resolutions
             #endregion
 
             #region [ Navigation Properties ]
-
             entityTransformed.Role = entity.Role;
+            entityTransformed.Resolution = entity.Resolution;
 
             #endregion
 

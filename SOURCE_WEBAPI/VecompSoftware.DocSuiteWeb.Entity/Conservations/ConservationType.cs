@@ -2,7 +2,6 @@
 {
     public enum ConservationType : short
     {
-        Biblos = 0,
-        ParER = 1
+        Ingestor = 0
     }
 }

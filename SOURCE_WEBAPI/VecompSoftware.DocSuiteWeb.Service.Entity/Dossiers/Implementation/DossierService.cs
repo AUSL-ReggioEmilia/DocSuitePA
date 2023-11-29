@@ -27,13 +27,13 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
         #region [ Fields ]
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly IMapperUnitOfWork _mapperUnitOfWork;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         #endregion
 
         #region [ Constructor ]
 
         public DossierService(IDataUnitOfWork unitOfWork, ILogger logger, IValidatorService validationService,
-            IDossierRuleset dossierRuleset, IMapperUnitOfWork mapperUnitOfWork, ISecurity security, IParameterEnvService parameterEnvService)
+            IDossierRuleset dossierRuleset, IMapperUnitOfWork mapperUnitOfWork, ISecurity security, IDecryptedParameterEnvService parameterEnvService)
             : base(unitOfWork, logger, validationService, dossierRuleset, mapperUnitOfWork, security)
         {
             _unitOfWork = unitOfWork;

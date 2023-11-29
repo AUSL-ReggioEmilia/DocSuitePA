@@ -9,10 +9,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>net48;netstandard2.1</TargetFrameworks>
-    <Version>9.09.0.0</Version>
+    <version>9.25.0.0</version>
     <Authors />
     <Company>Dgroove Srl</Company>
-    <Copyright>Copyright © Dgroove 2020</Copyright>
+    <Copyright>Copyright © Dgroove 2022</Copyright>
+    <Title>VecompSoftware.DocSuite.Public.Core.Models.Helpers</Title>
+    <ProductName>VecompSoftware.DocSuite.Public.Core.Models.Helpers</ProductName>
+    <Product>VecompSoftware.DocSuite.Public.Core.Models.Helpers</Product>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
 

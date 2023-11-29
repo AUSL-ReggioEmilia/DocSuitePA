@@ -67,6 +67,20 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Dossiers
         }
 
         [HttpGet]
+        public IHttpActionResult GetChildrenByParentProcess(Guid idProcess, bool loadOnlyActive, bool loadOnlyMy)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
+            {
+                DossierFolderTableValuedModel processRootFolder = _unitOfWork.Repository<DossierFolder>().FindProcessFolders(Username, Domain, string.Empty, idProcess, loadOnlyActive, loadOnlyMy).FirstOrDefault();
+
+                ICollection<DossierFolderTableValuedModel> dossierFolders = _unitOfWork.Repository<DossierFolder>().GetChildrenByParent(processRootFolder.IdDossierFolder, 0);
+                ICollection<DossierFolderModel> dossierFoldersModel = _mapperUnitOfwork.Repository<IDomainMapper<DossierFolderTableValuedModel, DossierFolderModel>>().MapCollection(dossierFolders).ToList();
+
+                return Ok(dossierFoldersModel);
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
         public IHttpActionResult GetProcessFolders(string name, Guid idProcess, bool loadOnlyActive, bool loadOnlyMy)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
@@ -140,6 +154,29 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Dossiers
             }
 
             return dossierFoldersModel;
+        }
+
+        [HttpGet]
+        public IHttpActionResult CountDossierFolderChildren(Guid idDossierFolder, bool? loadOnlyFolders)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                int childrenCount = _unitOfWork.Repository<DossierFolder>().CountChildren(idDossierFolder, loadOnlyFolders);
+
+                return Ok(childrenCount);
+
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetChildren(Guid idDossierFolder, int skip, int top, bool? loadOnlyFolders)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
+            {
+                ICollection<DossierFolderTableValuedModel> dossierFolders = _unitOfWork.Repository<DossierFolder>().GetChildren(idDossierFolder, skip, top, loadOnlyFolders);
+                ICollection<DossierFolderModel> dossierFoldersModel = _mapperUnitOfwork.Repository<IDomainMapper<DossierFolderTableValuedModel, DossierFolderModel>>().MapCollection(dossierFolders).ToList();
+                return Ok(dossierFoldersModel);
+            }, _logger, LogCategories);
         }
 
         #endregion

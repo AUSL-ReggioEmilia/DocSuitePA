@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentArchives;
@@ -11,7 +12,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Resolutions
     public class ResolutionDocumentSeriesItemValidator : ObjectValidator<ResolutionDocumentSeriesItem, ResolutionDocumentSeriesItemValidator>, IResolutionDocumentSeriesItemValidator
     {
         #region [ Constructor ]
-        public ResolutionDocumentSeriesItemValidator(ILogger logger, IValidatorMapper<ResolutionDocumentSeriesItem, ResolutionDocumentSeriesItemValidator> mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity) : base(logger, mapper, unitOfWork, currentSecurity)
+        public ResolutionDocumentSeriesItemValidator(ILogger logger, IValidatorMapper<ResolutionDocumentSeriesItem, ResolutionDocumentSeriesItemValidator> mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity) : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
         }
         #endregion

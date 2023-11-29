@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -14,8 +15,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.UDS
     public class UDSRepositoryValidator : ObjectValidator<UDSRepository, UDSRepositoryValidator>, IUDSRepositoryValidator
     {
         #region [ Constructor ]
-        public UDSRepositoryValidator(ILogger logger, IUDSRepositoryValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public UDSRepositoryValidator(ILogger logger, IUDSRepositoryValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
 
             DocumentUnits = new HashSet<DocumentUnit>();

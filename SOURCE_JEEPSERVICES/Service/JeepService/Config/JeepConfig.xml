@@ -9,7 +9,7 @@
         <PARAMETER key="AuthenticationType" value="Ssl" />
         <PARAMETER key="ServerPort" value="587" />
         <PARAMETER key="UserName" value="serviziodocsuiteweb**REMOVE**.it" />
-        <PARAMETER key="UserPassword" value="Passw0rd" />
+        <PARAMETER key="UserPassword" value="." />
         <PARAMETER key="Sender" value="servizio.docsuiteweb**REMOVE**.it" />
         <PARAMETER key="ServerType" value="Smtp" />
         <PARAMETER key="MaxErrorCount" value="5" />

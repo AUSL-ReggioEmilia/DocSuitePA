@@ -9,6 +9,14 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
 {
     public static class WorkflowRepositoryFinder
     {
+        public static WorkflowRepository GetIncludingEvaluationProperties(this IRepository<WorkflowRepository> repository, Guid workflowRepositoryId)
+        {
+            return repository
+                .Query(f => f.UniqueId == workflowRepositoryId, true)
+                .Include(p => p.WorkflowEvaluationProperties)
+                .Select().FirstOrDefault();
+        }
+
         public static WorkflowRepository GetByInstanceId(this IRepository<WorkflowRepository> repository, Guid workflowInstanceId)
         {
             return repository.Query(f => f.WorkflowInstances.Any(x => x.UniqueId == workflowInstanceId), true)
@@ -27,11 +35,12 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
         {
             return repository.Query(f => f.Name == workflowName && f.DSWEnvironment == DocSuiteWeb.Entity.Commons.DSWEnvironmentType.Any, optimization: optimization)
                     .Include(f => f.WorkflowRoleMappings)
+                    .Include(f => f.WorkflowEvaluationProperties)
                     .Select().FirstOrDefault();
         }
 
         public static ICollection<WorkflowRepository> GetAuthorizedActiveWorkflowRepositories(this IRepository<WorkflowRepository> repository, string username, string domain, int env, bool anyEnv, 
-            bool documentRequired, bool showOnlyNoInstanceWorkflows, bool showOnlyHasIsFascicleClosedRequired)
+            bool documentRequired, bool showOnlyNoInstanceWorkflows, bool showOnlyHasIsFascicleClosedRequired, bool documentUnitRequired)
         {
             return repository.ExecuteModelFunction<WorkflowRepository>(CommonDefinition.SQL_FX_WorkflowRepository_AuthorizedActiveWorkflowRepositories,
                 new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_UserName, username),
@@ -39,6 +48,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Workflows
                 new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_Environment, env),
                 new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_AnyEnvironment, anyEnv),
                 new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_DocumentRequired, documentRequired),
+                new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_DocumentUnitRequired, documentUnitRequired),
                 new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_ShowOnlyNoInstanceWorkflows, showOnlyNoInstanceWorkflows),
                 new QueryParameter(CommonDefinition.SQL_Param_WorkflowRepository_ShowOnlyHasIsFascicleClosedRequired, showOnlyHasIsFascicleClosedRequired));
 

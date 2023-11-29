@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -13,8 +14,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Resolutions
     public class ResolutionValidator : ObjectValidator<Resolution, ResolutionValidator>, IResolutionValidator
     {
         #region [ Constructor ]
-        public ResolutionValidator(ILogger logger, IResolutionValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public ResolutionValidator(ILogger logger, IResolutionValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
             ICollection<ResolutionContact> ResolutionContacts = new Collection<ResolutionContact>();
             ICollection<ResolutionLog> ResolutionLogs = new Collection<ResolutionLog>();
@@ -89,6 +90,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Resolutions
         public string InclusiveNumber { get; set; }
 
         public DateTime? WebPublicationDate { get; set; }
+
+        public float? Amount { get; set; }
 
         #endregion
 

@@ -12,7 +12,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
         public static IQueryable<CategoryFascicleRight> GetByProcedureCategoryId(this IRepository<CategoryFascicleRight> repository, short idCategory, bool optimization = false)
         {
             return repository.Query(x => x.CategoryFascicle.Category.EntityShortId == idCategory && x.CategoryFascicle.FascicleType == FascicleType.Procedure, optimization)
-                .Include(i => i.Role)
+                .Include(d => d.Role.TenantAOO)
                 .SelectAsQueryable();
         }
 

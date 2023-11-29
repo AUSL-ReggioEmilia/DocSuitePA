@@ -14,7 +14,7 @@ namespace VecompSoftware.DocSuite.SPID.SAML.Test
         [TestMethod]
         public void CreatePostRequestAndCheckResultNotEmpty()
         {
-            using (X509Certificate2 cert = new X509Certificate2("spid-developer.pfx", "Passw0rd", X509KeyStorageFlags.Exportable))
+            using (X509Certificate2 cert = new X509Certificate2("spid-developer.pfx", ".", X509KeyStorageFlags.Exportable))
             {
                 SamlRequestOption options = new SamlRequestOption()
                 {
@@ -37,7 +37,7 @@ namespace VecompSoftware.DocSuite.SPID.SAML.Test
         [TestMethod]
         public void CreateRedirectRequestAndCheckResultNotEmpty()
         {
-            using (X509Certificate2 cert = new X509Certificate2("spid-developer.pfx", "Passw0rd", X509KeyStorageFlags.Exportable))
+            using (X509Certificate2 cert = new X509Certificate2("spid-developer.pfx", ".", X509KeyStorageFlags.Exportable))
             {
                 SamlRequestOption options = new SamlRequestOption()
                 {

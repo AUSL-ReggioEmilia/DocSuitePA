@@ -36,6 +36,13 @@ namespace VecompSoftware.DocSuiteWeb.Finder.PECMails
                 .SelectAsQueryable();
         }
 
+        public static IQueryable<PECMail> GetByUniqueIdWithPECMailBoxIncluded(this IRepository<PECMail> repository, Guid uniqueId)
+        {
+            return repository.Query(x => x.UniqueId == uniqueId)
+                .Include(i => i.PECMailBox)
+                .SelectAsQueryable();
+        }
+
         public static IQueryable<PECMailAttachment> GetAttachments(this IRepository<PECMailAttachment> repository, int id)
         {
             return repository.Query(x => x.PECMail.EntityId == id).SelectAsQueryable();

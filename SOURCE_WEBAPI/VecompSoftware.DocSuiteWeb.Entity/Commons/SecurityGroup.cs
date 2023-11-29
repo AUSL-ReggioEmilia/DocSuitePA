@@ -12,7 +12,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
             : base(uniqueId)
         {
             SecurityUsers = new HashSet<SecurityUser>();
-            GroupChildren = new HashSet<SecurityGroup>();
             ContainerGroups = new HashSet<ContainerGroup>();
             RoleGroups = new HashSet<RoleGroup>();
         }
@@ -23,10 +22,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         /// Nome del gruppo
         /// </summary>
         public string GroupName { get; set; }
-        /// <summary>
-        /// Path incrementale del gruppo di sicurezza
-        /// </summary>
-        public string FullIncrementalPath { get; set; }
 
         /// <summary>
         /// Descrizione description
@@ -35,21 +30,10 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
 
         public bool IsAllUsers { get; set; }
 
-        public int IdSecurityGroupTenant { get; set; }
-
-        public Guid TenantId { get; set; }
         #endregion
 
         #region [ Navigation Properties ]
 
-        /// <summary>
-        /// Gruppo padre
-        /// </summary>
-        public SecurityGroup GroupFather { get; set; }
-        /// <summary>
-        /// Gruppo padre
-        /// </summary>
-        public virtual ICollection<SecurityGroup> GroupChildren { get; set; }
         /// <summary>
         /// Collezione degli utenti
         /// </summary>

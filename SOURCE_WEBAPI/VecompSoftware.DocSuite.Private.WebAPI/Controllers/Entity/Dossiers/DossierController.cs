@@ -25,7 +25,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Dossiers
         #region [ Fields ]
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly ICurrentIdentity _currentIdentity;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         private readonly ICQRSMessageMapper _cqrsMapper;
         private readonly IQueueService _queueService;
         private readonly ILogger _logger;
@@ -36,7 +36,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Dossiers
         public DossierController(IDossierService service, IDataUnitOfWork unitOfWork, 
             ILogger logger, 
             ICurrentIdentity currentIdentity,
-            IParameterEnvService parameterEnvService, 
+            IDecryptedParameterEnvService parameterEnvService, 
             ICQRSMessageMapper CQRSMapper,
             IQueueService queueService)
             : base(service, unitOfWork, logger)
@@ -51,7 +51,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Dossiers
         #endregion
 
         #region [ Methods ]
-        protected override void AfterSave(Dossier entity)
+        protected override void AfterSave(Dossier entity, Dossier existingEntity)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Dossiers
                 _logger.WriteError(ex, LogCategories);
             }
 
-            base.AfterSave(entity);
+            base.AfterSave(entity, existingEntity);
         }
         #endregion
     }

@@ -44,6 +44,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Resolutions
             entityTransformed.Status = entity.Status;
             entityTransformed.InclusiveNumber = entity.InclusiveNumber;
             entityTransformed.WebPublicationDate = entity.WebPublicationDate;
+            entityTransformed.Amount = entity.Amount;
 
             #region [ Navigation Properties ]
 

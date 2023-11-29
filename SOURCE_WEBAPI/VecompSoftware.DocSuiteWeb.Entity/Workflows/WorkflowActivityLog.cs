@@ -3,7 +3,7 @@
 namespace VecompSoftware.DocSuiteWeb.Entity.Workflows
 {
 
-    public class WorkflowActivityLog : DSWBaseLogEntity<WorkflowActivity, WorkflowStatus>
+    public class WorkflowActivityLog : DSWBaseLogEntity<WorkflowActivity, WorkflowActivityLogType>
     {
         #region Constructors
 

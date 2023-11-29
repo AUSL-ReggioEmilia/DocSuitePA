@@ -45,7 +45,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Tasks
 
             Property(x => x.SendingProcessStatus)
                 .HasColumnName("SendingProcessStatus")
-                .IsOptional();
+                .IsRequired();
 
             Property(x => x.RegistrationUser)
                .HasColumnName("RegistrationUser")

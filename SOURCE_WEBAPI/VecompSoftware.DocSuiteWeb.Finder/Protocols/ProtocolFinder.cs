@@ -38,7 +38,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Protocols
         {
             return repository.Query(x => x.UniqueId == uniqueId)
                 .Include(i => i.Category)
-                .Include(i => i.ProtocolRoles)
+                .Include(i => i.ProtocolRoles.Select(p => p.Role.TenantAOO))
                 .Include(i => i.ProtocolRoleUsers)
                 .Include(i => i.ProtocolType)
                 .Include(i => i.Container.ProtLocation)
@@ -50,9 +50,24 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Protocols
         {
             return repository.Query(x => x.UniqueId == uniqueIdProtocol)
                 .Include(t => t.Category.CategoryFascicles.Select(f => f.FasciclePeriod))
-                .Include(i => i.ProtocolRoles.Select(p => p.Role))
+                .Include(i => i.ProtocolRoles.Select(p => p.Role.TenantAOO))
                 .Include(i => i.Container.ProtLocation)
+                .Include(i => i.ProtocolUsers)
                 .Include(i => i.TenantAOO)
+                .SelectAsQueryable();
+        }
+
+        public static IQueryable<Protocol> GetByUniqueIdWithRoleAndContact(this IRepository<Protocol> repository, Guid uniqueIdProtocol)
+        {
+            return repository.Query(x => x.UniqueId == uniqueIdProtocol)
+                .Include(t => t.Category.CategoryFascicles.Select(f => f.FasciclePeriod))
+                .Include(i => i.ProtocolRoles.Select(p => p.Role.TenantAOO))
+                .Include(i => i.ProtocolContacts.Select(p => p.Contact))
+                .Include(i => i.ProtocolContactManuals)
+                .Include(i => i.Container.ProtLocation)
+                .Include(i => i.ProtocolUsers)
+                .Include(i => i.TenantAOO)
+                .Include(i => i.ProtocolType)
                 .SelectAsQueryable();
         }
 

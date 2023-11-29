@@ -214,8 +214,8 @@ namespace VecompSoftware.DocSuiteWeb.Service.ServiceBus
             InitializeMessage(message);
             KeyValuePair<string, object> eventName = message.Properties.SingleOrDefault(f => CustomPropertyName.EVENT_NAME.Equals(f.Key));
             _logger.WriteDebug(new LogMessage($"Sending message '{eventName.Value}' to topic {TopicName}"), LogCategories);
-
             await _topicClient.SendAsync(message);
+            _logger.WriteInfo(new LogMessage($"Message {message.MessageId} has been sent successfully by {(message.Properties.ContainsKey(CustomPropertyName.EXECUTOR_USER) ? message.Properties[CustomPropertyName.EXECUTOR_USER] : "SYSTEM")}"), LogCategories);
             return message;
         }
 

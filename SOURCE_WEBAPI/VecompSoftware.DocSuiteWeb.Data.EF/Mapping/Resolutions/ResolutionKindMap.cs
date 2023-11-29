@@ -26,6 +26,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Resolutions
                 .HasColumnName("IsActive")
                 .IsRequired();
 
+            Property(x => x.AmountEnabled)
+                .HasColumnName("AmountEnabled")
+                .IsRequired();
+
             Property(x => x.RegistrationDate)
                 .HasColumnName("RegistrationDate")
                 .IsRequired();

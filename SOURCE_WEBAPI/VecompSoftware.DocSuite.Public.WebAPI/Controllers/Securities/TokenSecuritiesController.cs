@@ -17,14 +17,18 @@ using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Finder.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Finder.Workflows;
 using VecompSoftware.DocSuiteWeb.Mapper.ServiceBus.Messages;
 using VecompSoftware.DocSuiteWeb.Model.Securities;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
 using VecompSoftware.DocSuiteWeb.Service.ServiceBus;
+using VecompSoftware.Helpers.Workflow;
 
 namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Securities
 {
+    [AzureAuthorize]
     [LogCategory(LogCategoryDefinition.SECURITY)]
     public class TokenSecuritiesController : ApiController
     {
@@ -32,23 +36,21 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Securities
 
         private static IEnumerable<LogCategory> _logCategories;
         private readonly ILogger _logger;
-        protected readonly Guid _instanceId;
         private readonly ITopicService _topicService;
         private readonly IDataUnitOfWork _unitOfWork;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         private readonly ICQRSMessageMapper _cqrsMapper;
         private readonly IMessageConfiguration _messageConfiguration;
         #endregion
 
         #region [ Constructor ]
-        public TokenSecuritiesController(ILogger logger, ITopicService topicService, IParameterEnvService parameterEnvService,
+        public TokenSecuritiesController(ILogger logger, ITopicService topicService, IDecryptedParameterEnvService parameterEnvService,
             IDataUnitOfWork unitOfWork, ICQRSMessageMapper cqrsMapper, IMessageConfiguration messageConfiguration)
             : base()
         {
             _logger = logger;
             _topicService = topicService;
             _parameterEnvService = parameterEnvService;
-            _instanceId = Guid.NewGuid();
             _unitOfWork = unitOfWork;
             _cqrsMapper = cqrsMapper;
             _messageConfiguration = messageConfiguration;
@@ -74,22 +76,62 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Securities
         private const string _filter_tokenAuthenticationId = "TokenAuthenticationId";
         private const string _filter_tokenExpiryDate = "TokenExpiryDate";
         [HttpPost]
-        public async Task<IHttpActionResult> Post(Guid authenticationId, string documentUnit, short year, int number)
+        public async Task<IHttpActionResult> Post(Guid authenticationId, string documentUnit, short? year, string number)
         {
             return await ActionHelper.TryCatchWithLoggerGeneric(async () =>
             {
                 _logger.WriteInfo(new LogMessage($"Token securities receive a request for authenticationId {authenticationId}, documentUnit {documentUnit}, year {year} and number {number}"), LogCategories);
-                if (!DSWAuthorizationServerProvider.ValidAuthenticationList.Any(f => f == authenticationId))
+                if (!IsValidAuthenticationId(authenticationId))
                 {
-                    _logger.WriteWarning(new LogMessage($"AuthenticationId {authenticationId} is not valid"), LogCategories);
+                    _logger.WriteWarning(new LogMessage($"WorkflowRepository with id '{authenticationId}' not found or doesn't have environment '{DSWEnvironmentType.Any}' or the _dsw_p_ExternalViewerIntegrationEnabled is not found"), LogCategories);
                     throw new DSWSecurityException($"AuthenticationId {authenticationId} is not valid", null, DSWExceptionCode.SC_InvalidAccount);
                 }
-                DocumentUnit reference = null;
+                int tokenModelEnvironment = 0;
+                short tokenModelYear = 0;
+                string tokenModelNumber = string.Empty;
+                Guid tokenModelUniqueId = Guid.Empty;
+                string tokenModelTitle = string.Empty;
                 switch (documentUnit)
                 {
                     case "Protocol":
                         {
-                            reference = _unitOfWork.Repository<DocumentUnit>().GetByNumbering(year, number, (int)DSWEnvironmentType.Protocol, optimization: true);
+                            int protocolNumber = 0;
+                            if (!year.HasValue || !int.TryParse(number, out protocolNumber))
+                            {
+                                _logger.WriteWarning(new LogMessage($"Year '{year}' and number {number} are not valid."), LogCategories);
+                                throw new DSWSecurityException($"Year '{year}' and number {number} are not valid.", null, DSWExceptionCode.SC_InvalidAccount);
+                            }
+                            DocumentUnit reference = _unitOfWork.Repository<DocumentUnit>().GetByWorkflowRepositoryId(year.Value, protocolNumber, (int)DSWEnvironmentType.Protocol, authenticationId, optimization: true);
+                            if (reference == null)
+                            {
+                                _logger.WriteWarning(new LogMessage($"DocumentUnit {documentUnit} - {year}/{number} not found"), LogCategories);
+                                throw new DSWSecurityException($"DocumentUnit {documentUnit} - {year}/{number} not found", null, DSWExceptionCode.SC_InvalidAccount);
+                            }
+                            tokenModelEnvironment = reference.Environment;
+                            tokenModelUniqueId = reference.UniqueId;
+                            tokenModelYear = reference.Year;
+                            tokenModelNumber = reference.Number.ToString();
+                            tokenModelTitle = reference.Title;
+                            break;
+                        }
+                    case "Collaboration":
+                        {
+                            Guid instanceId;
+                            if (!Guid.TryParse(number, out instanceId))
+                            {
+                                _logger.WriteWarning(new LogMessage($"Number {number} is not valid."), LogCategories);
+                                throw new DSWSecurityException($"Number {number} is not valid.", null, DSWExceptionCode.SC_InvalidAccount);
+                            }
+                            WorkflowInstance workflowInstance  = _unitOfWork.Repository<WorkflowInstance>().GetByColllaborationReferenceId(instanceId, authenticationId).SingleOrDefault();
+                            if (workflowInstance == null)
+                            {
+                                _logger.WriteWarning(new LogMessage($"ReferenceId {documentUnit} - {number} not found"), LogCategories);
+                                throw new DSWSecurityException($"DocumentUnit {documentUnit} - {number} not found", null, DSWExceptionCode.SC_InvalidAccount);
+                            }
+                            tokenModelEnvironment = (int)DSWEnvironmentType.Collaboration;
+                            tokenModelUniqueId = workflowInstance.UniqueId;
+                            tokenModelNumber = workflowInstance.InstanceId.ToString();
+                            tokenModelTitle = workflowInstance.Subject;
                             break;
                         }
                     default:
@@ -97,11 +139,6 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Securities
                             _logger.WriteWarning(new LogMessage($"AuthenticationId {authenticationId} has no valid documentUnit '{documentUnit}' name"), LogCategories);
                             throw new DSWSecurityException($"AuthenticationId {authenticationId} is not valid", null, DSWExceptionCode.SC_InvalidAccount);
                         }
-                }
-                if (reference == null)
-                {
-                    _logger.WriteWarning(new LogMessage($"DocumentUnit {documentUnit} - {year}/{number} not found"), LogCategories);
-                    throw new DSWSecurityException($"DocumentUnit {documentUnit} - {year}/{number} not found", null, DSWExceptionCode.SC_InvalidAccount);
                 }
                 Guid currentToken = Guid.NewGuid();
                 DateTimeOffset creationDate = DateTimeOffset.UtcNow;
@@ -115,11 +152,11 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Securities
                     Host = hostIdentify,
                     DocumentUnitAuhtorized = new DocSuiteWeb.Model.Entities.DocumentUnits.DocumentUnitModel()
                     {
-                        Environment = reference.Environment,
-                        UniqueId = reference.UniqueId,
-                        Year = reference.Year,
-                        Number = reference.Number.ToString(),
-                        Title = reference.Title
+                        Environment = tokenModelEnvironment,
+                        UniqueId = tokenModelUniqueId,
+                        Year = tokenModelYear,
+                        Number = tokenModelNumber,
+                        Title = tokenModelTitle
                     }
                 };
                 string username = "localmachine\\anonymous_api";
@@ -139,6 +176,21 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.Securities
                 ServiceBusMessage response = await _topicService.SendToTopicAsync(message);
                 return Ok(currentToken);
             }, _logger, LogCategories);
+        }
+
+        private bool IsValidAuthenticationId(Guid authenticationId)
+        {
+            WorkflowRepository workflowRepository = _unitOfWork.Repository<WorkflowRepository>().GetIncludingEvaluationProperties(authenticationId);
+
+            if (workflowRepository == null || workflowRepository.DSWEnvironment != DSWEnvironmentType.Any)
+            {
+                return false;
+            }
+
+            WorkflowEvaluationProperty externalIntegrationProperty = workflowRepository.WorkflowEvaluationProperties.FirstOrDefault(p => p.Name == WorkflowPropertyHelper.DSW_PROPERTY_EXTERNALVIEWER_INTEGRATION_ENABLED);
+            bool isExternalIntegrationEnabled = externalIntegrationProperty != null && externalIntegrationProperty.ValueBoolean.HasValue && externalIntegrationProperty.ValueBoolean.Value;
+
+            return isExternalIntegrationEnabled;
         }
 
         #endregion

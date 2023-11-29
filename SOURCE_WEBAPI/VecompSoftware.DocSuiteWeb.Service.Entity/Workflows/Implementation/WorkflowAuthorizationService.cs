@@ -52,17 +52,24 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Workflows
             {
                 switch (workflowMapping.AuthorizationType)
                 {
+                    case WorkflowAuthorizationType.AllProtocolSecurityUsers:
+                        {
+                            _logger.WriteDebug(new LogMessage("WorkflowAuthorizationType.AllProtocolSecurityUsers"), LogCategories);
+                            IEnumerable<SecurityUser> securityUsers = _unitOfWork.Repository<RoleGroup>().GetProtocolAuthorizedRoleSecurityUsers(workflowMapping.Role.UniqueId);
+                            authorizations.AddRange(_securityUserWorkflowAuthorizationMapper.MapCollection(securityUsers));
+                            break;
+                        }
                     case WorkflowAuthorizationType.AllRoleUser:
                         {
                             _logger.WriteDebug(new LogMessage("WorkflowAuthorizationType.AllRoleUser"), LogCategories);
-                            IEnumerable<SecurityUser> securityUsers = _unitOfWork.Repository<RoleGroup>().GetRoleGroupsAllAuthorizationType(workflowMapping.Role.EntityShortId);
+                            IEnumerable<SecurityUser> securityUsers = _unitOfWork.Repository<RoleGroup>().GetRoleGroupsAllAuthorizationType(workflowMapping.Role.UniqueId);
                             authorizations.AddRange(_securityUserWorkflowAuthorizationMapper.MapCollection(securityUsers));
                             break;
                         }
                     case WorkflowAuthorizationType.AllSecretary:
                         {
                             _logger.WriteDebug(new LogMessage("WorkflowAuthorizationType.AllSecretary"), LogCategories);
-                            IEnumerable<RoleUser> roleUsers = _unitOfWork.Repository<RoleUser>().GetByAuthorizationType(RoleUserType.Secretary, workflowMapping.Role.EntityShortId, DSWEnvironmentType.Protocol);
+                            IEnumerable<RoleUser> roleUsers = _unitOfWork.Repository<RoleUser>().GetByAuthorizationType(RoleUserType.Secretary, workflowMapping.Role.UniqueId, DSWEnvironmentType.Protocol);
                             authorizations.AddRange(_mapperRoleUserWorkflowAuthorization.MapCollection(roleUsers));
                             break;
                         }
@@ -70,14 +77,14 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Workflows
                         {
                             _logger.WriteDebug(new LogMessage("WorkflowAuthorizationType.AllSigner"), LogCategories);
                             IEnumerable<RoleUser> roleUsers = _unitOfWork.Repository<RoleUser>().GetByAuthorizationType(new List<string>() { RoleUserType.Vice, RoleUserType.Manager },
-                                workflowMapping.Role.EntityShortId, DSWEnvironmentType.Protocol);
+                                workflowMapping.Role.UniqueId, DSWEnvironmentType.Protocol);
                             authorizations.AddRange(_mapperRoleUserWorkflowAuthorization.MapCollection(roleUsers));
                             break;
                         }
                     case WorkflowAuthorizationType.AllManager:
                         {
                             _logger.WriteDebug(new LogMessage("WorkflowAuthorizationType.AllManager"), LogCategories);
-                            IEnumerable<RoleUser> roleUsers = _unitOfWork.Repository<RoleUser>().GetByAuthorizationType(RoleUserType.Manager, workflowMapping.Role.EntityShortId, DSWEnvironmentType.Protocol);
+                            IEnumerable<RoleUser> roleUsers = _unitOfWork.Repository<RoleUser>().GetByAuthorizationType(RoleUserType.Manager, workflowMapping.Role.UniqueId, DSWEnvironmentType.Protocol);
                             authorizations.AddRange(_mapperRoleUserWorkflowAuthorization.MapCollection(roleUsers));
                             break;
                         }

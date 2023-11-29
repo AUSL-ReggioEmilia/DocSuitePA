@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Threading.Tasks;
 using VecompSoftware.Core.Command;
@@ -7,6 +8,7 @@ using VecompSoftware.Core.Command.CQRS.Commands.Entities.DocumentArchives;
 using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuite.WebAPI.Common.Configurations;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
+using VecompSoftware.DocSuiteWeb.Common.Infrastructures;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Common.Securities;
 using VecompSoftware.DocSuiteWeb.Data;
@@ -15,11 +17,14 @@ using VecompSoftware.DocSuiteWeb.Entity.DocumentArchives;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Finder.DocumentArchives;
+using VecompSoftware.DocSuiteWeb.Finder.Tenants;
 using VecompSoftware.DocSuiteWeb.Mapper.ServiceBus.Messages;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Tenants;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
 using VecompSoftware.DocSuiteWeb.Service.Entity.DocumentArchives;
 using VecompSoftware.DocSuiteWeb.Service.ServiceBus;
 using VecompSoftware.Services.Command;
+using VecompSoftware.Services.Command.CQRS.Commands;
 using VecompSoftware.Services.Command.CQRS.Commands.Entities.DocumentArchives;
 
 namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.DocumentArchives
@@ -32,13 +37,13 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.DocumentArch
         private readonly ICurrentIdentity _currentIdentity;
         private readonly IQueueService _service_queue;
         private readonly ICQRSMessageMapper _mapper_cqrsMessageMapper;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
 
         #endregion
 
         #region [ Constructor ]
         public DocumentSeriesItemController(IDocumentSeriesItemService service, IDataUnitOfWork unitOfWork, ILogger logger, ICurrentIdentity currentIdentity, IQueueService queueService, 
-            ICQRSMessageMapper cqrsSMapper, IParameterEnvService parameterEnvService)
+            ICQRSMessageMapper cqrsSMapper, IDecryptedParameterEnvService parameterEnvService)
             : base(service, unitOfWork, logger)
         {
             _unitOfWork = unitOfWork;
@@ -52,12 +57,22 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.DocumentArch
 
         #region [ Methods ]
 
-        protected override void AfterSave(DocumentSeriesItem entity)
+        protected override void AfterSave(DocumentSeriesItem entity, DocumentSeriesItem existingEntity)
         {
             try
             {
                 _logger.WriteDebug(new LogMessage(string.Concat("VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.DocumentArchives.AfterSave with entity UniqueId ", entity.UniqueId)), LogCategories);
                 DocumentSeriesItem item = _unitOfWork.Repository<DocumentSeriesItem>().GetFullByUniqueId(entity.UniqueId).SingleOrDefault();
+                TenantTableValuedModel result = _unitOfWork.Repository<Tenant>().GetUserTenants(_currentIdentity.Account, _currentIdentity.Domain).FirstOrDefault();
+                Guid tenandId = _parameterEnvService.CurrentTenantId;
+                Guid tenandAOOId = _parameterEnvService.CurrentTenantId;
+                string tenantName = _parameterEnvService.CurrentTenantName;
+                if (result != null)
+                {
+                    tenandId = result.IdTenantModel;
+                    tenandAOOId = result.IdTenantAOO;
+                    tenantName = result.TenantName;
+                }
                 if (item != null)
                 {
                     IList<CategoryFascicle> categoryFascicles = item.Category.CategoryFascicles.Where(f => (f.DSWEnvironment == (int)DSWEnvironmentType.DocumentSeries || f.DSWEnvironment == 0)).ToList();
@@ -68,12 +83,16 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.DocumentArch
                     }
                     IIdentityContext identity = new IdentityContext(_currentIdentity.FullUserName);
 
-                    ICommandUpdateDocumentSeriesItem commandUpdate = new CommandUpdateDocumentSeriesItem(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, Guid.Empty, null, identity, item, categoryFascicle, null);
+                    ICommand command = new CommandUpdateDocumentSeriesItem(tenantName, tenandId, tenandAOOId, null, identity, item, categoryFascicle, null);
+                    if (CurrentUpdateActionType.HasValue && CurrentUpdateActionType == UpdateActionType.ActivateDocumentSeriesItem)
+                    {
+                        command = new CommandCreateDocumentSeriesItem(tenantName, tenandId, tenandAOOId, null, identity, item, categoryFascicle, null);
+                    }                    
 
-                    ServiceBusMessage message = _mapper_cqrsMessageMapper.Map(commandUpdate, new ServiceBusMessage());
+                    ServiceBusMessage message = _mapper_cqrsMessageMapper.Map(command, new ServiceBusMessage());
                     if (string.IsNullOrEmpty(message.ChannelName))
                     {
-                        throw new DSWException(string.Concat("Queue name to command [", commandUpdate.ToString(), "] is not mapped"), null, DSWExceptionCode.SC_Mapper);
+                        throw new DSWException(string.Concat("Queue name to command [", command.ToString(), "] is not mapped"), null, DSWExceptionCode.SC_Mapper);
                     }
 
                     Task.Run(async () =>
@@ -81,7 +100,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.DocumentArch
                         await _service_queue.SubscribeQueue(message.ChannelName).SendToQueueAsync(message);
                     }).Wait();
                 }
-                base.AfterSave(entity);
+                base.AfterSave(entity, existingEntity);
             }
             catch (DSWException ex)
             {

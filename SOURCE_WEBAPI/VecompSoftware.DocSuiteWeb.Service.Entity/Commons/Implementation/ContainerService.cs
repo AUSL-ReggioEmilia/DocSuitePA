@@ -19,13 +19,13 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
         private readonly ISecurity _security;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         #endregion
 
         #region [ Constructor ]
 
         public ContainerService(IDataUnitOfWork unitOfWork, ILogger logger, IValidatorService validationService,
-            IContainerRuleset containerRuleset, IMapperUnitOfWork mapperUnitOfWork, ISecurity security, IParameterEnvService parameterEnvService)
+            IContainerRuleset containerRuleset, IMapperUnitOfWork mapperUnitOfWork, ISecurity security, IDecryptedParameterEnvService parameterEnvService)
             : base(unitOfWork, logger, validationService, containerRuleset, mapperUnitOfWork, security)
         {
             _unitOfWork = unitOfWork;
@@ -43,11 +43,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
             {
                 entity.UDSLocation = _unitOfWork.Repository<Location>().Find(_parameterEnvService.UDSLocationId);
                 entity.AutomaticSecurityGroups = _parameterEnvService.ArchiveSecurityGroupsGenerationEnabled;
-                entity.TenantId = _parameterEnvService.CurrentTenantId;
                 entity.ContainerType = ContainerType.UDS;
-                entity.ActiveFrom = null;
-                entity.ActiveTo = null;
-                entity.Conservation = 0;
                 entity.DeskLocation = null;
                 entity.DocmLocation = null;
                 entity.DocumentSeriesAnnexedLocation = null;
@@ -56,13 +52,10 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
                 entity.HeadingFrontalino = null;
                 entity.HeadingLetter = null;
                 entity.idArchive = null;
-                entity.isActive = 1;
-                entity.Massive = null;
+                entity.isActive = true;
                 entity.Note = string.Empty;
                 entity.ProtAttachLocation = null;
                 entity.ProtLocation = null;
-                entity.ProtocolRejection = null;
-                entity.ProtocolType = null;
                 entity.ReslLocation = null;
                 if (!string.IsNullOrEmpty(entity.SecurityUserAccount))
                 {

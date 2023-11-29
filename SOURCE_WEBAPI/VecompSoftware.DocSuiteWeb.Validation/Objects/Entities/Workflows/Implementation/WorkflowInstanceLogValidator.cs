@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -11,8 +12,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Workflows
     public class WorkflowInstanceLogValidator : ObjectValidator<WorkflowInstanceLog, WorkflowInstanceLogValidator>, IWorkflowInstanceLogValidator
     {
         #region [ Constructor ]
-        public WorkflowInstanceLogValidator(ILogger logger, WorkflowInstanceLogValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public WorkflowInstanceLogValidator(ILogger logger, WorkflowInstanceLogValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #endregion
 

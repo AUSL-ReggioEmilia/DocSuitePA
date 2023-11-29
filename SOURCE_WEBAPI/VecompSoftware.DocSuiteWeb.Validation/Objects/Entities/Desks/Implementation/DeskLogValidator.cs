@@ -1,5 +1,6 @@
 ﻿using Microsoft.Practices.EnterpriseLibrary.Validation.Validators;
 using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -13,8 +14,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Desks
     public class DeskLogValidator : ObjectValidator<DeskLog, DeskLogValidator>, IDeskLogValidator
     {
         #region [ Constructor ]
-        public DeskLogValidator(ILogger logger, IDeskLogValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public DeskLogValidator(ILogger logger, IDeskLogValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #endregion
 

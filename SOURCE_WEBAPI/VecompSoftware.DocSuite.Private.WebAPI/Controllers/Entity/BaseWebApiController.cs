@@ -167,9 +167,11 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity
 
         private async Task<IHttpActionResult> PutAsync(TEntity entity, Func<TEntity, Task<TEntity>> lambda)
         {
+            _logger.WriteDebug(new LogMessage($"UPDATE '{_updateActionType}' REQUEST OF ENTITY {entity.GetType().Name}"), LogCategories);
             return await ActionHelper.TryCatchWithLoggerAsync(async () =>
             {
-                if (!_service.Queryable().Any(f => f.UniqueId == entity.UniqueId))
+                TEntity existingEntity = _service.Queryable(true).SingleOrDefault(p => p.UniqueId == entity.UniqueId);
+                if (existingEntity is null)
                 {
                     return NotFound();
                 }
@@ -183,12 +185,12 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity
                     IdWorkflowActivity = workflow.IdWorkflowActivity;
                     WorkflowAutoComplete = workflow.WorkflowAutoComplete;
                 }
-                entity = await lambda(entity);
+                TEntity updatedEntity = await lambda(entity);
                 bool result = await _unitOfWork.SaveAsync();
 
                 if (result)
                 {
-                    AfterSave(entity);
+                    AfterSave(updatedEntity, existingEntity);
                     return Ok(entity);
                 }
                 return InternalServerError();
@@ -255,7 +257,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity
             return query;
         }
 
-        protected virtual void AfterSave(TEntity entity)
+        protected virtual void AfterSave(TEntity updatedEntity, TEntity existingEntity = null)
         {
         }
 

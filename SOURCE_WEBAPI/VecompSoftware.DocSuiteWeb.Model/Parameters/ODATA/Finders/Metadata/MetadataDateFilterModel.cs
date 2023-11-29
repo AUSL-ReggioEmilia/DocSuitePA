@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders.Metadata
 {
@@ -24,7 +25,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders.Metadata
                 {
                     return null;
                 }
-                return DateTime.Parse(_model.Value);
+                return DateTime.ParseExact(_model.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             }
         }
         public DateTime? ToDate
@@ -35,7 +36,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders.Metadata
                 {
                     return null;
                 }
-                return DateTime.Parse(_model.ToValue);
+                return DateTime.ParseExact(_model.ToValue, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             }
         }
         #endregion
@@ -43,7 +44,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders.Metadata
         #region [ Methods ]
         public string ToFilter()
         {
-            return $"{(FromDate.HasValue ? $"{FromDate:dd/MM/yyyy}" : string.Empty)}|{(ToDate.HasValue ? $"{ToDate:dd/MM/yyyy}" : string.Empty)}";
+            return $"{(FromDate.HasValue ? $"{FromDate:yyyy-MM-dd'T'HH:mm:ss.FFFK}" : string.Empty)}|{(ToDate.HasValue ? $"{ToDate:yyyy-MM-dd'T'HH:mm:ss.FFFK}" : string.Empty)}";
         }
         #endregion
     }

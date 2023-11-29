@@ -16,6 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Resolutions
             entityTransformed.UniqueId = entity.UniqueId;
             entityTransformed.Name = entity.Name;
             entityTransformed.IsActive = entity.IsActive;
+            entityTransformed.AmountEnabled = entity.AmountEnabled;
             entityTransformed.RegistrationDate = entity.RegistrationDate;
             entityTransformed.RegistrationUser = entity.RegistrationUser;
             entityTransformed.LastChangedDate = entity.LastChangedDate;

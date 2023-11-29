@@ -53,7 +53,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.UDS
             if (entity.Relation != null)
             {
                 Collaboration collaboration = _unitOfWork.Repository<Collaboration>().Find(entity.Relation.EntityId);
-                collaboration.IdStatus = "PT";
+                collaboration.IdStatus = CollaborationStatusType.Registered;
                 _unitOfWork.Repository<Collaboration>().Update(collaboration);
                 entity.Relation = collaboration;
                 CreateCollaborationRelationLog(entity);
@@ -73,7 +73,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.UDS
             if (entity.Relation != null)
             {
                 Collaboration collaboration = _unitOfWork.Repository<Collaboration>().Find(entity.Relation.EntityId);
-                collaboration.IdStatus = "PT";
+                collaboration.IdStatus = CollaborationStatusType.Registered;
                 _unitOfWork.Repository<Collaboration>().Update(collaboration);
                 entity.Relation = collaboration;
                 CreateCollaborationRelationLog(entity);

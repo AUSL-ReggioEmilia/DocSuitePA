@@ -25,6 +25,11 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Fascicles
         /// </summary>
         public ReferenceType ReferenceType { get; set; }
 
+        /// <summary>
+        /// Get or set SequenceNumber
+        /// </summary>
+        public short SequenceNumber { get; set; }
+
         #endregion
 
         #region [ Navigation Properties ]

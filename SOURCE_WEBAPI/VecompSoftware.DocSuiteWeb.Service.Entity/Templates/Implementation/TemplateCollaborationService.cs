@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -33,6 +34,8 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Templates
         #region [ Methods ]
         protected override TemplateCollaboration BeforeCreate(TemplateCollaboration entity)
         {
+            SetImmutableFunctionality(entity);
+
             if (entity.TemplateCollaborationUsers != null && entity.TemplateCollaborationUsers.Count > 0)
             {
                 foreach (TemplateCollaborationUser item in entity.TemplateCollaborationUsers)
@@ -62,7 +65,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Templates
             _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entity.UniqueId, null, TableLogEvent.INSERT, string.Concat("Inserimento template collaborazione", entity.Name), typeof(TemplateCollaboration).Name, CurrentDomainUser.Account));
             return base.BeforeCreate(entity);
         }
-
+ 
         protected override IQueryFluent<TemplateCollaboration> SetEntityIncludeOnUpdate(IQueryFluent<TemplateCollaboration> query)
         {
             query.Include(x => x.TemplateCollaborationUsers)
@@ -70,6 +73,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Templates
                 .Include(x => x.TemplateCollaborationDocumentRepositories);
             return query;
         }
+    
         protected override IQueryFluent<TemplateCollaboration> SetEntityIncludeOnDelete(IQueryFluent<TemplateCollaboration> query)
         {
             return query.Include(x => x.TemplateCollaborationUsers)
@@ -79,6 +83,8 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Templates
 
         protected override TemplateCollaboration BeforeUpdate(TemplateCollaboration entity, TemplateCollaboration entityTransformed)
         {
+            SetImmutableFunctionality(entity);
+
             if (entity.TemplateCollaborationUsers != null)
             {
                 foreach (TemplateCollaborationUser item in entity.TemplateCollaborationUsers.Where(f => entityTransformed.TemplateCollaborationUsers.Any(c => c.UniqueId == f.UniqueId)))
@@ -126,6 +132,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Templates
                     entityTransformed.Roles.Add(_unitOfWork.Repository<Role>().Find(item.EntityShortId));
                 }
             }
+
             _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.UPDATE, string.Concat("Modificato template collaborazione", entity.Name), typeof(TemplateCollaboration).Name, CurrentDomainUser.Account));
             return base.BeforeUpdate(entity, entityTransformed);
         }
@@ -151,6 +158,29 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Templates
 
             return base.BeforeDelete(entity, entityTransformed);
         }
+
+        private static void SetImmutableFunctionality(TemplateCollaboration entity)
+        {
+            if (entity.RepresentationType == TemplateCollaborationRepresentationType.Folder)
+            {
+                // The TemplateCollaborationModel cotnains logic for both a folder structure and the template
+                // the support for a folder struture was added later in the project 
+                // and some non-null values (not important for a folder) must be set
+                // TODO: refactor to move these values inside JsonParameters
+
+                entity.DocumentType = (entity.DocumentType == null) ? string.Empty : entity.DocumentType;
+                entity.IdPriority = (entity.IdPriority == null) ? string.Empty : entity.IdPriority;
+                
+                // deleting a folder is not yet supported
+                entity.IsLocked = true;
+            }
+
+            if (entity.RepresentationType == TemplateCollaborationRepresentationType.FixedTemplates)
+            {
+                entity.IsLocked = true;
+            }
+        }
+
         #endregion
     }
 }

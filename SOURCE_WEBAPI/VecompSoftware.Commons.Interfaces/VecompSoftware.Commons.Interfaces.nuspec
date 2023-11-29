@@ -2,13 +2,13 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>VecompSoftware.Commons.Interfaces</id>
-    <version>9.09.0.0</version>
+    <version>9.25.0.0</version>
     <authors>Dgroove Srl</authors>
     <owners>Dgroove Srl</owners>
     <iconUrl>https://vecompsoftwarenugetserver.azurewebsites.net/favicon.ico</iconUrl>
     <description>VecompSoftware.Commons.Interfaces</description>
-    <copyright>Copyright © Dgroove 2020</copyright>
-    <tags>VecompSoftware.DocSuiteWeb.Common, YAC, Project_WebAPI</tags>
+    <copyright>Copyright © Dgroove 2022</copyright>
+    <tags>VecompSoftware.Commons.Interfaces, YAC, Project_WebAPI</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net48" />
       <frameworkAssembly assemblyName="mscorlib" targetFramework="net48" />

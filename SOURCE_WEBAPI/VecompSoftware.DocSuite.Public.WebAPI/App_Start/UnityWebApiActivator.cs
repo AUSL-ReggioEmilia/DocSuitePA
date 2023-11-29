@@ -1,3 +1,6 @@
+using System;
+using System.Linq;
+using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Dependencies;
 
@@ -12,8 +15,23 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
         /// <summary>Integrates Unity when the application starts.</summary>
         public static void Start()
         {
-            IDependencyResolver resolver = UnityConfig.GetConfiguredContainer();
-            GlobalConfiguration.Configuration.DependencyResolver = resolver;
+            try
+            {
+                IDependencyResolver resolver = UnityConfig.GetConfiguredContainer();
+                GlobalConfiguration.Configuration.DependencyResolver = resolver;
+            }
+            catch (Exception ex)
+            {
+                if (ex is System.Reflection.ReflectionTypeLoadException)
+                {
+                    ReflectionTypeLoadException typeLoadException = ex as ReflectionTypeLoadException;
+                    if (typeLoadException.LoaderExceptions != null)
+                    {
+                        throw new Exception(string.Join(", ", typeLoadException.LoaderExceptions.ToList()), ex);
+                    }
+                }
+                throw ex;
+            }
         }
 
         /// <summary>Disposes the Unity container when the application is shut down.</summary>

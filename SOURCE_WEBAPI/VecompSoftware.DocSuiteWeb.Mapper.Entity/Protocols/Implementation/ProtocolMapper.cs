@@ -19,10 +19,10 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Protocols
             entityTransformed.LastChangedReason = entity.LastChangedReason;
             entityTransformed.AlternativeRecipient = entity.AlternativeRecipient;
             entityTransformed.CheckPublication = entity.CheckPublication;
-            entityTransformed.ConservationStatus = entity.ConservationStatus;
             entityTransformed.TDError = entity.TDError;
             entityTransformed.DocAreaStatusDesc = entity.DocAreaStatusDesc;
             entityTransformed.IdProtocolKind = entity.IdProtocolKind;
+            entityTransformed.LastChangedUser = entity.LastChangedUser;
 
             if (entity.DocumentDate.HasValue)
             {
@@ -44,17 +44,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Protocols
                 entityTransformed.JournalDate = entity.JournalDate;
             }
 
-            if (entity.LastConservationDate.HasValue)
-            {
-                entityTransformed.LastConservationDate = entity.LastConservationDate;
-            }
-
-            if (entity.HasConservatedDocs.HasValue)
-            {
-                entityTransformed.HasConservatedDocs = entity.HasConservatedDocs;
-            }
-
-            if (entity.IdAnnexed.HasValue && entity.IdAnnexed != Guid.Empty)
+            if (entity.IdAnnexed.HasValue && entity.IdAnnexed.Value != Guid.Empty)
             {
                 entityTransformed.IdAnnexed = entity.IdAnnexed;
             }
@@ -87,11 +77,6 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Protocols
             if (entity.DocAreaStatus.HasValue)
             {
                 entityTransformed.DocAreaStatus = entity.DocAreaStatus;
-            }
-
-            if (entity.IdProtocolJournalLog.HasValue)
-            {
-                entityTransformed.IdProtocolJournalLog = entity.IdProtocolJournalLog;
             }
 
             if (entity.DematerialisationChainId.HasValue && entity.DematerialisationChainId != Guid.Empty)

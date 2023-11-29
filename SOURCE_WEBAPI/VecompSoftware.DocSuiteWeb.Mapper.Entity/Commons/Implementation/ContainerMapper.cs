@@ -15,20 +15,14 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Commons
             entityTransformed.Name = entity.Name;
             entityTransformed.isActive = entity.isActive;
             entityTransformed.idArchive = entity.idArchive;
-            entityTransformed.Massive = entity.Massive;
             entityTransformed.Note = entity.Note;
             entityTransformed.Privacy = entity.Privacy;
-            entityTransformed.ActiveFrom = entity.ActiveFrom;
-            entityTransformed.ActiveTo = entity.ActiveTo;
-            entityTransformed.Conservation = entity.Conservation;
             entityTransformed.DocumentSeriesAnnexedLocation = entity.DocumentSeriesAnnexedLocation;
             entityTransformed.DocumentSeriesLocation = entity.DocumentSeriesLocation;
             entityTransformed.DocumentSeriesUnpublishedAnnexedLocation = entity.DocumentSeriesUnpublishedAnnexedLocation;
-            entityTransformed.ProtocolRejection = entity.ProtocolRejection;
             entityTransformed.HeadingFrontalino = entity.HeadingFrontalino;
             entityTransformed.HeadingLetter = entity.HeadingLetter;
             entityTransformed.ProtAttachLocation = entity.ProtAttachLocation;
-            entityTransformed.ManageSecureDocument = entity.ManageSecureDocument;
             entityTransformed.PrivacyLevel = entity.PrivacyLevel;
             entityTransformed.PrivacyEnabled = entity.PrivacyEnabled;
             #endregion

@@ -1,4 +1,5 @@
-﻿using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
+﻿using System;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
 {
@@ -12,6 +13,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Protocols
         #endregion
 
         #region [ Properties ]
+        public Guid? UniqueId { get; set; }
         public ProtocolRoleType? Type { get; set; }
         public ProtocolRoleDistributionType? DistributionType { get; set; }
         public ProtocolRoleNoteType? NoteType { get; set; }

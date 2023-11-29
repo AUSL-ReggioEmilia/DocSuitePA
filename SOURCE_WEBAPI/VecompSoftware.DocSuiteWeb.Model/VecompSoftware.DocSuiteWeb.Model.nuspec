@@ -2,15 +2,15 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>VecompSoftware.DocSuiteWeb.Model</id>
-    <version>9.09.0.0</version>
+    <version>9.25.0.0</version>
     <authors>Dgroove Srl</authors>
     <owners>Dgroove Srl</owners>
     <iconUrl>https://vecompsoftwarenugetserver.azurewebsites.net/favicon.ico</iconUrl>
     <description>VecompSoftware.DocSuiteWeb.Model</description>
-    <copyright>Copyright © Dgroove 2020</copyright>
+    <copyright>Copyright © Dgroove 2022</copyright>
     <tags>VecompSoftware.DocSuiteWeb.Model, YAC, Project_WebAPI</tags>
     <dependencies>
-      <dependency id="VecompSoftware.Commons.Interfaces" version="9.09.0.0" />
+      <dependency id="VecompSoftware.Commons.Interfaces" version="9.25.0.0" />
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net48" />

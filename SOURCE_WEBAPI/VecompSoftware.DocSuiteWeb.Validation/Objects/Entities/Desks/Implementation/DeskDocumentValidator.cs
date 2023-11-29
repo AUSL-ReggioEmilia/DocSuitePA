@@ -1,6 +1,7 @@
 ﻿using Microsoft.Practices.EnterpriseLibrary.Validation.Validators;
 using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Desks;
@@ -13,8 +14,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Desks
     public class DeskDocumentValidator : ObjectValidator<DeskDocument, DeskDocumentValidator>, IDeskDocumentValidator
     {
         #region [ Constructor ]
-        public DeskDocumentValidator(ILogger logger, IDeskDocumentValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public DeskDocumentValidator(ILogger logger, IDeskDocumentValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #endregion
 
@@ -23,7 +24,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Desks
         /// <summary>
         /// Cancellazione logica documento
         /// </summary>
-        public short IsActive { get; set; }
+        public bool IsActive { get; set; }
         /// <summary>
         /// Ultima data in cui è stato modificato il documento
         /// </summary>

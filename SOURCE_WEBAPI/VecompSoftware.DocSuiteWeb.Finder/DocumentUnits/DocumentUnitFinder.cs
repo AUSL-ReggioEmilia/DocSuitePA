@@ -14,6 +14,18 @@ namespace VecompSoftware.DocSuiteWeb.Finder.DocumentUnits
 {
     public static class DocumentUnitFinder
     {
+        public static DocumentUnit GetByWorkflowRepositoryId(this IRepository<DocumentUnit> repository, short year, int number, int environment, Guid idWorkflowRepository, bool optimization = false)
+        {
+            return repository
+                .Query(x => x.Year == year
+                    && x.Number == number
+                    && x.Environment == environment
+                    && x.WorkflowActivities.Any(wfa => wfa.WorkflowInstance.WorkflowRepository.UniqueId == idWorkflowRepository), optimization: optimization)
+                .Include(x => x.DocumentUnitChains)
+                .Select()
+                .SingleOrDefault();
+        }
+
         public static IQueryable<DocumentUnit> GetByNumbering(this IRepository<DocumentUnit> repository, short year, int number)
         {
             return repository.Query(x => x.Year == year && x.Number == number)
@@ -56,6 +68,18 @@ namespace VecompSoftware.DocSuiteWeb.Finder.DocumentUnits
                 .Include(i => i.Container)
                 .Include(i => i.UDSRepository)
                 .Include(i => i.DocumentUnitRoles)
+                .Include(i => i.DocumentUnitUsers)
+                .Include(i => i.DocumentUnitChains)
+                .Include(i => i.DocumentUnitContacts)
+                .Include(i => i.TenantAOO)
+                .SelectAsQueryable();
+        }
+
+        public static IQueryable<DocumentUnit> GetByIdIncludingContainer(this IRepository<DocumentUnit> repository, Guid uniqueId)
+        {
+            return repository.Query(x => x.UniqueId == uniqueId)
+                .Include(i => i.Container.ProtLocation)
+                .Include(i => i.Container.ReslLocation)
                 .Include(i => i.DocumentUnitChains)
                 .SelectAsQueryable();
         }

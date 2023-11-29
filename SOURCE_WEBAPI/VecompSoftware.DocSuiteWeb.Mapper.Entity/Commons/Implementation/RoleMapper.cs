@@ -14,14 +14,16 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Commons
             #region [ Base ]
             entityTransformed.Name = entity.Name;
             entityTransformed.IsActive = entity.IsActive;
-            entityTransformed.ActiveFrom = entity.ActiveFrom;
-            entityTransformed.ActiveTo = entity.ActiveTo;
             entityTransformed.FullIncrementalPath = entity.FullIncrementalPath;
             entityTransformed.Collapsed = entity.Collapsed;
             entityTransformed.EMailAddress = entity.EMailAddress;
             entityTransformed.ServiceCode = entity.ServiceCode;
-            entityTransformed.IdRoleTenant = entity.IdRoleTenant;
-            entityTransformed.TenantId = entity.TenantId;
+            entityTransformed.RoleTypology = entity.RoleTypology;
+            entityTransformed.RegistrationUser = entity.RegistrationUser;
+            entityTransformed.RegistrationDate = entity.RegistrationDate;
+            entityTransformed.LastChangedUser = entity.LastChangedUser;
+            entityTransformed.LastChangedDate = entity.LastChangedDate;
+            entityTransformed.TenantAOO = entity.TenantAOO;
             #endregion
 
             return entityTransformed;

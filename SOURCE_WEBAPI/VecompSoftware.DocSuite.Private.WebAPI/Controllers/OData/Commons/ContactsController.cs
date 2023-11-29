@@ -24,14 +24,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Commons
         private readonly ILogger _logger;
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly IMapperUnitOfWork _mapperUnitOfWork;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
 
         #endregion
 
         #region [ Constructor ]
 
         public ContactsController(IContactService service, IDataUnitOfWork unitOfWork, ILogger logger, ISecurity security, IMapperUnitOfWork mapperUnitOfWork,
-            IParameterEnvService parameterEnvService)
+            IDecryptedParameterEnvService parameterEnvService)
             : base(service, unitOfWork, logger, security)
         {
             _unitOfWork = unitOfWork;
@@ -44,7 +44,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Commons
 
         #region [ Methods ]
         [HttpGet]
-        public IHttpActionResult FindContacts(ODataQueryOptions<Contact> options, [FromODataUri]ContactFinderModel finder)
+        public IHttpActionResult FindContacts(ODataQueryOptions<Contact> options, [FromODataUri] ContactFinderModel finder)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
@@ -83,13 +83,21 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Commons
         }
 
         [HttpGet]
-        public IHttpActionResult GetContactsByParentId(ODataQueryOptions<Contact> options, int idContact)
+        public IHttpActionResult GetContactsByParentId(ODataQueryOptions<Contact> options, int idContact, short idRole)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<Contact> contacts = _unitOfWork.Repository<Contact>().GetContactByParentId(idContact).ToList();
-                ICollection<ContactModel> results = _mapperUnitOfWork.Repository<IDomainMapper<Contact, ContactModel>>().MapCollection(contacts);
-                return Ok(results);
+                IQueryable<Contact> contacts = _unitOfWork.Repository<Contact>()
+                    .GetContactByParentId(idContact, optimization: true)
+                    .Where(contact => !string.IsNullOrEmpty(contact.SearchCode));
+                ICollection<string> authorizedAccounts = _unitOfWork.Repository<RoleUser>()
+                    .GetByIdRole(idRole, optimization: true)
+                    .Where(x => !string.IsNullOrEmpty(x.Account) && x.DSWEnvironment == DocSuiteWeb.Entity.Commons.DSWEnvironmentType.Any && x.Type == RoleUserType.FascicleResponsible)
+                    .Select(x => x.Account.ToLower()).ToList();
+                ICollection<Contact> authorizedContacts = contacts.Where(x => authorizedAccounts.Any(ru => ru == x.SearchCode.ToLower())).ToList();
+
+                ICollection<ContactModel> authorizedContactsResult = _mapperUnitOfWork.Repository<IDomainMapper<Contact, ContactModel>>().MapCollection(authorizedContacts);
+                return Ok(authorizedContactsResult);
             }, _logger, LogCategories);
         }
         #endregion

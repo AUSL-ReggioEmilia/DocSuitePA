@@ -31,11 +31,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Collaborations
         public int? IdChain { get; set; }
 
         /// <summary>
-        /// Get or set SessionId
-        /// </summary>
-        public string SessionId { get; set; }
-
-        /// <summary>
         /// Get or set Program
         /// </summary>
         public string Program { get; set; }

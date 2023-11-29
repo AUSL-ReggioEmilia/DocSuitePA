@@ -29,13 +29,13 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Collaboratio
         private readonly ICurrentIdentity _currentIdentity;
         private readonly IQueueService _queueService;
         private readonly ICQRSMessageMapper _cqrsMapper;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         #endregion
 
         #region [ Constructor ]
 
         public CollaborationController(ICollaborationService service, IDataUnitOfWork unitOfWork, ILogger logger, ICurrentIdentity currentIdentity, 
-            IQueueService queueService, ICQRSMessageMapper cqrsMapper, IParameterEnvService parameterEnvService)
+            IQueueService queueService, ICQRSMessageMapper cqrsMapper, IDecryptedParameterEnvService parameterEnvService)
             : base(service, unitOfWork, logger)
         {
             _unitOfWork = unitOfWork;
@@ -50,7 +50,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Collaboratio
         #endregion
 
         #region [ Methods ]
-        protected override void AfterSave(Collaboration entity)
+        protected override void AfterSave(Collaboration entity, Collaboration existingEntity)
         {
             try
             {
@@ -84,7 +84,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Collaboratio
             {
                 _logger.WriteError(ex, LogCategories);
             }
-            base.AfterSave(entity);
+            base.AfterSave(entity, existingEntity);
         }
         #endregion
     }

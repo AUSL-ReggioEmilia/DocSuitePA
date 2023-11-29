@@ -21,7 +21,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData
         #region [ Fields ]
 
         private static IEnumerable<LogCategory> _logCategories = null;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IEncryptedParameterEnvService _encryptedParameterEnvService;
         private readonly ILogger _logger;
 
         private static List<ODataParameterModel> _models = null;
@@ -43,9 +43,9 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData
         #endregion
 
         #region [ Constructor ]
-        public ParametersController(IParameterEnvService parameterEnvService, ILogger logger)
+        public ParametersController(IEncryptedParameterEnvService encryptedParameterEnvService, ILogger logger)
         {
-            _parameterEnvService = parameterEnvService;
+            _encryptedParameterEnvService = encryptedParameterEnvService;
             _logger = logger;
         }
 
@@ -65,7 +65,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData
             }, _logger, LogCategories);
         }
 
-        public static ODataParameterModel GetPropValue(PropertyInfo item, IParameterEnvService src)
+        public static ODataParameterModel GetPropValue(PropertyInfo item, IEncryptedParameterEnvService src)
         {
             dynamic value = null;
             try
@@ -77,7 +77,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData
             {
                 return null;
             }
-            return new ODataParameterModel() { Key = item.Name, Value = JsonConvert.SerializeObject(value, JsonSerializerConfig.SerializerSettings) };
+            return new ODataParameterModel() { Key = item.Name, Value = value };
         }
 
         private void InitModels()
@@ -88,9 +88,13 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData
                 _models = null;
             }
             _models = new List<ODataParameterModel>();
-            _models.AddRange(_parameterEnvService.GetType().GetProperties().Select(f => GetPropValue(f, _parameterEnvService)).Where(f => f != null));
+            _models.AddRange(_encryptedParameterEnvService.GetType().GetProperties().Select(f => GetPropValue(f, _encryptedParameterEnvService)).Where(f => f != null && ExcludeExposedProperties(f.Key)));
         }
 
+        private bool ExcludeExposedProperties(string parameterKey)
+        {
+            return parameterKey != "CustomInstanceName";
+        }
         #endregion
     }
 }

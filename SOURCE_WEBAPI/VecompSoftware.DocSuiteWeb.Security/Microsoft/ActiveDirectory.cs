@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using VecompSoftware.DocSuite.Service.Models.Parameters;
@@ -23,12 +24,12 @@ namespace VecompSoftware.DocSuiteWeb.Security.Microsoft
         #region [ Fields ]
         private readonly string _anonymous_apiUserName = "localmachine\\anonymous_api";
         private static IEnumerable<LogCategory> _logCategories = null;
-        private const string _ldapAddress = "LDAP://RootDS";
+        private const string _ldapAddress = "LDAP://"; 
         private const string _defaultNamingContext = "defaultNamingContext";
         private readonly ILogger _logger;
         private readonly ICurrentIdentity _currentIdentity;
         private readonly IMapperUnitOfWork _mapperUnitOfWork;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         private readonly Guid _instanceId;
         private readonly string _domainName;
         private readonly string _distinguishedName;
@@ -41,6 +42,15 @@ namespace VecompSoftware.DocSuiteWeb.Security.Microsoft
         private static readonly ConcurrentDictionary<string, ICollection<DomainUserModel>> _cache_getMembers = new ConcurrentDictionary<string, ICollection<DomainUserModel>>();
         private static readonly ConcurrentDictionary<string, ICollection<DomainGroupModel>> _cache_groupsFinder = new ConcurrentDictionary<string, ICollection<DomainGroupModel>>();
         private static readonly ConcurrentDictionary<string, ICollection<DomainUserModel>> _cache_usersFinder = new ConcurrentDictionary<string, ICollection<DomainUserModel>>();
+        
+        #region ADProperties
+        private const string MAIL = "mail";
+        private const string DISTINGUISHED_NAME = "distinguishedname";
+        private const string DISPLAY_NAME = "displayname";
+        private const string SID = "sid";
+        private const string SAMACCOUNTNAME = "samaccountname";
+        #endregion
+
         #endregion
 
         #region [ Properties ]
@@ -97,7 +107,7 @@ namespace VecompSoftware.DocSuiteWeb.Security.Microsoft
 
         #region [ Constructor ]
 
-        public ActiveDirectory(ILogger logger, ICurrentIdentity currentIdentity, IMapperUnitOfWork mapperUnitOfWork, IParameterEnvService parameterEnvService) //inserire intertfawccia per il get dell'httprequest)
+        public ActiveDirectory(ILogger logger, ICurrentIdentity currentIdentity, IMapperUnitOfWork mapperUnitOfWork, IDecryptedParameterEnvService parameterEnvService) //inserire intertfawccia per il get dell'httprequest)
         {
             _logger = logger;
             _currentIdentity = currentIdentity;
@@ -127,7 +137,7 @@ namespace VecompSoftware.DocSuiteWeb.Security.Microsoft
         /// <returns></returns>
         public DomainUserModel GetUser(string fullUserName)
         {
-            return ActionHelper.TryUserPrincipalCatchWithLogger((d,x) =>
+            return ActionHelper.TryUserPrincipalCatchWithLogger((d, x) =>
             {
                 DomainUserModel user = _mapperUnitOfWork.Repository<IDomainUserModelMapper>().Map(x, new DomainUserModel(), d);
                 try
@@ -135,7 +145,7 @@ namespace VecompSoftware.DocSuiteWeb.Security.Microsoft
                     user.DomainGroups = _mapperUnitOfWork.Repository<IDomainGroupModelMapper>().MapCollection(x.GetAuthorizationGroups());
                 }
                 catch { }
-                
+
                 return user;
 
             }, _logger, _parameterEnvService, fullUserName, _cache_getCurrentUser, LogCategories);
@@ -162,7 +172,7 @@ namespace VecompSoftware.DocSuiteWeb.Security.Microsoft
 
         public IReadOnlyCollection<DomainGroupModel> GetGroupsCurrentUser()
         {
-            ICollection<DomainGroupModel> results = ActionHelper.TryUserPrincipalCatchWithLogger((d,x) => _mapperUnitOfWork.Repository<IDomainGroupModelMapper>().MapCollection(x.GetGroups()),
+            ICollection<DomainGroupModel> results = ActionHelper.TryUserPrincipalCatchWithLogger((d, x) => _mapperUnitOfWork.Repository<IDomainGroupModelMapper>().MapCollection(x.GetGroups()),
                 _logger, _parameterEnvService, _currentIdentity.FullUserName, _cache_getGroupsCurrentUser, LogCategories) ?? new List<DomainGroupModel>();
             return new ReadOnlyCollection<DomainGroupModel>(results.OrderBy(f => f.DisplayName).ToList());
         }
@@ -204,24 +214,7 @@ namespace VecompSoftware.DocSuiteWeb.Security.Microsoft
             }, _logger, _parameterEnvService, LogCategories);
             return new ReadOnlyCollection<DomainGroupModel>(results.OrderBy(f => f.DisplayName).ToList());
         }
-
-        private UserPrincipal InitialDisplayNameSearching(PrincipalContext context, string searchString)
-        {
-            if (context.ContextType == ContextType.Domain)
-            {
-                new UserPrincipal(context) { DisplayName = searchString, Enabled = true, EmailAddress = "*" };
-            }
-            return new UserPrincipal(context) { DisplayName = searchString, Enabled = true};
-        }
-        private UserPrincipal InitialSamAccountNameSearching(PrincipalContext context, string searchString)
-        {
-            if (context.ContextType == ContextType.Domain)
-            {
-                new UserPrincipal(context) { SamAccountName = searchString, Enabled = true, EmailAddress = "*" };
-            }
-            return new UserPrincipal(context) { SamAccountName = searchString, Enabled = true };
-        }
-
+      
         public IReadOnlyCollection<DomainUserModel> UsersFinder(string text)
         {
             ICollection<DomainUserModel> results = ActionHelper.TryGenericCatchWithLogger((contexts) =>
@@ -231,32 +224,33 @@ namespace VecompSoftware.DocSuiteWeb.Security.Microsoft
                 {
                     return result;
                 }
+
                 List<DomainUserModel> localResults = new List<DomainUserModel>();
-                string searchString = string.Format("*{0}*", text);
-                IEnumerable<UserPrincipal> partialDisplaynameResult;
-                IEnumerable<UserPrincipal> partialUsernameResult;
+                
+                string queryString = string.Format(_parameterEnvService.BasicPersonSearcherKey, text);
+
                 foreach (KeyValuePair<string, PrincipalContext> context in contexts)
                 {
-                    if (context.Value.ContextType == ContextType.Domain)
+                    TenantModel tenantModel = _parameterEnvService.TenantModels.SingleOrDefault(f => f.DomainName.Equals(context.Value.Name, StringComparison.InvariantCultureIgnoreCase));
+                    if (tenantModel == null)
                     {
-
+                        throw new ArgumentException($"Tenant {context.Value.Name} from {context.Value.UserName} user has not been configurated in TenantModel");
                     }
-                    using (UserPrincipal searchMaskDisplayname = InitialDisplayNameSearching(context.Value, searchString))
-                    using (UserPrincipal searchMaskUsername = InitialSamAccountNameSearching(context.Value, searchString))
-                    using (PrincipalSearcher searcherDisplayname = new PrincipalSearcher(searchMaskDisplayname))
-                    using (PrincipalSearcher searcherUsername = new PrincipalSearcher(searchMaskUsername))
-                    using (PrincipalSearchResult<Principal> taskDisplayname = searcherDisplayname.FindAll())
-                    using (PrincipalSearchResult<Principal> taskUsername = searcherUsername.FindAll())
+
+                    DirectoryEntry entry = new DirectoryEntry($"{_ldapAddress}{context.Value.Name}" , context.Value.UserName, tenantModel.DomainPassword);
+                    DirectorySearcher search = new DirectorySearcher(entry, queryString);
+                    
+                    search.PropertiesToLoad.AddRange(new string[] { MAIL, DISTINGUISHED_NAME, DISPLAY_NAME, SID, SAMACCOUNTNAME });
+                    
+                    SearchResultCollection searhResults = search.FindAll();
+                    foreach (SearchResult item in searhResults)
                     {
-                        partialDisplaynameResult = taskDisplayname.OfType<UserPrincipal>();
-                        partialUsernameResult = taskUsername.OfType<UserPrincipal>();
-                        foreach (UserPrincipal item in partialDisplaynameResult
-                            .Union(partialUsernameResult.Where(x => x != null && !partialDisplaynameResult.Any(y => x.SamAccountName == y.SamAccountName))))
+                        DirectoryEntry user = item.GetDirectoryEntry();
+                        if (user != null)
                         {
-                            using (item)
-                            {
-                                localResults.Add(_mapperUnitOfWork.Repository<IDomainUserModelMapper>().Map(item, new DomainUserModel(), context.Key));
-                            }
+                            user.RefreshCache(new string[] { MAIL, DISTINGUISHED_NAME, DISPLAY_NAME, SID, SAMACCOUNTNAME });
+
+                            localResults.Add(_mapperUnitOfWork.Repository<IDomainUserModelMapper>().Map(user, context.Key));
                         }
                     }
                     context.Value.Dispose();
@@ -266,7 +260,6 @@ namespace VecompSoftware.DocSuiteWeb.Security.Microsoft
             }, _logger, _parameterEnvService, LogCategories);
             return new ReadOnlyCollection<DomainUserModel>(results.OrderBy(f => f.FullAccountInformation).ToList());
         }
-
         #endregion
 
     }

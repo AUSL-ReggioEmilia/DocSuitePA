@@ -14,7 +14,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Monitors
             IQueryable<TransparentAdministrationMonitorLog> results = repository
                 .Query(x => x.Date >= dateFrom && x.Date <= dateTo, optimization: true)
                 .Include(f => f.DocumentUnit)
-                .Include(f => f.Role)
+                .Include(d => d.Role.TenantAOO)
                 .SelectAsQueryable();
 
             if (!string.IsNullOrEmpty(userName))

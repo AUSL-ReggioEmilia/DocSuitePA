@@ -50,6 +50,12 @@ namespace VecompSoftware.DocSuiteWeb.Common.Infrastructures
         CloneProcessDetails = ProtocolShared * 2,
 
         [Description("InsertProcedureFascicle")]
-        InsertProcedureFascicle = CloneProcessDetails * 2
+        InsertProcedureFascicle = CloneProcessDetails * 2,
+
+        [Description("CreateDocumentSeriesItem")]
+        CreateDocumentSeriesItem = InsertProcedureFascicle * 2,
+
+        [Description("CloneFascicle")]
+        CloneFascicle = CreateDocumentSeriesItem * 2
     }
 }

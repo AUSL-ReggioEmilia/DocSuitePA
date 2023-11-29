@@ -34,6 +34,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Fascicles
             entityTransformed.MetadataDesigner = entity.MetadataDesigner;
             entityTransformed.DSWEnvironment = entity.DSWEnvironment;
             entityTransformed.CustomActions = entity.CustomActions;
+            entityTransformed.ProcessLabel = entity.ProcessLabel;
+            entityTransformed.DossierFolderLabel = entity.DossierFolderLabel;
             #endregion
 
             #region [ Navigation Properties ]

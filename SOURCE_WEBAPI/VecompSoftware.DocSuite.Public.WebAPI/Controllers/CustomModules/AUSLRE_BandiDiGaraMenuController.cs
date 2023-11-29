@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNet.OData;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Http;
 using VecompSoftware.DocSuite.Public.Core.Models.Customs.AUSL_RE.BandiDiGara;
+using VecompSoftware.DocSuite.Public.Core.Models.Domains.UDS;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
+using VecompSoftware.DocSuiteWeb.Entity.UDS;
+using VecompSoftware.DocSuiteWeb.Repository;
+using VecompSoftware.DocSuiteWeb.Repository.Parameters;
 using CommonHelpers = VecompSoftware.DocSuite.WebAPI.Common.Helpers;
 
 namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.CustomModules
@@ -47,7 +52,7 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.CustomModules
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _instanceId = Guid.NewGuid();          
+            _instanceId = Guid.NewGuid();
         }
         #endregion
 
@@ -57,48 +62,27 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.CustomModules
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
-                ICollection<MenuModel> menu = new List<MenuModel>
+                IEnumerable<Guid> menuIds = _unitOfWork.Repository<UDSFieldList>().ExecuteModelFunction<Guid>(CommonDefinition.SQL_FX_Get_UDS_T_BandiDiGara_MenuValue);
+                List<MenuModel> levels = new List<MenuModel>();
+                foreach (Guid menuId in menuIds)
                 {
-                    new MenuModel
-                    {
-                        Name = "Concorsi - Selezioni - Procedure comparative - Incarichi di funzione",
-                        SubMenu = new List<MenuModel>()
-                        {
-                            new MenuModel
-                            {
-                                Name = "Concorsi, selezioni, avvisi mobilita"
-                            },
-                            new MenuModel
-                            {
-                                Name = "Bando Child 2"
-                            },
-                        }
-                    },
-                    new MenuModel
-                    {
-                        Name = "Incarichi ad esperti e consulenti dell\'Azienda \'USL",
-                        SubMenu = new List<MenuModel>()
-                        {
-                            new MenuModel
-                            {
-                                Name = "Bando Child 3"
-                            }
-                        }
-                    },
-                    new MenuModel
-                    {
-                        Name = "Incarichi personale convenzionato",
-                        SubMenu = new List<MenuModel>()
-                        {
-                            new MenuModel
-                            {
-                                Name = "Bando Child 4"
-                            }
-                        }
-                    }
-                };
+                    List<UDSFieldListTableValuedModel> mainNode = _unitOfWork.Repository<UDSFieldList>()
+                    .ExecuteModelFunction<UDSFieldListTableValuedModel>(CommonDefinition.SQL_FX_UDSFieldList_GetChildrenByParent,
+                             new QueryParameter(CommonDefinition.SQL_Param_UDSFieldList_IdUDSFieldList, menuId)).ToList();
 
-                return Ok(menu);
+                    ICollection<MenuModel> menu = mainNode.Select(x => new MenuModel() { Name = x.Name, UniqueId = x.UniqueId }).ToList();
+
+                    foreach (UDSFieldListTableValuedModel item in mainNode)
+                    {
+                        List<UDSFieldListTableValuedModel> children = _unitOfWork.Repository<UDSFieldList>().ExecuteModelFunction<UDSFieldListTableValuedModel>(CommonDefinition.SQL_FX_UDSFieldList_GetChildrenByParent,
+                            new QueryParameter(CommonDefinition.SQL_Param_UDSFieldList_IdUDSFieldList, item.UniqueId)).ToList();
+                        ICollection<MenuModel> subMenu = children.Select(x => new MenuModel() { Name = x.Name, UniqueId = x.UniqueId }).ToList();
+                        menu.FirstOrDefault(x => x.UniqueId == item.UniqueId).SubMenu = subMenu;
+                    }
+                    levels.AddRange(menu);
+                }
+                
+                return Ok(levels);
             }, _logger, _logCategories);
         }
         #endregion

@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://Vecomp.BiblosDs.Documents" elementFormDefault="qualified" targetNamespace="http://Vecomp.BiblosDs.Documents" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/ContentFormat" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/Content" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Document" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd13" namespace="http://BiblosDS/2009/10/AttributeValue" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd19" namespace="http://BiblosDS/2009/10/DocumentServer" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd14" namespace="http://BiblosDS/2009/10/Attribute" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/Archive" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/Storage" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/StorageArea" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd18" namespace="http://BiblosDS/2009/10/Certificate" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd39" namespace="http://BiblosDS/2009/10/DocumentAttach" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd40" namespace="http://BiblosDS/2009/10/ArchiveStatistics" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd41" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd42" namespace="http://BiblosDS/2009/10/DocumentResponse" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd45" namespace="http://BiblosDS/2009/10/DocumentSignInfo" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd46" namespace="http://BiblosDS/2009/10/DocumentUnit" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd47" namespace="http://BiblosDS/2009/10/DocumentUnitChain" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd2" namespace="http://BiblosDS/2009/10/ContentFormat" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd3" namespace="http://BiblosDS/2009/10/Content" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd13" namespace="http://BiblosDS/2009/10/AttributeValue" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd19" namespace="http://BiblosDS/2009/10/DocumentServer" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd14" namespace="http://BiblosDS/2009/10/Attribute" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd7" namespace="http://BiblosDS/2009/10/Archive" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd11" namespace="http://BiblosDS/2009/10/Storage" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd21" namespace="http://BiblosDS/2009/10/StorageArea" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd18" namespace="http://BiblosDS/2009/10/Certificate" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd39" namespace="http://BiblosDS/2009/10/DocumentAttach" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd40" namespace="http://BiblosDS/2009/10/ArchiveStatistics" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd41" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd42" namespace="http://BiblosDS/2009/10/DocumentResponse" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd45" namespace="http://BiblosDS/2009/10/DocumentSignInfo" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd46" namespace="http://BiblosDS/2009/10/DocumentUnit" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd47" namespace="http://BiblosDS/2009/10/DocumentUnitChain" />
   <xs:element name="GetDocumentContent">
     <xs:complexType>
       <xs:sequence>

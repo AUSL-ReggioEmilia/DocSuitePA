@@ -17,6 +17,10 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Templates
             entityTransformed.WSDeletable = entity.WSDeletable;
             entityTransformed.WSManageable = entity.WSManageable;
             entityTransformed.JsonParameters = entity.JsonParameters;
+            entityTransformed.TemplateCollaborationLevel = entity.TemplateCollaborationLevel;
+            entityTransformed.TemplateCollaborationPath = entity.TemplateCollaborationPath;
+            entityTransformed.ParentInsertId = entity.ParentInsertId;
+            entityTransformed.RepresentationType = entity.RepresentationType;
             #endregion
 
             return entityTransformed;

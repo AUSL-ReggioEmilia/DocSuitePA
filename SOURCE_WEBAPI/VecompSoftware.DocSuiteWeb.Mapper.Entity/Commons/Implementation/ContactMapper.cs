@@ -13,8 +13,6 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Commons
         {
             #region [ Base ]
             entityTransformed.IdContactType = entity.IdContactType;
-            entityTransformed.ActiveFrom = entity.ActiveFrom;
-            entityTransformed.ActiveTo = entity.ActiveTo;
             entityTransformed.IsActive = entity.IsActive;
             entityTransformed.IncrementalFather = entity.IncrementalFather;
             entityTransformed.Description = entity.Description;
@@ -36,7 +34,6 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Commons
             entityTransformed.IsLocked = entity.IsLocked;
             entityTransformed.IsNotExpandable = entity.IsNotExpandable;
             entityTransformed.FullIncrementalPath = entity.FullIncrementalPath;
-            entityTransformed.IsChanged = entity.IsChanged;
             entityTransformed.Nationality = entity.Nationality;
             entityTransformed.Language = entity.Language;
             entityTransformed.SDIIdentification = entity.SDIIdentification;

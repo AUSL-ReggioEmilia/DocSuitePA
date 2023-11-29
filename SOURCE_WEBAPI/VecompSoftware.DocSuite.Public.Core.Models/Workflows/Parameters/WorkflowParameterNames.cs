@@ -236,6 +236,41 @@
 
 
         /// <summary>
+        /// Sottoclasse coi parametri specifici per il modulo Contact
+        /// </summary>
+        public static class ContactNames
+        {
+            /// <summary>
+            /// Riferimento del modello
+            /// </summary>
+            public const string CONTACT_MODEL = "dsw_p_contact_model";
+
+            /// <summary>
+            /// Se specificato, crea il contatto definito in CONTACT_MODEL come figlio del nodo specificato da PARENT_ROOT
+            /// </summary>
+            public const string PARENT_ROOT = "dsw_p_contact_parent_root";
+
+            /// <summary>
+            /// Se specificato, prima di creare il contatto verifica che non sia già presente in rubrica mediante ricerca del valore
+            /// specificato dal MappingTag
+            /// </summary>
+            public const string UNIQUE_CONTACT_MODEL_BY_MAPPINGTAG = "dsw_v_contact_unique_by_mappingtag";
+
+            /// <summary>
+            /// Se specificato, prima di creare il contatto verifica che non sia già presente in rubrica mediante ricerca del valore
+            /// specificato dal FiscalCode
+            /// </summary>
+            public const string UNIQUE_CONTACT_MODEL_BY_FISCALCODE = "dsw_v_contact_unique_by_fiscalCode";
+
+            /// <summary>
+            /// Se specificato, prima di creare il contatto verifica che non sia già presente in rubrica mediante ricerca del valore
+            /// specificato dal FiscalTaxCode
+            /// </summary>
+            public const string UNIQUE_CONTACT_MODEL_BY_FISCALTAXCODE = "dsw_v_contact_unique_by_fiscalTaxCode";
+        }
+
+
+        /// <summary>
         /// Sottoclasse coi parametri specifici per le integrazioni
         /// </summary>
         public static class IntegrationNames

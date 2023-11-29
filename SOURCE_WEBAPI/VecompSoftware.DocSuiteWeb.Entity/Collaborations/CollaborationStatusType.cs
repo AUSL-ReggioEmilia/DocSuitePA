@@ -15,7 +15,7 @@
         /// </summary>
         public const string ToProtocol = "DP";
         /// <summary>
-        /// Finalizzato al Protocollo
+        /// Gestito
         /// </summary>
         public const string Registered = "PT";
         /// <summary>

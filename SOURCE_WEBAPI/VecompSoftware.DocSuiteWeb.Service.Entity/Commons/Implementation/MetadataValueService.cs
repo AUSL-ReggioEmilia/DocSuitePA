@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -54,13 +55,35 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
                 }
                 metadataValue.PropertyType = MetadataPropertyType.PropertyDate;
             }
-            if (metadataDesignerModel.NumberFields.Any(x => x.KeyName == metadataValueModel.KeyName))
+            
+            BaseFieldModel numberField = metadataDesignerModel.NumberFields.SingleOrDefault(x => x.KeyName == metadataValueModel.KeyName);
+            if (numberField != null)
             {
-                if (int.TryParse(metadataValueModel.Value, out int res))
+                switch (numberField.FormatType)
                 {
-                    metadataValue.ValueInt = res;
+                    case NumberFieldFormatType.Double2Decimal:
+                    case NumberFieldFormatType.Double4Decimal:
+                        {
+                            if (double.TryParse(metadataValueModel.Value, out double res))
+                            {
+                                metadataValue.ValueDouble = res;
+                            }
+                            metadataValue.PropertyType = MetadataPropertyType.PropertyDouble;
+                            break;
+                        }
+                    case NumberFieldFormatType.Integer:
+                        {
+                            if (int.TryParse(metadataValueModel.Value, out int res))
+                            {
+                                metadataValue.ValueInt = res;
+                            }
+                            metadataValue.PropertyType = MetadataPropertyType.PropertyInt;
+                            break;
+                        }
+                    default:
+                        throw new DSWException($"Invalid FormatType specified for {metadataValueModel.KeyName}", null, DSWExceptionCode.SS_RulesetValidation);
+
                 }
-                metadataValue.PropertyType = MetadataPropertyType.PropertyInt;
             }
             return metadataValue;
         }

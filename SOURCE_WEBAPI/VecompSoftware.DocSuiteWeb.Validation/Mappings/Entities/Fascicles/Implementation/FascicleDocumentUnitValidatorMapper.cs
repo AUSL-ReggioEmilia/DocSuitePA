@@ -15,6 +15,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Fascicles
             entityTransformed.LastChangedUser = entity.LastChangedUser;
             entityTransformed.LastChangedDate = entity.LastChangedDate;
             entityTransformed.ReferenceType = entity.ReferenceType;
+            entityTransformed.SequenceNumber = entity.SequenceNumber;
             #endregion
 
             #region [ Navigation Properties ]

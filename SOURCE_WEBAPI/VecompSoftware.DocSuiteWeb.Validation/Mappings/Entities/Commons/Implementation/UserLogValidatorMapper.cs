@@ -32,6 +32,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Commons
             entityTransformed.LastChangedDate = entity.LastChangedDate;
             entityTransformed.LastChangedUser = entity.LastChangedUser;
             entityTransformed.UniqueId = entity.UniqueId;
+            entityTransformed.UserPrincipalName = entity.UserPrincipalName;
             #endregion
 
             #region [ Navigation Properties ]

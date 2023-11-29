@@ -1,10 +1,8 @@
 ﻿using System.Linq;
 using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
-using VecompSoftware.DocSuiteWeb.Entity.DocumentArchives;
-using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
+using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations;
-using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentArchives;
-using VecompSoftware.DocSuiteWeb.Model.Entities.Resolutions;
+using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
 
 namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Collaborations
 {
@@ -39,9 +37,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Collaborations
             modelTransformed.CollaborationVersionings = _mapperUnitOfWork.Repository<IDomainMapper<CollaborationVersioning, CollaborationVersioningModel>>().MapCollection(entity.CollaborationVersionings).ToList();
             modelTransformed.CollaborationUsers = _mapperUnitOfWork.Repository<IDomainMapper<CollaborationUser, CollaborationUserModel>>().MapCollection(entity.CollaborationUsers).ToList();
             modelTransformed.CollaborationSigns = _mapperUnitOfWork.Repository<IDomainMapper<CollaborationSign, CollaborationSignModel>>().MapCollection(entity.CollaborationSigns).ToList();
-            modelTransformed.DocumentSeriesItem = entity.DocumentSeriesItem == null ? null : _mapperUnitOfWork.Repository<IDomainMapper<DocumentSeriesItem, DocumentSeriesItemModel>>().Map(entity.DocumentSeriesItem, new DocumentSeriesItemModel());
-            modelTransformed.Resolution = entity.DocumentSeriesItem == null ? null : _mapperUnitOfWork.Repository<IDomainMapper<Resolution, ResolutionModel>>().Map(entity.Resolution, new ResolutionModel());
-
+            modelTransformed.DocumentUnit = entity.DocumentUnit == null ? null : _mapperUnitOfWork.Repository<IDomainMapper<DocumentUnit, DocumentUnitModel>>().Map(entity.DocumentUnit, new DocumentUnitModel());
+            
             return modelTransformed;
         }
     }

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using VecompSoftware.Commons.Interfaces.CQRS.Commands;
-using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentArchives;
-using VecompSoftware.DocSuiteWeb.Model.Entities.Resolutions;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
+using VecompSoftware.DocSuiteWeb.Model.Entities.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Model.Entities.UDS;
 
 namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 {
@@ -41,6 +42,8 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 
         public DateTime? PublicationDate { get; set; }
 
+        public DateTimeOffset RegistrationDate { get; set; }
+
         public DateTimeOffset? LastChangedDate { get; set; }
 
         public string PublicationUser { get; set; }
@@ -61,17 +64,19 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 
         public string TemplateName { get; set; }
 
+        public DraftReferenceType DraftReferenceType { get; set; }
+
         public ICollection<CollaborationVersioningModel> CollaborationVersionings { get; set; }
 
         public ICollection<CollaborationUserModel> CollaborationUsers { get; set; }
 
         public ICollection<CollaborationSignModel> CollaborationSigns { get; set; }
 
-        public DocumentSeriesItemModel DocumentSeriesItem { get; set; }
-
-        public ResolutionModel Resolution { get; set; }
+        public DocumentUnitModel DocumentUnit { get; set; }
 
         public CollaborationProtocolModel Protocol { get; set; }
+
+        public UDSWorkflowModel UDS { get; set; }
 
         #endregion
 
@@ -84,12 +89,12 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 
         public bool HasResolution()
         {
-            return Resolution != null;
+            return DocumentUnit != null && DocumentUnit.Environment == (int)DSWEnvironmentType.Resolution;
         }
 
         public bool HasSeries()
         {
-            return DocumentSeriesItem != null;
+            return DocumentUnit != null && DocumentUnit.Environment == (int)DSWEnvironmentType.DocumentSeries;
         }
 
         public bool HasDocumentExtracted()

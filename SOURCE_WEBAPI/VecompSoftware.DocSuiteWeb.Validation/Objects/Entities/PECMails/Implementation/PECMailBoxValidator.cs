@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -13,8 +14,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.PECMails
     public class PECMailBoxValidator : ObjectValidator<PECMailBox, PECMailBoxValidator>, IPECMailBoxValidator
     {
         #region [ Constructor ]
-        public PECMailBoxValidator(ILogger logger, IPECMailBoxValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public PECMailBoxValidator(ILogger logger, IPECMailBoxValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #endregion
 

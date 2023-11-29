@@ -49,7 +49,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.DocumentArchives
 
             Property(x => x.Severity)
                 .HasColumnName("Severity")
-                .IsRequired();
+                .IsOptional();
 
             Property(x => x.Hash)
               .HasColumnName("Hash")

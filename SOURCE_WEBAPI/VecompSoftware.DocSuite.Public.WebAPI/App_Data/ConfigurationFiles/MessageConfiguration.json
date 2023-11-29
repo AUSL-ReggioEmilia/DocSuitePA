@@ -532,5 +532,100 @@
     "QueueName": "",
     "TopicName": "workflow_integration",
     "MessageType": "Topic"
+  },
+  "CommandUpdateProtocolData": {
+    "QueueName": "data_protocol_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventCompleteProtocolUpdate": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "CommandUpdateRole": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandCreateRole": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventCreateRole": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventUpdateRole": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "CommandCreateProcess": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventCreateProcess": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "CommandUpdateProcess": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventUpdateProcess": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "CommandCreateDossierFolder": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventCreateDossierFolder": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "CommandUpdateDossierFolder": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventUpdateDossierFolder": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventCompleteGenerateReport": {
+    "QueueName": "",
+    "TopicName": "builder_event",
+    "MessageType": "Topic"
+  },
+  "CommandCreateSecurityUser": {
+    "QueueName": "cqrs_insert",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "CommandDeleteSecurityUser": {
+    "QueueName": "cqrs_update",
+    "TopicName": "",
+    "MessageType": "Queue"
+  },
+  "EventCreateSecurityUser": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
+  },
+  "EventDeleteSecurityUser": {
+    "QueueName": "",
+    "TopicName": "entity_event",
+    "MessageType": "Topic"
   }
 }

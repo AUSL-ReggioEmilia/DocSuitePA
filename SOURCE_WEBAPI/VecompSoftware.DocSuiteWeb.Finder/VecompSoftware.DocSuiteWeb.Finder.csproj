@@ -45,8 +45,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.9.20267.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.9.20267.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
+    <Reference Include="VecompSoftware.Helpers.Workflow, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Workflow.9.22.23328.1\lib\net48\VecompSoftware.Helpers.Workflow.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +75,7 @@
     <Compile Include="DocumentUnits\DocumentUnitRoleFinder.cs" />
     <Compile Include="DocumentUnits\DocumentUnitChainFinder.cs" />
     <Compile Include="DocumentUnits\DocumentUnitFinder.cs" />
+    <Compile Include="DocumentUnits\DocumentUnitsContactFinder.cs" />
     <Compile Include="Dossiers\DossierFinder.cs" />
     <Compile Include="Dossiers\DossierFolderFinder.cs" />
     <Compile Include="Dossiers\DossierLogFinder.cs" />
@@ -97,9 +98,11 @@
     <Compile Include="Processes\ProcessFascicleTemplateFinder.cs" />
     <Compile Include="Processes\ProcessFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocols\ProtocolDocumentTypeFinder.cs" />
     <Compile Include="Protocols\ProtocolFinder.cs" />
     <Compile Include="Protocols\ProtocolContactFinder.cs" />
     <Compile Include="Protocols\ProtocolRoleFinder.cs" />
+    <Compile Include="Protocols\ProtocolStatusFinder.cs" />
     <Compile Include="Protocols\ProtocolUserFinder.cs" />
     <Compile Include="Resolutions\ResolutionKindDocumentSeriesFinder.cs" />
     <Compile Include="Resolutions\ResolutionKindFinder.cs" />
@@ -114,11 +117,11 @@
     <Compile Include="Tenants\TenantContainerFinder.cs" />
     <Compile Include="Tenants\TenantFinder.cs" />
     <Compile Include="Tenants\TenantPECMailBoxFinder.cs" />
-    <Compile Include="Tenants\TenantRoleFinder.cs" />
     <Compile Include="Tenants\TenantWorkflowRepositoryFinder.cs" />
     <Compile Include="UDS\UDSCollaborationFinder.cs" />
     <Compile Include="UDS\UDSContactFinder.cs" />
     <Compile Include="UDS\UDSDocumentUnitFinder.cs" />
+    <Compile Include="UDS\UDSFieldListFinder.cs" />
     <Compile Include="UDS\UDSMessageFinder.cs" />
     <Compile Include="UDS\UDSPECMailFinder.cs" />
     <Compile Include="UDS\UDSRoleFinder.cs" />
@@ -131,6 +134,7 @@
     <Compile Include="Workflows\WorkflowAuthorizationFinder.cs" />
     <Compile Include="Workflows\WorkflowEvaluationPropertyFinder.cs" />
     <Compile Include="Workflows\WorkflowInstanceFinder.cs" />
+    <Compile Include="Workflows\WorkflowPropertyFinder.cs" />
     <Compile Include="Workflows\WorkflowRepositoryFinder.cs" />
     <Compile Include="Workflows\WorkflowRoleMappingFinder.cs" />
   </ItemGroup>

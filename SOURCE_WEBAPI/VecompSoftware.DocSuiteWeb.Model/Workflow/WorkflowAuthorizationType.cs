@@ -32,5 +32,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Workflow
         AllProtocolSecurityUsers = AllDematerialisationManager * 2,
         [Description("Tutti gli utenti del gruppo di sicurezza delle UDS")]
         AllUDSSecurityUsers = AllProtocolSecurityUsers * 2,
+        [Description("Tutti gli utenti abilitati alla gestione PEC")]
+        AllPECMailBoxRoleUser = AllUDSSecurityUsers * 2,
     }
 }

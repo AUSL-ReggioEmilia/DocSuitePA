@@ -14,6 +14,7 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Profiles.Domains.Fascicles
         {
             CreateMap<Fascicle, FascicleModel>()
                 .ForCtorParam("id", opt => opt.MapFrom(src => src.UniqueId))
+                .AfterMap((src, dest) => dest.Title = src.Title)
                 .AfterMap((src, dest) => dest.FascicleName = src.Name)
                 .AfterMap((src, dest) => dest.Subject = src.FascicleObject)
                 .AfterMap((src, dest) => dest.Name = "Fascicle")

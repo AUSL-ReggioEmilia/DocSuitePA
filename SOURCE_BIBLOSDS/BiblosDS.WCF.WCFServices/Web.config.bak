@@ -23,7 +23,7 @@
     </root>
   </log4net>
   <connectionStrings>
-    <!--<add name="BiblosDS" connectionString="metadata=res://*/Model.BiblosDSEntityFramework.csdl|res://*/Model.BiblosDSEntityFramework.ssdl|res://*/Model.BiblosDSEntityFramework.msl;provider=System.Data.SqlClient;provider connection string=&quot;Data Source=cs5lgricdl.database.windows.net;initial catalog=DEV-BIBLOSDS;user id=TioAdmin@cs5lgricdl;password=Passw0rd;multipleactiveresultsets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" />-->
+    <!--<add name="BiblosDS" connectionString="metadata=res://*/Model.BiblosDSEntityFramework.csdl|res://*/Model.BiblosDSEntityFramework.ssdl|res://*/Model.BiblosDSEntityFramework.msl;provider=System.Data.SqlClient;provider connection string=&quot;Data Source=cs5lgricdl.database.windows.net;initial catalog=DEV-BIBLOSDS;user id=TioAdmin@cs5lgricdl;password=.;multipleactiveresultsets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" />-->
     <add name="BiblosDS" connectionString="metadata=res://*/Model.BiblosDSEntityFramework.csdl|res://*/Model.BiblosDSEntityFramework.ssdl|res://*/Model.BiblosDSEntityFramework.msl;provider=System.Data.SqlClient;provider connection string=&quot;Data Source=.;initial catalog=DevBiblosDS2010;User ID=utente;password=DocSuite;multipleactiveresultsets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" />
   </connectionStrings>
   <appSettings>
@@ -33,7 +33,7 @@
     <add key="VerifyDocumentMainDate" value="true" />
     <add key="AllowZeroByteDocument" value="true" />
     <add key="PreservationAutoClose" value="true" />
-    <add key="BiblosDS" value="metadata=res://*/Model.BiblosDSEntityFramework.csdl|res://*/Model.BiblosDSEntityFramework.ssdl|res://*/Model.BiblosDSEntityFramework.msl;provider=System.Data.SqlClient;provider connection string=&quot;Data Source=cs5lgricdl.database.windows.net;initial catalog=DEV-BIBLOSDS;user id=TioAdmin@cs5lgricdl;password=Passw0rd;multipleactiveresultsets=True;App=EntityFramework&quot;"/>
+    <add key="BiblosDS" value="metadata=res://*/Model.BiblosDSEntityFramework.csdl|res://*/Model.BiblosDSEntityFramework.ssdl|res://*/Model.BiblosDSEntityFramework.msl;provider=System.Data.SqlClient;provider connection string=&quot;Data Source=cs5lgricdl.database.windows.net;initial catalog=DEV-BIBLOSDS;user id=TioAdmin@cs5lgricdl;password=.;multipleactiveresultsets=True;App=EntityFramework&quot;"/>
   </appSettings>
   <system.web>
     <httpRuntime maxRequestLength="2097151" useFullyQualifiedRedirectUrl="true" executionTimeout="14400"></httpRuntime>

@@ -38,15 +38,41 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Processes
         #region [ Methods ]        
 
         [HttpGet]
-        public IHttpActionResult AvailableProcesses(string name, short? categoryId, Guid? dossierId, bool loadOnlyMy)
+        public IHttpActionResult AvailableProcesses(string name, short? categoryId, Guid? dossierId, bool loadOnlyMy, bool isProcessActive)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
                 ICollection<ProcessTableValuedModel> processes =
-                    _unitOfWork.Repository<Process>().FindProcesses(Username, Domain, name, categoryId, dossierId, loadOnlyMy);
+                    _unitOfWork.Repository<Process>().FindProcesses(Username, Domain, name, categoryId, dossierId, loadOnlyMy, isProcessActive);
                 ICollection<ProcessModel> processModels = _mapperUnitOfwork.Repository<IDomainMapper<ProcessTableValuedModel, ProcessModel>>().MapCollection(processes);
 
                 return Ok(processModels);
+
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult CategoryProcesses(short categoryId, bool loadOnlyMy, int skip, int top)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                ICollection<ProcessTableValuedModel> processes =
+                    _unitOfWork.Repository<Process>().FindCategoryProcesses(Username, Domain, categoryId, loadOnlyMy, skip, top);
+                ICollection<ProcessModel> processModels = _mapperUnitOfwork.Repository<IDomainMapper<ProcessTableValuedModel, ProcessModel>>().MapCollection(processes);
+
+                return Ok(processModels);
+
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult CountCategoryProcesses(short categoryId, bool loadOnlyMy)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                int processesCount = _unitOfWork.Repository<Process>().CountCategoryProcesses(Username, Domain, categoryId, loadOnlyMy);
+
+                return Ok(processesCount);
 
             }, _logger, LogCategories);
         }

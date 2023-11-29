@@ -1,7 +1,9 @@
 ﻿using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Mapper;
+using VecompSoftware.DocSuiteWeb.Repository.Repositories;
 using VecompSoftware.DocSuiteWeb.Repository.UnitOfWork;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation;
@@ -30,7 +32,39 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
         #endregion
 
         #region [ Methods ]
+        protected override Role BeforeCreate(Role entity)
+        {
+            if (entity.TenantAOO != null)
+            {
+                entity.TenantAOO = _unitOfWork.Repository<TenantAOO>().Find(entity.TenantAOO.UniqueId);
+            }
 
+            if (entity.Father != null)
+            {
+                entity.Father = _unitOfWork.Repository<Role>().Find(entity.Father.EntityShortId);
+            }
+
+            return base.BeforeCreate(entity);
+        }
+
+        protected override bool ExecuteDelete()
+        {
+            return false;
+        }
+
+        protected override IQueryFluent<Role> SetEntityIncludeOnDelete(IQueryFluent<Role> query)
+        {
+            query = query.Include(p => p.TenantAOO);
+            return query;
+        }
+
+        protected override Role BeforeDelete(Role entity, Role entityTransformed)
+        {
+            entityTransformed.IsActive = false;
+            _unitOfWork.Repository<Role>().Update(entityTransformed);
+
+            return entityTransformed;
+        }
         #endregion
 
     }

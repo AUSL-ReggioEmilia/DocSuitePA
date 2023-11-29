@@ -33,8 +33,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Collaborations
 
             #region [ Navigation Properties ]
             entityTransformed.CollaborationLogs = entity.CollaborationLogs;
-            entityTransformed.DocumentSeriesItem = entity.DocumentSeriesItem;
-            entityTransformed.Resolution = entity.Resolution;
             entityTransformed.CollaborationSigns = entity.CollaborationSigns;
             entityTransformed.CollaborationUsers = entity.CollaborationUsers;
             entityTransformed.DeskCollaboration = entity.DeskCollaboration;

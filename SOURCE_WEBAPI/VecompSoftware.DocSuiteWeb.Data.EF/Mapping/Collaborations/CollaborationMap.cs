@@ -125,14 +125,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Collaborations
              .WithMany(x => x.Collaborations)
              .Map(m => m.MapKey("idLocation"));
 
-            HasOptional(t => t.DocumentSeriesItem)
-                .WithOptionalDependent()
-                .Map(m => m.MapKey("IdDocumentSeriesItem"));
-
-            HasOptional(t => t.Resolution)
-                .WithOptionalDependent()
-                .Map(m => m.MapKey("ResolutionUniqueId"));
-
             HasOptional(t => t.WorkflowInstance)
                 .WithMany(t => t.Collaborations)
                 .Map(m => m.MapKey("IdWorkflowInstance"));

@@ -1,0 +1,154 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/wrappers.proto";
+import "Protos/enums.proto";
+
+package dgroove.suite.documentproxy;
+option csharp_namespace = "VecompSoftware.DocSuite.Document.DocumentProxy";
+
+
+message CreateDocumentRequest{
+	string fileName = 1;
+	string referenceId = 2;
+	string referenceType = 3;
+	google.protobuf.StringValue documentId = 4;
+    int32 environment = 5;
+	bytes content = 6;
+	CreateActionType actionType = 7;
+	StoreActionType storeActionType = 8;
+	google.protobuf.StringValue storageReferenceId = 9;
+	Identity identity = 10;
+}
+
+message CreateDocumentReply{
+	string referenceId = 1;
+	string referenceType = 2;
+	string documentId = 3;
+	string virtualPath = 4;
+	string fileExtension = 5;
+	int32 size = 6;
+	MessageStatus status = 7;
+	ErrorReply error = 8;
+	google.protobuf.Timestamp createdAt = 9;
+}
+
+message GetDocumentRequest{
+	string referenceId = 1;
+	string referenceType = 2;
+	google.protobuf.StringValue documentId = 3;
+	Identity identity = 4;
+}
+
+message GetDocumentReply{
+	NullableDocument document = 1;
+	MessageStatus status = 2;
+	ErrorReply error = 3;
+}
+
+message GetDocumentsRequest{
+	string referenceId = 1;
+	string referenceType = 2;
+	repeated string documentIds = 3;
+	GetActionType actionType = 4;
+	// required only when actionType = GAT_GENERATE_ENCRYPTED_ARCHIVE
+	google.protobuf.StringValue encryptionPassword = 5;
+	Identity identity = 6;
+}
+
+message GetDocumentsReply{
+	repeated Document document = 1;
+	MessageStatus status = 2;
+	ErrorReply error = 3;
+}
+
+message GetReferenceInfoRequest{
+	string referenceId = 1;
+	google.protobuf.StringValue referenceType = 2;
+	int32 environment = 3;
+	Identity identity = 4;
+}
+
+message GetReferenceInfoReply{
+	repeated DocumentInfo documentInfos = 1;
+	MessageStatus status = 2;
+	ErrorReply error = 3;
+}
+
+message DeleteFromCacheRequest{
+	string referenceId = 1;
+	string referenceType = 2;
+	repeated string documentIds = 3;
+	Identity identity = 4;
+}
+
+message DeleteFromCacheReply{
+	repeated DocumentOperationResult operations = 1;
+	MessageStatus status = 2;
+	ErrorReply error = 3;
+}
+
+message GetDocumentAsPDFRequest{
+	string documentId = 1;
+	int32 environment = 2;
+	string referenceId = 3;
+	string referenceType = 4;
+	string signatureString = 5;
+	Identity identity = 6;
+}
+
+message GetDocumentAsPDFReply{
+	NullableDocument document = 1;
+	MessageStatus status = 2;
+	ErrorReply error = 3;
+}
+
+message DocumentOperationResult{
+	string referenceId = 1;
+	string referenceType = 2;
+	string documentId = 3;
+	MessageStatus status = 4;
+	ErrorReply error = 5;
+}
+
+message NullableDocument{
+	oneof kind {
+		google.protobuf.NullValue null = 1;
+		Document document = 2;
+	}
+}
+
+message DocumentInfo{
+	string fileName = 1;
+	string referenceId = 2;
+	string referenceType = 3;
+	string documentId = 4;
+	string virtualPath = 5;
+	string fileExtension = 6;
+	int32 size = 7;
+	google.protobuf.Timestamp createdAt = 8;
+}
+
+message Document{
+	string fileName = 1;
+	string referenceId = 2;
+	string referenceType = 3;
+	string documentId = 4;
+	string virtualPath = 5;
+	string fileExtension = 6;
+	bytes content = 7;
+	int32 size = 8;
+	google.protobuf.Timestamp createdAt = 9;
+}
+
+message ErrorReply{
+	string details = 1;
+	string errorCode = 2;
+}
+
+message Identity{
+	string account = 1;
+    string uniqueId = 2;
+	string userDeviceAddress = 3;
+}

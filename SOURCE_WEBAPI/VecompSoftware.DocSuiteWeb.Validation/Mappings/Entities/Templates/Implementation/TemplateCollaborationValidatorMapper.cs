@@ -25,6 +25,10 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Templates
             entityTransformed.LastChangedDate = entity.LastChangedDate;
             entityTransformed.LastChangedUser = entity.LastChangedUser;
             entityTransformed.JsonParameters = entity.JsonParameters;
+            entityTransformed.TemplateCollaborationPath = entity.TemplateCollaborationPath;
+            entityTransformed.TemplateCollaborationLevel = entity.TemplateCollaborationLevel;
+            entityTransformed.ParentInsertId = entity.ParentInsertId;
+            entityTransformed.RepresentationType = entity.RepresentationType;
             #endregion
 
             #region [ Navigation Properties ]

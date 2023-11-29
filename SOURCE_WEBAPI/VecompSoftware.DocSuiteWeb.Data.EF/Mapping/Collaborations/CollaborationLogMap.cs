@@ -43,10 +43,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Collaborations
                 .HasColumnName("SystemUser")
                 .IsOptional();
 
-            Property(x => x.SessionId)
-                .HasColumnName("SessionId")
-                .IsOptional();
-
             Property(x => x.Program)
                 .HasColumnName("Program")
                 .IsOptional();

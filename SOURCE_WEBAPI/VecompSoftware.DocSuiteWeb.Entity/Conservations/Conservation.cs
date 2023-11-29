@@ -19,6 +19,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Conservations
         public string Message { get; set; }
         public ConservationType Type { get; set; }
         public DateTimeOffset? SendDate { get; set; }
+        public DateTimeOffset? ConservationDate { get; set; }
         public string Uri { get; set; }
         #endregion
     }

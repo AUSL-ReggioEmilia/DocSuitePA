@@ -22,11 +22,13 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Templates
         public string Note { get; set; }
         public bool WSDeletable { get; set; }
         public bool WSManageable { get; set; }
+        public TemplateCollaborationRepresentationType RepresentationType { get; set; }
+        public string TemplateCollaborationPath { get; set; }
+        public short TemplateCollaborationLevel { get; set; }
         public string RegistrationUser { get; set; }
         public DateTimeOffset? RegistrationDate { get; set; }
         public DateTimeOffset? LastChangedDate { get; set; }
         public string LastChangedUser { get; set; }
-
         #endregion
     }
 }

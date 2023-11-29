@@ -59,6 +59,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -66,12 +67,19 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="VecompSoftware.Helpers.Security, Version=9.22.23328.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\VecompSoftware.Helpers.Security.9.22.23328.1\lib\net48\VecompSoftware.Helpers.Security.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseModelService.cs" />
     <Compile Include="IModelService.cs" />
-    <Compile Include="Parameters\Implementation\ParameterEnvService.cs" />
-    <Compile Include="Parameters\IParameterEnvService.cs" />
+    <Compile Include="Parameters\IDecryptedParameterEnvService.cs" />
+    <Compile Include="Parameters\IEncryptedParameterEnvService.cs" />
+    <Compile Include="Parameters\Implementation\DecryptedParameterEnvService.cs" />
+    <Compile Include="Parameters\Implementation\EncryptedParameterEnvService.cs" />
+    <Compile Include="Parameters\Implementation\ParameterEnvBaseService.cs" />
+    <Compile Include="Parameters\IParameterEnvBaseService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +87,7 @@
     <Content Include="VecompSoftware.DocSuite.Service.Model.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />

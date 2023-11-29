@@ -84,15 +84,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Tenants
                     p.MapRightKey("EntityShortId");
                 });
 
-            HasMany(t => t.Roles)
-                .WithMany(t => t.Tenants)
-                .Map(p =>
-                {
-                    p.ToTable("TenantRoles");
-                    p.MapLeftKey("IdTenant");
-                    p.MapRightKey("EntityShortId");
-                });
-
             HasMany(t => t.PECMailBoxes)
                 .WithMany(t => t.Tenants)
                 .Map(p =>
@@ -100,15 +91,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Tenants
                     p.ToTable("TenantPECMailBoxes");
                     p.MapLeftKey("IdTenant");
                     p.MapRightKey("EntityShortId");
-                });
-
-            HasMany(t => t.Contacts)
-                .WithMany(c => c.Tenants)
-                .Map(p =>
-                {
-                    p.ToTable("TenantContacts");
-                    p.MapLeftKey("IdTenant");
-                    p.MapRightKey("EntityId");
                 });
 
             HasRequired(t => t.TenantAOO)

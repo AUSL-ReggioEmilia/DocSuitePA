@@ -35,11 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -55,8 +56,18 @@
     <Compile Include="Commons\Implementation\ContactFullTableValuedModelMapper.cs" />
     <Compile Include="Commons\Implementation\RoleFullTableValuedModelMapper.cs" />
     <Compile Include="Commons\IRoleFullTableValuedModelMapper.cs" />
+    <Compile Include="Conservations\IConservationModelMapper.cs" />
+    <Compile Include="Conservations\Implementation\ConservationModelMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitCollaborationTableValueModelMapper.cs" />
+    <Compile Include="DocumentUnits\IDocumentUnitContactModelMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitCollaborationTableValueModelMapper.cs" />
+    <Compile Include="DocumentUnits\Implementation\DocumentUnitContactModelMapper.cs" />
     <Compile Include="Fascicles\IFascicleDocumentUnitModelMapper.cs" />
+    <Compile Include="Fascicles\IFascicleDocumentUnitTableValuedModelMapper.cs" />
     <Compile Include="Fascicles\Implementation\FascicleDocumentUnitModelMapper.cs" />
+    <Compile Include="Fascicles\Implementation\FascicleDocumentUnitTableValuedModelMapper.cs" />
+    <Compile Include="Fascicles\Implementation\ViewableFascicleTableValuedModelMapper.cs" />
+    <Compile Include="Fascicles\IViewableFascicleTableValuedModelMapper.cs" />
     <Compile Include="JeepServiceHosts\IJeepServiceHostModelMapper.cs" />
     <Compile Include="JeepServiceHosts\IJeepServiceHostTableValuedModelMapper.cs" />
     <Compile Include="JeepServiceHosts\Implementation\JeepServiceHostModelMapper.cs" />
@@ -157,9 +168,7 @@
     <Compile Include="Commons\Implementation\CategoryModelMapper.cs" />
     <Compile Include="Commons\Implementation\ContainerTableValuedModelMapper.cs" />
     <Compile Include="Commons\Implementation\CategoryTableValuedModelMapper.cs" />
-    <Compile Include="DocumentArchives\IDocumentSeriesItemCollaborationTableValueModelMapper.cs" />
     <Compile Include="DocumentArchives\IDocumentSeriesItemModelMapper.cs" />
-    <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemCollaborationTableValueModelMapper.cs" />
     <Compile Include="DocumentArchives\Implementation\DocumentSeriesItemModelMapper.cs" />
     <Compile Include="DocumentUnits\IDocumentUnitChainTableValuedModelMapper.cs" />
     <Compile Include="DocumentUnits\Implementation\DocumentUnitChainTableValuedModelMapper.cs" />
@@ -203,21 +212,19 @@
     <Compile Include="Protocols\Implementation\ProtocolContactTableValuedModelMapper.cs" />
     <Compile Include="Protocols\Implementation\ProtocolContactManualTableValuedModelMapper.cs" />
     <Compile Include="Protocols\Implementation\ProtocolTypeTableValuedModelMapper.cs" />
-    <Compile Include="Protocols\Implementation\ProtocolParerTableValuedModelMapper.cs" />
     <Compile Include="Protocols\IProtocolContactTableValueModelMapper.cs" />
     <Compile Include="Protocols\IProtocolContactManualTableValueModelMapper.cs" />
     <Compile Include="Protocols\IProtocolTypeTableValuedModelMapper.cs" />
-    <Compile Include="Protocols\IProtocolParerTableValuedModelMapper.cs" />
     <Compile Include="Protocols\IProtocolTableValuedModelMapper.cs" />
     <Compile Include="Protocols\Implementation\ProtocolTableValuedModelMapper.cs" />
-    <Compile Include="Resolutions\Implementation\ResolutionCollaborationTableValueModelMapper.cs" />
     <Compile Include="Resolutions\Implementation\FileResolutionModelMapper.cs" />
     <Compile Include="Resolutions\Implementation\ResolutionRoleModelMapper.cs" />
-    <Compile Include="Resolutions\IResolutionCollaborationTableValueModelMapper.cs" />
     <Compile Include="Resolutions\IFileResolutionModelMapper.cs" />
+    <Compile Include="Resolutions\Implementation\WebPubblicationModelMapper.cs" />
     <Compile Include="Resolutions\IResolutionRoleModelMapper.cs" />
     <Compile Include="Resolutions\IResolutionModelMapper.cs" />
     <Compile Include="Resolutions\Implementation\ResolutionModelMapper.cs" />
+    <Compile Include="Resolutions\IWebPubblicationModelMapper.cs" />
     <Compile Include="Securities\IDomainUserModelMessageContactEmailModelMapper.cs" />
     <Compile Include="Securities\IDomainUserModelMessageContactModelMapper.cs" />
     <Compile Include="Securities\IDomainUserModelCollaborationUserModelMapper.cs" />
@@ -244,6 +251,7 @@
     <Compile Include="Tenants\ITenantTableValuedModelMapper.cs" />
     <Compile Include="UDS\Implementation\UDSCollaborationEntityMapper.cs" />
     <Compile Include="UDS\Implementation\UDSContactEntityMapper.cs" />
+    <Compile Include="UDS\Implementation\UDSContactModelMapper.cs" />
     <Compile Include="UDS\Implementation\UDSDocumentUnitEntityMapper.cs" />
     <Compile Include="UDS\Implementation\UDSMessageEntityMapper.cs" />
     <Compile Include="UDS\Implementation\UDSPECMailEntityMapper.cs" />
@@ -253,6 +261,7 @@
     <Compile Include="UDS\Implementation\UDSRepositoryModelMapper.cs" />
     <Compile Include="UDS\Implementation\UDSSchemaRepositoryModelMapper.cs" />
     <Compile Include="DocumentUnits\IDocumentUnitUDSCommandModelMapper.cs" />
+    <Compile Include="UDS\IUDSContactModelMapper.cs" />
     <Compile Include="UDS\IUDSRoleEntityMapper.cs" />
     <Compile Include="UDS\IUDSUserEntityMapper.cs" />
     <Compile Include="UDS\IUDSPECMailEntityMapper.cs" />
@@ -288,12 +297,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <Content Include="VecompSoftware.DocSuiteWeb.Mapper.Model.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

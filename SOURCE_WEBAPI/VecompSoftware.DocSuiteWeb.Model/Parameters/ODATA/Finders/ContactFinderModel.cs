@@ -10,7 +10,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders
         public bool? ExcludeRoleContacts { get; set; }
         public int? ParentId { get; set; }
         public int? ParentToExclude { get; set; }
-        public Guid? IdTenant { get; set; }
+        public int? IdRole { get; set; }
         #endregion
     }
 }

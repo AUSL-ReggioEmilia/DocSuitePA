@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentArchives;
@@ -12,8 +13,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.DocumentArchive
     public class DocumentSeriesConstraintValidator : ObjectValidator<DocumentSeriesConstraint, DocumentSeriesConstraintValidator>, IDocumentSeriesConstraintValidator
     {
         #region [ Constructor ]
-        public DocumentSeriesConstraintValidator(ILogger logger, IDocumentSeriesConstraintValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public DocumentSeriesConstraintValidator(ILogger logger, IDocumentSeriesConstraintValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         { }
 
         #endregion

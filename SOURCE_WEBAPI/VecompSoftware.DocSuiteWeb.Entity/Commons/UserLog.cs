@@ -30,6 +30,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         public int PrivacyLevel { get; set; }
         public Guid CurrentTenantId { get; set; }
         public string UserProfile { get; set; }
+        public string UserPrincipalName { get; set; }
         #endregion
 
         #region [ Navigation Properties ]

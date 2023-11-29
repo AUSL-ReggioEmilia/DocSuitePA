@@ -23,7 +23,7 @@ namespace VecompSoftware.DocSuiteWeb.Security
         #region [ Methods ]
 
         public static TModel TryUserPrincipalCatchWithLogger<TModel>(Func<string, UserPrincipal, TModel> func, ILogger logger,
-            IParameterEnvService parameterEnvService, string fullUserName, ConcurrentDictionary<string, TModel> cache_result,
+            IDecryptedParameterEnvService parameterEnvService, string fullUserName, ConcurrentDictionary<string, TModel> cache_result,
             IEnumerable<LogCategory> logCategories)
         {
             TModel result = default(TModel);
@@ -37,16 +37,17 @@ namespace VecompSoftware.DocSuiteWeb.Security
 
                 string domain = parameterEnvService.CurrentTenantModel.DomainName;
                 string samAccountName = fullUserName;
+
                 if (fullUserName.Contains('\\'))
                 {
                     string[] token = fullUserName.Split('\\');
                     domain = token.First();
                     samAccountName = token.Last();
                 }
-                TenantModel tenantModel = parameterEnvService.TenantModels.SingleOrDefault(f=> f.DomainName.Equals(domain, StringComparison.InvariantCultureIgnoreCase));
+                TenantModel tenantModel = parameterEnvService.TenantModels.SingleOrDefault(f => f.DomainName.Equals(domain, StringComparison.InvariantCultureIgnoreCase));
                 if (tenantModel == null)
                 {
-                    throw new ArgumentException($"Tenant {domain} has not been configurated in TenantModel");
+                    throw new ArgumentException($"Tenant {domain} from {fullUserName} user has not been configurated in TenantModel");
                 }
                 UserPrincipal user;
                 using (PrincipalContext context = new PrincipalContext((ContextType)(int)tenantModel.SecurityContext, tenantModel.DomainAddress, tenantModel.DomainUser, tenantModel.DomainPassword))
@@ -78,7 +79,7 @@ namespace VecompSoftware.DocSuiteWeb.Security
         }
 
         public static TModel TryGroupPrincipalCatchWithLogger<TModel>(Func<string, GroupPrincipal, TModel> func, ILogger logger,
-            IParameterEnvService parameterEnvService, string groupName, ConcurrentDictionary<string, TModel> cache_result,
+            IDecryptedParameterEnvService parameterEnvService, string groupName, ConcurrentDictionary<string, TModel> cache_result,
             IEnumerable<LogCategory> logCategories)
         {
             TModel result = default(TModel);
@@ -118,8 +119,8 @@ namespace VecompSoftware.DocSuiteWeb.Security
             return result;
         }
 
-        public static TModel TryGenericCatchWithLogger<TModel>(Func<string, PrincipalContext, TModel> func, ILogger logger, 
-            IParameterEnvService parameterEnvService, IEnumerable<LogCategory> logCategories)
+        public static TModel TryGenericCatchWithLogger<TModel>(Func<string, PrincipalContext, TModel> func, ILogger logger,
+            IDecryptedParameterEnvService parameterEnvService, IEnumerable<LogCategory> logCategories)
         {
             try
             {
@@ -140,8 +141,8 @@ namespace VecompSoftware.DocSuiteWeb.Security
             return default(TModel);
         }
 
-        public static TModel TryGenericCatchWithLogger<TModel>(Func<IReadOnlyDictionary<string, PrincipalContext>, TModel> func, ILogger logger, 
-            IParameterEnvService parameterEnvService, IEnumerable<LogCategory> logCategories)
+        public static TModel TryGenericCatchWithLogger<TModel>(Func<IReadOnlyDictionary<string, PrincipalContext>, TModel> func, ILogger logger,
+            IDecryptedParameterEnvService parameterEnvService, IEnumerable<LogCategory> logCategories)
         {
             try
             {

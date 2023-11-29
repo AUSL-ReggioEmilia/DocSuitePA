@@ -23,6 +23,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Workflows
             entityTransformed.IdArchiveChain = entity.IdArchiveChain;
             entityTransformed.Priority = entity.Priority;
             entityTransformed.Note = entity.Note;
+            entityTransformed.IsVisible = entity.IsVisible;
 
             #endregion
 

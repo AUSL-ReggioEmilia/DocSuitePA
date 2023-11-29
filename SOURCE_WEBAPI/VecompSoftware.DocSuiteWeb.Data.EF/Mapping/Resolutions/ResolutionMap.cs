@@ -142,6 +142,14 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Resolutions
                 .HasColumnName("WebPublicationDate")
                 .IsOptional();
 
+            Property(x => x.Amount)
+                .HasColumnName("Amount")
+                .IsOptional();
+
+            Property(x => x.UltimaPaginaDate)
+                .HasColumnName("UltimaPaginaDate")
+                .IsOptional();
+
             Ignore(x => x.Timestamp)
                 .Ignore(x => x.RegistrationDate)
                 .Ignore(x => x.RegistrationUser)
@@ -173,6 +181,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Resolutions
                     .Map(m => m.ToTable("ResolutionMessage")
                                .MapLeftKey("UniqueIdResolution")
                                .MapRightKey("IdMessage"));
+
+            HasRequired(t => t.WebPublication)
+                .WithRequiredDependent(t => t.Resolution)
+                .Map(m => m.MapKey("IDResolution"));
             
             #endregion
         }

@@ -20,7 +20,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Protocols
             entityTransformed.Code = entity.Code;
             entityTransformed.IsActive = entity.IsActive;
             entityTransformed.HiddenFields = entity.HiddenFields;
-            entityTransformed.NeedPackage = entity.NeedPackage;
             entityTransformed.CommonUser = entity.CommonUser;
             #endregion
 

@@ -32,7 +32,10 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Tenants
             modelTransformed.LastChangedDate = entity.LastChangedDate;
             modelTransformed.Timestamp = entity.Timestamp;
             modelTransformed.TenantTypology = (TenantTypologyType)entity.TenantTypology;
-
+            if (entity.IdTenantAOO != Guid.Empty)
+            {
+                modelTransformed.TenantAOO = new TenantAOO(entity.IdTenantAOO);
+            }
             return modelTransformed;
         }
 

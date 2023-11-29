@@ -10,7 +10,7 @@ namespace BiblosDS.API
     /// Richiesta di Login
     /// </summary>
     /// <example>
-    /// new LoginRequest { UserName = "Gianni", Password = "Passw0rd", IdCliente = "VecompSoftware" }
+    /// new LoginRequest { UserName = "Gianni", Password = ".", IdCliente = "VecompSoftware" }
     /// </example>
     [DataContract]
     public class LoginRequest

@@ -12,6 +12,7 @@ using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Finder.DocumentUnits;
+using VecompSoftware.DocSuiteWeb.Model.Documents;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
 using ModelDocument = VecompSoftware.DocSuiteWeb.Model.Documents;
 
@@ -50,6 +51,25 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.DocumentUnits
 
         [EnableQuery(MaxExpansionDepth = 10, PageSize = 100, AllowedQueryOptions = AllowedQueryOptions.All)]
         [HttpGet]
+        public async Task<IHttpActionResult> GetBiblosDocumentContent(Guid documentId)
+        {
+            return await ActionHelper.TryCatchWithLoggerGeneric(async () =>
+            {
+                ModelDocument.Document documentModel = await _documentService.GetDocumentAsync(documentId);
+
+                if (documentModel == null)
+                {
+                    throw new ArgumentNullException($"Document with id '{documentId}' not found");
+                }
+
+                byte[] documentContent = await _documentService.GetDocumentContentAsync(documentModel.IdDocument);
+
+                return Ok(documentContent);
+            }, _logger, LogCategories);
+        }
+
+        [EnableQuery(MaxExpansionDepth = 10, PageSize = 100, AllowedQueryOptions = AllowedQueryOptions.All)]
+        [HttpGet]
         public async Task<IHttpActionResult> GetBiblosDocuments(Guid uniqueId, Guid? workflowArchiveChainId)
         {
             return await ActionHelper.TryCatchWithLoggerGeneric(async () =>
@@ -70,7 +90,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.DocumentUnits
                         {
                             DocumentId = item.IdDocument,
                             FileName = item.Name,
-                            ChainType = (DocSuiteWeb.Model.Entities.DocumentUnits.ChainType) documentUnitChain.ChainType,
+                            ChainType = (DocSuiteWeb.Model.Entities.DocumentUnits.ChainType)documentUnitChain.ChainType,
                             ChainId = item.IdChain.Value,
                             ArchiveSection = documentUnitChain.DocumentLabel
                         });
@@ -104,8 +124,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.DocumentUnits
                 ICollection<ModelDocument.Document> results = await _documentService.GetDocumentsFromChainAsync(idArchiveChain);
                 if (results.Any())
                 {
-                    int tollerance = 10000;
-                    DateTime lastDate = results.First().CreatedDate.Value;
+                    int tollerance = 3000;
+                    DateTime lastDate = results.OrderBy(f => f.CreatedDate.Value).First().CreatedDate.Value;
                     foreach (ModelDocument.Document item in results)
                     {
                         documents.Add(new DocumentModel
@@ -114,7 +134,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.DocumentUnits
                             FileName = item.Name,
                             ChainType = (item.CreatedDate.Value - lastDate).TotalMilliseconds > tollerance ? (DocSuiteWeb.Model.Entities.DocumentUnits.ChainType)ChainType.Miscellanea : (DocSuiteWeb.Model.Entities.DocumentUnits.ChainType)ChainType.MainChain,
                             ChainId = item.IdChain.Value,
-                            ArchiveSection = "Attività"
+                            Segnature = item.AttributeValues.SingleOrDefault(f => f.AttributeName.Equals(AttributeValue.ATTRIBUTE_SIGNATURE, StringComparison.InvariantCultureIgnoreCase))?.ValueString,
+                            ArchiveSection = item.ArchiveName
                         });
                         lastDate = item.CreatedDate.Value;
                     }

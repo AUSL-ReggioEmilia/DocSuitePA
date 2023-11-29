@@ -46,6 +46,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.DocumentUnits
             entityTransformed.Roles = _mapperUnitOfwork.Repository<IDomainMapper<DocumentUnitRole, RoleModel>>().MapCollection(entity.DocumentUnitRoles);
             entityTransformed.Documents = _mapperUnitOfwork.Repository<IDomainMapper<DocumentUnitChain, UDSDocumentModel>>().MapCollection(entity.DocumentUnitChains);
             entityTransformed.Users = _mapperUnitOfwork.Repository<IDomainMapper<DocumentUnitUser, UserModel>>().MapCollection(entity.DocumentUnitUsers);
+            entityTransformed.Contacts = _mapperUnitOfwork.Repository<IDomainMapper<DocumentUnitContact, UDSContactModel>>().MapCollection(entity.DocumentUnitContacts);
             #endregion
 
             return entityTransformed;

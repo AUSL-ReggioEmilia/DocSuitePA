@@ -8,7 +8,7 @@ using VecompSoftware.Core.Command;
 using VecompSoftware.Core.Command.CQRS.Commands.Entities.DocumentArchives;
 using VecompSoftware.Core.Command.CQRS.Commands.Entities.Fascicles;
 using VecompSoftware.Core.Command.CQRS.Commands.Entities.Protocols;
-using VecompSoftware.Core.Command.CQRS.Commands.Models.Resolutions;
+using VecompSoftware.Core.Command.CQRS.Commands.Entities.Resolutions;
 using VecompSoftware.Core.Command.CQRS.Commands.Models.UDS;
 using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuite.WebAPI.Common;
@@ -51,15 +51,14 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
         private readonly IQueueService _queueService;
         private readonly ICQRSMessageMapper _cqrsMapper;
         private readonly ILogger _logger;
-        private readonly IResolutionModelMapper _mapper;
         private readonly IMapperUnitOfWork _mapperUnitOfwork;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         #endregion
 
         #region [ Constructor ]
 
         public FascicleController(IFascicleService service, IDataUnitOfWork unitOfWork, ILogger logger, ICurrentIdentity currentIdentity, IQueueService queueService, ICQRSMessageMapper CQRSMapper, 
-            IResolutionModelMapper mapper, IMapperUnitOfWork mapperUnitOfWork, IParameterEnvService parameterEnvService)
+            IMapperUnitOfWork mapperUnitOfWork, IDecryptedParameterEnvService parameterEnvService)
             : base(service, unitOfWork, logger)
         {
             _unitOfWork = unitOfWork;
@@ -67,7 +66,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
             _cqrsMapper = CQRSMapper;
             _queueService = queueService;
             _logger = logger;
-            _mapper = mapper;
             _mapperUnitOfwork = mapperUnitOfWork;
             _parameterEnvService = parameterEnvService;
         }
@@ -123,7 +121,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
             }
         }
 
-        protected override void AfterSave(Fascicle entity)
+        protected override void AfterSave(Fascicle entity, Fascicle existingEntity)
         {
             try
             {
@@ -149,13 +147,10 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
                         }
                         if (item.DocumentUnit.Environment == (int)DSWEnvironmentType.Resolution)
                         {
-                            Resolution resolution = _unitOfWork.Repository<Resolution>().GetByUniqueId(item.DocumentUnit.UniqueId).Single();
-                            ResolutionModel resolutionModel = _mapper.Map(resolution, new ResolutionModel());
-                            _mapper.FileResolution = _unitOfWork.Repository<FileResolution>().GetByResolution(item.DocumentUnit.EntityId).SingleOrDefault();
-                            _mapper.ResolutionRoles = _unitOfWork.Repository<ResolutionRole>().GetByResolution(item.DocumentUnit.EntityId);
+                            Resolution resolution = _unitOfWork.Repository<Resolution>().GetFullByUniqueId(item.DocumentUnit.UniqueId).Single();
                             message = GenerateMessage(item.DocumentUnit.Category, (int)DSWEnvironmentType.Resolution,
                              (categoryFascicle) => new CommandUpdateResolution(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, item.DocumentUnit.TenantAOO.UniqueId,
-                             new IdentityContext(_currentIdentity.FullUserName), resolutionModel, categoryFascicle, null));
+                             new IdentityContext(_currentIdentity.FullUserName), resolution, categoryFascicle, null));
                             Task.Run(async () =>
                             {
                                 await _queueService.SubscribeQueue(message.ChannelName).SendToQueueAsync(message);
@@ -180,7 +175,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
                             commandModel.RegistrationUser = item.DocumentUnit.RegistrationUser;
                             message = GenerateMessage(item.DocumentUnit.Category, item.DocumentUnit.Environment,
                              (categoryFascicle) => new CommandCQRSUpdateUDSData(_parameterEnvService.CurrentTenantName, _parameterEnvService.CurrentTenantId, item.DocumentUnit.TenantAOO.UniqueId,
-                             new IdentityContext(_currentIdentity.FullUserName), commandModel, categoryFascicle, null, null, null, null));
+                             new IdentityContext(_currentIdentity.FullUserName), commandModel, categoryFascicle, null, null, null, null, false));
                             Task.Run(async () =>
                             {
                                 await _queueService.SubscribeQueue(message.ChannelName).SendToQueueAsync(message);
@@ -247,7 +242,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Fascicles
             {
                 _logger.WriteError(ex, LogCategories);
             }
-            base.AfterSave(entity);
+            base.AfterSave(entity, existingEntity);
         }
 
         #endregion

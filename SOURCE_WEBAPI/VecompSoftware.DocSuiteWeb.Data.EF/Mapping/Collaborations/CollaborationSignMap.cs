@@ -42,7 +42,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Collaborations
 
             Property(x => x.IsActive)
                 .HasColumnName("IsActive")
-                .IsOptional();
+                .IsRequired();
 
             Property(x => x.IdStatus)
                 .HasColumnName("idStatus")

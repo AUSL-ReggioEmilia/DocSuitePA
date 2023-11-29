@@ -25,7 +25,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
 
             Property(x => x.IsActive)
                 .HasColumnName("isActive")
-                .IsOptional();
+                .IsRequired();
 
             Property(x => x.Code)
                 .HasColumnName("Code")

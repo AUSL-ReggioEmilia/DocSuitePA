@@ -130,6 +130,14 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
                 .SelectAsQueryable()
                 .SingleOrDefault();
         }
+
+        public static ICollection<FascicleFolderTableValuedModel> GetChildren(this IRepository<FascicleFolder> repository, Guid idDossierFolder, int skip, int top)
+        {
+            return repository.ExecuteModelFunction<FascicleFolderTableValuedModel>(CommonDefinition.SQL_FX_FascicleFolder_GetChildren,
+                new QueryParameter(CommonDefinition.SQL_Param_FascicleFolder_IdFascicleFolder, idDossierFolder),
+                new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_Skip, skip),
+                new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_Top, top));
+        }
     }
 }
 

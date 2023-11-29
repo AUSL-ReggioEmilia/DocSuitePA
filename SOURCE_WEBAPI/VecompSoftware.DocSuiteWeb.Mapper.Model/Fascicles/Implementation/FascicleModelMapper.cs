@@ -45,6 +45,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Fascicles
             modelTransformed.MetadataDesigner = entity.MetadataDesigner;
             modelTransformed.DSWEnvironment = entity.DSWEnvironment;
             modelTransformed.CustomActions = entity.CustomActions;
+            modelTransformed.ProcessLabel = entity.ProcessLabel;
+            modelTransformed.DossierFolderLabel = entity.DossierFolderLabel;
             modelTransformed.FascicleDocumentUnits = _mapperUnitOfWork.Repository<IDomainMapper<FascicleDocumentUnit, VecompSoftwareFascicle.FascicleDocumentUnitModel>>().MapCollection(entity.FascicleDocumentUnits);
             modelTransformed.FascicleDocuments = _mapperUnitOfWork.Repository<IDomainMapper<FascicleDocument, VecompSoftwareFascicle.FascicleDocumentModel>>().MapCollection(entity.FascicleDocuments);
             modelTransformed.Category = entity.Category == null ? null : _mapperUnitOfWork.Repository<IDomainMapper<Category, CategoryModel>>().Map(entity.Category, new CategoryModel());

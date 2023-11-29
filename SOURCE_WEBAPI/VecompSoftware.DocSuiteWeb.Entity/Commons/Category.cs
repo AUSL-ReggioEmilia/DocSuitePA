@@ -39,7 +39,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         #region[ Properties ]
 
         public string Name { get; set; }
-        public ActiveType? IsActive { get; set; }
+        public bool IsActive { get; set; }
         public short? Code { get; set; }
         public string FullIncrementalPath { get; set; }
         public string FullCode { get; set; }

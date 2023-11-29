@@ -13,5 +13,6 @@
         Message = 8,
         Build = 9,
         Link = 10,
+        DocSuiteNext = 11,
     }
 }

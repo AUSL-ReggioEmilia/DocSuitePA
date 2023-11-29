@@ -35,6 +35,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
             Collaborations = new HashSet<Collaboration>();
             POLRequests = new HashSet<PosteOnLineRequest>();
             WorkflowActions = new HashSet<IWorkflowAction>();
+            DocumentUnitContacts = new HashSet<DocumentUnitContact>();
         }
         #endregion
 
@@ -73,6 +74,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.DocumentUnits
         public virtual ICollection<DocumentUnitRole> DocumentUnitRoles { get; set; }
 
         public virtual ICollection<DocumentUnitChain> DocumentUnitChains { get; set; }
+
+        public virtual ICollection<DocumentUnitContact> DocumentUnitContacts { get; set; }
 
         public virtual ICollection<DocumentUnitUser> DocumentUnitUsers { get; set; }
 

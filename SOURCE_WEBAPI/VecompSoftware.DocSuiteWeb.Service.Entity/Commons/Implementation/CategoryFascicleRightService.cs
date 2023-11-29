@@ -22,14 +22,14 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         #endregion
 
         #region [ Constructor ]
 
         public CategoryFascicleRightService(IDataUnitOfWork unitOfWork, ILogger logger, IValidatorService validationService,
             ICategoryFascicleRightRuleset categoryFascicleRightRuleset, IMapperUnitOfWork mapperUnitOfWork, ISecurity security,
-            IParameterEnvService parameterEnvService)
+            IDecryptedParameterEnvService parameterEnvService)
             : base(unitOfWork, logger, validationService, categoryFascicleRightRuleset, mapperUnitOfWork, security)
         {
             _unitOfWork = unitOfWork;
@@ -96,7 +96,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
         protected override IQueryFluent<CategoryFascicleRight> SetEntityIncludeOnDelete(IQueryFluent<CategoryFascicleRight> query)
         {
             return query.Include(i => i.CategoryFascicle.Category)
-                .Include(i => i.Role);
+                .Include(i => i.Role.TenantAOO);
         }
 
         protected override CategoryFascicleRight BeforeDelete(CategoryFascicleRight entity, CategoryFascicleRight entityTransformed)

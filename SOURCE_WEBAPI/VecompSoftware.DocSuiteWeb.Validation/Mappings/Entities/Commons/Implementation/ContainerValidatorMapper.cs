@@ -15,13 +15,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Commons
             entityTransformed.Name = entity.Name;
             entityTransformed.isActive = entity.isActive;
             entityTransformed.idArchive = entity.idArchive;
-            entityTransformed.Massive = entity.Massive;
             entityTransformed.Note = entity.Note;
             entityTransformed.Privacy = entity.Privacy;
-            entityTransformed.ActiveFrom = entity.ActiveFrom;
-            entityTransformed.ActiveTo = entity.ActiveTo;
-            entityTransformed.Conservation = entity.Conservation;
-            entityTransformed.ProtocolRejection = entity.ProtocolRejection;
             entityTransformed.HeadingFrontalino = entity.HeadingFrontalino;
             entityTransformed.HeadingLetter = entity.HeadingLetter;
             entityTransformed.RegistrationDate = entity.RegistrationDate;
@@ -31,17 +26,14 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Commons
             entityTransformed.UniqueId = entity.UniqueId;
             entityTransformed.AutomaticSecurityGroups = entity.AutomaticSecurityGroups;
             entityTransformed.PrefixSecurityGroupName = entity.PrefixSecurityGroupName;
-            entityTransformed.TenantId = entity.TenantId;
             entityTransformed.ContainerType = entity.ContainerType;
             entityTransformed.SecurityUserAccount = entity.SecurityUserAccount;
             entityTransformed.SecurityUserDisplayName = entity.SecurityUserDisplayName;
-            entityTransformed.ManageSecureDocument = entity.ManageSecureDocument;
             entityTransformed.PrivacyLevel = entity.PrivacyLevel;
             entityTransformed.PrivacyEnabled = entity.PrivacyEnabled;
             #endregion
 
             #region [ Navigation Properties ]
-            entityTransformed.ProtocolType = entity.ProtocolType;
             entityTransformed.DocmLocation = entity.DocmLocation;
             entityTransformed.ReslLocation = entity.ReslLocation;
             entityTransformed.ProtLocation = entity.ProtLocation;

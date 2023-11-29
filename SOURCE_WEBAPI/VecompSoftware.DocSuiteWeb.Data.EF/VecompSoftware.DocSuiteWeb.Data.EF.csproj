@@ -64,6 +64,7 @@
     <Compile Include="Mapping\Commons\MetadataValueMap.cs" />
     <Compile Include="Mapping\Commons\UserLogMap.cs" />
     <Compile Include="Mapping\DocumentArchives\DocumentSeriesItemLinkMap.cs" />
+    <Compile Include="Mapping\DocumentUnits\DocumentUnitContactMap.cs" />
     <Compile Include="Mapping\DocumentUnits\DocumentUnitFascicleCategoryMap.cs" />
     <Compile Include="Mapping\DocumentUnits\DocumentUnitFascicleHistoricizedCategoryMap.cs" />
     <Compile Include="Mapping\Fascicles\FascicleDocumentUnitMap.cs" />
@@ -102,10 +103,14 @@
     <Compile Include="Mapping\Fascicles\FascicleFolderMap.cs" />
     <Compile Include="Mapping\Monitors\TransparentAdministrationMonitorLogMap.cs" />
     <Compile Include="Mapping\Parameters\ParameterMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolJournalMap.cs" />
+    <Compile Include="Mapping\Protocols\ProtocolStatusMap.cs" />
     <Compile Include="Mapping\Resolutions\ResolutionDocumentSeriesItemMap.cs" />
     <Compile Include="Mapping\Resolutions\ResolutionKindDocumentSeriesMap.cs" />
     <Compile Include="Mapping\Resolutions\ResolutionKindMap.cs" />
     <Compile Include="Mapping\Resolutions\ResolutionLogMap.cs" />
+    <Compile Include="Mapping\Resolutions\WebPubblicationMap.cs" />
+    <Compile Include="Mapping\Tasks\TaskDetailMap.cs" />
     <Compile Include="Mapping\Tasks\TaskHeaderMap.cs" />
     <Compile Include="Mapping\Tasks\TaskHeaderProtocolMap.cs" />
     <Compile Include="Mapping\Templates\TemplateCollaborationMap.cs" />
@@ -147,10 +152,9 @@
     <Compile Include="Mapping\PECMails\PECMailLogMap.cs" />
     <Compile Include="Mapping\PECMails\PECMailMap.cs" />
     <Compile Include="Mapping\Protocols\ProtocolContactManualMap.cs" />
-    <Compile Include="Mapping\Protocols\ProtocolDraftMap.cs" />
+    <Compile Include="Mapping\Collaborations\CollaborationDraftMap.cs" />
     <Compile Include="Mapping\Protocols\ProtocolLogMap.cs" />
     <Compile Include="Mapping\Protocols\ProtocolContactMap.cs" />
-    <Compile Include="Mapping\Protocols\ProtocolParerMap.cs" />
     <Compile Include="Mapping\Protocols\ProtocolUserMap.cs" />
     <Compile Include="Mapping\Protocols\ProtocolRoleUserMap.cs" />
     <Compile Include="Mapping\Protocols\ProtocolRoleMap.cs" />
@@ -185,7 +189,11 @@
     <Compile Include="Mapping\Tenants\TenantConfigurationMap.cs" />
     <Compile Include="Mapping\Tenants\TenantMap.cs" />
     <Compile Include="Mapping\Tenants\TenantWorkflowRepositoryMap.cs" />
+    <Compile Include="Mapping\Tenders\TenderHeaderMap.cs" />
+    <Compile Include="Mapping\Tenders\TenderLotMap.cs" />
+    <Compile Include="Mapping\Tenders\TenderLotPaymentMap.cs" />
     <Compile Include="Mapping\UDS\UDSContactMap.cs" />
+    <Compile Include="Mapping\UDS\UDSFieldListMap.cs" />
     <Compile Include="Mapping\UDS\UDSMessageMap.cs" />
     <Compile Include="Mapping\UDS\UDSDocumentUnitMap.cs" />
     <Compile Include="Mapping\UDS\UDSCollaborationMap.cs" />
@@ -245,9 +253,7 @@
       <Name>VecompSoftware.DocSuiteWeb.Repository</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Mapping\NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

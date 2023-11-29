@@ -7,9 +7,9 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Fascicles
 {
     public static class FascicleDocumentFinder
     {
-        public static IQueryable<FascicleDocument> GetByIdFascicleFolder(this IRepository<FascicleDocument> repository, Guid idFascicleFolder, bool optimization = false, bool includ**REMOVE**igationProperties = true)
+        public static IQueryable<FascicleDocument> GetByIdFascicleFolder(this IRepository<FascicleDocument> repository, Guid idFascicleFolder, bool optimization = false, bool includeNavigationProperties = true)
         {
-            if (includ**REMOVE**igationProperties)
+            if (includeNavigationProperties)
             {
                 return repository.Query(x => x.FascicleFolder.UniqueId == idFascicleFolder, optimization: optimization)
                     .Include(i => i.FascicleFolder)

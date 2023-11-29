@@ -12,6 +12,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Commons
                 modelTransformed = new RoleModel
                 {
                     IdRole = model.Role_IdRole,
+                    EntityShortId = model.Role_IdRole,
                     Name = model.Role_Name
                 };
             }

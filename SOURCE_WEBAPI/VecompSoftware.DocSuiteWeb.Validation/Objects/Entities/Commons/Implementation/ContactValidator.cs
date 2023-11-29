@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -17,8 +18,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
     public class ContactValidator : ObjectValidator<Contact, ContactValidator>, IContactValidator
     {
         #region [ Constructor ]
-        public ContactValidator(ILogger logger, IContactValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public ContactValidator(ILogger logger, IContactValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         { }
 
         #endregion
@@ -43,13 +44,10 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
         public string EmailAddress { get; set; }
         public string CertifiedMail { get; set; }
         public string Note { get; set; }
-        public byte isActive { get; set; }
+        public bool isActive { get; set; }
         public byte? isLocked { get; set; }
         public byte? isNotExpandable { get; set; }
         public string FullIncrementalPath { get; set; }
-        public DateTime? ActiveFrom { get; set; }
-        public DateTime? ActiveTo { get; set; }
-        public short isChanged { get; set; }
         public string IdContactType { get; set; }
         public Guid UniqueId { get; set; }
         public string RegistrationUser { get; set; }

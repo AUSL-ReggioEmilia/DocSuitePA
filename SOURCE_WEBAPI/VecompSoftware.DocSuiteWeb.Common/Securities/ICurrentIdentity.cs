@@ -7,5 +7,7 @@
         string Account { get; }
 
         string Domain { get; }
+
+        bool IsServiceAccount { get; }
     }
 }

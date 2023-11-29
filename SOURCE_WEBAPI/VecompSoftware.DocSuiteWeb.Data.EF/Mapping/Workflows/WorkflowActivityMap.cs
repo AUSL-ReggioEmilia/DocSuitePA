@@ -82,6 +82,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Workflows
                 .HasColumnName("Note")
                 .IsOptional();
 
+            Property(x => x.IsVisible)
+                .HasColumnName("IsVisible")
+                .IsRequired();
+
             Ignore(x => x.EntityId)
                 .Ignore(x => x.EntityShortId);
             #endregion

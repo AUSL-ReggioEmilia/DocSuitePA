@@ -8,6 +8,8 @@ namespace VecompSoftware.DocSuiteWeb.Common.Infrastructures
 
         public string Model { get; set; }
 
+        public ReferenceBuildModelType ReferenceType { get; set; }
+
         public BuildActionType BuildType { get; set; }
     }
 }

@@ -1,6 +1,8 @@
-﻿using VecompSoftware.DocSuiteWeb.Common.Loggers;
+﻿using System.Linq;
+using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.PECMails;
+using VecompSoftware.DocSuiteWeb.Finder.PECMails;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Security;
 using VecompSoftware.DocSuiteWeb.Validation;
@@ -27,11 +29,22 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.PECMails
             _logger = logger;
         }
 
-        #endregion
+		#endregion
 
-        #region [ Methods  ]
+		#region [ Methods  ]
+		protected override PECMailReceipt BeforeCreate(PECMailReceipt entity)
+		{
+			if (entity.PECMail != null)
+			{
+				entity.PECMail = _unitOfWork.Repository<PECMail>().GetByUniqueId(entity.PECMail.UniqueId).SingleOrDefault();
+			}
+			if (entity.PECMailParent != null)
+			{
+				entity.PECMailParent = _unitOfWork.Repository<PECMail>().GetByUniqueId(entity.PECMailParent.UniqueId).SingleOrDefault();
+			}
+			return base.BeforeCreate(entity);
+		}
+		#endregion
 
-        #endregion
-
-    }
+	}
 }

@@ -51,7 +51,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
                     Name = entity.Name,
                     Code = 0,
                     StartDate = DateTimeOffset.UtcNow.Date,
-                    IsActive = ActiveType.Active
+                    IsActive = true
                 };
 
                 defaultCategory.CategorySchema = _unitOfWork.Repository<CategorySchema>().FindActiveCategorySchema();
@@ -82,7 +82,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
             parameter.LastUsedIdCategory++;
             parameter.LastUsedNumber = 0;
             parameter.Locked = false;
-            parameter.Version = 0;
             parameter.LastUsedResolutionYear = lastResolutionYear;
             parameter.LastUsedResolutionNumber = Convert.ToInt16(lastResolutionNumber + 1);
             parameter.LastUsedBillNumber = Convert.ToInt16(lastResolutionBillNumber + 1);

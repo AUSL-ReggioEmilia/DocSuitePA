@@ -69,21 +69,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
                 entity.Containers = containers;
             }
 
-            if (entity.Roles != null)
-            {
-                HashSet<Role> roles = new HashSet<Role>();
-                Role role = null;
-                foreach (Role item in entity.Roles)
-                {
-                    role = _unitOfWork.Repository<Role>().Find(item.EntityShortId);
-                    if (role != null)
-                    {
-                        roles.Add(role);
-                    }
-                }
-                entity.Roles = roles;
-            }
-
             if (entity.PECMailBoxes != null)
             {
                 HashSet<PECMailBox> pecMailBoxes = new HashSet<PECMailBox>();
@@ -114,21 +99,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
                 entity.TenantWorkflowRepositories = tenantWorkflowRepositories;
             }
 
-            if (entity.Contacts != null)
-            {
-                HashSet<Contact> tenantContacts = new HashSet<Contact>();
-                Contact tenantContact = null;
-                foreach (Contact item in entity.Contacts)
-                {
-                    tenantContact = _unitOfWork.Repository<Contact>().Find(item.EntityId);
-                    if (tenantContact != null)
-                    {
-                        tenantContacts.Add(tenantContact);
-                    }
-                }
-                entity.Contacts = tenantContacts;
-            }
-
             _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entity.UniqueId, null, TableLogEvent.INSERT, string.Concat("Inserimento OU ", entity.TenantName), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
 
             return base.BeforeCreate(entity);
@@ -138,10 +108,8 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
         {
             query.Include(d => d.Configurations)
                 .Include(d => d.Containers)
-                .Include(d => d.Roles)
                 .Include(d => d.PECMailBoxes)
-                .Include(d => d.TenantWorkflowRepositories)
-                .Include(d => d.Contacts);
+                .Include(d => d.TenantWorkflowRepositories);
             return query;
         }
 
@@ -166,20 +134,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
                             _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimossa la configurazione '", configuration.Tenant != null ? configuration.Tenant.TenantName : "", "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
                             break;
                         }
-                    case UpdateActionType.TenantContactAdd:
-                        {
-                            Contact contact = entity.Contacts.FirstOrDefault();
-                            entityTransformed.Contacts.Add(_unitOfWork.Repository<Contact>().Find(contact.EntityId));
-                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto il contatto '", contact.Description, "'"), typeof(Contact).Name, CurrentDomainUser.Account));
-                            break;
-                        }
-                    case UpdateActionType.TenantContactRemove:
-                        {
-                            Contact contact = entityTransformed.Contacts.FirstOrDefault(x=>x.EntityId == entity.Contacts.FirstOrDefault().EntityId);
-                            entityTransformed.Contacts.Remove(contact);
-                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il contatto '", contact.Description, "'"), typeof(Contact).Name, CurrentDomainUser.Account));
-                            break;
-                        }
                     case UpdateActionType.TenantContainerAdd:
                         {
                             Container container = entity.Containers.FirstOrDefault();
@@ -192,22 +146,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
                             Container container = entityTransformed.Containers.FirstOrDefault(x=>x.EntityShortId == entity.Containers.FirstOrDefault().EntityShortId);
                             entityTransformed.Containers.Remove(container);
                             _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il contenitore '", container.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                            break;
-                        }
-                    case UpdateActionType.TenantRoleAdd:
-                        {
-                            foreach (Role role in entity.Roles)
-                            {
-                                entityTransformed.Roles.Add(_unitOfWork.Repository<Role>().Find(role.EntityShortId));
-                                _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.INSERT, string.Concat("Aggiunto il settore '", role.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
-                            }
-                            break;
-                        }
-                    case UpdateActionType.TenantRoleRemove:
-                        {
-                            Role role = entityTransformed.Roles.FirstOrDefault(x => x.EntityShortId == entity.Roles.FirstOrDefault().EntityShortId);
-                            entityTransformed.Roles.Remove(role);
-                            _unitOfWork.Repository<TableLog>().Insert(TableLogService.CreateLog(entityTransformed.UniqueId, null, TableLogEvent.DELETE, string.Concat("Rimosso il settore '", role.Name, "'"), typeof(TenantConfiguration).Name, CurrentDomainUser.Account));
                             break;
                         }
                     case UpdateActionType.TenantPECMailBoxAdd:
@@ -246,26 +184,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Tenants
                     case UpdateActionType.TenantContainerRemoveAll:
                         {
                             entityTransformed.Containers.Clear();
-                            break;
-                        }
-                    case UpdateActionType.TenantRoleAddAll:
-                        {
-                            entityTransformed.Roles = _unitOfWork.Repository<Role>().Queryable(true).ToList();
-                            break;
-                        }
-                    case UpdateActionType.TenantRoleRemoveAll:
-                        {
-                            entityTransformed.Roles.Clear();
-                            break;
-                        }
-                    case UpdateActionType.TenantContactAddAll:
-                        {
-                            entityTransformed.Contacts = _unitOfWork.Repository<Contact>().Queryable(true).ToList();
-                            break;
-                        }
-                    case UpdateActionType.TenantContactRemoveAll:
-                        {
-                            entityTransformed.Contacts.Clear();
                             break;
                         }
                 }

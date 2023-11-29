@@ -3,6 +3,7 @@ using Microsoft.Practices.ObjectBuilder2;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
@@ -22,6 +23,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects
 
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly ISecurity _currentSecurity;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         private readonly ILogger _logger;
         private readonly IValidatorMapper<T, E> _mapper;
         private static IEnumerable<LogCategory> _logCategories = null;
@@ -44,6 +46,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects
         public IDataUnitOfWork UnitOfWork => _unitOfWork;
 
         public ISecurity CurrentSecurity => _currentSecurity;
+        public IDecryptedParameterEnvService ParameterEnvService => _parameterEnvService;
 
         public ObjectValidator<T, E> Self => this;
 
@@ -51,12 +54,13 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects
 
         #region [ Constructor ]
 
-        public ObjectValidator(ILogger logger, IValidatorMapper<T, E> mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
+        public ObjectValidator(ILogger logger, IValidatorMapper<T, E> mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvService)
         {
             _logger = logger;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _currentSecurity = currentSecurity;
+            _parameterEnvService = parameterEnvService;
         }
 
         #endregion

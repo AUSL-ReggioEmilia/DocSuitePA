@@ -28,6 +28,11 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
         #endregion
 
         #region [ Methods ]
+        protected override FascicleLog BeforeCreate(FascicleLog entity)
+        {
+            entity = FascicleService.CreateLog(entity.Entity, entity.LogType, entity.LogDescription, entity.RegistrationUser);
+            return base.BeforeCreate(entity);
+        }
 
         #endregion
 

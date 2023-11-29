@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
@@ -12,8 +13,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Templates
     {
         #region [ Constructor ]
 
-        public TemplateCollaborationDocumentRepositoryValidator(ILogger logger, ITemplateCollaborationDocumentRepositoryValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentsecurity)
-            : base(logger, mapper, unitOfWork, currentsecurity) { }
+        public TemplateCollaborationDocumentRepositoryValidator(ILogger logger, ITemplateCollaborationDocumentRepositoryValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentsecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentsecurity, parameterEnvSecurity) { }
         #endregion
 
         #region [ Properties ]

@@ -11,6 +11,7 @@ using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
+using VecompSoftware.DocSuiteWeb.Common.Securities;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
@@ -40,7 +41,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
     public class WorkflowStartService : WorkflowBaseService<WorkflowStart>, IWorkflowStartService, IDisposable
     {
         #region [ Fields ]
-        private const string _biblos_attribute_signature = "signature";
 
         private readonly IWorkflowInstanceService _workflowInstanceService;
         private readonly IDataUnitOfWork _unitOfWork;
@@ -57,15 +57,15 @@ namespace VecompSoftware.DocSuiteWeb.Service.Workflow
             IWorkflowInstanceRoleService workflowInstanceRoleService, IWorkflowActivityService workflowActivityService,
             ITopicService topicServiceBus, ICQRSMessageMapper mapper_eventServiceBusMessage,
             IDataUnitOfWork unitOfWork, StorageDocument.IDocumentContext<ModelDocument.Document, ModelDocument.ArchiveDocument> documentService,
-            ICollaborationService collaborationService, ISecurity security, IParameterEnvService parameterEnvService, IFascicleRoleService fascicleRoleService,
+            ICollaborationService collaborationService, ISecurity security, IDecryptedParameterEnvService parameterEnvService, IFascicleRoleService fascicleRoleService,
             IMessageService messageService, IDossierRoleService dossierRoleService, IQueueService queueService, IWordOpenXmlDocumentGenerator wordOpenXmlDocumentGenerator,
             IMessageConfiguration messageConfiguration, IProtocolLogService protocolLogService, IPDFDocumentGenerator pdfDocumentGenerator,
             IFascicleService fascicleService, IFascicleDocumentService fascicleDocumentService, IFascicleFolderService fascicleFolderService,
-            IFascicleDocumentUnitService fascDocumentUnitService, IFascicleLinkService fascicleLinkService)
+            IFascicleDocumentUnitService fascDocumentUnitService, IFascicleLinkService fascicleLinkService, IEncryptionKey encryptionKey, StorageDocument.DocumentProxy.IDocumentProxyContext documentProxyContext)
             : base(logger, workflowInstanceService, workflowInstanceRoleService, workflowActivityService, topicServiceBus, mapper_eventServiceBusMessage,
                   unitOfWork, documentService, collaborationService, security, parameterEnvService, fascicleRoleService, messageService, dossierRoleService, queueService,
                   wordOpenXmlDocumentGenerator, messageConfiguration, protocolLogService, pdfDocumentGenerator, fascicleService, fascicleDocumentService, fascicleFolderService,
-                  fascDocumentUnitService, fascicleLinkService)
+                  fascDocumentUnitService, fascicleLinkService, encryptionKey, documentProxyContext)
         {
             _unitOfWork = unitOfWork;
             _workflowInstanceService = workflowInstanceService;

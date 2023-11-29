@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
-using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Finder.Dossiers;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Commons;
@@ -28,18 +28,20 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Dossiers
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly IMapperUnitOfWork _mapperUnitOfwork;
         private readonly IMetadataFilterFactory _metadataFilterFactory;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
 
         #endregion
 
         #region [ Constructor ]
 
-        public DossiersController(IDossierService service, IDataUnitOfWork unitOfWork, ILogger logger, IMapperUnitOfWork mapperUnitOfWork, ISecurity security, IMetadataFilterFactory metadataFilterFactory)
+        public DossiersController(IDossierService service, IDataUnitOfWork unitOfWork, ILogger logger, IMapperUnitOfWork mapperUnitOfWork, ISecurity security, IMetadataFilterFactory metadataFilterFactory, IDecryptedParameterEnvService parameterEnvService)
             : base(service, unitOfWork, logger, security)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _mapperUnitOfwork = mapperUnitOfWork;
             _metadataFilterFactory = metadataFilterFactory;
+            _parameterEnvService = parameterEnvService;
         }
 
         #endregion
@@ -54,7 +56,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Dossiers
                 DossierFinderModel finder = parameter[ODataConfig.ODATA_FINDER_PARAMETER] as DossierFinderModel;
                 IDictionary<string, string> metadataValues = finder.MetadataValues.ToDictionary(d => d.KeyName, d => _metadataFilterFactory.CreateMetadataFilter(d).ToFilter());
                 ICollection<DossierTableValuedModel> dossierResults = _unitOfWork.Repository<Dossier>().GetAuthorized(Username, Domain, finder.Skip, finder.Top, finder.Year, finder.Number, finder.Subject, finder.IdContainer, finder.StartDateFrom,
-                    finder.StartDateTo, finder.EndDateFrom, finder.EndDateTo, finder.Note, finder.IdMetadataRepository, finder.MetadataValue, metadataValues, finder.IdCategory, finder.DossierType, finder.Status);
+                    finder.StartDateTo, finder.EndDateFrom, finder.EndDateTo, finder.Note, finder.IdMetadataRepository, finder.MetadataValue, metadataValues, finder.IdCategory, finder.DossierType, finder.Status, _parameterEnvService.ForceDescendingOrderElements);
                 ICollection<DossierModel> dossierModels = _mapperUnitOfwork.Repository<IDomainMapper<DossierTableValuedModel, DossierModel>>().MapCollection(dossierResults);
 
                 return Ok(dossierModels);
@@ -75,8 +77,6 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Dossiers
             }, _logger, LogCategories);
         }
 
-
-
         [HttpGet]
         public IHttpActionResult GetCompleteDossier(ODataQueryOptions<Dossier> options, Guid uniqueId)
         {
@@ -88,8 +88,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Dossiers
                 return Ok(dossierModel);
             }, _logger, LogCategories);
         }
-
-
+        
+        [HttpGet]
         public IHttpActionResult GetByUniqueId(ODataQueryOptions<Dossier> options, Guid uniqueId)
         {
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>

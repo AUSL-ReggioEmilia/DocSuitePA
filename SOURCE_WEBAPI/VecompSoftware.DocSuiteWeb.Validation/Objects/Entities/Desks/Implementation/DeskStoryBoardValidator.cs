@@ -1,5 +1,6 @@
 ﻿using Microsoft.Practices.EnterpriseLibrary.Validation.Validators;
 using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Desks;
@@ -11,8 +12,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Desks
     [HasSelfValidation]
     public class DeskStoryBoardValidator : ObjectValidator<DeskStoryBoard, DeskStoryBoardValidator>, IDeskStoryBoardValidator
     {
-        public DeskStoryBoardValidator(ILogger logger, IDeskStoryBoardValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public DeskStoryBoardValidator(ILogger logger, IDeskStoryBoardValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #region [ Properties ]
         public Guid UniqueId { get; set; }

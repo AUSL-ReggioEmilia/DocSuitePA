@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -18,8 +19,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
     public class ContainerValidator : ObjectValidator<Container, ContainerValidator>, IContainerValidator
     {
         #region [ Constructor ]
-        public ContainerValidator(ILogger logger, IContainerValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public ContainerValidator(ILogger logger, IContainerValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         { }
 
         #endregion
@@ -29,12 +30,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
         public short EntityShortId { get; set; }
         public string Name { get; set; }
         public string Note { get; set; }
-        public byte? isActive { get; set; }
-        public byte? Massive { get; set; }
-        public short? Conservation { get; set; }
-        public byte? ProtocolRejection { get; set; }
-        public DateTime? ActiveFrom { get; set; }
-        public DateTime? ActiveTo { get; set; }
+        public bool isActive { get; set; }
         public int? idArchive { get; set; }
         public byte? Privacy { get; set; }
         public string HeadingFrontalino { get; set; }
@@ -48,9 +44,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
         public string PrefixSecurityGroupName { get; set; }
         public string SecurityUserAccount { get; set; }
         public string SecurityUserDisplayName { get; set; }
-        public Guid? TenantId { get; set; }
         public ContainerType? ContainerType { get; set; }
-        public bool ManageSecureDocument { get; set; }
         public int PrivacyLevel { get; set; }
         public bool PrivacyEnabled { get; set; }
 
@@ -66,7 +60,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
         public Location DocumentSeriesLocation { get; set; }
         public Location DocumentSeriesUnpublishedAnnexedLocation { get; set; }
         public Location ProtAttachLocation { get; set; }
-        public ProtocolType ProtocolType { get; set; }
         public ICollection<Protocol> Protocols { get; set; }
         public ICollection<Resolution> Resolutions { get; set; }
         public ICollection<DocumentSeries> DocumentSeries { get; set; }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuiteWeb.Entity.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
 using VecompSoftware.DocSuiteWeb.Entity.Fascicles;
 using VecompSoftware.DocSuiteWeb.Entity.OCharts;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
-using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Commons
@@ -24,8 +24,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
             CategoryFascicles = new HashSet<CategoryFascicle>();
             ResolutionContacts = new HashSet<ResolutionContact>();
             UDSContacts = new HashSet<UDSContact>();
-            Tenants = new HashSet<Tenant>();
             MetadataValueContacts = new HashSet<MetadataValueContact>();
+            DocumentUnitContacts = new HashSet<DocumentUnitContact>();
         }
 
         #endregion
@@ -50,12 +50,9 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         public DateTime? BirthDate { get; set; }
         public string BirthPlace { get; set; }
         public string SearchCode { get; set; }
-        public byte IsActive { get; set; }
+        public bool IsActive { get; set; }
         public byte? IsLocked { get; set; }
         public byte? IsNotExpandable { get; set; }
-        public DateTime? ActiveFrom { get; set; }
-        public DateTime? ActiveTo { get; set; }
-        public short IsChanged { get; set; }
         public string IdContactType { get; set; }
         public string Nationality { get; set; }
         public LanguageType? Language { get; set; }
@@ -75,8 +72,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         public virtual ICollection<CategoryFascicle> CategoryFascicles { get; set; }
         public virtual ICollection<Dossier> Dossiers { get; set; }
         public virtual ICollection<UDSContact> UDSContacts { get; set; }
-        public virtual ICollection<Tenant> Tenants { get; set; }
         public virtual ICollection<MetadataValueContact> MetadataValueContacts { get; set; }
+        public virtual ICollection<DocumentUnitContact> DocumentUnitContacts { get; set; }
         #endregion
     }
 }

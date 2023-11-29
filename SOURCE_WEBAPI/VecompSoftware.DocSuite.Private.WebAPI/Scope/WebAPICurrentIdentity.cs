@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Security.Principal;
 using System.Web;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Securities;
 
 namespace VecompSoftware.DocSuite.Private.WebAPI.Scope
@@ -51,11 +54,10 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Scope
                 return _domain;
             }
         }
-
+        public bool IsServiceAccount => FullUserName.Equals(WindowsIdentity.GetCurrent().Name, StringComparison.InvariantCultureIgnoreCase);
         #endregion
 
         #region [ Constructor ]
-
         #endregion
     }
 }

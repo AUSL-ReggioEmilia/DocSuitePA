@@ -35,6 +35,11 @@ namespace VecompSoftware.DocSuiteWeb.Model.Documents
         public string Name { get; set; }
 
         /// <summary>
+        /// Segnatura del documento
+        /// </summary>
+        public string Signature { get; set; }
+
+        /// <summary>
         /// Nome archivio
         /// </summary>
         public string Archive { get; set; }

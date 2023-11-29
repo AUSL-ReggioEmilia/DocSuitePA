@@ -32,7 +32,7 @@ namespace VecompSoftware.DocSuiteWeb.CustomValidation.Entities.Protocols
                 category = CurrentUnitOfWork.Repository<Category>().GetById(objectToValidate.Category.EntityShortId).FirstOrDefault();
             }
             if (category == null ||
-                (category != null && category.IsActive.HasValue && category.IsActive.Value == ActiveType.Disabled))
+                (category != null && !category.IsActive))
             {
                 GenerateInvalidateResult();
             }

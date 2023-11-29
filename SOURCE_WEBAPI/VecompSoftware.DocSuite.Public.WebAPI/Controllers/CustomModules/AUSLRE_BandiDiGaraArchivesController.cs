@@ -1,21 +1,30 @@
 ﻿using Microsoft.AspNet.OData;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
+using VecompSoftware.DocSuite.Document;
+using VecompSoftware.DocSuite.Public.Core.Models.Customs.AUSL_RE.BandiDiGara;
+using VecompSoftware.DocSuite.Public.Core.Models.Domains.UDS;
 using VecompSoftware.DocSuite.Public.Core.Models.Workflows.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
-using CommonHelpers = VecompSoftware.DocSuite.WebAPI.Common.Helpers;
+using VecompSoftware.DocSuiteWeb.Entity.UDS;
+using VecompSoftware.DocSuiteWeb.Repository;
+using VecompSoftware.DocSuiteWeb.Repository.Parameters;
 using BandiDiGaraModels = VecompSoftware.DocSuite.Public.Core.Models.Customs.AUSL_RE.BandiDiGara;
-using VecompSoftware.DocSuite.Public.Core.Models.Customs.AUSL_RE.BandiDiGara;
+using CommonHelpers = VecompSoftware.DocSuite.WebAPI.Common.Helpers;
+using ModelDocument = VecompSoftware.DocSuiteWeb.Model.Documents;
 
 namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.CustomModules
 {
     [LogCategory(LogCategoryDefinition.ODATAAPI)]
     [EnableQuery]
     [AllowAnonymous]
+
     public class AUSLRE_BandiDiGaraArchivesController : ODataController
     {
         #region [ Fields ]
@@ -23,6 +32,9 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.CustomModules
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
         private readonly Guid _instanceId;
+        private readonly IDocumentContext<ModelDocument.Document, ModelDocument.ArchiveDocument> _documentService;
+        private static string _dataScadenza = "DataScadenza";
+        private static string _dataPubblicazione = "DataPubblicazione";
         #endregion
 
         #region [ Properties ]
@@ -46,11 +58,12 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.CustomModules
         #endregion
 
         #region [ Constructor ]
-        public AUSLRE_BandiDiGaraArchivesController(IDataUnitOfWork unitOfWork, ILogger logger)
+        public AUSLRE_BandiDiGaraArchivesController(IDataUnitOfWork unitOfWork, ILogger logger, IDocumentContext<ModelDocument.Document, ModelDocument.ArchiveDocument> documentService)
             : base()
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _documentService = documentService;
             _instanceId = Guid.NewGuid();
         }
         #endregion
@@ -62,7 +75,9 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.CustomModules
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
                 ArchiveFinderModel finder = parameter[ODataConfig.ODATA_FINDER_PARAMETER] as ArchiveFinderModel;
-                int count = 8;
+
+                int count = RetrieveCountActiveStatusForBandi(finder);
+
                 return Ok(count);
             }, _logger, _logCategories);
         }
@@ -73,64 +88,88 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Controllers.CustomModules
             return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
             {
                 ArchiveFinderModel finder = parameter[ODataConfig.ODATA_FINDER_PARAMETER] as ArchiveFinderModel;
-                ICollection<BandiDiGaraModels.ArchiveModel> archives = new List<BandiDiGaraModels.ArchiveModel>
+                List<AUSLRE_BandiModel_TableValue> resultModel = new List<AUSLRE_BandiModel_TableValue>();
+
+                resultModel = RetrieveResultsFilteredForBandi(finder);
+
+                List<BandiDiGaraModels.ArchiveModel> archives = new List<BandiDiGaraModels.ArchiveModel>();
+                foreach (AUSLRE_BandiModel_TableValue model in resultModel)
                 {
-                    new BandiDiGaraModels.ArchiveModel
+                    archives.Add(new BandiDiGaraModels.ArchiveModel()
                     {
-                        ArchiveName = "Test Nome Archive 1",
-                        Subject = "Test Oggetto Archive 1",
-                        RegistrationDate = new DateTimeOffset(),
-                    },
-                    new BandiDiGaraModels.ArchiveModel
-                    {
-                        ArchiveName = "Test Nome Archive 2",
-                        Subject = "Test Oggetto Archive 2",
-                        RegistrationDate = new DateTimeOffset(),
-                    },
-                    new BandiDiGaraModels.ArchiveModel
-                    {
-                        ArchiveName = "Test Nome Archive 3",
-                        Subject = "Test Oggetto Archive 3",
-                        RegistrationDate = new DateTimeOffset(),
-                    },
-                    new BandiDiGaraModels.ArchiveModel
-                    {
-                        ArchiveName = "Test Nome Archive 4",
-                        Subject = "Test Oggetto Archive 4",
-                        RegistrationDate = new DateTimeOffset(),
-                    }
-                };
+                        UniqueId = model.UDSId,
+                        Subject = model.Subject,
+                        Metadatas = new List<MetadataModel>()
+                        {
+                            new MetadataModel("Data pubblicazione", $"{model.DataPubblicazione: dd/MM/yyyy}", null, string.Empty, string.Empty),
+                            new MetadataModel("Data scadenza", $"{model.DataScadenza: dd/MM/yyyy}", null, string.Empty, string.Empty),
+                            new MetadataModel("Categoria", model.Categoria, null, string.Empty, string.Empty)
+                        }
+                    });
+                }
 
                 return Ok(archives);
             }, _logger, _logCategories);
         }
 
         [HttpGet]
-        public IHttpActionResult GetArchiveInfo(Guid uniqueId)
+        public async Task<BandiDiGaraModels.ArchiveModel> GetArchiveInfo(Guid uniqueId)
         {
-            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            return await CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(async () =>
             {
-                BandiDiGaraModels.ArchiveModel archive = new BandiDiGaraModels.ArchiveModel
-                {
-                    ArchiveName = "Test Nome Archive 1",
-                    Subject = "Test Oggetto Archive 1",
-                    RegistrationDate = new DateTimeOffset(),
-                    Documents = new List<Core.Models.Domains.Commons.DocumentModel>
-                    {
-                        new Core.Models.Domains.Commons.DocumentModel(new Guid(), "doc1.pdf"),
-                        new Core.Models.Domains.Commons.DocumentModel(new Guid(), "doc2.pdf")
-                    },
-                    Metadatas = new List<MetadataModel>
-                    {
-                        new MetadataModel("Metadato 1 Key", "Metadato 1 Value", new Guid()),
-                        new MetadataModel("Metadato 2 Key", "Metadato 2 Value", new Guid())
-                    }
-                };
+                ICollection<AUSLRE_BandiModel_TableValue> resultModels = _unitOfWork.Repository<UDSFieldList>().ExecuteModelFunction<AUSLRE_BandiModel_TableValue>(CommonDefinition.SQL_FX_Get_UDS_T_BandiDiGara_GetArchiveInfo,
+                    new QueryParameter(CommonDefinition.SQL_Param_UDSFieldList_IdUDS, uniqueId));
 
-                return Ok(archive);
+                AUSLRE_BandiModel_TableValue tableValue = resultModels.FirstOrDefault();
+                List<ModelDocument.Document> documents = new List<ModelDocument.Document>();
+                BandiDiGaraModels.ArchiveModel result = new BandiDiGaraModels.ArchiveModel()
+                {
+                    UniqueId = tableValue.UDSId,
+                    Subject = tableValue.Subject,
+                    Metadatas = new List<MetadataModel>()
+                        {
+                            new MetadataModel(tableValue.DataScadenzaLabel, $"{tableValue.DataScadenza: dd/MM/yyyy}", null, string.Empty, string.Empty),
+                            new MetadataModel(tableValue.DataPubblicazioneLabel, $"{tableValue.DataPubblicazione: dd/MM/yyyy}", null, string.Empty, string.Empty),
+                            new MetadataModel("Categoria", tableValue.Categoria, null, string.Empty, string.Empty),
+                            new MetadataModel("Descrizione", tableValue.Descrizione, null, string.Empty, string.Empty),
+                            new MetadataModel("Informazioni", string.IsNullOrEmpty(tableValue.Informazioni)?string.Empty:tableValue.Informazioni, null, string.Empty, string.Empty),
+                            new MetadataModel("Link esterno", string.IsNullOrEmpty(tableValue.LinkEsterno)?string.Empty:tableValue.LinkEsterno, null, string.Empty, string.Empty)
+                        },
+                };
+               
+                foreach (Guid idDocument in resultModels.Where(x => x.IdDocument.HasValue).Select(x => x.IdDocument.Value))
+                {
+                    documents.AddRange(await _documentService.GetDocumentsFromChainAsync(idDocument));
+                }
+                result.Documents = documents.OrderBy(f=> f.CreatedDate.Value).Select(f=> new Core.Models.Domains.Commons.DocumentModel(f.IdDocument, f.Name)).ToList();
+
+                return result;
             }, _logger, _logCategories);
         }
 
+        public int RetrieveCountActiveStatusForBandi(ArchiveFinderModel finder)
+        {
+            return _unitOfWork.Repository<UDSFieldList>().ExecuteModelScalarFunction<int>(CommonDefinition.SQL_FX_Get_UDS_T_BandiDiGara_CountActiveStatus,
+                       new QueryParameter(CommonDefinition.SQL_Param_UDS_SelectedMenuUniqueId, finder.ChildMenuUniqueId == Guid.Empty ? finder.ParentMenuUniqueId : finder.ChildMenuUniqueId),
+                        new QueryParameter(CommonDefinition.SQL_Param_UDS_Subject, string.IsNullOrEmpty(finder.Subject) ? string.Empty : finder.Subject),
+                        new QueryParameter(CommonDefinition.SQL_Param_UDS_Year, (short)finder.Year),
+                        new QueryParameter(CommonDefinition.SQL_Param_UDS_IsIntranet, finder.IsIntranet));
+        }
+
+        public List<AUSLRE_BandiModel_TableValue> RetrieveResultsFilteredForBandi(ArchiveFinderModel finder)
+        {
+            return _unitOfWork.Repository<UDSFieldList>().ExecuteModelFunction<AUSLRE_BandiModel_TableValue>(
+                        finder.OrderColumn == _dataScadenza && !finder.OrderByDesc ?
+                            CommonDefinition.SQL_FX_Get_UDS_T_BandiDiGara_FilterByDataScadenzaASC : finder.OrderColumn == _dataScadenza && finder.OrderByDesc ?
+                            CommonDefinition.SQL_FX_Get_UDS_T_BandiDiGara_FilterByDataScadenzaDESC : finder.OrderColumn == _dataPubblicazione && !finder.OrderByDesc ?
+                            CommonDefinition.SQL_FX_Get_UDS_T_BandiDiGara_FilterByDataPubblicazioneDESC : CommonDefinition.SQL_FX_Get_UDS_T_BandiDiGara_FilterByDataPubblicazioneASC,
+                      new QueryParameter(CommonDefinition.SQL_Param_UDS_SelectedMenuUniqueId, finder.ChildMenuUniqueId == Guid.Empty ? finder.ParentMenuUniqueId : finder.ChildMenuUniqueId),
+                      new QueryParameter(CommonDefinition.SQL_Param_UDS_Subject, string.IsNullOrEmpty(finder.Subject) ? string.Empty : finder.Subject),
+                      new QueryParameter(CommonDefinition.SQL_Param_UDS_Year, (short)finder.Year),
+                      new QueryParameter(CommonDefinition.SQL_Param_UDS_IsIntranet, finder.IsIntranet),
+                      new QueryParameter(CommonDefinition.SQL_Param_UDS_Skip, finder.Skip),
+                      new QueryParameter(CommonDefinition.SQL_Param_UDS_Top, finder.Top)).ToList();
+        }
         #endregion
     }
 }

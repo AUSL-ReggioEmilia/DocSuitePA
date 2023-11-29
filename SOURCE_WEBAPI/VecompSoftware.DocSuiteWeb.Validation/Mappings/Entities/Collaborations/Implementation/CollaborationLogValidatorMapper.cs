@@ -19,7 +19,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Collaborations
             entityTransformed.LogDescription = entity.LogDescription;
             entityTransformed.LogType = entity.LogType;
             entityTransformed.Program = entity.Program;
-            entityTransformed.SessionId = entity.SessionId;
             entityTransformed.Severity = entity.Severity;
             entityTransformed.SystemComputer = entity.SystemComputer;
             entityTransformed.RegistrationUser = entity.RegistrationUser;

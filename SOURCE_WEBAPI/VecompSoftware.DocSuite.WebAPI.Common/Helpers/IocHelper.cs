@@ -217,6 +217,16 @@ using VecompSoftware.Services.Command.CQRS.Commands;
 using VecompSoftware.Services.Command.CQRS.Events;
 using ModelDocument = VecompSoftware.DocSuiteWeb.Model.Documents;
 using WorkflowManager = VecompSoftware.DocSuiteWeb.Validation.RulesetDefinitions.Workflows;
+using VecompSoftware.DocSuiteWeb.Service.Entity.Tenders;
+using VecompSoftware.DocSuiteWeb.Entity.Tenders;
+using VecompSoftware.DocSuiteWeb.Mapper.Entity.Tenders;
+using VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Tenders;
+using VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Tenders;
+using VecompSoftware.DocSuiteWeb.Validation.RulesetDefinitions.Entities.Tenders;
+using VecompSoftware.DocSuite.WebAPI.Common.Configurations;
+using VecompSoftware.DocSuiteWeb.Mapper.Model.Conservations;
+using VecompSoftware.DocSuiteWeb.Model.Entities.Conservations;
+using VecompSoftware.DocSuite.Document.DocumentProxy;
 
 namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
 {
@@ -224,7 +234,7 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
     {
         public static IDependencyResolver Initialize<TUnityConfig, TCurrentIdentity>(this IUnityContainer container,
             string UDSAssemblyFullName, string UDSAssemblyFileName, string serviceBusConnectionString,
-            string messageConfigurationConfigPath, string customInstanceName,
+            string messageConfigurationConfigPath, string customInstanceName, string passwordEncryptionKey,
             TimeSpan autoDeleteOnIdle, TimeSpan defaultMessageTimeToLive, TimeSpan lockDuration, int maxDeliveryCount)
             where TUnityConfig : ILocator
             where TCurrentIdentity : ICurrentIdentity
@@ -232,7 +242,9 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
             container.AddNewExtension<Interception>();
             IDependencyResolver resolver = new UnityHierarchicalDependencyResolver(container);
 
+            EncryptionKey encryptionKeyInstance = new EncryptionKey { Value = WebApiConfiguration.PasswordEncryptionKey };
             container
+                .RegisterInstance<IEncryptionKey>(encryptionKeyInstance, new ContainerControlledLifetimeManager())
                 .RegisterType<ILogger, GlobalLogger>(new HierarchicalLifetimeManager())
                 .RegisterType<ILocator, TUnityConfig>(new HierarchicalLifetimeManager())
                 .RegisterType<IMapperUnitOfWork, MapperUnitOfWork>(new HierarchicalLifetimeManager())
@@ -246,11 +258,23 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IMessageConfiguration, MessageConfiguration>(new HierarchicalLifetimeManager(),
                             new InjectionConstructor(messageConfigurationConfigPath));
 
-            container
-                .RegisterType<IDocumentContext<ModelDocument.Document, ModelDocument.ArchiveDocument>, DocumentBiblosDS>(new HierarchicalLifetimeManager());
-            ILogger logger = (ILogger)resolver.BeginScope().GetService(typeof(ILogger));
+            container                                           
+                .RegisterType<IDocumentContext<ModelDocument.Document, ModelDocument.ArchiveDocument>, DocumentBiblosDS>(new HierarchicalLifetimeManager());            
 
-            container
+			ILogger logger = (ILogger)resolver.BeginScope().GetService(typeof(ILogger));
+
+			container.RegisterType<IDocumentProxyContext>(new InjectionFactory((c) => null));
+			if (!string.IsNullOrWhiteSpace(WebApiConfiguration.DocumentProxyGrpcEndpoint))
+            {
+				container.RegisterType<IDocumentProxyContext, DocumentProxyContext>(new HierarchicalLifetimeManager(),
+						new InjectionConstructor(logger,
+						WebApiConfiguration.DocumentProxyGrpcEndpoint,
+						WebApiConfiguration.DocumentProxyIdentityAccount ?? string.Empty,
+						WebApiConfiguration.DocumentProxyIdentityUniqueId.Value,
+						WebApiConfiguration.DocumentProxyPEMCertificate ?? string.Empty));
+			}
+
+			container
                 .RegisterType<IMetadataFilterFactory, MetadataFilterFactory>(new HierarchicalLifetimeManager());
 
             #region [ Parameters ]
@@ -258,7 +282,13 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
             #region [ Services ]
 
             container
-                .RegisterType<IParameterEnvService, ParameterEnvService>(new HierarchicalLifetimeManager(),
+                .RegisterType<IEncryptedParameterEnvService, EncryptedParameterEnvService>(new HierarchicalLifetimeManager(),
+                   new InjectionProperty("CustomInstanceName", customInstanceName),
+                   new Interceptor<InterfaceInterceptor>(),
+                   new InterceptionBehavior<ServicesLogging>());
+
+            container
+                .RegisterType<IDecryptedParameterEnvService, DecryptedParameterEnvService>(new HierarchicalLifetimeManager(),
                    new InjectionProperty("CustomInstanceName", customInstanceName),
                    new Interceptor<InterfaceInterceptor>(),
                    new InterceptionBehavior<ServicesLogging>());
@@ -772,8 +802,6 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IDomainMapper<DocumentSeriesItem, DocumentSeriesItem>, DocumentSeriesItemMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentSeriesItemLinkMapper, DocumentSeriesItemLinkMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<DocumentSeriesItemLink, DocumentSeriesItemLink>, DocumentSeriesItemLinkMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<IDocumentSeriesItemCollaborationTableValueModelMapper, DocumentSeriesItemCollaborationTableValueModelMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<IDomainMapper<CollaborationTableValuedModel, DocumentSeriesItemModel>, DocumentSeriesItemCollaborationTableValueModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentSeriesItemModelMapper, DocumentSeriesItemModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<DocumentSeriesItem, DocumentSeriesItemModel>, DocumentSeriesItemModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentSeriesItemRoleMapper, DocumentSeriesItemRoleMapper>(new HierarchicalLifetimeManager())
@@ -822,6 +850,9 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IDocumentUnitChainService, DocumentUnitChainService>(new HierarchicalLifetimeManager(),
                     new Interceptor<InterfaceInterceptor>(),
                     new InterceptionBehavior<ServicesLogging>())
+                .RegisterType<IDocumentUnitContactService, DocumentUnitContactService>(new HierarchicalLifetimeManager(),
+                    new Interceptor<InterfaceInterceptor>(),
+                    new InterceptionBehavior<ServicesLogging>())
                 .RegisterType<IDocumentUnitUserService, DocumentUnitUserService>(new HierarchicalLifetimeManager(),
                     new Interceptor<InterfaceInterceptor>(),
                     new InterceptionBehavior<ServicesLogging>())
@@ -843,6 +874,7 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IValidator<DocumentUnit>, DocumentUnitValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<DocumentUnitRole>, DocumentUnitRoleValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<DocumentUnitChain>, DocumentUnitChainValidator>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidator<DocumentUnitContact>, DocumentUnitContactValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<DocumentUnitFascicleHistoricizedCategory>, DocumentUnitFascicleHistoricizedCategoryValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<DocumentUnitFascicleCategory>, DocumentUnitFascicleCategoryValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<DocumentUnitUser>, DocumentUnitUserValidator>(new HierarchicalLifetimeManager());
@@ -860,6 +892,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IDomainMapper<DocumentUnitRole, DocumentUnitRole>, DocumentUnitRoleMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentUnitChainMapper, DocumentUnitChainMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<DocumentUnitChain, DocumentUnitChain>, DocumentUnitChainMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDocumentUnitContactMapper, DocumentUnitContactMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<DocumentUnitContact, DocumentUnitContact>, DocumentUnitContactMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentUnitChainTableValuedModelMapper, DocumentUnitChainTableValuedModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<DocumentUnitTableValuedModel, DocumentUnitChainModel>, DocumentUnitChainTableValuedModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentUnitTableValuedModelMapper, DocumentUnitTableValuedModelMapper>(new HierarchicalLifetimeManager())
@@ -870,6 +904,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IDomainMapper<DocumentUnitRole, RoleModel>, DocumentUnitRoleModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentUnitChainModelMapper, DocumentUnitChainModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<DocumentUnitChain, UDSDocumentModel>, DocumentUnitChainModelMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDocumentUnitContactModelMapper, DocumentUnitContactModelMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<DocumentUnitContact, DocumentUnitContactModel>, DocumentUnitContactModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentUnitUserMapper, DocumentUnitUserMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<DocumentUnitUser, DocumentUnitUser>, DocumentUnitUserMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<DocumentUnitUser, UserModel>, DocumentUnitUserModelMapper>(new HierarchicalLifetimeManager())
@@ -878,7 +914,11 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IDocumentUnitFascicleHistoricizedCategoryMapper, DocumentUnitFascicleHistoricizedCategoryMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<DocumentUnitFascicleHistoricizedCategory, DocumentUnitFascicleHistoricizedCategory>, DocumentUnitFascicleHistoricizedCategoryMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentUnitFascicleCategoryMapper, DocumentUnitFascicleCategoryMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<IDomainMapper<DocumentUnitFascicleCategory, DocumentUnitFascicleCategory>, DocumentUnitFascicleCategoryMapper>(new HierarchicalLifetimeManager());
+                .RegisterType<IDomainMapper<DocumentUnitFascicleCategory, DocumentUnitFascicleCategory>, DocumentUnitFascicleCategoryMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDocumentUnitCollaborationTableValueModelMapper, DocumentUnitCollaborationTableValueModelMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<CollaborationTableValuedModel, DocumentUnitModel>, DocumentUnitCollaborationTableValueModelMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<DocumentUnitContact, UDSContactModel>, UDSContactModelMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IUDSContactModelMapper, UDSContactModelMapper>(new HierarchicalLifetimeManager());
 
             #endregion
 
@@ -891,6 +931,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IValidatorMapper<DocumentUnitRole, DocumentUnitRoleValidator>, DocumentUnitRoleValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentUnitChainValidatorMapper, DocumentUnitChainValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidatorMapper<DocumentUnitChain, DocumentUnitChainValidator>, DocumentUnitChainValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDocumentUnitContactValidatorMapper, DocumentUnitContactValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidatorMapper<DocumentUnitContact, DocumentUnitContactValidator>, DocumentUnitContactValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDocumentUnitUserValidatorMapper, DocumentUnitUserValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidatorMapper<DocumentUnitUser, DocumentUnitUserValidator>, DocumentUnitUserValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidatorMapper<DocumentUnitFascicleHistoricizedCategory, DocumentUnitFascicleHistoricizedCategoryValidator>, DocumentUnitFascicleHistoricizedCategoryValidatorMapper>(new HierarchicalLifetimeManager())
@@ -997,6 +1039,9 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                         new InterceptionBehavior<ServicesLogging>())
                .RegisterType<ICollaborationAggregateService, CollaborationAggregateService>(new HierarchicalLifetimeManager(),
                         new Interceptor<InterfaceInterceptor>(),
+                        new InterceptionBehavior<ServicesLogging>())
+               .RegisterType<ICollaborationDraftService, CollaborationDraftService>(new HierarchicalLifetimeManager(),
+                        new Interceptor<InterfaceInterceptor>(),
                         new InterceptionBehavior<ServicesLogging>());
 
             #endregion
@@ -1022,6 +1067,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
             #region [ Entites & Models ]
 
             container
+                 .RegisterType<ICollaborationDraftMapper, CollaborationDraftMapper>(new HierarchicalLifetimeManager())
+                 .RegisterType<IDomainMapper<CollaborationDraft, CollaborationDraft>, CollaborationDraftMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<ICollaborationLogMapper, CollaborationLogMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IDomainMapper<CollaborationLog, CollaborationLog>, CollaborationLogMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<ICollaborationMapper, CollaborationMapper>(new HierarchicalLifetimeManager())
@@ -1056,6 +1103,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
             #region [ Validator ]
 
             container
+                 .RegisterType<IValidator<CollaborationDraft>, CollaborationDraftValidator>(new HierarchicalLifetimeManager())
+                .RegisterType<ICollaborationDraftValidatorMapper, CollaborationDraftValidatorMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<ICollaborationLogValidatorMapper, CollaborationLogValidatorMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IValidatorMapper<CollaborationLog, CollaborationLogValidator>, CollaborationLogValidatorMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<ICollaborationValidatorMapper, CollaborationValidatorMapper>(new HierarchicalLifetimeManager())
@@ -1137,6 +1186,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                  .RegisterType<IDomainMapper<FascicleTableValuedModel, FascicleModel>, FascicleTableValuedModelMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IDocumentUnitTableValuedModelMapper, DocumentUnitTableValuedModelMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IDomainMapper<DocumentUnitTableValuedModel, DocumentUnitModel>, DocumentUnitTableValuedModelMapper>(new HierarchicalLifetimeManager())
+                 .RegisterType<IFascicleDocumentUnitTableValuedModelMapper, FascicleDocumentUnitTableValuedModelMapper>(new HierarchicalLifetimeManager())
+                 .RegisterType<IDomainMapper<FascicleDocumentUnitTableValuedModel, FascicleDocumentUnitModel>, FascicleDocumentUnitTableValuedModelMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IFascicleLinkMapper, FascicleLinkMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IDomainMapper<FascicleLink, FascicleLink>, FascicleLinkMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IFascicleDocumentMapper, FascicleDocumentMapper>(new HierarchicalLifetimeManager())
@@ -1151,6 +1202,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                  .RegisterType<IDomainMapper<FascicleFolder, FascicleFolderModel>, FascicleFolderModelMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IFascicleFolderTableValuedModelMapper, FascicleFolderTableValuedModelMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IDomainMapper<FascicleFolderTableValuedModel, FascicleFolderModel>, FascicleFolderTableValuedModelMapper>(new HierarchicalLifetimeManager())
+                 .RegisterType<IViewableFascicleTableValuedModelMapper, ViewableFascicleTableValuedModelMapper>(new HierarchicalLifetimeManager())
+                 .RegisterType<IDomainMapper<ViewableFascicleTableValuedModel, FascicleModel>, ViewableFascicleTableValuedModelMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IFascicleDocumentUnitMapper, FascicleDocumentUnitMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IDomainMapper<FascicleDocumentUnit, FascicleDocumentUnit>, FascicleDocumentUnitMapper>(new HierarchicalLifetimeManager())
                  .RegisterType<IFascicleDocumentUnitModelMapper, FascicleDocumentUnitModelMapper>(new HierarchicalLifetimeManager())
@@ -1419,10 +1472,10 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IProtocolService, ProtocolService>(new HierarchicalLifetimeManager(),
                         new Interceptor<InterfaceInterceptor>(),
                         new InterceptionBehavior<ServicesLogging>())
-                .RegisterType<IProtocolDraftService, ProtocolDraftService>(new HierarchicalLifetimeManager(),
+                .RegisterType<IProtocolLogService, ProtocolLogService>(new HierarchicalLifetimeManager(),
                         new Interceptor<InterfaceInterceptor>(),
                         new InterceptionBehavior<ServicesLogging>())
-                .RegisterType<IProtocolLogService, ProtocolLogService>(new HierarchicalLifetimeManager(),
+                .RegisterType<IProtocolJournalService, ProtocolJournalService>(new HierarchicalLifetimeManager(),
                         new Interceptor<InterfaceInterceptor>(),
                         new InterceptionBehavior<ServicesLogging>())
                 .RegisterType<IProtocolTypeService, ProtocolTypeService>(new HierarchicalLifetimeManager(),
@@ -1438,9 +1491,6 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                         new Interceptor<InterfaceInterceptor>(),
                         new InterceptionBehavior<ServicesLogging>())
                 .RegisterType<IProtocolDocumentTypeService, ProtocolDocumentTypeService>(new HierarchicalLifetimeManager(),
-                        new Interceptor<InterfaceInterceptor>(),
-                        new InterceptionBehavior<ServicesLogging>())
-                .RegisterType<IProtocolParerService, ProtocolParerService>(new HierarchicalLifetimeManager(),
                         new Interceptor<InterfaceInterceptor>(),
                         new InterceptionBehavior<ServicesLogging>())
                 .RegisterType<IProtocolLinkService, ProtocolLinkService>(new HierarchicalLifetimeManager(),
@@ -1466,13 +1516,12 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
 
             container
                 .RegisterType<IValidator<Protocol>, ProtocolValidator>(new HierarchicalLifetimeManager())
-                .RegisterType<IValidator<ProtocolDraft>, ProtocolDraftValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<ProtocolType>, ProtocolTypeValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<ProtocolLog>, ProtocolLogValidator>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidator<ProtocolJournal>, ProtocolJournalValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<ProtocolRole>, ProtocolRoleValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<ProtocolRoleUser>, ProtocolRoleUserValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<ProtocolContact>, ProtocolContactValidator>(new HierarchicalLifetimeManager())
-                .RegisterType<IValidator<ProtocolParer>, ProtocolParerValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<ProtocolLink>, ProtocolLinkValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<ProtocolDocumentType>, ProtocolDocumentTypeValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<ProtocolUser>, ProtocolUserValidator>(new HierarchicalLifetimeManager())
@@ -1489,34 +1538,28 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
             container
                    .RegisterType<IProtocolMapper, ProtocolMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<Protocol, Protocol>, ProtocolMapper>(new HierarchicalLifetimeManager())
-                   .RegisterType<IProtocolDraftMapper, ProtocolDraftMapper>(new HierarchicalLifetimeManager())
-                   .RegisterType<IDomainMapper<ProtocolDraft, ProtocolDraft>, ProtocolDraftMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolTypeMapper, ProtocolTypeMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolType, ProtocolType>, ProtocolTypeMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolLogMapper, ProtocolLogMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolLog, ProtocolLog>, ProtocolLogMapper>(new HierarchicalLifetimeManager())
+                   .RegisterType<IProtocolJournalMapper, ProtocolJournalMapper>(new HierarchicalLifetimeManager())
+                   .RegisterType<IDomainMapper<ProtocolJournal, ProtocolJournal>, ProtocolJournalMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolRoleMapper, ProtocolRoleMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolRole, ProtocolRole>, ProtocolRoleMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolRoleUserMapper, ProtocolRoleUserMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolRoleUser, ProtocolRoleUser>, ProtocolRoleUserMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolContactMapper, ProtocolContactMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolContact, ProtocolContact>, ProtocolContactMapper>(new HierarchicalLifetimeManager())
-                   .RegisterType<IProtocolParerMapper, ProtocolParerMapper>(new HierarchicalLifetimeManager())
-                   .RegisterType<IDomainMapper<ProtocolParer, ProtocolParer>, ProtocolParerMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolLinkMapper, ProtocolLinkMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolLink, ProtocolLink>, ProtocolLinkMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolDocumentTypeMapper, ProtocolDocumentTypeMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolDocumentType, ProtocolDocumentType>, ProtocolDocumentTypeMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolTableValuedModelMapper, ProtocolTableValuedModelMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolTableValuedModel, ProtocolModel>, ProtocolTableValuedModelMapper>(new HierarchicalLifetimeManager())
-                   .RegisterType<IProtocolParerTableValuedModelMapper, ProtocolParerTableValuedModelMapper>(new HierarchicalLifetimeManager())
-                   .RegisterType<IDomainMapper<ProtocolTableValuedModel, ProtocolParerModel>, ProtocolParerTableValuedModelMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolContactManualTableValueModelMapper, ProtocolContactManualTableValueModelMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolTableValuedModel, ProtocolContactManualModel>, ProtocolContactManualTableValueModelMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolContactTableValueModelMapper, ProtocolContactTableValueModelMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolTableValuedModel, ProtocolContactModel>, ProtocolContactTableValueModelMapper>(new HierarchicalLifetimeManager())
-                   .RegisterType<IProtocolParerTableValuedModelMapper, ProtocolParerTableValuedModelMapper>(new HierarchicalLifetimeManager())
-                   .RegisterType<IDomainMapper<ProtocolTableValuedModel, ProtocolParerModel>, ProtocolParerTableValuedModelMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolTypeTableValuedModelMapper, ProtocolTypeTableValuedModelMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IDomainMapper<ProtocolTableValuedModel, ProtocolTypeModel>, ProtocolTypeTableValuedModelMapper>(new HierarchicalLifetimeManager())
                    .RegisterType<IProtocolUserMapper, ProtocolUserMapper>(new HierarchicalLifetimeManager())
@@ -1535,7 +1578,6 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
             #region [ Validator ]
 
             container
-                .RegisterType<IProtocolDraftValidatorMapper, ProtocolDraftValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidatorMapper<ProtocolContactManual, ProtocolContactManualValidator>, ProtocolContactManualValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IProtocolValidatorMapper, ProtocolValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidatorMapper<Protocol, ProtocolValidator>, ProtocolValidatorMapper>(new HierarchicalLifetimeManager())
@@ -1549,8 +1591,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IValidatorMapper<ProtocolType, ProtocolTypeValidator>, ProtocolTypeValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IProtocolLogValidatorMapper, ProtocolLogValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidatorMapper<ProtocolLog, ProtocolLogValidator>, ProtocolLogValidatorMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<IProtocolParerValidatorMapper, ProtocolParerValidatorMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<IValidatorMapper<ProtocolParer, ProtocolParerValidator>, ProtocolParerValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IProtocolJournalValidatorMapper, ProtocolJournalValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidatorMapper<ProtocolJournal, ProtocolJournalValidator>, ProtocolJournalValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IProtocolLinkValidatorMapper, ProtocolLinkValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidatorMapper<ProtocolLink, ProtocolLinkValidator>, ProtocolLinkValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IProtocolDocumentTypeValidatorMapper, ProtocolDocumentTypeValidatorMapper>(new HierarchicalLifetimeManager())
@@ -1655,7 +1697,7 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IValidator<ResolutionKindDocumentSeries>, ResolutionKindDocumentSeriesValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<ResolutionDocumentSeriesItem>, ResolutionDocumentSeriesItemValidator>(new HierarchicalLifetimeManager());
 
-            
+
 
             #endregion
 
@@ -1670,8 +1712,6 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IDomainMapper<FileResolution, FileResolution>, FileResolutionMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IResolutionRoleMapper, ResolutionRoleMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<ResolutionRole, ResolutionRole>, ResolutionRoleMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<IResolutionCollaborationTableValueModelMapper, ResolutionCollaborationTableValueModelMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<IDomainMapper<CollaborationTableValuedModel, ResolutionModel>, ResolutionCollaborationTableValueModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IResolutionRoleModelMapper, ResolutionRoleModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<ResolutionRole, ResolutionRoleModel>, ResolutionRoleModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IFileResolutionModelMapper, FileResolutionModelMapper>(new HierarchicalLifetimeManager())
@@ -1686,7 +1726,11 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IResolutionKindDocumentSeriesMapper, ResolutionKindDocumentSeriesMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<ResolutionKindDocumentSeries, ResolutionKindDocumentSeries>, ResolutionKindDocumentSeriesMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IResolutionDocumentSeriesItemMapper, ResolutionDocumentSeriesItemMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<IDomainMapper<ResolutionDocumentSeriesItem, ResolutionDocumentSeriesItem>, ResolutionDocumentSeriesItemMapper>(new HierarchicalLifetimeManager());
+                .RegisterType<IDomainMapper<ResolutionDocumentSeriesItem, ResolutionDocumentSeriesItem>, ResolutionDocumentSeriesItemMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IWebPublicationMapper, WebPublicationMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<WebPublication, WebPublication>, WebPublicationMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IWebPublicationModelMapper, WebPublicationModelMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<WebPublication, WebPublicationModel>, WebPublicationModelMapper>(new HierarchicalLifetimeManager());
 
             #endregion
 
@@ -1854,6 +1898,9 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                       .RegisterType<IUDSRoleService, UDSRoleService>(new HierarchicalLifetimeManager(),
                            new Interceptor<InterfaceInterceptor>(),
                            new InterceptionBehavior<ServicesLogging>())
+                      .RegisterType<IUDSFieldListService, UDSFieldListService>(new HierarchicalLifetimeManager(),
+                           new Interceptor<InterfaceInterceptor>(),
+                           new InterceptionBehavior<ServicesLogging>())
                       .RegisterType<IUDSUserService, UDSUserService>(new HierarchicalLifetimeManager(),
                            new Interceptor<InterfaceInterceptor>(),
                            new InterceptionBehavior<ServicesLogging>())
@@ -1886,6 +1933,7 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IValidator<UDSTypology>, UDSTypologyValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<UDSLog>, UDSLogValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<UDSRole>, UDSRoleValidator>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidator<UDSFieldList>, UDSFieldListValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<UDSUser>, UDSUserValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<UDSContact>, UDSContactValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<UDSMessage>, UDSMessageValidator>(new HierarchicalLifetimeManager())
@@ -1917,6 +1965,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IDomainMapper<UDSLog, UDSLog>, UDSLogMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IUDSRoleMapper, UDSRoleMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<UDSRole, UDSRole>, UDSRoleMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IUDSFieldListMapper, UDSFieldListMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<UDSFieldList, UDSFieldList>, UDSFieldListMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IUDSUserMapper, UDSUserMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<UDSUser, UDSUser>, UDSUserMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IUDSContactMapper, UDSContactMapper>(new HierarchicalLifetimeManager())
@@ -1960,6 +2010,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IValidatorMapper<UDSLog, UDSLogValidator>, UDSLogValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IUDSRoleValidatorMapper, UDSRoleValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidatorMapper<UDSRole, UDSRoleValidator>, UDSRoleValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IUDSFieldListValidatorMapper, UDSFieldListValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidatorMapper<UDSFieldList, UDSFieldListValidator>, UDSFieldListValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IUDSUserValidatorMapper, UDSUserValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidatorMapper<UDSUser, UDSUserValidator>, UDSUserValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IUDSContactValidatorMapper, UDSContactValidatorMapper>(new HierarchicalLifetimeManager())
@@ -2165,6 +2217,9 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
             container
                 .RegisterType<IConservationMapper, ConservationMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<Conservation, Conservation>, ConservationMapper>(new HierarchicalLifetimeManager());
+            container
+                .RegisterType<IConservationModelMapper, ConservationModelMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<Conservation, ConservationModel>, ConservationModelMapper>(new HierarchicalLifetimeManager());
 
             #endregion
 
@@ -2329,7 +2384,7 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IValidator<PECMailBoxConfiguration>, PECMailBoxConfigurationValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<TenantWorkflowRepository>, TenantWorkflowRepositoryValidator>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidator<TenantAOO>, TenantAOOValidator>(new HierarchicalLifetimeManager());
-            
+
 
             #endregion
 
@@ -2421,7 +2476,7 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IProcessFascicleTemplateMapper, ProcessFascicleTemplateMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<ProcessFascicleTemplate, ProcessFascicleTemplate>, ProcessFascicleTemplateMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IProcessFascicleWorkflowRepositoryMapper, ProcessFascicleWorkflowRepositoryMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<IDomainMapper<ProcessFascicleWorkflowRepository, ProcessFascicleWorkflowRepository>, ProcessFascicleWorkflowRepositoryMapper>(new HierarchicalLifetimeManager())                
+                .RegisterType<IDomainMapper<ProcessFascicleWorkflowRepository, ProcessFascicleWorkflowRepository>, ProcessFascicleWorkflowRepositoryMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IProcessFascicleTemplateModelMapper, ProcessFascicleTemplateModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<ProcessFascicleTemplate, ProcessFascicleTemplateModel>, ProcessFascicleTemplateModelMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IProcessTableValuedModelMapper, ProcessTableValuedModelMapper>(new HierarchicalLifetimeManager())
@@ -2455,6 +2510,9 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                     new InterceptionBehavior<ServicesLogging>())
                 .RegisterType<ITaskHeaderProtocolService, TaskHeaderProtocolService>(new HierarchicalLifetimeManager(),
                     new Interceptor<InterfaceInterceptor>(),
+                    new InterceptionBehavior<ServicesLogging>())
+                .RegisterType<ITaskDetailService, TaskDetailService>(new HierarchicalLifetimeManager(),
+                    new Interceptor<InterfaceInterceptor>(),
                     new InterceptionBehavior<ServicesLogging>());
 
             #endregion
@@ -2466,7 +2524,8 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
 
             container
                 .RegisterType<IValidator<TaskHeader>, TaskHeaderValidator>(new HierarchicalLifetimeManager())
-                .RegisterType<IValidator<TaskHeaderProtocol>, TaskHeaderProtocolValidator>(new HierarchicalLifetimeManager());
+                .RegisterType<IValidator<TaskHeaderProtocol>, TaskHeaderProtocolValidator>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidator<TaskDetail>, TaskDetailValidator>(new HierarchicalLifetimeManager());
 
             #endregion
 
@@ -2478,7 +2537,9 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<ITaskHeaderMapper, TaskHeaderMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IDomainMapper<TaskHeader, TaskHeader>, TaskHeaderMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<ITaskHeaderProtocolMapper, TaskHeaderProtocolMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<IDomainMapper<TaskHeaderProtocol, TaskHeaderProtocol>, TaskHeaderProtocolMapper>(new HierarchicalLifetimeManager());
+                .RegisterType<IDomainMapper<TaskHeaderProtocol, TaskHeaderProtocol>, TaskHeaderProtocolMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<ITaskDetailMapper, TaskDetailMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<TaskDetail, TaskDetail>, TaskDetailMapper>(new HierarchicalLifetimeManager());
 
             #endregion
 
@@ -2488,7 +2549,68 @@ namespace VecompSoftware.DocSuite.WebAPI.Common.Helpers
                 .RegisterType<IValidatorMapper<TaskHeader, TaskHeaderValidator>, TaskHeaderValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<ITaskHeaderValidatorMapper, TaskHeaderValidatorMapper>(new HierarchicalLifetimeManager())
                 .RegisterType<IValidatorMapper<TaskHeaderProtocol, TaskHeaderProtocolValidator>, TaskHeaderProtocolValidatorMapper>(new HierarchicalLifetimeManager())
-                .RegisterType<ITaskHeaderProtocolValidatorMapper, TaskHeaderProtocolValidatorMapper>(new HierarchicalLifetimeManager());
+                .RegisterType<ITaskHeaderProtocolValidatorMapper, TaskHeaderProtocolValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidatorMapper<TaskDetail, TaskDetailValidator>, TaskDetailValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<ITaskDetailValidatorMapper, TaskDetailValidatorMapper>(new HierarchicalLifetimeManager());
+
+            #endregion
+
+            #endregion
+
+            #endregion
+
+            #region [ Tenders ]
+
+            #region [ Services ]
+
+            container
+                .RegisterType<ITenderHeaderService, TenderHeaderService>(new HierarchicalLifetimeManager(),
+                    new Interceptor<InterfaceInterceptor>(),
+                    new InterceptionBehavior<ServicesLogging>())
+                .RegisterType<ITenderLotService, TenderLotService>(new HierarchicalLifetimeManager(),
+                    new Interceptor<InterfaceInterceptor>(),
+                    new InterceptionBehavior<ServicesLogging>())
+                .RegisterType<ITenderLotPaymentService, TenderLotPaymentService>(new HierarchicalLifetimeManager(),
+                    new Interceptor<InterfaceInterceptor>(),
+                    new InterceptionBehavior<ServicesLogging>());
+
+            #endregion
+
+            #region [ Validations ]
+
+            container
+                .RegisterType<ITenderRuleset, TenderRuleset>(new HierarchicalLifetimeManager());
+
+            container
+                .RegisterType<IValidator<TenderHeader>, TenderHeaderValidator>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidator<TenderLot>, TenderLotValidator>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidator<TenderLotPayment>, TenderLotPaymentValidator>(new HierarchicalLifetimeManager());
+
+            #endregion
+
+            #region [ Mappers ]
+
+            #region [ Entities & Models ]
+
+            container
+                .RegisterType<ITenderHeaderMapper, TenderHeaderMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<TenderHeader, TenderHeader>, TenderHeaderMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<ITenderLotMapper, TenderLotMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<TenderLot, TenderLot>, TenderLotMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<ITenderLotPaymentMapper, TenderLotPaymentMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IDomainMapper<TenderLotPayment, TenderLotPayment>, TenderLotPaymentMapper>(new HierarchicalLifetimeManager());
+
+            #endregion
+
+            #region [ Validator ]
+
+            container
+                .RegisterType<IValidatorMapper<TenderHeader, TenderHeaderValidator>, TenderHeaderValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<ITenderHeaderValidatorMapper, TenderHeaderValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidatorMapper<TenderLot, TenderLotValidator>, TenderLotValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<ITenderLotValidatorMapper, TenderLotValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<IValidatorMapper<TenderLotPayment, TenderLotPaymentValidator>, TenderLotPaymentValidatorMapper>(new HierarchicalLifetimeManager())
+                .RegisterType<ITenderLotPaymentValidatorMapper, TenderLotPaymentValidatorMapper>(new HierarchicalLifetimeManager());
 
             #endregion
 

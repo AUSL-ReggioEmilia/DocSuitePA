@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -11,8 +12,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.UDS
     public class UDSUserValidator : ObjectValidator<UDSUser, UDSUserValidator>, IUDSUserValidator
     {
         #region [ Constructor ]
-        public UDSUserValidator(ILogger logger, IUDSUserValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity security)
-            : base(logger, mapper, unitOfWork, security) { }
+        public UDSUserValidator(ILogger logger, IUDSUserValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity security, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, security, parameterEnvSecurity) { }
         #endregion
 
         #region [ Properties ]

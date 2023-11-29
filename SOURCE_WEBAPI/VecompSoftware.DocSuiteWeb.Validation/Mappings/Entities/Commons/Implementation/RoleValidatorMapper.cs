@@ -14,19 +14,16 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Mappings.Entities.Commons
             entityTransformed.EntityShortId = entity.EntityShortId;
             entityTransformed.Name = entity.Name;
             entityTransformed.IsActive = entity.IsActive;
-            entityTransformed.ActiveFrom = entity.ActiveFrom;
-            entityTransformed.ActiveTo = entity.ActiveTo;
             entityTransformed.FullIncrementalPath = entity.FullIncrementalPath;
             entityTransformed.Collapsed = entity.Collapsed;
             entityTransformed.EMailAddress = entity.EMailAddress;
             entityTransformed.ServiceCode = entity.ServiceCode;
             entityTransformed.UniqueId = entity.UniqueId;
-            entityTransformed.IdRoleTenant = entity.IdRoleTenant;
-            entityTransformed.TenantId = entity.TenantId;
             #endregion
 
             #region [ Navigation Properties ]
             entityTransformed.Father = entity.Father;
+            entityTransformed.TenantAOO = entity.TenantAOO;
             entityTransformed.CollaborationUsers = entity.CollaborationUsers;
             entityTransformed.Contacts = entity.Contacts;
             entityTransformed.OChartItems = entity.OChartItems;

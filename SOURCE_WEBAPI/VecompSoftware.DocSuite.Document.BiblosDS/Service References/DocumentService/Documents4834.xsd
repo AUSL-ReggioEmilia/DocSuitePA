@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:tns="http://BiblosDS/2009/10/DocumentResponse" elementFormDefault="qualified" targetNamespace="http://BiblosDS/2009/10/DocumentResponse" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Document" />
-  <xs:import schemaLocation="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd43" namespace="http://BiblosDS/2009/10/ResponseBase" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd6" namespace="http://BiblosDS/2009/10/Document" />
+  <xs:import schemaLocation="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd43" namespace="http://BiblosDS/2009/10/ResponseBase" />
   <xs:complexType name="DocumentResponse">
     <xs:complexContent mixed="false">
       <xs:extension xmlns:q1="http://BiblosDS/2009/10/ResponseBase" base="q1:ResponseBase">

@@ -37,8 +37,13 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles
         public string Classifications { get; set; }
         public bool? IncludeChildClassifications { get; set; }
         public ICollection<int> Roles { get; set; }
+        public int? MasterRole { get; set; }
         public short? Container { get; set; }
         public bool IsManager { get; set; }
         public bool IsSecretary { get; set; }
+        public Guid? IdProcess { get; set; }
+        public Guid? IdDossierFolder { get; set; }
+        public string ProcessLabel { get; set; }
+        public string DossierFolderLabel { get; set; }
     }
 }

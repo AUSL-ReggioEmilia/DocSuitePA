@@ -21,60 +21,60 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://localhost/BiblosDS2010WCF/Documents.svc" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://./BiblosDS2010WCF/Documents.svc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="Documents48.xsd" MetadataType="Schema" ID="1604b48a-1a9d-413f-b8a0-49f346ca317a" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd36" />
-    <MetadataFile FileName="Documents481.xsd" MetadataType="Schema" ID="c0c974da-cd5e-4ca3-87b0-0d67d0dda975" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd3" />
-    <MetadataFile FileName="Documents482.xsd" MetadataType="Schema" ID="67067d36-aea6-49a3-9bd4-f9ef53fbda9f" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd46" />
-    <MetadataFile FileName="Documents483.xsd" MetadataType="Schema" ID="55416577-43bb-4aa3-a31b-3dacb95aa814" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd19" />
-    <MetadataFile FileName="Documents484.xsd" MetadataType="Schema" ID="11068988-899c-40ad-96c2-e6426315410a" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd47" />
-    <MetadataFile FileName="Documents485.xsd" MetadataType="Schema" ID="1886d85e-8263-4379-9765-d1bd9707a36f" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd39" />
-    <MetadataFile FileName="Documents486.xsd" MetadataType="Schema" ID="c6aa8075-899e-4608-89d8-baa0ad4e9954" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd4" />
-    <MetadataFile FileName="Documents487.xsd" MetadataType="Schema" ID="d2c5871d-7921-4e9e-9f7b-186fd8bb8fe2" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd44" />
-    <MetadataFile FileName="Documents488.xsd" MetadataType="Schema" ID="5eea351a-d418-4d66-90dc-4d63fbe7c9ab" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd21" />
-    <MetadataFile FileName="Documents489.xsd" MetadataType="Schema" ID="889e085c-19bb-44a6-8548-6d2149907c4f" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd31" />
-    <MetadataFile FileName="Documents2.wsdl" MetadataType="Wsdl" ID="f1e500ad-fa47-4ef0-a2d8-369119f0a94b" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?wsdl" />
-    <MetadataFile FileName="Documents4810.xsd" MetadataType="Schema" ID="3690e02b-5d76-4069-be93-957469fcdfe9" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd29" />
-    <MetadataFile FileName="Documents4811.xsd" MetadataType="Schema" ID="0b6b8ec7-cdc1-4de9-bc43-dbebcb80f70f" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd6" />
-    <MetadataFile FileName="Documents4812.xsd" MetadataType="Schema" ID="454eebd8-f81b-4715-9b3d-581af63db464" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd45" />
-    <MetadataFile FileName="Documents4813.xsd" MetadataType="Schema" ID="15c16b1a-8e1e-497a-9e06-518b52119a30" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd5" />
-    <MetadataFile FileName="Documents4814.xsd" MetadataType="Schema" ID="17be84e7-12f0-4865-b7cd-49b9be256b3c" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd12" />
-    <MetadataFile FileName="Documents4815.xsd" MetadataType="Schema" ID="e6fddfa0-e88d-43d7-ab32-eba59fc4f375" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd13" />
-    <MetadataFile FileName="Documents4816.xsd" MetadataType="Schema" ID="1a534bbe-7deb-4110-b07b-582b9c4d867d" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd10" />
-    <MetadataFile FileName="Documents4817.xsd" MetadataType="Schema" ID="937abed9-62c7-45b2-a129-face406eea6c" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd11" />
-    <MetadataFile FileName="Documents4818.xsd" MetadataType="Schema" ID="a426e114-faf7-409d-a761-d6d83b656f56" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd16" />
-    <MetadataFile FileName="Documents4819.xsd" MetadataType="Schema" ID="5dcc2b43-35ad-4576-a852-76452601adcb" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd17" />
-    <MetadataFile FileName="Documents4820.xsd" MetadataType="Schema" ID="8c776692-a331-4006-88e3-6c35203ea067" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd14" />
-    <MetadataFile FileName="Documents4821.xsd" MetadataType="Schema" ID="8028e0d3-2c7f-436d-a934-3eb20bbf3698" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd15" />
-    <MetadataFile FileName="Documents4822.xsd" MetadataType="Schema" ID="c5ddc7f5-e627-4803-b04d-a32972f3f0ca" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd18" />
-    <MetadataFile FileName="Documents4823.xsd" MetadataType="Schema" ID="2ed60a10-90d7-4b76-a05f-58da177df8a6" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd7" />
-    <MetadataFile FileName="Documents21.wsdl" MetadataType="Wsdl" ID="2e881481-88cd-4406-a81c-07963313056c" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?wsdl=wsdl0" />
-    <MetadataFile FileName="Documents4824.xsd" MetadataType="Schema" ID="06135720-7f55-406c-90f1-1b178e9f4df7" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd22" />
-    <MetadataFile FileName="Documents4825.xsd" MetadataType="Schema" ID="80ec8c7f-7385-4635-837c-1cf5d25f480a" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd23" />
-    <MetadataFile FileName="Documents4826.xsd" MetadataType="Schema" ID="edc5cb61-dfc4-4865-9359-1ac20221d3a1" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd20" />
-    <MetadataFile FileName="Documents4827.xsd" MetadataType="Schema" ID="fdb9b816-9109-4f6c-b708-44d0ef09487b" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd1" />
-    <MetadataFile FileName="Documents4828.xsd" MetadataType="Schema" ID="60e3148b-968f-4f4f-b7f1-fa7a762e0493" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd26" />
-    <MetadataFile FileName="Documents4829.xsd" MetadataType="Schema" ID="656603ba-38fe-40e6-954c-7a9249f18e3a" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd27" />
-    <MetadataFile FileName="Documents4830.xsd" MetadataType="Schema" ID="0f253a04-7111-4ca1-8ff8-2fc6481d2c8f" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd24" />
-    <MetadataFile FileName="Documents4831.xsd" MetadataType="Schema" ID="81fb543c-4712-4be4-9885-175a292e8290" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd25" />
-    <MetadataFile FileName="Documents4832.xsd" MetadataType="Schema" ID="a1c9d061-eea3-4128-b369-3cf7b65156d4" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd28" />
-    <MetadataFile FileName="Documents4833.xsd" MetadataType="Schema" ID="327e5979-969f-4397-91a3-068c4159a4c9" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd8" />
-    <MetadataFile FileName="Documents4834.xsd" MetadataType="Schema" ID="9d891a1f-af34-4d39-8bac-09d71b3d4a30" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd42" />
-    <MetadataFile FileName="Documents4835.xsd" MetadataType="Schema" ID="5d58f070-62a7-4d0f-84ff-6d0b81c71819" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd43" />
-    <MetadataFile FileName="Documents4836.xsd" MetadataType="Schema" ID="bb816c27-aa09-40cf-976b-c427cfcb4081" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd40" />
-    <MetadataFile FileName="Documents4837.xsd" MetadataType="Schema" ID="9624b089-a41e-4a98-b736-6689da3ec630" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd41" />
-    <MetadataFile FileName="Documents4838.xsd" MetadataType="Schema" ID="d4a50bc5-4fd0-4bf8-970c-f6cd2642176a" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd32" />
-    <MetadataFile FileName="Documents1.disco" MetadataType="Disco" ID="cf7f0400-554f-4ec8-8de9-cc95dad44a18" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?disco" />
-    <MetadataFile FileName="Documents4839.xsd" MetadataType="Schema" ID="f77887f7-19fd-428f-83b0-b2ca2f6b05fe" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd33" />
-    <MetadataFile FileName="Documents4840.xsd" MetadataType="Schema" ID="4719a2dd-f7e4-42af-a021-8ecafbfc60ce" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd30" />
-    <MetadataFile FileName="Documents4841.xsd" MetadataType="Schema" ID="894d88ee-6029-4e93-af1a-11da9dd5851d" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd2" />
-    <MetadataFile FileName="Documents4842.xsd" MetadataType="Schema" ID="8fe1ad71-fc38-4676-b828-2292cf8c51ee" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd0" />
-    <MetadataFile FileName="Documents4843.xsd" MetadataType="Schema" ID="ed4c0612-ca77-4925-ad3f-f7035d655cdd" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd37" />
-    <MetadataFile FileName="Documents4844.xsd" MetadataType="Schema" ID="158ec301-3603-4ded-81cb-648e00824499" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd34" />
-    <MetadataFile FileName="Documents4845.xsd" MetadataType="Schema" ID="b49a5470-2eb0-45cc-82ce-760c5f2b071f" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd35" />
-    <MetadataFile FileName="Documents4846.xsd" MetadataType="Schema" ID="16adf395-ac42-4134-90d1-ad96bdc64708" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd38" />
-    <MetadataFile FileName="Documents4847.xsd" MetadataType="Schema" ID="67d88984-83bc-48bc-9c32-6db4507a9b9d" SourceId="1" SourceUrl="http://localhost/BiblosDS2010WCF/Documents.svc?xsd=xsd9" />
+    <MetadataFile FileName="Documents48.xsd" MetadataType="Schema" ID="1604b48a-1a9d-413f-b8a0-49f346ca317a" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd36" />
+    <MetadataFile FileName="Documents481.xsd" MetadataType="Schema" ID="c0c974da-cd5e-4ca3-87b0-0d67d0dda975" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd3" />
+    <MetadataFile FileName="Documents482.xsd" MetadataType="Schema" ID="67067d36-aea6-49a3-9bd4-f9ef53fbda9f" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd46" />
+    <MetadataFile FileName="Documents483.xsd" MetadataType="Schema" ID="55416577-43bb-4aa3-a31b-3dacb95aa814" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd19" />
+    <MetadataFile FileName="Documents484.xsd" MetadataType="Schema" ID="11068988-899c-40ad-96c2-e6426315410a" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd47" />
+    <MetadataFile FileName="Documents485.xsd" MetadataType="Schema" ID="1886d85e-8263-4379-9765-d1bd9707a36f" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd39" />
+    <MetadataFile FileName="Documents486.xsd" MetadataType="Schema" ID="c6aa8075-899e-4608-89d8-baa0ad4e9954" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd4" />
+    <MetadataFile FileName="Documents487.xsd" MetadataType="Schema" ID="d2c5871d-7921-4e9e-9f7b-186fd8bb8fe2" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd44" />
+    <MetadataFile FileName="Documents488.xsd" MetadataType="Schema" ID="5eea351a-d418-4d66-90dc-4d63fbe7c9ab" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd21" />
+    <MetadataFile FileName="Documents489.xsd" MetadataType="Schema" ID="889e085c-19bb-44a6-8548-6d2149907c4f" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd31" />
+    <MetadataFile FileName="Documents2.wsdl" MetadataType="Wsdl" ID="f1e500ad-fa47-4ef0-a2d8-369119f0a94b" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?wsdl" />
+    <MetadataFile FileName="Documents4810.xsd" MetadataType="Schema" ID="3690e02b-5d76-4069-be93-957469fcdfe9" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd29" />
+    <MetadataFile FileName="Documents4811.xsd" MetadataType="Schema" ID="0b6b8ec7-cdc1-4de9-bc43-dbebcb80f70f" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd6" />
+    <MetadataFile FileName="Documents4812.xsd" MetadataType="Schema" ID="454eebd8-f81b-4715-9b3d-581af63db464" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd45" />
+    <MetadataFile FileName="Documents4813.xsd" MetadataType="Schema" ID="15c16b1a-8e1e-497a-9e06-518b52119a30" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd5" />
+    <MetadataFile FileName="Documents4814.xsd" MetadataType="Schema" ID="17be84e7-12f0-4865-b7cd-49b9be256b3c" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd12" />
+    <MetadataFile FileName="Documents4815.xsd" MetadataType="Schema" ID="e6fddfa0-e88d-43d7-ab32-eba59fc4f375" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd13" />
+    <MetadataFile FileName="Documents4816.xsd" MetadataType="Schema" ID="1a534bbe-7deb-4110-b07b-582b9c4d867d" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd10" />
+    <MetadataFile FileName="Documents4817.xsd" MetadataType="Schema" ID="937abed9-62c7-45b2-a129-face406eea6c" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd11" />
+    <MetadataFile FileName="Documents4818.xsd" MetadataType="Schema" ID="a426e114-faf7-409d-a761-d6d83b656f56" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd16" />
+    <MetadataFile FileName="Documents4819.xsd" MetadataType="Schema" ID="5dcc2b43-35ad-4576-a852-76452601adcb" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd17" />
+    <MetadataFile FileName="Documents4820.xsd" MetadataType="Schema" ID="8c776692-a331-4006-88e3-6c35203ea067" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd14" />
+    <MetadataFile FileName="Documents4821.xsd" MetadataType="Schema" ID="8028e0d3-2c7f-436d-a934-3eb20bbf3698" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd15" />
+    <MetadataFile FileName="Documents4822.xsd" MetadataType="Schema" ID="c5ddc7f5-e627-4803-b04d-a32972f3f0ca" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd18" />
+    <MetadataFile FileName="Documents4823.xsd" MetadataType="Schema" ID="2ed60a10-90d7-4b76-a05f-58da177df8a6" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd7" />
+    <MetadataFile FileName="Documents21.wsdl" MetadataType="Wsdl" ID="2e881481-88cd-4406-a81c-07963313056c" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="Documents4824.xsd" MetadataType="Schema" ID="06135720-7f55-406c-90f1-1b178e9f4df7" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd22" />
+    <MetadataFile FileName="Documents4825.xsd" MetadataType="Schema" ID="80ec8c7f-7385-4635-837c-1cf5d25f480a" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd23" />
+    <MetadataFile FileName="Documents4826.xsd" MetadataType="Schema" ID="edc5cb61-dfc4-4865-9359-1ac20221d3a1" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd20" />
+    <MetadataFile FileName="Documents4827.xsd" MetadataType="Schema" ID="fdb9b816-9109-4f6c-b708-44d0ef09487b" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd1" />
+    <MetadataFile FileName="Documents4828.xsd" MetadataType="Schema" ID="60e3148b-968f-4f4f-b7f1-fa7a762e0493" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd26" />
+    <MetadataFile FileName="Documents4829.xsd" MetadataType="Schema" ID="656603ba-38fe-40e6-954c-7a9249f18e3a" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd27" />
+    <MetadataFile FileName="Documents4830.xsd" MetadataType="Schema" ID="0f253a04-7111-4ca1-8ff8-2fc6481d2c8f" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd24" />
+    <MetadataFile FileName="Documents4831.xsd" MetadataType="Schema" ID="81fb543c-4712-4be4-9885-175a292e8290" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd25" />
+    <MetadataFile FileName="Documents4832.xsd" MetadataType="Schema" ID="a1c9d061-eea3-4128-b369-3cf7b65156d4" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd28" />
+    <MetadataFile FileName="Documents4833.xsd" MetadataType="Schema" ID="327e5979-969f-4397-91a3-068c4159a4c9" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd8" />
+    <MetadataFile FileName="Documents4834.xsd" MetadataType="Schema" ID="9d891a1f-af34-4d39-8bac-09d71b3d4a30" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd42" />
+    <MetadataFile FileName="Documents4835.xsd" MetadataType="Schema" ID="5d58f070-62a7-4d0f-84ff-6d0b81c71819" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd43" />
+    <MetadataFile FileName="Documents4836.xsd" MetadataType="Schema" ID="bb816c27-aa09-40cf-976b-c427cfcb4081" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd40" />
+    <MetadataFile FileName="Documents4837.xsd" MetadataType="Schema" ID="9624b089-a41e-4a98-b736-6689da3ec630" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd41" />
+    <MetadataFile FileName="Documents4838.xsd" MetadataType="Schema" ID="d4a50bc5-4fd0-4bf8-970c-f6cd2642176a" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd32" />
+    <MetadataFile FileName="Documents1.disco" MetadataType="Disco" ID="cf7f0400-554f-4ec8-8de9-cc95dad44a18" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?disco" />
+    <MetadataFile FileName="Documents4839.xsd" MetadataType="Schema" ID="f77887f7-19fd-428f-83b0-b2ca2f6b05fe" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd33" />
+    <MetadataFile FileName="Documents4840.xsd" MetadataType="Schema" ID="4719a2dd-f7e4-42af-a021-8ecafbfc60ce" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd30" />
+    <MetadataFile FileName="Documents4841.xsd" MetadataType="Schema" ID="894d88ee-6029-4e93-af1a-11da9dd5851d" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd2" />
+    <MetadataFile FileName="Documents4842.xsd" MetadataType="Schema" ID="8fe1ad71-fc38-4676-b828-2292cf8c51ee" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd0" />
+    <MetadataFile FileName="Documents4843.xsd" MetadataType="Schema" ID="ed4c0612-ca77-4925-ad3f-f7035d655cdd" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd37" />
+    <MetadataFile FileName="Documents4844.xsd" MetadataType="Schema" ID="158ec301-3603-4ded-81cb-648e00824499" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd34" />
+    <MetadataFile FileName="Documents4845.xsd" MetadataType="Schema" ID="b49a5470-2eb0-45cc-82ce-760c5f2b071f" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd35" />
+    <MetadataFile FileName="Documents4846.xsd" MetadataType="Schema" ID="16adf395-ac42-4134-90d1-ad96bdc64708" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd38" />
+    <MetadataFile FileName="Documents4847.xsd" MetadataType="Schema" ID="67d88984-83bc-48bc-9c32-6db4507a9b9d" SourceId="1" SourceUrl="http://./BiblosDS2010WCF/Documents.svc?xsd=xsd9" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

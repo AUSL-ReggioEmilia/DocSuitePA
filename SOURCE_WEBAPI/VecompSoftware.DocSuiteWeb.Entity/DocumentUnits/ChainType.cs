@@ -19,6 +19,7 @@
         AttachmentOmissisChain = MainOmissisChain * 2,
         UltimaPaginaChain = AttachmentOmissisChain * 2,
         SupervisoryBoardChain = UltimaPaginaChain * 2,
-        DematerialisationChain = SupervisoryBoardChain * 2
+        DematerialisationChain = SupervisoryBoardChain * 2,
+        MetadataChain = DematerialisationChain * 2
     }
 }

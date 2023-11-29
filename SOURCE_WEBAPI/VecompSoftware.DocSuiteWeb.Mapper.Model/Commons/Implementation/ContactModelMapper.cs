@@ -23,6 +23,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Commons
             entityTransformed.EntityId = entity.EntityId;
             entityTransformed.Description = entity.Description;
             entityTransformed.Email = entity.EmailAddress;
+            entityTransformed.IdRole = entity.Role?.EntityShortId;
+            entityTransformed.SearchCode = entity.SearchCode;
 
             return entityTransformed;
         }

@@ -9,11 +9,14 @@
 
   <PropertyGroup>
     <TargetFrameworks>net48;netstandard2.1</TargetFrameworks>
-    <Version>9.09.0.0</Version>
+    <version>9.25.0.0</version>
     <Authors />
     <Company>Dgroove Srl</Company>
-    <Copyright>Copyright © Dgroove 2020</Copyright>
+    <Copyright>Copyright © Dgroove 2022</Copyright>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <Title>VecompSoftware.DocSuite.Public.Core.Models</Title>
+    <ProductName>VecompSoftware.DocSuite.Public.Core.Models</ProductName>
+    <Product>VecompSoftware.DocSuite.Public.Core.Models</Product>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,13 +29,13 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework)'=='net48'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
 	<Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

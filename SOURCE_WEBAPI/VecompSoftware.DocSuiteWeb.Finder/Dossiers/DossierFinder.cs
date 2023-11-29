@@ -20,7 +20,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
 
         public static ICollection<DossierTableValuedModel> GetAuthorized(this IRepository<Dossier> repository, string userName, string domain, int skip, int top, short? year, int? number, string subject, short? idContainer,
             DateTimeOffset? startDateFrom, DateTimeOffset? startDateTo, DateTimeOffset? endDateFrom, DateTimeOffset? endDateTo, string note, Guid? idMetadataRepository, string genericMetadataValue,
-            IDictionary<string, string> metadataValues, short? idCategory, DossierType? dossierType, DossierStatus? status, bool optimization = true)
+            IDictionary<string, string> metadataValues, short? idCategory, DossierType? dossierType, DossierStatus? status, bool descendingOrder, bool optimization = true)
         {
             QueryParameter yearParameter = new QueryParameter(CommonDefinition.SQL_Param_Dossier_Year, DBNull.Value);
             QueryParameter numberParameter = new QueryParameter(CommonDefinition.SQL_Param_Dossier_Number, DBNull.Value);
@@ -37,6 +37,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
             QueryParameter idCategoryParameter = new QueryParameter(CommonDefinition.SQL_Param_Category_IdCategory, DBNull.Value);
             QueryParameter dossierTypeParameter = new QueryParameter(CommonDefinition.SQL_Param_Dossier_DossierType, DBNull.Value);
             QueryParameter statusParameter = new QueryParameter(CommonDefinition.SQL_Param_DossierFolder_Status, DBNull.Value);
+            QueryParameter descendingOrderParameter = new QueryParameter(CommonDefinition.SQL_Param_Dossier_DescendingOrder, DBNull.Value);
 
             if (year.HasValue)
             {
@@ -104,19 +105,20 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Dossiers
                     table.Rows.Add(metadataValue.Key, metadataValue.Value);
                 }
             }
+            descendingOrderParameter.ParameterValue = descendingOrder;
             metadataValuesParameter.ParameterValue = table;
 
             ICollection<DossierTableValuedModel> results = repository.ExecuteModelFunction<DossierTableValuedModel>(CommonDefinition.SQL_FX_Dossier_AuthorizedDossiers,
                 new QueryParameter(CommonDefinition.SQL_Param_Dossier_UserName, userName), new QueryParameter(CommonDefinition.SQL_Param_Dossier_Domain, domain),
                 new QueryParameter(CommonDefinition.SQL_Param_Dossier_Skip, skip), new QueryParameter(CommonDefinition.SQL_Param_Dossier_Top, top),
                 yearParameter, numberParameter, subjectParameter, noteParameter, containerParameter, idMetadataRepositoryParameter, genericMetadataValueParameter, startDateFromParameter,
-                startDateToParameter, endDateFromParameter, endDateToParameter, metadataValuesParameter, idCategoryParameter, dossierTypeParameter, statusParameter);
+                startDateToParameter, endDateFromParameter, endDateToParameter, metadataValuesParameter, idCategoryParameter, dossierTypeParameter, statusParameter, descendingOrderParameter);
 
-            return results.OrderBy(x => x.Year).OrderBy(x => x.Number).ToList();
+            return results.ToList();
         }
 
         public static int CountAuthorized(this IRepository<Dossier> repository, string userName, string domain, short? year, int? number, string subject, short? idContainer,
-            DateTimeOffset? startDateFrom, DateTimeOffset? startDateTo, DateTimeOffset? endDateFrom, DateTimeOffset? endDateTo, string note, Guid? idMetadataRepository, string genericMetadataValue, 
+            DateTimeOffset? startDateFrom, DateTimeOffset? startDateTo, DateTimeOffset? endDateFrom, DateTimeOffset? endDateTo, string note, Guid? idMetadataRepository, string genericMetadataValue,
             IDictionary<string, string> metadataValues, short? idCategory, DossierType? dossierType, DossierStatus? status, bool optimization = true)
         {
             QueryParameter yearParameter = new QueryParameter(CommonDefinition.SQL_Param_Dossier_Year, DBNull.Value);

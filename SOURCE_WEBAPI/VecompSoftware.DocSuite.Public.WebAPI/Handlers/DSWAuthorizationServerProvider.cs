@@ -10,11 +10,14 @@ using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
+using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
+using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Finder.Protocols;
-using VecompSoftware.DocSuiteWeb.Model.Securities;
+using VecompSoftware.DocSuiteWeb.Finder.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.ServiceBus;
 using VecompSoftware.DocSuiteWeb.Service.ServiceBus;
+using VecompSoftware.Helpers.Workflow;
 using VecompSoftware.Services.Command.CQRS.Events.Models.ExternalSecurities;
 
 namespace VecompSoftware.DocSuite.Public.WebAPI.Handlers
@@ -44,8 +47,6 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Handlers
 
         private static readonly object _lockObject = new object();
         private static IEnumerable<LogCategory> _logCategories = null;
-        private static IReadOnlyList<Guid> _validAuthenticationList = null;
-        private static IReadOnlyDictionary<string, KeyValuePair<Guid, string>> _mapper_authentication_integration = null;
         #endregion
 
         #region [ Constructor ]
@@ -61,50 +62,7 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Handlers
         #endregion
 
         #region [ Properties ]
-        public static IReadOnlyList<Guid> ValidAuthenticationList
-        {
-            get
-            {
-                if (_validAuthenticationList == null)
-                {
-                    lock (_lockObject)
-                    {
-                        if (_validAuthenticationList == null)
-                        {
-                            Guid **REMOVE**_ERPContract = Guid.Parse("51DAE147-3E30-4434-A73F-DCB5E062CA5E");
-                            Guid **REMOVE**_SAPInvoice = Guid.Parse("49DC7004-EFC1-454A-9174-CEA12D06061E");
-                            Guid auslre_AVELCO = Guid.Parse("7AF08013-7018-4583-942C-73441C680994");
-                            Guid auslre_ZEN = Guid.Parse("C39ADF96-AAEF-4237-BA56-A22A8C6BD4EF");
-                            _validAuthenticationList = new List<Guid>
-                            {
-                                auslre_ZEN, **REMOVE**_ERPContract, **REMOVE**_ERPContract, auslre_AVELCO, **REMOVE**_SAPInvoice
-                            };
-                            Dictionary<string, KeyValuePair<Guid, string>> local = new Dictionary<string, KeyValuePair<Guid, string>>
-                            {
-                                { "**REMOVE**.ERP_CONTRATTI", new KeyValuePair<Guid, string>(**REMOVE**_ERPContract, VALUE_ExternalViewer_AuthenticationRule_Token) },
-                                { "**REMOVE**.SAP_FATTURE", new KeyValuePair<Guid, string>(**REMOVE**_SAPInvoice, VALUE_ExternalViewer_AuthenticationRule_Token) },
-                                { "AUSLRE.AVELCO", new KeyValuePair<Guid, string>(auslre_AVELCO, VALUE_ExternalViewer_AuthenticationRule_Token) },
-                                { "AUSLRE.ZEN", new KeyValuePair<Guid, string>(auslre_ZEN, VALUE_ExternalViewer_AuthenticationRule_Token) }
-                            };
-                            _mapper_authentication_integration = local;
-                        }
-                    }
-                }
-                return _validAuthenticationList;
-            }
-        }
-
-        private static IReadOnlyDictionary<string, KeyValuePair<Guid, string>> ValidIntegrations
-        {
-            get
-            {
-                if (_mapper_authentication_integration == null)
-                {
-                    IReadOnlyList<Guid> tmp = ValidAuthenticationList;
-                }
-                return _mapper_authentication_integration;
-            }
-        }
+        
 
         protected static IEnumerable<LogCategory> LogCategories
         {
@@ -120,6 +78,20 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Handlers
         #endregion
 
         #region [ Methods ]
+        private bool IsValidAuthenticationId(Guid authenticationId)
+        {
+            WorkflowRepository workflowRepository = _unitOfWork.Repository<WorkflowRepository>().GetIncludingEvaluationProperties(authenticationId);
+
+            if (workflowRepository == null || workflowRepository.DSWEnvironment != DSWEnvironmentType.Any)
+            {
+                return false;
+            }
+
+            WorkflowEvaluationProperty externalIntegrationProperty = workflowRepository.WorkflowEvaluationProperties.FirstOrDefault(p => p.Name == WorkflowPropertyHelper.DSW_PROPERTY_EXTERNALVIEWER_INTEGRATION_ENABLED);
+            bool isExternalIntegrationEnabled = externalIntegrationProperty != null && externalIntegrationProperty.ValueBoolean.HasValue && externalIntegrationProperty.ValueBoolean.Value;
+
+            return isExternalIntegrationEnabled;
+        }
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
@@ -165,8 +137,7 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Handlers
                 _logger.WriteWarning(new LogMessage(ex.Message), ex, LogCategories);
             }
             Guid authenticationId = Guid.Empty;
-            KeyValuePair<Guid, string> currentIntegration;
-            if (string.IsNullOrEmpty(appId) || !Guid.TryParse(appId, out authenticationId) || !ValidAuthenticationList.Any(f => f == authenticationId))
+            if (string.IsNullOrEmpty(appId) || !Guid.TryParse(appId, out authenticationId) || !IsValidAuthenticationId(authenticationId))
             {
                 _logger.WriteWarning(new LogMessage($"The AppId '{appId}' is not valid."), LogCategories);
                 context.SetError("invalid_grant", $"The AppId {appId} is not valid.");
@@ -180,7 +151,7 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Handlers
                 context.Rejected();
                 return;
             }
-            if (string.IsNullOrEmpty(username) || !ValidIntegrations.Any(f => f.Key == username))
+            if (string.IsNullOrEmpty(username))
             {
                 _logger.WriteWarning(new LogMessage($"The Username '{username}' is not valid."), LogCategories);
                 context.SetError("invalid_grant", $"The Username {username} is not valid.");
@@ -195,14 +166,6 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Handlers
                 context.Rejected();
                 return;
             }
-            currentIntegration = ValidIntegrations[username];
-            if (currentIntegration.Key != authenticationId || currentIntegration.Value != authRule)
-            {
-                _logger.WriteWarning(new LogMessage($"{username}: The configuration is not valid."), LogCategories);
-                context.SetError("invalid_grant", "The configuration is not valid.");
-                context.Rejected();
-                return;
-            }
 
             if (kind == "Protocol" && authRule == VALUE_ExternalViewer_AuthenticationRule_OAuth2 &&
                 (string.IsNullOrEmpty(year) || string.IsNullOrEmpty(number)))
@@ -212,6 +175,7 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Handlers
                 context.Rejected();
                 return;
             }
+
             if (kind == "Protocol" && authRule == VALUE_ExternalViewer_AuthenticationRule_Token &&
                 (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(token) || string.IsNullOrEmpty(year) || string.IsNullOrEmpty(number)))
             {
@@ -225,7 +189,7 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Handlers
                 string topicName = _messageConfiguration.GetConfigurations()["EventTokenSecurity"].TopicName;
                 if (!await _topicService.SubscriptionExists(topicName, token))
                 {
-                    _logger.WriteWarning(new LogMessage($"AppId {appId} has no valid token {authenticationId}"), LogCategories);
+                    _logger.WriteWarning(new LogMessage($"AppId {appId} subscription {topicName} doesn't exists and has no valid token {authenticationId}"), LogCategories);
                     context.SetError($"AppId {appId} has not validate token {authenticationId}", "The protocols params is not valid.");
                     context.Rejected();
                     return;
@@ -234,14 +198,14 @@ namespace VecompSoftware.DocSuite.Public.WebAPI.Handlers
                 IEventTokenSecurity tokenSecurityModel = null;
                 if (serviceBusMessage == null || (tokenSecurityModel = (IEventTokenSecurity)serviceBusMessage.Content) == null)
                 {
-                    _logger.WriteWarning(new LogMessage($"AppId {appId} has no valid token"), LogCategories);
+                    _logger.WriteWarning(new LogMessage($"AppId {appId} has no valid token TokenSecurityModel is null"), LogCategories);
                     context.SetError($"AppId {appId} has not validate token {token}", "The protocols params is not valid.");
                     context.Rejected();
                     return;
                 }
                 if (tokenSecurityModel.ContentType.ContentTypeValue.DocumentUnitAuhtorized.UniqueId.ToString() != uniqueId)
                 {
-                    _logger.WriteWarning(new LogMessage($"AppId {appId} token is not valid for protocol {uniqueId}-{year}/{number}"), LogCategories);
+                    _logger.WriteWarning(new LogMessage($"AppId {appId} token is not valid for protocol {uniqueId}-{year}/{number} but has {tokenSecurityModel.ContentType.ContentTypeValue.DocumentUnitAuhtorized.UniqueId}"), LogCategories);
                     context.SetError($"AppId {appId} token is not valid for protocol {uniqueId}-{year}/{number}", "The protocols params is not valid.");
                     context.Rejected();
                     return;

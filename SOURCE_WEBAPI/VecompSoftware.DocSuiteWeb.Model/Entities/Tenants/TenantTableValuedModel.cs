@@ -13,6 +13,7 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Tenants
         #region [ Properties ]
 
         public Guid IdTenantModel { get; set; }
+        public Guid IdTenantAOO { get; set; }
         public string TenantName { get; set; }
         public string CompanyName { get; set; }
         public TenantTypologyType TenantTypology { get; set; }

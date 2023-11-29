@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
@@ -11,8 +12,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.UDS
     public class UDSTypologyValidator : ObjectValidator<UDSTypology, UDSTypologyValidator>, IUDSTypologyValidator
     {
         #region [ Constructor ]
-        public UDSTypologyValidator(ILogger logger, IUDSTypologyValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public UDSTypologyValidator(ILogger logger, IUDSTypologyValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity,parameterEnvSecurity)
         {
             UDSRepositories = new HashSet<UDSRepository>();
         }

@@ -2,6 +2,7 @@
 using Microsoft.Owin.Cors;
 using Owin;
 using VecompSoftware.DocSuite.Private.WebAPI.Middleware;
+using VecompSoftware.DocSuite.WebAPI.Common.Configurations;
 
 namespace VecompSoftware.DocSuite.Private.WebAPI
 {
@@ -13,7 +14,10 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
 
         public void ConfigureAPI(IAppBuilder appBuilder)
         {
-            appBuilder.Use(typeof(DSWShibbolethMiddleware));
+            if (WebApiConfiguration.ShibbolethEnabled)
+            {
+                appBuilder.Use(typeof(DSWShibbolethMiddleware));
+            }
 
             appBuilder.Map("/signalr", map =>
             {
@@ -22,6 +26,12 @@ namespace VecompSoftware.DocSuite.Private.WebAPI
                 // configure the set of origins and/or http verbs by
                 // providing a cors options with a different policy.
                 map.UseCors(CorsOptions.AllowAll);
+
+                if (WebApiConfiguration.SignalRMaxIncomingWebSocketMessageSize.HasValue && WebApiConfiguration.SignalRMaxIncomingWebSocketMessageSize.Value > 0) 
+                {
+					GlobalHost.Configuration.MaxIncomingWebSocketMessageSize = WebApiConfiguration.SignalRMaxIncomingWebSocketMessageSize;
+				}                
+
                 HubConfiguration hubConfiguration = new HubConfiguration
                 {
                     // You can enable JSONP by uncommenting line below.

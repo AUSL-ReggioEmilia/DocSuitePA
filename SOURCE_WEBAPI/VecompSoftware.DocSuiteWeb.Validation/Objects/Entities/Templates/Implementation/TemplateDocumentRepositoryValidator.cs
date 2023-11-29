@@ -1,4 +1,5 @@
 ﻿using System;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Templates;
@@ -10,8 +11,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Templates
     public class TemplateDocumentRepositoryValidator : ObjectValidator<TemplateDocumentRepository, TemplateDocumentRepositoryValidator>, ITemplateDocumentRepositoryValidator
     {
         #region [ Constructor ]
-        public TemplateDocumentRepositoryValidator(ILogger logger, ITemplateDocumentRepositoryValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public TemplateDocumentRepositoryValidator(ILogger logger, ITemplateDocumentRepositoryValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #endregion
 

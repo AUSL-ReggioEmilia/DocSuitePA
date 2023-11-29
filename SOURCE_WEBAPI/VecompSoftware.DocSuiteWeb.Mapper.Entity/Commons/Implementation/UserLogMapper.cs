@@ -28,6 +28,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Entity.Commons
             entityTransformed.PrivacyLevel = entity.PrivacyLevel;
             entityTransformed.CurrentTenantId = entity.CurrentTenantId;
             entityTransformed.UserProfile = entity.UserProfile;
+            entityTransformed.UserPrincipalName = entity.UserPrincipalName;
             #endregion
 
             return entityTransformed;

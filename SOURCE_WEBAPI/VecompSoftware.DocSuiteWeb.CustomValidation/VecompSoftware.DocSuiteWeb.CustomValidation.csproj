@@ -46,8 +46,8 @@
       <HintPath>..\packages\EnterpriseLibrary.Validation.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Validation.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -62,6 +62,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseValidator.cs" />
+    <Compile Include="Commons\HasPolicyRightOverridable.cs" />
+    <Compile Include="Commons\PasswordEncryptionKeyValidator.cs" />
     <Compile Include="Entities\Commons\IsLocationNameUnique.cs" />
     <Compile Include="Entities\Commons\CategoryFascicleContainsPeriodic.cs" />
     <Compile Include="Commons\HasContainerPrefixGroupName.cs" />
@@ -177,10 +179,15 @@
     <Compile Include="Entities\Templates\HasTemplateValidRole.cs" />
     <Compile Include="Entities\Templates\HasTemplateValidSigner.cs" />
     <Compile Include="Entities\Templates\TemplateAlreadyExist.cs" />
+    <Compile Include="Entities\Templates\TemplateFixedFolderParentInvalid.cs" />
+    <Compile Include="Entities\Templates\TemplateFolderParentInvalid.cs" />
+    <Compile Include="Entities\Templates\TemplateParentInvalid.cs" />
     <Compile Include="Entities\Tenants\IsTenantAOONameUnique.cs" />
     <Compile Include="Entities\Tenants\IsTenantNameUnique.cs" />
     <Compile Include="Entities\Tenants\IsOnlyOneTenantActivated.cs" />
     <Compile Include="Entities\UDS\HasModifyRights.cs" />
+    <Compile Include="Entities\UDS\HasUDSRepository.cs" />
+    <Compile Include="Entities\UDS\HasValidEnvironment.cs" />
     <Compile Include="Entities\UDS\IsActive.cs" />
     <Compile Include="Entities\UDS\NameAlreadyExists.cs" />
     <Compile Include="Entities\UDS\DocumentUnitAlreadyExists.cs" />
@@ -215,6 +222,14 @@
     <ProjectReference Include="..\VecompSoftware.Commons.Interfaces\VecompSoftware.Commons.Interfaces.csproj">
       <Project>{C6F323C0-C21B-433B-90C8-0B64A42115AB}</Project>
       <Name>VecompSoftware.Commons.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.Service.Models\VecompSoftware.DocSuite.Service.Models.csproj">
+      <Project>{666bdbda-d461-4692-9cf7-ff03784a6e96}</Project>
+      <Name>VecompSoftware.DocSuite.Service.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VecompSoftware.DocSuite.WebAPI.Common\VecompSoftware.DocSuite.WebAPI.Common.csproj">
+      <Project>{0e7722c7-e7e0-4ca4-98dd-741894bfabc7}</Project>
+      <Name>VecompSoftware.DocSuite.WebAPI.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\VecompSoftware.DocSuiteWeb.Common\VecompSoftware.DocSuiteWeb.Common.csproj">
       <Project>{58938aa6-b3d6-4256-8c5c-4bcab88517bb}</Project>

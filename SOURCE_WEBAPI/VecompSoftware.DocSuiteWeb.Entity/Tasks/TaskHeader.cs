@@ -26,6 +26,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Tasks
 
         #region [ Navigation Properties ]
         public virtual ICollection<TaskHeaderProtocol> TaskHeaderProtocols { get; set; }
+        public virtual ICollection<TaskDetail> TaskDetails { get; set; }
         #endregion
     }
 }

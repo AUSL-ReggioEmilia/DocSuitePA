@@ -29,7 +29,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Processes
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
         private readonly IDossierService _dossierService;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
 
         #endregion
 
@@ -37,7 +37,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Processes
 
         public ProcessService(IDataUnitOfWork unitOfWork, ILogger logger, IValidatorService validationService,
             IProcessRuleset processRuleset, IMapperUnitOfWork mapperUnitOfWork, ISecurity security,
-            IDossierService dossierService, IParameterEnvService parameterEnvService)
+            IDossierService dossierService, IDecryptedParameterEnvService parameterEnvService)
             : base(unitOfWork, logger, validationService, processRuleset, mapperUnitOfWork, security)
         {
             _unitOfWork = unitOfWork;
@@ -109,7 +109,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Processes
                 .Include(d => d.Dossier)
                 .Include(d => d.Dossier.DossierFolders)
                 .Include(d => d.Dossier.DossierFolders.Select(dfr => dfr.DossierFolderRoles))
-                .Include(d => d.Dossier.DossierFolders.Select(dfr => dfr.DossierFolderRoles.Select(r => r.Role)))
+                .Include(d => d.Dossier.DossierFolders.Select(dfr => dfr.DossierFolderRoles.Select(r => r.Role.TenantAOO)))
                 .Include(d => d.Dossier.DossierFolders.Select(pft => pft.FascicleTemplates));
             return query;
         }

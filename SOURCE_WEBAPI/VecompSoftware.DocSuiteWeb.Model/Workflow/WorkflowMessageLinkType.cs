@@ -6,6 +6,7 @@
         ExternalViewerLink = 2,
         DocSuiteGenericActivity = 3,
         DocumentUnitLink = 4,
-        CreatedFascicleLink = 5
+        CreatedFascicleLink = 5,
+        ProtocolLink = 6
     }
 }

@@ -51,10 +51,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Protocols
                 .HasColumnName("HiddenFields")
                 .IsOptional();
 
-            Property(x => x.NeedPackage)
-                .HasColumnName("NeedPackage")
-                .IsOptional();
-
             Property(x => x.CommonUser)
                 .HasColumnName("CommonUser")
                 .IsOptional();

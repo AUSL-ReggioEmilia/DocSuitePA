@@ -4,6 +4,10 @@ namespace VecompSoftware.DocSuiteWeb.Model.Documents
 {
     public class AttributeValue
     {
+        public const string ATTRIBUTE_SIGNATURE = "Signature";
+        public const string ATTRIBUTE_FILENAME = "Filename";
+        public const string ATTRIBUTE_ISSIGNED = "IsSigned";
+
         public Guid Id { get; set; }
         public Guid IdAttribute { get; set; }
         public string AttributeName { get; set; }

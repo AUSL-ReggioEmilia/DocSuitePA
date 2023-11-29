@@ -20,6 +20,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Tenants
             Parameters = new HashSet<Parameter>();
             Protocols = new HashSet<Protocol>();
             Categories = new HashSet<Category>();
+            Roles = new HashSet<Role>();
+            ProtocolJournals = new HashSet<ProtocolJournal>();
         }
         #endregion
 
@@ -36,6 +38,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Tenants
         public virtual ICollection<Parameter> Parameters { get; set; }
         public virtual ICollection<Protocol> Protocols { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
+        public virtual ICollection<Role> Roles { get; set; }
+        public virtual ICollection<ProtocolJournal> ProtocolJournals { get; set; }
         #endregion
     }
 }

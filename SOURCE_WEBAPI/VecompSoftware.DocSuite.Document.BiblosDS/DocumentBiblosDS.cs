@@ -12,6 +12,7 @@ using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
+using VecompSoftware.DocSuiteWeb.Common.Securities;
 using VecompSoftware.DocSuiteWeb.Model.Documents;
 using VecompSoftware.DocSuiteWeb.Model.WebAPI;
 using ModelDocument = VecompSoftware.DocSuiteWeb.Model.Documents;
@@ -25,21 +26,18 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
 
         private readonly Guid _instanceId;
         private readonly ILogger _logger;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
+        private readonly ICurrentIdentity _currentIdentity;
         private readonly DocumentsClient _documentsClient;
         private ICollection<Archive> _archives = null;
         private bool _disposed;
         private static IEnumerable<LogCategory> _logCategories = null;
         private static readonly ConcurrentDictionary<string, KeyValuePair<Archive, List<DocumentService.Attribute>>> _cache_ArchiveAttributes = new ConcurrentDictionary<string, KeyValuePair<Archive, List<DocumentService.Attribute>>>();
-        private const string _biblos_attribute_filename = "filename";
-        private const string _biblos_attribute_signature = "signature";
         #endregion
 
         #region [ Properties ]
-        protected static IEnumerable<LogCategory> LogCategories
-        {
-            get
-            {
+        protected static IEnumerable<LogCategory> LogCategories {
+            get {
                 if (_logCategories == null)
                 {
                     _logCategories = LogCategoryHelper.GetCategoriesAttribute(typeof(DocumentBiblosDS));
@@ -48,10 +46,8 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
             }
         }
 
-        protected ICollection<Archive> Archives
-        {
-            get
-            {
+        protected ICollection<Archive> Archives {
+            get {
                 if (_archives == null)
                 {
                     _archives = _documentsClient.GetArchives();
@@ -62,12 +58,13 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
         #endregion
 
         #region [ Constructor ]
-        public DocumentBiblosDS(ILogger logger, IParameterEnvService parameterEnvService)
+        public DocumentBiblosDS(ILogger logger, IDecryptedParameterEnvService parameterEnvService, ICurrentIdentity currentIdentity)
         {
             _instanceId = Guid.NewGuid();
             _logger = logger;
             _parameterEnvService = parameterEnvService;
             _documentsClient = new DocumentsClient();
+            _currentIdentity = currentIdentity;
         }
 
         #endregion
@@ -108,14 +105,22 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
             {
                 List<DocumentService.Document> documents = await _documentsClient.GetDocumentChildrenAsync(idChain);
                 List<ModelDocument.Document> results = new List<ModelDocument.Document>(documents.Count);
-                results.AddRange(documents.Select(doc => new ModelDocument.Document()
+                results.AddRange(documents.Select(x => new ModelDocument.Document()
                 {
                     IdChain = idChain,
-                    IdDocument = doc.IdDocument,
-                    Name = doc.Name,
-                    Size = doc.Size,
-                    Version = doc.Version,
-                    CreatedDate = doc.DateCreated
+                    IdDocument = x.IdDocument,
+                    Name = x.Name,
+                    Size = x.Size,
+                    DocumentHash = x.DocumentHash,
+                    Version = x.Version,
+                    CreatedDate = x.DateCreated,
+                    AttributeValues = x.AttributeValues != null ? x.AttributeValues.Select(f => new ModelDocument.AttributeValue()
+                    {
+                        AttributeName = f.Attribute.Name,
+                        IdAttribute = f.Attribute.IdAttribute,
+                        Id = f.IdAttribute,
+                        ValueString = f.Value as string
+                    }).ToList() : new List<ModelDocument.AttributeValue>()
                 }));
                 return results;
             }, _logger, LogCategories);
@@ -138,7 +143,14 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
                     Name = x.Name,
                     Size = x.Size,
                     Version = x.Version,
-                    CreatedDate = x.DateCreated
+                    CreatedDate = x.DateCreated,
+                    AttributeValues = x.AttributeValues != null ? x.AttributeValues.Select(f => new ModelDocument.AttributeValue()
+                    {
+                        AttributeName = f.Attribute.Name,
+                        IdAttribute = f.Attribute.IdAttribute,
+                        Id = f.IdAttribute,
+                        ValueString = f.Value as string
+                    }).ToList() : new List<ModelDocument.AttributeValue>()
                 });
             }, _logger, LogCategories) ?? new List<ModelDocument.Document>();
         }
@@ -149,6 +161,31 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
             {
                 Content document = await _documentsClient.GetDocumentContentByIdAsync(idDocument);
                 return document.Blob;
+            }, _logger, LogCategories);
+        }
+
+        public async Task<ModelDocument.Document> GetDocumentAsync(Guid idDocument)
+        {
+            return await DocumentHelper.TryCatchWithLogger(async () =>
+            {
+                DocumentService.Document result = await _documentsClient.GetDocumentInfoByIdAsync(idDocument);
+                return new ModelDocument.Document()
+                {
+                    IdDocument = result.IdDocument,
+                    Name = result.Name,
+                    Size = result.Size,
+                    Version = result.Version,
+                    CreatedDate = result.DateCreated,
+                    IdChain = result.DocumentParent.IdDocument,
+                    ArchiveName = result.Archive.Name,
+                    AttributeValues = result.AttributeValues != null ? result.AttributeValues.Select(f => new ModelDocument.AttributeValue()
+                    {
+                        AttributeName = f.Attribute.Name,
+                        IdAttribute = f.Attribute.IdAttribute,
+                        Id = f.IdAttribute,
+                        ValueString = f.Value as string
+                    }).ToList() : new List<ModelDocument.AttributeValue>()
+                };
             }, _logger, LogCategories);
         }
 
@@ -212,6 +249,45 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
             }, _logger, LogCategories);
         }
 
+        public async Task<ModelDocument.ArchiveDocument> UpdateDocumentAsync(ModelDocument.ArchiveDocument documentModel, Dictionary<string, string> attributes)
+        {
+            return await DocumentHelper.TryCatchWithLogger(async () =>
+            {
+                string archiveName = documentModel.Archive;
+                KeyValuePair<Archive, List<DocumentService.Attribute>> archive = await GetArchive(archiveName);
+
+                DocumentService.Document checkedout = await _documentsClient.DocumentCheckOutAsync(documentModel.IdDocument, true, _currentIdentity.FullUserName);
+                checkedout.Content = new Content { Blob = documentModel.ContentStream };
+                checkedout.Name = documentModel.Name;
+                checkedout.AttributeValues = new List<DocumentService.AttributeValue>();
+
+                foreach (KeyValuePair<string, string> attribute in attributes)
+                {
+                    try
+                    {
+                        checkedout.AttributeValues.Add(new DocumentService.AttributeValue()
+                        {
+                            Value = attribute.Value,
+                            Attribute = archive.Value.Single(f => f.Name.Equals(attribute.Key, StringComparison.InvariantCultureIgnoreCase))
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.WriteWarning(new LogMessage($"Error processing attribute {attribute.Key}"), ex, LogCategories);
+                    }
+                }
+
+                Guid idCheckIn = await _documentsClient.DocumentCheckInAsync(checkedout, _currentIdentity.FullUserName);
+                await _documentsClient.ConfirmDocumentAsync(checkedout.IdDocument);
+
+                DocumentService.Document lastVersion = await _documentsClient.GetDocumentLatestVersionAsync(idCheckIn);
+                documentModel.IdDocument = lastVersion.IdDocument;
+                documentModel.Size = lastVersion.Size;
+                documentModel.Version = lastVersion.Version;
+                return documentModel;
+            }, _logger, LogCategories);
+        }
+
         public async Task<bool> HasActiveDocumentsAsync(Guid idChain)
         {
             bool hasActiveDocument = await _documentsClient.HasActiveDocumentsAsync(idChain);
@@ -238,15 +314,44 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
             document.AttributeValues.Add(new DocumentService.AttributeValue()
             {
                 Value = documentModel.Name,
-                Attribute = archive.Value.Single(f => f.Name.Equals(_biblos_attribute_filename, StringComparison.InvariantCultureIgnoreCase))
+                Attribute = archive.Value.Single(f => f.Name.Equals(ModelDocument.AttributeValue.ATTRIBUTE_FILENAME, StringComparison.InvariantCultureIgnoreCase))
             });
             document.AttributeValues.Add(new DocumentService.AttributeValue()
             {
-                Value = documentModel.Name,
-                Attribute = archive.Value.Single(f => f.Name.Equals(_biblos_attribute_signature, StringComparison.InvariantCultureIgnoreCase))
+                Value = string.IsNullOrEmpty(documentModel.Signature) ? documentModel.Name : documentModel.Signature,
+                Attribute = archive.Value.Single(f => f.Name.Equals(ModelDocument.AttributeValue.ATTRIBUTE_SIGNATURE, StringComparison.InvariantCultureIgnoreCase))
             });
             document = await _documentsClient.AddDocumentToChainAsync(document, documentModel.IdChain, ContentFormat.Binary);
             _logger.WriteInfo(new LogMessage($"Document {document.IdDocument} has been successfully created in archive {archive.Key.Name}"), LogCategories);
+            return document;
+        }
+
+        private async Task<DocumentService.Document> UpdateDocument(ModelDocument.ArchiveDocument documentModel, KeyValuePair<Archive, List<DocumentService.Attribute>> archive)
+        {
+            _logger.WriteDebug(new LogMessage($"Updating {documentModel?.Name} into archive {documentModel?.Archive} with {documentModel?.ContentStream?.Length} bytes"), LogCategories);
+
+
+            DocumentService.Document document = new DocumentService.Document
+            {
+                Content = new Content() { Blob = documentModel.ContentStream },
+                Name = documentModel.Name,
+                Archive = Archives.Single(f => f.Name.Equals(documentModel.Archive, StringComparison.InvariantCultureIgnoreCase)),
+                AttributeValues = new List<DocumentService.AttributeValue>()
+            };
+            document.AttributeValues.Add(new DocumentService.AttributeValue()
+            {
+                Value = documentModel.Name,
+                Attribute = archive.Value.Single(f => f.Name.Equals(ModelDocument.AttributeValue.ATTRIBUTE_FILENAME, StringComparison.InvariantCultureIgnoreCase))
+            });
+            document.AttributeValues.Add(new DocumentService.AttributeValue()
+            {
+                Value = string.IsNullOrEmpty(documentModel.Signature) ? documentModel.Name : documentModel.Signature,
+                Attribute = archive.Value.Single(f => f.Name.Equals(ModelDocument.AttributeValue.ATTRIBUTE_SIGNATURE, StringComparison.InvariantCultureIgnoreCase))
+            });
+            document = await _documentsClient.AddDocumentToChainAsync(document, documentModel.IdChain, ContentFormat.Binary);
+
+
+            _logger.WriteInfo(new LogMessage($"Document {document.IdDocument} has been successfully updated in archive {archive.Key.Name}"), LogCategories);
             return document;
         }
 
@@ -261,28 +366,19 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
                     throw new DSWException(string.Concat("Document archive '", archiveName, "' not found"), null, DSWExceptionCode.DM_Parameters);
                 }
                 List<DocumentService.Attribute> attributes = await _documentsClient.GetAttributesDefinitionAsync(biblosArchive.Name);
-                if (!attributes.Any(f => f.Name.Equals(_biblos_attribute_filename, StringComparison.InvariantCultureIgnoreCase)))
+                if (!attributes.Any(f => f.Name.Equals(ModelDocument.AttributeValue.ATTRIBUTE_FILENAME, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    throw new DSWException(string.Concat("Archive '", archiveName, "' doesn't has attibute ", _biblos_attribute_filename, " definition"), null, DSWExceptionCode.DM_Parameters);
+                    throw new DSWException($"Archive '{archiveName}' doesn't has attibute {ModelDocument.AttributeValue.ATTRIBUTE_FILENAME} definition", null, DSWExceptionCode.DM_Parameters);
                 }
-                if (!attributes.Any(f => f.Name.Equals(_biblos_attribute_signature, StringComparison.InvariantCultureIgnoreCase)))
+                if (!attributes.Any(f => f.Name.Equals(ModelDocument.AttributeValue.ATTRIBUTE_SIGNATURE, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    throw new DSWException(string.Concat("Archive '", archiveName, "' doesn't has attibute ", _biblos_attribute_signature, " definition"), null, DSWExceptionCode.DM_Parameters);
+                    throw new DSWException($"Archive '{archiveName}' doesn't has attibute {ModelDocument.AttributeValue.ATTRIBUTE_SIGNATURE} definition", null, DSWExceptionCode.DM_Parameters);
                 }
                 archive = new KeyValuePair<Archive, List<DocumentService.Attribute>>(biblosArchive, attributes);
                 _cache_ArchiveAttributes.TryAdd(archiveName, archive);
             }
 
             return archive;
-        }
-
-        public async Task<Guid> GetDocumentIdAsync(string archiveName, int documentId)
-        {
-            return await DocumentHelper.TryCatchWithLogger(async () =>
-            {
-                Guid idChain = await _documentsClient.GetDocumentIdAsync(archiveName, documentId);
-                return idChain;
-            }, _logger, LogCategories);
         }
 
         public async Task<ICollection<Guid>> FullTextFindDocumentsAsync(IList<string> archiveNames, string filter)
@@ -301,7 +397,7 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
                     string finderSerialized = JsonConvert.SerializeObject(finder);
                     HttpContent content = new StringContent(finderSerialized, Encoding.UTF8, "application/json");
 
-                    HttpResponseMessage responseMessage = client.PostAsync(_parameterEnvService.CurrentTenantModel.BiblosWebAPIUrl, content).Result;
+                    HttpResponseMessage responseMessage = await client.PostAsync(_parameterEnvService.CurrentTenantModel.BiblosWebAPIUrl, content);
                     if (responseMessage.IsSuccessStatusCode)
                     {
                         string json = await responseMessage.Content.ReadAsStringAsync();
@@ -327,6 +423,33 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
                     }
                 }
                 return false;
+            }, _logger, LogCategories);
+        }
+
+        public async Task<Guid> GetDocumentIdAsync(int idBiblos, string archiveName)
+        {
+            return await DocumentHelper.TryCatchWithLogger(async () =>
+            {
+                Guid documentId = await _documentsClient.GetDocumentIdAsync(archiveName, idBiblos);
+                return documentId;
+            }, _logger, LogCategories);
+        }
+
+        public async Task DetachDocumentAsync(Guid idDocument)
+        {
+            await DocumentHelper.TryCatchWithLogger(async () =>
+            {
+                DocumentService.Document document = await _documentsClient.GetDocumentInfoByIdAsync(idDocument);
+                
+                if (document == null)
+                {
+                    _logger.WriteWarning(new LogMessage($"Document with IdDocument {idDocument} not found"), LogCategories);
+                    return;
+                }
+
+                _logger.WriteInfo(new LogMessage($"Detaching document with IdDocument {idDocument}"), LogCategories);
+                await _documentsClient.DocumentDetachAsync(document);
+                _logger.WriteInfo(new LogMessage($"Document with IdDocument {idDocument}  detached"), LogCategories);
             }, _logger, LogCategories);
         }
         #endregion

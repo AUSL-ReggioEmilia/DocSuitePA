@@ -19,6 +19,7 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Fascicles
         {
             entityTransformed.UniqueId = entity.UniqueId;
             entityTransformed.ReferenceType = (VecompSoftwareFascicle.ReferenceType)entity.ReferenceType;
+            entityTransformed.SequenceNumber = entity.SequenceNumber;
             entityTransformed.DocumentUnit = _mapperUnitOfWork.Repository<IDomainMapper<DocumentUnit, DocumentUnitModel>>().Map(entity.DocumentUnit, new DocumentUnitModel());
             return entityTransformed;
         }

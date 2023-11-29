@@ -77,8 +77,29 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Templates
                 .HasColumnName("Timestamp")
                 .IsRequired();
 
+            Property(x => x.TemplateCollaborationLevel)
+              .HasColumnName("TemplateCollaborationLevel")
+              .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)
+              .IsOptional();
+
+            Property(x => x.TemplateCollaborationPath)
+                .HasColumnName("TemplateCollaborationPath")
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed)
+                .IsOptional();
+
+            Property(x => x.ParentInsertId)
+                .HasColumnName("ParentInsertId")
+                .IsOptional();
+
+            Property(x => x.RepresentationType)
+                .HasColumnName("RepresentationType")
+                .IsRequired();
+
             Ignore(x => x.EntityShortId)
                 .Ignore(x => x.EntityId);
+
+            MapToStoredProcedures();
+
             #endregion
 
             #region [ Configure Navigation Properties ]

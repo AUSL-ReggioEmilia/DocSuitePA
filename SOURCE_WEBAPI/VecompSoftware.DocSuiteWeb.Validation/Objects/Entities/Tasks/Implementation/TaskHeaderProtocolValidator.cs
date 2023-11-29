@@ -1,4 +1,5 @@
-﻿using VecompSoftware.DocSuiteWeb.Common.Loggers;
+﻿using VecompSoftware.DocSuite.Service.Models.Parameters;
+using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Entity.Tasks;
@@ -10,8 +11,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Tasks
     public class TaskHeaderProtocolValidator : ObjectValidator<TaskHeaderProtocol, TaskHeaderProtocolValidator>, ITaskHeaderProtocolValidator
     {
         #region [ Constructor ]
-        public TaskHeaderProtocolValidator(ILogger logger, ITaskHeaderProtocolValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public TaskHeaderProtocolValidator(ILogger logger, ITaskHeaderProtocolValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
         }
         #endregion

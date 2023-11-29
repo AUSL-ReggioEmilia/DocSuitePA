@@ -37,6 +37,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
             DocumentSeriesItems = new HashSet<DocumentSeriesItem>();
             DocumentSeriesItemAnnexes = new HashSet<DocumentSeriesItem>();
             DocumentSeriesItemUnpublishedAnnexes = new HashSet<DocumentSeriesItem>();
+            ProtocolJournals = new HashSet<ProtocolJournal>();
         }
         #endregion
 
@@ -70,7 +71,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         #endregion
 
         #region [ Navigation Properties ]
-
+        public virtual ICollection<ProtocolJournal> ProtocolJournals { get; set; }
         public virtual ICollection<Container> DocmContainers { get; set; }
         public virtual ICollection<Container> ProtContainers { get; set; }
         public virtual ICollection<Container> ReslContainers { get; set; }

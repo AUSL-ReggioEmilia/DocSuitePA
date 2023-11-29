@@ -12,5 +12,6 @@ namespace VecompSoftware.DocSuiteWeb.Model.Securities
         public bool? HasFascicleResponsibleRole { get; set; }
         public bool? HasFascicleSecretaryRole { get; set; }
         public bool? HasManagerRole { get; set; }
+        public bool? HasPECSendableRight { get; set; }
     }
 }

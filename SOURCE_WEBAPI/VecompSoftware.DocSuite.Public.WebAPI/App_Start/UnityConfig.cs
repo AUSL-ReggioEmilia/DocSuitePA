@@ -40,10 +40,14 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
         {
             IDependencyResolver resolver = container.Initialize<UnityConfig, WebAPICurrentIdentity>(string.Empty, string.Empty,
                 WebApiConfiguration.ServiceBusConnectionString, HostingEnvironment.MapPath(WebApiConfiguration.MESSAGE_CONFIGURATION_FILE_PATH), 
-                WebApiConfiguration.CustomInstanceName,
+                WebApiConfiguration.CustomInstanceName, WebApiConfiguration.PasswordEncryptionKey,
                 WebApiConfiguration.AutoDeleteOnIdle, WebApiConfiguration.DefaultMessageTimeToLive, WebApiConfiguration.LockDuration,
                 WebApiConfiguration.MaxDeliveryCount);
-
+            
+            if (WebApiConfiguration.AzureEnabled)
+            {
+                container.RegisterType<Security.ISecurity, Security.Microsoft.AzureActiveDirectory>(new HierarchicalLifetimeManager());
+            }
             IDataUnitOfWork unitOfWork = (IDataUnitOfWork)resolver.BeginScope().GetService(typeof(IDataUnitOfWork));
             Security.ISecurity security = (Security.ISecurity)resolver.BeginScope().GetService(typeof(Security.ISecurity));
             container.RegisterInstance(AutoMapperConfig.RegisterMappings(unitOfWork, security));

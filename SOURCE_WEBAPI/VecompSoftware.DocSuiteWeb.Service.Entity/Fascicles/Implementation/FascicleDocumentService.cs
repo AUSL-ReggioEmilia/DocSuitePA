@@ -38,6 +38,10 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
             {
                 entity.Fascicle = _unitOfWork.Repository<Fascicle>().Find(entity.Fascicle.UniqueId);
             }
+            if (entity.FascicleFolder != null)
+            {
+                entity.FascicleFolder = _unitOfWork.Repository<FascicleFolder>().Find(entity.FascicleFolder.UniqueId);
+            }
 
             _unitOfWork.Repository<FascicleLog>().Insert(FascicleService.CreateLog(entity.Fascicle, FascicleLogType.Modify, $"Modifica sulla tipologia documento (-{entity.ChainType}-{entity.IdArchiveChain}) del fascicolo", CurrentDomainUser.Account));
 

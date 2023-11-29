@@ -26,13 +26,13 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Messages
         private readonly ICurrentIdentity _currentIdentity;
         private readonly IQueueService _queueService;
         private readonly ICQRSMessageMapper _cqrsMapper;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         #endregion
 
         #region [ Constructor ]
 
         public MessageController(IMessageService service, IDataUnitOfWork unitOfWork, ILogger logger, ICurrentIdentity currentIdentity, IQueueService queueService, 
-            ICQRSMessageMapper cqrsMapper, IParameterEnvService parameterEnvService)
+            ICQRSMessageMapper cqrsMapper, IDecryptedParameterEnvService parameterEnvService)
             : base(service, unitOfWork, logger)
         {
             _logger = logger;
@@ -46,7 +46,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Messages
         #endregion
 
         #region [ Methods ]
-        protected override void AfterSave(Message entity)
+        protected override void AfterSave(Message entity, Message existingEntity)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.Entity.Messages
             {
                 _logger.WriteError(ex, LogCategories);
             }
-            base.AfterSave(entity);
+            base.AfterSave(entity, existingEntity);
         }
         #endregion
 

@@ -21,7 +21,7 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Desks
         /// <summary>
         /// Cancellazione logica documento
         /// </summary>
-        public short IsActive { get; set; }
+        public bool IsActive { get; set; }
 
         /// <summary>
         /// Tipologia di documento memorizzato

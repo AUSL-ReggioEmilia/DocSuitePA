@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -17,8 +18,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Fascicles
     public class FascicleValidator : ObjectValidator<Fascicle, FascicleValidator>, IFascicleValidator
     {
         #region [ Constructor ]
-        public FascicleValidator(ILogger logger, IFascicleValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public FascicleValidator(ILogger logger, IFascicleValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         {
             FascicleDocumentUnits = new Collection<FascicleDocumentUnit>();
             Contacts = new Collection<Contact>();
@@ -133,6 +134,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Fascicles
         /// </summary>
         /// 
         public string CustomActions { get; set; }
+        public string ProcessLabel { get; set; }
+        public string DossierFolderLabel { get; set; }
         public byte[] Timestamp { get; set; }
 
 

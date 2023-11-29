@@ -16,7 +16,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Messages
 
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
-        private readonly IParameterEnvService _parameterEnvService;
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
         #endregion
 
         #region [ Properties ]
@@ -25,7 +25,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Messages
         #region [ Constructor ]
 
         public MessageService(IDataUnitOfWork unitOfWork, ILogger logger, IValidatorService validationService,
-            IMessageRuleset messageRuleset, IMapperUnitOfWork mapperUnitOfWork, IParameterEnvService parameterEnvService, ISecurity security)
+            IMessageRuleset messageRuleset, IMapperUnitOfWork mapperUnitOfWork, IDecryptedParameterEnvService parameterEnvService, ISecurity security)
             : base(unitOfWork, logger, validationService, messageRuleset, mapperUnitOfWork, security)
         {
             _unitOfWork = unitOfWork;

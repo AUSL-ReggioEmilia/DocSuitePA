@@ -20,6 +20,10 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Fascicles
             Property(x => x.ReferenceType)
                 .HasColumnName("ReferenceType")
                 .IsRequired();
+            
+            Property(x => x.SequenceNumber)
+               .HasColumnName("SequenceNumber")
+               .IsRequired();
 
             Property(x => x.RegistrationUser)
                .HasColumnName("RegistrationUser")
@@ -40,6 +44,9 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Fascicles
             Property(x => x.Timestamp)
                 .HasColumnName("Timestamp")
                 .IsRequired();
+            Property(x => x.SequenceNumber)
+               .HasColumnName("SequenceNumber")
+               .IsRequired();
 
             Ignore(x => x.EntityId)
                .Ignore(x => x.EntityShortId);

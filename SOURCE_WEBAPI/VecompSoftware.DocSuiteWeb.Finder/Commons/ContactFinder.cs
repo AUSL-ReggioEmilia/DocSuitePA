@@ -21,8 +21,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             QueryParameter parentToExcludeParameter = new QueryParameter(CommonDefinition.SQL_Param_Contact_ParentToExclude, DBNull.Value);
             QueryParameter avcpParentIdParameter = new QueryParameter(CommonDefinition.SQL_Param_Contact_AVCPParentId, DBNull.Value);
             QueryParameter fascicleParentIdParameter = new QueryParameter(CommonDefinition.SQL_Param_Contact_FascicleParentId, DBNull.Value);
-            QueryParameter tenantIdParameter = new QueryParameter(CommonDefinition.SQL_Param_Role_TenantId, DBNull.Value);
-
+            QueryParameter idRoleParameter = new QueryParameter(CommonDefinition.SQL_Param_Contact_IdRole, DBNull.Value);
 
             if (!string.IsNullOrEmpty(finderModel.Filter))
             {
@@ -48,14 +47,16 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             {
                 parentToExcludeParameter.ParameterValue = finderModel.ParentToExclude.Value;
             }
-            if (finderModel.IdTenant.HasValue)
+
+            if (finderModel.IdRole.HasValue)
             {
-                tenantIdParameter.ParameterValue = finderModel.IdTenant.Value;
+                idRoleParameter.ParameterValue = finderModel.IdRole.Value;
             }
 
             return repository.ExecuteModelFunction<ContactTableValuedModel>(CommonDefinition.SQL_FX_Contact_FindContacts,
                 new QueryParameter(CommonDefinition.SQL_Param_Contact_UserName, userName), new QueryParameter(CommonDefinition.SQL_Param_Contact_Domain, domain),
-                filterParameter, applyAuthorizationsParameter, excludeRoleContactsParameter, parentIdParameter, parentToExcludeParameter, avcpParentIdParameter, fascicleParentIdParameter, tenantIdParameter);
+                filterParameter, applyAuthorizationsParameter, excludeRoleContactsParameter, parentIdParameter, parentToExcludeParameter, avcpParentIdParameter, fascicleParentIdParameter,
+                idRoleParameter);
         }
 
         public static ICollection<ContactTableValuedModel> GetContactParents(this IRepository<Contact> repository, int idContact)
@@ -86,7 +87,8 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                 string fullIncrementalPath = repository.Queryable(optimization = true).Where(f => f.EntityId == idFather.Value).Select(f => f.FullIncrementalPath).SingleOrDefault();
                 if (!string.IsNullOrEmpty(fullIncrementalPath))
                 {
-                    partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
+					fullIncrementalPath = $"{fullIncrementalPath}|";
+					partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
                 }
             }
             return partialQuery;
@@ -100,21 +102,23 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                 string fullIncrementalPath = repository.Queryable(optimization = true).Where(f => f.EntityId == idFather.Value).Select(f => f.FullIncrementalPath).SingleOrDefault();
                 if (!string.IsNullOrEmpty(fullIncrementalPath))
                 {
+					fullIncrementalPath = $"{fullIncrementalPath}|";
                     partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
                 }
             }
             return partialQuery.Count();
         }
 
-        public static IQueryable<Contact> FindContactsByDescriptionOrFiscalCode(this IRepository<Contact> repository, string description, string fiscalCode, int? idFather, bool optimization = false)
+        public static IQueryable<Contact> FindContactsByDescriptionAndFiscalCode(this IRepository<Contact> repository, string description, string fiscalCode, int? idFather, bool optimization = false)
         {
-            IQueryable<Contact> partialQuery = repository.Query(x => x.Description == description || (!string.IsNullOrEmpty(fiscalCode) && x.FiscalCode == fiscalCode), optimization).SelectAsQueryable();
+            IQueryable<Contact> partialQuery = repository.Query(x => x.Description == description && (!string.IsNullOrEmpty(fiscalCode) && x.FiscalCode == fiscalCode), optimization).SelectAsQueryable();
             if (idFather.HasValue)
             {
                 string fullIncrementalPath = repository.Queryable(optimization = true).Where(f => f.EntityId == idFather.Value).Select(f => f.FullIncrementalPath).SingleOrDefault();
                 if (!string.IsNullOrEmpty(fullIncrementalPath))
                 {
-                    partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
+                    fullIncrementalPath = $"{fullIncrementalPath}|";
+					partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
                 }
             }
             return partialQuery;
@@ -129,7 +133,8 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                 string fullIncrementalPath = repository.Queryable(optimization = true).Where(f => f.EntityId == idFather.Value).Select(f => f.FullIncrementalPath).SingleOrDefault();
                 if (!string.IsNullOrEmpty(fullIncrementalPath))
                 {
-                    partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
+					fullIncrementalPath = $"{fullIncrementalPath}|";
+					partialQuery = partialQuery.Where(f => f.FullIncrementalPath.StartsWith(fullIncrementalPath));
                 }
             }
             return partialQuery;

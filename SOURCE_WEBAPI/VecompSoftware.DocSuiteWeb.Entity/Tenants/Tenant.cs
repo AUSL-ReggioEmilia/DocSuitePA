@@ -6,7 +6,6 @@ using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Tenants
 {
-
     public class Tenant : DSWTenantBaseEntity
     {
         #region [ Constructor ]
@@ -18,10 +17,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Tenants
         {
             Configurations = new HashSet<TenantConfiguration>();
             Containers = new HashSet<Container>();
-            Roles = new HashSet<Role>();
             PECMailBoxes = new HashSet<PECMailBox>();
             TenantWorkflowRepositories = new HashSet<TenantWorkflowRepository>();
-            Contacts = new HashSet<Contact>();
             WorkflowActivities = new HashSet<WorkflowActivity>();
         }
 
@@ -37,10 +34,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Tenants
 
         public virtual ICollection<TenantConfiguration> Configurations { get; set; }
         public virtual ICollection<Container> Containers { get; set; }
-        public virtual ICollection<Role> Roles { get; set; }
         public virtual ICollection<PECMailBox> PECMailBoxes { get; set; }
         public virtual ICollection<TenantWorkflowRepository> TenantWorkflowRepositories { get; set; }
-        public virtual ICollection<Contact> Contacts { get; set; }
         public virtual ICollection<WorkflowActivity> WorkflowActivities { get; set; }
         public virtual TenantAOO TenantAOO { get; set; }
 

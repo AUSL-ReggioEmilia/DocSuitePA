@@ -2,16 +2,17 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>VecompSoftware.DocSuiteWeb.Common</id>
-    <version>9.09.0.0</version>
+    <version>9.25.0.0</version>
     <authors>Dgroove Srl</authors>
     <owners>Dgroove Srl</owners>
     <iconUrl>https://vecompsoftwarenugetserver.azurewebsites.net/favicon.ico</iconUrl>
     <description>VecompSoftware.DocSuiteWeb.Common</description>
-    <copyright>Copyright © Dgroove 2020</copyright>
+    <copyright>Copyright © Dgroove 2022</copyright>
     <tags>VecompSoftware.DocSuiteWeb.Common, YAC, Project_WebAPI</tags>
     <dependencies>
       <group targetFramework="net48">
-        <dependency id="Newtonsoft.Json" version="12.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" />
+        <dependency id="VecompSoftware.Helpers.Security" version="9.25.0.0" />
       </group>
     </dependencies>
     <frameworkAssemblies>

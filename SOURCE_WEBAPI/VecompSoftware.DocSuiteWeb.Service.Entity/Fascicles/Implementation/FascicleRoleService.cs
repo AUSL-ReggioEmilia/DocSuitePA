@@ -48,7 +48,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 
         protected override IQueryFluent<FascicleRole> SetEntityIncludeOnUpdate(IQueryFluent<FascicleRole> query)
         {
-            return query.Include(x => x.Role)
+            return query.Include(x => x.Role.TenantAOO)
                 .Include(f => f.Fascicle);
         }
 
@@ -69,7 +69,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 
         protected override IQueryFluent<FascicleRole> SetEntityIncludeOnDelete(IQueryFluent<FascicleRole> query)
         {
-            return query.Include(x => x.Role)
+            return query.Include(x => x.Role.TenantAOO)
                 .Include(f => f.Fascicle);
         }
 

@@ -27,7 +27,9 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             List<RoleUser> results = new List<RoleUser>();
             for (int i = tokens.Length - 1; i >= 0; i--)
             {
-                results.AddRange(GetByAuthorizationType(repository, RoleUserType.Manager, short.Parse(tokens[i]), environment).ToList());
+                short roleId = short.Parse(tokens[i]);
+                RoleUser tmp = repository.Queryable(true).Where(f => f.Role.EntityShortId == roleId).FirstOrDefault();
+                results.AddRange(GetByAuthorizationType(repository, RoleUserType.Manager, tmp.Role.UniqueId, environment).ToList());
                 if (results.Any())
                 {
                     return results.First();
@@ -36,15 +38,15 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             return null;
         }
 
-        public static IQueryable<RoleUser> GetByAuthorizationType(this IRepository<RoleUser> repository, string roleUserType, short roleId, DSWEnvironmentType environment)
+        public static IQueryable<RoleUser> GetByAuthorizationType(this IRepository<RoleUser> repository, string roleUserType, Guid roleUniqueId, DSWEnvironmentType environment)
         {
-            return GetByAuthorizationType(repository, new List<string>() { roleUserType }, roleId, environment);
+            return GetByAuthorizationType(repository, new List<string>() { roleUserType }, roleUniqueId, environment);
         }
 
-        public static IQueryable<RoleUser> GetByAuthorizationType(this IRepository<RoleUser> repository, ICollection<string> roleUserTypes, short roleId, DSWEnvironmentType environment)
+        public static IQueryable<RoleUser> GetByAuthorizationType(this IRepository<RoleUser> repository, ICollection<string> roleUserTypes, Guid roleUniqueId, DSWEnvironmentType environment)
         {
             return repository.Queryable(true)
-                .Where(f => f.Role.EntityShortId == roleId && f.Enabled.HasValue && f.Enabled.Value == true && f.DSWEnvironment == environment
+                .Where(f => f.Role.UniqueId == roleUniqueId && f.Enabled.HasValue && f.Enabled.Value == true && f.DSWEnvironment == environment
                     && f.IsMainRole.HasValue && f.IsMainRole == true)
                 .Where(f => roleUserTypes.Contains(f.Type.ToUpper()));
         }
@@ -64,10 +66,10 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
         public static ICollection<SecurityRight> GetUserRights(this IRepository<RoleUser> repository, string username, string domain, bool roleGroupPECRightEnabled)
         {
             ICollection<SecurityRight> results = repository.ExecuteModelFunction<SecurityRight>(CommonDefinition.SQL_FX_UserDomain_UserRights,
-                new QueryParameter(CommonDefinition.SQL_Param_UserDomain_UserName, username), 
+                new QueryParameter(CommonDefinition.SQL_Param_UserDomain_UserName, username),
                 new QueryParameter(CommonDefinition.SQL_Param_UserDomain_Domain, domain),
                 new QueryParameter(CommonDefinition.SQL_Param_UserDomain_RoleGroupPECRightEnabled, roleGroupPECRightEnabled));
-            if (!results.Any(f=> f.Environment == Model.Entities.Commons.DSWEnvironmentType.Collaboration))
+            if (!results.Any(f => f.Environment == Model.Entities.Commons.DSWEnvironmentType.Collaboration))
             {
                 results.Add(new SecurityRight()
                 {
@@ -152,7 +154,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             }
             return results;
         }
-  
+
         public static ICollection<RoleUserModel> GetRoleUsersFromDossier(this IRepository<RoleUser> repository, Guid? idDossier)
         {
             QueryParameter idDossierParameter = new QueryParameter(CommonDefinition.SQL_Param_UserRole_IdDossier, idDossier);
@@ -160,6 +162,11 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
             return repository.ExecuteModelFunction<RoleUserModel>(
                 CommonDefinition.SQL_FX_RoleUser_AllSecretariesFromDossier,
                 idDossierParameter);
+        }
+
+        public static IQueryable<RoleUser> GetByIdRole(this IRepository<RoleUser> repository, short idRole, bool optimization = true)
+        {
+            return repository.Query(x => x.Role.EntityShortId == idRole, optimization: optimization).SelectAsQueryable();
         }
     }
 }

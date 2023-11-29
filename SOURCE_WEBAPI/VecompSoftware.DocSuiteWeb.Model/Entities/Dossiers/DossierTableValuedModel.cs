@@ -40,7 +40,8 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Dossiers
         public int? Contact_Incremental { get; set; }
 
         public string Contact_Description { get; set; }
-
+        public string MetadataDesigner { get; set; }
+        public string MetadataValues { get; set; }
 
         #endregion
 

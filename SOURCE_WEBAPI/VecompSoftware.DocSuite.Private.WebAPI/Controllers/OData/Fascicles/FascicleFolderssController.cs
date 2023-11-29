@@ -59,6 +59,30 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Controllers.OData.Fascicles
                 return Ok(fascicleFolders);
             }, _logger, LogCategories);
         }
+
+        [HttpGet]
+        public IHttpActionResult CountFascicleFolderChildren(Guid idFascicleFolder)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric(() =>
+            {
+                int childrenCount = _unitOfWork.Repository<FascicleFolder>().CountChildren(idFascicleFolder);
+
+                return Ok(childrenCount);
+
+            }, _logger, LogCategories);
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetChildren(Guid idFascicleFolder, int skip, int top)
+        {
+            return CommonHelpers.ActionHelper.TryCatchWithLoggerGeneric<IHttpActionResult>(() =>
+            {
+                ICollection<FascicleFolderTableValuedModel> fascicleFolders = _unitOfWork.Repository<FascicleFolder>().GetChildren(idFascicleFolder, skip, top);
+                ICollection<FascicleFolderModel> fascicleFoldersModel = _mapperUnitOfwork.Repository<IDomainMapper<FascicleFolderTableValuedModel, FascicleFolderModel>>().MapCollection(fascicleFolders).ToList();
+
+                return Ok(fascicleFoldersModel);
+            }, _logger, LogCategories);
+        }
         #endregion
     }
 }

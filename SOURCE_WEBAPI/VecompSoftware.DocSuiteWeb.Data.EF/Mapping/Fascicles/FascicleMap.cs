@@ -106,6 +106,14 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Fascicles
                 .HasColumnName("CustomActions")
                 .IsOptional();
 
+            Property(x => x.ProcessLabel)
+                .HasColumnName("ProcessLabel")
+                .IsOptional();
+
+            Property(x => x.DossierFolderLabel)
+                .HasColumnName("DossierFolderLabel")
+                .IsOptional();
+
             Ignore(x => x.EntityId)
                 .Ignore(x => x.EntityShortId)
                 .Ignore(x => x.WorkflowAutoComplete)

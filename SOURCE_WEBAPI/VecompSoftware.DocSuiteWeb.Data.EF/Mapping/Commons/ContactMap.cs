@@ -126,18 +126,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .HasColumnName("Timestamp")
                 .IsRequired();
 
-            Property(x => x.ActiveFrom)
-             .HasColumnName("ActiveFrom")
-             .IsOptional();
-
-            Property(x => x.ActiveTo)
-             .HasColumnName("ActiveTo")
-             .IsOptional();
-
-            Property(x => x.IsChanged)
-             .HasColumnName("isChanged")
-             .IsOptional();
-
             Property(x => x.UniqueId)
                 .HasColumnName("UniqueId")
                 .IsRequired();

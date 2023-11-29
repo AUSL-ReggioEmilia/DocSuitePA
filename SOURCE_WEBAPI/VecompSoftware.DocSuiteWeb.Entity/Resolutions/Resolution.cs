@@ -5,6 +5,7 @@ using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentArchives;
 using VecompSoftware.DocSuiteWeb.Entity.Messages;
+using VecompSoftware.DocSuiteWeb.Entity.Tenders;
 
 namespace VecompSoftware.DocSuiteWeb.Entity.Resolutions
 {
@@ -17,12 +18,12 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Resolutions
         {
             ResolutionContacts = new HashSet<ResolutionContact>();
             ResolutionLogs = new HashSet<ResolutionLog>();
-            //ResolutionRoles = new HashSet<ResolutionRole>();
+            ResolutionRoles = new HashSet<ResolutionRole>();
             WorkflowActions = new List<IWorkflowAction>();
             DocumentSeriesItemLinks = new HashSet<DocumentSeriesItemLink>();
             ResolutionDocumentSeriesItems = new HashSet<ResolutionDocumentSeriesItem>();
             Messages = new HashSet<Message>();
-          
+            TenderHeaders = new HashSet<TenderHeader>();
         }
         #endregion
 
@@ -90,6 +91,10 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Resolutions
 
         public DateTime? WebPublicationDate { get; set; }
 
+        public float? Amount { get; set; }
+
+        public DateTimeOffset? UltimaPaginaDate { get; set; }
+
         #endregion
 
         #region [ Navigation Properties ]
@@ -112,9 +117,11 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Resolutions
 
         public virtual ICollection<Message> Messages { get; set; }
 
-        //public virtual ICollection<ResolutionRole> ResolutionRoles { get; set; }
+        public virtual ICollection<ResolutionRole> ResolutionRoles { get; set; }
 
+        public virtual ICollection<TenderHeader> TenderHeaders { get; set; }
 
+        public virtual WebPublication WebPublication { get; set; }
         #endregion
 
         #region [ Not Mapping Properties ]

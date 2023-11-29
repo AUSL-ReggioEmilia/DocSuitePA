@@ -16,11 +16,6 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Tenants
         public static IQueryable<Tenant> GetByUniqueId(this IRepository<Tenant> repository, Guid uniqueId, bool optimization = false)
         {
             return repository.Query(x => x.UniqueId == uniqueId, optimization)
-                .Include(i => i.Configurations)
-                .Include(i => i.Roles)
-                .Include(i => i.Containers)
-                .Include(i => i.PECMailBoxes)
-                .Include(i => i.TenantWorkflowRepositories)
                 .Include(i => i.TenantAOO)
                 .SelectAsQueryable();
         }
@@ -54,5 +49,19 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Tenants
             );
         }
 
+        public static int CountTenant(this IRepository<Tenant> repository, string tenantName)
+        {
+            return repository.Queryable().Count(x => x.TenantName == tenantName);
+        }
+
+        public static int CountTenant(this IRepository<Tenant> repository, Guid uniqueId)
+        {
+            return repository.Queryable().Count(x => x.UniqueId == uniqueId);
+        }
+
+        public static int CountTenantAOO(this IRepository<TenantAOO> repository, Guid uniqueId)
+        {
+            return repository.Queryable().Count(x => x.UniqueId == uniqueId);
+        }
     }
 }

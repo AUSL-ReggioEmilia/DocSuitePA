@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Filters;
 using VecompSoftware.DocSuiteWeb.Common.CustomAttributes;
@@ -55,18 +56,18 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Filters
                 return messages;
             }
             messages = FillRecursive(ex.InnerException, messages, validationCode);
-            string msg = ex.Message;
-            if (ex is HttpResponseException)
+            if (ex is OperationCanceledException ope)
             {
-                HttpResponseException err = (ex as HttpResponseException);
-                if (err != null && err.Response != null)
+                _logger.WriteDebug(new LogMessage($"OperationCanceledException : {ope.TargetSite?.Name}"), LogCategories);
+            }
+            if (ex is HttpResponseException err && err.Response != null)
+            {
+                try
                 {
-                    try
-                    {
-                        _logger.WriteError(new LogMessage(err.Response.Content.ReadAsStringAsync().Result), LogCategories);
-                    }
-                    catch (Exception) {; }
+                    _logger.WriteDebug(new LogMessage("reading err.Response.Content.ReadAsStringAsync ...."), LogCategories);
+                    Task.Run(async () => _logger.WriteError(new LogMessage(await err.Response.Content.ReadAsStringAsync()), LogCategories));
                 }
+                catch (Exception) {; }
             }
             messages.Add(new ValidationMessageModel() { Message = ex.Message, MessageCode = validationCode });
             return messages;
@@ -74,7 +75,8 @@ namespace VecompSoftware.DocSuite.Private.WebAPI.Filters
 
         public override void OnException(HttpActionExecutedContext context)
         {
-            _logger.WriteError(context.Exception, LogCategories);
+            
+            _logger.WriteError(new LogMessage($"OnException {context.Exception.Message}: {context.Request.GetOwinContext()?.Authentication?.User?.Identity?.Name} {context.Request?.RequestUri}"), context.Exception, LogCategories);
             HttpResponseMessage responseMessage = new HttpResponseMessage(HttpStatusCode.BadRequest);
             List<ValidationMessageModel> messages = new List<ValidationMessageModel>();
             ValidationModel model = new ValidationModel();

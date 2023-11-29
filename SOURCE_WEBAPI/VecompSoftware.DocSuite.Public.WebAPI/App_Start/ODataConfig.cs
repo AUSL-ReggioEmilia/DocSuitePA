@@ -2,7 +2,6 @@
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Query;
 using System;
-using System.Collections.Generic;
 using System.Web.Http;
 using VecompSoftware.DocSuite.Public.Core.Models.Customs.AUSL_RE.BandiDiGara;
 using VecompSoftware.DocSuite.Public.Core.Models.Domains;
@@ -18,7 +17,6 @@ using VecompSoftware.DocSuiteWeb.Model.Entities.Dossiers;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Fascicles;
 using VecompSoftware.DocSuiteWeb.Model.Entities.Workflows;
 using VecompSoftware.DocSuiteWeb.Model.Parameters.ODATA.Finders;
-using FascicleFolderModel = VecompSoftware.DocSuite.Public.Core.Models.Domains.Fascicles.FascicleFolderModel;
 using FascicleModel = VecompSoftware.DocSuite.Public.Core.Models.Domains.Fascicles.FascicleModel;
 
 namespace VecompSoftware.DocSuite.Public.WebAPI
@@ -26,6 +24,7 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
     public static class ODataConfig
     {
         public const string ODATA_FINDER_PARAMETER = "finder";
+        public const string ODATA_INPUT_PARAMETER = "input";
 
         public static void Register(HttpConfiguration config)
         {
@@ -557,7 +556,16 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
                .EntitySet<ArchiveModel>("AUSLRE_BandiDiGaraArchives")
                .EntityType.HasKey(p => p.UniqueId);
 
+            builder
+               .EntitySet<MenuModel>("AUSLRE_CommittenteMenu")
+               .EntityType.HasKey(p => p.UniqueId);
+
+            builder
+               .EntitySet<ArchiveModel>("AUSLRE_CommittenteArchives")
+               .EntityType.HasKey(p => p.UniqueId);
+
             #region [ Functions ]
+            #region [BandiDiGara]
             FunctionConfiguration getMenu = builder
                  .EntityType<MenuModel>().Collection
                  .Function("GetMenu");
@@ -589,6 +597,44 @@ namespace VecompSoftware.DocSuite.Public.WebAPI
             getArchiveInfo.Namespace = "ArchiveModelService";
             getArchiveInfo.Parameter<Guid>("uniqueId");
             getArchiveInfo.ReturnsCollectionFromEntitySet<ArchiveModel>("AUSLRE_BandiDiGaraArchives");
+
+            #endregion
+
+            #region [Commitente]
+            FunctionConfiguration getMenuCommittente = builder
+                 .EntityType<MenuModel>().Collection
+                 .Function("GetMenu");
+
+            getMenuCommittente.Namespace = "MenuModelService";
+            getMenuCommittente.ReturnsCollectionFromEntitySet<MenuModel>("AUSLRE_CommittenteMenu");
+
+            ActionConfiguration countArchiveByGridCommittente = builder
+                .EntityType<ArchiveModel>().Collection
+                .Action("CountArchiveByGrid");
+
+            countArchiveByGridCommittente.Namespace = "ArchiveModelService";
+            countArchiveByGridCommittente.ReturnsCollectionFromEntitySet<ArchiveModel>("AUSLRE_CommittenteArchives");
+            countArchiveByGridCommittente.Parameter<ArchiveFinderModel>("finder");
+
+            ActionConfiguration searchArchiveByGridCommittente = builder
+                .EntityType<ArchiveModel>().Collection
+                .Action("SearchArchiveByGrid");
+
+            searchArchiveByGridCommittente.Namespace = "ArchiveModelService";
+            searchArchiveByGridCommittente.ReturnsCollectionFromEntitySet<ArchiveModel>("AUSLRE_CommittenteArchives");
+            searchArchiveByGridCommittente.Parameter<ArchiveFinderModel>("finder");
+
+
+            FunctionConfiguration getArchiveInfoCommittente = builder
+                .EntityType<ArchiveModel>().Collection
+                .Function("GetArchiveInfo");
+
+            getArchiveInfoCommittente.Namespace = "ArchiveModelService";
+            getArchiveInfoCommittente.Parameter<Guid>("uniqueId");
+            getArchiveInfoCommittente.ReturnsCollectionFromEntitySet<ArchiveModel>("AUSLRE_CommittenteArchives");
+            #endregion
+
+
             #endregion
 
             #region [ Navigation Properties ]

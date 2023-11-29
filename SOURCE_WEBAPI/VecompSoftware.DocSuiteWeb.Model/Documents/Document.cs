@@ -32,9 +32,19 @@ namespace VecompSoftware.DocSuiteWeb.Model.Documents
         public string Name { get; set; }
 
         /// <summary>
+        /// Nome dell'archivio
+        /// </summary>
+        public string ArchiveName { get; set; }
+
+        /// <summary>
         /// Dimensione del documento
         /// </summary>
         public long? Size { get; set; }
+
+        /// <summary>
+        /// Hash del documento
+        /// </summary>
+        public string DocumentHash { get; set; }
 
         /// <summary>
         /// Versione del documento

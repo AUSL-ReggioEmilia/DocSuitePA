@@ -72,6 +72,8 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Fascicles
         public int? DSWEnvironment { get; set; }
 
         public string CustomActions { get; set; }
+        public string ProcessLabel { get; set; }
+        public string DossierFolderLabel { get; set; }
 
         #endregion
 

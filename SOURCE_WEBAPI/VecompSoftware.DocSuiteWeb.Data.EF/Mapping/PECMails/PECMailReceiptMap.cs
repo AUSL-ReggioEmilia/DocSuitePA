@@ -84,7 +84,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.PECMails
             Property(x => x.LastChangedUser)
                 .HasColumnName("LastChangedUser")
                 .HasMaxLength(256)
-                .IsRequired();
+                .IsOptional();
 
             Property(x => x.LastChangedDate)
                 .HasColumnName("LastChangedDate")

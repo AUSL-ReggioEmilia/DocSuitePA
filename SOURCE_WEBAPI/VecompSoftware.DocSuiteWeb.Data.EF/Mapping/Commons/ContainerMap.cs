@@ -27,11 +27,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
 
             Property(x => x.isActive)
                 .HasColumnName("isActive")
-                .IsOptional();
-
-            Property(x => x.Massive)
-                .HasColumnName("Massive")
-                .IsOptional();
+                .IsRequired();
 
             Property(x => x.RegistrationDate)
                 .HasColumnName("RegistrationDate")
@@ -49,26 +45,9 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .HasColumnName("LastChangedUser")
                 .IsOptional();
 
-            Property(x => x.Conservation)
-                .HasColumnName("Conservation")
-                .IsOptional();
-
-            Property(x => x.ProtocolRejection)
-                .HasColumnName("ProtocolRejection")
-                .IsOptional();
-
-            Property(x => x.ActiveFrom)
-                .HasColumnName("ActiveFrom")
-                .IsOptional();
-
-            Property(x => x.ActiveTo)
-                .HasColumnName("ActiveTo")
-                .IsOptional();
-
             Property(x => x.idArchive)
                 .HasColumnName("idArchive")
                 .IsOptional();
-
 
             Property(x => x.Privacy)
                 .HasColumnName("Privacy")
@@ -81,10 +60,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
             Property(x => x.HeadingLetter)
                 .HasColumnName("HeadingLetter")
                 .IsOptional();
-
-            Property(x => x.ManageSecureDocument)
-                .HasColumnName("ManageSecureDocument")
-                .IsRequired();
 
             Property(x => x.PrivacyLevel)
                .HasColumnName("PrivacyLevel")
@@ -106,10 +81,6 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
             #endregion
 
             #region [ Configure Navigation Properties ]
-
-            HasOptional(t => t.ProtocolType)
-                .WithMany(t => t.Containers)
-                .Map(m => m.MapKey("idProtocolType"));
 
             HasOptional(t => t.DocmLocation)
                 .WithMany(t => t.DocmContainers)

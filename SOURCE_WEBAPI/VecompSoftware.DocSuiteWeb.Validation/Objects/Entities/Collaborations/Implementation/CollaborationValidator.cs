@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
@@ -15,8 +16,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Collaborations
     public class CollaborationValidator : ObjectValidator<Collaboration, CollaborationValidator>, ICollaborationValidator
     {
         #region [ Constructor ]
-        public CollaborationValidator(ILogger logger, ICollaborationValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity) { }
+        public CollaborationValidator(ILogger logger, ICollaborationValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity) { }
 
         #endregion
 
@@ -113,12 +114,6 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Collaborations
         /// Get or set Location reference
         /// </summary>
         public Location Location { get; set; }
-
-        public DocumentSeriesItem DocumentSeriesItem { get; set; }
-
-        //public Protocol Protocol { get; set; }
-
-        public Resolution Resolution { get; set; }
 
         /// <summary>
         /// Get or set CollaborationLog reference

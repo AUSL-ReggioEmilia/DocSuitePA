@@ -17,7 +17,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
 
             Property(x => x.EntityShortId)
                 .HasColumnName("idRole")
-                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+                .HasDatabaseGeneratedOption(DatabaseGeneratedOption.Computed);
 
             Property(x => x.Name)
                 .HasColumnName("Name")
@@ -25,15 +25,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
 
             Property(x => x.IsActive)
                 .HasColumnName("isActive")
-                .IsOptional();
-
-            Property(x => x.ActiveFrom)
-                .HasColumnName("ActiveFrom")
-                .IsOptional();
-
-            Property(x => x.ActiveTo)
-                .HasColumnName("ActiveTo")
-                .IsOptional();
+                .IsRequired();
 
             Property(x => x.FullIncrementalPath)
                 .HasColumnName("FullIncrementalPath")
@@ -61,7 +53,7 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
 
             Property(x => x.RegistrationUser)
                  .HasColumnName("RegistrationUser")
-                 .IsOptional();
+                 .IsRequired();
 
             Property(x => x.LastChangedDate)
                  .HasColumnName("LastChangedDate")
@@ -71,23 +63,21 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                 .HasColumnName("LastChangedUser")
                 .IsOptional();
 
-            Property(x => x.ServiceCode)
-                .HasColumnName("ServiceCode")
-                .IsOptional();
-
-            Property(x => x.TenantId)
-                .HasColumnName("TenantId")
-                .IsRequired();
-
-            Property(x => x.IdRoleTenant)
-                .HasColumnName("IdRoleTenant")
+            Property(x => x.RoleTypology)
+                .HasColumnName("RoleTypology")
                 .IsRequired();
 
             Property(x => x.Timestamp)
                 .HasColumnName("Timestamp")
                 .IsRequired();
 
-            Ignore(x => x.EntityId);
+            Ignore(x => x.EntityId)
+                .Ignore(x => x.WorkflowAutoComplete)
+                .Ignore(x => x.WorkflowName)
+                .Ignore(x => x.IdWorkflowActivity)
+                .Ignore(x => x.WorkflowActions);
+
+            MapToStoredProcedures();
             #endregion
 
             #region [ Configure Navigation Properties ]
@@ -95,6 +85,9 @@ namespace VecompSoftware.DocSuiteWeb.Data.EF.Mapping.Commons
                .WithMany()
                .Map(x => x.MapKey("idRoleFather"));
 
+            HasRequired(x => x.TenantAOO)
+                .WithMany(x => x.Roles)
+                    .Map(m => m.MapKey("IdTenantAOO"));
             #endregion
         }
     }

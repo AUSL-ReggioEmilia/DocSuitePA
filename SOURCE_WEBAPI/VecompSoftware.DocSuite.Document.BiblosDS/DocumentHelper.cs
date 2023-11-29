@@ -46,6 +46,32 @@ namespace VecompSoftware.DocSuite.Document.BiblosDS
             }
         }
 
+        public static async Task TryCatchWithLogger(Func<Task> func, ILogger logger, IEnumerable<LogCategory> logCategories)
+        {
+            try
+            {
+                await func();
+            }
+            catch (AggregateException ae)
+            {
+                ae.Handle((x) =>
+                {
+                    if (x is Exception)
+                    {
+                        logger.WriteError(x, logCategories);
+                    }
+                    return false;
+                });
+                throw new DSWException(string.Concat("Document BiblosDS layer - AggregateException in invoke operation: ", string.Join(", ", ae.InnerExceptions.Select(f => f.Message))),
+                    ae.Flatten(), DSWExceptionCode.DM_Anomaly);
+            }
+            catch (DSWException) { throw; }
+            catch (Exception ex)
+            {
+                logger.WriteError(ex, logCategories);
+                throw new DSWException(string.Concat("Document BiblosDS layer - unexpected exception was thrown while invoking operation: ", ex.Message), ex, DSWExceptionCode.DM_Anomaly);
+            }
+        }
         #endregion
     }
 }

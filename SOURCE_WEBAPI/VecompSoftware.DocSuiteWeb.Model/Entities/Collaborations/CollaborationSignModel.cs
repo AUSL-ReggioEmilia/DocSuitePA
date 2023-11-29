@@ -8,6 +8,8 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.Collaborations
 
         public Guid? IdCollaborationSign { get; set; }
 
+        public int IdCollaboration { get; set; }
+
         public short Incremental { get; set; }
 
         public bool IsActive { get; set; }

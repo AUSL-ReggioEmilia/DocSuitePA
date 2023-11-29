@@ -19,14 +19,18 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                 .SelectAsQueryable();
         }
 
+        public static int Count(this IRepository<Container> repository, Guid uniqueId)
+        {
+            return repository.Queryable().Count(x => x.UniqueId == uniqueId);
+        }
+
         public static int CountProtocolInsertRight(this IRepository<Container> repository, string userName, string domain)
         {
-
             return repository.Queryable(true).Count(x => x.ContainerGroups
                         .Any(s => s.SecurityGroup.SecurityUsers
                         .Any(a => a.Account.ToLower().Equals(userName) && a.UserDomain.ToLower().Equals(domain))
                             && s.ProtocolRights.StartsWith("1")
-                        ) && x.isActive.HasValue && x.isActive.Value == 1
+                        ) && x.isActive
                     );
         }
 
@@ -37,7 +41,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                 .Any(s => s.SecurityGroup.SecurityUsers
                    .Any(a => a.Account.ToLower().Equals(userName) && a.UserDomain.ToLower().Equals(domain))
                     && s.DocumentRights.StartsWith("1"))
-                 && x.isActive.HasValue && x.isActive.Value == 1
+                 && x.isActive
                  );
         }
 
@@ -48,7 +52,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                 .Any(s => s.SecurityGroup.SecurityUsers
                    .Any(a => a.Account.ToLower().Equals(userName) && a.UserDomain.ToLower().Equals(domain))
                     && ((s.DocumentRights.StartsWith("01")) || (s.DocumentRights.StartsWith("11"))))
-                 && x.isActive.HasValue && x.isActive.Value == 1 && x.DocmLocation != null
+                 && x.isActive && x.DocmLocation != null
          );
         }
 
@@ -67,7 +71,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                    .Any(s => s.SecurityGroup.SecurityUsers
                      .Any(a => a.Account.ToLower().Equals(userName) && a.UserDomain.ToLower().Equals(domain))
                       && s.DocumentRights.StartsWith("1"))
-                   && x.isActive.HasValue && x.isActive.Value == 1
+                   && x.isActive
                    && x.Tenants.Any(t => t.UniqueId == tenantId), optimization: optimization)
                    .SelectAsQueryable();
         }
@@ -102,7 +106,7 @@ namespace VecompSoftware.DocSuiteWeb.Finder.Commons
                             s.ResolutionRights.StartsWith("1") || s.FascicleRights.StartsWith("1")
                             //|| s.UDSRights.StartsWith("1")
                             ))
-                   && x.isActive.HasValue && x.isActive.Value == 1, optimization: optimization)
+                   && x.isActive, optimization: optimization)
                    .OrderBy(o => o.OrderBy(c => c.Name))
                    .SelectAsQueryable();
         }

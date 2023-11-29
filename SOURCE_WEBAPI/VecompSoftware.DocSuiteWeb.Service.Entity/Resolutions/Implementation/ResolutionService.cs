@@ -34,7 +34,8 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Resolutions
 
         protected override IQueryFluent<Resolution> SetEntityIncludeOnUpdate(IQueryFluent<Resolution> query)
         {
-            query.Include(i => i.FileResolution);
+            query.Include(i => i.FileResolution)
+                .Include(i => i.ResolutionRoles);
             return query;
         }
 

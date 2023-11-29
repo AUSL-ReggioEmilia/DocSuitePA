@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
@@ -11,8 +12,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Protocols
     public class ProtocolDocumentTypeValidator : ObjectValidator<ProtocolDocumentType, ProtocolDocumentTypeValidator>, IProtocolDocumentTypeValidator
     {
         #region [ Constructor ]
-        public ProtocolDocumentTypeValidator(ILogger logger, IProtocolDocumentTypeValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public ProtocolDocumentTypeValidator(ILogger logger, IProtocolDocumentTypeValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         { }
 
         #endregion
@@ -27,7 +28,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Protocols
         public string Code { get; set; }
         public string Description { get; set; }
         public bool? IsActive { get; set; }
-        public bool? HiddenFields { get; set; }
+        public string HiddenFields { get; set; }
         public bool? NeedPackage { get; set; }
         public string CommonUser { get; set; }
 

@@ -102,7 +102,6 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
             if (entity.ParentInsertId.HasValue)
             {
                 DossierFolder parentFolder = _unitOfWork.Repository<DossierFolder>().Find(entity.ParentInsertId);
-
                 if (parentFolder != null && parentFolder.DossierFolderLevel > 1)
                 {
                     parentFolder.Status = DossierFolderStatus.Folder;
@@ -163,7 +162,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
             .Include(x => x.Fascicle)
             .Include(x => x.FascicleWorkflowRepositories.Select(p => p.Process))
             .Include(x => x.FascicleWorkflowRepositories.Select(w => w.WorkflowRepository))
-            .Include(x => x.DossierFolderRoles.Select(r => r.Role))
+            .Include(x => x.DossierFolderRoles.Select(r => r.Role.TenantAOO))
             .SelectAsQueryable()
             .FirstOrDefault();
 
@@ -255,7 +254,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Dossiers
             query
                 .Include(d => d.Fascicle)
                 .Include(d => d.Dossier)
-                .Include(d => d.DossierFolderRoles.Select(f => f.Role));
+                .Include(d => d.DossierFolderRoles.Select(f => f.Role.TenantAOO));
             return query;
         }
 

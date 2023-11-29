@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Commons;
@@ -18,8 +19,8 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
     public class CategoryValidator : ObjectValidator<Category, CategoryValidator>, ICategoryValidator
     {
         #region [ Constructor ]
-        public CategoryValidator(ILogger logger, ICategoryValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public CategoryValidator(ILogger logger, ICategoryValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         { }
 
         #endregion
@@ -28,7 +29,7 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
 
         public short EntityShortId { get; set; }
         public string Name { get; set; }
-        public ActiveType? IsActive { get; set; }
+        public bool IsActive { get; set; }
         public short? Code { get; set; }
         public string FullIncrementalPath { get; set; }
         public string FullCode { get; set; }

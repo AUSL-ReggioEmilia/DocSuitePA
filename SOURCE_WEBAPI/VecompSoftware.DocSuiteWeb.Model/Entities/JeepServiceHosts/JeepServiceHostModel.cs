@@ -17,6 +17,8 @@ namespace VecompSoftware.DocSuiteWeb.Model.Entities.JeepServiceHosts
         public bool IsDefault { get; set; }
         public string RegistrationUser { get; set; }
         public DateTimeOffset RegistrationDate { get; set; }
+        public string LastChangedUser { get; set; }
+        public DateTimeOffset? LastChangedDate { get; set; }
         #endregion
 
         #region [ Methods ]

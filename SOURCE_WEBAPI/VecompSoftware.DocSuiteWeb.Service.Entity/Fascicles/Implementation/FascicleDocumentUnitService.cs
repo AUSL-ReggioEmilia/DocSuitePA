@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Exceptions;
 using VecompSoftware.DocSuiteWeb.Common.Helpers;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
@@ -17,6 +18,7 @@ using VecompSoftware.DocSuiteWeb.Finder.DocumentUnits;
 using VecompSoftware.DocSuiteWeb.Finder.Fascicles;
 using VecompSoftware.DocSuiteWeb.Finder.Protocols;
 using VecompSoftware.DocSuiteWeb.Finder.Resolutions;
+using VecompSoftware.DocSuiteWeb.Finder.Tenants;
 using VecompSoftware.DocSuiteWeb.Finder.UDS;
 using VecompSoftware.DocSuiteWeb.Mapper;
 using VecompSoftware.DocSuiteWeb.Repository.Repositories;
@@ -34,17 +36,20 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
         private readonly IDataUnitOfWork _unitOfWork;
         private readonly IMapperUnitOfWork _mapperUnitOfWork;
         private const string DOCUMENT_UNIT_NOT_FOUND_MESSAGE = "Unità documentaria non trovata nel fascicolo.";
+        private readonly IDecryptedParameterEnvService _parameterEnvService;
+
         #endregion
 
         #region [ Constructor ]
 
         public FascicleDocumentUnitService(IDataUnitOfWork unitOfWork, ILogger logger, IValidatorService validationService,
             Validation.RulesetDefinitions.Entities.Fascicles.IFascicleRuleset validatorRuleset, IMapperUnitOfWork mapperUnitOfWork,
-            ISecurity security) : base(unitOfWork, logger, validationService, validatorRuleset, mapperUnitOfWork, security)
+            ISecurity security, IDecryptedParameterEnvService parameterEnvService) : base(unitOfWork, logger, validationService, validatorRuleset, mapperUnitOfWork, security)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _mapperUnitOfWork = mapperUnitOfWork;
+            _parameterEnvService = parameterEnvService;
         }
 
         #endregion
@@ -72,7 +77,8 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
 
             if (entity.DocumentUnit != null)
             {
-                entity.DocumentUnit = _unitOfWork.Repository<DocumentUnit>().GetByIdWithCategory(entity.DocumentUnit.UniqueId).SingleOrDefault();
+                // Must use GetCompleteById to load the DocumentUnit because it is used by FascicleDocumentUnitController -> AfterSave method
+                entity.DocumentUnit = _unitOfWork.Repository<DocumentUnit>().GetCompleteById(entity.DocumentUnit.UniqueId).SingleOrDefault();
             }
 
             entity.ReferenceType = ReferenceType.Reference;
@@ -82,6 +88,13 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
             }
 
             entity.Fascicle.LastChangedDate = DateTimeOffset.UtcNow;
+            if (!CurrentInsertActionType.HasValue || (CurrentInsertActionType.HasValue && 
+                (CurrentInsertActionType.Value == Common.Infrastructures.InsertActionType.None || CurrentInsertActionType.Value == Common.Infrastructures.InsertActionType.AutomaticIntoFascicleDetection)))
+            {
+                short currentMaxSequenceNumber = _unitOfWork.Repository<FascicleDocumentUnit>().GetLatestSequenceNumber(entity.Fascicle.UniqueId);
+                entity.SequenceNumber = ++currentMaxSequenceNumber;
+            }
+
             FascicleLog fascicleLog = FascicleService.CreateLog(entity.Fascicle, entity.ReferenceType.Equals(ReferenceType.Fascicle) ? FascicleLogType.UDInsert : FascicleLogType.UDReferenceInsert,
                 string.Format("Inserimento ({0}) {1} n. {2} in fascicolo n. {3}",
                 entity.ReferenceType.Equals(ReferenceType.Fascicle) ? EnumHelper.GetDescription(ReferenceType.Fascicle) : EnumHelper.GetDescription(ReferenceType.Reference),
@@ -147,15 +160,15 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
             {
                 entityTransformed.FascicleFolder = _unitOfWork.Repository<FascicleFolder>().GetByCategoryAndFascicle(entity.Fascicle.UniqueId, idCategory.Value, optimization: false).FirstOrDefault();
             }
-            
+
             if (entity.DocumentUnit != null)
             {
-                entityTransformed.DocumentUnit = _unitOfWork.Repository<DocumentUnit>().GetByIdWithCategory(entity.DocumentUnit.UniqueId).SingleOrDefault();
+                entityTransformed.DocumentUnit = _unitOfWork.Repository<DocumentUnit>().GetCompleteById(entity.DocumentUnit.UniqueId).SingleOrDefault();
             }
 
             entityTransformed = AutomaticFascicleDetection(entityTransformed);
             _unitOfWork.Repository<FascicleLog>().Insert(FascicleService.CreateLog(entityTransformed.Fascicle, FascicleLogType.Modify,
-                 $"Spostato documento {entityTransformed.DocumentUnit.GetTitle()} nella cartella {entityTransformed.FascicleFolder.Name} ({entityTransformed.FascicleFolder.GetTitle()})", 
+                 $"Spostato documento {entityTransformed.DocumentUnit.GetTitle()} nella cartella {entityTransformed.FascicleFolder.Name} ({entityTransformed.FascicleFolder.GetTitle()})",
                  CurrentDomainUser.Account));
 
             return base.BeforeUpdate(entity, entityTransformed);
@@ -297,7 +310,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Fascicles
             entity.ReferenceType = entityTransformed.ReferenceType;
 
             _unitOfWork.Repository<FascicleLog>().Insert(FascicleService.CreateLog(entityTransformed.Fascicle, FascicleLogType.UDDelete,
-                $"Eliminazione {LogDocumentNameHelper.GetAttributeDescription(GetType())} n. { entityTransformed.DocumentUnit.GetTitle()} da fascicolo n. {entityTransformed.Fascicle.Title}",
+                $"Eliminazione {entityTransformed.DocumentUnit.DocumentUnitName} n. { entityTransformed.DocumentUnit.Title} da fascicolo n. {entityTransformed.Fascicle.Title}",
                 CurrentDomainUser.Account));
 
             return base.BeforeDelete(entity, entityTransformed);

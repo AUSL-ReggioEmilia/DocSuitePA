@@ -38,7 +38,7 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
 
         protected override IQueryFluent<RoleUser> SetEntityIncludeOnUpdate(IQueryFluent<RoleUser> query)
         {
-            query.Include(f => f.Role);
+            query.Include(f => f.Role.TenantAOO);
 
 
             return query;
@@ -52,10 +52,10 @@ namespace VecompSoftware.DocSuiteWeb.Service.Entity.Commons
                 {
                     if (entity.Role != null)
                     {
-                        entityTransformed.Role = _unitOfWork.Repository<Role>().Find(entity.Role.IdRoleTenant);
+                        entityTransformed.Role = _unitOfWork.Repository<Role>().Find(entity.Role.EntityId);
                     }
 
-                    IQueryable<TemplateCollaborationUser> invalidUsers = _unitOfWork.Repository<TemplateCollaborationUser>().GetTemplatesByUser(entityTransformed.Account, entityTransformed.Role.IdRoleTenant);
+                    IQueryable<TemplateCollaborationUser> invalidUsers = _unitOfWork.Repository<TemplateCollaborationUser>().GetTemplatesByUser(entityTransformed.Account, entityTransformed.Role.EntityShortId);
 
                     if (invalidUsers != null && invalidUsers.Count() > 0)
                     {

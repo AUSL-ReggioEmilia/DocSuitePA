@@ -16,7 +16,8 @@ namespace VecompSoftware.DocSuiteWeb.Mapper.Model.Collaborations
                 entityTransformed.SignDate = entity.CollaborationSign_SignDate;
                 entityTransformed.SignUser = entity.CollaborationSign_SignUser;
                 entityTransformed.IsAbsent = entity.CollaborationSign_IsAbsent;
-            }            
+                entityTransformed.IdCollaboration = entity.IdCollaboration;
+            }
 
             return entityTransformed;
         }

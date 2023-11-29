@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.DocSuite.Service.Models.Parameters;
 using VecompSoftware.DocSuiteWeb.Common.Loggers;
 using VecompSoftware.DocSuiteWeb.Data;
 using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
@@ -10,6 +11,7 @@ using VecompSoftware.DocSuiteWeb.Entity.OCharts;
 using VecompSoftware.DocSuiteWeb.Entity.Protocols;
 using VecompSoftware.DocSuiteWeb.Entity.Resolutions;
 using VecompSoftware.DocSuiteWeb.Entity.Templates;
+using VecompSoftware.DocSuiteWeb.Entity.Tenants;
 using VecompSoftware.DocSuiteWeb.Entity.UDS;
 using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 using VecompSoftware.DocSuiteWeb.Security;
@@ -20,42 +22,32 @@ namespace VecompSoftware.DocSuiteWeb.Validation.Objects.Entities.Commons
     public class RoleValidator : ObjectValidator<Role, RoleValidator>, IRoleValidator
     {
         #region [ Constructor ]
-        public RoleValidator(ILogger logger, IRoleValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity)
-            : base(logger, mapper, unitOfWork, currentSecurity)
+        public RoleValidator(ILogger logger, IRoleValidatorMapper mapper, IDataUnitOfWork unitOfWork, ISecurity currentSecurity, IDecryptedParameterEnvService parameterEnvSecurity)
+            : base(logger, mapper, unitOfWork, currentSecurity, parameterEnvSecurity)
         { }
 
         #endregion
 
         #region [ Properties ]
         public short EntityShortId { get; set; }
-
         public string Name { get; set; }
 
-        public byte IsActive { get; set; }
-
-        public DateTime? ActiveFrom { get; set; }
-
-        public DateTime? ActiveTo { get; set; }
+        public bool IsActive { get; set; }
 
         public string FullIncrementalPath { get; set; }
 
-        public byte Collapsed { get; set; }
+        public bool Collapsed { get; set; }
 
         public string EMailAddress { get; set; }
-
         public string ServiceCode { get; set; }
-
         public Guid UniqueId { get; set; }
-
-        public short IdRoleTenant { get; set; }
-
-        public Guid TenantId { get; set; }
-        public string MappingTag { get; set; }
+        public RoleTypology RoleTypology { get; set; }
 
         #endregion
 
         #region [ Navigation Properties ]
         public Role Father { get; set; }
+        public TenantAOO TenantAOO { get; set; }
 
         public ICollection<WorkflowRepository> WorkflowRepositories { get; set; }
 

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using VecompSoftware.Commons.Interfaces.CQRS.Commands;
+using VecompSoftware.Commons.Interfaces.CQRS.Events;
 using VecompSoftware.DocSuiteWeb.Entity.Collaborations;
 using VecompSoftware.DocSuiteWeb.Entity.DocumentArchives;
 using VecompSoftware.DocSuiteWeb.Entity.Dossiers;
@@ -17,7 +19,7 @@ using VecompSoftware.DocSuiteWeb.Entity.Workflows;
 namespace VecompSoftware.DocSuiteWeb.Entity.Commons
 {
 
-    public class Role : DSWBaseEntity
+    public class Role : DSWBaseEntity, IWorkflowContentBase
     {
         #region [ Constructor ]
         public Role() : this(Guid.NewGuid()) { }
@@ -44,7 +46,6 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
             UDSAuthorizations = new HashSet<UDSRole>();
             //Mailboxes = new HashSet<PECMailBox>();
             TransparentAdministrationMonitorLogs = new HashSet<TransparentAdministrationMonitorLog>();
-            Tenants = new HashSet<Tenant>();
             Processes = new HashSet<Process>();
         }
         #endregion
@@ -53,29 +54,23 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
 
         public string Name { get; set; }
 
-        public byte IsActive { get; set; }
-
-        public DateTime? ActiveFrom { get; set; }
-
-        public DateTime? ActiveTo { get; set; }
+        public bool IsActive { get; set; }
 
         public string FullIncrementalPath { get; set; }
 
-        public byte Collapsed { get; set; }
+        public bool Collapsed { get; set; }
 
         public string EMailAddress { get; set; }
 
         public string ServiceCode { get; set; }
 
-        public short IdRoleTenant { get; set; }
-
-        public Guid TenantId { get; set; }
-
+        public RoleTypology RoleTypology { get; set; }
 
         #endregion
 
         #region [ Navigation Properties ]
         public Role Father { get; set; }
+        public virtual TenantAOO TenantAOO { get; set; }
 
         public virtual ICollection<TemplateCollaborationUser> TemplateCollaborationUsers { get; set; }
 
@@ -117,11 +112,17 @@ namespace VecompSoftware.DocSuiteWeb.Entity.Commons
         public virtual ICollection<UDSRole> UDSAuthorizations { get; set; }
 
         public virtual ICollection<TransparentAdministrationMonitorLog> TransparentAdministrationMonitorLogs { get; set; }
-        public virtual ICollection<Tenant> Tenants { get; set; }
 
         public virtual ICollection<CategoryFascicleRight> CategoryFascicleRights { get; set; }
 
         public virtual ICollection<Process> Processes { get; set; }
+        #endregion
+
+        #region [ Not Mapping Properties ]
+        public bool WorkflowAutoComplete { get; set; }
+        public Guid? IdWorkflowActivity { get; set; }
+        public string WorkflowName { get; set; }
+        public ICollection<IWorkflowAction> WorkflowActions { get; set; }
         #endregion
     }
 }
