@@ -87,7 +87,7 @@ dependsOn:
   proprietary:
     - name: Microsoft SQL Server
       versionMin: "2014"
-      versionMax: "2019"
+      versionMax: "2022"
       optional: no
     - name: LimiLabs Mail.dll (developer)
       versionMin: "3.x"
@@ -121,7 +121,7 @@ dependsOn:
 name: DocSuite PA
 platforms:
   - windows
-releaseDate: '2021-04-26'
+releaseDate: '2023-12-11'
 logo: docsuite-pa.png
 roadmap: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/projects/1'
 softwareType: standalone/web
