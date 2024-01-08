@@ -54,7 +54,7 @@ it:
     gdpr: true
     lineeGuidaDesign: false
     misureMinimeSicurezza: true
-    modelloInteroperatibilita: true
+    modelloInteroperabilita: true
   countryExtensionVersion: '0.2'
   piattaforme:
     anpr: false
