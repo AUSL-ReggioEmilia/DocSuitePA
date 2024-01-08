@@ -54,7 +54,7 @@ it:
     gdpr: true
     lineeGuidaDesign: false
     misureMinimeSicurezza: true
-    modelloInteroperabilita: true
+    modelloInteroperatibilita: true
   countryExtensionVersion: '0.2'
   piattaforme:
     anpr: false
@@ -88,34 +88,34 @@ dependsOn:
     - name: Microsoft SQL Server
       versionMin: "2014"
       versionMax: "2022"
-      optional: no
+      optional: false
     - name: LimiLabs Mail.dll (developer)
       versionMin: "3.x"
       versionMax: "3.x"
-      optional: no
+      optional: false
     - name: Dynamic Web Twain
       versionMin: "8"
       versionMax: "17"
-      optional: yes
+      optional: true
     - name: ITextSharp (developer)
       versionMin: "7"
       versionMax: "7"
-      optional: no
+      optional: false
     - name: Comped DigitaL Sign
       versionMin: "5.x"
       versionMax: "5.x"
-      optional: yes
+      optional: true
     - name: Dgroove Signer App
       versionMin: "1.x"
       versionMax: "2.x"
-      optional: yes
+      optional: true
   hardware:
     - name: Smart Card Reader
-      optional: yes
+      optional: true
     - name: Scanner Twain 
-      optional: yes
+      optional: true
     - name: Zebra Label Printer 
-      optional: yes
+      optional: true
 
 
 name: DocSuite PA
