@@ -118,7 +118,7 @@ dependsOn:
       optional: true
 
 
-name: DocSuite PA
+name: Docsuite PA
 platforms:
   - windows
 releaseDate: '2023-12-11'
