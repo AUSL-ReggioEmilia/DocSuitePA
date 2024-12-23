@@ -13,7 +13,7 @@ description:
     documentation: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/wiki'
     features:
       - Protocollo Informatico
-      - Archivi (Repertori)
+      - Repertori
       - Provvedimenti Amministrativi (Delibere, Determinazioni, Disposizioni, Verbali, ..)
       - Fascicoli e Aggregazioni archivistiche (Procedimenti amministrativi e Attività)
       - Dossier (Pratiche)
