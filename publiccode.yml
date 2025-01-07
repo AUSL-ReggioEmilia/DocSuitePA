@@ -2,7 +2,7 @@
 # metadata file that makes public software easily discoverable.
 # More info at https://github.com/italia/publiccode.yml
 
-publiccodeYmlVersion: '0.2'
+publiccodeYmlVersion: '0.4.0'
 applicationSuite: 'DocSuite PA - Protocollo, Gestione Documentale e Trasparenza'
 categories:
   - document-management
@@ -22,7 +22,6 @@ description:
       - Workflow e Scrivania Attività
       - Conservazione Digitale e versamento a Conservatore Accreditato
       - Trasparenza e SPID (anche accesso pubblico e istanze digitali) (FOIA)
-    genericName: Gestione Documentale
     localisedName: DocSuite PA
     longDescription: >
       DocSuite è la soluzione per la gestione documentale, comprende le
@@ -65,7 +64,6 @@ it:
     codiceIPA: auslre
 landingURL: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA'
 legal:
-  authorsFile: authors.txt
   license: EUPL-1.2
   mainCopyrightOwner: AUSL Reggio Emilia
   repoOwner: AUSL Reggio Emilia
@@ -123,7 +121,6 @@ platforms:
   - windows
 releaseDate: '2023-12-11'
 logo: docsuite-pa.png
-roadmap: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA/projects/1'
 softwareType: standalone/web
 softwareVersion: '9.25'
 url: 'https://github.com/AUSL-ReggioEmilia/DocSuitePA.git'
