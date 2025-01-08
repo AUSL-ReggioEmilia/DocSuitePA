@@ -128,22 +128,19 @@ usedBy:
   - (auslre)    AUSL Reggio Emilia
   - (auslpc)    AUSL Piacenza
   - (aslto)     ASL Città di Torino
-  - (ausltc)    ASL Toscana Centro
-  - (aouc_fi)   AO  Universitaria Careggi di Firenze
   - (as5_SP)    ASL Liguria 5 
   - (ulss_9)    Azienda Ulss 9 Scaligera 
   - (agenas)    AGENAS
-  - (enes)      ENAS - Ente acque della Sardegna
+  - (enas)      ENAS - Ente acque della Sardegna
   - (eanln_rm)  ENEA - Agenzia nazionale per le nuove tecnologie, l energia e lo sviluppo economico sostenibile
   - (enpai_)    ENPACL
   - (cnocl_rm)  Consiglio dell ordine dei Consulenti del Lavoro 
-  - (iz_to)     Istituto Zooprofilattico Sperimentale del Piemonte, Liguria e Valle D Aosta
-  - (iz_ve)     Istituto Zooprofilattico Sperimentale delle Venezie
-  - (uirnet)    Uirnet Spa
+  - (izsto)     Istituto Zooprofilattico Sperimentale del Piemonte, Liguria e Valle D Aosta
+  - (izsve)     Istituto Zooprofilattico Sperimentale delle Venezie
   - (afolmb)    AFOL Monza Brianza
-  -             Pubblica Amministrazione e degli Enti e delle Aziende del settore pubblico
-                allargato nella Repubblica di San Marino
+  - (AASS SM)   Azienda Autonoma di Stato per i Servizi Pubblici - Repubblica di San Marino
+  - (AASLP SM)  Azienda Autonoma di Stato per i Lavori Pubblici - Repubblica di San Marino
   -             One Scarl, Compagnia Toscana Trasporti (CTT) e altre aziende pubbliche del gruppo
   - (aoui_ve)   Azienda Ospedaliera Universitaria di Verona (Trasparenza)
-  - (avscr)     Acque Veronesi (Trasparenza)
-  - (ASP)       Area Science Park
+  -             CISIA - Consorzio Interuniversitario Sistemi Integrati per l'Accesso
+  -             Area Science Park
