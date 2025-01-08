@@ -3,7 +3,7 @@
 # More info at https://github.com/italia/publiccode.yml
 
 publiccodeYmlVersion: '0.4.0'
-applicationSuite: 'DocSuite PA - Protocollo, Gestione Documentale e Trasparenza'
+applicationSuite: 'Docsuite Next PA - Protocollo, Gestione Documentale e Trasparenza'
 categories:
   - document-management
   - collaboration
@@ -22,9 +22,9 @@ description:
       - Workflow e Scrivania Attività
       - Conservazione Digitale e versamento a Conservatore Accreditato
       - Trasparenza e SPID (anche accesso pubblico e istanze digitali) (FOIA)
-    localisedName: DocSuite PA
+    localisedName: Docsuite Next PA
     longDescription: >
-      DocSuite è la soluzione per la gestione documentale, comprende le
+      Docsuite è la soluzione per la gestione documentale, comprende le
       funzionalità per:
       - archivi e serie documentali, registri
       - protocollo e flussi documentali,
@@ -39,7 +39,7 @@ description:
       - integrazione con accesso SPID
       - conservazione digitale e versamento a conservatore accreditato
     shortDescription: >
-      DocSuite PA Gestione Documentale: Protocollo e PEC, Fascicoli,
+      Docsuite Next PA Gestione Documentale: Protocollo e PEC, Fascicoli,
       Provvedimenti Amministrativi e Albo Online, Trasparenza 
 developmentStatus: stable
 intendedAudience:
